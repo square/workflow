@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+kotlin.experimental.coroutines 'enable'
+
+dependencies {
+  compileOnly deps.annotations.intellij
+  compileOnly deps.annotations.androidSupport
+
+  api project(':workflow-core')
+  api deps.kotlin.stdLib.jdk6
+  api deps.kotlin.coroutines.core
+  api deps.okio
+  api deps.rxjava2.rxjava2
+
+  implementation deps.kotlin.coroutines.rx2
+  implementation deps.kotlin.reflect
+
+  testImplementation deps.test.assertj
+  testImplementation deps.test.hamcrestCore
+  testImplementation deps.test.junit
+  testImplementation deps.kotlin.test.mockito
+  testImplementation deps.test.mockito
+  testImplementation deps.rxjava2.extensions
+}
