@@ -1,7 +1,5 @@
 package com.squareup.reactor.rx2
 
-import android.support.annotation.VisibleForTesting
-import android.support.annotation.VisibleForTesting.PACKAGE_PRIVATE
 import com.squareup.reactor.CoroutineReactor
 import com.squareup.reactor.EnterState
 import com.squareup.reactor.FinishWith
@@ -20,15 +18,13 @@ import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.rx2.rxSingle
 import kotlin.coroutines.experimental.CoroutineContext
 
-// TODO(MDX-166) Make internal once buck is fixed.
-@VisibleForTesting(otherwise = PACKAGE_PRIVATE)
-class ReactorRx2Workflow<S : Any, in E : Any, out O : Any>(
+internal class ReactorRx2Workflow<S : Any, in E : Any, out O : Any>(
   private val reactor: CoroutineReactor<S, E, O>,
   private val initialState: S
 ) : Rx2Workflow<S, E, O>, CoroutineScope {
 
   // The events channel is buffered primarily so that reactors don't race themselves when state
-  // changes immediately cause more events to be sent. See RF-1619.
+  // changes immediately cause more events to be sent.
   private val events = Channel<E>(Channel.UNLIMITED)
 
   private val stateSubject = BehaviorSubject.create<Single<Reaction<S, O>>>()
