@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.squareup.reactor.rx2
 
 import com.squareup.reactor.CoroutineReactor
