@@ -61,8 +61,7 @@ class WorkflowPool {
   private val factories = mutableMapOf<Type<*, *, *>, Launcher<*, *, *>>()
   private val workflows = mutableMapOf<Id<*, *, *>, WorkflowEntry>()
 
-  /** Visible for testing only. */
-  val peekWorkflowsCount get() = workflows.values.size
+  internal val peekWorkflowsCount get() = workflows.values.size
 
   /**
    * Registers the [Launcher] to be used to create workflows that match its [Launcher.type],
@@ -151,7 +150,7 @@ class WorkflowPool {
   private fun <S : Any, E : Any, O : Any> requireWorkflow(
     delegating: Delegating<S, E, O>
   ): Rx2Workflow<S, E, O> {
-    // RF-1636 Some complexity here to handle workflows that complete the moment
+    // Some complexity here to handle workflows that complete the moment
     // they are started. We want to return the short-lived workflow so that its
     // result can be processed, but we also need to make sure it doesn't linger
     // in the map.
