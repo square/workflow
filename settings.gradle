@@ -1,0 +1,2 @@
+include ':workflow-core'
+include ':workflow-rx2'
