@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.squareup.reactor.rx2
 
 import com.squareup.reactor.EnterState
@@ -268,7 +270,6 @@ class ReactorAsWorkflowIntegrationTest {
     }
   }
 
-  // RF-1426
   @Test fun acceptsEventsBeforeSubscriptions() {
     val reactor = object : Rx2Reactor<FirstState, String, String> {
       override fun onReact(

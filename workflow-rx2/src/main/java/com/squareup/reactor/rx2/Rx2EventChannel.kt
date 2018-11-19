@@ -1,7 +1,5 @@
 package com.squareup.reactor.rx2
 
-import android.support.annotation.VisibleForTesting
-import android.support.annotation.VisibleForTesting.PACKAGE_PRIVATE
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
@@ -47,9 +45,7 @@ interface Rx2EventChannel<E : Any> {
   fun <R : Any> select(block: EventSelectBuilder<E, R>.() -> Unit): Single<out R>
 }
 
-// TODO(MDX-166) This is only public for test access, should be internal when buck is fixed.
-@VisibleForTesting(otherwise = PACKAGE_PRIVATE)
-fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : Rx2EventChannel<E> {
+internal fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : Rx2EventChannel<E> {
   /**
    * Returns a [Single] that will complete successfully when [Rx2Workflow.sendEvent] is passed an
    * event that matches one of the select cases specified by the given block.

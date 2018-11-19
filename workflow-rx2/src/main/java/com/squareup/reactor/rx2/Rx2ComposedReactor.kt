@@ -20,6 +20,7 @@ interface Rx2ComposedReactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launc
 /**
  * Use this to implement [WorkflowPool.Launcher.launchRx2].
  */
+@Suppress("DEPRECATION")
 fun <S : Any, E : Any, O : Any> Rx2ComposedReactor<S, E, O>.doLaunch(
   initialState: S,
   workflows: WorkflowPool
