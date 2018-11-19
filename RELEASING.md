@@ -40,11 +40,18 @@ To deploy a new snapshot release, you don't need to update any properties. Just 
    git commit -am "Releasing version 0.1.0."
    git tag 0.1.0
    ```
-4. Push your commit and tag:
-   ```
-   git push origin --tags
-   ```
-5. Upload the artifacts:
+4. Upload the artifacts:
    ```
    ./gradlew clean uploadArchives
+   ```
+5. Update the `VERSION_NAME` property to the new snapshot version, e.g.
+   `VERSION_NAME=0.2.0-SNAPSHOT`
+6. Commit the new snapshot version:
+   ```
+   git commit -am "Finish releasing version 0.1.0."
+   ```
+7. Push your commits and tag:
+   ```
+   git push origin master
+   git push origin 0.1.0
    ```
