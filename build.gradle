@@ -7,6 +7,7 @@ buildscript {
       'assertj': '2.6.0',
       'mavenPublishPlugin': '0.6.0',
       'ktlintPlugin': '5.1.0',
+      'detektPlugin': '1.0.0-RC11',
       'mockitoKotlin': '1.5.0',
       'mockito': '2.7.5',
       'intellijAnnotations': '13.0',
@@ -38,6 +39,7 @@ buildscript {
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:${versions.mavenPublishPlugin}",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:${versions.ktlintPlugin}",
+      'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${versions.detektPlugin}",
       'okio': "com.squareup.okio:okio:1.13.0",
       'rxjava2':[
           'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.3",
@@ -61,6 +63,7 @@ buildscript {
     classpath deps.dokka
     classpath deps.mavenPublish
     classpath deps.ktlint
+    classpath deps.detekt
   }
 
   repositories {
@@ -81,6 +84,12 @@ subprojects {
     google()
   }
 
+  // Static analysis
   apply plugin: "org.jlleitschuh.gradle.ktlint"
-  apply plugin: 'com.vanniktech.maven.publish'
+  apply plugin: "com.vanniktech.maven.publish"
+
+  apply plugin: "io.gitlab.arturbosch.detekt"
+  afterEvaluate {
+    project.tasks.getByName('check').dependsOn 'detekt'
+  }
 }
