@@ -3,11 +3,13 @@ package com.squareup.workflow
 import com.squareup.reactor.EnterState
 import com.squareup.reactor.FinishWith
 import com.squareup.reactor.Reaction
-import com.squareup.reactor.rx2.Rx2ComposedReactor
-import com.squareup.reactor.rx2.Rx2EventChannel
-import com.squareup.reactor.rx2.doLaunch
+import com.squareup.workflow.rx2.ComposedReactor
+import com.squareup.workflow.rx2.EventChannel
+import com.squareup.workflow.rx2.doLaunch
 import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.WorkflowPool.Type
+import com.squareup.workflow.rx2.Workflow
+import com.squareup.workflow.rx2.toCompletable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.assertj.core.api.Java6Assertions.assertThat
@@ -26,12 +28,12 @@ class WorkflowPoolTest {
   var abandonCount = 0
   var launchCount = 0
 
-  inner class MyReactor : Rx2ComposedReactor<String, String, String> {
+  inner class MyReactor : ComposedReactor<String, String, String> {
     override val type = object : Type<String, String, String> {}
 
     override fun onReact(
       state: String,
-      events: Rx2EventChannel<String>,
+      events: EventChannel<String>,
       workflows: WorkflowPool
     ): Single<out Reaction<String, String>> = events.select {
       onEvent<String> {
@@ -40,13 +42,13 @@ class WorkflowPoolTest {
       }
     }
 
-    override fun launchRx2(
+    override fun launch(
       initialState: String,
       workflows: WorkflowPool
-    ): Rx2Workflow<String, String, String> {
+    ): Workflow<String, String, String> {
       launchCount++
       val workflow = doLaunch(initialState, workflows)
-      return object : Rx2Workflow<String, String, String> by workflow {
+      return object : Workflow<String, String, String> by workflow {
         override fun abandon() {
           abandonCount++
           workflow.abandon()
@@ -68,7 +70,7 @@ class WorkflowPoolTest {
   }
 
   @Test fun metaTest_myReactorReportsStatesAndResult() {
-    val workflow = myReactor.launchRx2(NEW, pool)
+    val workflow = myReactor.launch(NEW, pool)
     val stateSub = workflow.state.test() as TestObserver<String>
     val resultSub = workflow.result.test() as TestObserver<String>
 
@@ -88,7 +90,7 @@ class WorkflowPoolTest {
   }
 
   @Test fun metaTest_myReactorAbandonsAndStateCompletes() {
-    val workflow = myReactor.launchRx2(NEW, pool)
+    val workflow = myReactor.launch(NEW, pool)
     val abandoned = AtomicBoolean(false)
 
     workflow.toCompletable()
@@ -104,7 +106,7 @@ class WorkflowPoolTest {
 
   @Test fun waitsForStateAfterCurrent() {
     val delegatingState = DelegatingState(NEW)
-    val nestedStateSub = pool.nextDelegateReactionRx2(delegatingState)
+    val nestedStateSub = pool.nextDelegateReaction(delegatingState)
         .test()
     nestedStateSub.assertNoValues()
 
@@ -124,7 +126,7 @@ class WorkflowPoolTest {
 
     // We don't actually care about the reaction, just want the workflow
     // to start.
-    pool.nextDelegateReactionRx2(firstState)
+    pool.nextDelegateReaction(firstState)
 
     // Advance the state a bit.
     val input = pool.input(firstState.id)
@@ -133,7 +135,7 @@ class WorkflowPoolTest {
     input.sendEvent("charlie")
 
     // Check that we get the result we expect after the above events.
-    val resultSub = pool.nextDelegateReactionRx2(DelegatingState("charlie"))
+    val resultSub = pool.nextDelegateReaction(DelegatingState("charlie"))
         .test()
     resultSub.assertNoValues()
 
@@ -144,7 +146,7 @@ class WorkflowPoolTest {
 
   @Test fun reportsImmediateResult() {
     val delegatingState = DelegatingState(NEW)
-    val resultSub = pool.nextDelegateReactionRx2(delegatingState)
+    val resultSub = pool.nextDelegateReaction(delegatingState)
         .test()
     resultSub.assertNoValues()
 
@@ -155,29 +157,29 @@ class WorkflowPoolTest {
   }
 
   @Test fun initsOncePerNextState() {
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     assertThat(launchCount).isEqualTo(1)
 
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     assertThat(launchCount).isEqualTo(1)
 
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     assertThat(launchCount).isEqualTo(1)
   }
 
   @Test fun initsOncePerResult() {
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     assertThat(launchCount).isEqualTo(1)
 
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     assertThat(launchCount).isEqualTo(1)
 
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     assertThat(launchCount).isEqualTo(1)
   }
 
   @Test fun routesEvents() {
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     val input = pool.input(myReactor.type.makeId())
 
     input.sendEvent("able")
@@ -189,7 +191,7 @@ class WorkflowPoolTest {
 
   @Test fun dropsLateEvents() {
     val input = pool.input(myReactor.type.makeId())
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
 
     input.sendEvent("able")
     input.sendEvent("baker")
@@ -207,14 +209,14 @@ class WorkflowPoolTest {
   @Test fun dropsEarlyEvents() {
     val input = pool.input(myReactor.type.makeId())
     input.sendEvent("able")
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     input.sendEvent("baker")
 
     assertThat(eventsSent).isEqualTo(listOf("baker"))
   }
 
   @Test fun resumesRoutingEvents() {
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
     val input = pool.input(myReactor.type.makeId())
 
     input.sendEvent("able")
@@ -224,7 +226,7 @@ class WorkflowPoolTest {
 
     input.sendEvent("charlie")
     input.sendEvent("delta")
-    pool.nextDelegateReactionRx2(DelegatingState())
+    pool.nextDelegateReaction(DelegatingState())
 
     input.sendEvent("echo")
     input.sendEvent("foxtrot")
@@ -239,7 +241,7 @@ class WorkflowPoolTest {
 
   @Test fun abandonsOnlyOnce() {
     assertThat(abandonCount).isZero()
-    pool.nextDelegateReactionRx2(DelegatingState(NEW))
+    pool.nextDelegateReaction(DelegatingState(NEW))
     pool.abandonDelegate(DelegatingState().id)
     pool.abandonDelegate(DelegatingState().id)
     pool.abandonDelegate(DelegatingState().id)
@@ -250,7 +252,7 @@ class WorkflowPoolTest {
     val alreadyInNewState = DelegatingState(NEW)
     val id = alreadyInNewState.id
 
-    val stateSub = pool.nextDelegateReactionRx2(alreadyInNewState)
+    val stateSub = pool.nextDelegateReaction(alreadyInNewState)
         .test()
 
     pool.abandonDelegate(id)

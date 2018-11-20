@@ -1,14 +1,13 @@
 @file:Suppress("DEPRECATION")
 
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
 import com.squareup.reactor.EnterState
 import com.squareup.reactor.FinishWith
 import com.squareup.reactor.Reaction
 import com.squareup.reactor.ReactorException
-import com.squareup.reactor.rx2.TestState.FirstState
-import com.squareup.reactor.rx2.TestState.SecondState
-import com.squareup.workflow.Rx2Workflow
+import com.squareup.workflow.rx2.TestState.FirstState
+import com.squareup.workflow.rx2.TestState.SecondState
 import io.reactivex.Single
 import io.reactivex.Single.just
 import io.reactivex.Single.never
@@ -23,10 +22,10 @@ import org.junit.rules.ExpectedException
 
 class ReactorAsWorkflowIntegrationTest {
 
-  private open class MockReactor : Rx2Reactor<TestState, Nothing, String> {
+  private open class MockReactor : Reactor<TestState, Nothing, String> {
     override fun onReact(
       state: TestState,
-      events: Rx2EventChannel<Nothing>
+      events: EventChannel<Nothing>
     ): Single<out Reaction<TestState, String>> = never()
   }
 
@@ -35,8 +34,9 @@ class ReactorAsWorkflowIntegrationTest {
   private val stateSub = TestObserver<TestState>()
   private val resultSub = TestObserver<String>()
 
-  private var reactor: Rx2Reactor<TestState, Nothing, String> = MockReactor()
-  private lateinit var workflow: Rx2Workflow<TestState, Nothing, String>
+  private var reactor: Reactor<TestState, Nothing, String> =
+    MockReactor()
+  private lateinit var workflow: Workflow<TestState, Nothing, String>
 
   @Suppress("UNCHECKED_CAST")
   fun start(input: String) {
@@ -95,7 +95,7 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<Nothing>
+        events: EventChannel<Nothing>
       ): Single<out Reaction<TestState, String>> {
         return when (state) {
           is FirstState -> EnterState(SecondState("${state.value} ${state.value}"))
@@ -118,7 +118,7 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<Nothing>
+        events: EventChannel<Nothing>
       ): Single<out Reaction<TestState, String>> {
         return when (state) {
           is FirstState -> secondStateSubject.firstOrError().map { EnterState(it) }
@@ -143,7 +143,7 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<Nothing>
+        events: EventChannel<Nothing>
       ): Single<out Reaction<TestState, String>> {
         throw RuntimeException("((angery))")
       }
@@ -163,7 +163,7 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<Nothing>
+        events: EventChannel<Nothing>
       ): Single<out Reaction<TestState, String>> {
         return Single.error(RuntimeException("((angery))"))
       }
@@ -185,7 +185,7 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<Nothing>
+        events: EventChannel<Nothing>
       ): Single<out Reaction<TestState, String>> {
         return never<Reaction<TestState, String>>()
             .doOnSubscribe { subscribeCount++ }
@@ -208,7 +208,7 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<Nothing>
+        events: EventChannel<Nothing>
       ): Single<out Reaction<TestState, String>> {
         return just(FinishWith("all done"))
       }
@@ -247,7 +247,7 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<Nothing>
+        events: EventChannel<Nothing>
       ): Single<out Reaction<TestState, String>> =
         when (state) {
           is FirstState -> trigger.firstOrError().map { EnterState(SecondState("")) }
@@ -271,10 +271,10 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun acceptsEventsBeforeSubscriptions() {
-    val reactor = object : Rx2Reactor<FirstState, String, String> {
+    val reactor = object : Reactor<FirstState, String, String> {
       override fun onReact(
         state: FirstState,
-        events: Rx2EventChannel<String>
+        events: EventChannel<String>
       ): Single<out Reaction<FirstState, String>> {
         return events.select {
           onEvent<String> {
@@ -292,10 +292,10 @@ class ReactorAsWorkflowIntegrationTest {
 
   @Test fun buffersEvents_whenSelectNotCalled() {
     val proceedToSecondState = CompletableSubject.create()
-    val reactor = object : Rx2Reactor<TestState, String, String> {
+    val reactor = object : Reactor<TestState, String, String> {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<String>
+        events: EventChannel<String>
       ): Single<out Reaction<TestState, String>> = when (state) {
         is FirstState -> proceedToSecondState.andThen(just(EnterState(SecondState(""))))
         is SecondState -> events.select {
@@ -318,11 +318,11 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun buffersEvents_whenReentrant() {
-    lateinit var workflow: Rx2Workflow<TestState, String, String>
-    val reactor = object : Rx2Reactor<TestState, String, String> {
+    lateinit var workflow: Workflow<TestState, String, String>
+    val reactor = object : Reactor<TestState, String, String> {
       override fun onReact(
         state: TestState,
-        events: Rx2EventChannel<String>
+        events: EventChannel<String>
       ): Single<out Reaction<TestState, String>> = when (state) {
         is FirstState -> events.select {
           onEvent<String> { event ->
@@ -348,10 +348,10 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun rejectsEvents_whenSelectCalled_withNoEventCases() {
-    val reactor = object : Rx2Reactor<FirstState, String, String> {
+    val reactor = object : Reactor<FirstState, String, String> {
       override fun onReact(
         state: FirstState,
-        events: Rx2EventChannel<String>
+        events: EventChannel<String>
       ): Single<out Reaction<FirstState, String>> = events.select {
         // No cases.
       }

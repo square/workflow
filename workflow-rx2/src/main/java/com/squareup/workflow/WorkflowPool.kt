@@ -4,6 +4,8 @@ import com.squareup.reactor.EnterState
 import com.squareup.reactor.FinishWith
 import com.squareup.reactor.Reaction
 import com.squareup.workflow.WorkflowPool.Id
+import com.squareup.workflow.rx2.Workflow
+import com.squareup.workflow.rx2.toCompletable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -13,7 +15,7 @@ import io.reactivex.disposables.CompositeDisposable
  * Runs [named][Id] [Workflow] instances, typically those associated with [Delegating]
  * states of composite workflows.
  *
- * @see com.squareup.reactor.ComposedReactor
+ * @see com.squareup.workflow.rx2.ComposedReactor
  */
 class WorkflowPool {
   interface Type<S : Any, E : Any, out O : Any> {
@@ -28,24 +30,24 @@ class WorkflowPool {
 
   /**
    * When [registered][WorkflowPool.register] with a [WorkflowPool],
-   * creates [Rx2Workflow] instances of the specified [type] as needed.
+   * creates [Workflow] instances of the specified [type] as needed.
    *
    * Instances may be created on demand as a side effect of calls to
    * [WorkflowPool.nextDelegateReaction]. They are reaped as they
-   * are [completed][Rx2Workflow.toCompletable], including via calls
+   * are [completed][Workflow.toCompletable], including via calls
    * to [WorkflowPool.abandonDelegate].
    */
   interface Launcher<S : Any, E : Any, out O : Any> {
     val type: Type<S, E, O>
 
-    fun launchRx2(
+    fun launch(
       initialState: S,
       workflows: WorkflowPool
-    ): Rx2Workflow<S, E, O>
+    ): Workflow<S, E, O>
   }
 
   /**
-   * Unique identifier for a particular [Rx2Workflow] to be run by a [WorkflowPool].
+   * Unique identifier for a particular [Workflow] to be run by a [WorkflowPool].
    * See [Type.makeId] for details.
    */
   data class Id<S : Any, E : Any, out O : Any>
@@ -54,7 +56,7 @@ class WorkflowPool {
     val type: Type<S, E, O>
   )
 
-  private class WorkflowEntry(val workflow: Rx2Workflow<*, *, *>) {
+  private class WorkflowEntry(val workflow: Workflow<*, *, *>) {
     val sub = CompositeDisposable()
   }
 
@@ -85,7 +87,7 @@ class WorkflowPool {
    *
    * If the nested workflow is [abandoned][abandonDelegate], the [Single] never completes.
    */
-  fun <S : Any, O : Any> nextDelegateReactionRx2(
+  fun <S : Any, O : Any> nextDelegateReaction(
     delegating: Delegating<S, *, O>
   ): Single<Reaction<S, O>> {
     val workflow = requireWorkflow(delegating)
@@ -149,17 +151,17 @@ class WorkflowPool {
 
   private fun <S : Any, E : Any, O : Any> requireWorkflow(
     delegating: Delegating<S, E, O>
-  ): Rx2Workflow<S, E, O> {
+  ): Workflow<S, E, O> {
     // Some complexity here to handle workflows that complete the moment
     // they are started. We want to return the short-lived workflow so that its
     // result can be processed, but we also need to make sure it doesn't linger
     // in the map.
 
     @Suppress("UNCHECKED_CAST")
-    var workflow = workflows[delegating.id]?.workflow as Rx2Workflow<S, E, O>?
+    var workflow = workflows[delegating.id]?.workflow as Workflow<S, E, O>?
 
     if (workflow == null) {
-      workflow = factory(delegating.id.type).launchRx2(delegating.delegateState, this)
+      workflow = factory(delegating.id.type).launch(delegating.delegateState, this)
 
       val entry = WorkflowEntry(workflow)
       workflows[delegating.id] = entry
