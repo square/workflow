@@ -130,20 +130,22 @@ fun <S : Any, E : Any, O : Any> CoroutineWorkflow<S, E, O>.asRx2Workflow(): Work
           }
         }
         .replay(1)
-        .autoConnect(0) { sub -> job.invokeOnCompletion { sub.dispose() } }
+        .refCount()
 
-    override val result: Maybe<out O> = rxMaybe { awaitResult() }
+    override val result: Maybe<out O> = rxMaybe {
+      awaitResult()
+    }
         .onErrorResumeNext { error: Throwable ->
           if (error is CancellationException) {
-            Maybe.empty()
+            Maybe.never()
           } else {
             Maybe.error(error)
           }
         }
 
     override fun abandon() {
-      job.cancel()
       this@asRx2Workflow.abandon()
+      job.cancel()
     }
 
     override fun sendEvent(event: E) {

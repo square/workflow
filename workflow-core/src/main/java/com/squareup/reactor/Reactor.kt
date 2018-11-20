@@ -99,3 +99,6 @@ interface Reactor<S : Any, E : Any, out O : Any> {
    */
   fun abandon(state: S) {}
 }
+
+fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startWorkflow(initialState: S): Workflow<S, E, O> =
+  ReactorWorkflow(this, initialState)

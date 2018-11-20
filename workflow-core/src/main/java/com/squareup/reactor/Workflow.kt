@@ -1,7 +1,6 @@
 package com.squareup.reactor
 
 import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
@@ -122,10 +121,3 @@ fun <S : Any, E : Any, O1 : Any, O2 : Any> Workflow<S, E, O1>.mapResult(
     override fun abandon() = this@mapResult.abandon()
   }
 }
-
-/**
- * A [Workflow] implementation that is also a [CoroutineScope].
- */
-private abstract class CoroutineScopedWorkflow<out S : Any, in E : Any, out O : Any>(
-  final override val coroutineContext: CoroutineContext
-) : Workflow<S, E, O>, CoroutineScope
