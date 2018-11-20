@@ -12,9 +12,7 @@ dependencies {
   api deps.kotlin.stdLib.jdk6
   api deps.kotlin.coroutines.core
 
-  testImplementation deps.test.assertj
-  testImplementation deps.test.hamcrestCore
-  testImplementation deps.test.junit
-  testImplementation deps.kotlin.test.mockito
-  testImplementation deps.test.mockito
+  implementation deps.kotlin.reflect
+
+  testImplementation deps.kotlin.test.jdk
 }

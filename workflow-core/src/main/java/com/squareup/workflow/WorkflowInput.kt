@@ -1,7 +1,5 @@
 package com.squareup.workflow
 
-import io.reactivex.functions.Consumer
-
 /**
  * Accepts input [events][E] for a `Workflow` implementation.
  */
@@ -18,12 +16,8 @@ interface WorkflowInput<in E> {
     override fun sendEvent(event: Nothing) = Unit
   }
 
-  @Suppress("DeprecatedCallableAddReplaceWith")
   companion object {
     fun <E> disabled(): WorkflowInput<E> = NoOp.adaptEvents<E, Unit> { }
-
-    @Deprecated("Wouldn't you rather be using Kotlin?")
-    fun <E> forJava(handler: Consumer<E>): WorkflowInput<E> = WorkflowInput { handler.accept(it) }
   }
 }
 

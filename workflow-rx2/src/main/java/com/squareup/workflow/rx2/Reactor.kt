@@ -2,11 +2,12 @@
 
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.Reactor as CoroutineReactor
 import com.squareup.workflow.Reaction
+import com.squareup.workflow.startWorkflow
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.rx2.await
+import com.squareup.workflow.Reactor as CoroutineReactor
 
 /**
  * Implements a state machine where the states are represented by objects of type (or subclasses of
@@ -65,6 +66,6 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.toCoroutineReactor() =
 
 fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startWorkflow(initialState: S):
     Workflow<S, E, O> {
-  return ReactorWorkflow(toCoroutineReactor(), initialState)
-      .apply { start() }
+  return toCoroutineReactor().startWorkflow(initialState)
+      .asRx2Workflow()
 }

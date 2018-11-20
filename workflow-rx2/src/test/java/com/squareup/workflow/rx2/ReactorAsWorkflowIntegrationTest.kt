@@ -84,11 +84,12 @@ class ReactorAsWorkflowIntegrationTest {
     stateSub.assertTerminated()
   }
 
-  @Test fun resultDoesNotCompleteWhenAbandoned() {
+  @Test fun resultCompletesWhenAbandoned() {
     val workflow = reactor.startWorkflow(SecondState("hello"))
     val resultSub = workflow.result.test()
     workflow.abandon()
-    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+    resultSub.assertTerminated()
   }
 
   @Test fun singleStateChangeAndThenFinish() {
