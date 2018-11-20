@@ -1,4 +1,4 @@
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
 import java.util.concurrent.atomic.AtomicReference
 
