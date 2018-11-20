@@ -3,6 +3,7 @@ package com.squareup.workflow
 import com.squareup.reactor.EnterState
 import com.squareup.reactor.FinishWith
 import com.squareup.reactor.Reaction
+import com.squareup.reactor.WorkflowInput
 import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.rx2.Workflow
 import com.squareup.workflow.rx2.toCompletable

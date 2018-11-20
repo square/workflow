@@ -1,9 +1,18 @@
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.WorkflowInput
+import com.squareup.reactor.WorkflowInput
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import kotlinx.coroutines.experimental.CancellationException
+import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.channels.consumeEach
+import kotlinx.coroutines.experimental.rx2.rxMaybe
+import kotlinx.coroutines.experimental.rx2.rxObservable
+import kotlin.coroutines.experimental.CoroutineContext
+import com.squareup.reactor.Workflow as CoroutineWorkflow
 
 /**
  * Models a process in the app as a stream of [states][state] of type [S], followed by
@@ -28,9 +37,6 @@ interface Workflow<out S : Any, in E : Any, out O : Any> : WorkflowInput<E> {
    * May be called to advise a running workflow that it is to be abandoned prematurely, before
    * it has fired its [result]. Provided as an optional hook to allow implementations to handle any
    * tear-down concerns.
-   *
-   * This method has a default no-op implementation, so if your workflow is written in Kotlin and
-   * you don't care about this hook, you needn't override this method.
    */
   fun abandon()
 }
@@ -97,3 +103,50 @@ fun <S : Any, E : Any, O1 : Any, O2 : Any> Workflow<S, E, O1>.mapResult(transfor
     override fun abandon() = this@mapResult.abandon()
   }
 }
+
+fun <S : Any, E : Any, O : Any> CoroutineWorkflow<S, E, O>.asRx2Workflow(): Workflow<S, E, O> =
+  object : Workflow<S, E, O>, CoroutineScope {
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = Dispatchers.Unconfined + job
+
+    // This block will be invoked for every subscriber, so we need to multicast the resulting
+    // Observable ourselves.
+    override val state: Observable<out S> = rxObservable {
+      val stateChannel = openSubscriptionToState()
+      // This will cancel the channel on error or successful completion, which is necessary
+      // to unsubscribe from the workflow.
+      stateChannel.consumeEach { state ->
+        send(state)
+      }
+    }
+        .onErrorResumeNext { error: Throwable ->
+          // When a coroutine throws a CancellationException, it's not actually an error, just a
+          // a signal that the coroutine was cancelled. For workflows, it means the workflow was
+          // abandoned.
+          if (error is CancellationException) {
+            Observable.empty()
+          } else {
+            Observable.error(error)
+          }
+        }
+        .replay(1)
+        .autoConnect(0) { sub -> job.invokeOnCompletion { sub.dispose() } }
+
+    override val result: Maybe<out O> = rxMaybe { awaitResult() }
+        .onErrorResumeNext { error: Throwable ->
+          if (error is CancellationException) {
+            Maybe.empty()
+          } else {
+            Maybe.error(error)
+          }
+        }
+
+    override fun abandon() {
+      job.cancel()
+      this@asRx2Workflow.abandon()
+    }
+
+    override fun sendEvent(event: E) {
+      this@asRx2Workflow.sendEvent(event)
+    }
+  }

@@ -1,5 +1,6 @@
 package com.squareup.workflow
 
+import com.squareup.reactor.WorkflowInput
 import com.squareup.workflow.rx2.ofKeyType
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer

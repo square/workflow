@@ -1,5 +1,7 @@
 package com.squareup.workflow
 
+import com.squareup.reactor.WorkflowInput
+
 /**
  * Given a workflow state [S], converts it to a type suitable for use as a view model.
  * At the moment, this probably means [AnyScreen] or [LayeredScreen].
