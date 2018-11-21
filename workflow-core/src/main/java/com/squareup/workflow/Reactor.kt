@@ -1,4 +1,4 @@
-package com.squareup.reactor
+package com.squareup.workflow
 
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 

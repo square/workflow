@@ -1,4 +1,4 @@
-package com.squareup.reactor
+package com.squareup.workflow
 
 /**
  * Basically a monad that indicates whether a [Reactor] should enter another state ([EnterState]), with

@@ -2,10 +2,10 @@
 
 package com.squareup.workflow.rx2
 
-import com.squareup.reactor.EnterState
-import com.squareup.reactor.FinishWith
-import com.squareup.reactor.Reaction
-import com.squareup.reactor.ReactorException
+import com.squareup.workflow.EnterState
+import com.squareup.workflow.FinishWith
+import com.squareup.workflow.Reaction
+import com.squareup.workflow.ReactorException
 import com.squareup.workflow.rx2.TestState.FirstState
 import com.squareup.workflow.rx2.TestState.SecondState
 import io.reactivex.Single

@@ -14,7 +14,7 @@ interface Delegating<S : Any, E : Any, O : Any> {
 
   /**
    * The current state of the delegate. Used as its initial state if it was not already
-   * running; typically kept current via [com.squareup.reactor.onDelegateResult]
+   * running; typically kept current via [com.squareup.workflow.onDelegateResult]
    */
   val delegateState: S
 }

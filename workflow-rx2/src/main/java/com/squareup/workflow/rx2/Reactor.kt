@@ -2,8 +2,8 @@
 
 package com.squareup.workflow.rx2
 
-import com.squareup.reactor.Reactor as CoroutineReactor
-import com.squareup.reactor.Reaction
+import com.squareup.workflow.Reactor as CoroutineReactor
+import com.squareup.workflow.Reaction
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.rx2.await

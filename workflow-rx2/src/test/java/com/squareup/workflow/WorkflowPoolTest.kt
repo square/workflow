@@ -1,8 +1,5 @@
 package com.squareup.workflow
 
-import com.squareup.reactor.EnterState
-import com.squareup.reactor.FinishWith
-import com.squareup.reactor.Reaction
 import com.squareup.workflow.rx2.ComposedReactor
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.doLaunch
