@@ -1,4 +1,4 @@
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
 import hu.akarnokd.rxjava2.debug.RxJavaAssemblyTracking
 import org.junit.rules.TestRule

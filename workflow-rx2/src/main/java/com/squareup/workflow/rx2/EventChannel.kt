@@ -1,4 +1,4 @@
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.Dispatchers
@@ -11,7 +11,7 @@ import kotlinx.coroutines.experimental.rx2.rxSingle
 import org.jetbrains.annotations.TestOnly
 
 /**
- * Helper for [Rx2Reactor]s that can accept events from external sources.
+ * Helper for [Reactor]s that can accept events from external sources.
  *
  * From inside `onReact`, you can handle events by calling `select` and passing a block that describes
  * how to handle each event type you're willing to accept. A [Single] will be returned that will
@@ -41,13 +41,13 @@ import org.jetbrains.annotations.TestOnly
  *
  * @param E The supertype of all valid events. Probably a sealed class.
  */
-interface Rx2EventChannel<E : Any> {
+interface EventChannel<E : Any> {
   fun <R : Any> select(block: EventSelectBuilder<E, R>.() -> Unit): Single<out R>
 }
 
-internal fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : Rx2EventChannel<E> {
+fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
   /**
-   * Returns a [Single] that will complete successfully when [Rx2Workflow.sendEvent] is passed an
+   * Returns a [Single] that will complete successfully when [Workflow.sendEvent] is passed an
    * event that matches one of the select cases specified by the given block.
    *
    * Exceptions thrown from `block` are thrown immediately, exceptions thrown from select cases are
@@ -77,7 +77,8 @@ internal fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : Rx2EventCha
       val selectionJob = Job(parent = coroutineContext[Job])
       kotlinx.coroutines.experimental.selects.select<Single<R>> {
         val selectBuilder = this
-        val eventSelectBuilder = EventSelectBuilder<E, R>(selectBuilder, selectionJob)
+        val eventSelectBuilder =
+          EventSelectBuilder<E, R>(selectBuilder, selectionJob)
         block(eventSelectBuilder)
 
         // Always await the next event, even if there are no event cases registered.
@@ -110,10 +111,10 @@ internal fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : Rx2EventCha
 
 /**
  * **Helper for testing:**
- * Creates an [Rx2EventChannel] that will send all the values passed, and then throw if another
+ * Creates an [EventChannel] that will send all the values passed, and then throw if another
  * select is attempted.
  */
-@TestOnly fun <E : Any> eventChannelOf(vararg values: E): Rx2EventChannel<E> =
+@TestOnly fun <E : Any> eventChannelOf(vararg values: E): EventChannel<E> =
   Channel<E>(values.size)
       .apply {
         // Load all the values into the channel's buffer.

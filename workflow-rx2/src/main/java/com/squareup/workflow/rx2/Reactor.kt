@@ -1,10 +1,9 @@
 @file:Suppress("DEPRECATION")
 
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
-import com.squareup.reactor.CoroutineReactor
+import com.squareup.reactor.Reactor as CoroutineReactor
 import com.squareup.reactor.Reaction
-import com.squareup.workflow.Rx2Workflow
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.rx2.await
@@ -18,7 +17,7 @@ import kotlinx.coroutines.experimental.rx2.await
  *   * `EnterState(nextState)`: Call [onReact] again with `nextState`.
  *   * `FinishWith(result)`: The state machine is in a terminal state and has a result of type `O`.
  *
- * To use a [Rx2Reactor], call [Rx2Reactor.startWorkflow].
+ * To use a [Reactor], call [Reactor.startWorkflow].
  *
  * For more information, including a how-to guide for writing Reactors, please see the `README.md`
  * file in this package.
@@ -27,28 +26,28 @@ import kotlinx.coroutines.experimental.rx2.await
  * @param E Event type. If your Reactor doesn't have any events, use `Nothing`
  * @param O Output (result) type
  */
-@Deprecated("Use Rx2ComposedReactor instead.")
-interface Rx2Reactor<S : Any, E : Any, out O : Any> {
+@Deprecated("Use ComposedReactor instead.")
+interface Reactor<S : Any, E : Any, out O : Any> {
 
   /**
-   * Called by the [Rx2Workflow] to obtain the next state transition.
+   * Called by the [Workflow] to obtain the next state transition.
    */
   fun onReact(
     state: S,
-    events: Rx2EventChannel<E>
+    events: EventChannel<E>
   ): Single<out Reaction<S, O>>
 
   /**
-   * Called by the [Rx2Workflow] when the reactor is abandoned.
+   * Called by the [Workflow] when the reactor is abandoned.
    */
   fun onAbandoned(state: S) {}
 }
 
 /**
- * Adapter to convert a [Rx2Reactor] to a [CoroutineReactor].
+ * Adapter to convert a [Reactor] to a [Reactor].
  */
 @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-fun <S : Any, E : Any, O : Any> Rx2Reactor<S, E, O>.toCoroutineReactor() =
+fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.toCoroutineReactor() =
   object : CoroutineReactor<S, E, O> {
     override suspend fun react(
       state: S,
@@ -64,8 +63,8 @@ fun <S : Any, E : Any, O : Any> Rx2Reactor<S, E, O>.toCoroutineReactor() =
       "${javaClass.simpleName}(${this@toCoroutineReactor.javaClass.name})"
   }
 
-fun <S : Any, E : Any, O : Any> Rx2Reactor<S, E, O>.startWorkflow(initialState: S):
-    Rx2Workflow<S, E, O> {
-  return ReactorRx2Workflow(toCoroutineReactor(), initialState)
+fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startWorkflow(initialState: S):
+    Workflow<S, E, O> {
+  return ReactorWorkflow(toCoroutineReactor(), initialState)
       .apply { start() }
 }
