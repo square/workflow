@@ -1,4 +1,4 @@
-package com.squareup.reactor
+package com.squareup.workflow
 
 /**
  * Wraps exceptions thrown by [Reactor.onReact] or the Singles emitted from it.

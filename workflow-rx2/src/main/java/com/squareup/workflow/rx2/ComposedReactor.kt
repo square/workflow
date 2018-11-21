@@ -1,6 +1,6 @@
 package com.squareup.workflow.rx2
 
-import com.squareup.reactor.Reaction
+import com.squareup.workflow.Reaction
 import com.squareup.workflow.Delegating
 import com.squareup.workflow.WorkflowPool
 import io.reactivex.Single
