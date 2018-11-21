@@ -6,7 +6,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
  * Implements a state machine where the states are represented by objects of type (or subclasses of
  * type) `S`.
  *
- * > ***Using [CoroutineReactor] directly is not currently supported. Subclass `Reactor` instead.***
+ * > ***Using [Reactor] directly is not currently supported. Subclass `Reactor` instead.***
  *
  * The state machine can be initialized with an arbitrary value of type `I` which is converted to
  * the initial state by the method [onStart].
@@ -82,7 +82,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
  * @param E Event type. If your Reactor doesn't have any events, use `Nothing`
  * @param O Output (result) type
  */
-interface CoroutineReactor<S : Any, E : Any, out O : Any> {
+interface Reactor<S : Any, E : Any, out O : Any> {
   /**
    * Called by the `Workflow` to obtain the next state transition.
    */

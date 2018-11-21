@@ -1,7 +1,7 @@
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
-import com.squareup.reactor.rx2.CoroutineEventChannelTest.Events.Click
-import com.squareup.reactor.rx2.CoroutineEventChannelTest.Events.Dismiss
+import com.squareup.workflow.rx2.CoroutineEventChannelTest.Events.Click
+import com.squareup.workflow.rx2.CoroutineEventChannelTest.Events.Dismiss
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.MaybeSubject

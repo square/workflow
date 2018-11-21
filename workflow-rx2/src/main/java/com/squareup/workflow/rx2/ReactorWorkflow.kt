@@ -1,11 +1,10 @@
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
-import com.squareup.reactor.CoroutineReactor
+import com.squareup.reactor.Reactor
 import com.squareup.reactor.EnterState
 import com.squareup.reactor.FinishWith
 import com.squareup.reactor.Reaction
 import com.squareup.reactor.ReactorException
-import com.squareup.workflow.Rx2Workflow
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -18,10 +17,10 @@ import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.rx2.rxSingle
 import kotlin.coroutines.experimental.CoroutineContext
 
-internal class ReactorRx2Workflow<S : Any, in E : Any, out O : Any>(
-  private val reactor: CoroutineReactor<S, E, O>,
+internal class ReactorWorkflow<S : Any, in E : Any, out O : Any>(
+  private val reactor: Reactor<S, E, O>,
   private val initialState: S
-) : Rx2Workflow<S, E, O>, CoroutineScope {
+) : Workflow<S, E, O>, CoroutineScope {
 
   // The events channel is buffered primarily so that reactors don't race themselves when state
   // changes immediately cause more events to be sent.
@@ -54,7 +53,7 @@ internal class ReactorRx2Workflow<S : Any, in E : Any, out O : Any>(
   private val isStarted: Boolean get() = stateSubject.hasValue()
 
   /**
-   * Defines the context for the coroutine from which the [Rx2Reactor.onReact] method is called.
+   * Defines the context for the coroutine from which the [Reactor.onReact] method is called.
    */
   override val coroutineContext: CoroutineContext =
   // Unconfined means the coroutine is never dispatched and always resumed synchronously on the
@@ -104,7 +103,7 @@ internal class ReactorRx2Workflow<S : Any, in E : Any, out O : Any>(
   }
 
   /**
-   * Ensures any errors thrown either by the [Rx2Reactor.onReact] method or the [Single] it returns are
+   * Ensures any errors thrown either by the [Reactor.onReact] method or the [Single] it returns are
    * wrapped in a [ReactorException] and transmitted through Rx plumbing.
    */
   private fun tryReact(currentState: S): Single<out Reaction<S, O>> {

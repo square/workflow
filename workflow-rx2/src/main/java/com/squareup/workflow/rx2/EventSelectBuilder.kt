@@ -1,4 +1,4 @@
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -12,8 +12,8 @@ import kotlinx.coroutines.experimental.selects.SelectBuilder
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 
 /**
- * The receiver for lambdas passed to [EventChannel.select][Rx2EventChannel.select].
- * For usage see the documentation for [EventChannel][Rx2EventChannel].
+ * The receiver for lambdas passed to [EventChannel.select][EventChannel.select].
+ * For usage see the documentation for [EventChannel][EventChannel].
  */
 class EventSelectBuilder<E : Any, R : Any> internal constructor(
   private val builder: SelectBuilder<Single<R>>,
@@ -99,7 +99,9 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
     predicateMapper: (E) -> T?,
     handler: (T) -> R
   ) {
-    cases += SelectCase<E, T, R>(predicateMapper, handler)
+    cases += SelectCase<E, T, R>(
+        predicateMapper, handler
+    )
   }
 }
 

@@ -1,4 +1,4 @@
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
 import junit.framework.TestCase.fail
 import org.assertj.core.api.Java6Assertions.assertThat

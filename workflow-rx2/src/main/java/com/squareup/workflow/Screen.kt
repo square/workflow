@@ -1,6 +1,6 @@
 package com.squareup.workflow
 
-import com.squareup.workflow.Screen.Key
+import com.squareup.workflow.rx2.ofKeyType
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import kotlin.reflect.jvm.jvmName
@@ -31,7 +31,7 @@ class Screen<D : Any, E : Any>(
   operator fun component2() = workflow
 
   /**
-   * Uniquely identifies a type of screen and defines its schema. Also can [filterRx2]
+   * Uniquely identifies a type of screen and defines its schema. Also can [filter]
    * an untyped stream of [Screen] down to just those that match.
    *
    * @param typeName Uniquely identifies screens of this type, typically a class name. All
@@ -67,9 +67,9 @@ class Screen<D : Any, E : Any>(
      *
      *    myWorkflow.getState()
      *        .map(wfState -> wfState.state[SOME_LAYER]!!)
-     *        .compose(key.filterRx2())
+     *        .compose(key.filter())
      */
-    fun filterRx2(): ObservableTransformer<AnyScreen, Screen<D, E>> =
+    fun filter(): ObservableTransformer<AnyScreen, Screen<D, E>> =
       ObservableTransformer { observable -> observable.ofKeyType(this) }
 
     /**
@@ -105,24 +105,4 @@ class Screen<D : Any, E : Any>(
     @JvmField
     val NO_KEY = Key<Nothing, Nothing>("NO_KEY")
   }
-}
-
-/**
- * Transforms a stream of arbitrarily typed [Screen]s to a stream of screens
- * that match a given [Screen.Key] exactly (including both [Screen.Key.typeName] and
- * [Screen.Key.value]), cast appropriately. For each stack received, works from
- * the top (index zero) and emits the first matching screen, or emits nothing if there is no match.
- *
- *    myWorkflow.state
- *        .map(wfState -> wfState.state[SOME_LAYER]!!)
- *        .ofKeyType(someKey)
- */
-fun <D : Any, E : Any> Observable<out AnyScreen>.ofKeyType(key: Key<D, E>):
-    Observable<Screen<D, E>> {
-  return filter { it.key == key }
-      .map {
-        // The types had better match if the keys match.
-        @Suppress("UNCHECKED_CAST")
-        it as Screen<D, E>
-      }
 }

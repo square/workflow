@@ -1,34 +1,33 @@
-package com.squareup.reactor.rx2
+package com.squareup.workflow.rx2
 
 import com.squareup.reactor.Reaction
 import com.squareup.workflow.Delegating
-import com.squareup.workflow.Rx2Workflow
 import com.squareup.workflow.WorkflowPool
 import io.reactivex.Single
 
 /**
  * See `ComposedReactor` in the Rx1 module.
  */
-interface Rx2ComposedReactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O> {
+interface ComposedReactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O> {
   fun onReact(
     state: S,
-    events: Rx2EventChannel<E>,
+    events: EventChannel<E>,
     workflows: WorkflowPool
   ): Single<out Reaction<S, O>>
 }
 
 /**
- * Use this to implement [WorkflowPool.Launcher.launchRx2].
+ * Use this to implement [WorkflowPool.Launcher.launch].
  */
 @Suppress("DEPRECATION")
-fun <S : Any, E : Any, O : Any> Rx2ComposedReactor<S, E, O>.doLaunch(
+fun <S : Any, E : Any, O : Any> ComposedReactor<S, E, O>.doLaunch(
   initialState: S,
   workflows: WorkflowPool
-): Rx2Workflow<S, E, O> {
-  return object : Rx2Reactor<S, E, O> {
+): Workflow<S, E, O> {
+  return object : Reactor<S, E, O> {
     override fun onReact(
       state: S,
-      events: Rx2EventChannel<E>
+      events: EventChannel<E>
     ): Single<out Reaction<S, O>> {
       return onReact(state, events, workflows)
     }

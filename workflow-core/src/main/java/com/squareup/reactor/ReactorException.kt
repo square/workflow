@@ -8,7 +8,7 @@ package com.squareup.reactor
  */
 class ReactorException(
   cause: Throwable,
-  val reactor: CoroutineReactor<*, *, *>,
+  val reactor: Reactor<*, *, *>,
   val reactorState: Any
 ) : RuntimeException(cause) {
 
