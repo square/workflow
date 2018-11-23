@@ -20,14 +20,11 @@ import kotlin.coroutines.experimental.CoroutineContext
  *
  * The react loop runs inside a coroutine. For each state, the state value is sent on a
  * [ConflatedBroadcastChannel][kotlinx.coroutines.experimental.channels.ConflatedBroadcastChannel].
- * When [react][Reactor.react] returns [FinishWith], a [CompletableDeferred] representing the
+ * When [react][Reactor.onReact] returns [FinishWith], a [CompletableDeferred] representing the
  * workflow result is completed, and then the broadcast channel is closed.
  *
- * When the workflow is cancelled, the reactor's [abandon][Reactor.abandon] is first called, and
- * then the coroutine running the broadcast loop is cancelled.
- *
  * _Note:_
- * If [Reactor.react] immediately returns [FinishWith], the last state may not be emitted since
+ * If [Reactor.onReact] immediately returns [FinishWith], the last state may not be emitted since
  * the [state channel][openSubscriptionToState] is closed immediately.
  *
  * @param result Passed in so we can use implementation-by-delegation.
@@ -35,6 +32,7 @@ import kotlin.coroutines.experimental.CoroutineContext
 internal class ReactorWorkflow<S : Any, in E : Any, out O : Any> private constructor(
   private val reactor: Reactor<S, E, O>,
   private val initialState: S,
+  private val workflows: WorkflowPool,
   override val coroutineContext: CoroutineContext,
   private val result: CompletableDeferred<O>
 ) : Workflow<S, E, O>, Deferred<O> by result, CoroutineScope {
@@ -42,9 +40,12 @@ internal class ReactorWorkflow<S : Any, in E : Any, out O : Any> private constru
   constructor(
     reactor: Reactor<S, E, O>,
     initialState: S,
+    workflows: WorkflowPool,
     context: CoroutineContext
   ) : this(
-      reactor, initialState,
+      reactor,
+      initialState,
+      workflows,
       // Unconfined means the coroutine is never dispatched and always resumed synchronously on the
       // current thread. This is the default RxJava behavior, and the behavior we explicitly want
       // here.
@@ -93,21 +94,9 @@ internal class ReactorWorkflow<S : Any, in E : Any, out O : Any> private constru
 
   init {
     result.invokeOnCompletion { cancelReason ->
-      // If the reason is null it means the result was completed normally, and we don't want
-      // to abort the reactor in that case.
-      if (cancelReason == null) return@invokeOnCompletion
-
-      try {
-        if (cancelReason is CancellationException) {
-          // Only call abandon if we were actually cancelled – don't do it if the reactor throws.
-          // Abandon may throw, and we don't want to lose the original exception.
-          currentState?.let(reactor::abandon)
-        }
-      } catch (@Suppress("TooGenericExceptionCaught") abandonException: Throwable) {
-        // The contract for invokeOnCompletion forbids us from throwing any exceptions ourselves,
-        // and we can't just tack it onto the original exception because it will be ignored.
-        handleUncaughtException(abandonException)
-      } finally {
+      // If the reason is null it means the result was completed normally, and we don't need to
+      // do anything special.
+      if (cancelReason != null) {
         // We explicitly cancel the broadcast coroutine instead of making the result the parent
         // job because we need to ensure that the reactor is abandoned before the state channel
         // completes.
@@ -133,7 +122,7 @@ internal class ReactorWorkflow<S : Any, in E : Any, out O : Any> private constru
   @Suppress("TooGenericExceptionCaught")
   private suspend fun tryReact(currentState: S): Reaction<S, O> =
     try {
-      reactor.react(currentState, events)
+      reactor.onReact(currentState, events, workflows)
     } catch (cause: Throwable) {
       // CancellationExceptions aren't actually errors, rethrow them directly.
       if (cause is CancellationException) throw cause
