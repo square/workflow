@@ -35,10 +35,11 @@ To deploy a new snapshot release, you don't need to update any properties. Just 
 1. Make sure you're on the `master` branch.
 2. In `gradle.properties`, remove the `-SNAPSHOT` prefix from the `VERSION_NAME` property.
    E.g. `VERSION_NAME=0.1.0`
+   Update CHANGELOG.md with the changes since the last release.
 3. Create a commit and tag the commit with the version number:
    ```
-   git commit -am "Releasing version 0.1.0."
-   git tag 0.1.0
+   git commit -am "Releasing v0.1.0."
+   git tag v0.1.0
    ```
 4. Upload the artifacts:
    ```
@@ -48,10 +49,9 @@ To deploy a new snapshot release, you don't need to update any properties. Just 
    `VERSION_NAME=0.2.0-SNAPSHOT`
 6. Commit the new snapshot version:
    ```
-   git commit -am "Finish releasing version 0.1.0."
+   git commit -am "Finish releasing v0.1.0."
    ```
 7. Push your commits and tag:
    ```
-   git push origin master
-   git push origin 0.1.0
+   git push origin master && git push origin v0.1.0
    ```
