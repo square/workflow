@@ -3,13 +3,16 @@
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Delegating
+import com.squareup.workflow.Worker
 import com.squareup.workflow.Reaction
 import com.squareup.workflow.WorkflowPool
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.CancellationException
+import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.rx2.asSingle
 import com.squareup.workflow.nextDelegateReaction as nextDelegateReactionCore
+import com.squareup.workflow.workerResult as workerResultCore
 
 /**
  * Starts the required nested workflow if it wasn't already running. Returns
@@ -27,7 +30,23 @@ import com.squareup.workflow.nextDelegateReaction as nextDelegateReactionCore
  */
 fun <S : Any, O : Any> WorkflowPool.nextDelegateReaction(
   delegating: Delegating<S, *, O>
-): Single<Reaction<S, O>> = nextDelegateReactionCore(delegating).asSingle(Unconfined)
+): Single<Reaction<S, O>> = nextDelegateReactionCore(delegating).asSingleNeverOnCancel()
+
+/**
+ * This is a convenience method that wraps
+ * [awaitWorkerResult][WorkflowPool.awaitWorkerResult] in a [Deferred] so it can
+ * be selected on.
+ *
+ * @see WorkflowPool.awaitWorkerResult
+ */
+inline fun <reified I : Any, reified O : Any> WorkflowPool.workerResult(
+  worker: Worker<I, O>,
+  input: I,
+  name: String = ""
+): Single<O> = workerResultCore(worker, input, name).asSingleNeverOnCancel()
+
+@PublishedApi
+internal fun <T : Any> Deferred<T>.asSingleNeverOnCancel() = asSingle(Unconfined)
     .onErrorResumeNext {
       if (it is CancellationException) {
         Single.never()
