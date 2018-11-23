@@ -1,8 +1,12 @@
 package com.squareup.workflow.rx2
 
+import com.squareup.workflow.Delegating
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
 import com.squareup.workflow.Reaction
+import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Background
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Cancel
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Pause
@@ -15,9 +19,6 @@ import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.Pause
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.RunningEchoJob
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.RunningImmediateJob
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.StringEchoer
-import com.squareup.workflow.Delegating
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.WorkflowPool.Id
 import io.reactivex.Single
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule

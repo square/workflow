@@ -3,6 +3,7 @@
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Reaction
+import com.squareup.workflow.Workflow
 import com.squareup.workflow.startWorkflow
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
@@ -64,8 +65,6 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.toCoroutineReactor() =
       "${javaClass.simpleName}(${this@toCoroutineReactor.javaClass.name})"
   }
 
-fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startWorkflow(initialState: S):
-    Workflow<S, E, O> {
-  return toCoroutineReactor().startWorkflow(initialState)
-      .asRx2Workflow()
-}
+fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startWorkflow(
+  initialState: S
+): Workflow<S, E, O> = toCoroutineReactor().startWorkflow(initialState)

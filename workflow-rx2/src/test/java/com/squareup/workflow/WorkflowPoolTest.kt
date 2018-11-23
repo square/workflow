@@ -1,14 +1,16 @@
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowPool.Id
+import com.squareup.workflow.WorkflowPool.Type
 import com.squareup.workflow.rx2.ComposedReactor
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.doLaunch
-import com.squareup.workflow.WorkflowPool.Id
-import com.squareup.workflow.WorkflowPool.Type
-import com.squareup.workflow.rx2.Workflow
+import com.squareup.workflow.rx2.result
+import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
+import kotlinx.coroutines.experimental.CancellationException
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
@@ -45,12 +47,12 @@ class WorkflowPoolTest {
     ): Workflow<String, String, String> {
       launchCount++
       val workflow = doLaunch(initialState, workflows)
-      return object : Workflow<String, String, String> by workflow {
-        override fun abandon() {
+      workflow.invokeOnCompletion { cause ->
+        if (cause is CancellationException) {
           abandonCount++
-          workflow.abandon()
         }
       }
+      return workflow
     }
   }
 
@@ -93,7 +95,7 @@ class WorkflowPoolTest {
     workflow.toCompletable()
         .subscribe { abandoned.set(true) }
     assertThat(abandoned.get()).isFalse()
-    workflow.abandon()
+    workflow.cancel()
     assertThat(abandoned.get()).isTrue()
   }
 
