@@ -6,7 +6,7 @@ import com.squareup.workflow.rx2.ComposedReactor
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.nextDelegateReaction
 import com.squareup.workflow.rx2.result
-import com.squareup.workflow.rx2.startWorkflow
+import com.squareup.workflow.rx2.doLaunch
 import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable
 import io.reactivex.Single
@@ -47,7 +47,7 @@ class WorkflowPoolIntegrationTest {
       workflows: WorkflowPool
     ): Workflow<String, String, String> {
       launchCount++
-      val workflow = startWorkflow(initialState, workflows)
+      val workflow = doLaunch(initialState, workflows)
       workflow.invokeOnCompletion { cause ->
         if (cause is CancellationException) {
           abandonCount++
