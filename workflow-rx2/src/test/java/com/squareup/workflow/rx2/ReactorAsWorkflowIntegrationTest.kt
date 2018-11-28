@@ -6,14 +6,17 @@ import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
 import com.squareup.workflow.Reaction
 import com.squareup.workflow.ReactorException
+import com.squareup.workflow.Workflow
 import com.squareup.workflow.rx2.TestState.FirstState
 import com.squareup.workflow.rx2.TestState.SecondState
 import io.reactivex.Single
 import io.reactivex.Single.just
 import io.reactivex.Single.never
+import io.reactivex.exceptions.OnErrorNotImplementedException
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.CompletableSubject
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.SingleSubject
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.assertj.core.api.Java6Assertions.fail
 import org.junit.Rule
@@ -34,8 +37,7 @@ class ReactorAsWorkflowIntegrationTest {
   private val stateSub = TestObserver<TestState>()
   private val resultSub = TestObserver<String>()
 
-  private var reactor: Reactor<TestState, Nothing, String> =
-    MockReactor()
+  private var reactor: Reactor<TestState, Nothing, String> = MockReactor()
   private lateinit var workflow: Workflow<TestState, Nothing, String>
 
   @Suppress("UNCHECKED_CAST")
@@ -69,7 +71,7 @@ class ReactorAsWorkflowIntegrationTest {
     val workflow = reactor.startWorkflow(SecondState("hello"))
 
     workflow.state.subscribe(stateSub)
-    workflow.abandon()
+    workflow.cancel()
 
     stateSub.assertValue(SecondState("hello"))
     stateSub.assertTerminated()
@@ -77,18 +79,19 @@ class ReactorAsWorkflowIntegrationTest {
 
   @Test fun stateStaysCompletedForLateSubscribersWhenAbandoned() {
     val workflow = reactor.startWorkflow(SecondState("hello"))
-    workflow.abandon()
+    workflow.cancel()
 
     workflow.state.subscribe(stateSub)
     stateSub.assertNoValues()
     stateSub.assertTerminated()
   }
 
-  @Test fun resultDoesNotCompleteWhenAbandoned() {
+  @Test fun resultCompletesWhenAbandoned() {
     val workflow = reactor.startWorkflow(SecondState("hello"))
     val resultSub = workflow.result.test()
-    workflow.abandon()
-    resultSub.assertNotTerminated()
+    workflow.cancel()
+    resultSub.assertNoValues()
+    resultSub.assertTerminated()
   }
 
   @Test fun singleStateChangeAndThenFinish() {
@@ -198,7 +201,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertThat(subscribeCount).isEqualTo(1)
     assertThat(unsubscribeCount).isEqualTo(0)
 
-    workflow.abandon()
+    workflow.cancel()
 
     assertThat(subscribeCount).isEqualTo(1)
     assertThat(unsubscribeCount).isEqualTo(1)
@@ -219,7 +222,7 @@ class ReactorAsWorkflowIntegrationTest {
     }
 
     start("starting")
-    workflow.abandon()
+    workflow.cancel()
   }
 
   @Test fun reactorIsAbandoned_onAbandonment() {
@@ -234,7 +237,7 @@ class ReactorAsWorkflowIntegrationTest {
     start("starting")
     workflow.state.ignoreElements()
         .subscribe { log.append("+workflow.Completed") }
-    workflow.abandon()
+    workflow.cancel()
 
     // Docs promise that the workflow doesn't complete until the reactor has a chance
     // to do its abandon thing.
@@ -243,14 +246,14 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun exceptionIsPropagated_whenStateSubscriberThrowsFromSecondOnNext_asynchronously() {
-    val trigger = PublishSubject.create<Unit>()
+    val trigger = SingleSubject.create<Unit>()
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
         events: EventChannel<Nothing>
       ): Single<out Reaction<TestState, String>> =
         when (state) {
-          is FirstState -> trigger.firstOrError().map { EnterState(SecondState("")) }
+          is FirstState -> trigger.map { EnterState(SecondState("")) }
           is SecondState -> super.onReact(state, events)
         }
     }
@@ -262,11 +265,15 @@ class ReactorAsWorkflowIntegrationTest {
         .ofType(SecondState::class.java)
         .subscribe { throw RuntimeException("fail") }
 
-    thrown.expect(RuntimeException::class.java)
-    thrown.expectMessage("fail")
-
-    rethrowingUncaughtExceptions {
-      trigger.onNext(Unit)
+    try {
+      rethrowingUncaughtExceptions {
+        trigger.onSuccess(Unit)
+      }
+      fail("Expected exception.")
+    } catch (e: OnErrorNotImplementedException) {
+      assertThat(e.cause)
+          .isInstanceOf(RuntimeException::class.java)
+          .hasMessage("fail")
     }
   }
 

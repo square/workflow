@@ -1,7 +1,8 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowPool.Id
-import com.squareup.workflow.rx2.Workflow
+import com.squareup.workflow.rx2.result
+import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -125,14 +126,14 @@ class WorkflowPool {
    * is a no-op.
    */
   fun abandonDelegate(id: Id<*, *, *>) {
-    workflows[id]?.workflow?.abandon()
+    workflows[id]?.workflow?.cancel()
   }
 
   /**
    * Abandons all workflows currently running in this pool.
    */
   fun abandonAll() {
-    workflows.values.forEach { it.workflow.abandon() }
+    workflows.values.forEach { it.workflow.cancel() }
   }
 
   private fun <S : Any, E : Any, O : Any> factory(

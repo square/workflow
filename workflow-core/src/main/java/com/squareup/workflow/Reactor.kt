@@ -1,6 +1,8 @@
 package com.squareup.workflow
 
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 /**
  * Implements a state machine where the states are represented by objects of type (or subclasses of
@@ -92,10 +94,16 @@ interface Reactor<S : Any, E : Any, out O : Any> {
   ): Reaction<S, O>
 
   /**
-   * Called from `Workflow.abandon` when the reactor is abandoned. Note that this
+   * Called from `Workflow.cancel` when the reactor is abandoned. Note that this
    * method is called _before_ `Workflow.state` completes.
    *
    * Optional, has default empty implementation.
    */
   fun abandon(state: S) {}
 }
+
+fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startWorkflow(
+  initialState: S,
+  context: CoroutineContext = EmptyCoroutineContext
+): Workflow<S, E, O> =
+  ReactorWorkflow(this, initialState, context)
