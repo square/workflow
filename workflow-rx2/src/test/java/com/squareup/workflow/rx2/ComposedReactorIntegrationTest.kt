@@ -165,7 +165,7 @@ class ComposedReactorIntegrationTest {
     override fun launch(
       initialState: String,
       workflows: WorkflowPool
-    ): Workflow<String, String, String> = startWorkflow(initialState, workflows)
+    ): Workflow<String, String, String> = doLaunch(initialState, workflows)
   }
 
   val echoReactor = StringEchoer()
@@ -188,7 +188,7 @@ class ComposedReactorIntegrationTest {
     override fun launch(
       initialState: Unit,
       workflows: WorkflowPool
-    ): Workflow<Unit, String, Unit> = startWorkflow(initialState, workflows)
+    ): Workflow<Unit, String, Unit> = doLaunch(initialState, workflows)
   }
 
   val immediateReactor =
@@ -309,7 +309,7 @@ class ComposedReactorIntegrationTest {
     ): Workflow<OuterState, OuterEvent, Unit> {
       workflows.register(echoReactor)
       workflows.register(immediateReactor)
-      val workflow = startWorkflow(initialState, workflows)
+      val workflow = doLaunch(initialState, workflows)
       workflow.toCompletable()
           .subscribe { workflows.abandonAll() }
       return workflow

@@ -21,7 +21,7 @@ interface ComposedReactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher
  * Use this to implement [WorkflowPool.Launcher.launch].
  */
 @Suppress("DEPRECATION")
-fun <S : Any, E : Any, O : Any> ComposedReactor<S, E, O>.startWorkflow(
+fun <S : Any, E : Any, O : Any> ComposedReactor<S, E, O>.doLaunch(
   initialState: S,
   workflows: WorkflowPool
 ): Workflow<S, E, O> {
