@@ -1,19 +1,16 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowPool.Id
-import com.squareup.workflow.rx2.result
-import com.squareup.workflow.rx2.state
-import com.squareup.workflow.rx2.toCompletable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.Dispatchers.Unconfined
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import org.jetbrains.annotations.TestOnly
 
 /**
  * Runs [named][Id] [Workflow] instances, typically those associated with [Delegating]
  * states of composite workflows.
- *
- * @see com.squareup.workflow.rx2.ComposedReactor
  */
 class WorkflowPool {
   interface Type<S : Any, E : Any, out O : Any> {
@@ -31,9 +28,9 @@ class WorkflowPool {
    * creates [Workflow] instances of the specified [type] as needed.
    *
    * Instances may be created on demand as a side effect of calls to
-   * [WorkflowPool.nextDelegateReaction]. They are reaped as they
-   * are [completed][Workflow.toCompletable], including via calls
-   * to [WorkflowPool.abandonDelegate].
+   * [WorkflowPool.nextDelegateReaction]. They are reaped as they are
+   * [completed][Workflow.invokeOnCompletion], including via calls to
+   * [WorkflowPool.abandonDelegate].
    */
   interface Launcher<S : Any, E : Any, out O : Any> {
     val type: Type<S, E, O>
@@ -54,14 +51,12 @@ class WorkflowPool {
     val type: Type<S, E, O>
   )
 
-  private class WorkflowEntry(val workflow: Workflow<*, *, *>) {
-    val sub = CompositeDisposable()
-  }
+  private class WorkflowEntry(val workflow: Workflow<*, *, *>)
 
   private val factories = mutableMapOf<Type<*, *, *>, Launcher<*, *, *>>()
   private val workflows = mutableMapOf<Id<*, *, *>, WorkflowEntry>()
 
-  internal val peekWorkflowsCount get() = workflows.values.size
+  @get:TestOnly val peekWorkflowsCount get() = workflows.values.size
 
   /**
    * Registers the [Launcher] to be used to create workflows that match its [Launcher.type],
@@ -75,32 +70,28 @@ class WorkflowPool {
 
   /**
    * Starts the required nested workflow if it wasn't already running. Returns
-   * a [Single] that will fire the next time the nested workflow updates its state,
-   * or completes.
+   * a [ReceiveChannel] that will send all the reactions from the delegate workflow.
    *
    * If the nested workflow was not already running, it is started in the
    * [given state][Delegating.delegateState], and that state is reported by the
-   * returned [Single]. Otherwise, the [Single] skips state updates that match the given
-   * state.
+   * returned [ReceiveChannel].
    *
-   * If the nested workflow is [abandoned][abandonDelegate], the [Single] never completes.
+   * If the nested workflow is [abandoned][abandonDelegate], the channel will be cancelled.
+   *
+   * @see nextDelegateReaction
    */
-  fun <S : Any, O : Any> nextDelegateReaction(
+  suspend fun <S : Any, O : Any> awaitNextDelegateReaction(
     delegating: Delegating<S, *, O>
-  ): Single<Reaction<S, O>> {
+  ): Reaction<S, O> {
     val workflow = requireWorkflow(delegating)
+    val stateChannel = workflow.openSubscriptionToState()
 
-    @Suppress("UnstableApiUsage")
-    return Maybe
-        .amb(listOf(
-            workflow.state
-                .skipWhile { it == delegating.delegateState }
-                .map { EnterState(it) }
-                .concatWith(Observable.never())
-                .firstElement(),
-            workflow.result.map { FinishWith(it) }
-        ))
-        .switchIfEmpty(Single.never())
+    var state = stateChannel.receiveOrNull()
+    // Skip all the states that match the delegating state.
+    while (state == delegating.delegateState) {
+      state = stateChannel.receiveOrNull()
+    }
+    return state?.let(::EnterState) ?: FinishWith(workflow.await())
   }
 
   /**
@@ -110,13 +101,11 @@ class WorkflowPool {
    *
    * This method _does not_ start a new workflow if none was running already.
    */
-  fun <E : Any> input(id: Id<*, E, *>): WorkflowInput<E> {
-    return object : WorkflowInput<E> {
-      override fun sendEvent(event: E) {
-        workflows[id]?.let {
-          @Suppress("UNCHECKED_CAST")
-          (it.workflow as WorkflowInput<E>).sendEvent(event)
-        }
+  fun <E : Any> input(id: Id<*, E, *>): WorkflowInput<E> = object : WorkflowInput<E> {
+    override fun sendEvent(event: E) {
+      workflows[id]?.let {
+        @Suppress("UNCHECKED_CAST")
+        (it.workflow as WorkflowInput<E>).sendEvent(event)
       }
     }
   }
@@ -164,10 +153,22 @@ class WorkflowPool {
       val entry = WorkflowEntry(workflow)
       workflows[delegating.id] = entry
 
-      entry.sub.add(workflow.toCompletable()
-          .subscribe { workflows.remove(delegating.id)!!.sub.dispose() }
-      )
+      // Wait for the workflow to finish then remove it from the map.
+      workflow.invokeOnCompletion { workflows -= delegating.id }
     }
     return workflow
   }
+}
+
+/**
+ * This is a convenience method that wraps
+ * [awaitNextDelegateReaction][WorkflowPool.awaitNextDelegateReaction] in a [Deferred] so it can
+ * be selected on.
+ *
+ * @see WorkflowPool.awaitNextDelegateReaction
+ */
+fun <S : Any, O : Any> WorkflowPool.nextDelegateReaction(
+  delegating: Delegating<S, *, O>
+): Deferred<Reaction<S, O>> = GlobalScope.async(Unconfined) {
+  awaitNextDelegateReaction(delegating)
 }

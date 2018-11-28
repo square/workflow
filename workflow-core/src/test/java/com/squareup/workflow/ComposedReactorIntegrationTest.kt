@@ -1,28 +1,22 @@
-package com.squareup.workflow.rx2
+package com.squareup.workflow
 
-import com.squareup.workflow.Delegating
-import com.squareup.workflow.EnterState
-import com.squareup.workflow.FinishWith
-import com.squareup.workflow.Reaction
-import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterEvent.Background
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterEvent.Cancel
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterEvent.Pause
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterEvent.Resume
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterEvent.RunEchoJob
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterEvent.RunImmediateJob
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterReactor
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterState.Idle
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterState.Paused
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterState.RunningEchoJob
+import com.squareup.workflow.ComposedReactorIntegrationTest.OuterState.RunningImmediateJob
+import com.squareup.workflow.ComposedReactorIntegrationTest.StringEchoer
 import com.squareup.workflow.WorkflowPool.Id
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Background
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Cancel
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Pause
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Resume
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.RunEchoJob
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.RunImmediateJob
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterReactor
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.Idle
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.Paused
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.RunningEchoJob
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.RunningImmediateJob
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.StringEchoer
-import io.reactivex.Single
-import org.assertj.core.api.Java6Assertions.assertThat
-import org.junit.Rule
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.selects.select
 import org.junit.Test
+import kotlin.test.assertEquals
 
 /**
  * Tests [ComposedReactor], [Delegating] and [WorkflowPool], with an [OuterReactor]
@@ -34,23 +28,21 @@ import org.junit.Test
  */
 @Suppress("MemberVisibilityCanBePrivate")
 class ComposedReactorIntegrationTest {
-  @Rule @JvmField val assemblyTracking = RxAssemblyTrackingRule()
-
   @Test fun runAndSeeResultAfterStateUpdate() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "fnord")
     sendEchoEvent("job", STOP_ECHO_JOB)
-    assertThat(results).isEqualTo(listOf("fnord"))
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertEquals(listOf("fnord"), results)
+    assertEquals(0, pool.peekWorkflowsCount)
   }
 
   @Test fun runAndSeeResultAfterNoStateUpdates() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", STOP_ECHO_JOB)
-    assertThat(results).isEqualTo(listOf(NEW_ECHO_JOB))
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertEquals(listOf(NEW_ECHO_JOB), results)
+    assertEquals(0, pool.peekWorkflowsCount)
   }
 
   @Test fun pause_doesAbandonAndRestartFromSavedState() {
@@ -59,12 +51,12 @@ class ComposedReactorIntegrationTest {
     sendEchoEvent("job", "able")
 
     workflow.sendEvent(Pause)
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertEquals(0, pool.peekWorkflowsCount)
 
     workflow.sendEvent(Resume)
 
     sendEchoEvent("job", STOP_ECHO_JOB)
-    assertThat(results).isEqualTo(listOf("able"))
+    assertEquals(listOf("able"), results)
   }
 
   @Test fun pauseImmediatelyAndResumeAndCompleteImmediately() {
@@ -74,8 +66,8 @@ class ComposedReactorIntegrationTest {
     workflow.sendEvent(Resume)
 
     sendEchoEvent("job", STOP_ECHO_JOB)
-    assertThat(results).isEqualTo(listOf(NEW_ECHO_JOB))
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertEquals(listOf(NEW_ECHO_JOB), results)
+    assertEquals(0, pool.peekWorkflowsCount)
   }
 
   @Test fun cancel_abandons() {
@@ -85,14 +77,14 @@ class ComposedReactorIntegrationTest {
     sendEchoEvent("job", "baker")
 
     workflow.sendEvent(Cancel)
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertEquals(0, pool.peekWorkflowsCount)
 
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", STOP_ECHO_JOB)
 
     // We used the same job id, but the state changes from the previous session were dropped.
-    assertThat(results).isEqualTo(listOf(NEW_ECHO_JOB))
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertEquals(listOf(NEW_ECHO_JOB), results)
+    assertEquals(0, pool.peekWorkflowsCount)
   }
 
   @Test fun background_demonstratesConcurrentWorkflowsOfTheSameType() {
@@ -120,7 +112,7 @@ class ComposedReactorIntegrationTest {
     workflow.sendEvent(RunEchoJob("job3"))
     sendEchoEvent("job3", STOP_ECHO_JOB)
 
-    assertThat(results).isEqualTo(listOf("biz", "baz", "bang"))
+    assertEquals(listOf("biz", "baz", "bang"), results)
   }
 
   @Test fun syncSingleOnSuccessInNestedWorkflow() {
@@ -130,9 +122,9 @@ class ComposedReactorIntegrationTest {
     workflow.sendEvent(RunEchoJob("fnord"))
     sendEchoEvent("fnord", STOP_ECHO_JOB)
 
-    assertThat(results).isEqualTo(listOf("Finished $ImmediateOnSuccess", NEW_ECHO_JOB))
+    assertEquals(listOf("Finished $ImmediateOnSuccess", NEW_ECHO_JOB), results)
 
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertEquals(0, pool.peekWorkflowsCount)
   }
 
   companion object {
@@ -149,23 +141,21 @@ class ComposedReactorIntegrationTest {
 
     override val type = StringEchoer
 
-    override fun onReact(
+    override suspend fun onReact(
       state: String,
-      events: EventChannel<String>,
+      events: ReceiveChannel<String>,
       workflows: WorkflowPool
-    ): Single<out Reaction<String, String>> = events.select {
-      onEvent<String> { event ->
-        when (event) {
-          STOP_ECHO_JOB -> FinishWith(state)
-          else -> EnterState(event)
-        }
+    ): Reaction<String, String> = events.receive().let { event ->
+      when (event) {
+        STOP_ECHO_JOB -> FinishWith(state)
+        else -> EnterState(event)
       }
     }
 
     override fun launch(
       initialState: String,
       workflows: WorkflowPool
-    ): Workflow<String, String, String> = startWorkflow(initialState, workflows)
+    ): Workflow<String, String, String> = doLaunch(initialState, workflows)
   }
 
   val echoReactor = StringEchoer()
@@ -175,24 +165,19 @@ class ComposedReactorIntegrationTest {
 
     override val type = ImmediateOnSuccess
 
-    override fun onReact(
+    override suspend fun onReact(
       state: Unit,
-      events: EventChannel<String>,
+      events: ReceiveChannel<String>,
       workflows: WorkflowPool
-    ): Single<out Reaction<Unit, Unit>> = events.select {
-      onSuccess(Single.just("fnord")) {
-        FinishWith(Unit)
-      }
-    }
+    ): Reaction<Unit, Unit> = FinishWith(Unit)
 
     override fun launch(
       initialState: Unit,
       workflows: WorkflowPool
-    ): Workflow<Unit, String, Unit> = startWorkflow(initialState, workflows)
+    ): Workflow<Unit, String, Unit> = doLaunch(initialState, workflows)
   }
 
-  val immediateReactor =
-    ImmediateOnSuccess()
+  val immediateReactor = ImmediateOnSuccess()
 
   sealed class OuterState {
     object Idle : OuterState()
@@ -249,48 +234,59 @@ class ComposedReactorIntegrationTest {
   inner class OuterReactor : ComposedReactor<OuterState, OuterEvent, Unit> {
     override val type = object : WorkflowPool.Type<OuterState, OuterEvent, Unit> {}
 
-    override fun onReact(
+    override suspend fun onReact(
       state: OuterState,
-      events: EventChannel<OuterEvent>,
+      events: ReceiveChannel<OuterEvent>,
       workflows: WorkflowPool
-    ): Single<out Reaction<OuterState, Unit>> = when (state) {
+    ): Reaction<OuterState, Unit> = when (state) {
 
-      Idle -> events.select {
-        onEvent<RunEchoJob> { EnterState(RunningEchoJob(it.id, it.state)) }
-        onEvent<RunImmediateJob> { EnterState(RunningImmediateJob) }
-        onEvent<Cancel> { FinishWith(Unit) }
+      Idle -> events.receive().let {
+        @Suppress("UNCHECKED_CAST")
+        when (it) {
+          is RunEchoJob -> EnterState(RunningEchoJob(it.id, it.state))
+          RunImmediateJob -> EnterState(RunningImmediateJob)
+          Cancel -> FinishWith(Unit)
+          else -> throw IllegalArgumentException("invalid event: $it")
+        } as Reaction<OuterState, Unit>
       }
 
-      is RunningEchoJob -> events.select {
-        onSuccess(workflows.nextDelegateReaction(state)) {
+      is RunningEchoJob -> select {
+        workflows.nextDelegateReaction(state)
+            .onAwait {
+              when (it) {
+                is EnterState -> EnterState(state.copy(delegateState = it.state))
+                is FinishWith -> {
+                  results += it.result
+                  EnterState(Idle)
+                }
+              }
+            }
+
+        events.onReceive {
           when (it) {
-            is EnterState -> EnterState(state.copy(delegateState = it.state))
-            is FinishWith -> {
-              results += it.result
+            Pause -> {
+              workflows.abandonDelegate(state.id)
+              EnterState(Paused(state.id.name, state.delegateState))
+            }
+            Background -> EnterState(Idle)
+            Cancel -> {
+              workflows.abandonDelegate(state.id)
               EnterState(Idle)
             }
+            else -> throw IllegalArgumentException("invalid event: $it")
           }
         }
+      }
 
-        onEvent<Pause> {
-          workflows.abandonDelegate(state.id)
-          EnterState(Paused(state.id.name, state.delegateState))
-        }
-
-        onEvent<Background> { EnterState(Idle) }
-
-        onEvent<Cancel> {
-          workflows.abandonDelegate(state.id)
-          EnterState(Idle)
+      is Paused -> events.receive().let {
+        when (it) {
+          Resume -> EnterState(RunningEchoJob(state.id, state.lastState))
+          Cancel -> EnterState(Idle)
+          else -> throw IllegalArgumentException("invalid event: $it")
         }
       }
 
-      is Paused -> events.select {
-        onEvent<Resume> { EnterState(RunningEchoJob(state.id, state.lastState)) }
-        onEvent<Cancel> { EnterState(Idle) }
-      }
-
-      is RunningImmediateJob -> workflows.nextDelegateReaction(state).map {
+      is RunningImmediateJob -> workflows.awaitNextDelegateReaction(state).let {
         when (it) {
           is EnterState -> throw AssertionError("Should never re-enter $RunningImmediateJob.")
           is FinishWith -> {
@@ -309,9 +305,8 @@ class ComposedReactorIntegrationTest {
     ): Workflow<OuterState, OuterEvent, Unit> {
       workflows.register(echoReactor)
       workflows.register(immediateReactor)
-      val workflow = startWorkflow(initialState, workflows)
-      workflow.toCompletable()
-          .subscribe { workflows.abandonAll() }
+      val workflow = doLaunch(initialState, workflows)
+      workflow.invokeOnCompletion { workflows.abandonAll() }
       return workflow
     }
   }
