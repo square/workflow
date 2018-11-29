@@ -21,7 +21,7 @@ class WorkflowPoolTest {
   var abandonCount = 0
   var launchCount = 0
 
-  inner class MyReactor : ComposedReactor<String, String, String> {
+  inner class MyReactor : Reactor<String, String, String> {
     override suspend fun onReact(
       state: String,
       events: ReceiveChannel<String>,

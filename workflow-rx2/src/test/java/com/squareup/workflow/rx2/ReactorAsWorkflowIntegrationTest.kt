@@ -7,6 +7,7 @@ import com.squareup.workflow.FinishWith
 import com.squareup.workflow.Reaction
 import com.squareup.workflow.ReactorException
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.rx2.TestState.FirstState
 import com.squareup.workflow.rx2.TestState.SecondState
 import io.reactivex.Single
@@ -28,7 +29,8 @@ class ReactorAsWorkflowIntegrationTest {
   private open class MockReactor : Reactor<TestState, Nothing, String> {
     override fun onReact(
       state: TestState,
-      events: EventChannel<Nothing>
+      events: EventChannel<Nothing>,
+      workflows: WorkflowPool
     ): Single<out Reaction<TestState, String>> = never()
   }
 
@@ -42,7 +44,7 @@ class ReactorAsWorkflowIntegrationTest {
 
   @Suppress("UNCHECKED_CAST")
   fun start(input: String) {
-    workflow = reactor.startWorkflow(FirstState(input))
+    workflow = reactor.startRootWorkflow(FirstState(input))
         .apply {
           state.subscribe(stateSub)
           result.subscribe(resultSub)
@@ -57,7 +59,7 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun startFromState() {
-    val workflow = reactor.startWorkflow(SecondState("hello"))
+    val workflow = reactor.startRootWorkflow(SecondState("hello"))
 
     workflow.state.subscribe(stateSub)
     workflow.result.subscribe(resultSub)
@@ -68,7 +70,7 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun stateCompletesWhenAbandoned() {
-    val workflow = reactor.startWorkflow(SecondState("hello"))
+    val workflow = reactor.startRootWorkflow(SecondState("hello"))
 
     workflow.state.subscribe(stateSub)
     workflow.cancel()
@@ -78,7 +80,7 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun stateStaysCompletedForLateSubscribersWhenAbandoned() {
-    val workflow = reactor.startWorkflow(SecondState("hello"))
+    val workflow = reactor.startRootWorkflow(SecondState("hello"))
     workflow.cancel()
 
     workflow.state.subscribe(stateSub)
@@ -87,7 +89,7 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun resultCompletesWhenAbandoned() {
-    val workflow = reactor.startWorkflow(SecondState("hello"))
+    val workflow = reactor.startRootWorkflow(SecondState("hello"))
     val resultSub = workflow.result.test()
     workflow.cancel()
     resultSub.assertNoValues()
@@ -98,7 +100,8 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: EventChannel<Nothing>
+        events: EventChannel<Nothing>,
+        workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> {
         return when (state) {
           is FirstState -> EnterState(SecondState("${state.value} ${state.value}"))
@@ -121,7 +124,8 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: EventChannel<Nothing>
+        events: EventChannel<Nothing>,
+        workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> {
         return when (state) {
           is FirstState -> secondStateSubject.firstOrError().map { EnterState(it) }
@@ -146,7 +150,8 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: EventChannel<Nothing>
+        events: EventChannel<Nothing>,
+        workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> {
         throw RuntimeException("((angery))")
       }
@@ -166,7 +171,8 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: EventChannel<Nothing>
+        events: EventChannel<Nothing>,
+        workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> {
         return Single.error(RuntimeException("((angery))"))
       }
@@ -188,7 +194,8 @@ class ReactorAsWorkflowIntegrationTest {
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: EventChannel<Nothing>
+        events: EventChannel<Nothing>,
+        workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> {
         return never<Reaction<TestState, String>>()
             .doOnSubscribe { subscribeCount++ }
@@ -207,54 +214,17 @@ class ReactorAsWorkflowIntegrationTest {
     assertThat(unsubscribeCount).isEqualTo(1)
   }
 
-  @Test fun reactorIsNotAbandoned_whenInFinishedState() {
-    reactor = object : MockReactor() {
-      override fun onReact(
-        state: TestState,
-        events: EventChannel<Nothing>
-      ): Single<out Reaction<TestState, String>> {
-        return just(FinishWith("all done"))
-      }
-
-      override fun onAbandoned(state: TestState) {
-        fail("Expected onAbandoned not to be called.")
-      }
-    }
-
-    start("starting")
-    workflow.cancel()
-  }
-
-  @Test fun reactorIsAbandoned_onAbandonment() {
-    val log = StringBuilder()
-
-    reactor = object : MockReactor() {
-      override fun onAbandoned(state: TestState) {
-        log.append("+reactor.onAbandoned")
-      }
-    }
-
-    start("starting")
-    workflow.state.ignoreElements()
-        .subscribe { log.append("+workflow.Completed") }
-    workflow.cancel()
-
-    // Docs promise that the workflow doesn't complete until the reactor has a chance
-    // to do its abandon thing.
-    assertThat(log.toString())
-        .isEqualToIgnoringWhitespace("+reactor.onAbandoned+workflow.Completed")
-  }
-
   @Test fun exceptionIsPropagated_whenStateSubscriberThrowsFromSecondOnNext_asynchronously() {
     val trigger = SingleSubject.create<Unit>()
     reactor = object : MockReactor() {
       override fun onReact(
         state: TestState,
-        events: EventChannel<Nothing>
+        events: EventChannel<Nothing>,
+        workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> =
         when (state) {
           is FirstState -> trigger.map { EnterState(SecondState("")) }
-          is SecondState -> super.onReact(state, events)
+          is SecondState -> super.onReact(state, events, workflows)
         }
     }
     start("foo")
@@ -281,7 +251,8 @@ class ReactorAsWorkflowIntegrationTest {
     val reactor = object : Reactor<FirstState, String, String> {
       override fun onReact(
         state: FirstState,
-        events: EventChannel<String>
+        events: EventChannel<String>,
+        workflows: WorkflowPool
       ): Single<out Reaction<FirstState, String>> {
         return events.select {
           onEvent<String> {
@@ -292,7 +263,7 @@ class ReactorAsWorkflowIntegrationTest {
     }
 
     // Unused, but just to be certain it doesn't get gc'd on us. Silly, I know.
-    val workflow = reactor.startWorkflow(FirstState("Hello"))
+    val workflow = reactor.startRootWorkflow(FirstState("Hello"))
     workflow.sendEvent("Fnord")
     // No crash, no bug!
   }
@@ -302,7 +273,8 @@ class ReactorAsWorkflowIntegrationTest {
     val reactor = object : Reactor<TestState, String, String> {
       override fun onReact(
         state: TestState,
-        events: EventChannel<String>
+        events: EventChannel<String>,
+        workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> = when (state) {
         is FirstState -> proceedToSecondState.andThen(just(EnterState(SecondState(""))))
         is SecondState -> events.select {
@@ -310,7 +282,7 @@ class ReactorAsWorkflowIntegrationTest {
         }
       }
     }
-    val workflow = reactor.startWorkflow(FirstState("Hello"))
+    val workflow = reactor.startRootWorkflow(FirstState("Hello"))
     workflow.result.subscribe(resultSub)
 
     // This event should get buffered…
@@ -329,7 +301,8 @@ class ReactorAsWorkflowIntegrationTest {
     val reactor = object : Reactor<TestState, String, String> {
       override fun onReact(
         state: TestState,
-        events: EventChannel<String>
+        events: EventChannel<String>,
+        workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> = when (state) {
         is FirstState -> events.select {
           onEvent<String> { event ->
@@ -342,7 +315,7 @@ class ReactorAsWorkflowIntegrationTest {
         }
       }
     }
-    workflow = reactor.startWorkflow(FirstState(""))
+    workflow = reactor.startRootWorkflow(FirstState(""))
     workflow.state.subscribe(stateSub)
     workflow.result.subscribe(resultSub)
 
@@ -358,12 +331,13 @@ class ReactorAsWorkflowIntegrationTest {
     val reactor = object : Reactor<FirstState, String, String> {
       override fun onReact(
         state: FirstState,
-        events: EventChannel<String>
+        events: EventChannel<String>,
+        workflows: WorkflowPool
       ): Single<out Reaction<FirstState, String>> = events.select {
         // No cases.
       }
     }
-    val workflow = reactor.startWorkflow(FirstState("Hello"))
+    val workflow = reactor.startRootWorkflow(FirstState("Hello"))
     workflow.state.subscribe(stateSub)
 
     workflow.sendEvent("Fnord")

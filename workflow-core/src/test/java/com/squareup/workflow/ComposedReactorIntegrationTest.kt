@@ -19,7 +19,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 /**
- * Tests [ComposedReactor], [Delegating] and [WorkflowPool], with an [OuterReactor]
+ * Tests [Reactor], [Delegating] and [WorkflowPool], with an [OuterReactor]
  * that can run, pause, background, resume named instances of an [StringEchoer].
  *
  * This IS NOT meant to be an example of how to write workflows in production.
@@ -136,7 +136,7 @@ class ComposedReactorIntegrationTest {
    * Basically a job that can emit strings at arbitrary times, and whose
    * result code is the last string it emitted.
    */
-  class StringEchoer : ComposedReactor<String, String, String> {
+  class StringEchoer : Reactor<String, String, String> {
     override suspend fun onReact(
       state: String,
       events: ReceiveChannel<String>,
@@ -156,7 +156,7 @@ class ComposedReactorIntegrationTest {
 
   val echoReactor = StringEchoer()
 
-  class ImmediateOnSuccess : ComposedReactor<Unit, String, Unit> {
+  class ImmediateOnSuccess : Reactor<Unit, String, Unit> {
     override suspend fun onReact(
       state: Unit,
       events: ReceiveChannel<String>,
@@ -223,7 +223,7 @@ class ComposedReactorIntegrationTest {
   /**
    * One running job, which might be paused or backgrounded. Any number of background jobs.
    */
-  inner class OuterReactor : ComposedReactor<OuterState, OuterEvent, Unit> {
+  inner class OuterReactor : Reactor<OuterState, OuterEvent, Unit> {
     override suspend fun onReact(
       state: OuterState,
       events: ReceiveChannel<OuterEvent>,

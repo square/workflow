@@ -1,8 +1,8 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowPool.Id
-import com.squareup.workflow.rx2.ComposedReactor
 import com.squareup.workflow.rx2.EventChannel
+import com.squareup.workflow.rx2.Reactor
 import com.squareup.workflow.rx2.doLaunch
 import com.squareup.workflow.rx2.nextDelegateReaction
 import com.squareup.workflow.rx2.result
@@ -27,7 +27,7 @@ class WorkflowPoolIntegrationTest {
   var abandonCount = 0
   var launchCount = 0
 
-  inner class MyReactor : ComposedReactor<String, String, String> {
+  inner class MyReactor : Reactor<String, String, String> {
     override fun onReact(
       state: String,
       events: EventChannel<String>,
