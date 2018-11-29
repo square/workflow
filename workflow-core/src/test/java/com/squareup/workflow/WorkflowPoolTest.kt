@@ -1,7 +1,6 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowPool.Id
-import com.squareup.workflow.WorkflowPool.Type
 import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import org.junit.Test
@@ -23,8 +22,6 @@ class WorkflowPoolTest {
   var launchCount = 0
 
   inner class MyReactor : ComposedReactor<String, String, String> {
-    override val type = object : Type<String, String, String> {}
-
     override suspend fun onReact(
       state: String,
       events: ReceiveChannel<String>,
@@ -57,7 +54,7 @@ class WorkflowPoolTest {
     override val delegateState: String = "",
     name: String = ""
   ) : Delegating<String, String, String> {
-    override val id: Id<String, String, String> = myReactor.type.makeId(name)
+    override val id: Id<String, String, String> = myReactor.workflowType.makeId(name)
   }
 
   @Test fun metaTest_myReactorReportsStatesAndResult() {
@@ -161,7 +158,7 @@ class WorkflowPoolTest {
 
   @Test fun routesEvents() {
     pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.type.makeId())
+    val input = pool.input(myReactor.workflowType.makeId())
 
     input.sendEvent("able")
     input.sendEvent("baker")
@@ -171,7 +168,7 @@ class WorkflowPoolTest {
   }
 
   @Test fun dropsLateEvents() {
-    val input = pool.input(myReactor.type.makeId())
+    val input = pool.input(myReactor.workflowType.makeId())
     pool.nextDelegateReaction(DelegatingState())
 
     input.sendEvent("able")
@@ -183,7 +180,7 @@ class WorkflowPoolTest {
   }
 
   @Test fun dropsEarlyEvents() {
-    val input = pool.input(myReactor.type.makeId())
+    val input = pool.input(myReactor.workflowType.makeId())
     input.sendEvent("able")
     pool.nextDelegateReaction(DelegatingState())
     input.sendEvent("baker")
@@ -193,7 +190,7 @@ class WorkflowPoolTest {
 
   @Test fun resumesRoutingEvents() {
     pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.type.makeId())
+    val input = pool.input(myReactor.workflowType.makeId())
 
     input.sendEvent("able")
     input.sendEvent("baker")

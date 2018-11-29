@@ -122,7 +122,7 @@ class ComposedReactorIntegrationTest {
     workflow.sendEvent(RunEchoJob("fnord"))
     sendEchoEvent("fnord", STOP_ECHO_JOB)
 
-    assertEquals(listOf("Finished $ImmediateOnSuccess", NEW_ECHO_JOB), results)
+    assertEquals(listOf("Finished ${ImmediateOnSuccess::class}", NEW_ECHO_JOB), results)
 
     assertEquals(0, pool.peekWorkflowsCount)
   }
@@ -137,10 +137,6 @@ class ComposedReactorIntegrationTest {
    * result code is the last string it emitted.
    */
   class StringEchoer : ComposedReactor<String, String, String> {
-    companion object : WorkflowPool.Type<String, String, String>
-
-    override val type = StringEchoer
-
     override suspend fun onReact(
       state: String,
       events: ReceiveChannel<String>,
@@ -161,10 +157,6 @@ class ComposedReactorIntegrationTest {
   val echoReactor = StringEchoer()
 
   class ImmediateOnSuccess : ComposedReactor<Unit, String, Unit> {
-    companion object : WorkflowPool.Type<Unit, String, Unit>
-
-    override val type = ImmediateOnSuccess
-
     override suspend fun onReact(
       state: Unit,
       events: ReceiveChannel<String>,
@@ -189,7 +181,7 @@ class ComposedReactorIntegrationTest {
       constructor(
         id: String,
         state: String
-      ) : this(StringEchoer.makeId(id), state)
+      ) : this(StringEchoer::class.makeId(id), state)
     }
 
     data class Paused(
@@ -198,7 +190,7 @@ class ComposedReactorIntegrationTest {
     ) : OuterState()
 
     object RunningImmediateJob : OuterState(), Delegating<Unit, String, Unit> {
-      override val id = ImmediateOnSuccess.makeId()
+      override val id = makeId()
       override val delegateState = Unit
     }
   }
@@ -232,8 +224,6 @@ class ComposedReactorIntegrationTest {
    * One running job, which might be paused or backgrounded. Any number of background jobs.
    */
   inner class OuterReactor : ComposedReactor<OuterState, OuterEvent, Unit> {
-    override val type = object : WorkflowPool.Type<OuterState, OuterEvent, Unit> {}
-
     override suspend fun onReact(
       state: OuterState,
       events: ReceiveChannel<OuterEvent>,
@@ -290,7 +280,7 @@ class ComposedReactorIntegrationTest {
         when (it) {
           is EnterState -> throw AssertionError("Should never re-enter $RunningImmediateJob.")
           is FinishWith -> {
-            results += "Finished $ImmediateOnSuccess"
+            results += "Finished ${ImmediateOnSuccess::class}"
             EnterState(Idle)
           }
         }
@@ -317,7 +307,7 @@ class ComposedReactorIntegrationTest {
     echoJobId: String,
     event: String
   ) {
-    pool.input(StringEchoer.makeId(echoJobId))
+    pool.input(StringEchoer::class.makeId(echoJobId))
         .sendEvent(event)
   }
 }

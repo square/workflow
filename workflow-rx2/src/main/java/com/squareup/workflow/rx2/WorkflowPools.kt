@@ -15,11 +15,12 @@ import com.squareup.workflow.nextDelegateReaction as nextDelegateReactionCore
  * Starts the required nested workflow if it wasn't already running. Returns
  * a [Single] that will fire the next time the nested workflow updates its state,
  * or completes.
+ * States that are equal to the [Delegating.delegateState] are skipped.
  *
  * If the nested workflow was not already running, it is started in the
- * [given state][Delegating.delegateState], and that state is reported by the
- * returned [Single]. Otherwise, the [Single] skips state updates that match the given
- * state.
+ * [given state][Delegating.delegateState] (the initial state is not reported, since states equal
+ * to the delegate state are skipped). Otherwise, the [Single] skips state updates that match the
+ * given state.
  *
  * If the nested workflow is [abandoned][WorkflowPool.abandonDelegate], the [Single] never
  * completes.
