@@ -7,7 +7,6 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
 
@@ -109,15 +108,16 @@ class WorkflowPool {
   }
 
   /**
-   * Starts the required nested workflow if it wasn't already running. Returns
-   * a [ReceiveChannel] that will send all the reactions from the delegate workflow.
+   * Starts the required nested workflow if it wasn't already running. Suspends until the next time
+   * the nested workflow updates its state, or completes, and then returns that [Reaction].
+   * States that are equal to the [Delegating.delegateState] are skipped.
    *
    * If the nested workflow was not already running, it is started in the
-   * [given state][Delegating.delegateState], and that state is reported by the
-   * returned [ReceiveChannel].
+   * [given state][Delegating.delegateState]. Note that the initial state is not returned, since
+   * states matching the delegate state are skipped.
    *
-   * If the nested workflow is [abandoned][abandonDelegate], the channel will be cancelled.
-   *
+   * @throws kotlinx.coroutines.experimental.CancellationException If the nested workflow is
+   * [abandoned][abandonDelegate].
    * @see nextDelegateReaction
    */
   suspend fun <S : Any, O : Any> awaitNextDelegateReaction(
