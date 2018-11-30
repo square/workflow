@@ -1,0 +1,14 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.vanniktech.maven.publish'
+
+android rootProject.ext.defaultAndroidConfig
+
+dependencies {
+  api project(':viewbuilder-rx2')
+
+  api deps.coordinators
+  api deps.kotlin.stdLib.jdk6
+  api deps.kotlin.reflect
+  api deps.rxjava2.rxjava2
+}

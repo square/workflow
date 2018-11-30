@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="login_button">Login</string>
+  <string name="login_email_hint">email@address.com</string>
+  <string name="login_password_hint">password</string>
+  <string name="second_factor_hint">one time token</string>
+</resources>

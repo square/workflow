@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- View Tag used for back button handlers. See HandlesBack.Helper -->
+  <item type="id" name="back_handler"/>
+  <!-- View Tag holding the Screen.Key associated with a view. -->
+  <item type="id" name="view_stack_key"/>
+</resources>
