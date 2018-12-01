@@ -7,6 +7,7 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
 
@@ -22,7 +23,7 @@ class WorkflowPool {
    *  - [Launcher.workflowType]
    *  - `KClass<Launcher>.workflowType`
    */
-  class Type<S : Any, E : Any, out O : Any>(
+  class Type<S : Any, in E : Any, out O : Any>(
     stateType: KClass<S>,
     eventType: KClass<E>,
     outputType: KClass<O>
@@ -62,7 +63,7 @@ class WorkflowPool {
    * [completed][Workflow.invokeOnCompletion], including via calls to
    * [WorkflowPool.abandonDelegate].
    */
-  interface Launcher<S : Any, E : Any, out O : Any> {
+  interface Launcher<S : Any, in E : Any, out O : Any> {
     fun launch(
       initialState: S,
       workflows: WorkflowPool
@@ -77,7 +78,7 @@ class WorkflowPool {
    *  - `KClass<Launcher>.makeId()`
    *  - [Delegating.makeId]
    */
-  data class Id<S : Any, E : Any, out O : Any>
+  data class Id<S : Any, in E : Any, out O : Any>
   internal constructor(
     val name: String,
     val workflowType: Type<S, E, O>
@@ -85,7 +86,7 @@ class WorkflowPool {
 
   private class WorkflowEntry(val workflow: Workflow<*, *, *>)
 
-  private val factories = mutableMapOf<Type<*, *, *>, Launcher<*, *, *>>()
+  private val launchers = mutableMapOf<Type<*, *, *>, Launcher<*, *, *>>()
   private val workflows = mutableMapOf<Id<*, *, *>, WorkflowEntry>()
 
   @get:TestOnly val peekWorkflowsCount get() = workflows.values.size
@@ -96,15 +97,11 @@ class WorkflowPool {
    * matching [Launcher] will be replaced, with the intention of allowing redundant calls
    * to be safe.
    */
-  inline fun <reified S : Any, reified E : Any, reified O : Any> register(
-    factory: Launcher<S, E, O>
-  ) = register(factory, factory.workflowType)
-
-  @PublishedApi internal fun <S : Any, E : Any, O : Any> register(
-    factory: Launcher<S, E, O>,
+  fun <S : Any, E : Any, O : Any> register(
+    launcher: Launcher<S, E, O>,
     type: Type<S, E, O>
   ) {
-    factories[type] = factory
+    launchers[type] = launcher
   }
 
   /**
@@ -132,6 +129,41 @@ class WorkflowPool {
       state = stateChannel.receiveOrNull()
     }
     return state?.let(::EnterState) ?: FinishWith(workflow.await())
+  }
+
+  /**
+   * Starts the required [Worker] if it wasn't already running. Suspends until the worker
+   * completes and then returns its result.
+   *
+   * If the worker was not already running, it is started with the given input.
+   *
+   * @throws kotlinx.coroutines.experimental.CancellationException If the worker is
+   * [abandoned][abandonDelegate].
+   * @see workerResult
+   */
+  suspend inline fun <reified I : Any, reified O : Any> awaitWorkerResult(
+    worker: Worker<I, O>,
+    input: I,
+    name: String = ""
+  ): O = awaitWorkerResult(worker, input, name, worker.workflowType)
+
+  /**
+   * Hides the actual logic of starting processes from being inline in external code.
+   */
+  @PublishedApi
+  internal suspend fun <I : Any, O : Any> awaitWorkerResult(
+    worker: Worker<I, O>,
+    input: I,
+    name: String,
+    type: Type<I, Nothing, O>
+  ): O {
+    register(worker.asReactor(), type)
+    val delegating = object : Delegating<I, Nothing, O> {
+      override val id: Id<I, Nothing, O> = type.makeId(name)
+      override val delegateState: I get() = input
+    }
+    return requireWorkflow(delegating)
+        .await()
   }
 
   /**
@@ -165,10 +197,10 @@ class WorkflowPool {
     workflows.values.forEach { it.workflow.cancel() }
   }
 
-  private fun <S : Any, E : Any, O : Any> factory(
+  private fun <S : Any, E : Any, O : Any> launcher(
     type: Type<S, E, O>
   ): Launcher<S, E, O> {
-    val launcher = factories[type]
+    val launcher = launchers[type]
     check(launcher != null) {
       "Expected launcher for \"$type\". Did you forget to call WorkflowPool.register()?"
     }
@@ -188,7 +220,7 @@ class WorkflowPool {
     var workflow = workflows[delegating.id]?.workflow as Workflow<S, E, O>?
 
     if (workflow == null) {
-      workflow = factory(delegating.id.workflowType).launch(delegating.delegateState, this)
+      workflow = launcher(delegating.id.workflowType).launch(delegating.delegateState, this)
 
       val entry = WorkflowEntry(workflow)
       workflows[delegating.id] = entry
@@ -199,6 +231,18 @@ class WorkflowPool {
     return workflow
   }
 }
+
+/**
+ * Registers the [Launcher] to be used to create workflows that match its [Launcher.workflowType],
+ * in response to calls to [nextDelegateReaction]. A previously registered
+ * matching [Launcher] will be replaced, with the intention of allowing redundant calls
+ * to be safe.
+ */
+// Note: This is defined as an extension function so that custom register functions can be defined
+// that can implement custom behavior for specific launcher sub-types.
+inline fun <reified S : Any, reified E : Any, reified O : Any> WorkflowPool.register(
+  launcher: Launcher<S, E, O>
+) = register(launcher, launcher.workflowType)
 
 /**
  * This is a convenience method that wraps
@@ -212,6 +256,29 @@ fun <S : Any, O : Any> WorkflowPool.nextDelegateReaction(
 ): Deferred<Reaction<S, O>> = GlobalScope.async(Unconfined) {
   awaitNextDelegateReaction(delegating)
 }
+
+/**
+ * This is a convenience method that wraps [awaitWorkerResult][WorkflowPool.awaitWorkerResult]
+ * in a [Deferred] so it can be selected on.
+ *
+ * @see WorkflowPool.awaitWorkerResult
+ */
+inline fun <reified I : Any, reified O : Any> WorkflowPool.workerResult(
+  worker: Worker<I, O>,
+  input: I,
+  name: String = ""
+): Deferred<O> = workerResult(worker, input, name, worker.workflowType)
+
+/**
+ * Hides the implementation of [workerResult] above from being inlined in public code.
+ */
+@PublishedApi
+internal fun <I : Any, O : Any> WorkflowPool.workerResult(
+  worker: Worker<I, O>,
+  input: I,
+  name: String = "",
+  type: Type<I, Nothing, O>
+) = GlobalScope.async(Unconfined) { awaitWorkerResult(worker, input, name, type) }
 
 /**
  * Returns the [Type] that represents this [Launcher]'s type parameters.
@@ -241,3 +308,16 @@ inline fun <reified S : Any, reified E : Any, reified O : Any>
 inline val <reified S : Any, reified E : Any, reified O : Any>
     KClass<out Launcher<S, E, O>>.workflowType: Type<S, E, O>
   get() = Type(S::class, E::class, O::class)
+
+private fun <I : Any, O : Any> Worker<I, O>.asReactor() = object : Reactor<I, Nothing, O> {
+  override fun launch(
+    initialState: I,
+    workflows: WorkflowPool
+  ): Workflow<@UnsafeVariance I, Nothing, O> = doLaunch(initialState, workflows)
+
+  override suspend fun onReact(
+    state: I,
+    events: ReceiveChannel<Nothing>,
+    workflows: WorkflowPool
+  ): Reaction<@UnsafeVariance I, O> = FinishWith(call(state))
+}

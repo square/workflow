@@ -8,6 +8,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.makeId
+import com.squareup.workflow.register
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Background
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Cancel
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Pause
