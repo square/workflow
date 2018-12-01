@@ -1,0 +1,13 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android rootProject.ext.defaultAndroidConfig
+
+dependencies {
+  api project(':viewbuilder-android')
+  api project(':sample-game-common')
+
+  api deps.appcompatv7
+  api deps.coordinators
+  api deps.rxjava2.rxjava2
+}

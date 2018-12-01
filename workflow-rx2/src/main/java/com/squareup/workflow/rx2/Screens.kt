@@ -6,6 +6,8 @@ import com.squareup.workflow.Screen.Key
 import io.reactivex.Observable
 
 /**
+ * **NB:** This class is not quite deprecated yet, but it will be _very_ soon.
+ *
  * Transforms a stream of arbitrarily typed [Screen]s to a stream of screens
  * that match a given [Screen.Key] exactly (including both [Screen.Key.typeName] and
  * [Screen.Key.value]), cast appropriately. For each stack received, works from

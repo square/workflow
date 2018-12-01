@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">tictactoeandroid</string>
+  <string name="end_game">End Game</string>
+  <string name="end_game_title">End the Game?</string>
+  <string name="exit">Exit</string>
+  <string name="keep_playing">Keep Playing</string>
+  <string name="let_s_play">Let\'s Play!</string>
+  <string name="player_o">Player O</string>
+  <string name="player_x">Player X</string>
+</resources>

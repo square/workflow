@@ -9,6 +9,8 @@ typealias AnyScreen = Screen<*, *>
 typealias AnyScreenKey = Screen.Key<*, *>
 
 /**
+ * **NB:** This class is not quite deprecated yet, but it will be _very_ soon.
+ *
  * A platform independent view model, typically instantiated via a [Renderer].
  *
  * While not a `data class`, this class still supports destructuring so you can do stuff like:

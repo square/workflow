@@ -1,21 +1,42 @@
 buildscript {
   ext.versions = [
+      'agpVersion': '3.2.1',
+      'buildToolsVersion': '28.0.3',
+      'minSdkVersion': 21,
+      'targetSdkVersion': 26,
+      'sourceCompatibilityVersion': JavaVersion.VERSION_1_8,
+      'targetCompatibilityVersion': JavaVersion.VERSION_1_8,
+
+      'coordinators': '0.4',
+      'rxandroid2': '2.1.0',
+      'supportVersion': '26.0.2',
+      'timberVersion': '4.7.1',
+
+      'assertj': '2.6.0',
+      'compileSdkVersion': '27',
+      'detektPlugin': '1.0.0-RC11',
+      'dokka': '0.9.16',
+      'hamcrest': '1.3',
+      'intellijAnnotations': '13.0',
+      'junit': '4.12',
       'kotlin': '1.2.61',
       'kotlinCoroutines': '0.26.1',
-      'dokka': '0.9.16',
-      'junit': '4.12',
-      'assertj': '2.6.0',
-      'mavenPublishPlugin': '0.6.0',
       'ktlintPlugin': '5.1.0',
-      'detektPlugin': '1.0.0-RC11',
-      'mockitoKotlin': '1.5.0',
+      'mavenPublishPlugin': '0.6.0',
       'mockito': '2.7.5',
-      'intellijAnnotations': '13.0',
-      'hamcrest': '1.3',
-      'rxjava2Extensions': '0.20.4'
+      'mockitoKotlin': '1.5.0',
+      'rxjava2Extensions': '0.20.4',
   ]
 
   ext.deps = [
+      'android_gradle_plugin': "com.android.tools.build:gradle:${versions.agpVersion}",
+
+      'appcompatv7': "com.android.support:appcompat-v7:${versions.supportVersion}",
+      'coordinators': "com.squareup.coordinators:coordinators:${versions.coordinators}",
+      'design': "com.android.support:design:${versions.supportVersion}",
+      'rxandroid2': "io.reactivex.rxjava2:rxandroid:${versions.rxandroid2}",
+      'timber': "com.jakewharton.timber:timber:${versions.timberVersion}",
+
       'kotlin': [
           'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
           'stdLib': [
@@ -59,16 +80,35 @@ buildscript {
   ]
 
   dependencies {
-    classpath deps.kotlin.gradlePlugin
-    classpath deps.dokka
-    classpath deps.mavenPublish
-    classpath deps.ktlint
+    classpath deps.android_gradle_plugin
     classpath deps.detekt
+    classpath deps.dokka
+    classpath deps.kotlin.gradlePlugin
+    classpath deps.ktlint
+    classpath deps.mavenPublish
   }
 
   repositories {
     mavenCentral()
     gradlePluginPortal()
+    google()
+  }
+}
+
+rootProject.ext.defaultAndroidConfig = {
+  compileSdkVersion versions.targetSdkVersion
+  buildToolsVersion versions.buildToolsVersion
+
+  compileOptions {
+    sourceCompatibility versions.sourceCompatibilityVersion
+    targetCompatibility versions.targetCompatibilityVersion
+  }
+
+  defaultConfig {
+    minSdkVersion versions.minSdkVersion
+    targetSdkVersion versions.targetSdkVersion
+    versionCode 1
+    versionName "1.0"
   }
 }
 
@@ -84,9 +124,7 @@ subprojects {
     google()
   }
 
-  // Static analysis
   apply plugin: "org.jlleitschuh.gradle.ktlint"
-
   apply plugin: "io.gitlab.arturbosch.detekt"
   afterEvaluate {
     project.tasks.getByName('check').dependsOn 'detekt'

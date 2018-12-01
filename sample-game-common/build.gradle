@@ -1,0 +1,25 @@
+// Note that this is a java library, not android. That's the point. Don't
+// change it.
+//
+// This demonstrates that we can build our app logic in a platform independent
+// way easily. This workflow in particular works on the command line as well
+// as in android.
+//
+// Also, unit tests on pure java/kotlin modules run screamingly fast.
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+dependencies {
+  implementation project(':viewbuilder-rx2')
+  implementation project(':workflow-rx2')
+
+  implementation deps.kotlin.stdLib.jdk6
+  implementation deps.kotlin.reflect
+  implementation deps.rxjava2.rxjava2
+
+  testImplementation deps.test.assertj
+  testImplementation deps.test.hamcrestCore
+  testImplementation deps.test.junit
+  testImplementation deps.rxjava2.extensions
+}

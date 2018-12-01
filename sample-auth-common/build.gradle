@@ -1,0 +1,11 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+dependencies {
+  implementation project(':viewbuilder-rx2')
+  implementation project(':workflow-rx2')
+
+  implementation deps.kotlin.stdLib.jdk6
+  implementation deps.kotlin.reflect
+  implementation deps.rxjava2.rxjava2
+}

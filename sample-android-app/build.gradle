@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android rootProject.ext.defaultAndroidConfig
+
+android {
+  defaultConfig {
+    applicationId "com.squareup.possiblefuture.shell"
+    minSdkVersion versions.minSdkVersion
+    multiDexEnabled true
+    targetSdkVersion versions.targetSdkVersion
+    versionCode 1
+    versionName "1.0.0"
+  }
+}
+
+dependencies {
+  implementation project(':sample-auth-common')
+  implementation project(':sample-auth-android')
+  implementation project(':sample-game-common')
+  implementation project(':sample-game-android')
+  implementation project(':viewbuilder-android')
+  implementation project(':workflow-rx2')
+
+  implementation deps.appcompatv7
+  implementation deps.design
+  implementation deps.okio
+  implementation deps.rxandroid2
+  implementation deps.rxjava2.rxjava2
+  implementation deps.timber
+}
