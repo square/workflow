@@ -1,3 +1,0 @@
-test_command: 'script/ci'
-targets:
-  - type: unit
