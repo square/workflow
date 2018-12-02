@@ -95,12 +95,12 @@ fun <T : Any> Deferred<T>.asWorker(): Worker<Unit, T> = worker { await() }
 
 /**
  * Uniquely identifies the [Worker] across the [WorkflowPool].
- * See [WorkflowPool.Type.makeId] for details.
+ * See [WorkflowPool.Type.makeWorkflowId] for details.
  */
 @Suppress("unused")
-inline fun <reified I : Any, reified O : Any> Worker<I, O>.makeId(
+inline fun <reified I : Any, reified O : Any> Worker<I, O>.makeWorkflowId(
   name: String = ""
-): Id<I, Nothing, O> = workflowType.makeId(name)
+): Id<I, Nothing, O> = workflowType.makeWorkflowId(name)
 
 /**
  * Returns the [Type] of the [Worker] for the [WorkflowPool]

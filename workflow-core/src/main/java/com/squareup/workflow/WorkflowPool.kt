@@ -54,7 +54,7 @@ class WorkflowPool {
      * @param name allows multiple workflows of the same type to be managed at once. If
      * no name is specified, we unique only on the [Type] itself.
      */
-    fun makeId(name: String = ""): Id<S, E, O> = Id(name, this)
+    fun makeWorkflowId(name: String = ""): Id<S, E, O> = Id(name, this)
 
     override fun hashCode(): Int = hashCode
     override fun equals(other: Any?): Boolean = when {
@@ -87,11 +87,11 @@ class WorkflowPool {
 
   /**
    * Unique identifier for a particular [Workflow] to be run by a [WorkflowPool].
-   * See [Type.makeId] for details.
+   * See [Type.makeWorkflowId] for details.
    *
    * Convenience extension functions exist on `KClass<Launcher>` and [Delegating] to create IDs:
-   *  - `KClass<Launcher>.makeId()`
-   *  - [Delegating.makeId]
+   *  - `KClass<Launcher>.makeWorkflowId()`
+   *  - [Delegating.makeWorkflowId]
    */
   data class Id<S : Any, in E : Any, out O : Any>
   internal constructor(
@@ -174,7 +174,7 @@ class WorkflowPool {
   ): O {
     register(worker.asReactor(), type)
     val delegating = object : Delegating<I, Nothing, O> {
-      override val id: Id<I, Nothing, O> = type.makeId(name)
+      override val id: Id<I, Nothing, O> = type.makeWorkflowId(name)
       override val delegateState: I get() = input
     }
     return requireWorkflow(delegating)
@@ -306,13 +306,14 @@ inline val <reified S : Any, reified E : Any, reified O : Any>
 /**
  * Make an ID for the [workflowType] of this [Delegating].
  *
- * E.g. `MyLauncher::class.makeId()`
+ * E.g. `MyLauncher::class.makeWorkflowId()`
  *
- * @see Type.makeId
+ * @see Type.makeWorkflowId
  */
 @Suppress("unused")
 inline fun <reified S : Any, reified E : Any, reified O : Any>
-    KClass<out Launcher<S, E, O>>.makeId(name: String = ""): Id<S, E, O> = workflowType.makeId(name)
+    KClass<out Launcher<S, E, O>>.makeWorkflowId(name: String = ""): Id<S, E, O> =
+    workflowType.makeWorkflowId(name)
 
 /**
  * Returns the [Type] that represents this [Launcher] class's type parameters.

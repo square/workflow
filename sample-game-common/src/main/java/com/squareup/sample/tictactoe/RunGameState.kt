@@ -18,7 +18,7 @@ package com.squareup.sample.tictactoe
 import com.squareup.sample.tictactoe.SyncState.SAVING
 import com.squareup.workflow.Delegating
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.makeId
+import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.readUtf8WithLength
@@ -33,7 +33,7 @@ import kotlin.reflect.jvm.jvmName
 sealed class RunGameState {
   internal data class Playing(override val delegateState: Turn) : RunGameState(),
       Delegating<Turn, TakeTurnsEvent, CompletedGame> {
-    override val id = TakeTurnsReactor::class.makeId()
+    override val id = TakeTurnsReactor::class.makeWorkflowId()
   }
 
   internal data class NewGame(

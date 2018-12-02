@@ -24,7 +24,7 @@ import com.squareup.sample.tictactoe.RunGameResult
 import com.squareup.sample.tictactoe.RunGameState
 import com.squareup.workflow.Delegating
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.makeId
+import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.readUtf8WithLength
@@ -45,13 +45,13 @@ sealed class ShellState {
   internal data class Authenticating(
     override val delegateState: AuthState = AuthState.start()
   ) : ShellState(), Delegating<AuthState, AuthEvent, String> {
-    override val id = AuthReactor::class.makeId()
+    override val id = AuthReactor::class.makeWorkflowId()
   }
 
   internal data class RunningGame(
     override val delegateState: RunGameState = RunGameState.start()
   ) : ShellState(), Delegating<RunGameState, RunGameEvent, RunGameResult> {
-    override val id = RunGameReactor::class.makeId()
+    override val id = RunGameReactor::class.makeWorkflowId()
   }
 
   fun toSnapshot(): Snapshot {

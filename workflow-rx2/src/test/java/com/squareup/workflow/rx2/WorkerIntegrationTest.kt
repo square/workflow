@@ -17,7 +17,7 @@ package com.squareup.workflow.rx2
 
 import com.squareup.workflow.ReactorException
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.makeId
+import com.squareup.workflow.makeWorkflowId
 import io.reactivex.subjects.SingleSubject
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
@@ -57,7 +57,7 @@ class WorkerIntegrationTest {
         .test()
     reaction.assertNotTerminated()
 
-    pool.abandonDelegate(worker.makeId())
+    pool.abandonDelegate(worker.makeWorkflowId())
 
     // The rx2 version of nextProcessResult will never complete the single if the workflow is
     // cancelled.

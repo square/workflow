@@ -24,7 +24,7 @@ import com.squareup.workflow.WorkflowPool.Type
 interface Delegating<S : Any, E : Any, O : Any> {
   /**
    * Uniquely identifies the delegate across the [WorkflowPool].
-   * See [WorkflowPool.Type.makeId] for details.
+   * See [WorkflowPool.Type.makeWorkflowId] for details.
    */
   val id: Id<S, E, O>
 
@@ -41,10 +41,10 @@ interface Delegating<S : Any, E : Any, O : Any> {
  * This is a convenience function intended to be used inside delegating states, to initialize
  * their [Delegating.id] property.
  *
- * @see Type.makeId
+ * @see Type.makeWorkflowId
  */
 @Suppress("unused")
 inline fun <reified S : Any, reified E : Any, reified O : Any>
-    Delegating<S, E, O>.makeId(name: String = ""): Id<S, E, O> =
+    Delegating<S, E, O>.makeWorkflowId(name: String = ""): Id<S, E, O> =
 // We can't use id.type since ID hasn't been initialized yet.
-  Type(S::class, E::class, O::class).makeId(name)
+  Type(S::class, E::class, O::class).makeWorkflowId(name)
