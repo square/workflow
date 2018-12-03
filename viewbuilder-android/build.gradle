@@ -15,6 +15,10 @@
  */
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.vanniktech.maven.publish'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
 
 android rootProject.ext.defaultAndroidConfig
 
@@ -23,6 +27,7 @@ dependencies {
 
   api deps.coordinators
   api deps.kotlin.stdLib.jdk6
-  api deps.kotlin.reflect
   api deps.rxjava2.rxjava2
+
+  implementation deps.kotlin.reflect
 }
