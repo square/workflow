@@ -20,7 +20,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
-import com.squareup.possiblefuture.tictactoeandroid.R
 import com.squareup.sample.tictactoe.CompletedGame
 import com.squareup.sample.tictactoe.Ending.Draw
 import com.squareup.sample.tictactoe.Ending.Quitted

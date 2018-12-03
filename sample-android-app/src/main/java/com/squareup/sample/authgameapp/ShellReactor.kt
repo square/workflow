@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.possiblefuture.shell
+package com.squareup.sample.authgameapp
 
-import com.squareup.possiblefuture.authworkflow.AuthReactor
-import com.squareup.possiblefuture.shell.ShellState.Authenticating
-import com.squareup.possiblefuture.shell.ShellState.RunningGame
+import com.squareup.sample.authworkflow.AuthReactor
+import com.squareup.sample.authgameapp.ShellState.Authenticating
+import com.squareup.sample.authgameapp.ShellState.RunningGame
 import com.squareup.sample.tictactoe.RunGameReactor
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith

@@ -19,7 +19,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import com.squareup.coordinators.Coordinator
-import com.squareup.possiblefuture.tictactoeandroid.R
 import com.squareup.sample.tictactoe.NewGameScreen
 import com.squareup.sample.tictactoe.RunGameEvent
 import com.squareup.sample.tictactoe.RunGameEvent.NoMore
