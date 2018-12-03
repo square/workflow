@@ -39,6 +39,7 @@ dependencies {
 
   implementation deps.appcompatv7
   implementation deps.design
+  implementation deps.kotlin.reflect
   implementation deps.okio
   implementation deps.rxandroid2
   implementation deps.rxjava2.rxjava2
