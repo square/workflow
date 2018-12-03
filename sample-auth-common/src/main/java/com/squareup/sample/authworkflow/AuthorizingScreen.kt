@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.possiblefuture.authworkflow
+package com.squareup.sample.authworkflow
 
-import com.squareup.viewbuilder.EventHandlingScreen
-
-data class SecondFactorScreen(
-  override val data: String,
-  override val onEvent: (SubmitSecondFactor) -> Unit
-) : EventHandlingScreen<String, SubmitSecondFactor>
+data class AuthorizingScreen(
+  val message: String
+)

@@ -13,4 +13,4 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<manifest package="com.squareup.possiblefuture.authandroid"/>
+<manifest package="com.squareup.sample.authworkflow.android"/>

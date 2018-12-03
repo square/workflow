@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.possiblefuture.authandroid
+package com.squareup.sample.authworkflow.android
 
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
-import com.squareup.possiblefuture.authworkflow.SecondFactorScreen
-import com.squareup.possiblefuture.authworkflow.SubmitSecondFactor
+import com.squareup.sample.authworkflow.SecondFactorScreen
+import com.squareup.sample.authworkflow.SubmitSecondFactor
 import com.squareup.viewbuilder.LayoutViewBuilder
 import com.squareup.viewbuilder.ViewBuilder
 import io.reactivex.Observable

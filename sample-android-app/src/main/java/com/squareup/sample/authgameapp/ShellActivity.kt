@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.possiblefuture.shell
+package com.squareup.sample.authgameapp
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.squareup.possiblefuture.authandroid.AuthViewBuilders
+import com.squareup.sample.authworkflow.android.AuthViewBuilders
 import com.squareup.sample.tictactoe.android.TicTacToeViewBuilders
 import com.squareup.viewbuilder.HandlesBack
 import com.squareup.viewbuilder.ViewBuilder

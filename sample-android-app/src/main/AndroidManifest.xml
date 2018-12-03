@@ -16,7 +16,7 @@
   -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.squareup.possiblefuture.shell"
+    package="com.squareup.sample.authgameapp"
     >
 
   <application

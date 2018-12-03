@@ -19,7 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
-import com.squareup.possiblefuture.tictactoeandroid.R
 import com.squareup.sample.tictactoe.Board
 import com.squareup.sample.tictactoe.GamePlayScreen
 import com.squareup.sample.tictactoe.TakeTurnsEvent

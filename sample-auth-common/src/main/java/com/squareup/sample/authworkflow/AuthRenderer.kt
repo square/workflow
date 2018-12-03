@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.possiblefuture.authworkflow
+package com.squareup.sample.authworkflow
 
-import com.squareup.possiblefuture.authworkflow.AuthState.Authorizing
-import com.squareup.possiblefuture.authworkflow.AuthState.AuthorizingSecondFactor
-import com.squareup.possiblefuture.authworkflow.AuthState.LoginPrompt
-import com.squareup.possiblefuture.authworkflow.AuthState.SecondFactorPrompt
+import com.squareup.sample.authworkflow.AuthState.Authorizing
+import com.squareup.sample.authworkflow.AuthState.AuthorizingSecondFactor
+import com.squareup.sample.authworkflow.AuthState.LoginPrompt
+import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool

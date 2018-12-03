@@ -20,7 +20,7 @@ android rootProject.ext.defaultAndroidConfig
 
 android {
   defaultConfig {
-    applicationId "com.squareup.possiblefuture.shell"
+    applicationId "com.squareup.sample.authgameapp"
     minSdkVersion versions.minSdkVersion
     multiDexEnabled true
     targetSdkVersion versions.targetSdkVersion

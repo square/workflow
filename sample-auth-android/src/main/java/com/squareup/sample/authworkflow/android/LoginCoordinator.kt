@@ -13,26 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.possiblefuture.authandroid
+package com.squareup.sample.authworkflow.android
 
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
-import com.squareup.possiblefuture.authworkflow.AuthorizingScreen
+import com.squareup.sample.authworkflow.LoginScreen
+import com.squareup.sample.authworkflow.SubmitLogin
 import com.squareup.viewbuilder.LayoutViewBuilder
 import com.squareup.viewbuilder.ViewBuilder
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
-internal class AuthorizingCoordinator(private val screens: Observable<out AuthorizingScreen>) :
-    Coordinator() {
+internal class LoginCoordinator(private val screens: Observable<out LoginScreen>) : Coordinator() {
   private val subs = CompositeDisposable()
+
+  private lateinit var error: TextView
+  private lateinit var email: EditText
+  private lateinit var password: EditText
+  private lateinit var button: Button
 
   override fun attach(view: View) {
     super.attach(view)
-    val messageView = view.findViewById<TextView>(R.id.authorizing_message)
-    subs.add(screens.map { s -> s.message }
-        .subscribe { messageView.text = it })
+
+    error = view.findViewById(R.id.login_error_message)
+    email = view.findViewById(R.id.login_email)
+    password = view.findViewById(R.id.login_password)
+    button = view.findViewById(R.id.login_button)
+
+    subs.add(screens.subscribe(this::update))
   }
 
   override fun detach(view: View) {
@@ -40,7 +51,15 @@ internal class AuthorizingCoordinator(private val screens: Observable<out Author
     super.detach(view)
   }
 
-  companion object : ViewBuilder<AuthorizingScreen> by LayoutViewBuilder.of(
-      R.layout.authorizing_layout, ::AuthorizingCoordinator
+  private fun update(screen: LoginScreen) {
+    error.text = screen.data
+
+    button.setOnClickListener {
+      screen.onEvent(SubmitLogin(email.text.toString(), password.text.toString()))
+    }
+  }
+
+  companion object : ViewBuilder<LoginScreen> by LayoutViewBuilder.of(
+      R.layout.login_layout, ::LoginCoordinator
   )
 }

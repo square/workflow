@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.possiblefuture.authworkflow
+package com.squareup.sample.authworkflow
 
 import com.squareup.viewbuilder.EventHandlingScreen
 
