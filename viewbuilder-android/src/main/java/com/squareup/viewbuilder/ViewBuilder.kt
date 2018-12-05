@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2018 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,11 @@ interface ViewBuilder<T : Any> {
           left + right
         })
 
+    // This is why I can't make the type field up there Class<T>. If I change this
+    // method to get(type: Class<T>) the return type is coerced to ViewBuilder<out T>,
+    // and everything falls apart.
+    //
+    // https://github.com/square/workflow/issues/18
     operator fun <T : Any> get(type: String): ViewBuilder<T> {
       require(type in builders) { "Unrecognized screen type $type" }
 
