@@ -22,7 +22,6 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.consume
 import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
@@ -176,7 +175,7 @@ class WorkflowPool {
     name: String,
     type: Type<I, Nothing, O>
   ): O {
-    register(worker.asReactor(), type)
+    register(worker.asLauncher(), type)
     val delegating = object : Delegating<I, Nothing, O> {
       override val id: Id<I, Nothing, O> = type.makeWorkflowId(name)
       override val delegateState: I get() = input
@@ -349,15 +348,11 @@ inline val <reified S : Any, reified E : Any, reified O : Any>
     KClass<out Launcher<S, E, O>>.workflowType: Type<S, E, O>
   get() = Type(S::class, E::class, O::class)
 
-private fun <I : Any, O : Any> Worker<I, O>.asReactor() = object : Reactor<I, Nothing, O> {
+private fun <I : Any, O : Any> Worker<I, O>.asLauncher() = object : Launcher<I, Nothing, O> {
   override fun launch(
     initialState: I,
     workflows: WorkflowPool
-  ): Workflow<@UnsafeVariance I, Nothing, O> = doLaunch(initialState, workflows)
-
-  override suspend fun onReact(
-    state: I,
-    events: ReceiveChannel<Nothing>,
-    workflows: WorkflowPool
-  ): Reaction<@UnsafeVariance I, O> = FinishWith(call(state))
+  ): Workflow<@UnsafeVariance I, Nothing, O> = GlobalScope.workflow(Unconfined) { _, _ ->
+    call(initialState)
+  }
 }

@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.ReactorException
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.makeWorkflowId
 import io.reactivex.subjects.SingleSubject
@@ -48,8 +47,7 @@ class WorkerIntegrationTest {
 
     val failure = reaction.errors()
         .single()
-    assertThat(failure).isInstanceOf(ReactorException::class.java)
-    assertThat(failure.cause is IOException).isTrue()
+    assertThat(failure).isInstanceOf(IOException::class.java)
   }
 
   @Test fun whenWorkflowCancelled() {
