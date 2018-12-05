@@ -27,6 +27,7 @@ out/
 .gradle/
 build/
 local.properties
+javadoc/
 
 # Intellij
 *.iml

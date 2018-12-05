@@ -30,7 +30,7 @@ buildscript {
       'assertj': '2.6.0',
       'compileSdkVersion': '27',
       'detektPlugin': '1.0.0-RC11',
-      'dokka': '0.9.16',
+      'dokka': '0.9.17',
       'hamcrest': '1.3',
       'intellijAnnotations': '13.0',
       'junit': '4.12',
@@ -73,6 +73,7 @@ buildscript {
           ]
       ],
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
+      'dokka_android': "org.jetbrains.dokka:dokka-android-gradle-plugin:${versions.dokka}",
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:${versions.mavenPublishPlugin}",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:${versions.ktlintPlugin}",
       'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${versions.detektPlugin}",
@@ -98,6 +99,7 @@ buildscript {
     classpath deps.android_gradle_plugin
     classpath deps.detekt
     classpath deps.dokka
+    classpath deps.dokka_android
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
     classpath deps.mavenPublish

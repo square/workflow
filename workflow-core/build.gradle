@@ -16,6 +16,7 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'org.jetbrains.dokka'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
@@ -31,4 +32,20 @@ dependencies {
   implementation deps.kotlin.reflect
 
   testImplementation deps.kotlin.test.jdk
+}
+
+dokka {
+  outputDirectory = "${rootProject.projectDir}/javadoc"
+
+  // Specifies the location of the project source code on the Web.
+  linkMapping {
+      // Source directory
+      dir = "src/main/java"
+       
+      // URL showing where the source code can be accessed through the web browser
+      url = "https://github.com/square/workflow/blob/master/workflow-core/src/main/java"
+      
+      // Suffix which is used to append the line number to the URL. Use #L for GitHub
+      suffix = "#L"
+  }
 }
