@@ -23,6 +23,7 @@ import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.channels.consume
 import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
 
@@ -136,14 +137,17 @@ class WorkflowPool {
     delegating: Delegating<S, *, O>
   ): Reaction<S, O> {
     val workflow = requireWorkflow(delegating)
-    val stateChannel = workflow.openSubscriptionToState()
-
-    var state = stateChannel.receiveOrNull()
-    // Skip all the states that match the delegating state.
-    while (state == delegating.delegateState) {
-      state = stateChannel.receiveOrNull()
-    }
-    return state?.let(::EnterState) ?: FinishWith(workflow.await())
+    workflow.openSubscriptionToState()
+        .consume {
+          removeCompletedWorkflowAfter(delegating.id) {
+            var state = receiveOrNull()
+            // Skip all the states that match the delegating state.
+            while (state == delegating.delegateState) {
+              state = receiveOrNull()
+            }
+            return state?.let(::EnterState) ?: FinishWith(workflow.await())
+          }
+        }
   }
 
   /**
@@ -177,8 +181,11 @@ class WorkflowPool {
       override val id: Id<I, Nothing, O> = type.makeWorkflowId(name)
       override val delegateState: I get() = input
     }
-    return requireWorkflow(delegating)
-        .await()
+    val workflow = requireWorkflow(delegating)
+
+    removeCompletedWorkflowAfter(delegating.id) {
+      return workflow.await()
+    }
   }
 
   /**
@@ -238,12 +245,29 @@ class WorkflowPool {
       workflow = launcher(delegating.id.workflowType).launch(delegating.delegateState, this)
 
       val entry = WorkflowEntry(workflow)
+      // This entry will eventually be removed from the map by removeCompletedWorkflowAfter.
       workflows[delegating.id] = entry
-
-      // Wait for the workflow to finish then remove it from the map.
-      workflow.invokeOnCompletion { workflows -= delegating.id }
     }
     return workflow
+  }
+
+  /**
+   * Ensures that the workflow identified by [id] is removed from the pool map before returning,
+   * iff that workflow is completed after [block] returns or throws.
+   *
+   * **This function must be used any time a workflow result is about to be reported.**
+   */
+  private inline fun <R : Any> removeCompletedWorkflowAfter(
+    id: Id<*, *, *>,
+    block: () -> R
+  ): R = try {
+    block()
+  } finally {
+    workflows[id]?.let { workflow ->
+      if (workflow.workflow.isCompleted) {
+        workflows -= id
+      }
+    }
   }
 }
 

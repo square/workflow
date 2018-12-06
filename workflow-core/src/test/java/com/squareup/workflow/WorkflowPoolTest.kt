@@ -203,6 +203,20 @@ class WorkflowPoolTest {
     assertEquals(listOf("baker"), eventsSent)
   }
 
+  @Test fun workflowIsntDroppedUntilResultReported() {
+    pool.nextDelegateReaction(DelegatingState())
+    val input = pool.input(myReactor.workflowType.makeWorkflowId())
+
+    input.sendEvent("able")
+    input.sendEvent("baker")
+    // End the workflow.
+    input.sendEvent(STOP)
+
+    pool.nextDelegateReaction(DelegatingState())
+
+    assertEquals(listOf("able", "baker", STOP), eventsSent)
+  }
+
   @Test fun resumesRoutingEvents() {
     pool.nextDelegateReaction(DelegatingState())
     val input = pool.input(myReactor.workflowType.makeWorkflowId())
@@ -211,6 +225,8 @@ class WorkflowPoolTest {
     input.sendEvent("baker")
     // End the workflow.
     input.sendEvent(STOP)
+    // Consume the completed workflow.
+    pool.nextDelegateReaction(DelegatingState())
 
     input.sendEvent("charlie")
     input.sendEvent("delta")
