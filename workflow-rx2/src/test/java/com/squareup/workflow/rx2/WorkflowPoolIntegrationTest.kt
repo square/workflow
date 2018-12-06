@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow
+package com.squareup.workflow.rx2
 
+import com.squareup.workflow.Delegating
+import com.squareup.workflow.EnterState
+import com.squareup.workflow.FinishWith
+import com.squareup.workflow.Reaction
+import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPool.Id
-import com.squareup.workflow.rx2.EventChannel
-import com.squareup.workflow.rx2.Reactor
-import com.squareup.workflow.rx2.doLaunch
-import com.squareup.workflow.rx2.nextDelegateReaction
-import com.squareup.workflow.rx2.result
-import com.squareup.workflow.rx2.state
-import com.squareup.workflow.rx2.toCompletable
+import com.squareup.workflow.register
+import com.squareup.workflow.workflowType
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.experimental.CancellationException
@@ -235,6 +236,8 @@ class WorkflowPoolIntegrationTest {
     input.sendEvent("baker")
     // End the workflow.
     input.sendEvent(STOP)
+    // Consume the completed workflow.
+    pool.nextDelegateReaction(DelegatingState())
 
     input.sendEvent("charlie")
     input.sendEvent("delta")
