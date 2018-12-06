@@ -59,7 +59,7 @@ class ReactorAsWorkflowIntegrationTest {
 
   @Suppress("UNCHECKED_CAST")
   fun start(input: String) {
-    workflow = reactor.startRootWorkflow(FirstState(input))
+    workflow = reactor.doLaunch(FirstState(input), WorkflowPool())
         .apply {
           state.subscribe(stateSub)
           result.subscribe(resultSub)
@@ -74,7 +74,7 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun startFromState() {
-    val workflow = reactor.startRootWorkflow(SecondState("hello"))
+    val workflow = reactor.doLaunch(SecondState("hello"), WorkflowPool())
 
     workflow.state.subscribe(stateSub)
     workflow.result.subscribe(resultSub)
@@ -85,7 +85,7 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun stateCompletesWhenAbandoned() {
-    val workflow = reactor.startRootWorkflow(SecondState("hello"))
+    val workflow = reactor.doLaunch(SecondState("hello"), WorkflowPool())
 
     workflow.state.subscribe(stateSub)
     workflow.cancel()
@@ -95,7 +95,7 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun stateStaysCompletedForLateSubscribersWhenAbandoned() {
-    val workflow = reactor.startRootWorkflow(SecondState("hello"))
+    val workflow = reactor.doLaunch(SecondState("hello"), WorkflowPool())
     workflow.cancel()
 
     workflow.state.subscribe(stateSub)
@@ -104,7 +104,7 @@ class ReactorAsWorkflowIntegrationTest {
   }
 
   @Test fun resultCompletesWhenAbandoned() {
-    val workflow = reactor.startRootWorkflow(SecondState("hello"))
+    val workflow = reactor.doLaunch(SecondState("hello"), WorkflowPool())
     val resultSub = workflow.result.test()
     workflow.cancel()
     resultSub.assertNoValues()
@@ -278,7 +278,7 @@ class ReactorAsWorkflowIntegrationTest {
     }
 
     // Unused, but just to be certain it doesn't get gc'd on us. Silly, I know.
-    val workflow = reactor.startRootWorkflow(FirstState("Hello"))
+    val workflow = reactor.doLaunch(FirstState("Hello"), WorkflowPool())
     workflow.sendEvent("Fnord")
     // No crash, no bug!
   }
@@ -297,7 +297,7 @@ class ReactorAsWorkflowIntegrationTest {
         }
       }
     }
-    val workflow = reactor.startRootWorkflow(FirstState("Hello"))
+    val workflow = reactor.doLaunch(FirstState("Hello"), WorkflowPool())
     workflow.result.subscribe(resultSub)
 
     // This event should get buffered…
@@ -330,7 +330,7 @@ class ReactorAsWorkflowIntegrationTest {
         }
       }
     }
-    workflow = reactor.startRootWorkflow(FirstState(""))
+    workflow = reactor.doLaunch(FirstState(""), WorkflowPool())
     workflow.state.subscribe(stateSub)
     workflow.result.subscribe(resultSub)
 
@@ -352,7 +352,7 @@ class ReactorAsWorkflowIntegrationTest {
         // No cases.
       }
     }
-    val workflow = reactor.startRootWorkflow(FirstState("Hello"))
+    val workflow = reactor.doLaunch(FirstState("Hello"), WorkflowPool())
     workflow.state.subscribe(stateSub)
 
     workflow.sendEvent("Fnord")

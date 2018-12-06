@@ -19,7 +19,6 @@ import com.squareup.workflow.Reaction
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.doLaunch
-import com.squareup.workflow.startRootWorkflow
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.rx2.await
@@ -48,14 +47,6 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
   initialState: S,
   workflows: WorkflowPool
 ): Workflow<S, E, O> = toCoroutineReactor().doLaunch(initialState, workflows)
-
-/**
- * Use this only to create a top-level workflow. If you're implementing
- * [WorkflowPool.Launcher.launch], use [doLaunch].
- */
-fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startRootWorkflow(
-  initialState: S
-): Workflow<S, E, O> = toCoroutineReactor().startRootWorkflow(initialState)
 
 /**
  * Adapter to convert a [Reactor] to a [Reactor].
