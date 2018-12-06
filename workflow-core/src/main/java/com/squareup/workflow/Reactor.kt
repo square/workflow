@@ -16,6 +16,9 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowPool.Launcher
+import kotlinx.coroutines.experimental.CancellationException
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlin.coroutines.experimental.CoroutineContext
 import kotlin.coroutines.experimental.EmptyCoroutineContext
@@ -179,19 +182,59 @@ interface Reactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O
 }
 
 /**
- * Use this to implement [WorkflowPool.Launcher.launch].
- */
-fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
-  initialState: S,
-  workflows: WorkflowPool,
-  context: CoroutineContext = EmptyCoroutineContext
-): Workflow<S, E, O> = ReactorWorkflow(this, initialState, workflows, context)
-
-/**
  * Use this only to create a top-level workflow. If you're implementing [Launcher.launch], use
  * [doLaunch].
  */
 fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startRootWorkflow(
   initialState: S,
   context: CoroutineContext = EmptyCoroutineContext
-): Workflow<S, E, O> = ReactorWorkflow(this, initialState, WorkflowPool(), context)
+): Workflow<S, E, O> = doLaunch(initialState, WorkflowPool(), context)
+
+/**
+ * Implements a [Workflow] using a [Reactor].
+ * Use this to implement [WorkflowPool.Launcher.launch].
+ *
+ * The react loop runs inside a [workflow coroutine][workflow].
+ *
+ * The [initial state][initialState], and then each [subsequent state][EnterState], are all sent
+ * to the builder's state channel.
+ *
+ * _Note:_
+ * If [Reactor.onReact] immediately returns [FinishWith], the last state may not be emitted since
+ * the [state channel][Workflow.openSubscriptionToState] is closed immediately.
+ */
+fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
+  initialState: S,
+  workflows: WorkflowPool,
+  context: CoroutineContext = EmptyCoroutineContext
+): Workflow<S, E, O> {
+  return GlobalScope.workflow(
+      // Unconfined means the coroutine is never dispatched and always resumed synchronously on the
+      // current thread. This is the default RxJava behavior, and the behavior we explicitly want
+      // here.
+      context = context + Dispatchers.Unconfined
+  ) { stateChannel, eventChannel ->
+    var reaction: Reaction<S, O> = EnterState(initialState)
+    var currentState: S?
+
+    while (reaction is EnterState) {
+      val state = reaction.state
+      currentState = state
+      stateChannel.send(state)
+
+      // Wraps any errors thrown by the [Reactor.onReact] method in a [ReactorException].
+      reaction = try {
+        onReact(currentState, eventChannel, workflows)
+      } catch (@Suppress("TooGenericExceptionCaught") cause: Throwable) {
+        // CancellationExceptions aren't actually errors, rethrow them directly.
+        if (cause is CancellationException) throw cause
+        throw ReactorException(
+            cause = cause,
+            reactor = this@doLaunch,
+            reactorState = currentState
+        )
+      }
+    }
+    return@workflow (reaction as FinishWith).result
+  }
+}

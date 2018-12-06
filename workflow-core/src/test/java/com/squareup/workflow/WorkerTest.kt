@@ -46,8 +46,7 @@ class WorkerTest {
     deferred.completeExceptionally(IOException("network fail"))
 
     val failure = reaction.getCompletionExceptionOrNull()!!
-    assertTrue(failure is ReactorException)
-    assertTrue(failure.cause is IOException)
+    assertTrue(failure is IOException)
   }
 
   @Test fun whenInternalCoroutineCancelled() {

@@ -20,7 +20,6 @@ import com.squareup.workflow.TestState.SecondState
 import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.CoroutineExceptionHandler
-import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
@@ -31,7 +30,6 @@ import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import org.junit.Test
-import kotlin.coroutines.experimental.EmptyCoroutineContext
 import kotlin.coroutines.experimental.suspendCoroutine
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -408,27 +406,6 @@ class ReactorAsWorkflowIntegrationTest {
     runBlocking {
       assertEquals(null, stateSub.receiveOrNull())
     }
-  }
-
-  @Test fun handleUncaughtException_fallsBackToThreadHandler() {
-    val thread = Thread.currentThread()
-    lateinit var uncaughtThread: Thread
-    lateinit var uncaughtException: Throwable
-    val originalHandler = thread.uncaughtExceptionHandler
-    thread.setUncaughtExceptionHandler { t, e ->
-      uncaughtThread = t
-      uncaughtException = e
-    }
-
-    try {
-      val scope = CoroutineScope(EmptyCoroutineContext)
-      scope.handleUncaughtException(RuntimeException("i escaped"))
-    } finally {
-      thread.uncaughtExceptionHandler = originalHandler
-    }
-
-    assertEquals(thread, uncaughtThread)
-    assertEquals("i escaped", uncaughtException.message)
   }
 }
 
