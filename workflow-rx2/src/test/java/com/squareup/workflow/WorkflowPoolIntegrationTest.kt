@@ -78,7 +78,7 @@ class WorkflowPoolIntegrationTest {
     override val delegateState: String = "",
     name: String = ""
   ) : Delegating<String, String, String> {
-    override val id: Id<String, String, String> = myReactor.workflowType.makeId(name)
+    override val id: Id<String, String, String> = myReactor.workflowType.makeWorkflowId(name)
   }
 
   @Test fun metaTest_myReactorReportsStatesAndResult() {
@@ -192,7 +192,7 @@ class WorkflowPoolIntegrationTest {
 
   @Test fun routesEvents() {
     pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.workflowType.makeId())
+    val input = pool.input(myReactor.workflowType.makeWorkflowId())
 
     input.sendEvent("able")
     input.sendEvent("baker")
@@ -202,7 +202,7 @@ class WorkflowPoolIntegrationTest {
   }
 
   @Test fun dropsLateEvents() {
-    val input = pool.input(myReactor.workflowType.makeId())
+    val input = pool.input(myReactor.workflowType.makeWorkflowId())
     pool.nextDelegateReaction(DelegatingState())
 
     input.sendEvent("able")
@@ -219,7 +219,7 @@ class WorkflowPoolIntegrationTest {
   }
 
   @Test fun dropsEarlyEvents() {
-    val input = pool.input(myReactor.workflowType.makeId())
+    val input = pool.input(myReactor.workflowType.makeWorkflowId())
     input.sendEvent("able")
     pool.nextDelegateReaction(DelegatingState())
     input.sendEvent("baker")
@@ -229,7 +229,7 @@ class WorkflowPoolIntegrationTest {
 
   @Test fun resumesRoutingEvents() {
     pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.workflowType.makeId())
+    val input = pool.input(myReactor.workflowType.makeWorkflowId())
 
     input.sendEvent("able")
     input.sendEvent("baker")

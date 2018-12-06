@@ -63,7 +63,7 @@ class WorkerTest {
     val reaction = pool.workerResult(worker, Unit)
     assertFalse(reaction.isCompleted)
 
-    pool.abandonDelegate(worker.makeId())
+    pool.abandonDelegate(worker.makeWorkflowId())
 
     assertFailsWith<CancellationException> { reaction.getCompleted() }
   }

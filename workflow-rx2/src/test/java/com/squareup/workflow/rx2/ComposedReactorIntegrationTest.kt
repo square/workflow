@@ -22,7 +22,7 @@ import com.squareup.workflow.Reaction
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPool.Id
-import com.squareup.workflow.makeId
+import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Background
 import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Cancel
@@ -213,7 +213,7 @@ class ComposedReactorIntegrationTest {
       constructor(
         id: String,
         state: String
-      ) : this(StringEchoer::class.makeId(id), state)
+      ) : this(StringEchoer::class.makeWorkflowId(id), state)
     }
 
     data class Paused(
@@ -222,7 +222,7 @@ class ComposedReactorIntegrationTest {
     ) : OuterState()
 
     object RunningImmediateJob : OuterState(), Delegating<Unit, String, Unit> {
-      override val id = makeId()
+      override val id = makeWorkflowId()
       override val delegateState = Unit
     }
   }
@@ -329,7 +329,7 @@ class ComposedReactorIntegrationTest {
     echoJobId: String,
     event: String
   ) {
-    pool.input(StringEchoer::class.makeId(echoJobId))
+    pool.input(StringEchoer::class.makeWorkflowId(echoJobId))
         .sendEvent(event)
   }
 }

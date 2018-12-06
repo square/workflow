@@ -196,7 +196,7 @@ class ComposedReactorIntegrationTest {
       constructor(
         id: String,
         state: String
-      ) : this(StringEchoer::class.makeId(id), state)
+      ) : this(StringEchoer::class.makeWorkflowId(id), state)
     }
 
     data class Paused(
@@ -205,7 +205,7 @@ class ComposedReactorIntegrationTest {
     ) : OuterState()
 
     object RunningImmediateJob : OuterState(), Delegating<Unit, String, Unit> {
-      override val id = makeId()
+      override val id = makeWorkflowId()
       override val delegateState = Unit
     }
   }
@@ -322,7 +322,7 @@ class ComposedReactorIntegrationTest {
     echoJobId: String,
     event: String
   ) {
-    pool.input(StringEchoer::class.makeId(echoJobId))
+    pool.input(StringEchoer::class.makeWorkflowId(echoJobId))
         .sendEvent(event)
   }
 }
