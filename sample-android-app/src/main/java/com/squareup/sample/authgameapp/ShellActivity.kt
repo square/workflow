@@ -24,7 +24,7 @@ import com.squareup.viewbuilder.ViewBuilder
 import com.squareup.viewbuilder.ViewBuilder.Registry
 import com.squareup.viewbuilder.ViewStackCoordinator
 import com.squareup.viewbuilder.ViewStackFrameLayout
-import com.squareup.viewbuilder.ViewStackScreen
+import com.squareup.viewbuilder.StackScreen
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.rx2.result
 import com.squareup.workflow.rx2.state
@@ -47,7 +47,7 @@ class ShellActivity : AppCompatActivity() {
   /** Workflow decides what we're doing. */
   private lateinit var workflow: ShellWorkflow
 
-  private lateinit var screens: Observable<out ViewStackScreen<*>>
+  private lateinit var screens: Observable<out StackScreen<*>>
 
   private val subs = CompositeDisposable()
 
@@ -76,8 +76,8 @@ class ShellActivity : AppCompatActivity() {
     subs.add(workflow.result.subscribe { finish() })
 
     val viewFactory = buildViewFactory()
-    val rootViewBuilder: ViewBuilder<ViewStackScreen<*>> =
-      viewFactory[ViewStackScreen::class.jvmName]
+    val rootViewBuilder: ViewBuilder<StackScreen<*>> =
+      viewFactory[StackScreen::class.jvmName]
     val rootView = rootViewBuilder.buildView(screens, viewFactory, this)
     bodyFrame = rootView.findViewById(R.id.view_stack)
 

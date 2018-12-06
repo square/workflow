@@ -19,7 +19,7 @@ import com.squareup.sample.authworkflow.AuthRenderer
 import com.squareup.sample.authgameapp.ShellState.Authenticating
 import com.squareup.sample.authgameapp.ShellState.RunningGame
 import com.squareup.sample.tictactoe.RunGameRenderer
-import com.squareup.viewbuilder.ViewStackScreen
+import com.squareup.viewbuilder.StackScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
@@ -29,18 +29,18 @@ import com.squareup.workflow.WorkflowPool
  *
  *     <ShellState, Nothing, MainAndModalScreen<ViewStackScreen<*>, *>>>
  */
-object ShellRenderer : Renderer<ShellState, Nothing, ViewStackScreen<*>> {
+object ShellRenderer : Renderer<ShellState, Nothing, StackScreen<*>> {
   override fun render(
     state: ShellState,
     workflow: WorkflowInput<Nothing>,
     workflows: WorkflowPool
-  ): ViewStackScreen<*> {
+  ): StackScreen<*> {
     return when (state) {
       is Authenticating -> AuthRenderer.render(
           state.delegateState,
           workflows.input(state.id),
           workflows
-      ).let { ViewStackScreen(it) }
+      ).let { StackScreen(it) }
 
       is RunningGame -> RunGameRenderer.render(
           state.delegateState,
@@ -49,8 +49,8 @@ object ShellRenderer : Renderer<ShellState, Nothing, ViewStackScreen<*>> {
       ).let { modal ->
         // Can't do dialogs yet, so just show the top-most modal if there is one.
         modal.modals.lastOrNull()
-            ?.let { ViewStackScreen(it) }
-            ?: ViewStackScreen(modal.main)
+            ?.let { StackScreen(it) }
+            ?: StackScreen(modal.main)
       }
     }
   }

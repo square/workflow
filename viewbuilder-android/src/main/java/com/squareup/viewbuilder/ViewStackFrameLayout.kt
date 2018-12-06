@@ -66,11 +66,11 @@ class ViewStackFrameLayout(
         ?: super.onRestoreInstanceState(state)
   }
 
-  companion object : ViewBuilder<ViewStackScreen<*>> {
-    override val type = ViewStackScreen::class.jvmName
+  companion object : ViewBuilder<StackScreen<*>> {
+    override val type = StackScreen::class.jvmName
 
     override fun buildView(
-      screens: Observable<out ViewStackScreen<*>>,
+      screens: Observable<out StackScreen<*>>,
       builders: Registry,
       contextForNewView: Context,
       container: ViewGroup?

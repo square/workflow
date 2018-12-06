@@ -15,6 +15,9 @@
  */
 package com.squareup.viewbuilder
 
+/**
+ * Implemented by screens that accept events.
+ */
 interface EventHandlingScreen<out D : Any, in E : Any> {
   val data: D
   val onEvent: (E) -> Unit
