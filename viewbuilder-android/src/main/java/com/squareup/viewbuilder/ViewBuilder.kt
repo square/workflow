@@ -21,6 +21,10 @@ import android.view.ViewGroup
 import com.squareup.viewbuilder.ViewBuilder.Registry
 import io.reactivex.Observable
 
+/**
+ * Builds a [View] that can render a stream of screens of the specified [type][T].
+ * Typically implemented by delegating to [LayoutViewBuilder]. See that class for details.
+ */
 interface ViewBuilder<T : Any> {
   // Tried making this Class<T>, but got into trouble w/type invariance.
   // https://github.com/square/workflow/issues/18
@@ -33,6 +37,10 @@ interface ViewBuilder<T : Any> {
     container: ViewGroup? = null
   ): View
 
+  /**
+   * A collection of [ViewBuilder]s, keyed to the names of the screen types
+   * they render.
+   */
   class Registry private constructor(
     private val builders: Map<String, ViewBuilder<*>>
   ) {

@@ -25,6 +25,38 @@ import com.squareup.coordinators.Coordinators
 import com.squareup.viewbuilder.ViewBuilder.Registry
 import io.reactivex.Observable
 
+/**
+ * Takes a [layoutId] and a [coordinatorConstructor] method and implements
+ * [ViewBuilder].
+ *
+ * Typical usage is to have a [Coordinator]'s `companion object` implement
+ * [ViewBuilder] by delegating to one of these, tied to the layout resource
+ * it typically expects to drive.
+ *
+ *    class NewGameCoordinator(
+ *       private val screens: Observable<out NewGameScreen>
+ *    ) : Coordinator() {
+ *      // ...
+ *      companion object : ViewBuilder<NewGameScreen> by LayoutViewBuilder.of(
+ *          R.layout.new_game_layout, ::NewGameCoordinator
+ *      )
+ *    }
+ *
+ * This pattern allows us to assemble [ViewBuilder.Registry]'s out of the
+ * [Coordinator] classes themselves.
+ *
+ *    val TicTacToeViewBuilders = Registry(
+ *        NewGameCoordinator, GamePlayCoordinator, GameOverCoordinator
+ *    )
+ *
+ * Also note that two flavors of [coordinatorConstructor] are supported. Every
+ * [Coordinator] must accept an `[Observable]<out [T]>`. Optionally, they can
+ * also have a second [ViewBuilder.Registry] argument, to allow recursive calls
+ * to render nested screens. Containers like [ViewStackCoordinator] make use of this.
+ *
+ * The great thing is that this will all fall apart in a matter of hours or
+ * days as we sort out `TransitionManager` support!
+ */
 class LayoutViewBuilder<T : Any> private constructor(
   override val type: String,
   @LayoutRes private val layoutId: Int,

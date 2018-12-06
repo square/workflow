@@ -19,33 +19,35 @@ import com.squareup.sample.tictactoe.RunGameState.MaybeQuitting
 import com.squareup.sample.tictactoe.RunGameState.Playing
 import com.squareup.viewbuilder.EventHandlingScreen.Companion.ignoreEvents
 import com.squareup.viewbuilder.MainAndModalScreen
+import com.squareup.viewbuilder.StackedMainAndModalScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 
-object RunGameRenderer : Renderer<RunGameState, RunGameEvent, MainAndModalScreen<*, *>> {
+object RunGameRenderer :
+    Renderer<RunGameState, RunGameEvent, StackedMainAndModalScreen<*, ConfirmQuitScreen>> {
 
   override fun render(
     state: RunGameState,
     workflow: WorkflowInput<RunGameEvent>,
     workflows: WorkflowPool
-  ): MainAndModalScreen<*, *> {
+  ): StackedMainAndModalScreen<*, ConfirmQuitScreen> {
     return when (state) {
 
       is Playing -> {
         return TakeTurnsRenderer
             .render(state.delegateState, workflows.input(state.id), workflows)
-            .let { MainAndModalScreen<Any, Any>(it) }
+            .let { MainAndModalScreen(it) }
       }
 
-      is RunGameState.NewGame -> MainAndModalScreen<Any, Any>(NewGameScreen(workflow::sendEvent))
+      is RunGameState.NewGame -> StackedMainAndModalScreen(NewGameScreen(workflow::sendEvent))
 
-      is MaybeQuitting -> MainAndModalScreen(
+      is MaybeQuitting -> StackedMainAndModalScreen(
           GamePlayScreen(state.completedGame.lastTurn, ignoreEvents()),
           ConfirmQuitScreen(workflow::sendEvent)
       )
 
-      is RunGameState.GameOver -> MainAndModalScreen<Any, Any>(
+      is RunGameState.GameOver -> StackedMainAndModalScreen(
           GameOverScreen(state, workflow::sendEvent)
       )
     }

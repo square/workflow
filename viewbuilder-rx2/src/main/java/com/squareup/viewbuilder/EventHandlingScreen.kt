@@ -23,8 +23,6 @@ interface EventHandlingScreen<out D : Any, in E : Any> {
   val onEvent: (E) -> Unit
 
   companion object {
-    fun <E> ignoreEvents(): (E) -> Unit {
-      return { Unit }
-    }
+    fun <E> ignoreEvents(): (E) -> Unit = { Unit }
   }
 }

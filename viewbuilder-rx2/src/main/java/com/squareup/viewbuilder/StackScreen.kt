@@ -22,11 +22,19 @@ import io.reactivex.Observable
  * Typically these are the leaves of composite UI structures. That is, it's
  * probably a mistake if you find yourself creating, say, a
  * `StackScreen<MainAndModalScreen<*, *>>`.
+ *
+ * @throws IllegalArgumentException if [T] is [StackScreen]
  */
-data class StackScreen<T : Any>(
+data class StackScreen<out T : Any>(
   val wrapped: T,
   private val keyExtension: String = ""
 ) {
+  init {
+    require(wrapped !is StackScreen<*>) {
+      "Surely you didn't mean to put a stack right in a stack."
+    }
+  }
+
   val key = ViewStackKey(wrapped::class.java, keyExtension)
 }
 

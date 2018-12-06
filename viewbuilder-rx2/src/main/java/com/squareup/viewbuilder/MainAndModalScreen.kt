@@ -15,6 +15,23 @@
  */
 package com.squareup.viewbuilder
 
+/**
+ * For flows that navigate through a series of main / body screens, sometimes covered by
+ * the occasional modal dialog.
+ */
+typealias StackedMainAndModalScreen<M, D> = MainAndModalScreen<StackScreen<M>, D>
+
+/**
+ * For flows that show a [main] screen, optionally covered by a number of nested
+ * [modals].
+ *
+ * @param modals A list of modal screens to show over [main]. This is a list to support
+ * modeling of things like nested alerts, or wizards over wizards over wizards.
+ *
+ * @param M the type of the [main] / body screen, typically `StackScreen<*>`.
+ * (See [StackedMainAndModalScreen].)
+ * @param D type of the [modals] / dialogs
+ */
 data class MainAndModalScreen<out M : Any, out D : Any>(
   val main: M,
   val modals: List<D> = emptyList()
@@ -23,4 +40,16 @@ data class MainAndModalScreen<out M : Any, out D : Any>(
     main: M,
     modal: D
   ) : this(main, listOf(modal))
+}
+
+@Suppress("FunctionName")
+fun <M : Any, D : Any> StackedMainAndModalScreen(
+  main: M,
+  modal: D? = null
+): StackedMainAndModalScreen<M, D> {
+  return MainAndModalScreen(StackScreen(main), modal?.let { listOf(it) } ?: emptyList())
+}
+
+fun <M : Any, D : Any> StackScreen<M>.toMainAndModal(): StackedMainAndModalScreen<M, D> {
+  return MainAndModalScreen(this)
 }

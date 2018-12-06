@@ -19,24 +19,25 @@ import com.squareup.sample.authworkflow.AuthState.Authorizing
 import com.squareup.sample.authworkflow.AuthState.AuthorizingSecondFactor
 import com.squareup.sample.authworkflow.AuthState.LoginPrompt
 import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
+import com.squareup.viewbuilder.StackScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 
-object AuthRenderer : Renderer<AuthState, AuthEvent, Any> {
+object AuthRenderer : Renderer<AuthState, AuthEvent, StackScreen<Any>> {
   override fun render(
     state: AuthState,
     workflow: WorkflowInput<AuthEvent>,
     workflows: WorkflowPool
-  ): Any {
-    return when (state) {
-      is LoginPrompt -> LoginScreen(state.errorMessage, workflow::sendEvent)
+  ): StackScreen<Any> = StackScreen(
+      when (state) {
+        is LoginPrompt -> LoginScreen(state.errorMessage, workflow::sendEvent)
 
-      is Authorizing -> AuthorizingScreen("Logging in…")
+        is Authorizing -> AuthorizingScreen("Logging in…")
 
-      is AuthorizingSecondFactor -> AuthorizingScreen("Submitting one time token…")
+        is AuthorizingSecondFactor -> AuthorizingScreen("Submitting one time token…")
 
-      is SecondFactorPrompt -> SecondFactorScreen(state.errorMessage, workflow::sendEvent)
-    }
-  }
+        is SecondFactorPrompt -> SecondFactorScreen(state.errorMessage, workflow::sendEvent)
+      }
+  )
 }
