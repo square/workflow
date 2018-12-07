@@ -47,7 +47,7 @@ buildscript {
   ext.deps = [
       'android_gradle_plugin': "com.android.tools.build:gradle:${versions.agp}",
 
-      'appcompatv7': "com.android.support:appcompat-v7:${versions.support}",
+      'appcompat': "androidx.appcompat:appcompat:${versions.support}",
       'coordinators': "com.squareup.coordinators:coordinators:${versions.coordinators}",
       'constraint_layout': "com.android.support.constraint:constraint-layout:1.1.0",
       'design': "com.android.support:design:${versions.support}",
