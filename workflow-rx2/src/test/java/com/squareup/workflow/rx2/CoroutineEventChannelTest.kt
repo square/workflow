@@ -54,7 +54,7 @@ class CoroutineEventChannelTest {
 
   private var events = Channel<Events>(UNLIMITED)
 
-  @Test fun selectEvent_propagatesResult() {
+  @Test fun `select event propagates result`() {
     events.asEventChannel()
         .select<String> {
           onEvent<Click> { it.toString() }
@@ -66,7 +66,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("Click")
   }
 
-  @Test fun selectEvent_propagatesExceptionsFromBuilder() {
+  @Test fun `select event propagates exceptions from builder`() {
     events.asEventChannel()
         .select<String> {
           throw RuntimeException("fail")
@@ -76,7 +76,7 @@ class CoroutineEventChannelTest {
     resultSub.assertError { it is RuntimeException && it.message == "fail" }
   }
 
-  @Test fun selectEvent_propagatesExceptionsFromHandlers() {
+  @Test fun `select event propagates exceptions from handlers`() {
     events.asEventChannel()
         .select<String> {
           onEvent<Click> { throw RuntimeException("fail") }
@@ -90,7 +90,7 @@ class CoroutineEventChannelTest {
         .hasMessage("fail")
   }
 
-  @Test fun selectEvent_throwsWhenEventNotAccepted() {
+  @Test fun `select event throws when event not accepted`() {
     events.asEventChannel()
         .select<String> {
           onEvent<Click> { "clicked" }
@@ -104,7 +104,7 @@ class CoroutineEventChannelTest {
     }
   }
 
-  @Test fun selectEvent_doesNotThrow_whenReentered() {
+  @Test fun `select event does not throw when reentered`() {
     val receivedEvents = mutableListOf<Events>()
 
     // Use map and doOnSuccess to simulate how code will actually use this – Reactors don't
@@ -135,7 +135,7 @@ class CoroutineEventChannelTest {
     assertThat(receivedEvents).containsExactly(Click, Dismiss)
   }
 
-  @Test fun selectEvent_clearsState_onUnsubscribe() {
+  @Test fun `selectEvent clears state on unsubscribe`() {
     events.asEventChannel()
         .select<String> {}
         .subscribe(resultSub)
@@ -147,7 +147,7 @@ class CoroutineEventChannelTest {
         .select<Unit> {}
   }
 
-  @Test fun selectEvent_isNotRequired() {
+  @Test fun `selectEvent is not required`() {
     events.asEventChannel()
         .select<String> { onEvent<Click> { "done" } }
         .subscribe(resultSub)
@@ -155,7 +155,7 @@ class CoroutineEventChannelTest {
     resultSub.assertNotTerminated()
   }
 
-  @Test fun onSuccess_singleCase() {
+  @Test fun `onSuccess single case`() {
     val relay = SingleSubject.create<String>()
     events.asEventChannel()
         .select<String> { onSuccess(relay) { "got $it" } }
@@ -170,7 +170,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("got foo")
   }
 
-  @Test fun onSuccess_multipleCases() {
+  @Test fun `onSuccess multiple cases`() {
     val relay1 = SingleSubject.create<String>()
     val relay2 = SingleSubject.create<String>()
     events.asEventChannel()
@@ -189,7 +189,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("2 got foo")
   }
 
-  @Test fun onSuccess_whenTerminatesWithError() {
+  @Test fun `onSuccess when terminates with error`() {
     val subject = SingleSubject.create<String>()
     events.asEventChannel()
         .select<String> { onSuccess(subject) { "got $it" } }
@@ -205,7 +205,7 @@ class CoroutineEventChannelTest {
     resultSub.assertError(e)
   }
 
-  @Test fun onSuccess_withOnEvent_whenSingleWins() {
+  @Test fun `onSuccess with onEvent when Single wins`() {
     val relay = SingleSubject.create<String>()
     events.asEventChannel()
         .select<String> {
@@ -223,7 +223,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("relay got foo")
   }
 
-  @Test fun onSuccess_withOnEvent_whenEventWins() {
+  @Test fun `onSuccess with onEvent when Event wins`() {
     val relay = SingleSubject.create<String>()
     events.asEventChannel()
         .select<String> {
@@ -241,7 +241,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("clicked")
   }
 
-  @Test fun onSuccess_unsubscribes_whenLosesRace_noExceptions() {
+  @Test fun `onSuccess unsubscribes when loses race no exceptions`() {
     var subscribeCalls = 0
     var disposeCalls = 0
     val observable = SingleSubject.create<String>()
@@ -263,7 +263,7 @@ class CoroutineEventChannelTest {
     assertThat(disposeCalls).isEqualTo(1)
   }
 
-  @Test fun onSuccess_unsubscribes_whenSelectThrows() {
+  @Test fun `onSuccess unsubscribes when select throws`() {
     var subscribeCalls = 0
     var disposeCalls = 0
     val observable = SingleSubject.create<String>()
@@ -280,7 +280,7 @@ class CoroutineEventChannelTest {
     assertThat(disposeCalls).isEqualTo(1)
   }
 
-  @Test fun onMaybe_singleCase() {
+  @Test fun `onMaybe single case`() {
     val relay = MaybeSubject.create<String>()
     events.asEventChannel()
         .select<String> { onMaybeSuccessOrNever(relay) { "got $it" } }
@@ -295,7 +295,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("got foo")
   }
 
-  @Test fun onMaybe_multipleCases() {
+  @Test fun `onMaybe multiple cases`() {
     val relay1 = MaybeSubject.create<String>()
     val relay2 = MaybeSubject.create<String>()
     events.asEventChannel()
@@ -314,7 +314,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("2 got foo")
   }
 
-  @Test fun onMaybe_doesntEmit_whenCompletesWithoutValue() {
+  @Test fun `onMaybe doesnt emit when completes without value`() {
     val subject = MaybeSubject.create<String>()
     events.asEventChannel()
         .select<String> { onMaybeSuccessOrNever(subject) { "got $it" } }
@@ -328,7 +328,7 @@ class CoroutineEventChannelTest {
     resultSub.assertNotTerminated()
   }
 
-  @Test fun onMaybe_allowsOtherCasesToWin_whenCompletesWithoutValue() {
+  @Test fun `onMaybe allows other cases to win when completes without value`() {
     val subject = MaybeSubject.create<String>()
     events.asEventChannel()
         .select<String> {
@@ -346,7 +346,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("clicked")
   }
 
-  @Test fun onMaybe_whenTerminatesWithError() {
+  @Test fun `onMaybe when terminates with error`() {
     val subject = MaybeSubject.create<String>()
     events.asEventChannel()
         .select<String> { onMaybeSuccessOrNever(subject) { "got $it" } }
@@ -362,7 +362,7 @@ class CoroutineEventChannelTest {
     resultSub.assertError(e)
   }
 
-  @Test fun onMaybe_withOnEvent_whenMaybeWins() {
+  @Test fun `onMaybe with onEvent when Maybe wins`() {
     val relay = MaybeSubject.create<String>()
     events.asEventChannel()
         .select<String> {
@@ -380,7 +380,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("relay got foo")
   }
 
-  @Test fun onMaybe_withOnEvent_whenEventWins() {
+  @Test fun `onMaybe with onEvent when Event wins`() {
     val relay = MaybeSubject.create<String>()
     events.asEventChannel()
         .select<String> {
@@ -398,7 +398,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("clicked")
   }
 
-  @Test fun onMaybe_unsubscribes_whenLosesRace_noExceptions() {
+  @Test fun `onMaybe unsubscribes when loses race no exceptions`() {
     var subscribeCalls = 0
     var disposeCalls = 0
     val observable = MaybeSubject.create<String>()
@@ -420,7 +420,7 @@ class CoroutineEventChannelTest {
     assertThat(disposeCalls).isEqualTo(1)
   }
 
-  @Test fun onMaybe_unsubscribes_whenSelectThrows() {
+  @Test fun `onMaybe unsubscribes when select throws`() {
     var subscribeCalls = 0
     var disposeCalls = 0
     val observable = MaybeSubject.create<String>()
@@ -437,7 +437,7 @@ class CoroutineEventChannelTest {
     assertThat(disposeCalls).isEqualTo(1)
   }
 
-  @Test fun exceptionFromSingleHandler_isPropagated() {
+  @Test fun `exception from single handler is propagated`() {
     val relay = PublishSubject.create<String>()
     events.asEventChannel()
         .select<String> {
@@ -452,7 +452,7 @@ class CoroutineEventChannelTest {
     resultSub.assertError { it is RuntimeException && it.message == "fail" }
   }
 
-  @Test fun observableEmission_isIgnored_fromEventHandler() {
+  @Test fun `observable emission is ignored from event handler`() {
     val relay = PublishSubject.create<String>()
     events.asEventChannel()
         .select<String> { onEvent<Click> { relay.onNext("boo"); "clicked" } }
@@ -464,7 +464,7 @@ class CoroutineEventChannelTest {
     resultSub.assertValue("clicked")
   }
 
-  @Test fun closeWhileSelect_neverSignals() {
+  @Test fun `close while select never signals`() {
     events.asEventChannel()
         .select<String> { onEvent<Click> { "clicked" } }
         .subscribe(resultSub)
@@ -475,7 +475,7 @@ class CoroutineEventChannelTest {
     resultSub.assertNotTerminated()
   }
 
-  @Test fun exceptionFromSubscriber_reportsToUncaughtHandler_whenEventNotQueued() {
+  @Test fun `exception from subscriber reports to uncaught handler when event not queued`() {
     events.asEventChannel()
         .select<String> { onEvent<Click> { "clicked" } }
         .subscribe { event ->
@@ -494,7 +494,7 @@ class CoroutineEventChannelTest {
   }
 
   @Suppress("UNCHECKED_CAST")
-  @Test fun unsubscribe_cancelsSelect() {
+  @Test fun `unsubscribe cancels select`() {
     val firstSub = events.asEventChannel()
         .select<String> { onEvent<Click> { "clicked 1" } }
         .test()

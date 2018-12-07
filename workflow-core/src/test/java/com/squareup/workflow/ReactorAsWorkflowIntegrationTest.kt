@@ -73,7 +73,7 @@ class ReactorAsWorkflowIntegrationTest {
     resultSub = GlobalScope.async(Unconfined) { workflow.await() }
   }
 
-  @Test fun startNew_initialState_afterStartNew() {
+  @Test fun `start new initial state after start new`() {
     start("hello")
 
     assertEquals(FirstState("hello"), stateSub.poll())
@@ -82,7 +82,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertFalse(resultSub.isCompleted)
   }
 
-  @Test fun startFromState() {
+  @Test fun `start from state`() {
     val workflow = reactor.doLaunch(SecondState("hello"), WorkflowPool())
 
     subscribeToState(workflow)
@@ -94,7 +94,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertFalse(resultSub.isCompleted)
   }
 
-  @Test fun stateCompletesWhenAbandoned() {
+  @Test fun `state completes when abandoned`() {
     val workflow = reactor.doLaunch(SecondState("hello"), WorkflowPool())
 
     subscribeToState(workflow)
@@ -104,7 +104,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertTrue(stateSub.isClosedForReceive)
   }
 
-  @Test fun stateStaysCompletedForLateSubscribersWhenAbandoned() {
+  @Test fun `state stays completed for late subscribers when abandoned`() {
     val workflow = reactor.doLaunch(SecondState("hello"), WorkflowPool())
     workflow.cancel()
 
@@ -112,14 +112,14 @@ class ReactorAsWorkflowIntegrationTest {
     assertTrue(stateSub.isClosedForReceive)
   }
 
-  @Test fun resultCompletesWhenAbandoned() {
+  @Test fun `result completes when abandoned`() {
     val workflow = reactor.doLaunch(SecondState("hello"), WorkflowPool())
     subscribeToResult(workflow)
     workflow.cancel()
     assertTrue(resultSub.isCompletedExceptionally)
   }
 
-  @Test fun singleStateChangeAndThenFinish() {
+  @Test fun `single state change and then finish`() {
     reactor = object : MockReactor() {
       override suspend fun onReact(
         state: TestState,
@@ -140,7 +140,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertEquals("all done", resultSub.getCompleted())
   }
 
-  @Test fun delayedStateChange() {
+  @Test fun `delayed state change`() {
     val secondStateDeferred = CompletableDeferred<TestState>()
 
     reactor = object : MockReactor() {
@@ -167,7 +167,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertEquals("all done", resultSub.getCompleted())
   }
 
-  @Test fun whenReactThrowsImmediately() {
+  @Test fun `when react throws immediately`() {
     reactor = object : MockReactor() {
       override suspend fun onReact(
         state: TestState,
@@ -195,7 +195,7 @@ class ReactorAsWorkflowIntegrationTest {
     }
   }
 
-  @Test fun whenReactThrowsAfterSuspending() {
+  @Test fun `when react throws after suspending`() {
     reactor = object : MockReactor() {
       override suspend fun onReact(
         state: TestState,
@@ -225,7 +225,7 @@ class ReactorAsWorkflowIntegrationTest {
     }
   }
 
-  @Test fun reactIsCancelled_onAbandonment() {
+  @Test fun `react is cancelled on abandonment`() {
     var invoked = false
     var cancelled = false
     reactor = object : MockReactor() {
@@ -252,7 +252,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertTrue(cancelled)
   }
 
-  @Test fun exceptionIsPropagated_whenStateSubscriberThrowsFromSecondOnNext_asynchronously() {
+  @Test fun `exception is propagated when state subscriber throws from second onNext asynchronously`() {
     val trigger = CompletableDeferred<Unit>()
     reactor = object : MockReactor() {
       override suspend fun onReact(
@@ -298,7 +298,7 @@ class ReactorAsWorkflowIntegrationTest {
     }
   }
 
-  @Test fun acceptsEventsBeforeSubscriptions() {
+  @Test fun `accepts events before subscriptions`() {
     val reactor = object : Reactor<FirstState, String, String> {
       override suspend fun onReact(
         state: FirstState,
@@ -316,7 +316,7 @@ class ReactorAsWorkflowIntegrationTest {
     // No crash, no bug!
   }
 
-  @Test fun buffersEvents_whenSelectNotCalled() {
+  @Test fun `buffers events when select not called`() {
     val proceedToSecondState = CompletableDeferred<Unit>()
     val reactor = object : Reactor<TestState, String, String> {
       override suspend fun onReact(
@@ -345,7 +345,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertEquals("Fnord", resultSub.getCompleted())
   }
 
-  @Test fun buffersEvents_whenReentrant() {
+  @Test fun `buffers events when reentrant`() {
     lateinit var workflow: Workflow<TestState, String, String>
     val reactor = object : Reactor<TestState, String, String> {
       override suspend fun onReact(
@@ -373,7 +373,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertEquals("i heard you like events", resultSub.getCompleted())
   }
 
-  @Test fun stateReceiveOrNull_returnsNull_onFinishImmediately() {
+  @Test fun `state receiveOrNull returns null onFinishImmediately`() {
     reactor = object : MockReactor() {
       override suspend fun onReact(
         state: TestState,
@@ -388,7 +388,7 @@ class ReactorAsWorkflowIntegrationTest {
     }
   }
 
-  @Test fun stateReceiveOrNull_returnsNull_onFinishLater() {
+  @Test fun `state receiveOrNull returns null onFinishLater`() {
     val trigger = CompletableDeferred<Unit>()
     reactor = object : MockReactor() {
       override suspend fun onReact(

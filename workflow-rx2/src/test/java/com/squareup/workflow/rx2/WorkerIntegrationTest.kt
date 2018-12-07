@@ -28,7 +28,7 @@ class WorkerIntegrationTest {
   private val single = SingleSubject.create<Unit>()
   private val worker = single.asWorker()
 
-  @Test fun whenCallSucceeds() {
+  @Test fun `when call succeeds`() {
     val reaction = pool.workerResult(worker, Unit)
         .test()
     reaction.assertNotTerminated()
@@ -38,7 +38,7 @@ class WorkerIntegrationTest {
     reaction.assertValue(Unit)
   }
 
-  @Test fun whenCallFails() {
+  @Test fun `when call fails`() {
     val reaction = pool.workerResult(worker, Unit)
         .test()
     reaction.assertNotTerminated()
@@ -50,7 +50,7 @@ class WorkerIntegrationTest {
     assertThat(failure).isInstanceOf(IOException::class.java)
   }
 
-  @Test fun whenWorkflowCancelled() {
+  @Test fun `when workflow cancelled`() {
     val reaction = pool.workerResult(worker, Unit)
         .test()
     reaction.assertNotTerminated()

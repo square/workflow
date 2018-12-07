@@ -30,7 +30,7 @@ class WorkerTest {
   private val deferred = CompletableDeferred<Unit>()
   private val worker = deferred.asWorker()
 
-  @Test fun whenCallSucceeds() {
+  @Test fun `when call succeeds`() {
     val reaction = pool.workerResult(worker, Unit)
     assertFalse(reaction.isCompleted)
 
@@ -39,7 +39,7 @@ class WorkerTest {
     assertEquals(Unit, reaction.getCompleted())
   }
 
-  @Test fun whenCallFails() {
+  @Test fun `when call fails`() {
     val reaction = pool.workerResult(worker, Unit)
     assertFalse(reaction.isCompleted)
 
@@ -49,7 +49,7 @@ class WorkerTest {
     assertTrue(failure is IOException)
   }
 
-  @Test fun whenInternalCoroutineCancelled() {
+  @Test fun `when internal coroutine cancelled`() {
     val reaction = pool.workerResult(worker, Unit)
     assertFalse(reaction.isCompleted)
 
@@ -58,7 +58,7 @@ class WorkerTest {
     assertFailsWith<CancellationException> { reaction.getCompleted() }
   }
 
-  @Test fun whenWorkflowCancelled() {
+  @Test fun `when workflow cancelled`() {
     val reaction = pool.workerResult(worker, Unit)
     assertFalse(reaction.isCompleted)
 

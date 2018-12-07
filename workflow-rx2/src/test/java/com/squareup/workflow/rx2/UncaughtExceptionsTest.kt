@@ -21,7 +21,7 @@ import org.junit.Test
 import java.util.concurrent.CountDownLatch
 
 class UncaughtExceptionsTest {
-  @Test fun rethrowingUncaughtExceptions_rethrowsExceptionFromBlock() {
+  @Test fun `rethrowingUncaughtExceptions rethrows Exception from block`() {
     try {
       rethrowingUncaughtExceptions {
         throw RuntimeException("fail")
@@ -32,7 +32,7 @@ class UncaughtExceptionsTest {
     }
   }
 
-  @Test fun rethrowingUncaughtExceptions_rethrowsUncaught_fromSameThread() {
+  @Test fun `rethrowingUncaughtExceptions rethrows Uncaught from same thread`() {
     try {
       rethrowingUncaughtExceptions {
         Thread.getDefaultUncaughtExceptionHandler()
@@ -44,7 +44,7 @@ class UncaughtExceptionsTest {
     }
   }
 
-  @Test fun rethrowingUncaughtException_suppressesUncaught_whenBlockThrows() {
+  @Test fun `rethrowingUncaughtException suppresses Uncaught when block throws`() {
     try {
       rethrowingUncaughtExceptions {
         Thread.getDefaultUncaughtExceptionHandler()
@@ -59,7 +59,7 @@ class UncaughtExceptionsTest {
     }
   }
 
-  @Test fun rethrowingUncaughtException_suppressesUncaught_whenMultipleUncaught() {
+  @Test fun `rethrowingUncaughtException suppresses Uncaught when multiple Uncaught`() {
     try {
       rethrowingUncaughtExceptions {
         Thread.getDefaultUncaughtExceptionHandler()
@@ -77,7 +77,7 @@ class UncaughtExceptionsTest {
     }
   }
 
-  @Test fun rethrowingUncaughtException_suppressesUncaught_whenMultipleThreads() {
+  @Test fun `rethrowingUncaughtException suppresses Uncaught when multiple threads`() {
     // This number should be high enough to give some contention.
     val threadCount = 10
     val readyToStartLatch = CountDownLatch(threadCount)

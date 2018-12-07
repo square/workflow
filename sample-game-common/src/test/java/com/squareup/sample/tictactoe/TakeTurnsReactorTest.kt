@@ -28,7 +28,7 @@ import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 
 class TakeTurnsReactorTest {
-  @Test fun readWriteCompletedGame() {
+  @Test fun `read write completed game`() {
     val turn = Turn("biz", "baz")
     val before = CompletedGame(Quitted, turn)
     val out = before.toSnapshot()
@@ -36,7 +36,7 @@ class TakeTurnsReactorTest {
     assertThat(after).isEqualTo(before)
   }
 
-  @Test fun startsGameWithGivenNames() {
+  @Test fun `starts game with given names`() {
     val workflow = TakeTurnsReactor().launch(Turn("higgledy", "piggledy"), WorkflowPool())
     val tester = workflow.state.test()
     val turn = tester.values()[0]
@@ -45,7 +45,7 @@ class TakeTurnsReactorTest {
     assertThat(turn.players[O]).isEqualTo("piggledy")
   }
 
-  @Test fun xWins() {
+  @Test fun `x wins`() {
     val workflow = TakeTurnsReactor().launch(Turn("higgledy", "piggledy"), WorkflowPool())
     val tester = workflow.result.test() as TestObserver<CompletedGame>
 
