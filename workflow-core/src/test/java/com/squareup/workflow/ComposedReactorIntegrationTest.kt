@@ -43,7 +43,7 @@ import kotlin.test.assertEquals
  */
 @Suppress("MemberVisibilityCanBePrivate")
 class ComposedReactorIntegrationTest {
-  @Test fun runAndSeeResultAfterStateUpdate() {
+  @Test fun `run and see result after state update`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "fnord")
@@ -52,7 +52,7 @@ class ComposedReactorIntegrationTest {
     assertEquals(0, pool.peekWorkflowsCount)
   }
 
-  @Test fun runAndSeeResultAfterNoStateUpdates() {
+  @Test fun `run and see result after no state updates`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", STOP_ECHO_JOB)
@@ -60,7 +60,7 @@ class ComposedReactorIntegrationTest {
     assertEquals(0, pool.peekWorkflowsCount)
   }
 
-  @Test fun pause_doesAbandonAndRestartFromSavedState() {
+  @Test fun `pause_does abandon and restart from SavedState`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "able")
@@ -74,7 +74,7 @@ class ComposedReactorIntegrationTest {
     assertEquals(listOf("able"), results)
   }
 
-  @Test fun pauseImmediatelyAndResumeAndCompleteImmediately() {
+  @Test fun `pause immediately and resume and complete immediately`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     workflow.sendEvent(Pause)
@@ -85,7 +85,7 @@ class ComposedReactorIntegrationTest {
     assertEquals(0, pool.peekWorkflowsCount)
   }
 
-  @Test fun cancel_abandons() {
+  @Test fun `cancel abandons`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "able")
@@ -102,7 +102,7 @@ class ComposedReactorIntegrationTest {
     assertEquals(0, pool.peekWorkflowsCount)
   }
 
-  @Test fun background_demonstratesConcurrentWorkflowsOfTheSameType() {
+  @Test fun `background demonstrates concurrent workflows of the same type`() {
     val workflow = outerReactor.launch()
 
     workflow.sendEvent(RunEchoJob("job1"))
@@ -130,7 +130,7 @@ class ComposedReactorIntegrationTest {
     assertEquals(listOf("biz", "baz", "bang"), results)
   }
 
-  @Test fun syncSingleOnSuccessInNestedWorkflow() {
+  @Test fun `sync single on success in nested workflow`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunImmediateJob)
 

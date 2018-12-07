@@ -82,7 +82,7 @@ class WorkflowPoolIntegrationTest {
     override val id: Id<String, String, String> = myReactor.workflowType.makeWorkflowId(name)
   }
 
-  @Test fun metaTest_myReactorReportsStatesAndResult() {
+  @Test fun `meta test myReactor reports states and result`() {
     val workflow = myReactor.launch(NEW, pool)
     val stateSub = workflow.state.test() as TestObserver<String>
     val resultSub = workflow.result.test() as TestObserver<String>
@@ -102,7 +102,7 @@ class WorkflowPoolIntegrationTest {
     }
   }
 
-  @Test fun metaTest_myReactorAbandonsAndStateCompletes() {
+  @Test fun `meta test myReactor abandons and state completes`() {
     val workflow = myReactor.launch(NEW, pool)
     val abandoned = AtomicBoolean(false)
 
@@ -113,11 +113,11 @@ class WorkflowPoolIntegrationTest {
     assertThat(abandoned.get()).isTrue()
   }
 
-  @Test fun noEagerLaunch() {
+  @Test fun `no eager launch`() {
     assertThat(launchCount).isZero()
   }
 
-  @Test fun waitsForStateAfterCurrent() {
+  @Test fun `waits for state after current`() {
     val delegatingState = DelegatingState(NEW)
     val nestedStateSub = pool.nextDelegateReaction(delegatingState)
         .test()
@@ -134,7 +134,7 @@ class WorkflowPoolIntegrationTest {
     nestedStateSub.assertComplete()
   }
 
-  @Test fun reportsResult() {
+  @Test fun `reports result`() {
     val firstState = DelegatingState(NEW)
 
     // We don't actually care about the reaction, just want the workflow
@@ -157,7 +157,7 @@ class WorkflowPoolIntegrationTest {
     resultSub.assertComplete()
   }
 
-  @Test fun reportsImmediateResult() {
+  @Test fun `reports immediate result`() {
     val delegatingState = DelegatingState(NEW)
     val resultSub = pool.nextDelegateReaction(delegatingState)
         .test()
@@ -169,7 +169,7 @@ class WorkflowPoolIntegrationTest {
     resultSub.assertComplete()
   }
 
-  @Test fun initsOncePerNextState() {
+  @Test fun `inits once per next state`() {
     pool.nextDelegateReaction(DelegatingState())
     assertThat(launchCount).isEqualTo(1)
 
@@ -180,7 +180,7 @@ class WorkflowPoolIntegrationTest {
     assertThat(launchCount).isEqualTo(1)
   }
 
-  @Test fun initsOncePerResult() {
+  @Test fun `inits once per result`() {
     pool.nextDelegateReaction(DelegatingState())
     assertThat(launchCount).isEqualTo(1)
 
@@ -191,7 +191,7 @@ class WorkflowPoolIntegrationTest {
     assertThat(launchCount).isEqualTo(1)
   }
 
-  @Test fun routesEvents() {
+  @Test fun `routes events`() {
     pool.nextDelegateReaction(DelegatingState())
     val input = pool.input(myReactor.workflowType.makeWorkflowId())
 
@@ -202,7 +202,7 @@ class WorkflowPoolIntegrationTest {
     assertThat(eventsSent).isEqualTo(listOf("able", "baker", "charlie"))
   }
 
-  @Test fun dropsLateEvents() {
+  @Test fun `drops late events`() {
     val input = pool.input(myReactor.workflowType.makeWorkflowId())
     pool.nextDelegateReaction(DelegatingState())
 
@@ -219,7 +219,7 @@ class WorkflowPoolIntegrationTest {
     )
   }
 
-  @Test fun dropsEarlyEvents() {
+  @Test fun `drops early events`() {
     val input = pool.input(myReactor.workflowType.makeWorkflowId())
     input.sendEvent("able")
     pool.nextDelegateReaction(DelegatingState())
@@ -228,7 +228,7 @@ class WorkflowPoolIntegrationTest {
     assertThat(eventsSent).isEqualTo(listOf("baker"))
   }
 
-  @Test fun resumesRoutingEvents() {
+  @Test fun `resumes routing events`() {
     pool.nextDelegateReaction(DelegatingState())
     val input = pool.input(myReactor.workflowType.makeWorkflowId())
 
@@ -254,7 +254,7 @@ class WorkflowPoolIntegrationTest {
     )
   }
 
-  @Test fun abandonsOnlyOnce() {
+  @Test fun `abandons only once`() {
     assertThat(abandonCount).isZero()
     pool.nextDelegateReaction(DelegatingState(NEW))
     pool.abandonDelegate(DelegatingState().id)
@@ -263,7 +263,7 @@ class WorkflowPoolIntegrationTest {
     assertThat(abandonCount).isEqualTo(1)
   }
 
-  @Test fun abandonEmitsNothingAndDoesNotComplete() {
+  @Test fun `abandon emits nothing and does not complete`() {
     val alreadyInNewState = DelegatingState(NEW)
     val id = alreadyInNewState.id
 

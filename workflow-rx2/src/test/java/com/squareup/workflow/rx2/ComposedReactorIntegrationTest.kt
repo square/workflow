@@ -53,7 +53,7 @@ import org.junit.Test
 class ComposedReactorIntegrationTest {
   @Rule @JvmField val assemblyTracking = RxAssemblyTrackingRule()
 
-  @Test fun runAndSeeResultAfterStateUpdate() {
+  @Test fun `run and see result after state update`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "fnord")
@@ -62,7 +62,7 @@ class ComposedReactorIntegrationTest {
     assertThat(pool.peekWorkflowsCount).isZero()
   }
 
-  @Test fun runAndSeeResultAfterNoStateUpdates() {
+  @Test fun `run and see result after no state updates`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", STOP_ECHO_JOB)
@@ -70,7 +70,7 @@ class ComposedReactorIntegrationTest {
     assertThat(pool.peekWorkflowsCount).isZero()
   }
 
-  @Test fun pause_doesAbandonAndRestartFromSavedState() {
+  @Test fun `pause does abandon and restart from saved state`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "able")
@@ -84,7 +84,7 @@ class ComposedReactorIntegrationTest {
     assertThat(results).isEqualTo(listOf("able"))
   }
 
-  @Test fun pauseImmediatelyAndResumeAndCompleteImmediately() {
+  @Test fun `pause immediately and resume and complete immediately`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     workflow.sendEvent(Pause)
@@ -112,7 +112,7 @@ class ComposedReactorIntegrationTest {
     assertThat(pool.peekWorkflowsCount).isZero()
   }
 
-  @Test fun background_demonstratesConcurrentWorkflowsOfTheSameType() {
+  @Test fun `background demonstrates concurrent workflows of the same type`() {
     val workflow = outerReactor.launch()
 
     workflow.sendEvent(RunEchoJob("job1"))
@@ -140,7 +140,7 @@ class ComposedReactorIntegrationTest {
     assertThat(results).isEqualTo(listOf("biz", "baz", "bang"))
   }
 
-  @Test fun syncSingleOnSuccessInNestedWorkflow() {
+  @Test fun `sync single on success in nested workflow`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunImmediateJob)
 
