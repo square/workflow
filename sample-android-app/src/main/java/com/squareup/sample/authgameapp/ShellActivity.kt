@@ -17,19 +17,21 @@ package com.squareup.sample.authgameapp
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.squareup.sample.authworkflow.android.AuthViewBuilders
+import com.squareup.sample.tictactoe.ConfirmQuitScreen
 import com.squareup.sample.tictactoe.android.TicTacToeViewBuilders
 import com.squareup.viewbuilder.HandlesBack
+import com.squareup.viewbuilder.MainAndModalScreen
+import com.squareup.viewbuilder.StackedMainAndModalScreen
 import com.squareup.viewbuilder.ViewBuilder
 import com.squareup.viewbuilder.ViewBuilder.Registry
-import com.squareup.viewbuilder.ViewStackCoordinator
-import com.squareup.viewbuilder.ViewStackFrameLayout
-import com.squareup.viewbuilder.ViewStackScreen
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.rx2.result
 import com.squareup.workflow.rx2.state
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import timber.log.Timber
 import kotlin.reflect.jvm.jvmName
 
 /**
@@ -47,11 +49,19 @@ class ShellActivity : AppCompatActivity() {
   /** Workflow decides what we're doing. */
   private lateinit var workflow: ShellWorkflow
 
-  private lateinit var screens: Observable<out ViewStackScreen<*>>
+  /**
+   * TODO(ray) Weird interim state, bad example: IRL this would be
+   * something like `Observable<out StackedMainAndModalScreen<*, *>>`,
+   * but dialog support is nascent.
+   *
+   * More interesting apps have richer, bespoke root screens, to handle
+   * things like their specific status bars, menu drawers, whatever.
+   */
+  private lateinit var screens: Observable<out StackedMainAndModalScreen<*, ConfirmQuitScreen>>
+  private lateinit var content: View
 
   private val subs = CompositeDisposable()
 
-  private var bodyFrame: ViewStackFrameLayout? = null
   private var latestSnapshot = Snapshot.EMPTY
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +78,10 @@ class ShellActivity : AppCompatActivity() {
         .launch(initialState, component.workflowPool)
 
     screens = workflow.state
-        .doOnNext { latestSnapshot = it.toSnapshot() }
+        .doOnNext {
+          latestSnapshot = it.toSnapshot()
+          Timber.d("showing: %s", it)
+        }
         .map { state -> ShellRenderer.render(state, workflow, component.workflowPool) }
 
     // When the workflow fires its one and only result, quit the app.
@@ -76,16 +89,15 @@ class ShellActivity : AppCompatActivity() {
     subs.add(workflow.result.subscribe { finish() })
 
     val viewFactory = buildViewFactory()
-    val rootViewBuilder: ViewBuilder<ViewStackScreen<*>> =
-      viewFactory[ViewStackScreen::class.jvmName]
-    val rootView = rootViewBuilder.buildView(screens, viewFactory, this)
-    bodyFrame = rootView.findViewById(R.id.view_stack)
+    val rootViewBuilder: ViewBuilder<StackedMainAndModalScreen<*, ConfirmQuitScreen>> =
+      viewFactory[MainAndModalScreen::class.jvmName]
 
-    setContentView(rootView)
+    content = rootViewBuilder.buildView(screens, viewFactory, this)
+        .apply { setContentView(this) }
   }
 
   override fun onBackPressed() {
-    bodyFrame?.showing?.let { !HandlesBack.Helper.onBackPressed(it) } ?: super.onBackPressed()
+    if (!HandlesBack.Helper.onBackPressed(content)) super.onBackPressed()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -101,7 +113,7 @@ class ShellActivity : AppCompatActivity() {
   override fun onRetainCustomNonConfigurationInstance(): Any = component
 
   private fun buildViewFactory(): ViewBuilder.Registry {
-    return Registry(ViewStackCoordinator) + AuthViewBuilders + TicTacToeViewBuilders
+    return Registry(ShellCoordinator) + AuthViewBuilders + TicTacToeViewBuilders
   }
 
   private companion object {

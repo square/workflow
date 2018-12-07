@@ -23,7 +23,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
 class ViewStackCoordinator(
-  private val screens: Observable<out ViewStackScreen<*>>,
+  private val screens: Observable<out StackScreen<*>>,
   private val builders: ViewBuilder.Registry
 ) : Coordinator() {
   private val subs = CompositeDisposable()
@@ -43,15 +43,15 @@ class ViewStackCoordinator(
     super.detach(view)
   }
 
-  companion object : ViewBuilder<ViewStackScreen<*>> by LayoutViewBuilder(
-      type = ViewStackScreen::class.java,
+  companion object : ViewBuilder<StackScreen<*>> by LayoutViewBuilder(
+      type = StackScreen::class.java,
       layoutId = R.layout.view_stack_layout,
       coordinatorConstructor = ::ViewStackCoordinator
   )
 }
 
-fun <T : Any> ViewStackScreen<T>.buildWrappedView(
-  screens: Observable<out ViewStackScreen<*>>,
+fun <T : Any> StackScreen<T>.buildWrappedView(
+  screens: Observable<out StackScreen<*>>,
   builders: Registry,
   container: ViewGroup
 ): View {

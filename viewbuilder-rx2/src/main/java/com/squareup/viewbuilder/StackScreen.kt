@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2018 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,24 @@ package com.squareup.viewbuilder
 
 import io.reactivex.Observable
 
-data class ViewStackScreen<T : Any>(
+/**
+ * Wraps screens that may be shown in series, drill down or wizard style.
+ * Typically these are the leaves of composite UI structures. That is, it's
+ * probably a mistake if you find yourself creating, say, a
+ * `StackScreen<MainAndModalScreen<*, *>>`.
+ *
+ * @throws IllegalArgumentException if [T] is [StackScreen]
+ */
+data class StackScreen<out T : Any>(
   val wrapped: T,
   private val keyExtension: String = ""
 ) {
+  init {
+    require(wrapped !is StackScreen<*>) {
+      "Surely you didn't mean to put a stack right in a stack."
+    }
+  }
+
   val key = ViewStackKey(wrapped::class.java, keyExtension)
 }
 
@@ -29,8 +43,8 @@ data class ViewStackKey<T : Any>(
   val extension: String
 )
 
-fun <T : Any> Observable<out ViewStackScreen<*>>.matchingWrappedScreens(
-  screen: ViewStackScreen<T>
+fun <T : Any> Observable<out StackScreen<*>>.matchingWrappedScreens(
+  screen: StackScreen<T>
 ): Observable<out T> {
   return filter { it.key == screen.key }.map {
     screen.key.type.cast(it.wrapped)
