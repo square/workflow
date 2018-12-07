@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.WorkflowPool.Launcher
 import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
@@ -180,15 +179,6 @@ interface Reactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O
     workflows: WorkflowPool
   ): Workflow<S, E, O> = doLaunch(initialState, workflows)
 }
-
-/**
- * Use this only to create a top-level workflow. If you're implementing [Launcher.launch], use
- * [doLaunch].
- */
-fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.startRootWorkflow(
-  initialState: S,
-  context: CoroutineContext = EmptyCoroutineContext
-): Workflow<S, E, O> = doLaunch(initialState, WorkflowPool(), context)
 
 /**
  * Implements a [Workflow] using a [Reactor].
