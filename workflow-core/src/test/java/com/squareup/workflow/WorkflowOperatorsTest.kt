@@ -398,7 +398,6 @@ class WorkflowOperatorsTest {
     assertFailsWith<ExpectedException> { withMappedResult.getCompleted() }
   }
 
-  @Ignore("https://github.com/square/workflow/issues/71")
   @Test fun `mapResult cancels upstream when transformed workflow is cancelled`() {
     var sourceCancellation: Throwable? = null
     val source = scope.workflow<Nothing, Nothing, Nothing> { _, _ ->

@@ -88,9 +88,20 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
 fun <S : Any, E : Any, O1 : Any, O2 : Any> Workflow<S, E, O1>.mapResult(
   transform: suspend (O1) -> O2
 ): Workflow<S, E, O2> {
+  // We can't just make the downstream a child of the upstream workflow to propagate cancellation,
+  // since the downstream's call to `await` would never return (parent waits for all its children
+  // to complete).
   val transformedResult = GlobalScope.async(operatorContext) {
     transform(this@mapResult.await())
   }
+
+  // Propagate cancellation upstream.
+  transformedResult.invokeOnCompletion { cause ->
+    if (cause != null) {
+      this@mapResult.cancel(cause)
+    }
+  }
+
   return object : Workflow<S, E, O2>,
       Deferred<O2> by transformedResult,
       WorkflowInput<E> by this {
