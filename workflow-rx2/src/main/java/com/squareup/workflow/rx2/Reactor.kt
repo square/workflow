@@ -20,6 +20,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.doLaunch
 import io.reactivex.Single
+import kotlinx.coroutines.experimental.CoroutineName
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.rx2.await
 import com.squareup.workflow.Reactor as CoroutineReactor
@@ -45,8 +46,12 @@ interface Reactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O
  */
 fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
   initialState: S,
-  workflows: WorkflowPool
-): Workflow<S, E, O> = toCoroutineReactor().doLaunch(initialState, workflows)
+  workflows: WorkflowPool,
+  name: String? = null
+): Workflow<S, E, O> = toCoroutineReactor().doLaunch(
+    initialState, workflows,
+    context = CoroutineName(getWorkflowCoroutineName(name))
+)
 
 /**
  * Adapter to convert a [Reactor] to a [Reactor].
@@ -66,5 +71,8 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.toCoroutineReactor() =
     ): Workflow<S, E, O> = this@toCoroutineReactor.launch(initialState, workflows)
 
     override fun toString(): String =
-      "${javaClass.simpleName}(${this@toCoroutineReactor.javaClass.name})"
+      "rx2.Reactor(${this@toCoroutineReactor.javaClass.name})"
   }
+
+private fun Reactor<*, *, *>.getWorkflowCoroutineName(name: String?) =
+  "workflow(${name ?: this::class.qualifiedName})"

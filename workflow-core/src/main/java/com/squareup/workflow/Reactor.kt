@@ -16,6 +16,7 @@
 package com.squareup.workflow
 
 import kotlinx.coroutines.experimental.CancellationException
+import kotlinx.coroutines.experimental.CoroutineName
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
@@ -198,11 +199,14 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
   workflows: WorkflowPool,
   context: CoroutineContext = EmptyCoroutineContext
 ): Workflow<S, E, O> {
+  // Ensure the workflow has a name, for debugging.
+  val coroutineName = CoroutineName(getWorkflowCoroutineName())
+
   return GlobalScope.workflow(
       // Unconfined means the coroutine is never dispatched and always resumed synchronously on the
       // current thread. This is the default RxJava behavior, and the behavior we explicitly want
       // here.
-      context = context + Dispatchers.Unconfined
+      context = coroutineName + context + Dispatchers.Unconfined
   ) { stateChannel, eventChannel ->
     var reaction: Reaction<S, O> = EnterState(initialState)
     var currentState: S?
@@ -228,3 +232,5 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
     return@workflow (reaction as FinishWith).result
   }
 }
+
+private fun Reactor<*, *, *>.getWorkflowCoroutineName() = "workflow(${this::class.qualifiedName})"
