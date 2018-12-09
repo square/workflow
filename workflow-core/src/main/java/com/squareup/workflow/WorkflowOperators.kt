@@ -22,8 +22,11 @@ import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.channels.consume
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.channels.produce
+import kotlinx.coroutines.experimental.channels.toChannel
+import kotlinx.coroutines.experimental.selects.whileSelect
 import kotlin.coroutines.experimental.CoroutineContext
 
 /**
@@ -73,10 +76,36 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
     WorkflowInput<E> by this {
   override fun openSubscriptionToState(): ReceiveChannel<S2> =
     GlobalScope.produce(operatorContext, capacity = CONFLATED) {
-      val source = this@switchMapState.openSubscriptionToState()
-      source.consumeEach { rawState ->
-        transform(rawState).consumeEach { transformedState ->
-          send(transformedState)
+      val upstreamChannel = this@switchMapState.openSubscriptionToState()
+      var transformedChannel: ReceiveChannel<S2>? = null
+      val downstreamChannel = channel
+
+      upstreamChannel.consume {
+        whileSelect {
+          upstreamChannel.onReceiveOrNull { upstreamState ->
+            if (upstreamState == null) {
+              // Upstream channel completed, but we need to finish forwarding the transformed
+              // channel.
+              transformedChannel?.toChannel(downstreamChannel)
+              false
+            } else {
+              // Stop listening to the old downstream channel and start listening to the new one.
+              transformedChannel?.cancel()
+              transformedChannel = transform(upstreamState)
+              true
+            }
+          }
+
+          transformedChannel?.onReceiveOrNull?.invoke { transformedState ->
+            if (transformedState == null) {
+              // Downstream channel completed, continue waiting for upstream state.
+              transformedChannel = null
+            } else {
+              // Forward downstream state.
+              downstreamChannel.send(transformedState)
+            }
+            true
+          }
         }
       }
     }

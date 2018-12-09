@@ -22,7 +22,6 @@ import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.consume
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -196,7 +195,6 @@ class WorkflowOperatorsTest {
         }
   }
 
-  @Ignore("https://github.com/square/workflow/issues/69")
   @Test fun `switchMapState cuts off previous transformed channel on new source value`() {
     val switchMapTrigger = Channel<Unit>()
     val source = scope.workflow<String, String, Unit> { state, events ->
@@ -232,30 +230,34 @@ class WorkflowOperatorsTest {
         }
   }
 
-  @Ignore("https://github.com/square/workflow/issues/69")
   @Test fun `switchMapState cancels previous transformed channel on new source value`() {
     val source = scope.workflow<String, String, Unit> { state, events ->
       state.send(events.receive())
       state.send(events.receive())
+      suspendCancellableCoroutine { }
     }
     var mappedCancellation: Throwable? = null
-    val withMappedStates = source.switchMapState {
+    var mappedCancellationState: String? = null
+    val withMappedStates = source.switchMapState { state ->
       Channel<Nothing>().apply {
         invokeOnClose { cause ->
+          // Cause should be null.
           mappedCancellation = cause
+          mappedCancellationState = state
         }
       }
     }
 
     withMappedStates.openSubscriptionToState()
         .consume {
-          assertNull(mappedCancellation)
+          assertNull(mappedCancellationState)
 
           withMappedStates.sendEvent("foo")
-          assertNull(mappedCancellation)
+          assertNull(mappedCancellationState)
 
           withMappedStates.sendEvent("bar")
-          assertTrue(mappedCancellation is CancellationException)
+          assertNull(mappedCancellation)
+          assertEquals("foo", mappedCancellationState)
         }
   }
 
