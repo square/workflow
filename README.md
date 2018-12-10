@@ -5,7 +5,9 @@ Follow Square's engineering blog, [The Corner](https://medium.com/square-corner-
 
 Workflow is a library for making composable state machines, and UIs driven by those state machines.
 
-This project is under active development, more documentation and samples will be coming soon!
+This project is under active development. The workflow code is being piloted in production apps. The view code is not (yet).
+
+More documentation and samples will be coming soon!
 
 ## Resources
 
