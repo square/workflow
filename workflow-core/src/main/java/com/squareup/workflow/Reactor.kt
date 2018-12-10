@@ -17,7 +17,7 @@ package com.squareup.workflow
 
 import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.CoroutineName
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlin.coroutines.experimental.CoroutineContext
@@ -191,8 +191,16 @@ interface Reactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O
  * to the builder's state channel.
  *
  * _Note:_
- * If [Reactor.onReact] immediately returns [FinishWith], the last state may not be emitted since
- * the [state channel][Workflow.openSubscriptionToState] is closed immediately.
+ * If [onReact][Reactor.onReact] immediately returns [FinishWith], the last state may not be
+ * emitted since the [state channel][Workflow.openSubscriptionToState] is closed immediately.
+ *
+ * ## Dispatchers
+ *
+ * If [context] contains a
+ * [CoroutineDispatcher][kotlinx.coroutines.experimental.CoroutineDispatcher], it is not used.
+ * The [onReact][Reactor.onReact] method is always invoked from the [Unconfined] dispatcher. If your
+ * `onReact` actually requires a particular dispatcher, it should use
+ * [withContext][kotlinx.coroutines.experimental.withContext].
  */
 fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
   initialState: S,
@@ -202,12 +210,17 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
   // Ensure the workflow has a name, for debugging.
   val coroutineName = CoroutineName(getWorkflowCoroutineName())
 
-  return GlobalScope.workflow(
-      // Unconfined means the coroutine is never dispatched and always resumed synchronously on the
-      // current thread. This is the default RxJava behavior, and the behavior we explicitly want
-      // here.
-      context = coroutineName + context + Dispatchers.Unconfined
-  ) { stateChannel, eventChannel ->
+  // The ordering of these context pieces is significant – context elements on the right replace
+  // matching elements on the left.
+  //  1. The name comes before the external context, so if the external context already has a name
+  //     it is used instead.
+  //  2. The dispatcher comes after the external context because we want to force it:
+  //     This code doesn't care what dispatcher it runs on, it isn't performing any
+  //     thread-sensitive side effects. For more information about why Unconfined is used, see this
+  //     module's README.
+  val workflowContext = coroutineName + context + Unconfined
+
+  return GlobalScope.workflow(context = workflowContext) { stateChannel, eventChannel ->
     var reaction: Reaction<S, O> = EnterState(initialState)
     var currentState: S?
 

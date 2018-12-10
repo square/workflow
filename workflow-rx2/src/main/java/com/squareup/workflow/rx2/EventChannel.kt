@@ -16,7 +16,7 @@
 package com.squareup.workflow.rx2
 
 import io.reactivex.Single
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.channels.Channel
@@ -83,8 +83,9 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
     // concurrency.
     // Furthermore, we use the Unconfined dispatcher since we don't do any real work here ourselves,
     // and any threading requirements of the calling code can be enforced using Rx mechanisms and
-    // ensuring events are sent from the correct threads.
-    return GlobalScope.rxSingle<R>(Dispatchers.Unconfined) {
+    // ensuring events are sent from the correct threads. See the README in workflow-core for more
+    // information.
+    return GlobalScope.rxSingle<R>(Unconfined) {
       // We pass this job to the EventSelectBuilder so it can use it as the parent for any coroutines
       // it starts. We cancel the job after a selection is made so we don't leak, e.g., rx
       // subscriptions. We also make it a child of the rxSingle job so that if there's an exception,
