@@ -302,7 +302,7 @@ class WorkflowOperatorsTest {
         }
   }
 
-  @Test fun `switchMapState completes with error when transformed channel is cancelled`() {
+  @Test fun `switchMapState state completes with error when transformed channel is cancelled`() {
     val source = scope.workflow<Int, Unit, Unit> { state, events ->
       events.receive()
       state.send(42)
@@ -341,7 +341,26 @@ class WorkflowOperatorsTest {
         }
   }
 
-  @Test fun `switchMapState cancels upstream when transformed channel is cancelled`() {
+  @Test fun `switchMapState cancels transformed channel when state channel cancelled`() {
+    val transformedChannel = Channel<Nothing>()
+    val source = scope.workflow<Unit, Unit, Nothing> { states, events ->
+      events.receive()
+      states.send(Unit)
+      suspendCancellableCoroutine { }
+    }
+    val withMappedStates = source.switchMapState { transformedChannel }
+
+    withMappedStates.openSubscriptionToState()
+        .consume {
+          withMappedStates.sendEvent(Unit)
+
+          assertFalse(transformedChannel.isClosedForSend)
+          this.cancel(ExpectedException)
+          assertTrue(transformedChannel.isClosedForSend)
+        }
+  }
+
+  @Test fun `switchMapState cancels upstream workflow when workflow cancelled`() {
     var sourceCancellation: Throwable? = null
     val source = scope.workflow<Unit, Nothing, Nothing> { _, _ ->
       suspendCancellableCoroutine<Nothing> { continuation ->
@@ -359,7 +378,7 @@ class WorkflowOperatorsTest {
   }
 
   @Test fun `mapResult works`() {
-    val source = scope.workflow<Nothing, Unit, Int> { state, events ->
+    val source = scope.workflow<Nothing, Unit, Int> { _, events ->
       events.receive()
       return@workflow 42
     }
@@ -373,7 +392,7 @@ class WorkflowOperatorsTest {
   }
 
   @Test fun `mapResult completes with error when transformer throws`() {
-    val source = scope.workflow<Nothing, Unit, Int> { state, events ->
+    val source = scope.workflow<Nothing, Unit, Int> { _, events ->
       events.receive()
       return@workflow 42
     }

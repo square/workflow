@@ -19,6 +19,7 @@ import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
@@ -80,6 +81,7 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
       var transformedChannel: ReceiveChannel<S2>? = null
       val downstreamChannel = channel
 
+      coroutineContext[Job]?.invokeOnCompletion { transformedChannel?.cancel(it) }
       upstreamChannel.consume {
         whileSelect {
           upstreamChannel.onReceiveOrNull { upstreamState ->
