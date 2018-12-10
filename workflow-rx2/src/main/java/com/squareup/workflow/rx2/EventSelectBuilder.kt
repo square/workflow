@@ -18,7 +18,7 @@ package com.squareup.workflow.rx2
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.Single.just
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async
@@ -69,7 +69,7 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
    * expose this context to callers and suggest that the `select` block is intended to be used to
    * start coroutines.
    */
-  private val context = Dispatchers.Unconfined + selectionJob
+  private val context = Unconfined + selectionJob
 
   /** Selects an event by type `T`. */
   inline fun <reified T : E> onEvent(noinline handler: (T) -> R) {

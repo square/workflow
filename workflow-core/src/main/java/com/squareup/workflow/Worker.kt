@@ -23,7 +23,7 @@ import kotlinx.coroutines.experimental.Deferred
  * Defines a discrete task that a [Workflow] can execute asynchronously via [WorkflowPool],
  * possibly across state changes.
  *
- * # Defining Workers
+ * ## Defining Workers
  *
  * There are a few ways to define a worker:
  *  - Call [worker] and pass a suspending block:
@@ -53,7 +53,7 @@ import kotlinx.coroutines.experimental.Deferred
  *    }
  *    ```
  *
- * # Running Workers
+ * ## Running Workers
  *
  * To use, pass an instance of your [Worker] to [WorkflowPool.awaitWorkerResult] along with its
  * input value. You may also pass an optional `name` `String` if you need to distinguish between
@@ -73,6 +73,13 @@ import kotlinx.coroutines.experimental.Deferred
  *   }
  * }
  * ```
+ *
+ * ## Note on Dispatchers
+ *
+ * Workers are always invoked with the
+ * [Unconfined][kotlinx.coroutines.experimental.Dispatchers.Unconfined] dispatcher. If a worker
+ * needs a specific dispatcher (e.g. to do IO), it should use
+ * [withContext][kotlinx.coroutines.experimental.withContext].
  */
 interface Worker<in I : Any, out O : Any> {
   /**

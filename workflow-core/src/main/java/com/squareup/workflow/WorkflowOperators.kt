@@ -17,7 +17,7 @@ package com.squareup.workflow
 
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.Channel.Factory.CONFLATED
@@ -31,8 +31,10 @@ import kotlin.coroutines.experimental.CoroutineContext
 
 /**
  * [CoroutineContext] used by [Workflow] operators below.
+ *
+ * See this module's README for an explanation of why Unconfined is used.
  */
-private val operatorContext: CoroutineContext = Dispatchers.Unconfined
+private val operatorContext: CoroutineContext = Unconfined
 
 /**
  * [Transforms][https://stackoverflow.com/questions/15457015/explain-contramap]
