@@ -186,6 +186,8 @@ class CoroutineWorkflowTest : CoroutineScope {
     assertTrue(cancelReason is CancellationException)
     assertEquals(ExpectedException, cancelReason.cause)
   }
-}
 
-private object ExpectedException : RuntimeException()
+  private companion object {
+    object ExpectedException : RuntimeException()
+  }
+}
