@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow.rx2
 
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.Single.just
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
@@ -24,7 +23,6 @@ import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.rx2.await
 import kotlinx.coroutines.experimental.selects.SelectBuilder
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 
 /**
  * The receiver for lambdas passed to [EventChannel.select][EventChannel.select].
@@ -91,23 +89,6 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
   }
 
   /**
-   * Defines a case that is selected when `maybe` completes successfully, and is passed the value
-   * emitted by `maybe`.
-   *
-   * If `maybe` completes without a value, `handler` will never be invoked but the select expression
-   * will continue to wait for any of its other cases.
-   */
-  fun <T : Any> onMaybeSuccessOrNever(
-    maybe: Maybe<out T>,
-    handler: (T) -> R
-  ) {
-    with(builder) {
-      GlobalScope.async(context) { maybe.await() ?: suspendForever() }
-          .onAwait { just(handler(it)) }
-    }
-  }
-
-  /**
    * Selects an event of type `eventClass` that also satisfies `predicate`.
    */
   @PublishedApi internal fun <T : E> addEventCase(
@@ -119,5 +100,3 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
     )
   }
 }
-
-private suspend fun suspendForever(): Nothing = suspendCancellableCoroutine { }
