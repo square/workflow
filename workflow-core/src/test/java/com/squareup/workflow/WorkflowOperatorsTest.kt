@@ -256,7 +256,7 @@ class WorkflowOperatorsTest {
           assertNull(mappedCancellationState)
 
           withMappedStates.sendEvent("bar")
-          assertNull(mappedCancellation)
+          assertTrue(mappedCancellation is CancellationException)
           assertEquals("foo", mappedCancellationState)
         }
   }
