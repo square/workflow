@@ -16,7 +16,6 @@
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Workflow
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import kotlinx.coroutines.experimental.CancellationException
@@ -69,9 +68,3 @@ val <O : Any> Workflow<*, *, O>.result: Maybe<out O>
           Maybe.error(error)
         }
       }
-
-/**
- * Returns a [Completable] that fires either when [Workflow.result] fires, or when
- * [Workflow.cancel] is called.
- */
-fun Workflow<*, *, *>.toCompletable(): Completable = state.ignoreElements()
