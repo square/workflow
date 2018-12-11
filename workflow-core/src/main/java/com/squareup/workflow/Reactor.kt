@@ -114,11 +114,37 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
  *    }
  *
  * To define a state that delegates to a nested workflow, have the [S] subtype that
- * represents it implement [Delegating]. Use [WorkflowPool.awaitNextDelegateReaction] when entering
- * that state to drive the nested workflow and react to its result.
+ * represents it implement [Delegating]. Use [WorkflowPool.awaitNextDelegateReaction]
+ * when entering that state to drive the nested workflow and react to its result.
  *
  * For example, in the simplest case, where the parent workflow accepts no events
- * of its own while the delegate is running, do something like this:
+ * of its own while the delegate is running, the delegating state type would look
+ * like this:
+ *
+ *     data class RunningNested(
+ *       // Stores the state of the nested workflow, and used as its initial
+ *       // state when it is started.
+ *       override val delegateState: NestedState = NestedState.start()
+ *     ) : MyState(), Delegating<NestedState, NestedEvent, NestedResult> {
+ *       override val id = NestedReactor::class.makeWorkflowId()
+ *     }
+ *
+ * You'd register a `NestedReactor` instance with the [WorkflowPool] passed
+ * to your [launch] implementation:
+ *
+ *    class MyReactor(
+ *      private val nestedReactor : NestedReactor
+ *    ) {
+ *      override fun launch(
+ *        initialState: MyState,
+ *        workflows: WorkflowPool
+ *      ) : Workflow<MyState, MyEvent, MyResult> {
+ *        workflows.register(nestedReactor)
+ *        return doLaunch(initialState, workflows)
+ *      }
+ *
+ * and in your [onReact] method, use [WorkflowPool.nextDelegateReaction]
+ * to wait for the nested workflow to do its job:
  *
  *    is Delegating -> workflows.awaitNextDelegateReaction(state).let {
  *      when (it) {
