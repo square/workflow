@@ -19,7 +19,6 @@ import com.squareup.workflow.rx2.CoroutineEventChannelTest.Events.Click
 import com.squareup.workflow.rx2.CoroutineEventChannelTest.Events.Dismiss
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.observers.TestObserver
-import io.reactivex.subjects.MaybeSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.SingleSubject
 import junit.framework.TestCase.assertTrue
@@ -41,11 +40,6 @@ class CoroutineEventChannelTest {
     object Dismiss : Events() {
       override fun toString() = javaClass.simpleName!!
     }
-  }
-
-  enum class State {
-    InitialState,
-    OtherState
   }
 
   @JvmField @Rule val thrown = ExpectedException.none()!!
@@ -272,163 +266,6 @@ class CoroutineEventChannelTest {
     events.asEventChannel()
         .select<String> {
           onSuccess(observable) { "shouldn't happen" }
-          throw RuntimeException("fail")
-        }
-        .subscribe(resultSub)
-
-    resultSub.assertErrorMessage("fail")
-    assertThat(disposeCalls).isEqualTo(1)
-  }
-
-  @Test fun `onMaybe single case`() {
-    val relay = MaybeSubject.create<String>()
-    events.asEventChannel()
-        .select<String> { onMaybeSuccessOrNever(relay) { "got $it" } }
-        .subscribe(resultSub)
-
-    resultSub.assertNotTerminated()
-    resultSub.assertNoValues()
-
-    relay.onSuccess("foo")
-
-    resultSub.assertComplete()
-    resultSub.assertValue("got foo")
-  }
-
-  @Test fun `onMaybe multiple cases`() {
-    val relay1 = MaybeSubject.create<String>()
-    val relay2 = MaybeSubject.create<String>()
-    events.asEventChannel()
-        .select<String> {
-          onMaybeSuccessOrNever(relay1) { "1 got $it" }
-          onMaybeSuccessOrNever(relay2) { "2 got $it" }
-        }
-        .subscribe(resultSub)
-
-    resultSub.assertNotTerminated()
-    resultSub.assertNoValues()
-
-    relay2.onSuccess("foo")
-
-    resultSub.assertComplete()
-    resultSub.assertValue("2 got foo")
-  }
-
-  @Test fun `onMaybe doesnt emit when completes without value`() {
-    val subject = MaybeSubject.create<String>()
-    events.asEventChannel()
-        .select<String> { onMaybeSuccessOrNever(subject) { "got $it" } }
-        .subscribe(resultSub)
-
-    resultSub.assertNotTerminated()
-    resultSub.assertNoValues()
-
-    subject.onComplete()
-
-    resultSub.assertNotTerminated()
-  }
-
-  @Test fun `onMaybe allows other cases to win when completes without value`() {
-    val subject = MaybeSubject.create<String>()
-    events.asEventChannel()
-        .select<String> {
-          onMaybeSuccessOrNever(subject) { "got $it" }
-          onEvent<Click> { "clicked" }
-        }
-        .subscribe(resultSub)
-
-    resultSub.assertNotTerminated()
-    resultSub.assertNoValues()
-
-    subject.onComplete()
-    events.offer(Click)
-
-    resultSub.assertValue("clicked")
-  }
-
-  @Test fun `onMaybe when terminates with error`() {
-    val subject = MaybeSubject.create<String>()
-    events.asEventChannel()
-        .select<String> { onMaybeSuccessOrNever(subject) { "got $it" } }
-        .subscribe(resultSub)
-
-    resultSub.assertNotTerminated()
-    resultSub.assertNoValues()
-
-    val e = RuntimeException("oops")
-    subject.onError(e)
-
-    resultSub.assertNoValues()
-    resultSub.assertError(e)
-  }
-
-  @Test fun `onMaybe with onEvent when Maybe wins`() {
-    val relay = MaybeSubject.create<String>()
-    events.asEventChannel()
-        .select<String> {
-          onMaybeSuccessOrNever(relay) { "relay got $it" }
-          onEvent<Click> { "clicked" }
-        }
-        .subscribe(resultSub)
-
-    resultSub.assertNotTerminated()
-    resultSub.assertNoValues()
-
-    relay.onSuccess("foo")
-
-    resultSub.assertComplete()
-    resultSub.assertValue("relay got foo")
-  }
-
-  @Test fun `onMaybe with onEvent when Event wins`() {
-    val relay = MaybeSubject.create<String>()
-    events.asEventChannel()
-        .select<String> {
-          onMaybeSuccessOrNever(relay) { "relay got $it" }
-          onEvent<Click> { "clicked" }
-        }
-        .subscribe(resultSub)
-
-    resultSub.assertNotTerminated()
-    resultSub.assertNoValues()
-
-    events.offer(Click)
-
-    resultSub.assertComplete()
-    resultSub.assertValue("clicked")
-  }
-
-  @Test fun `onMaybe unsubscribes when loses race no exceptions`() {
-    var subscribeCalls = 0
-    var disposeCalls = 0
-    val observable = MaybeSubject.create<String>()
-        .doOnSubscribe { subscribeCalls++ }
-        .doOnDispose { disposeCalls++ }
-    events.asEventChannel()
-        .select<String> {
-          onMaybeSuccessOrNever(observable) { "shouldn't happen" }
-          onEvent<Click> { "clicked" }
-        }
-        .subscribe(resultSub)
-
-    assertThat(subscribeCalls).isEqualTo(1)
-    assertThat(disposeCalls).isEqualTo(0)
-
-    events.offer(Click)
-
-    resultSub.assertComplete()
-    assertThat(disposeCalls).isEqualTo(1)
-  }
-
-  @Test fun `onMaybe unsubscribes when select throws`() {
-    var subscribeCalls = 0
-    var disposeCalls = 0
-    val observable = MaybeSubject.create<String>()
-        .doOnSubscribe { subscribeCalls++ }
-        .doOnDispose { disposeCalls++ }
-    events.asEventChannel()
-        .select<String> {
-          onMaybeSuccessOrNever(observable) { "shouldn't happen" }
           throw RuntimeException("fail")
         }
         .subscribe(resultSub)
