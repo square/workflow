@@ -18,24 +18,22 @@ package com.squareup.workflow
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.consume
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.channels.toChannel
-import kotlinx.coroutines.experimental.selects.whileSelect
+import kotlinx.coroutines.experimental.launch
 import kotlin.coroutines.experimental.CoroutineContext
 
 /**
- * [CoroutineContext] used by [Workflow] operators below.
+ * Defines the [CoroutineContext] used by [Workflow] operators below.
  *
  * See this module's README for an explanation of why Unconfined is used.
  */
-private val operatorContext: CoroutineContext = Unconfined
+private val operatorScope = CoroutineScope(Unconfined)
 
 /**
  * [Transforms][https://stackoverflow.com/questions/15457015/explain-contramap]
@@ -58,7 +56,7 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.mapState(
     Deferred<O> by this,
     WorkflowInput<E> by this {
   override fun openSubscriptionToState(): ReceiveChannel<S2> =
-    GlobalScope.produce(operatorContext) {
+    operatorScope.produce {
       val source = this@mapState.openSubscriptionToState()
       source.consumeEach {
         send(transform(it))
@@ -67,10 +65,10 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.mapState(
 }
 
 /**
- * Like [mapState], transforms the receiving workflow with [Workflow.state] of type
- * [S1] to one with states of [S2]. Unlike that method, each [S1] update is transformed
- * into a stream of [S2] updates -- useful when an [S1] state might wrap an underlying
- * workflow whose own screens need to be shown.
+ * Like [mapState], transforms the receiving workflow with
+ * [state][Workflow.openSubscriptionToState] of type [S1] to one with states of [S2]. Unlike that
+ * method, each [S1] update is transformed into a stream of [S2] updates -- useful when an [S1]
+ * state might wrap an underlying workflow whose own screens need to be shown.
  */
 fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
   transform: suspend CoroutineScope.(S1) -> ReceiveChannel<S2>
@@ -78,38 +76,21 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
     Deferred<O> by this,
     WorkflowInput<E> by this {
   override fun openSubscriptionToState(): ReceiveChannel<S2> =
-    GlobalScope.produce(operatorContext, capacity = CONFLATED) {
+    operatorScope.produce(capacity = CONFLATED) {
       val upstreamChannel = this@switchMapState.openSubscriptionToState()
-      var transformedChannel: ReceiveChannel<S2>? = null
       val downstreamChannel = channel
+      var transformerJob: Job? = null
 
-      coroutineContext[Job]?.invokeOnCompletion { transformedChannel?.cancel(it) }
-      upstreamChannel.consume {
-        whileSelect {
-          upstreamChannel.onReceiveOrNull { upstreamState ->
-            if (upstreamState == null) {
-              // Upstream channel completed, but we need to finish forwarding the transformed
-              // channel.
-              transformedChannel?.toChannel(downstreamChannel)
-              false
-            } else {
-              // Stop listening to the old downstream channel and start listening to the new one.
-              transformedChannel?.cancel()
-              transformedChannel = transform(upstreamState)
-              true
-            }
-          }
-
-          transformedChannel?.onReceiveOrNull?.invoke { transformedState ->
-            if (transformedState == null) {
-              // Downstream channel completed, continue waiting for upstream state.
-              transformedChannel = null
-            } else {
-              // Forward downstream state.
-              downstreamChannel.send(transformedState)
-            }
-            true
-          }
+      upstreamChannel.consumeEach { upstreamState ->
+        // Stop emitting states from the previous transformed channel before processing the new
+        // item. This behavior is what differentiates switchMap from other flatMap variants.
+        transformerJob?.cancel()
+        // Start a new coroutine to forward all items downstream. While this is running, we'll go
+        // back to waiting for the next upstream state. If the upstream channel is closed, we'll
+        // leave the consumeEach loop but the produce coroutine will wait for this child coroutine
+        // to complete (structured concurrency) before closing the downstream channel.
+        transformerJob = launch {
+          transform(upstreamState).toChannel(downstreamChannel)
         }
       }
     }
@@ -124,7 +105,7 @@ fun <S : Any, E : Any, O1 : Any, O2 : Any> Workflow<S, E, O1>.mapResult(
   // We can't just make the downstream a child of the upstream workflow to propagate cancellation,
   // since the downstream's call to `await` would never return (parent waits for all its children
   // to complete).
-  val transformedResult = GlobalScope.async(operatorContext) {
+  val transformedResult = operatorScope.async {
     transform(this@mapResult.await())
   }
 
