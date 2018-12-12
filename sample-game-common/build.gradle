@@ -38,4 +38,5 @@ dependencies {
   testImplementation deps.test.hamcrestCore
   testImplementation deps.test.junit
   testImplementation deps.rxjava2.extensions
+  testImplementation project(':workflow-test')
 }

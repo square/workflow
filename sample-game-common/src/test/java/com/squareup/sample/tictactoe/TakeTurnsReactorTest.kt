@@ -19,8 +19,11 @@ import com.squareup.sample.tictactoe.Ending.Quitted
 import com.squareup.sample.tictactoe.Ending.Victory
 import com.squareup.sample.tictactoe.Player.O
 import com.squareup.sample.tictactoe.Player.X
+import com.squareup.sample.tictactoe.TakeTurnsEvent.Quit
 import com.squareup.sample.tictactoe.TakeTurnsEvent.TakeSquare
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.rx2.assertFinish
+import com.squareup.workflow.rx2.assertTransition
 import com.squareup.workflow.rx2.result
 import com.squareup.workflow.rx2.state
 import io.reactivex.observers.TestObserver
@@ -66,5 +69,37 @@ class TakeTurnsReactorTest {
             )
         )
     tester.assertValue(CompletedGame(Victory, expectedLastTurn))
+  }
+
+  @Test fun `picking an already picked square enters same state`() {
+    val state = Turn(
+        players = mapOf(X to "higgledy", O to "piggledy"),
+        board = listOf(
+            listOf(X, X, X),
+            listOf(O, O, null),
+            listOf(null, null, null)
+        )
+    )
+    TakeTurnsReactor().assertTransition(
+        fromState = state,
+        event = TakeSquare(0, 0),
+        toState = state
+    )
+  }
+
+  @Test fun `quit finishes game`() {
+    val turn = Turn(
+        players = mapOf(X to "higgledy", O to "piggledy"),
+        board = listOf(
+            listOf(X, X, X),
+            listOf(O, O, null),
+            listOf(null, null, null)
+        )
+    )
+    TakeTurnsReactor().assertFinish(
+        fromState = turn,
+        event = Quit,
+        output = CompletedGame(Quitted, turn)
+    )
   }
 }
