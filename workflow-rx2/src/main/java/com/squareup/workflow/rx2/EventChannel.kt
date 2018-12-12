@@ -16,6 +16,7 @@
 package com.squareup.workflow.rx2
 
 import io.reactivex.Single
+import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
@@ -24,6 +25,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.rx2.await
 import kotlinx.coroutines.experimental.rx2.rxSingle
 import org.jetbrains.annotations.TestOnly
+import kotlin.coroutines.experimental.suspendCoroutine
 
 /**
  * Helper for [Reactor]s that can accept events from external sources.
@@ -86,39 +88,44 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
     // ensuring events are sent from the correct threads. See the README in workflow-core for more
     // information.
     return GlobalScope.rxSingle<R>(Unconfined) {
-      // We pass this job to the EventSelectBuilder so it can use it as the parent for any coroutines
-      // it starts. We cancel the job after a selection is made so we don't leak, e.g., rx
-      // subscriptions. We also make it a child of the rxSingle job so that if there's an exception,
-      // it'll get cancelled automatically.
-      val selectionJob = Job(parent = coroutineContext[Job])
-      kotlinx.coroutines.experimental.selects.select<Single<R>> {
-        val selectBuilder = this
-        val eventSelectBuilder =
-          EventSelectBuilder<E, R>(selectBuilder, selectionJob)
-        block(eventSelectBuilder)
+      try {
+        // We pass this job to the EventSelectBuilder so it can use it as the parent for any coroutines
+        // it starts. We cancel the job after a selection is made so we don't leak, e.g., rx
+        // subscriptions. We also make it a child of the rxSingle job so that if there's an exception,
+        // it'll get cancelled automatically.
+        val selectionJob = Job(parent = coroutineContext[Job])
+        kotlinx.coroutines.experimental.selects.select<Single<R>> {
+          val selectBuilder = this
+          val eventSelectBuilder = EventSelectBuilder<E, R>(selectBuilder, selectionJob)
+          block(eventSelectBuilder)
 
-        // Always await the next event, even if there are no event cases registered.
-        // See this PR comment: https://git.sqcorp.co/projects/ANDROID/repos/register/pull-requests/23262/overview?commentId=2780276
-        // If the event doesn't match any registered cases, throw.
-        onReceiveOrNull { event ->
-          if (event == null) {
-            // Channel was closed while we were suspended.
-            // The single is about to be unsubscribed from, so don't emit.
-            return@onReceiveOrNull Single.never<R>()
+          // Always await the next event, even if there are no event cases registered.
+          // See this PR comment: https://git.sqcorp.co/projects/ANDROID/repos/register/pull-requests/23262/overview?commentId=2780276
+          // If the event doesn't match any registered cases, throw.
+          onReceiveOrNull { event ->
+            if (event == null) {
+              // Channel was closed while we were suspended.
+              // The single is about to be unsubscribed from, so don't emit.
+              return@onReceiveOrNull Single.never<R>()
+            }
+
+            eventSelectBuilder.cases.asSequence()
+                .mapNotNull { it.tryHandle(event) }
+                .firstOrNull()
+                ?.invoke()
+                ?.let { Single.just(it) }
+                ?: throw IllegalStateException("Expected EventChannel to accept event: $event")
           }
-
-          eventSelectBuilder.cases.asSequence()
-              .mapNotNull { it.tryHandle(event) }
-              .firstOrNull()
-              ?.invoke()
-              ?.let { Single.just(it) }
-              ?: throw IllegalStateException("Expected EventChannel to accept event: $event")
         }
+            .await()
+            // In the happy case, we still need to cancel this job so any observable cases that didn't
+            // win get unsubscribed.
+            .also { selectionJob.cancel() }
+      } catch (cancellation: CancellationException) {
+        // The select was cancelled, which means the workflow was abandoned and we're about to get
+        // unsubscribed from. Don't propagate the error, just never emit/return.
+        suspendCoroutine<Nothing> { }
       }
-          .await()
-          // In the happy case, we still need to cancel this job so any observable cases that didn't
-          // win get unsubscribed.
-          .also { selectionJob.cancel() }
     }
   }
 }

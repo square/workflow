@@ -44,7 +44,7 @@ import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
 import com.squareup.workflow.rx2.doLaunch
-import com.squareup.workflow.rx2.nextDelegateReaction
+import com.squareup.workflow.rx2.singleWorker
 import io.reactivex.Single
 
 enum class RunGameResult {
@@ -63,6 +63,8 @@ class RunGameReactor(
   private val takeTurnsReactor: TakeTurnsReactor,
   private val gameLog: GameLog
 ) : Reactor<RunGameState, RunGameEvent, RunGameResult> {
+
+  private val logGameWorker = singleWorker(gameLog::logGame)
 
   override fun launch(
     initialState: RunGameState,
@@ -83,12 +85,14 @@ class RunGameReactor(
       onEvent<StartGame> { EnterState(Playing(Turn(it.x, it.o))) }
     }
 
-    is Playing -> workflows.nextDelegateReaction(state).map {
-      when (it) {
-        is EnterState -> EnterState(state.copy(delegateState = it.state))
-        is FinishWith -> when (it.result.ending) {
-          Quitted -> EnterState(MaybeQuitting(it.result))
-          else -> EnterState(GameOver(it.result))
+    is Playing -> events.select {
+      workflows.onNextDelegateReaction(state) {
+        when (it) {
+          is EnterState -> EnterState(state.copy(delegateState = it.state))
+          is FinishWith -> when (it.result.ending) {
+            Quitted -> EnterState(MaybeQuitting(it.result))
+            else -> EnterState(GameOver(it.result))
+          }
         }
       }
     }
@@ -108,15 +112,16 @@ class RunGameReactor(
     is GameOver -> {
       events.select {
         if (state.syncState == SAVING) {
-          onSuccess(gameLog.logGame(state.completedGame)) {
+          // Note that we never cancel this worker if we get a different event. If the user decides
+          // to do something else while we're trying to sync the game state, we just ignore the
+          // result.
+          workflows.onWorkerResult(logGameWorker, state.completedGame) {
             when (it) {
               TRY_LATER -> EnterState(state.copy(syncState = SAVE_FAILED))
               LOGGED -> EnterState(state.copy(syncState = SAVED))
             }
           }
-        }
-
-        if (state.syncState == SAVE_FAILED) {
+        } else if (state.syncState == SAVE_FAILED) {
           onEvent<TrySaveAgain> { EnterState(state.copy(syncState = SAVING)) }
         }
 

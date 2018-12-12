@@ -15,9 +15,11 @@
  */
 package com.squareup.workflow.rx2
 
+import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.makeWorkflowId
+import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.SingleSubject
+import kotlinx.coroutines.experimental.channels.Channel
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
@@ -25,22 +27,20 @@ import java.io.IOException
 class WorkerIntegrationTest {
 
   private val pool = WorkflowPool()
-  private val single = SingleSubject.create<Unit>()
+  private val single = SingleSubject.create<String>()
   private val worker = single.asWorker()
 
   @Test fun `when call succeeds`() {
     val reaction = pool.workerResult(worker, Unit)
-        .test()
     reaction.assertNotTerminated()
 
-    single.onSuccess(Unit)
+    single.onSuccess("bar")
 
-    reaction.assertValue(Unit)
+    reaction.assertValue("bar")
   }
 
   @Test fun `when call fails`() {
     val reaction = pool.workerResult(worker, Unit)
-        .test()
     reaction.assertNotTerminated()
 
     single.onError(IOException("network fail"))
@@ -50,12 +50,11 @@ class WorkerIntegrationTest {
     assertThat(failure).isInstanceOf(IOException::class.java)
   }
 
-  @Test fun `when workflow cancelled`() {
+  @Test fun `when worker cancelled`() {
     val reaction = pool.workerResult(worker, Unit)
-        .test()
     reaction.assertNotTerminated()
 
-    pool.abandonDelegate(worker.makeWorkflowId())
+    pool.abandonWorker(worker)
 
     // The rx2 version of nextProcessResult will never complete the single if the workflow is
     // cancelled.
@@ -63,3 +62,11 @@ class WorkerIntegrationTest {
     reaction.assertNoErrors()
   }
 }
+
+@Suppress("UNCHECKED_CAST")
+private inline fun <reified I : Any, reified O : Any> WorkflowPool.workerResult(
+  worker: Worker<I, O>,
+  input: I
+): TestObserver<O> = Channel<Nothing>().asEventChannel()
+    .select<O> { onWorkerResult(worker, input) { it } }
+    .test() as TestObserver<O>
