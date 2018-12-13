@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:JvmName("TestUtils")
+@file:JvmName("Assertions")
 
-package com.squareup.workflow.rx2
+package com.squareup.workflow.test
 
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.rx2.Reactor
+import com.squareup.workflow.rx2.result
+import com.squareup.workflow.rx2.state
 import io.reactivex.observers.TestObserver
 
 /**
@@ -29,6 +32,7 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.assertTransition(
   toState: S
 ) {
   val workflow = launch(fromState, WorkflowPool())
+  @Suppress("UNCHECKED_CAST")
   val observer = workflow.state.test() as TestObserver<S>
   workflow.sendEvent(event)
   observer.assertValues(fromState, toState)
@@ -43,6 +47,7 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.assertFinish(
   output: O
 ) {
   val workflow = launch(fromState, WorkflowPool())
+  @Suppress("UNCHECKED_CAST")
   val observer = workflow.result.test() as TestObserver<O>
   workflow.sendEvent(event)
   observer.assertValues(output)
