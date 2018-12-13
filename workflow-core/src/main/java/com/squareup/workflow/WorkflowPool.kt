@@ -27,7 +27,7 @@ import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
 
 /**
- * Runs [named][Id] [Workflow] instances, typically those associated with [Delegating]
+ * Runs [named][Id] [Workflow] instances, typically those associated with [WorkflowHandle]
  * states of composite workflows.
  */
 class WorkflowPool {
@@ -74,9 +74,9 @@ class WorkflowPool {
    * previously-registered ones).
    *
    * Instances may be created on demand as a side effect of calls to
-   * [WorkflowPool.nextDelegateReaction]. They are reaped as they are
+   * [WorkflowPool.workflowUpdate]. They are reaped as they are
    * [completed][Workflow.invokeOnCompletion], including via calls to
-   * [WorkflowPool.abandonDelegate].
+   * [WorkflowPool.abandonWorkflow].
    */
   interface Launcher<S : Any, in E : Any, out O : Any> {
     fun launch(
@@ -89,9 +89,8 @@ class WorkflowPool {
    * Unique identifier for a particular [Workflow] to be run by a [WorkflowPool].
    * See [Type.makeWorkflowId] for details.
    *
-   * Convenience extension functions exist on `KClass<Launcher>` and [Delegating] to create IDs:
+   * A convenience extension functions exists on `KClass<Launcher>` to create IDs:
    *  - `KClass<Launcher>.makeWorkflowId()`
-   *  - [Delegating.makeWorkflowId]
    */
   data class Id<S : Any, in E : Any, out O : Any>
   internal constructor(
@@ -108,7 +107,7 @@ class WorkflowPool {
 
   /**
    * Registers the [Launcher] to be used to create workflows that match its [Launcher.workflowType],
-   * in response to calls to [nextDelegateReaction]. A previously registered
+   * in response to calls to [workflowUpdate]. A previously registered
    * matching [Launcher] will be replaced, with the intention of allowing redundant calls
    * to be safe.
    */
@@ -122,29 +121,31 @@ class WorkflowPool {
   /**
    * Starts the required nested workflow if it wasn't already running. Suspends until the next time
    * the nested workflow updates its state, or completes, and then returns that [Reaction].
-   * States that are equal to the [Delegating.delegateState] are skipped.
+   * States that are equal to the [RunWorkflow.state] are skipped.
    *
    * If the nested workflow was not already running, it is started in the
-   * [given state][Delegating.delegateState]. Note that the initial state is not returned, since
-   * states matching the delegate state are skipped.
+   * [given state][RunWorkflow.state]. Note that the initial state is
+   * not returned, since states matching the given state are skipped.
    *
    * @throws kotlinx.coroutines.experimental.CancellationException If the nested workflow is
-   * [abandoned][abandonDelegate].
-   * @see nextDelegateReaction
+   * [abandoned][abandonWorkflow].
+   * @see workflowUpdate
    */
-  suspend fun <S : Any, O : Any> awaitNextDelegateReaction(
-    delegating: Delegating<S, *, O>
-  ): Reaction<S, O> {
-    val workflow = requireWorkflow(delegating)
+  suspend fun <S : Any, E : Any, O : Any> awaitWorkflowUpdate(
+    handle: RunWorkflow<S, E, O>
+  ): WorkflowHandle<S, E, O> {
+    val workflow = requireWorkflow(handle)
     workflow.openSubscriptionToState()
         .consume {
-          removeCompletedWorkflowAfter(delegating.id) {
+          removeCompletedWorkflowAfter(handle.id) {
             var state = receiveOrNull()
-            // Skip all the states that match the delegating state.
-            while (state == delegating.delegateState) {
+            // Skip all the states that match the handle's state.
+            while (state == handle.state) {
               state = receiveOrNull()
             }
-            return state?.let(::EnterState) ?: FinishWith(workflow.await())
+            return state
+                ?.let { handle.copy(state = it) }
+                ?: FinishedWorkflow(handle.id, workflow.await())
           }
         }
   }
@@ -176,13 +177,10 @@ class WorkflowPool {
     type: Type<I, Nothing, O>
   ): O {
     register(worker.asLauncher(), type)
-    val delegating = object : Delegating<I, Nothing, O> {
-      override val id: Id<I, Nothing, O> = type.makeWorkflowId(name)
-      override val delegateState: I get() = input
-    }
-    val workflow = requireWorkflow(delegating)
+    val handle = RunWorkflow(type.makeWorkflowId(name), input)
+    val workflow = requireWorkflow(handle)
 
-    removeCompletedWorkflowAfter(delegating.id) {
+    removeCompletedWorkflowAfter(handle.id) {
       return workflow.await()
     }
   }
@@ -194,13 +192,20 @@ class WorkflowPool {
    *
    * This method _does not_ start a new workflow if none was running already.
    */
-  fun <E : Any> input(id: Id<*, E, *>): WorkflowInput<E> = object : WorkflowInput<E> {
+  fun <E : Any> input(
+    handle: RunWorkflow<*, E, *>
+  ): WorkflowInput<E> = object : WorkflowInput<E> {
     override fun sendEvent(event: E) {
-      workflows[id]?.let {
+      workflows[handle.id]?.let {
         @Suppress("UNCHECKED_CAST")
         (it.workflow as WorkflowInput<E>).sendEvent(event)
       }
     }
+  }
+
+  @PublishedApi
+  internal fun abandonWorkflow(id: Id<*, *, *>) {
+    workflows[id]?.workflow?.cancel()
   }
 
   /**
@@ -210,9 +215,7 @@ class WorkflowPool {
    *
    * @see abandonAll
    */
-  fun abandonDelegate(id: Id<*, *, *>) {
-    workflows[id]?.workflow?.cancel()
-  }
+  fun abandonWorkflow(handle: RunWorkflow<*, *, *>) = abandonWorkflow(handle.id)
 
   /**
    * Abandons the identified [Worker] if it was already running. If it wasn't, this is a no-op.
@@ -224,12 +227,12 @@ class WorkflowPool {
   inline fun <reified I : Any, reified O : Any> abandonWorker(
     worker: Worker<I, O>,
     name: String = ""
-  ) = abandonDelegate(worker.makeWorkflowId(name))
+  ) = abandonWorkflow(worker.makeWorkflowId(name))
 
   /**
    * Abandons all workflows currently running in this pool.
    *
-   * @see abandonDelegate
+   * @see abandonWorkflow
    * @see abandonWorker
    */
   fun abandonAll() {
@@ -248,7 +251,7 @@ class WorkflowPool {
   }
 
   private fun <S : Any, E : Any, O : Any> requireWorkflow(
-    delegating: Delegating<S, E, O>
+    handle: RunWorkflow<S, E, O>
   ): Workflow<S, E, O> {
     // Some complexity here to handle workflows that complete the moment
     // they are started. We want to return the short-lived workflow so that its
@@ -256,14 +259,14 @@ class WorkflowPool {
     // in the map.
 
     @Suppress("UNCHECKED_CAST")
-    var workflow = workflows[delegating.id]?.workflow as Workflow<S, E, O>?
+    var workflow = workflows[handle.id]?.workflow as Workflow<S, E, O>?
 
     if (workflow == null) {
-      workflow = launcher(delegating.id.workflowType).launch(delegating.delegateState, this)
+      workflow = launcher(handle.id.workflowType).launch(handle.state, this)
 
       val entry = WorkflowEntry(workflow)
       // This entry will eventually be removed from the map by removeCompletedWorkflowAfter.
-      workflows[delegating.id] = entry
+      workflows[handle.id] = entry
     }
     return workflow
   }
@@ -290,7 +293,7 @@ class WorkflowPool {
 
 /**
  * Registers the [Launcher] to be used to create workflows that match its [Launcher.workflowType],
- * in response to calls to [nextDelegateReaction]. A previously registered
+ * in response to calls to [workflowUpdate]. A previously registered
  * matching [Launcher] will be replaced, with the intention of allowing redundant calls
  * to be safe.
  */
@@ -302,15 +305,15 @@ inline fun <reified S : Any, reified E : Any, reified O : Any> WorkflowPool.regi
 
 /**
  * This is a convenience method that wraps
- * [awaitNextDelegateReaction][WorkflowPool.awaitNextDelegateReaction] in a [Deferred] so it can
+ * [WorkflowPool.awaitWorkflowUpdate] in a [Deferred] so it can
  * be selected on.
  *
- * @see WorkflowPool.awaitNextDelegateReaction
+ * @see WorkflowPool.awaitWorkflowUpdate
  */
-fun <S : Any, O : Any> WorkflowPool.nextDelegateReaction(
-  delegating: Delegating<S, *, O>
-): Deferred<Reaction<S, O>> = GlobalScope.async(Unconfined) {
-  awaitNextDelegateReaction(delegating)
+fun <S : Any, E : Any, O : Any> WorkflowPool.workflowUpdate(
+  handle: RunWorkflow<S, E, O>
+): Deferred<WorkflowHandle<S, E, O>> = GlobalScope.async(Unconfined) {
+  awaitWorkflowUpdate(handle)
 }
 
 /**
@@ -345,7 +348,7 @@ inline val <reified S : Any, reified E : Any, reified O : Any>
   get() = Type(S::class, E::class, O::class)
 
 /**
- * Make an ID for the [workflowType] of this [Delegating].
+ * Make an ID for the [workflowType] of this [WorkflowHandle].
  *
  * E.g. `MyLauncher::class.makeWorkflowId()`
  *

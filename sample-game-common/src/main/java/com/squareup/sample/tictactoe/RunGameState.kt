@@ -16,9 +16,8 @@
 package com.squareup.sample.tictactoe
 
 import com.squareup.sample.tictactoe.SyncState.SAVING
-import com.squareup.workflow.Delegating
+import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.readUtf8WithLength
@@ -31,9 +30,10 @@ import kotlin.reflect.jvm.jvmName
  * The state of a [RunGameReactor].
  */
 sealed class RunGameState {
-  internal data class Playing(override val delegateState: Turn) : RunGameState(),
-      Delegating<Turn, TakeTurnsEvent, CompletedGame> {
-    override val id = TakeTurnsReactor::class.makeWorkflowId()
+  internal data class Playing(
+    val takingTurns: RunWorkflow<Turn, TakeTurnsEvent, CompletedGame>
+  ) : RunGameState() {
+    constructor(turn: Turn) : this(TakeTurnsReactor.getStarter(turn))
   }
 
   internal data class NewGame(
@@ -54,7 +54,7 @@ sealed class RunGameState {
 
       when (this) {
         is Playing -> {
-          sink.writeByteStringWithLength(delegateState.toSnapshot().bytes)
+          sink.writeByteStringWithLength(takingTurns.state.toSnapshot().bytes)
         }
         is NewGame -> {
           sink.writeUtf8WithLength(defaultXName)
@@ -67,7 +67,7 @@ sealed class RunGameState {
   }
 
   companion object {
-    fun start(): RunGameState = NewGame()
+    fun startingState(): RunGameState = NewGame()
 
     fun fromSnapshot(byteString: ByteString): RunGameState {
       byteString.parse { source ->
@@ -75,9 +75,7 @@ sealed class RunGameState {
 
         return when (className) {
           Playing::class.jvmName -> Playing(
-              Turn.fromSnapshot(
-                  source.readByteStringWithLength()
-              )
+              TakeTurnsReactor.getStarter(Turn.fromSnapshot(source.readByteStringWithLength()))
           )
 
           NewGame::class.jvmName -> NewGame(

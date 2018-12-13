@@ -69,11 +69,10 @@ class ShellActivity : AppCompatActivity() {
 
     component = lastCustomNonConfigurationInstance as? ShellComponent ?: ShellComponent()
 
-    val snapshot = savedInstanceState
-        ?.getParcelable<ParceledSnapshot>(SNAPSHOT_NAME)
-        ?.snapshot
+    val initialState = savedInstanceState?.getParcelable<ParceledSnapshot>(SNAPSHOT_NAME)
+        ?.snapshot?.bytes?.let { ShellState.fromSnapshot(it) }
+        ?: ShellState.startingState()
 
-    val initialState = ShellState.start(snapshot)
     workflow = component.shellReactor()
         .launch(initialState, component.workflowPool)
 

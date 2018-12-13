@@ -37,9 +37,12 @@ import com.squareup.sample.tictactoe.SyncState.SAVE_FAILED
 import com.squareup.sample.tictactoe.SyncState.SAVING
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
+import com.squareup.workflow.FinishedWorkflow
 import com.squareup.workflow.Reaction
+import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
@@ -86,10 +89,10 @@ class RunGameReactor(
     }
 
     is Playing -> events.select {
-      workflows.onNextDelegateReaction(state) {
+      workflows.onWorkflowUpdate(state.takingTurns) {
         when (it) {
-          is EnterState -> EnterState(state.copy(delegateState = it.state))
-          is FinishWith -> when (it.result.ending) {
+          is RunWorkflow -> EnterState(Playing(it))
+          is FinishedWorkflow -> when (it.result.ending) {
             Quitted -> EnterState(MaybeQuitting(it.result))
             else -> EnterState(GameOver(it.result))
           }
@@ -133,5 +136,16 @@ class RunGameReactor(
         onEvent<NoMore> { FinishWith(FinishedPlaying) }
       }
     }
+  }
+
+  companion object {
+    /**
+     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
+     * [launch] and start a workflow.
+     */
+    fun getStarter(
+      state: RunGameState = RunGameState.startingState()
+    ): RunWorkflow<RunGameState, RunGameEvent, RunGameResult> =
+      RunWorkflow(RunGameReactor::class.makeWorkflowId(), state)
   }
 }
