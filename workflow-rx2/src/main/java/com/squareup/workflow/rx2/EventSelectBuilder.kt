@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DeprecatedCallableAddReplaceWith")
+
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Delegating
 import com.squareup.workflow.Reaction
 import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.nextDelegateReaction
-import com.squareup.workflow.workerResult
 import io.reactivex.Single
 import io.reactivex.Single.just
+import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.rx2.await
@@ -69,11 +69,12 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
   /**
    * Context that should be used for all coroutines started to wait for potential inputs.
    * It's job will be cancelled once a selection is made.
-   * Note that this class intentionally does not implement `CoroutineScope`, since we don't want to
-   * expose this context to callers and suggest that the `select` block is intended to be used to
-   * start coroutines.
+   * Note that [EventSelectBuilder] intentionally does not implement `CoroutineScope`, since we
+   * don't want to expose this context to callers and suggest that the `select` block is intended
+   * to be used to start coroutines.
    */
-  private val context = Unconfined + selectionJob
+  @PublishedApi
+  internal val scope = CoroutineScope(Unconfined + selectionJob)
 
   /** Selects an event by type `T`. */
   inline fun <reified T : E> onEvent(noinline handler: (T) -> R) {
@@ -81,9 +82,8 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
   }
 
   /**
-   * Starts the required nested workflow if it wasn't already running. Returns
-   * a [Single] that will fire the next time the nested workflow updates its state,
-   * or completes.
+   * Starts the required nested workflow if it wasn't already running. This case will be selected
+   * the next time the nested workflow updates its state or completes.
    * States that are equal to the [Delegating.delegateState] are skipped.
    *
    * If the nested workflow was not already running, it is started in the
@@ -97,12 +97,7 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
   fun <S : Any, O : Any> WorkflowPool.onNextDelegateReaction(
     delegating: Delegating<S, *, O>,
     handler: (Reaction<S, O>) -> R
-  ) {
-    with(builder) {
-      nextDelegateReaction(delegating)
-          .onAwait { just(handler(it)) }
-    }
-  }
+  ) = onSuspending(handler) { awaitNextDelegateReaction(delegating) }
 
   /**
    * Starts the indicated [worker] if it wasn't already running, and selects on the result from
@@ -121,27 +116,17 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
     input: I,
     name: String = "",
     crossinline handler: (O) -> R
-  ) {
-    with(builder) {
-      workerResult(worker, input, name)
-          .onAwait { just(handler(it)) }
-    }
-  }
+  ) = onSuspending(handler) { awaitWorkerResult(worker, input, name) }
 
   /**
    * Defines a case that is selected when `single` completes successfully, and is passed the value
    * emitted by `single`.
    */
-  @Deprecated("Use onNextDelegateReaction or onWorkerResult.")
+  @Deprecated("Create a Worker and use onNextDelegateReaction or onWorkerResult instead.")
   fun <T : Any> onSuccess(
     single: Single<out T>,
     handler: (T) -> R
-  ) {
-    with(builder) {
-      GlobalScope.async(context) { single.await() }
-          .onAwait { just(handler(it)) }
-    }
-  }
+  ) = onSuspending(handler) { single.await() }
 
   /**
    * Selects an event of type `eventClass` that also satisfies `predicate`.
@@ -153,5 +138,24 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
     cases += SelectCase<E, T, R>(
         predicateMapper, handler
     )
+  }
+
+  /**
+   * Starts a new coroutine to run the [block] and then selects on the `block`'s result.
+   *
+   * This should **not** be used to await on types that have built-in support for `select`, since
+   * selection is not atomic. For things that don't support select there is a race between
+   * completion and the other select cases being selected. However, this shouldn't be a problem in
+   * practice because [EventSelectBuilder] makes no guarantees about thread safety and so it already
+   * relies on external synchronization.
+   */
+  @PublishedApi internal inline fun <T> onSuspending(
+    crossinline handler: (T) -> R,
+    crossinline block: suspend () -> T
+  ) {
+    with(builder) {
+      scope.async { block() }
+          .onAwait { just(handler(it)) }
+    }
   }
 }

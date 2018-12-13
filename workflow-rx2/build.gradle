@@ -38,6 +38,7 @@ dependencies {
   testImplementation deps.test.assertj
   testImplementation deps.test.hamcrestCore
   testImplementation deps.test.junit
+  testImplementation deps.kotlin.test.jdk
   testImplementation deps.kotlin.test.mockito
   testImplementation deps.test.mockito
   testImplementation deps.rxjava2.extensions
