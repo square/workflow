@@ -22,8 +22,8 @@ import com.squareup.sample.tictactoe.Player.X
 import com.squareup.sample.tictactoe.TakeTurnsEvent.Quit
 import com.squareup.sample.tictactoe.TakeTurnsEvent.TakeSquare
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.rx2.assertFinish
-import com.squareup.workflow.rx2.assertTransition
+import com.squareup.workflow.test.assertFinish
+import com.squareup.workflow.test.assertTransition
 import com.squareup.workflow.rx2.result
 import com.squareup.workflow.rx2.state
 import io.reactivex.observers.TestObserver

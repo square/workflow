@@ -20,11 +20,9 @@ import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.rx2.await
 import kotlinx.coroutines.experimental.rx2.rxSingle
-import org.jetbrains.annotations.TestOnly
 import kotlin.coroutines.experimental.suspendCoroutine
 
 /**
@@ -129,20 +127,3 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
     }
   }
 }
-
-// Helpers for testing.
-
-/**
- * **Helper for testing:**
- * Creates an [EventChannel] that will send all the values passed, and then throw if another
- * select is attempted.
- */
-@TestOnly fun <E : Any> eventChannelOf(vararg values: E): EventChannel<E> =
-  Channel<E>(values.size)
-      .apply {
-        // Load all the values into the channel's buffer.
-        values.forEach { check(offer(it)) }
-        // Ensure any receives after the values are read will fail.
-        close()
-      }
-      .asEventChannel()
