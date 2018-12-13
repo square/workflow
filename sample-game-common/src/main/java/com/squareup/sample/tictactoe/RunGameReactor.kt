@@ -61,7 +61,7 @@ enum class RunGameResult {
  */
 class RunGameReactor(
   private val takeTurnsReactor: TakeTurnsReactor,
-  private val gameLog: GameLog
+  gameLog: GameLog
 ) : Reactor<RunGameState, RunGameEvent, RunGameResult> {
 
   private val logGameWorker = singleWorker(gameLog::logGame)
@@ -112,9 +112,6 @@ class RunGameReactor(
     is GameOver -> {
       events.select {
         if (state.syncState == SAVING) {
-          // Note that we never cancel this worker if we get a different event. If the user decides
-          // to do something else while we're trying to sync the game state, we just ignore the
-          // result.
           workflows.onWorkerResult(logGameWorker, state.completedGame) {
             when (it) {
               TRY_LATER -> EnterState(state.copy(syncState = SAVE_FAILED))
@@ -126,6 +123,8 @@ class RunGameReactor(
         }
 
         onEvent<PlayAgain> {
+          workflows.abandonWorker(logGameWorker)
+
           with(state.completedGame.lastTurn) {
             EnterState(NewGame(players[X]!!, players[O]!!))
           }
