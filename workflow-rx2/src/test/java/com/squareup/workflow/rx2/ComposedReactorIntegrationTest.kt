@@ -95,7 +95,7 @@ class ComposedReactorIntegrationTest {
     assertThat(pool.peekWorkflowsCount).isZero()
   }
 
-  @Test fun cancel_abandons() {
+  @Test fun `cancel abandons`() {
     val workflow = outerReactor.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "able")
@@ -189,7 +189,7 @@ class ComposedReactorIntegrationTest {
       events: EventChannel<String>,
       workflows: WorkflowPool
     ): Single<out Reaction<Unit, Unit>> = events.select {
-      onSuccess(Single.just("fnord")) {
+      workflows.onWorkerResult(singleWorker<Unit, String> { Single.just("fnord") }, Unit) {
         FinishWith(Unit)
       }
     }
@@ -269,7 +269,7 @@ class ComposedReactorIntegrationTest {
       }
 
       is RunningEchoJob -> events.select {
-        onSuccess(workflows.nextDelegateReaction(state)) {
+        workflows.onNextDelegateReaction(state) {
           when (it) {
             is EnterState -> EnterState(state.copy(delegateState = it.state))
             is FinishWith -> {
@@ -297,12 +297,14 @@ class ComposedReactorIntegrationTest {
         onEvent<Cancel> { EnterState(Idle) }
       }
 
-      is RunningImmediateJob -> workflows.nextDelegateReaction(state).map {
-        when (it) {
-          is EnterState -> throw AssertionError("Should never re-enter $RunningImmediateJob.")
-          is FinishWith -> {
-            results += "Finished ${ImmediateOnSuccess::class}"
-            EnterState(Idle)
+      is RunningImmediateJob -> events.select {
+        workflows.onNextDelegateReaction(state) {
+          when (it) {
+            is EnterState -> throw AssertionError("Should never re-enter $RunningImmediateJob.")
+            is FinishWith -> {
+              results += "Finished ${ImmediateOnSuccess::class}"
+              EnterState(Idle)
+            }
           }
         }
       }

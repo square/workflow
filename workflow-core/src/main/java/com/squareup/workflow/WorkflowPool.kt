@@ -156,7 +156,7 @@ class WorkflowPool {
    * If the worker was not already running, it is started with the given input.
    *
    * @throws kotlinx.coroutines.experimental.CancellationException If the worker is
-   * [abandoned][abandonDelegate].
+   * [abandoned][abandonWorker].
    * @see workerResult
    */
   suspend inline fun <reified I : Any, reified O : Any> awaitWorkerResult(
@@ -204,15 +204,33 @@ class WorkflowPool {
   }
 
   /**
-   * Abandons the identified workflow if it was already running. If it wasn't, this
-   * is a no-op.
+   * Abandons the identified workflow if it was already running. If it wasn't, this is a no-op.
+   *
+   * To abandon a [Worker], use [abandonWorker].
+   *
+   * @see abandonAll
    */
   fun abandonDelegate(id: Id<*, *, *>) {
     workflows[id]?.workflow?.cancel()
   }
 
   /**
+   * Abandons the identified [Worker] if it was already running. If it wasn't, this is a no-op.
+   *
+   * To abandon a nested worker, use [abandonWorker].
+   *
+   * @see abandonAll
+   */
+  inline fun <reified I : Any, reified O : Any> abandonWorker(
+    worker: Worker<I, O>,
+    name: String = ""
+  ) = abandonDelegate(worker.makeWorkflowId(name))
+
+  /**
    * Abandons all workflows currently running in this pool.
+   *
+   * @see abandonDelegate
+   * @see abandonWorker
    */
   fun abandonAll() {
     workflows.values.forEach { it.workflow.cancel() }
@@ -336,7 +354,7 @@ inline val <reified S : Any, reified E : Any, reified O : Any>
 @Suppress("unused")
 inline fun <reified S : Any, reified E : Any, reified O : Any>
     KClass<out Launcher<S, E, O>>.makeWorkflowId(name: String = ""): Id<S, E, O> =
-    workflowType.makeWorkflowId(name)
+  workflowType.makeWorkflowId(name)
 
 /**
  * Returns the [Type] that represents this [Launcher] class's type parameters.

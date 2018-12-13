@@ -15,6 +15,12 @@
  */
 package com.squareup.workflow.rx2
 
+import com.squareup.workflow.Delegating
+import com.squareup.workflow.Reaction
+import com.squareup.workflow.Worker
+import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.nextDelegateReaction
+import com.squareup.workflow.workerResult
 import io.reactivex.Single
 import io.reactivex.Single.just
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
@@ -29,7 +35,7 @@ import kotlinx.coroutines.experimental.selects.SelectBuilder
  * For usage see the documentation for [EventChannel][EventChannel].
  */
 class EventSelectBuilder<E : Any, R : Any> internal constructor(
-  private val builder: SelectBuilder<Single<R>>,
+  @PublishedApi internal val builder: SelectBuilder<Single<R>>,
   /**
    * Job that should be used as the parent for any coroutines started to wait for potential inputs.
    * This job will be cancelled once a selection is made.
@@ -75,9 +81,58 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
   }
 
   /**
+   * Starts the required nested workflow if it wasn't already running. Returns
+   * a [Single] that will fire the next time the nested workflow updates its state,
+   * or completes.
+   * States that are equal to the [Delegating.delegateState] are skipped.
+   *
+   * If the nested workflow was not already running, it is started in the
+   * [given state][Delegating.delegateState] (the initial state is not reported, since states equal
+   * to the delegate state are skipped). Otherwise, the [Single] skips state updates that match the
+   * given state.
+   *
+   * If the nested workflow is [abandoned][WorkflowPool.abandonDelegate], this case will never
+   * be selected.
+   */
+  fun <S : Any, O : Any> WorkflowPool.onNextDelegateReaction(
+    delegating: Delegating<S, *, O>,
+    handler: (Reaction<S, O>) -> R
+  ) {
+    with(builder) {
+      nextDelegateReaction(delegating)
+          .onAwait { just(handler(it)) }
+    }
+  }
+
+  /**
+   * Starts the indicated [worker] if it wasn't already running, and selects on the result from
+   * the worker finishing.
+   *
+   * This method can be called with the same worker multiple times and it will only be started once,
+   * until it finishes. Then, the next time it is called it will restart the worker.
+   *
+   * If the nested workflow is [abandoned][WorkflowPool.abandonWorker], this case will never
+   * be selected.
+   *
+   * @see WorkflowPool.awaitWorkerResult
+   */
+  inline fun <reified I : Any, reified O : Any> WorkflowPool.onWorkerResult(
+    worker: Worker<I, O>,
+    input: I,
+    name: String = "",
+    crossinline handler: (O) -> R
+  ) {
+    with(builder) {
+      workerResult(worker, input, name)
+          .onAwait { just(handler(it)) }
+    }
+  }
+
+  /**
    * Defines a case that is selected when `single` completes successfully, and is passed the value
    * emitted by `single`.
    */
+  @Deprecated("Use onNextDelegateReaction or onWorkerResult.")
   fun <T : Any> onSuccess(
     single: Single<out T>,
     handler: (T) -> R

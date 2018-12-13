@@ -27,6 +27,7 @@ import com.squareup.workflow.workflowType
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.experimental.CancellationException
+import kotlinx.coroutines.experimental.channels.Channel
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
@@ -120,7 +121,6 @@ class WorkflowPoolIntegrationTest {
   @Test fun `waits for state after current`() {
     val delegatingState = DelegatingState(NEW)
     val nestedStateSub = pool.nextDelegateReaction(delegatingState)
-        .test()
     nestedStateSub.assertNoValues()
 
     val input = pool.input(delegatingState.id)
@@ -149,7 +149,6 @@ class WorkflowPoolIntegrationTest {
 
     // Check that we get the result we expect after the above events.
     val resultSub = pool.nextDelegateReaction(DelegatingState("charlie"))
-        .test()
     resultSub.assertNoValues()
 
     input.sendEvent(STOP)
@@ -160,7 +159,6 @@ class WorkflowPoolIntegrationTest {
   @Test fun `reports immediate result`() {
     val delegatingState = DelegatingState(NEW)
     val resultSub = pool.nextDelegateReaction(delegatingState)
-        .test()
     resultSub.assertNoValues()
 
     val input = pool.input(delegatingState.id)
@@ -268,7 +266,6 @@ class WorkflowPoolIntegrationTest {
     val id = alreadyInNewState.id
 
     val stateSub = pool.nextDelegateReaction(alreadyInNewState)
-        .test()
 
     pool.abandonDelegate(id)
 
@@ -276,3 +273,14 @@ class WorkflowPoolIntegrationTest {
     stateSub.assertNotTerminated()
   }
 }
+
+/**
+ * Helper for calling and subscribing to [com.squareup.workflow.nextDelegateReaction] for tests..
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <S : Any, O : Any> WorkflowPool.nextDelegateReaction(
+  delegating: Delegating<S, *, O>
+): TestObserver<Reaction<S, O>> = Channel<Nothing>().asEventChannel()
+    .select<Reaction<S, O>> {
+      onNextDelegateReaction(delegating) { it }
+    }.test() as TestObserver<Reaction<S, O>>

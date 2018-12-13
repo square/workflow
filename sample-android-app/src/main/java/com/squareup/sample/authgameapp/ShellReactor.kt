@@ -15,9 +15,9 @@
  */
 package com.squareup.sample.authgameapp
 
-import com.squareup.sample.authworkflow.AuthReactor
 import com.squareup.sample.authgameapp.ShellState.Authenticating
 import com.squareup.sample.authgameapp.ShellState.RunningGame
+import com.squareup.sample.authworkflow.AuthReactor
 import com.squareup.sample.tictactoe.RunGameReactor
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
@@ -28,7 +28,6 @@ import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
 import com.squareup.workflow.rx2.doLaunch
-import com.squareup.workflow.rx2.nextDelegateReaction
 import io.reactivex.Single
 
 /**
@@ -65,10 +64,12 @@ internal class ShellReactor(
     events: EventChannel<LogOut>,
     workflows: WorkflowPool
   ): Single<out Reaction<ShellState, Unit>> = when (state) {
-    is Authenticating -> workflows.nextDelegateReaction(state).map {
-      when (it) {
-        is EnterState -> EnterState<ShellState>(state.copy(delegateState = it.state))
-        is FinishWith -> EnterState(RunningGame())
+    is Authenticating -> events.select {
+      workflows.onNextDelegateReaction(state) {
+        when (it) {
+          is EnterState -> EnterState<ShellState>(state.copy(delegateState = it.state))
+          is FinishWith -> EnterState(RunningGame())
+        }
       }
     }
 
@@ -78,7 +79,7 @@ internal class ShellReactor(
         EnterState(Authenticating())
       }
 
-      onSuccess(workflows.nextDelegateReaction(state)) {
+      workflows.onNextDelegateReaction(state) {
         when (it) {
           is EnterState -> EnterState(state.copy(delegateState = it.state))
           is FinishWith -> EnterState(RunningGame())

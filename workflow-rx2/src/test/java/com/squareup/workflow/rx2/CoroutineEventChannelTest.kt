@@ -274,7 +274,7 @@ class CoroutineEventChannelTest {
     assertThat(disposeCalls).isEqualTo(1)
   }
 
-  @Test fun `exception from single handler is propagated`() {
+  @Test fun `onSuccess handler exception is propagated`() {
     val relay = PublishSubject.create<String>()
     events.asEventChannel()
         .select<String> {
