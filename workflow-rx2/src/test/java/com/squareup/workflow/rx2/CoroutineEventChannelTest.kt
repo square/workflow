@@ -15,20 +15,37 @@
  */
 package com.squareup.workflow.rx2
 
+import com.squareup.workflow.Delegating
+import com.squareup.workflow.EnterState
+import com.squareup.workflow.FinishWith
+import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Id
+import com.squareup.workflow.WorkflowPool.Launcher
+import com.squareup.workflow.makeWorkflowId
+import com.squareup.workflow.register
 import com.squareup.workflow.rx2.CoroutineEventChannelTest.Events.Click
 import com.squareup.workflow.rx2.CoroutineEventChannelTest.Events.Dismiss
+import com.squareup.workflow.workflow
+import io.reactivex.Single
+import io.reactivex.Single.just
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.observers.TestObserver
+import io.reactivex.subjects.CompletableSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.SingleSubject
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.experimental.Dispatchers.Unconfined
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import org.assertj.core.api.Java6Assertions.assertThat
-import org.assertj.core.api.Java6Assertions.fail
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
+import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.test.assertFailsWith
+import kotlin.test.fail
 
 class CoroutineEventChannelTest {
 
@@ -42,10 +59,8 @@ class CoroutineEventChannelTest {
     }
   }
 
-  @JvmField @Rule val thrown = ExpectedException.none()!!
-
+  private val pool = WorkflowPool()
   private val resultSub = TestObserver<String>()
-
   private var events = Channel<Events>(UNLIMITED)
 
   @Test fun `select event propagates result`() {
@@ -147,6 +162,248 @@ class CoroutineEventChannelTest {
         .subscribe(resultSub)
 
     resultSub.assertNotTerminated()
+  }
+
+  @Test fun `onSuspending single case`() {
+    val deferred = CompletableDeferred<String>()
+    events.asEventChannel()
+        .select<String> { onSuspending({ "got $it" }) { deferred.await() } }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    deferred.complete("foo")
+
+    resultSub.assertComplete()
+    resultSub.assertValue("got foo")
+  }
+
+  @Test fun `onSuspending multiple cases`() {
+    val deferred1 = CompletableDeferred<String>()
+    val deferred2 = CompletableDeferred<String>()
+    events.asEventChannel()
+        .select<String> {
+          onSuspending({ "1 got $it" }) { deferred1.await() }
+          onSuspending({ "2 got $it" }) { deferred2.await() }
+        }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    deferred2.complete("foo")
+
+    resultSub.assertComplete()
+    resultSub.assertValue("2 got foo")
+  }
+
+  @Test fun `onSuspending when terminates with error`() {
+    val deferred = CompletableDeferred<String>()
+    events.asEventChannel()
+        .select<String> { onSuspending({ "got $it" }) { deferred.await() } }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    val e = RuntimeException("oops")
+    deferred.completeExceptionally(e)
+
+    resultSub.assertNoValues()
+    resultSub.assertError(e)
+  }
+
+  @Test fun `onSuspending with onEvent when Single wins`() {
+    val deferred = CompletableDeferred<String>()
+    events.asEventChannel()
+        .select<String> {
+          onSuspending({ "got $it" }) { deferred.await() }
+          onEvent<Click> { "clicked" }
+        }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    deferred.complete("foo")
+
+    resultSub.assertComplete()
+    resultSub.assertValue("got foo")
+  }
+
+  @Test fun `onSuspending with onEvent when Event wins`() {
+    val deferred = CompletableDeferred<String>()
+    events.asEventChannel()
+        .select<String> {
+          onSuspending({ "got $it" }) { deferred.await() }
+          onEvent<Click> { "clicked" }
+        }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    events.offer(Click)
+
+    resultSub.assertComplete()
+    resultSub.assertValue("clicked")
+  }
+
+  @Test fun `onSuspending cancels coroutine when loses race without errors`() {
+    var invocations = 0
+    var cancellations = 0
+    events.asEventChannel()
+        .select<String> {
+          onSuspending({ error("shouldn't happen") }) {
+            invocations++
+            suspendCancellableCoroutine<Nothing> {
+              it.invokeOnCancellation { cancellations++ }
+            }
+          }
+          onEvent<Click> { "clicked" }
+        }
+        .subscribe(resultSub)
+
+    assertThat(invocations).isEqualTo(1)
+    assertThat(cancellations).isEqualTo(0)
+
+    events.offer(Click)
+
+    resultSub.assertComplete()
+    assertThat(invocations).isEqualTo(1)
+    assertThat(cancellations).isEqualTo(1)
+  }
+
+  @Test fun `onSuspending cancels coroutine when select throws`() {
+    var cancellations = 0
+    events.asEventChannel()
+        .select<String> {
+          onSuspending({ error("shouldn't happen") }) {
+            suspendCancellableCoroutine<Nothing> {
+              it.invokeOnCancellation { cancellations++ }
+            }
+          }
+          throw ExpectedException
+        }
+        .subscribe(resultSub)
+
+    resultSub.assertError(ExpectedException)
+    assertThat(cancellations).isEqualTo(1)
+  }
+
+  @Test fun `onSuspending handler exception is propagated`() {
+    val deferred = CompletableDeferred<String>()
+    events.asEventChannel()
+        .select<String> {
+          onSuspending({ throw ExpectedException }) { deferred.await() }
+        }
+        .subscribe(resultSub)
+
+    resultSub.assertNoErrors()
+
+    deferred.complete("boo")
+
+    resultSub.assertError { it === ExpectedException }
+  }
+
+  @Test fun `onWorkerResult succeeds`() {
+    val trigger = CompletableSubject.create()
+    val worker = singleWorker { it: String ->
+      trigger.andThen(just("worker: $it"))
+    }
+    events.asEventChannel()
+        .select<String> { pool.onWorkerResult(worker, "foo") { "got $it" } }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    trigger.onComplete()
+
+    resultSub.assertValue("got worker: foo")
+  }
+
+  @Test fun `onWorkerResult throws from worker`() {
+    val trigger = CompletableSubject.create()
+    val worker = singleWorker<String, String> {
+      trigger.andThen(Single.error<String>(ExpectedException))
+    }
+    events.asEventChannel()
+        .select<String> { pool.onWorkerResult(worker, "oops") { fail() } }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    trigger.onComplete()
+
+    resultSub.assertError(ExpectedException)
+  }
+
+  @Test fun `onNextDelegateReaction reports state`() {
+    val launcher = object : Launcher<String, String, String> {
+      override fun launch(
+        initialState: String,
+        workflows: WorkflowPool
+      ): Workflow<String, String, String> = GlobalScope.workflow(Unconfined) { s, e ->
+        s.send("$initialState -> ${e.receive()}")
+        suspendCoroutine<Nothing> { }
+      }
+    }
+    val workflowId = launcher::class.makeWorkflowId()
+    val state = DelegateWorkflowState(workflowId, "foo")
+    pool.register(launcher)
+    events.asEventChannel()
+        .select<String> {
+          pool.onNextDelegateReaction(state) {
+            when (it) {
+              is EnterState -> "enter ${it.state}"
+              is FinishWith -> "finish ${it.result}"
+            }
+          }
+        }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    pool.input(workflowId)
+        .sendEvent("bar")
+
+    resultSub.assertValue("enter foo -> bar")
+  }
+
+  @Test fun `onNextDelegateReaction reports result`() {
+    val launcher = object : Launcher<String, String, String> {
+      override fun launch(
+        initialState: String,
+        workflows: WorkflowPool
+      ): Workflow<String, String, String> = GlobalScope.workflow(Unconfined) { _, e ->
+        "$initialState -> ${e.receive()}"
+      }
+    }
+    val workflowId = launcher::class.makeWorkflowId()
+    val state = DelegateWorkflowState(workflowId, "foo")
+    pool.register(launcher)
+    events.asEventChannel()
+        .select<String> {
+          pool.onNextDelegateReaction(state) {
+            when (it) {
+              is EnterState -> "enter ${it.state}"
+              is FinishWith -> "finish ${it.result}"
+            }
+          }
+        }
+        .subscribe(resultSub)
+
+    resultSub.assertNotTerminated()
+    resultSub.assertNoValues()
+
+    pool.input(workflowId)
+        .sendEvent("bar")
+
+    resultSub.assertValue("finish foo -> bar")
   }
 
   @Test fun `onSuccess single case`() {
@@ -319,13 +576,13 @@ class CoroutineEventChannelTest {
           throw RuntimeException("fail: $event")
         }
 
-    try {
+    assertFailsWith<UndeliverableException> {
       rethrowingUncaughtExceptions {
         events.offer(Click)
       }
-      fail("Expected exception.")
-    } catch (e: UndeliverableException) {
-      assertThat(e.cause).isExactlyInstanceOf(RuntimeException::class.java)
+    }.let {
+      assertThat(it.cause)
+          .isExactlyInstanceOf(RuntimeException::class.java)
           .hasMessage("fail: clicked")
     }
   }
@@ -347,3 +604,10 @@ class CoroutineEventChannelTest {
     secondSub.assertValue("clicked 2")
   }
 }
+
+private object ExpectedException : RuntimeException()
+
+private data class DelegateWorkflowState(
+  override val id: Id<String, String, String>,
+  override val delegateState: String
+) : Delegating<String, String, String>
