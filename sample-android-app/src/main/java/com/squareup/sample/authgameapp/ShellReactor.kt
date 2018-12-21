@@ -17,7 +17,9 @@ package com.squareup.sample.authgameapp
 
 import com.squareup.sample.authgameapp.ShellState.Authenticating
 import com.squareup.sample.authgameapp.ShellState.RunningGame
+import com.squareup.sample.authworkflow.AuthLauncher
 import com.squareup.sample.authworkflow.AuthReactor
+import com.squareup.sample.tictactoe.RunGameLauncher
 import com.squareup.sample.tictactoe.RunGameReactor
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishedWorkflow
@@ -46,16 +48,16 @@ typealias ShellWorkflow = Workflow<ShellState, LogOut, Unit>
 object LogOut
 
 internal class ShellReactor(
-  private val runGameReactor: RunGameReactor,
-  private val authReactor: AuthReactor
+  private val runGameLauncher: RunGameLauncher,
+  private val authLauncher: AuthLauncher
 ) : Reactor<ShellState, LogOut, Unit> {
 
   override fun launch(
     initialState: ShellState,
     workflows: WorkflowPool
   ): ShellWorkflow {
-    workflows.register(runGameReactor)
-    workflows.register(authReactor)
+    workflows.register(runGameLauncher)
+    workflows.register(authLauncher)
 
     return doLaunch(initialState, workflows)
   }

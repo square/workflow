@@ -26,6 +26,7 @@ import com.squareup.workflow.Reaction
 import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
@@ -33,10 +34,26 @@ import com.squareup.workflow.rx2.doLaunch
 import io.reactivex.Scheduler
 import io.reactivex.Single
 
+/**
+ * We define this otherwise redundant interface to keep composite reactors
+ * that build on [AuthReactor] decoupled from it, for ease of testing.
+ */
+interface AuthLauncher : Launcher<AuthState, AuthEvent, String>
+
+/**
+ * Runs a set of login screens and pretends to produce an auth token,
+ * via a pretend [authService].
+ *
+ * Demonstrates both client side validation (email format, must include "@")
+ * and server side validation (password is "password").
+ *
+ * Includes a 2fa path for email addresses that include the string "2fa".
+ * Token is "1234".
+ */
 class AuthReactor(
   private val authService: AuthService,
   private val main: Scheduler
-) : Reactor<AuthState, AuthEvent, String> {
+) : Reactor<AuthState, AuthEvent, String>, AuthLauncher {
 
   override fun launch(
     initialState: AuthState,

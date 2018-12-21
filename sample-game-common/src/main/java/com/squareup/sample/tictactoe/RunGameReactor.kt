@@ -42,6 +42,7 @@ import com.squareup.workflow.Reaction
 import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
@@ -56,6 +57,12 @@ enum class RunGameResult {
 }
 
 /**
+ * We define this otherwise redundant interface to keep composite reactors
+ * that build on [RunGameReactor] decoupled from it, for ease of testing.
+ */
+interface RunGameLauncher : Launcher<RunGameState, RunGameEvent, RunGameResult>
+
+/**
  * Runs the screens around a Tic Tac Toe game: prompts for player names, runs a
  * confirm quit screen, and offers a chance to play again. Delegates to [TakeTurnsReactor]
  * for the actual playing of the game.
@@ -65,7 +72,7 @@ enum class RunGameResult {
 class RunGameReactor(
   private val takeTurnsReactor: TakeTurnsReactor,
   gameLog: GameLog
-) : Reactor<RunGameState, RunGameEvent, RunGameResult> {
+) : Reactor<RunGameState, RunGameEvent, RunGameResult>, RunGameLauncher {
 
   private val logGameWorker = singleWorker(gameLog::logGame)
 
