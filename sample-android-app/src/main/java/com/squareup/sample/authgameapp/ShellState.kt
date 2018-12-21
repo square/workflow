@@ -16,10 +16,10 @@
 package com.squareup.sample.authgameapp
 
 import com.squareup.sample.authworkflow.AuthEvent
-import com.squareup.sample.authworkflow.AuthReactor
+import com.squareup.sample.authworkflow.AuthLauncher
 import com.squareup.sample.authworkflow.AuthState
 import com.squareup.sample.tictactoe.RunGameEvent
-import com.squareup.sample.tictactoe.RunGameReactor
+import com.squareup.sample.tictactoe.RunGameLauncher
 import com.squareup.sample.tictactoe.RunGameResult
 import com.squareup.sample.tictactoe.RunGameState
 import com.squareup.workflow.RunWorkflow
@@ -39,12 +39,12 @@ import kotlin.reflect.jvm.jvmName
 sealed class ShellState {
 
   internal data class Authenticating(
-    val authWorkflow: RunWorkflow<AuthState, AuthEvent, String> = AuthReactor.getStarter()
+    val authWorkflow: RunWorkflow<AuthState, AuthEvent, String> = AuthLauncher.getStarter()
   ) : ShellState()
 
   internal data class RunningGame(
     val runGameWorkflow: RunWorkflow<RunGameState, RunGameEvent, RunGameResult> =
-      RunGameReactor.getStarter()
+      RunGameLauncher.getStarter()
   ) : ShellState()
 
   fun toSnapshot(): Snapshot {
@@ -67,9 +67,9 @@ sealed class ShellState {
 
       return when (shellStateName) {
         Authenticating::class.jvmName ->
-          Authenticating(AuthReactor.getStarter(AuthState.fromSnapshot(delegateByteString)))
+          Authenticating(AuthLauncher.getStarter(AuthState.fromSnapshot(delegateByteString)))
         RunningGame::class.jvmName ->
-          RunningGame(RunGameReactor.getStarter(RunGameState.fromSnapshot(delegateByteString)))
+          RunningGame(RunGameLauncher.getStarter(RunGameState.fromSnapshot(delegateByteString)))
 
         else -> throw IllegalArgumentException("Unrecognized state: $shellStateName")
       }

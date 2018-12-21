@@ -89,7 +89,7 @@ class WorkflowPool {
    * Unique identifier for a particular [Workflow] to be run by a [WorkflowPool].
    * See [Type.makeWorkflowId] for details.
    *
-   * A convenience extension functions exists on `KClass<Launcher>` to create IDs:
+   * A convenience extension function exists on `KClass<Launcher>` to create IDs:
    *  - `KClass<Launcher>.makeWorkflowId()`
    */
   data class Id<S : Any, in E : Any, out O : Any>

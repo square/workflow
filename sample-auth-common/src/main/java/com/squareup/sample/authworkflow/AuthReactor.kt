@@ -25,9 +25,9 @@ import com.squareup.workflow.FinishWith
 import com.squareup.workflow.Reaction
 import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPool.Launcher
-import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
 import com.squareup.workflow.rx2.doLaunch
@@ -38,7 +38,18 @@ import io.reactivex.Single
  * We define this otherwise redundant interface to keep composite reactors
  * that build on [AuthReactor] decoupled from it, for ease of testing.
  */
-interface AuthLauncher : Launcher<AuthState, AuthEvent, String>
+interface AuthLauncher : Launcher<AuthState, AuthEvent, String> {
+  companion object {
+    /**
+     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
+     * [launch] and start a workflow.
+     */
+    fun getStarter(
+      state: AuthState = AuthState.startingState()
+    ): RunWorkflow<AuthState, AuthEvent, String> =
+      WorkflowHandle.getStarter(AuthLauncher::class, state)
+  }
+}
 
 /**
  * Runs a set of login screens and pretends to produce an auth token,
@@ -128,15 +139,4 @@ class AuthReactor(
 
   private val SubmitLogin.userInputErrorMessage: String
     get() = if (email.indexOf('@') < 0) "Invalid address" else ""
-
-  companion object {
-    /**
-     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
-     * [launch] and start a workflow.
-     */
-    fun getStarter(
-      state: AuthState = AuthState.startingState()
-    ): RunWorkflow<AuthState, AuthEvent, String> =
-      RunWorkflow(AuthReactor::class.makeWorkflowId(), state)
-  }
 }

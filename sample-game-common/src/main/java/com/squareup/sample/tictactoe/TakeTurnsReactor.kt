@@ -25,8 +25,8 @@ import com.squareup.workflow.FinishWith
 import com.squareup.workflow.Reaction
 import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
 import com.squareup.workflow.rx2.doLaunch
@@ -99,6 +99,6 @@ class TakeTurnsReactor : Reactor<Turn, TakeTurnsEvent, CompletedGame> {
      * [launch] and start a workflow.
      */
     fun getStarter(turn: Turn): RunWorkflow<Turn, TakeTurnsEvent, CompletedGame> =
-      RunWorkflow(TakeTurnsReactor::class.makeWorkflowId(), turn)
+      WorkflowHandle.getStarter(TakeTurnsReactor::class, turn)
   }
 }

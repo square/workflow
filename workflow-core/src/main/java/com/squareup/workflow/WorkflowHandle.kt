@@ -16,10 +16,12 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowPool.Id
+import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.WorkflowPool.Type
+import kotlin.reflect.KClass
 
 /**
- * Describes a workflow to be run by a [WorkflowPool]. Includes the the
+ * Describes a workflow to be run by a [WorkflowPool]. Includes the
  * [state][RunWorkflow.state] the workflow should start in / was last
  * known to be in, or the [result][FinishedWorkflow.result] the workflow
  * reported when it finished.
@@ -35,6 +37,21 @@ sealed class WorkflowHandle<S : Any, E : Any, O : Any> {
    * See [WorkflowPool.Type.makeWorkflowId] for details.
    */
   abstract val id: Id<S, E, O>
+
+  companion object {
+
+    /**
+     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
+     * launch a workflow of the given type in the given state.
+     */
+    inline fun <reified S : Any, reified E : Any, reified O : Any> getStarter(
+      launcherType: KClass<out Launcher<S, E, O>>,
+      state: S,
+      name: String = ""
+    ): RunWorkflow<S, E, O> {
+      return RunWorkflow(launcherType.makeWorkflowId(name), state)
+    }
+  }
 }
 
 /**
@@ -65,7 +82,6 @@ data class FinishedWorkflow<S : Any, E : Any, O : Any>(
  *
  * @see Type.makeWorkflowId
  */
-@Suppress("unused")
 inline fun <reified S : Any, reified E : Any, reified O : Any>
     WorkflowHandle<S, E, O>.makeWorkflowId(name: String = ""): Id<S, E, O> =
 // We can't use id.type since ID hasn't been initialized yet.

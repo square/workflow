@@ -41,9 +41,9 @@ import com.squareup.workflow.FinishedWorkflow
 import com.squareup.workflow.Reaction
 import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPool.Launcher
-import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
@@ -60,7 +60,18 @@ enum class RunGameResult {
  * We define this otherwise redundant interface to keep composite reactors
  * that build on [RunGameReactor] decoupled from it, for ease of testing.
  */
-interface RunGameLauncher : Launcher<RunGameState, RunGameEvent, RunGameResult>
+interface RunGameLauncher : Launcher<RunGameState, RunGameEvent, RunGameResult> {
+  companion object {
+    /**
+     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
+     * [launch] and start a workflow.
+     */
+    fun getStarter(
+      state: RunGameState = RunGameState.startingState()
+    ): RunWorkflow<RunGameState, RunGameEvent, RunGameResult> =
+      WorkflowHandle.getStarter(RunGameLauncher::class, state)
+  }
+}
 
 /**
  * Runs the screens around a Tic Tac Toe game: prompts for player names, runs a
@@ -143,16 +154,5 @@ class RunGameReactor(
         onEvent<NoMore> { FinishWith(FinishedPlaying) }
       }
     }
-  }
-
-  companion object {
-    /**
-     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
-     * [launch] and start a workflow.
-     */
-    fun getStarter(
-      state: RunGameState = RunGameState.startingState()
-    ): RunWorkflow<RunGameState, RunGameEvent, RunGameResult> =
-      RunWorkflow(RunGameReactor::class.makeWorkflowId(), state)
   }
 }
