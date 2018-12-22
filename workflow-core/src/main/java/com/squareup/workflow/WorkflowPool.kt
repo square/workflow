@@ -50,6 +50,8 @@ class WorkflowPool {
 
     /**
      * Creates an id for an instance of this type to be managed by a [WorkflowPool].
+     * It is rare to create an [Id] yourself. They're created for when you build
+     * a [WorkflowHandle].
      *
      * @param name allows multiple workflows of the same type to be managed at once. If
      * no name is specified, we unique only on the [Type] itself.
@@ -88,9 +90,6 @@ class WorkflowPool {
   /**
    * Unique identifier for a particular [Workflow] to be run by a [WorkflowPool].
    * See [Type.makeWorkflowId] for details.
-   *
-   * A convenience extension function exists on `KClass<Launcher>` to create IDs:
-   *  - `KClass<Launcher>.makeWorkflowId()`
    */
   data class Id<S : Any, in E : Any, out O : Any>
   internal constructor(
@@ -194,9 +193,20 @@ class WorkflowPool {
    */
   fun <E : Any> input(
     handle: RunWorkflow<*, E, *>
+  ): WorkflowInput<E> = input(handle.id)
+
+  /**
+   * Returns a [WorkflowInput] that will route events to the identified [Workflow],
+   * if it is running. That check is made each time an event is sent: if the workflow
+   * is running at the moment, the event is delivered. If not, it is dropped.
+   *
+   * This method _does not_ start a new workflow if none was running already.
+   */
+  fun <E : Any> input(
+    id: WorkflowPool.Id<*, E, *>
   ): WorkflowInput<E> = object : WorkflowInput<E> {
     override fun sendEvent(event: E) {
-      workflows[handle.id]?.let {
+      workflows[id]?.let {
         @Suppress("UNCHECKED_CAST")
         (it.workflow as WorkflowInput<E>).sendEvent(event)
       }

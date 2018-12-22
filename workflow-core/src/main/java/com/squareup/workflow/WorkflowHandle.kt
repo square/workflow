@@ -17,7 +17,6 @@ package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.WorkflowPool.Launcher
-import com.squareup.workflow.WorkflowPool.Type
 import kotlin.reflect.KClass
 
 /**
@@ -42,7 +41,10 @@ sealed class WorkflowHandle<S : Any, E : Any, O : Any> {
 
     /**
      * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
-     * launch a workflow of the given type in the given state.
+     * launch a workflow of the given type in the given [state].
+     *
+     * @param name allows multiple workflows of the same type to be managed at once. If
+     * no name is specified, we unique only on the type itself.
      */
     inline fun <reified S : Any, reified E : Any, reified O : Any> getStarter(
       launcherType: KClass<out Launcher<S, E, O>>,
@@ -60,8 +62,15 @@ sealed class WorkflowHandle<S : Any, E : Any, O : Any> {
  * a new [WorkflowHandle] when the workflow's state changes from the given,
  * or it produces a result.
  *
+ * In a [Reactor.onReact] implementation, pass the handle to
+ * `WorkflowPool.`[workflowUpdate()] inside a `select` block
+ * to start the workflow, handle its state updates, and handle the result
+ * when it finishes.
+ *
  * If you're using an Rx2 `EventChannel`, you'll pass the handle to `onWorkflowUpdate`
  * inside an `events.select {}` block.
+ *
+ * The easiest way to create instances is via [WorkflowHandle.getStarter].
  */
 data class RunWorkflow<S : Any, E : Any, O : Any>(
   override val id: Id<S, E, O>,
@@ -76,13 +85,3 @@ data class FinishedWorkflow<S : Any, E : Any, O : Any>(
   override val id: Id<S, E, O>,
   val result: O
 ) : WorkflowHandle<S, E, O>()
-
-/**
- * Make an ID for the [workflowType] of this [WorkflowHandle].
- *
- * @see Type.makeWorkflowId
- */
-inline fun <reified S : Any, reified E : Any, reified O : Any>
-    WorkflowHandle<S, E, O>.makeWorkflowId(name: String = ""): Id<S, E, O> =
-// We can't use id.type since ID hasn't been initialized yet.
-  Type(S::class, E::class, O::class).makeWorkflowId(name)

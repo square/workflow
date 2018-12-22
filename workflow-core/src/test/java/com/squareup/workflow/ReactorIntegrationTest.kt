@@ -322,9 +322,7 @@ class ReactorIntegrationTest {
     echoJobId: String,
     event: String
   ) {
-    val sketchyHandle =
-      RunWorkflow(StringEchoer::class.makeWorkflowId(echoJobId), "this is hacky")
-    pool.input(sketchyHandle)
+    pool.input(StringEchoer::class.makeWorkflowId(echoJobId))
         .sendEvent(event)
   }
 }
