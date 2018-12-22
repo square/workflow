@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.WorkflowPool.Id
 import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import org.junit.Test
@@ -65,12 +64,10 @@ class WorkflowPoolTest {
 
   val pool = WorkflowPool().apply { register(myReactor) }
 
-  inner class DelegatingState(
-    override val delegateState: String = "",
+  private fun handle(
+    state: String = "",
     name: String = ""
-  ) : Delegating<String, String, String> {
-    override val id: Id<String, String, String> = myReactor.workflowType.makeWorkflowId(name)
-  }
+  ) = RunWorkflow(myReactor.workflowType.makeWorkflowId(name), state)
 
   @Test fun `meta test myReactor reports states and result`() {
     val workflow = myReactor.launch(NEW, pool)
@@ -105,75 +102,75 @@ class WorkflowPoolTest {
   }
 
   @Test fun `waits for state after current`() {
-    val delegatingState = DelegatingState(NEW)
-    val nestedStateSub = pool.nextDelegateReaction(delegatingState)
+    val handle = handle(NEW)
+    val nestedStateSub = pool.workflowUpdate(handle)
     assertFalse(nestedStateSub.isCompleted)
 
-    val input = pool.input(delegatingState.id)
+    val input = pool.input(handle)
     input.sendEvent(NEW)
     input.sendEvent(NEW)
     input.sendEvent(NEW)
     assertFalse(nestedStateSub.isCompleted)
 
     input.sendEvent("fnord")
-    assertEquals(EnterState("fnord"), nestedStateSub.getCompleted())
+    assertEquals(handle("fnord"), nestedStateSub.getCompleted())
   }
 
   @Test fun `reports result`() {
-    val firstState = DelegatingState(NEW)
+    val firstState = handle(NEW)
 
     // We don't actually care about the reaction, just want the workflow to start.
-    pool.nextDelegateReaction(firstState)
+    pool.workflowUpdate(firstState)
 
     // Advance the state a bit.
-    val input = pool.input(firstState.id)
+    val input = pool.input(firstState)
     input.sendEvent("able")
     input.sendEvent("baker")
     input.sendEvent("charlie")
 
     // Check that we get the result we expect after the above events.
-    val resultSub = pool.nextDelegateReaction(DelegatingState("charlie"))
+    val resultSub = pool.workflowUpdate(handle("charlie"))
     assertFalse(resultSub.isCompleted)
 
     input.sendEvent(STOP)
-    assertEquals(FinishWith("charlie"), resultSub.getCompleted())
+    assertEquals(FinishedWorkflow(firstState.id, "charlie"), resultSub.getCompleted())
   }
 
   @Test fun `reports immediate result`() {
-    val delegatingState = DelegatingState(NEW)
-    val resultSub = pool.nextDelegateReaction(delegatingState)
+    val handle = handle(NEW)
+    val resultSub = pool.workflowUpdate(handle)
     assertFalse(resultSub.isCompleted)
 
-    val input = pool.input(delegatingState.id)
+    val input = pool.input(handle)
     input.sendEvent(STOP)
-    assertEquals(FinishWith(NEW), resultSub.getCompleted())
+    assertEquals(FinishedWorkflow(handle.id, NEW), resultSub.getCompleted())
   }
 
   @Test fun `inits once per next state`() {
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
     assertEquals(1, launchCount)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
     assertEquals(1, launchCount)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
     assertEquals(1, launchCount)
   }
 
   @Test fun `inits once per result`() {
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
     assertEquals(1, launchCount)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
     assertEquals(1, launchCount)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
     assertEquals(1, launchCount)
   }
 
   @Test fun `routes events`() {
-    pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
+    pool.workflowUpdate(handle())
+    val input = pool.input(handle())
 
     input.sendEvent("able")
     input.sendEvent("baker")
@@ -183,8 +180,8 @@ class WorkflowPoolTest {
   }
 
   @Test fun `drops late events`() {
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
-    pool.nextDelegateReaction(DelegatingState())
+    val input = pool.input(handle())
+    pool.workflowUpdate(handle())
 
     input.sendEvent("able")
     input.sendEvent("baker")
@@ -195,42 +192,42 @@ class WorkflowPoolTest {
   }
 
   @Test fun `drops early events`() {
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
+    val input = pool.input(handle())
     input.sendEvent("able")
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
     input.sendEvent("baker")
 
     assertEquals(listOf("baker"), eventsSent)
   }
 
   @Test fun `workflow isnt dropped until result reported`() {
-    pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
+    pool.workflowUpdate(handle())
+    val input = pool.input(handle())
 
     input.sendEvent("able")
     input.sendEvent("baker")
     // End the workflow.
     input.sendEvent(STOP)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
 
     assertEquals(listOf("able", "baker", STOP), eventsSent)
   }
 
   @Test fun `resumes routing events`() {
-    pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
+    pool.workflowUpdate(handle())
+    val input = pool.input(handle())
 
     input.sendEvent("able")
     input.sendEvent("baker")
     // End the workflow.
     input.sendEvent(STOP)
     // Consume the completed workflow.
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
 
     input.sendEvent("charlie")
     input.sendEvent("delta")
-    pool.nextDelegateReaction(DelegatingState())
+    pool.workflowUpdate(handle())
 
     input.sendEvent("echo")
     input.sendEvent("foxtrot")
@@ -240,20 +237,20 @@ class WorkflowPoolTest {
 
   @Test fun `abandons only once`() {
     assertEquals(0, abandonCount)
-    pool.nextDelegateReaction(DelegatingState(NEW))
-    pool.abandonDelegate(DelegatingState().id)
-    pool.abandonDelegate(DelegatingState().id)
-    pool.abandonDelegate(DelegatingState().id)
+    pool.workflowUpdate(handle(NEW))
+    pool.abandonWorkflow(handle().id)
+    pool.abandonWorkflow(handle().id)
+    pool.abandonWorkflow(handle().id)
     assertEquals(1, abandonCount)
   }
 
   @Test fun `abandon cancels deferred`() {
-    val alreadyInNewState = DelegatingState(NEW)
+    val alreadyInNewState = handle(NEW)
     val id = alreadyInNewState.id
 
-    val stateSub = pool.nextDelegateReaction(alreadyInNewState)
+    val stateSub = pool.workflowUpdate(alreadyInNewState)
 
-    pool.abandonDelegate(id)
+    pool.abandonWorkflow(id)
 
     assertTrue(stateSub.isCompletedExceptionally)
     assertTrue(stateSub.getCompletionExceptionOrNull() is CancellationException)

@@ -17,9 +17,9 @@
 
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.Delegating
-import com.squareup.workflow.Reaction
+import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Worker
+import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
 import io.reactivex.Single
 import io.reactivex.Single.just
@@ -82,22 +82,22 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
   }
 
   /**
-   * Starts the required nested workflow if it wasn't already running. This case will be selected
-   * the next time the nested workflow updates its state or completes.
-   * States that are equal to the [Delegating.delegateState] are skipped.
+   * Starts running the workflow described by [handle] in the given [state][RunWorkflow.state],
+   * if it wasn't running running. This case will be selected the next time the nested workflow updates its state
+   * or completes. States that are equal to the [RunWorkflow.state] are skipped.
    *
    * If the nested workflow was not already running, it is started in the
-   * [given state][Delegating.delegateState] (the initial state is not reported, since states equal
+   * [given state][RunWorkflow.state] (the initial state is not reported, since states equal
    * to the delegate state are skipped). Otherwise, the [Single] skips state updates that match the
    * given state.
    *
-   * If the nested workflow is [abandoned][WorkflowPool.abandonDelegate], this case will never
+   * If the nested workflow is [abandoned][WorkflowPool.abandonWorkflow], this case will never
    * be selected.
    */
-  fun <S : Any, O : Any> WorkflowPool.onNextDelegateReaction(
-    delegating: Delegating<S, *, O>,
-    handler: (Reaction<S, O>) -> R
-  ) = onSuspending(handler) { awaitNextDelegateReaction(delegating) }
+  fun <S : Any, E : Any, O : Any> WorkflowPool.onWorkflowUpdate(
+    handle: RunWorkflow<S, E, O>,
+    handler: (WorkflowHandle<S, E, O>) -> R
+  ) = onSuspending(handler) { awaitWorkflowUpdate(handle) }
 
   /**
    * Starts the indicated [worker] if it wasn't already running, and selects on the result from

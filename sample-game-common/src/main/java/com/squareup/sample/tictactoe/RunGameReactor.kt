@@ -37,9 +37,13 @@ import com.squareup.sample.tictactoe.SyncState.SAVE_FAILED
 import com.squareup.sample.tictactoe.SyncState.SAVING
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
+import com.squareup.workflow.FinishedWorkflow
 import com.squareup.workflow.Reaction
+import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
@@ -53,6 +57,23 @@ enum class RunGameResult {
 }
 
 /**
+ * We define this otherwise redundant interface to keep composite reactors
+ * that build on [RunGameReactor] decoupled from it, for ease of testing.
+ */
+interface RunGameLauncher : Launcher<RunGameState, RunGameEvent, RunGameResult> {
+  companion object {
+    /**
+     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
+     * [launch] and start a workflow.
+     */
+    fun getStarter(
+      state: RunGameState = RunGameState.startingState()
+    ): RunWorkflow<RunGameState, RunGameEvent, RunGameResult> =
+      WorkflowHandle.getStarter(RunGameLauncher::class, state)
+  }
+}
+
+/**
  * Runs the screens around a Tic Tac Toe game: prompts for player names, runs a
  * confirm quit screen, and offers a chance to play again. Delegates to [TakeTurnsReactor]
  * for the actual playing of the game.
@@ -62,7 +83,7 @@ enum class RunGameResult {
 class RunGameReactor(
   private val takeTurnsReactor: TakeTurnsReactor,
   gameLog: GameLog
-) : Reactor<RunGameState, RunGameEvent, RunGameResult> {
+) : Reactor<RunGameState, RunGameEvent, RunGameResult>, RunGameLauncher {
 
   private val logGameWorker = singleWorker(gameLog::logGame)
 
@@ -86,10 +107,10 @@ class RunGameReactor(
     }
 
     is Playing -> events.select {
-      workflows.onNextDelegateReaction(state) {
+      workflows.onWorkflowUpdate(state.takingTurns) {
         when (it) {
-          is EnterState -> EnterState(state.copy(delegateState = it.state))
-          is FinishWith -> when (it.result.ending) {
+          is RunWorkflow -> EnterState(Playing(it))
+          is FinishedWorkflow -> when (it.result.ending) {
             Quitted -> EnterState(MaybeQuitting(it.result))
             else -> EnterState(GameOver(it.result))
           }

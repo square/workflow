@@ -15,13 +15,14 @@
  */
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.Delegating
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
+import com.squareup.workflow.FinishedWorkflow
 import com.squareup.workflow.Reaction
+import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.register
 import com.squareup.workflow.workflowType
 import io.reactivex.Single
@@ -33,7 +34,7 @@ import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
-class WorkflowPoolIntegrationTest {
+class Rx2WorkflowPoolIntegrationTest {
   companion object {
     const val NEW = "*NEW*"
     const val STOP = "*STOP*"
@@ -73,15 +74,12 @@ class WorkflowPoolIntegrationTest {
 
   val myReactor = MyReactor()
 
-  val pool = WorkflowPool()
-      .apply { register(myReactor) }
+  val pool = WorkflowPool().apply { register(myReactor) }
 
-  inner class DelegatingState(
-    override val delegateState: String = "",
+  private fun handle(
+    state: String = "",
     name: String = ""
-  ) : Delegating<String, String, String> {
-    override val id: Id<String, String, String> = myReactor.workflowType.makeWorkflowId(name)
-  }
+  ) = RunWorkflow(myReactor.workflowType.makeWorkflowId(name), state)
 
   @Test fun `meta test myReactor reports states and result`() {
     val workflow = myReactor.launch(NEW, pool)
@@ -119,79 +117,80 @@ class WorkflowPoolIntegrationTest {
   }
 
   @Test fun `waits for state after current`() {
-    val delegatingState = DelegatingState(NEW)
-    val nestedStateSub = pool.nextDelegateReaction(delegatingState)
+    val handle = handle(NEW)
+    val nestedStateSub = pool.testOnWorkflowUpdate(handle)
     nestedStateSub.assertNoValues()
 
-    val input = pool.input(delegatingState.id)
+    val input = pool.input(handle)
     input.sendEvent(NEW)
     input.sendEvent(NEW)
     input.sendEvent(NEW)
     nestedStateSub.assertNoValues()
 
     input.sendEvent("fnord")
-    nestedStateSub.assertValue(EnterState("fnord"))
+    nestedStateSub.assertValue(RunWorkflow(handle.id, "fnord"))
     nestedStateSub.assertComplete()
   }
 
   @Test fun `reports result`() {
-    val firstState = DelegatingState(NEW)
+    val handle = handle(NEW)
 
     // We don't actually care about the reaction, just want the workflow
     // to start.
-    pool.nextDelegateReaction(firstState)
+    pool.testOnWorkflowUpdate(handle)
 
     // Advance the state a bit.
-    val input = pool.input(firstState.id)
+    val input = pool.input(handle)
     input.sendEvent("able")
     input.sendEvent("baker")
     input.sendEvent("charlie")
 
     // Check that we get the result we expect after the above events.
-    val resultSub = pool.nextDelegateReaction(DelegatingState("charlie"))
+    val resultSub = pool.testOnWorkflowUpdate(handle("charlie"))
     resultSub.assertNoValues()
 
     input.sendEvent(STOP)
-    resultSub.assertValue(FinishWith("charlie"))
+    resultSub.assertValue(FinishedWorkflow(handle.id, "charlie"))
     resultSub.assertComplete()
   }
 
   @Test fun `reports immediate result`() {
-    val delegatingState = DelegatingState(NEW)
-    val resultSub = pool.nextDelegateReaction(delegatingState)
+    val handle = handle(NEW)
+    val resultSub = pool.testOnWorkflowUpdate(handle)
     resultSub.assertNoValues()
 
-    val input = pool.input(delegatingState.id)
+    val input = pool.input(handle)
     input.sendEvent(STOP)
-    resultSub.assertValue(FinishWith(NEW))
+    resultSub.assertValue(FinishedWorkflow(handle.id, NEW))
     resultSub.assertComplete()
   }
 
   @Test fun `inits once per next state`() {
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle())
     assertThat(launchCount).isEqualTo(1)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle())
     assertThat(launchCount).isEqualTo(1)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle())
     assertThat(launchCount).isEqualTo(1)
   }
 
   @Test fun `inits once per result`() {
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle())
     assertThat(launchCount).isEqualTo(1)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle())
     assertThat(launchCount).isEqualTo(1)
 
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle())
     assertThat(launchCount).isEqualTo(1)
   }
 
   @Test fun `routes events`() {
-    pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
+    val handle = handle()
+    pool.testOnWorkflowUpdate(handle)
+    val input = pool.input(handle)
 
     input.sendEvent("able")
     input.sendEvent("baker")
@@ -201,8 +200,9 @@ class WorkflowPoolIntegrationTest {
   }
 
   @Test fun `drops late events`() {
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
-    pool.nextDelegateReaction(DelegatingState())
+    val handle = handle()
+    val input = pool.input(handle)
+    pool.testOnWorkflowUpdate(handle)
 
     input.sendEvent("able")
     input.sendEvent("baker")
@@ -218,28 +218,30 @@ class WorkflowPoolIntegrationTest {
   }
 
   @Test fun `drops early events`() {
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
+    val handle = handle()
+    val input = pool.input(handle)
     input.sendEvent("able")
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle)
     input.sendEvent("baker")
 
     assertThat(eventsSent).isEqualTo(listOf("baker"))
   }
 
   @Test fun `resumes routing events`() {
-    pool.nextDelegateReaction(DelegatingState())
-    val input = pool.input(myReactor.workflowType.makeWorkflowId())
+    val handle = handle()
+    pool.testOnWorkflowUpdate(handle)
+    val input = pool.input(handle)
 
     input.sendEvent("able")
     input.sendEvent("baker")
     // End the workflow.
     input.sendEvent(STOP)
     // Consume the completed workflow.
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle)
 
     input.sendEvent("charlie")
     input.sendEvent("delta")
-    pool.nextDelegateReaction(DelegatingState())
+    pool.testOnWorkflowUpdate(handle)
 
     input.sendEvent("echo")
     input.sendEvent("foxtrot")
@@ -254,20 +256,18 @@ class WorkflowPoolIntegrationTest {
 
   @Test fun `abandons only once`() {
     assertThat(abandonCount).isZero()
-    pool.nextDelegateReaction(DelegatingState(NEW))
-    pool.abandonDelegate(DelegatingState().id)
-    pool.abandonDelegate(DelegatingState().id)
-    pool.abandonDelegate(DelegatingState().id)
+    pool.testOnWorkflowUpdate(handle(NEW))
+    pool.abandonWorkflow(handle())
+    pool.abandonWorkflow(handle())
+    pool.abandonWorkflow(handle())
     assertThat(abandonCount).isEqualTo(1)
   }
 
   @Test fun `abandon emits nothing and does not complete`() {
-    val alreadyInNewState = DelegatingState(NEW)
-    val id = alreadyInNewState.id
+    val alreadyInNewState = handle(NEW)
+    val stateSub = pool.testOnWorkflowUpdate(alreadyInNewState)
 
-    val stateSub = pool.nextDelegateReaction(alreadyInNewState)
-
-    pool.abandonDelegate(id)
+    pool.abandonWorkflow(alreadyInNewState)
 
     stateSub.assertNoValues()
     stateSub.assertNotTerminated()
@@ -275,12 +275,13 @@ class WorkflowPoolIntegrationTest {
 }
 
 /**
- * Helper for calling and subscribing to [com.squareup.workflow.nextDelegateReaction] for tests..
+ * Helper for calling and subscribing to
+ * [com.squareup.workflow.rx2.EventSelectBuilder.onWorkflowUpdate] for tests.
  */
 @Suppress("UNCHECKED_CAST")
-private fun <S : Any, O : Any> WorkflowPool.nextDelegateReaction(
-  delegating: Delegating<S, *, O>
-): TestObserver<Reaction<S, O>> = Channel<Nothing>().asEventChannel()
-    .select<Reaction<S, O>> {
-      onNextDelegateReaction(delegating) { it }
-    }.test() as TestObserver<Reaction<S, O>>
+private fun <S : Any, E : Any, O : Any> WorkflowPool.testOnWorkflowUpdate(
+  handle: RunWorkflow<S, E, O>
+): TestObserver<WorkflowHandle<S, E, O>> = Channel<Nothing>().asEventChannel()
+    .select<WorkflowHandle<S, E, O>> {
+      onWorkflowUpdate(handle) { it }
+    }.test() as TestObserver<WorkflowHandle<S, E, O>>

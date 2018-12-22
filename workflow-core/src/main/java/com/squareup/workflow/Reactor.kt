@@ -114,7 +114,7 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
  *    }
  *
  * To define a state that delegates to a nested workflow, have the [S] subtype that
- * represents it implement [Delegating]. Use [WorkflowPool.awaitNextDelegateReaction]
+ * represents it implement [Delegating]. Use [WorkflowPool.awaitWorkflowUpdate]
  * when entering that state to drive the nested workflow and react to its result.
  *
  * For example, in the simplest case, where the parent workflow accepts no events
@@ -143,7 +143,7 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
  *        return doLaunch(initialState, workflows)
  *      }
  *
- * and in your [onReact] method, use [WorkflowPool.nextDelegateReaction]
+ * and in your [onReact] method, use [WorkflowPool.workflowUpdate]
  * to wait for the nested workflow to do its job:
  *
  *    is Delegating -> workflows.awaitNextDelegateReaction(state).let {
@@ -158,7 +158,7 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
  *
  * If you need to handle other events while the workflow is running, use the events channel and
  * `select` again.
- * Remember to call [WorkflowPool.abandonDelegate] if you leave while the nested workflow is still
+ * Remember to call [WorkflowPool.abandonWorkflow] if you leave while the nested workflow is still
  * running!
  *
  *    is Delegating -> select {

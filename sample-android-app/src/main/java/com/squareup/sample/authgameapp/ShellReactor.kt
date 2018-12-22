@@ -17,11 +17,14 @@ package com.squareup.sample.authgameapp
 
 import com.squareup.sample.authgameapp.ShellState.Authenticating
 import com.squareup.sample.authgameapp.ShellState.RunningGame
+import com.squareup.sample.authworkflow.AuthLauncher
 import com.squareup.sample.authworkflow.AuthReactor
+import com.squareup.sample.tictactoe.RunGameLauncher
 import com.squareup.sample.tictactoe.RunGameReactor
 import com.squareup.workflow.EnterState
-import com.squareup.workflow.FinishWith
+import com.squareup.workflow.FinishedWorkflow
 import com.squareup.workflow.Reaction
+import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.register
@@ -37,7 +40,7 @@ import io.reactivex.Single
  * Delegates to [AuthReactor] and [RunGameReactor]. Responsible only for deciding
  * what to do as each nested workflow ends.
  */
-typealias ShellWorkflow = Workflow<ShellState, Nothing, Unit>
+typealias ShellWorkflow = Workflow<ShellState, LogOut, Unit>
 
 /**
  * Only event handled by [ShellReactor].
@@ -45,16 +48,16 @@ typealias ShellWorkflow = Workflow<ShellState, Nothing, Unit>
 object LogOut
 
 internal class ShellReactor(
-  private val runGameReactor: RunGameReactor,
-  private val authReactor: AuthReactor
+  private val runGameLauncher: RunGameLauncher,
+  private val authLauncher: AuthLauncher
 ) : Reactor<ShellState, LogOut, Unit> {
 
   override fun launch(
     initialState: ShellState,
     workflows: WorkflowPool
-  ): Workflow<ShellState, LogOut, Unit> {
-    workflows.register(runGameReactor)
-    workflows.register(authReactor)
+  ): ShellWorkflow {
+    workflows.register(runGameLauncher)
+    workflows.register(authLauncher)
 
     return doLaunch(initialState, workflows)
   }
@@ -65,24 +68,24 @@ internal class ShellReactor(
     workflows: WorkflowPool
   ): Single<out Reaction<ShellState, Unit>> = when (state) {
     is Authenticating -> events.select {
-      workflows.onNextDelegateReaction(state) {
+      workflows.onWorkflowUpdate(state.authWorkflow) {
         when (it) {
-          is EnterState -> EnterState<ShellState>(state.copy(delegateState = it.state))
-          is FinishWith -> EnterState(RunningGame())
+          is RunWorkflow -> EnterState<ShellState>(Authenticating(it))
+          is FinishedWorkflow -> EnterState(RunningGame())
         }
       }
     }
 
     is RunningGame -> events.select {
       onEvent<LogOut> {
-        workflows.abandonDelegate(state.id)
+        workflows.abandonWorkflow(state.runGameWorkflow)
         EnterState(Authenticating())
       }
 
-      workflows.onNextDelegateReaction(state) {
+      workflows.onWorkflowUpdate(state.runGameWorkflow) {
         when (it) {
-          is EnterState -> EnterState(state.copy(delegateState = it.state))
-          is FinishWith -> EnterState(RunningGame())
+          is RunWorkflow -> EnterState(RunningGame(it))
+          is FinishedWorkflow -> EnterState(RunningGame())
         }
       }
     }

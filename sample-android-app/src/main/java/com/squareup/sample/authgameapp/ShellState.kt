@@ -16,15 +16,14 @@
 package com.squareup.sample.authgameapp
 
 import com.squareup.sample.authworkflow.AuthEvent
-import com.squareup.sample.authworkflow.AuthReactor
+import com.squareup.sample.authworkflow.AuthLauncher
 import com.squareup.sample.authworkflow.AuthState
 import com.squareup.sample.tictactoe.RunGameEvent
-import com.squareup.sample.tictactoe.RunGameReactor
+import com.squareup.sample.tictactoe.RunGameLauncher
 import com.squareup.sample.tictactoe.RunGameResult
 import com.squareup.sample.tictactoe.RunGameState
-import com.squareup.workflow.Delegating
+import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.readUtf8WithLength
@@ -36,49 +35,41 @@ import kotlin.reflect.jvm.jvmName
 /**
  * The state of [ShellReactor]. Indicates which nested workflow is running, and records
  * the current nested state.
- *
- * There is a bit of anti-DRY boilerplate in here that we could probably make more concise
- * with some type param craftiness, but that would probably make for confusing sample code.
  */
 sealed class ShellState {
 
   internal data class Authenticating(
-    override val delegateState: AuthState = AuthState.start()
-  ) : ShellState(), Delegating<AuthState, AuthEvent, String> {
-    override val id = AuthReactor::class.makeWorkflowId()
-  }
+    val authWorkflow: RunWorkflow<AuthState, AuthEvent, String> = AuthLauncher.getStarter()
+  ) : ShellState()
 
   internal data class RunningGame(
-    override val delegateState: RunGameState = RunGameState.start()
-  ) : ShellState(), Delegating<RunGameState, RunGameEvent, RunGameResult> {
-    override val id = RunGameReactor::class.makeWorkflowId()
-  }
+    val runGameWorkflow: RunWorkflow<RunGameState, RunGameEvent, RunGameResult> =
+      RunGameLauncher.getStarter()
+  ) : ShellState()
 
   fun toSnapshot(): Snapshot {
     return Snapshot.write { sink ->
       sink.writeUtf8WithLength(this::class.jvmName)
 
       when (this) {
-        is Authenticating -> sink.writeByteStringWithLength(delegateState.toSnapshot().bytes)
-        is RunningGame -> sink.writeByteStringWithLength(delegateState.toSnapshot().bytes)
+        is Authenticating -> sink.writeByteStringWithLength(authWorkflow.state.toSnapshot().bytes)
+        is RunningGame -> sink.writeByteStringWithLength(runGameWorkflow.state.toSnapshot().bytes)
       }
     }
   }
 
   companion object {
-    fun start(snapshot: Snapshot?): ShellState {
-      return snapshot?.let { fromSnapshot(it.bytes) } ?: Authenticating()
-    }
+    fun startingState(): ShellState = Authenticating()
 
-    private fun fromSnapshot(byteString: ByteString): ShellState = byteString.parse {
+    fun fromSnapshot(byteString: ByteString): ShellState = byteString.parse {
       val shellStateName = it.readUtf8WithLength()
-      val delegateByteString = (it.readByteStringWithLength())
+      val delegateByteString = it.readByteStringWithLength()
 
       return when (shellStateName) {
         Authenticating::class.jvmName ->
-          Authenticating(AuthState.fromSnapshot(delegateByteString))
+          Authenticating(AuthLauncher.getStarter(AuthState.fromSnapshot(delegateByteString)))
         RunningGame::class.jvmName ->
-          RunningGame(RunGameState.fromSnapshot(delegateByteString))
+          RunningGame(RunGameLauncher.getStarter(RunGameState.fromSnapshot(delegateByteString)))
 
         else -> throw IllegalArgumentException("Unrecognized state: $shellStateName")
       }

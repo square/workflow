@@ -96,7 +96,7 @@ import com.squareup.workflow.Reactor as CoroutineReactor
  * If you need to mix such command-like [Single]s with workflow events, make a
  * [Worker][com.squareup.workflow.Worker] for your `Single` using [singleWorker].
  * [EventChannel] offers [onWorkerResult][EventSelectBuilder.onWorkerResult] in addition to
- * `onEvent`. Remember to call [WorkflowPool.abandonDelegate] if you leave while the `Worker` is
+ * `onEvent`. Remember to call [WorkflowPool.abandonWorkflow] if you leave while the `Worker` is
  * still running!
  *
  *    private val updateWorker = singleWorker { statusService.update }
@@ -147,7 +147,7 @@ import com.squareup.workflow.Reactor as CoroutineReactor
  *
  * To define a state that delegates to a nested workflow, have the [S] subtype that represents it
  * implement [com.squareup.workflow.Delegating]. Use
- * [onNextDelegateReaction][EventSelectBuilder.onNextDelegateReaction] when entering that state to
+ * [onNextDelegateReaction][EventSelectBuilder.onWorkflowUpdate] when entering that state to
  * drive the nested workflow and react to its result.
  *
  * For example, in the simplest case, where the parent workflow accepts no events of its own while
@@ -175,7 +175,7 @@ import com.squareup.workflow.Reactor as CoroutineReactor
  *      }
  *
  * and in your [onReact] method, use
- * [onNextDelegateReaction][EventSelectBuilder.onNextDelegateReaction] to wait for the nested
+ * [onNextDelegateReaction][EventSelectBuilder.onWorkflowUpdate] to wait for the nested
  * workflow to do its job:
  *
  *    is Delegating -> events.select {
@@ -191,7 +191,7 @@ import com.squareup.workflow.Reactor as CoroutineReactor
  *    }
  *
  * If you need to handle other events while the workflow is running, remember to call
- * [WorkflowPool.abandonDelegate] if you leave while the nested workflow is still running!
+ * [WorkflowPool.abandonWorkflow] if you leave while the nested workflow is still running!
  *
  *    is Delegating -> events.select {
  *      workflows.onNextDelegateReaction(state) {

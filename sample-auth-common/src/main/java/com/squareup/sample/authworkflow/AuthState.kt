@@ -59,7 +59,7 @@ sealed class AuthState {
   }
 
   companion object {
-    fun start(): AuthState = LoginPrompt()
+    fun startingState(): AuthState = LoginPrompt()
 
     // Tags used to serialize the state.
     internal const val LOGIN_PROMPT_TAG = 0

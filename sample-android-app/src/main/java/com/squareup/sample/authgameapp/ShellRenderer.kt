@@ -40,14 +40,14 @@ object ShellRenderer :
     return when (state) {
       is Authenticating ->
         AuthRenderer.render(
-            state.delegateState,
-            workflows.input(state.id),
+            state.authWorkflow.state,
+            workflows.input(state.authWorkflow),
             workflows
         ).toMainAndModal()
 
       is RunningGame -> RunGameRenderer.render(
-          state.delegateState,
-          workflows.input(state.id),
+          state.runGameWorkflow.state,
+          workflows.input(state.runGameWorkflow),
           workflows
       )
     }

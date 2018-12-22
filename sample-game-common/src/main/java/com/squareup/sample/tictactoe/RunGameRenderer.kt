@@ -36,7 +36,7 @@ object RunGameRenderer :
 
       is Playing -> {
         return TakeTurnsRenderer
-            .render(state.delegateState, workflows.input(state.id), workflows)
+            .render(state.takingTurns.state, workflows.input(state.takingTurns), workflows)
             .let { MainAndModalScreen(it) }
       }
 

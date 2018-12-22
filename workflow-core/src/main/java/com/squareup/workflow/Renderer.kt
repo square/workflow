@@ -17,16 +17,19 @@ package com.squareup.workflow
 
 /**
  * Given a workflow state [S], converts it to a type suitable for use as a view model.
- * At the moment, this probably means [AnyScreen] or [LayeredScreen].
  */
 interface Renderer<S : Any, E : Any, R : Any> {
 
   /**
    * Renders [state] and [workflow] as [R].
    *
-   * When [S] is a [Delegating] state, you'll typically make recursive calls
-   * to the [Renderer] for its [nested state][Delegating.delegateState],
-   * finding the appropriate [WorkflowInput] to provide it via [WorkflowPool.input].
+   * Any [RunWorkflow] field of [S] can be handled via a recursive calls
+   * to the [Renderer] appropriate for its [state][RunWorkflow.state],
+   * using [WorkflowPool.input] to find the right [WorkflowInput].
+   *
+   * By making the parent [Renderer] responsible for finding the [WorkflowInput] to
+   * be used by the child, we allow the parent to intercept the child's events. E.g.,
+   * a modal parent can disable a child by passing it [WorkflowInput.disabled].
    */
   fun render(
     state: S,

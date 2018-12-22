@@ -15,34 +15,35 @@
  */
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.Delegating
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
+import com.squareup.workflow.FinishedWorkflow
 import com.squareup.workflow.Reaction
+import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.register
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Background
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Cancel
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Pause
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.Resume
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.RunEchoJob
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterEvent.RunImmediateJob
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterReactor
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.Idle
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.Paused
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.RunningEchoJob
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.OuterState.RunningImmediateJob
-import com.squareup.workflow.rx2.ComposedReactorIntegrationTest.StringEchoer
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Background
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Cancel
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Pause
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Resume
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.RunEchoJob
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.RunImmediateJob
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterReactor
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterState.Idle
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterState.Paused
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterState.RunningEchoJob
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterState.RunningImmediateJob
+import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.StringEchoer
 import io.reactivex.Single
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 
 /**
- * Tests [Reactor], [Delegating] and [WorkflowPool], with an [OuterReactor]
+ * Tests [Reactor], [WorkflowHandle] and [WorkflowPool], with an [OuterReactor]
  * that can run, pause, background, resume named instances of an [StringEchoer].
  *
  * This IS NOT meant to be an example of how to write workflows in production.
@@ -50,7 +51,7 @@ import org.junit.Test
  * to exercise running concurrent workflows of the same time.
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class ComposedReactorIntegrationTest {
+class Rx2ReactorIntegrationTest {
   @Rule @JvmField val assemblyTracking = RxAssemblyTrackingRule()
 
   @Test fun `run and see result after state update`() {
@@ -200,38 +201,33 @@ class ComposedReactorIntegrationTest {
     ): Workflow<Unit, String, Unit> = doLaunch(initialState, workflows)
   }
 
-  val immediateReactor =
-    ImmediateOnSuccess()
+  val immediateReactor = ImmediateOnSuccess()
 
   sealed class OuterState {
     object Idle : OuterState()
 
-    data class RunningEchoJob constructor(
-      override val id: Id<String, String, String>,
-      override val delegateState: String
-    ) : OuterState(), Delegating<String, String, String> {
-      constructor(
-        id: String,
-        state: String
-      ) : this(StringEchoer::class.makeWorkflowId(id), state)
-    }
-
-    data class Paused(
-      val id: String,
-      val lastState: String
+    data class RunningEchoJob(
+      val echoer: RunWorkflow<String, String, String>
     ) : OuterState()
 
-    object RunningImmediateJob : OuterState(), Delegating<Unit, String, Unit> {
-      override val id = makeWorkflowId()
-      override val delegateState = Unit
+    data class Paused(
+      val echoer: RunWorkflow<String, String, String>
+    ) : OuterState()
+
+    object RunningImmediateJob : OuterState() {
+      val job = RunWorkflow(ImmediateOnSuccess::class.makeWorkflowId(), Unit)
     }
   }
 
   sealed class OuterEvent {
     data class RunEchoJob(
-      val id: String,
-      val state: String = NEW_ECHO_JOB
-    ) : OuterEvent()
+      val echoer: RunWorkflow<String, String, String>
+    ) : OuterEvent() {
+      constructor(
+        id: String,
+        state: String = NEW_ECHO_JOB
+      ) : this(RunWorkflow(StringEchoer::class.makeWorkflowId(id), state))
+    }
 
     object RunImmediateJob : OuterEvent()
 
@@ -254,6 +250,11 @@ class ComposedReactorIntegrationTest {
 
   /**
    * One running job, which might be paused or backgrounded. Any number of background jobs.
+   *
+   * There are two kinds of jobs:
+   *
+   *  - [StringEchoer], whose state is the last String event it received
+   *  - [ImmediateOnSuccess], which immediately completes
    */
   inner class OuterReactor : Reactor<OuterState, OuterEvent, Unit> {
     override fun onReact(
@@ -263,16 +264,16 @@ class ComposedReactorIntegrationTest {
     ): Single<out Reaction<OuterState, Unit>> = when (state) {
 
       Idle -> events.select {
-        onEvent<RunEchoJob> { EnterState(RunningEchoJob(it.id, it.state)) }
+        onEvent<RunEchoJob> { EnterState(RunningEchoJob(it.echoer)) }
         onEvent<RunImmediateJob> { EnterState(RunningImmediateJob) }
         onEvent<Cancel> { FinishWith(Unit) }
       }
 
       is RunningEchoJob -> events.select {
-        workflows.onNextDelegateReaction(state) {
+        workflows.onWorkflowUpdate(state.echoer) {
           when (it) {
-            is EnterState -> EnterState(state.copy(delegateState = it.state))
-            is FinishWith -> {
+            is RunWorkflow -> EnterState(RunningEchoJob(it))
+            is FinishedWorkflow -> {
               results += it.result
               EnterState(Idle)
             }
@@ -280,28 +281,30 @@ class ComposedReactorIntegrationTest {
         }
 
         onEvent<Pause> {
-          workflows.abandonDelegate(state.id)
-          EnterState(Paused(state.id.name, state.delegateState))
+          workflows.abandonWorkflow(state.echoer)
+          EnterState(Paused(state.echoer))
         }
 
         onEvent<Background> { EnterState(Idle) }
 
         onEvent<Cancel> {
-          workflows.abandonDelegate(state.id)
+          workflows.abandonWorkflow(state.echoer)
           EnterState(Idle)
         }
       }
 
       is Paused -> events.select {
-        onEvent<Resume> { EnterState(RunningEchoJob(state.id, state.lastState)) }
+        onEvent<Resume> { EnterState(RunningEchoJob(state.echoer)) }
         onEvent<Cancel> { EnterState(Idle) }
       }
 
       is RunningImmediateJob -> events.select {
-        workflows.onNextDelegateReaction(state) {
+        workflows.onWorkflowUpdate(state.job) {
           when (it) {
-            is EnterState -> throw AssertionError("Should never re-enter $RunningImmediateJob.")
-            is FinishWith -> {
+            is RunWorkflow -> throw AssertionError(
+                "Should never re-enter $RunningImmediateJob."
+            )
+            is FinishedWorkflow -> {
               results += "Finished ${ImmediateOnSuccess::class}"
               EnterState(Idle)
             }
