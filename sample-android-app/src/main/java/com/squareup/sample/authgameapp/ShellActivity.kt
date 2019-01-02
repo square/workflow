@@ -27,8 +27,8 @@ import com.squareup.viewbuilder.StackedMainAndModalScreen
 import com.squareup.viewbuilder.ViewBuilder
 import com.squareup.viewbuilder.ViewBuilder.Registry
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.rx2.result
 import com.squareup.workflow.rx2.state
+import com.squareup.workflow.rx2.toCompletable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
@@ -85,7 +85,7 @@ class ShellActivity : AppCompatActivity() {
 
     // When the workflow fires its one and only result, quit the app.
     // TODO(ray) this never happens, add back button handling.
-    subs.add(workflow.result.subscribe { finish() })
+    subs.add(workflow.toCompletable().subscribe { finish() })
 
     val viewFactory = buildViewFactory()
     val rootViewBuilder: ViewBuilder<StackedMainAndModalScreen<*, ConfirmQuitScreen>> =
