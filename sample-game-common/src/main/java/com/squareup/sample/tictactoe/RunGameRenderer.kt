@@ -23,6 +23,7 @@ import com.squareup.viewbuilder.StackedMainAndModalScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.render
 
 object RunGameRenderer :
     Renderer<RunGameState, RunGameEvent, StackedMainAndModalScreen<*, ConfirmQuitScreen>> {
@@ -36,7 +37,7 @@ object RunGameRenderer :
 
       is Playing -> {
         return TakeTurnsRenderer
-            .render(state.takingTurns.state, workflows.input(state.takingTurns), workflows)
+            .render(state.takingTurns, workflows)
             .let { MainAndModalScreen(it) }
       }
 

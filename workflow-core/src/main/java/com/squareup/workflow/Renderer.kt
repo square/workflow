@@ -37,3 +37,12 @@ interface Renderer<S : Any, E : Any, R : Any> {
     workflows: WorkflowPool
   ): R
 }
+
+/**
+ * Convenience for the usual case where we're rendering a [handle][RunWorkflow] and sending
+ * events to the [WorkflowInput] it identifies.
+ */
+fun <S : Any, E : Any, O : Any, R : Any> Renderer<S, E, R>.render(
+  handle: RunWorkflow<S, E, O>,
+  workflows: WorkflowPool
+): R = render(handle.state, workflows.input(handle), workflows)
