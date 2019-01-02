@@ -25,6 +25,7 @@ import com.squareup.viewbuilder.toMainAndModal
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.render
 
 /**
  * TODO(rjrjr): it's weird and distracting that the specific modal type (ConfirmQuitScreen) leaks
@@ -38,18 +39,9 @@ object ShellRenderer :
     workflows: WorkflowPool
   ): StackedMainAndModalScreen<*, ConfirmQuitScreen> {
     return when (state) {
-      is Authenticating ->
-        AuthRenderer.render(
-            state.authWorkflow.state,
-            workflows.input(state.authWorkflow),
-            workflows
-        ).toMainAndModal()
+      is Authenticating -> AuthRenderer.render(state.authWorkflow, workflows).toMainAndModal()
 
-      is RunningGame -> RunGameRenderer.render(
-          state.runGameWorkflow.state,
-          workflows.input(state.runGameWorkflow),
-          workflows
-      )
+      is RunningGame -> RunGameRenderer.render(state.runGameWorkflow, workflows)
     }
   }
 }
