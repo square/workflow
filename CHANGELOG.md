@@ -1,15 +1,27 @@
 Change Log
 ==========
 
+## Version 0.6.0
+
+_2019-1-2_
+
+ * Breaking improvements to `WorkflowPool` API --
+   `Delegating` interface replaced by `WorkflowHandle` sealed class. (#98)
+ * Deprecates `EventSelectBuilder.onSuccess`, replaced by `onWorkflowUpdate`
+   and `onWorkerResult`. (#89)
+ * Sample code includes unit test of a composite workflow, `ShellReactorTest`,
+   demonstrating how to keep composites decoupled from their components. (#102)
+ * Adds `eventChannelOf` helper for testing. (#85, #95)
+
 ## Version 0.5.0
 
 _2018-12-11_
 
  * Improvements to `switchMapState`:
-     * Fix: `switchMapState` now is actually a switch map, was previously behaving like a concat
-       map. (#69, #71)
-     * Introduced variation that takes a lambda that returns an RxJava2 `Observable`, for
-       `workflow-rx2` consumers. (#53)
+    * Fix: `switchMapState` now is actually a switch map, was previously behaving like a concat
+      map. (#69, #71)
+    * Introduced variation that takes a lambda that returns an RxJava2 `Observable`, for
+      `workflow-rx2` consumers. (#53)
  * Factored the channel and coroutine management out of `ReactorWorkflow` into a more pure
    `workflow` builder function. (d0aef29)
  * Fix: Race condition in `WorkflowPool`. (#45)
