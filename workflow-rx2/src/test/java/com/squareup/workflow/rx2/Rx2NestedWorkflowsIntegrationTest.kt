@@ -23,27 +23,28 @@ import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.register
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Background
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Cancel
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Pause
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Resume
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.RunEchoJob
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.RunImmediateJob
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterReactor
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterState.Idle
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterState.Paused
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterState.RunningEchoJob
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterState.RunningImmediateJob
-import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.StringEchoer
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterEvent.Background
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterEvent.Cancel
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterEvent.Pause
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterEvent.Resume
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterEvent.RunEchoJob
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterEvent.RunImmediateJob
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterLauncher
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterState.Idle
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterState.Paused
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterState.RunningEchoJob
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.OuterState.RunningImmediateJob
+import com.squareup.workflow.rx2.Rx2NestedWorkflowsIntegrationTest.StringEchoer
 import io.reactivex.Single
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 
 /**
- * Tests [Reactor], [WorkflowHandle] and [WorkflowPool], with an [OuterReactor]
+ * Tests [discreteStateWorkflow], [WorkflowHandle] and [WorkflowPool], with an [OuterLauncher]
  * that can run, pause, background, resume named instances of an [StringEchoer].
  *
  * This IS NOT meant to be an example of how to write workflows in production.
@@ -51,11 +52,11 @@ import org.junit.Test
  * to exercise running concurrent workflows of the same time.
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class Rx2ReactorIntegrationTest {
+class Rx2NestedWorkflowsIntegrationTest {
   @Rule @JvmField val assemblyTracking = RxAssemblyTrackingRule()
 
   @Test fun `run and see result after state update`() {
-    val workflow = outerReactor.launch()
+    val workflow = outerLauncher.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "fnord")
     sendEchoEvent("job", STOP_ECHO_JOB)
@@ -64,7 +65,7 @@ class Rx2ReactorIntegrationTest {
   }
 
   @Test fun `run and see result after no state updates`() {
-    val workflow = outerReactor.launch()
+    val workflow = outerLauncher.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", STOP_ECHO_JOB)
     assertThat(results).isEqualTo(listOf(NEW_ECHO_JOB))
@@ -72,7 +73,7 @@ class Rx2ReactorIntegrationTest {
   }
 
   @Test fun `pause does abandon and restart from saved state`() {
-    val workflow = outerReactor.launch()
+    val workflow = outerLauncher.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "able")
 
@@ -86,7 +87,7 @@ class Rx2ReactorIntegrationTest {
   }
 
   @Test fun `pause immediately and resume and complete immediately`() {
-    val workflow = outerReactor.launch()
+    val workflow = outerLauncher.launch()
     workflow.sendEvent(RunEchoJob("job"))
     workflow.sendEvent(Pause)
     workflow.sendEvent(Resume)
@@ -97,7 +98,7 @@ class Rx2ReactorIntegrationTest {
   }
 
   @Test fun `cancel abandons`() {
-    val workflow = outerReactor.launch()
+    val workflow = outerLauncher.launch()
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", "able")
     sendEchoEvent("job", "baker")
@@ -114,7 +115,7 @@ class Rx2ReactorIntegrationTest {
   }
 
   @Test fun `background demonstrates concurrent workflows of the same type`() {
-    val workflow = outerReactor.launch()
+    val workflow = outerLauncher.launch()
 
     workflow.sendEvent(RunEchoJob("job1"))
     workflow.sendEvent(Background)
@@ -142,7 +143,7 @@ class Rx2ReactorIntegrationTest {
   }
 
   @Test fun `sync single on success in nested workflow`() {
-    val workflow = outerReactor.launch()
+    val workflow = outerLauncher.launch()
     workflow.sendEvent(RunImmediateJob)
 
     workflow.sendEvent(RunEchoJob("fnord"))
@@ -162,48 +163,43 @@ class Rx2ReactorIntegrationTest {
    * Basically a job that can emit strings at arbitrary times, and whose
    * result code is the last string it emitted.
    */
-  class StringEchoer : Reactor<String, String, String> {
-    override fun onReact(
-      state: String,
-      events: EventChannel<String>,
-      workflows: WorkflowPool
-    ): Single<out Reaction<String, String>> = events.select {
-      onEvent<String> { event ->
-        when (event) {
-          STOP_ECHO_JOB -> FinishWith(state)
-          else -> EnterState(event)
-        }
-      }
-    }
-
+  private class StringEchoer : Launcher<String, String, String> {
     override fun launch(
       initialState: String,
       workflows: WorkflowPool
-    ): Workflow<String, String, String> = doLaunch(initialState, workflows)
+    ): Workflow<String, String, String> =
+      workflows.discreteStateWorkflow(initialState, "StringEchoer") { state, events, _ ->
+        events.select {
+          onEvent<String> { event ->
+            when (event) {
+              STOP_ECHO_JOB -> FinishWith(state)
+              else -> EnterState(event)
+            }
+          }
+        }
+      }
   }
 
-  val echoReactor = StringEchoer()
+  private val echoLauncher = StringEchoer()
 
-  class ImmediateOnSuccess : Reactor<Unit, String, Unit> {
-    override fun onReact(
-      state: Unit,
-      events: EventChannel<String>,
-      workflows: WorkflowPool
-    ): Single<out Reaction<Unit, Unit>> = events.select {
-      workflows.onWorkerResult(singleWorker<Unit, String> { Single.just("fnord") }, Unit) {
-        FinishWith(Unit)
-      }
-    }
-
+  private class ImmediateOnSuccess : Launcher<Unit, String, Unit> {
     override fun launch(
       initialState: Unit,
       workflows: WorkflowPool
-    ): Workflow<Unit, String, Unit> = doLaunch(initialState, workflows)
+    ): Workflow<Unit, String, Unit> = workflows.discreteStateWorkflow(
+        initialState, "ImmediateOnSuccess"
+    ) { _, events, _ ->
+      events.select {
+        workflows.onWorkerResult(singleWorker<Unit, String> { Single.just("fnord") }, Unit) {
+          FinishWith(Unit)
+        }
+      }
+    }
   }
 
-  val immediateReactor = ImmediateOnSuccess()
+  private val immediateLauncher = ImmediateOnSuccess()
 
-  sealed class OuterState {
+  private sealed class OuterState {
     object Idle : OuterState()
 
     data class RunningEchoJob(
@@ -219,7 +215,7 @@ class Rx2ReactorIntegrationTest {
     }
   }
 
-  sealed class OuterEvent {
+  private sealed class OuterEvent {
     data class RunEchoJob(
       val echoer: RunWorkflow<String, String, String>
     ) : OuterEvent() {
@@ -244,9 +240,9 @@ class Rx2ReactorIntegrationTest {
     object Background : OuterEvent()
   }
 
-  val results = mutableListOf<String>()
+  private val results = mutableListOf<String>()
 
-  val pool = WorkflowPool()
+  private val pool = WorkflowPool()
 
   /**
    * One running job, which might be paused or backgrounded. Any number of background jobs.
@@ -256,8 +252,22 @@ class Rx2ReactorIntegrationTest {
    *  - [StringEchoer], whose state is the last String event it received
    *  - [ImmediateOnSuccess], which immediately completes
    */
-  inner class OuterReactor : Reactor<OuterState, OuterEvent, Unit> {
-    override fun onReact(
+  private inner class OuterLauncher : Launcher<OuterState, OuterEvent, Unit> {
+    fun launch() = launch(Idle, pool)
+
+    override fun launch(
+      initialState: OuterState,
+      workflows: WorkflowPool
+    ): Workflow<OuterState, OuterEvent, Unit> {
+      workflows.register(echoLauncher)
+      workflows.register(immediateLauncher)
+      val workflow = workflows.discreteStateWorkflow(initialState, "OuterLauncher", ::onReact)
+      workflow.toCompletable()
+          .subscribe { workflows.abandonAll() }
+      return workflow
+    }
+
+    private fun onReact(
       state: OuterState,
       events: EventChannel<OuterEvent>,
       workflows: WorkflowPool
@@ -312,25 +322,11 @@ class Rx2ReactorIntegrationTest {
         }
       }
     }
-
-    fun launch() = launch(Idle, pool)
-
-    override fun launch(
-      initialState: OuterState,
-      workflows: WorkflowPool
-    ): Workflow<OuterState, OuterEvent, Unit> {
-      workflows.register(echoReactor)
-      workflows.register(immediateReactor)
-      val workflow = doLaunch(initialState, workflows)
-      workflow.toCompletable()
-          .subscribe { workflows.abandonAll() }
-      return workflow
-    }
   }
 
-  val outerReactor = OuterReactor()
+  private val outerLauncher = OuterLauncher()
 
-  fun sendEchoEvent(
+  private fun sendEchoEvent(
     echoJobId: String,
     event: String
   ) {

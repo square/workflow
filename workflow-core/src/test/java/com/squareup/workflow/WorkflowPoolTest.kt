@@ -15,8 +15,8 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowPool.Launcher
 import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertEquals
@@ -35,22 +35,13 @@ class WorkflowPoolTest {
   var abandonCount = 0
   var launchCount = 0
 
-  inner class MyReactor : Reactor<String, String, String> {
-    override suspend fun onReact(
-      state: String,
-      events: ReceiveChannel<String>,
-      workflows: WorkflowPool
-    ): Reaction<String, String> = events.receive().let {
-      eventsSent += it
-      if (it == STOP) FinishWith(state) else EnterState(it)
-    }
-
+  inner class MyLauncher : Launcher<String, String, String> {
     override fun launch(
       initialState: String,
       workflows: WorkflowPool
     ): Workflow<String, String, String> {
       launchCount++
-      val workflow = doLaunch(initialState, workflows)
+      val workflow = workflows.discreteStateWorkflow(initialState, nextState = onReact)
       workflow.invokeOnCompletion {
         if (it is CancellationException) {
           abandonCount++
@@ -58,19 +49,26 @@ class WorkflowPoolTest {
       }
       return workflow
     }
+
+    private val onReact: StateTransitionFunction<String, String, String> = { state, events, _ ->
+      events.receive()
+          .let {
+            eventsSent += it
+            if (it == STOP) FinishWith(state) else EnterState(it)
+          }
+    }
   }
 
-  val myReactor = MyReactor()
-
-  val pool = WorkflowPool().apply { register(myReactor) }
+  val myLauncher = MyLauncher()
+  val pool = WorkflowPool().apply { register(myLauncher) }
 
   private fun handle(
     state: String = "",
     name: String = ""
-  ) = RunWorkflow(myReactor.workflowType.makeWorkflowId(name), state)
+  ) = RunWorkflow(myLauncher.workflowType.makeWorkflowId(name), state)
 
   @Test fun `meta test myReactor reports states and result`() {
-    val workflow = myReactor.launch(NEW, pool)
+    val workflow = myLauncher.launch(NEW, pool)
     val stateSub = workflow.openSubscriptionToState()
 
     assertEquals(NEW, stateSub.poll())
@@ -87,7 +85,7 @@ class WorkflowPoolTest {
   }
 
   @Test fun `meta test myReactor abandons and state completes`() {
-    val workflow = myReactor.launch(NEW, pool)
+    val workflow = myLauncher.launch(NEW, pool)
     val abandoned = AtomicBoolean(false)
 
     workflow.invokeOnCompletion { abandoned.set(true) }

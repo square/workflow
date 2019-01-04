@@ -4,21 +4,19 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION")
-
 package com.squareup.workflow
 
-import com.squareup.workflow.ReactorAsWorkflowIntegrationTest.TestState.FirstState
-import com.squareup.workflow.ReactorAsWorkflowIntegrationTest.TestState.SecondState
+import com.squareup.workflow.DiscreteStateWorkflowIntegrationTest.TestState.FirstState
+import com.squareup.workflow.DiscreteStateWorkflowIntegrationTest.TestState.SecondState
 import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.CoroutineExceptionHandler
@@ -39,8 +37,8 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-@Deprecated("Sticking around until Reactor goes away.")
-class ReactorAsWorkflowIntegrationTest {
+// TODO update
+class DiscreteStateWorkflowIntegrationTest {
 
   private open class MockReactor : Reactor<TestState, Nothing, String> {
     override suspend fun onReact(
@@ -351,21 +349,17 @@ class ReactorAsWorkflowIntegrationTest {
 
   @Test fun `buffers events when reentrant`() {
     lateinit var workflow: Workflow<TestState, String, String>
-    val reactor = object : Reactor<TestState, String, String> {
-      override suspend fun onReact(
-        state: TestState,
-        events: ReceiveChannel<String>,
-        workflows: WorkflowPool
-      ): Reaction<TestState, String> = when (state) {
-        is FirstState -> {
-          val event = events.receive()
-          workflow.sendEvent("i heard you like events")
-          EnterState(SecondState(event))
+    workflow = WorkflowPool()
+        .discreteStateWorkflow(FirstState("") as TestState) { state, events, _ ->
+          when (state) {
+            is FirstState -> {
+              val event = events.receive()
+              workflow.sendEvent("i heard you like events")
+              EnterState(SecondState(event))
+            }
+            is SecondState -> FinishWith(events.receive())
+          }
         }
-        is SecondState -> FinishWith(events.receive())
-      }
-    }
-    workflow = reactor.doLaunch(FirstState(""), WorkflowPool())
     subscribeToState(workflow)
     subscribeToResult(workflow)
 

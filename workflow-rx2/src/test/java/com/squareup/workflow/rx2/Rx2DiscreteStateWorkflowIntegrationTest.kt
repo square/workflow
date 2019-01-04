@@ -23,8 +23,8 @@ import com.squareup.workflow.Reaction
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowException
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.rx2.ReactorAsWorkflowIntegrationTest.TestState.FirstState
-import com.squareup.workflow.rx2.ReactorAsWorkflowIntegrationTest.TestState.SecondState
+import com.squareup.workflow.rx2.Rx2DiscreteStateWorkflowIntegrationTest.TestState.FirstState
+import com.squareup.workflow.rx2.Rx2DiscreteStateWorkflowIntegrationTest.TestState.SecondState
 import io.reactivex.Single
 import io.reactivex.Single.just
 import io.reactivex.Single.never
@@ -39,8 +39,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
 
-@Deprecated("Sticking around until Reactor goes away.")
-class ReactorAsWorkflowIntegrationTest {
+// TODO update
+class Rx2DiscreteStateWorkflowIntegrationTest {
 
   private open class MockReactor : Reactor<TestState, Nothing, String> {
     override fun onReact(

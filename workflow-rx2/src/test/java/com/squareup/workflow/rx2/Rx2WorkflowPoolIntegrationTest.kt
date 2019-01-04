@@ -23,6 +23,7 @@ import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.register
 import com.squareup.workflow.workflowType
 import io.reactivex.Single
@@ -45,8 +46,22 @@ class Rx2WorkflowPoolIntegrationTest {
   var abandonCount = 0
   var launchCount = 0
 
-  inner class MyReactor : Reactor<String, String, String> {
-    override fun onReact(
+  inner class MyLauncher : Launcher<String, String, String> {
+    override fun launch(
+      initialState: String,
+      workflows: WorkflowPool
+    ): Workflow<String, String, String> {
+      launchCount++
+      val workflow = workflows.discreteStateWorkflow(initialState, "Mylauncher", ::onReact)
+      workflow.invokeOnCompletion { cause ->
+        if (cause is CancellationException) {
+          abandonCount++
+        }
+      }
+      return workflow
+    }
+
+    private fun onReact(
       state: String,
       events: EventChannel<String>,
       workflows: WorkflowPool
@@ -56,23 +71,9 @@ class Rx2WorkflowPoolIntegrationTest {
         if (it == STOP) FinishWith(state) else EnterState(it)
       }
     }
-
-    override fun launch(
-      initialState: String,
-      workflows: WorkflowPool
-    ): Workflow<String, String, String> {
-      launchCount++
-      val workflow = doLaunch(initialState, workflows)
-      workflow.invokeOnCompletion { cause ->
-        if (cause is CancellationException) {
-          abandonCount++
-        }
-      }
-      return workflow
-    }
   }
 
-  val myReactor = MyReactor()
+  val myReactor = MyLauncher()
 
   val pool = WorkflowPool().apply { register(myReactor) }
 

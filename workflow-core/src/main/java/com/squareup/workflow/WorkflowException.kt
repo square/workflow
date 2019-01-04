@@ -16,18 +16,17 @@
 package com.squareup.workflow
 
 /**
- * Wraps exceptions thrown by [Reactor.onReact] or the Singles emitted from it.
+ * Wraps exceptions thrown by a workflow's state transition function.
  *
- * The message includes the name of the [Reactor] class and the result of calling [toString] on the
- * state of the `Reactor` at the time the exception was thrown.
+ * The message includes the name of the workflow and the result of calling [toString] on the
+ * state of the workflow at the time the exception was thrown.
  */
-class ReactorException(
+class WorkflowException(
   cause: Throwable,
-  val reactor: Reactor<*, *, *>,
-  val reactorState: Any
+  val workflowName: String,
+  val workflowState: Any
 ) : RuntimeException(cause) {
-
   override val message: String
-    get() = "Reactor $reactor @ $reactorState " +
+    get() = "Workflow $workflowName @ $workflowState " +
         "threw ${cause!!.javaClass.simpleName}: ${cause.message}"
 }
