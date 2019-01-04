@@ -67,7 +67,7 @@ class WorkflowPoolTest {
   private fun handle(
     state: String = "",
     name: String = ""
-  ) = RunWorkflow(myReactor.workflowType.makeWorkflowId(name), state)
+  ) = WorkflowPool.handle(myReactor::class, state, name)
 
   @Test fun `meta test myReactor reports states and result`() {
     val workflow = myReactor.launch(NEW, pool)
@@ -113,7 +113,7 @@ class WorkflowPoolTest {
     assertFalse(nestedStateSub.isCompleted)
 
     input.sendEvent("fnord")
-    assertEquals(handle("fnord"), nestedStateSub.getCompleted())
+    assertEquals(handle("fnord"), (nestedStateSub.getCompleted() as Running).handle)
   }
 
   @Test fun `reports result`() {
@@ -133,7 +133,7 @@ class WorkflowPoolTest {
     assertFalse(resultSub.isCompleted)
 
     input.sendEvent(STOP)
-    assertEquals(FinishedWorkflow(firstState.id, "charlie"), resultSub.getCompleted())
+    assertEquals(Finished("charlie"), resultSub.getCompleted())
   }
 
   @Test fun `reports immediate result`() {
@@ -143,7 +143,7 @@ class WorkflowPoolTest {
 
     val input = pool.input(handle)
     input.sendEvent(STOP)
-    assertEquals(FinishedWorkflow(handle.id, NEW), resultSub.getCompleted())
+    assertEquals(Finished(NEW), resultSub.getCompleted())
   }
 
   @Test fun `inits once per next state`() {
@@ -200,7 +200,7 @@ class WorkflowPoolTest {
     assertEquals(listOf("baker"), eventsSent)
   }
 
-  @Test fun `workflow isnt dropped until result reported`() {
+  @Test fun `workflow isn't dropped until result reported`() {
     pool.workflowUpdate(handle())
     val input = pool.input(handle())
 

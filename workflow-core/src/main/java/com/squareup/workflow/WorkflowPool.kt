@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.WorkflowPool.Id
+import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.WorkflowPool.Type
 import kotlinx.coroutines.experimental.Deferred
@@ -27,8 +27,14 @@ import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
 
 /**
- * Runs [named][Id] [Workflow] instances, typically those associated with [WorkflowHandle]
- * states of composite workflows.
+ * Runs [Workflow] and [Worker]s on demand.
+ *
+ * To run a [Workflow]:
+ *
+ *  - [register] a [Launcher] of the appropriate type
+ *  - create a matching [Handle] call [awaitWorkflowUpdate]
+ *
+ * To run a [Worker], call [awaitWorkerResult]. (A worker is effectively its own [Launcher].)
  */
 class WorkflowPool {
   /**
@@ -51,12 +57,13 @@ class WorkflowPool {
     /**
      * Creates an id for an instance of this type to be managed by a [WorkflowPool].
      * It is rare to create an [Id] yourself. They're created for when you build
-     * a [WorkflowHandle].
+     * a [WorkflowUpdate].
      *
      * @param name allows multiple workflows of the same type to be managed at once. If
      * no name is specified, we unique only on the [Type] itself.
      */
-    fun makeWorkflowId(name: String = ""): Id<S, E, O> = Id(name, this)
+    @PublishedApi
+    internal fun makeWorkflowId(name: String = ""): Id<S, E, O> = Id(name, this)
 
     override fun hashCode(): Int = hashCode
     override fun equals(other: Any?): Boolean = when {
@@ -97,6 +104,26 @@ class WorkflowPool {
     val workflowType: Type<S, E, O>
   )
 
+  /**
+   * Describes a [Workflow] to be run by a [WorkflowPool]. A [Handle] is effectively
+   * a contract, a declaration of the type of [Workflow] that should be run, and what its
+   * current state is understood to be.
+   *
+   * Passing a [Handle] to [awaitWorkflowUpdate] instructs the receiving [WorkflowPool] to
+   * make it so: start the described [Workflow] if necessary, and report when its
+   * state changes from the given, or when it produces a result.
+   *
+   * @param id Uniquely identifies this workflow across the [WorkflowPool].
+   * @param state The current state of the workflow.
+   *
+   * @see [handle] to create instances
+   */
+  data class Handle<S : Any, in E : Any, out O : Any>
+  @PublishedApi internal constructor(
+    internal val id: Id<S, E, O>,
+    val state: S
+  )
+
   private class WorkflowEntry(val workflow: Workflow<*, *, *>)
 
   private val launchers = mutableMapOf<Type<*, *, *>, Launcher<*, *, *>>()
@@ -118,21 +145,23 @@ class WorkflowPool {
   }
 
   /**
-   * Starts the required nested workflow if it wasn't already running. Suspends until the next time
-   * the nested workflow updates its state, or completes, and then returns that [Reaction].
-   * States that are equal to the [RunWorkflow.state] are skipped.
+   * Starts the [Workflow] described by [handle] if it wasn't already running.
+   * Suspends until that workflow's state changes from the given [Handle.state], or it completes.
+   * Returns a [WorkflowUpdate] with the [new state][Running] or the [Finished].
    *
-   * If the nested workflow was not already running, it is started in the
-   * [given state][RunWorkflow.state]. Note that the initial state is
-   * not returned, since states matching the given state are skipped.
+   * Callers are responsible for keeping the [Workflow] running until it produces a
+   * [Finished], or else [abandoning][abandonWorkflow] it. To keep the [Workflow]
+   * running, call [awaitWorkflowUpdate] again with the [Running.handle] returned from the
+   * previous call.
    *
    * @throws kotlinx.coroutines.experimental.CancellationException If the nested workflow is
    * [abandoned][abandonWorkflow].
+   *
    * @see workflowUpdate
    */
   suspend fun <S : Any, E : Any, O : Any> awaitWorkflowUpdate(
-    handle: RunWorkflow<S, E, O>
-  ): WorkflowHandle<S, E, O> {
+    handle: Handle<S, E, O>
+  ): WorkflowUpdate<S, E, O> {
     val workflow = requireWorkflow(handle)
     workflow.openSubscriptionToState()
         .consume {
@@ -143,20 +172,20 @@ class WorkflowPool {
               state = receiveOrNull()
             }
             return state
-                ?.let { handle.copy(state = it) }
-                ?: FinishedWorkflow(handle.id, workflow.await())
+                ?.let { Running(handle.copy(state = it)) }
+                ?: Finished(workflow.await())
           }
         }
   }
 
   /**
-   * Starts the required [Worker] if it wasn't already running. Suspends until the worker
-   * completes and then returns its result.
-   *
-   * If the worker was not already running, it is started with the given input.
+   * Suspends until the given [worker] produces its result. If it wasn't already running,
+   * starts it with the given [input]. The caller must either consume the result, or
+   * else call [abandonWorker].
    *
    * @throws kotlinx.coroutines.experimental.CancellationException If the worker is
    * [abandoned][abandonWorker].
+   *
    * @see workerResult
    */
   suspend inline fun <reified I : Any, reified O : Any> awaitWorkerResult(
@@ -176,7 +205,7 @@ class WorkflowPool {
     type: Type<I, Nothing, O>
   ): O {
     register(worker.asLauncher(), type)
-    val handle = RunWorkflow(type.makeWorkflowId(name), input)
+    val handle = Handle(type.makeWorkflowId(name), input)
     val workflow = requireWorkflow(handle)
 
     removeCompletedWorkflowAfter(handle.id) {
@@ -192,21 +221,10 @@ class WorkflowPool {
    * This method _does not_ start a new workflow if none was running already.
    */
   fun <E : Any> input(
-    handle: RunWorkflow<*, E, *>
-  ): WorkflowInput<E> = input(handle.id)
-
-  /**
-   * Returns a [WorkflowInput] that will route events to the identified [Workflow],
-   * if it is running. That check is made each time an event is sent: if the workflow
-   * is running at the moment, the event is delivered. If not, it is dropped.
-   *
-   * This method _does not_ start a new workflow if none was running already.
-   */
-  fun <E : Any> input(
-    id: WorkflowPool.Id<*, E, *>
+    handle: Handle<*, E, *>
   ): WorkflowInput<E> = object : WorkflowInput<E> {
     override fun sendEvent(event: E) {
-      workflows[id]?.let {
+      workflows[handle.id]?.let {
         @Suppress("UNCHECKED_CAST")
         (it.workflow as WorkflowInput<E>).sendEvent(event)
       }
@@ -225,7 +243,7 @@ class WorkflowPool {
    *
    * @see abandonAll
    */
-  fun abandonWorkflow(handle: RunWorkflow<*, *, *>) = abandonWorkflow(handle.id)
+  fun abandonWorkflow(handle: Handle<*, *, *>) = abandonWorkflow(handle.id)
 
   /**
    * Abandons the identified [Worker] if it was already running. If it wasn't, this is a no-op.
@@ -237,7 +255,7 @@ class WorkflowPool {
   inline fun <reified I : Any, reified O : Any> abandonWorker(
     worker: Worker<I, O>,
     name: String = ""
-  ) = abandonWorkflow(worker.makeWorkflowId(name))
+  ) = abandonWorkflow(worker.workflowType.makeWorkflowId(name))
 
   /**
    * Abandons all workflows currently running in this pool.
@@ -261,7 +279,7 @@ class WorkflowPool {
   }
 
   private fun <S : Any, E : Any, O : Any> requireWorkflow(
-    handle: RunWorkflow<S, E, O>
+    handle: Handle<S, E, O>
   ): Workflow<S, E, O> {
     // Some complexity here to handle workflows that complete the moment
     // they are started. We want to return the short-lived workflow so that its
@@ -299,6 +317,25 @@ class WorkflowPool {
       }
     }
   }
+
+  companion object {
+    /**
+     * Creates a [Handle] describing a [Workflow] to be managed via [awaitWorkflowUpdate].
+     */
+    inline fun <reified S : Any, reified E : Any, reified O : Any> handle(
+      launcherType: KClass<out Launcher<S, E, O>>,
+      state: S,
+      name: String = ""
+    ): Handle<S, E, O> = Handle(launcherType.workflowType.makeWorkflowId(name), state)
+
+    /**
+     * Creates a [Handle] describing a [Workflow] to be managed via [awaitWorkflowUpdate].
+     */
+    inline fun <reified E : Any, reified O : Any> handle(
+      launcherType: KClass<out Launcher<Unit, E, O>>,
+      name: String = ""
+    ): Handle<Unit, E, O> = handle(launcherType, Unit, name)
+  }
 }
 
 /**
@@ -321,8 +358,8 @@ inline fun <reified S : Any, reified E : Any, reified O : Any> WorkflowPool.regi
  * @see WorkflowPool.awaitWorkflowUpdate
  */
 fun <S : Any, E : Any, O : Any> WorkflowPool.workflowUpdate(
-  handle: RunWorkflow<S, E, O>
-): Deferred<WorkflowHandle<S, E, O>> = GlobalScope.async(Unconfined) {
+  handle: Handle<S, E, O>
+): Deferred<WorkflowUpdate<S, E, O>> = GlobalScope.async(Unconfined) {
   awaitWorkflowUpdate(handle)
 }
 
@@ -356,18 +393,6 @@ internal fun <I : Any, O : Any> WorkflowPool.workerResult(
 inline val <reified S : Any, reified E : Any, reified O : Any>
     Launcher<S, E, O>.workflowType: Type<S, E, O>
   get() = Type(S::class, E::class, O::class)
-
-/**
- * Make an ID for the [workflowType] of this [WorkflowHandle].
- *
- * E.g. `MyLauncher::class.makeWorkflowId()`
- *
- * @see Type.makeWorkflowId
- */
-@Suppress("unused")
-inline fun <reified S : Any, reified E : Any, reified O : Any>
-    KClass<out Launcher<S, E, O>>.makeWorkflowId(name: String = ""): Id<S, E, O> =
-  workflowType.makeWorkflowId(name)
 
 /**
  * Returns the [Type] that represents this [Launcher] class's type parameters.

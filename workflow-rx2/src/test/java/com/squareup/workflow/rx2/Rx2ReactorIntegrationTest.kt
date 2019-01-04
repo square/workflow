@@ -17,13 +17,13 @@ package com.squareup.workflow.rx2
 
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
-import com.squareup.workflow.FinishedWorkflow
+import com.squareup.workflow.Finished
 import com.squareup.workflow.Reaction
-import com.squareup.workflow.RunWorkflow
+import com.squareup.workflow.Running
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.makeWorkflowId
+import com.squareup.workflow.WorkflowPool.Handle
+import com.squareup.workflow.WorkflowUpdate
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Background
 import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Cancel
@@ -43,7 +43,7 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * Tests [Reactor], [WorkflowHandle] and [WorkflowPool], with an [OuterReactor]
+ * Tests [Reactor], [WorkflowUpdate] and [WorkflowPool], with an [OuterReactor]
  * that can run, pause, background, resume named instances of an [StringEchoer].
  *
  * This IS NOT meant to be an example of how to write workflows in production.
@@ -207,26 +207,26 @@ class Rx2ReactorIntegrationTest {
     object Idle : OuterState()
 
     data class RunningEchoJob(
-      val echoer: RunWorkflow<String, String, String>
+      val echoer: Handle<String, String, String>
     ) : OuterState()
 
     data class Paused(
-      val echoer: RunWorkflow<String, String, String>
+      val echoer: Handle<String, String, String>
     ) : OuterState()
 
     object RunningImmediateJob : OuterState() {
-      val job = RunWorkflow(ImmediateOnSuccess::class.makeWorkflowId(), Unit)
+      val job = WorkflowPool.handle(ImmediateOnSuccess::class)
     }
   }
 
   sealed class OuterEvent {
     data class RunEchoJob(
-      val echoer: RunWorkflow<String, String, String>
+      val echoer: Handle<String, String, String>
     ) : OuterEvent() {
       constructor(
         id: String,
         state: String = NEW_ECHO_JOB
-      ) : this(RunWorkflow(StringEchoer::class.makeWorkflowId(id), state))
+      ) : this(WorkflowPool.handle(StringEchoer::class, state, id))
     }
 
     object RunImmediateJob : OuterEvent()
@@ -272,8 +272,8 @@ class Rx2ReactorIntegrationTest {
       is RunningEchoJob -> events.select {
         workflows.onWorkflowUpdate(state.echoer) {
           when (it) {
-            is RunWorkflow -> EnterState(RunningEchoJob(it))
-            is FinishedWorkflow -> {
+            is Running -> EnterState(RunningEchoJob(it.handle))
+            is Finished -> {
               results += it.result
               EnterState(Idle)
             }
@@ -301,10 +301,10 @@ class Rx2ReactorIntegrationTest {
       is RunningImmediateJob -> events.select {
         workflows.onWorkflowUpdate(state.job) {
           when (it) {
-            is RunWorkflow -> throw AssertionError(
+            is Running -> throw AssertionError(
                 "Should never re-enter $RunningImmediateJob."
             )
-            is FinishedWorkflow -> {
+            is Finished -> {
               results += "Finished ${ImmediateOnSuccess::class}"
               EnterState(Idle)
             }
@@ -334,7 +334,7 @@ class Rx2ReactorIntegrationTest {
     echoJobId: String,
     event: String
   ) {
-    pool.input(StringEchoer::class.makeWorkflowId(echoJobId))
+    pool.input(WorkflowPool.handle(StringEchoer::class, "ignored", echoJobId))
         .sendEvent(event)
   }
 }

@@ -16,8 +16,8 @@
 package com.squareup.sample.tictactoe
 
 import com.squareup.sample.tictactoe.SyncState.SAVING
-import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.readUtf8WithLength
@@ -31,9 +31,9 @@ import kotlin.reflect.jvm.jvmName
  */
 sealed class RunGameState {
   internal data class Playing(
-    val takingTurns: RunWorkflow<Turn, TakeTurnsEvent, CompletedGame>
+    val takingTurns: WorkflowPool.Handle<Turn, TakeTurnsEvent, CompletedGame>
   ) : RunGameState() {
-    constructor(turn: Turn) : this(TakeTurnsReactor.getStarter(turn))
+    constructor(turn: Turn) : this(TakeTurnsReactor.handle(turn))
   }
 
   internal data class NewGame(
@@ -75,7 +75,7 @@ sealed class RunGameState {
 
         return when (className) {
           Playing::class.jvmName -> Playing(
-              TakeTurnsReactor.getStarter(Turn.fromSnapshot(source.readByteStringWithLength()))
+              TakeTurnsReactor.handle(Turn.fromSnapshot(source.readByteStringWithLength()))
           )
 
           NewGame::class.jvmName -> NewGame(
