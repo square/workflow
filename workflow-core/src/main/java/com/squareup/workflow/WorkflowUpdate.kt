@@ -16,7 +16,7 @@
 package com.squareup.workflow
 
 /**
- * Reports either the [new state][Running] or the [Finished] of
+ * Reports either the [new state][Running] or the [result][Finished] of
  * a [Workflow] being run via [WorkflowPool.awaitWorkflowUpdate].
  */
 sealed class WorkflowUpdate<out S : Any, out E : Any, out O : Any>

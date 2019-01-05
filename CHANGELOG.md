@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+## Version 0.7.0
+
+_2019-1-4_
+
+ * Breaking change, further API refinement of `WorkflowPool` and friends.
+   Extracts `WorkflowUpdate` and `WorkflowPool.Handle` from the defunct
+   `WorkflowHandle`. (#114) 
+
 ## Version 0.6.0
 
 _2019-1-2_
