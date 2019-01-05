@@ -37,12 +37,12 @@ import com.squareup.sample.tictactoe.SyncState.SAVE_FAILED
 import com.squareup.sample.tictactoe.SyncState.SAVING
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
-import com.squareup.workflow.FinishedWorkflow
+import com.squareup.workflow.Finished
 import com.squareup.workflow.Reaction
-import com.squareup.workflow.RunWorkflow
+import com.squareup.workflow.Running
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
@@ -62,14 +62,10 @@ enum class RunGameResult {
  */
 interface RunGameLauncher : Launcher<RunGameState, RunGameEvent, RunGameResult> {
   companion object {
-    /**
-     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
-     * [launch] and start a workflow.
-     */
-    fun getStarter(
+    fun handle(
       state: RunGameState = RunGameState.startingState()
-    ): RunWorkflow<RunGameState, RunGameEvent, RunGameResult> =
-      WorkflowHandle.getStarter(RunGameLauncher::class, state)
+    ): Handle<RunGameState, RunGameEvent, RunGameResult> =
+      WorkflowPool.handle(RunGameLauncher::class, state)
   }
 }
 
@@ -99,39 +95,38 @@ class RunGameReactor(
     state: RunGameState,
     events: EventChannel<RunGameEvent>,
     workflows: WorkflowPool
-  ): Single<out Reaction<RunGameState, RunGameResult>> = when (state) {
+  ): Single<out Reaction<RunGameState, RunGameResult>> = events.select {
+    when (state) {
+      is NewGame -> {
+        onEvent<NoMore> { FinishWith(CanceledStart) }
+        onEvent<StartGame> { EnterState(Playing(Turn(it.x, it.o))) }
+      }
 
-    is NewGame -> events.select {
-      onEvent<NoMore> { FinishWith(CanceledStart) }
-      onEvent<StartGame> { EnterState(Playing(Turn(it.x, it.o))) }
-    }
-
-    is Playing -> events.select {
-      workflows.onWorkflowUpdate(state.takingTurns) {
-        when (it) {
-          is RunWorkflow -> EnterState(Playing(it))
-          is FinishedWorkflow -> when (it.result.ending) {
-            Quitted -> EnterState(MaybeQuitting(it.result))
-            else -> EnterState(GameOver(it.result))
+      is Playing -> {
+        workflows.onWorkflowUpdate(state.takingTurns) {
+          when (it) {
+            is Running -> EnterState(Playing(it.handle))
+            is Finished -> when (it.result.ending) {
+              Quitted -> EnterState(MaybeQuitting(it.result))
+              else -> EnterState(GameOver(it.result))
+            }
           }
         }
       }
-    }
 
-    is MaybeQuitting -> events.select {
-      onEvent<ConfirmQuit> {
-        EnterState(
-            GameOver(state.completedGame)
-        )
+      is MaybeQuitting -> {
+        onEvent<ConfirmQuit> {
+          EnterState(
+              GameOver(state.completedGame)
+          )
+        }
+
+        onEvent<ContinuePlaying> {
+          EnterState(Playing(state.completedGame.lastTurn))
+        }
       }
 
-      onEvent<ContinuePlaying> {
-        EnterState(Playing(state.completedGame.lastTurn))
-      }
-    }
-
-    is GameOver -> {
-      events.select {
+      is GameOver -> {
         if (state.syncState == SAVING) {
           workflows.onWorkerResult(logGameWorker, state.completedGame) {
             when (it) {

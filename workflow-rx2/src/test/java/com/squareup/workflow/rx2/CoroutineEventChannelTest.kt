@@ -15,12 +15,12 @@
  */
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.FinishedWorkflow
-import com.squareup.workflow.RunWorkflow
+import com.squareup.workflow.Finished
+import com.squareup.workflow.Running
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.WorkflowPool.Launcher
-import com.squareup.workflow.makeWorkflowId
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.CoroutineEventChannelTest.Events.Click
 import com.squareup.workflow.rx2.CoroutineEventChannelTest.Events.Dismiss
@@ -349,16 +349,15 @@ class CoroutineEventChannelTest {
         suspendCoroutine<Nothing> { }
       }
     }
-    val workflowId = launcher::class.makeWorkflowId()
-    val handle = RunWorkflow(workflowId, "foo")
+    val handle = WorkflowPool.handle(launcher::class, "foo")
     val state = DelegateWorkflowState(handle)
     pool.register(launcher)
     events.asEventChannel()
         .select<String> {
           pool.onWorkflowUpdate(state.workflow) {
             when (it) {
-              is RunWorkflow -> "enter ${it.state}"
-              is FinishedWorkflow -> "finish ${it.result}"
+              is Running -> "enter ${it.handle.state}"
+              is Finished -> "finish ${it.result}"
             }
           }
         }
@@ -382,16 +381,15 @@ class CoroutineEventChannelTest {
         "$initialState -> ${e.receive()}"
       }
     }
-    val workflowId = launcher::class.makeWorkflowId()
-    val handle = RunWorkflow(workflowId, "foo")
+    val handle = WorkflowPool.handle(launcher::class, "foo")
     val state = DelegateWorkflowState(handle)
     pool.register(launcher)
     events.asEventChannel()
         .select<String> {
           pool.onWorkflowUpdate(state.workflow) {
             when (it) {
-              is RunWorkflow -> "enter ${it.state}"
-              is FinishedWorkflow -> "finish ${it.result}"
+              is Running -> "enter ${it.handle}"
+              is Finished -> "finish ${it.result}"
             }
           }
         }
@@ -608,5 +606,5 @@ class CoroutineEventChannelTest {
 private object ExpectedException : RuntimeException()
 
 private data class DelegateWorkflowState(
-  val workflow: RunWorkflow<String, String, String>
+  val workflow: Handle<String, String, String>
 )

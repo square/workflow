@@ -23,8 +23,8 @@ interface Renderer<S : Any, E : Any, R : Any> {
   /**
    * Renders [state] and [workflow] as [R].
    *
-   * Any [RunWorkflow] field of [S] can be handled via a recursive calls
-   * to the [Renderer] appropriate for its [state][RunWorkflow.state],
+   * Any [Running] field of [S] can be handled via a recursive calls
+   * to the [Renderer] appropriate for its [state][Running.handle],
    * using [WorkflowPool.input] to find the right [WorkflowInput].
    *
    * By making the parent [Renderer] responsible for finding the [WorkflowInput] to
@@ -39,10 +39,10 @@ interface Renderer<S : Any, E : Any, R : Any> {
 }
 
 /**
- * Convenience for the usual case where we're rendering a [handle][RunWorkflow] and sending
+ * Convenience for the usual case where we're rendering a [handle][Running] and sending
  * events to the [WorkflowInput] it identifies.
  */
 fun <S : Any, E : Any, O : Any, R : Any> Renderer<S, E, R>.render(
-  handle: RunWorkflow<S, E, O>,
+  handle: WorkflowPool.Handle<S, E, O>,
   workflows: WorkflowPool
 ): R = render(handle.state, workflows.input(handle), workflows)

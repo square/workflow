@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.WorkflowPool.Type
 import kotlinx.coroutines.experimental.Deferred
 
@@ -99,15 +98,6 @@ fun <I : Any, O : Any> worker(block: suspend (I) -> O): Worker<I, O> = object : 
  * Creates a [Worker] that will report the [Deferred]'s eventual value as its result.
  */
 fun <T : Any> Deferred<T>.asWorker(): Worker<Unit, T> = worker { await() }
-
-/**
- * Uniquely identifies the [Worker] across the [WorkflowPool].
- * See [WorkflowPool.Type.makeWorkflowId] for details.
- */
-@Suppress("unused")
-inline fun <reified I : Any, reified O : Any> Worker<I, O>.makeWorkflowId(
-  name: String = ""
-): Id<I, Nothing, O> = workflowType.makeWorkflowId(name)
 
 /**
  * Returns the [Type] of the [Worker] for the [WorkflowPool]

@@ -17,9 +17,11 @@
 
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.RunWorkflow
+import com.squareup.workflow.Finished
+import com.squareup.workflow.Running
 import com.squareup.workflow.Worker
-import com.squareup.workflow.WorkflowHandle
+import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowUpdate
 import com.squareup.workflow.WorkflowPool
 import io.reactivex.Single
 import io.reactivex.Single.just
@@ -82,26 +84,26 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
   }
 
   /**
-   * Starts running the workflow described by [handle] in the given [state][RunWorkflow.state],
-   * if it wasn't running running. This case will be selected the next time the nested workflow updates its state
-   * or completes. States that are equal to the [RunWorkflow.state] are skipped.
+   * Starts the [Workflow] described by [handle] if it wasn't already running.
+   * This case is selected when the [Workflow]'s state changes from the
+   * [given][WorkflowPool.Handle.state], or the [Workflow] completes.
    *
-   * If the nested workflow was not already running, it is started in the
-   * [given state][RunWorkflow.state] (the initial state is not reported, since states equal
-   * to the delegate state are skipped). Otherwise, the [Single] skips state updates that match the
-   * given state.
+   * Callers are responsible for keeping the [Workflow] running until it is
+   * [Finished], or else [abandoning][WorkflowPool.abandonWorkflow] it. To keep the [Workflow]
+   * running, call [onWorkflowUpdate] again with the provided [Running.handle].
    *
-   * If the nested workflow is [abandoned][WorkflowPool.abandonWorkflow], this case will never
+   * If the workflow is [abandoned][WorkflowPool.abandonWorkflow], this case will never
    * be selected.
    */
   fun <S : Any, E : Any, O : Any> WorkflowPool.onWorkflowUpdate(
-    handle: RunWorkflow<S, E, O>,
-    handler: (WorkflowHandle<S, E, O>) -> R
+    handle: WorkflowPool.Handle<S, E, O>,
+    handler: (WorkflowUpdate<S, E, O>) -> R
   ) = onSuspending(handler) { awaitWorkflowUpdate(handle) }
 
   /**
-   * Starts the indicated [worker] if it wasn't already running, and selects on the result from
-   * the worker finishing.
+   * Selected when the given [worker] produces its result. If [worker] wasn't already running,
+   * it is started the given [input]. The caller must ensure that the result is consumed, or
+   * else call [WorkflowPool.abandonWorker].
    *
    * This method can be called with the same worker multiple times and it will only be started once,
    * until it finishes. Then, the next time it is called it will restart the worker.

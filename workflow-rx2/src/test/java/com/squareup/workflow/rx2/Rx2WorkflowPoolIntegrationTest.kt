@@ -17,14 +17,14 @@ package com.squareup.workflow.rx2
 
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
-import com.squareup.workflow.FinishedWorkflow
+import com.squareup.workflow.Finished
 import com.squareup.workflow.Reaction
-import com.squareup.workflow.RunWorkflow
+import com.squareup.workflow.Running
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowHandle
+import com.squareup.workflow.WorkflowUpdate
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.register
-import com.squareup.workflow.workflowType
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.experimental.CancellationException
@@ -79,7 +79,7 @@ class Rx2WorkflowPoolIntegrationTest {
   private fun handle(
     state: String = "",
     name: String = ""
-  ) = RunWorkflow(myReactor.workflowType.makeWorkflowId(name), state)
+  ) = WorkflowPool.handle(myReactor::class, state, name)
 
   @Test fun `meta test myReactor reports states and result`() {
     val workflow = myReactor.launch(NEW, pool)
@@ -128,7 +128,7 @@ class Rx2WorkflowPoolIntegrationTest {
     nestedStateSub.assertNoValues()
 
     input.sendEvent("fnord")
-    nestedStateSub.assertValue(RunWorkflow(handle.id, "fnord"))
+    assertThat((nestedStateSub.values()[0] as Running).handle.state).isEqualTo("fnord")
     nestedStateSub.assertComplete()
   }
 
@@ -150,7 +150,7 @@ class Rx2WorkflowPoolIntegrationTest {
     resultSub.assertNoValues()
 
     input.sendEvent(STOP)
-    resultSub.assertValue(FinishedWorkflow(handle.id, "charlie"))
+    resultSub.assertValue(Finished("charlie"))
     resultSub.assertComplete()
   }
 
@@ -161,7 +161,7 @@ class Rx2WorkflowPoolIntegrationTest {
 
     val input = pool.input(handle)
     input.sendEvent(STOP)
-    resultSub.assertValue(FinishedWorkflow(handle.id, NEW))
+    resultSub.assertValue(Finished(NEW))
     resultSub.assertComplete()
   }
 
@@ -280,8 +280,8 @@ class Rx2WorkflowPoolIntegrationTest {
  */
 @Suppress("UNCHECKED_CAST")
 private fun <S : Any, E : Any, O : Any> WorkflowPool.testOnWorkflowUpdate(
-  handle: RunWorkflow<S, E, O>
-): TestObserver<WorkflowHandle<S, E, O>> = Channel<Nothing>().asEventChannel()
-    .select<WorkflowHandle<S, E, O>> {
+  handle: Handle<S, E, O>
+): TestObserver<WorkflowUpdate<S, E, O>> = Channel<Nothing>().asEventChannel()
+    .select<WorkflowUpdate<S, E, O>> {
       onWorkflowUpdate(handle) { it }
-    }.test() as TestObserver<WorkflowHandle<S, E, O>>
+    }.test() as TestObserver<WorkflowUpdate<S, E, O>>

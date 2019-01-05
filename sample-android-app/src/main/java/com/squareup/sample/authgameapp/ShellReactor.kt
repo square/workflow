@@ -22,9 +22,9 @@ import com.squareup.sample.authworkflow.AuthReactor
 import com.squareup.sample.tictactoe.RunGameLauncher
 import com.squareup.sample.tictactoe.RunGameReactor
 import com.squareup.workflow.EnterState
-import com.squareup.workflow.FinishedWorkflow
+import com.squareup.workflow.Finished
 import com.squareup.workflow.Reaction
-import com.squareup.workflow.RunWorkflow
+import com.squareup.workflow.Running
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.register
@@ -70,8 +70,8 @@ internal class ShellReactor(
     is Authenticating -> events.select {
       workflows.onWorkflowUpdate(state.authWorkflow) {
         when (it) {
-          is RunWorkflow -> EnterState<ShellState>(Authenticating(it))
-          is FinishedWorkflow -> EnterState(RunningGame())
+          is Running -> EnterState<ShellState>(Authenticating(it.handle))
+          is Finished -> EnterState(RunningGame())
         }
       }
     }
@@ -84,8 +84,8 @@ internal class ShellReactor(
 
       workflows.onWorkflowUpdate(state.runGameWorkflow) {
         when (it) {
-          is RunWorkflow -> EnterState(RunningGame(it))
-          is FinishedWorkflow -> EnterState(RunningGame())
+          is Running -> EnterState(RunningGame(it.handle))
+          is Finished -> EnterState(RunningGame())
         }
       }
     }

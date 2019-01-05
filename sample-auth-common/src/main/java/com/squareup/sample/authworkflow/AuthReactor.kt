@@ -23,10 +23,9 @@ import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
 import com.squareup.workflow.EnterState
 import com.squareup.workflow.FinishWith
 import com.squareup.workflow.Reaction
-import com.squareup.workflow.RunWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowHandle
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor
@@ -40,14 +39,8 @@ import io.reactivex.Single
  */
 interface AuthLauncher : Launcher<AuthState, AuthEvent, String> {
   companion object {
-    /**
-     * Returns a [RunWorkflow] handle that will instruct a [WorkflowPool] to call
-     * [launch] and start a workflow.
-     */
-    fun getStarter(
-      state: AuthState = AuthState.startingState()
-    ): RunWorkflow<AuthState, AuthEvent, String> =
-      WorkflowHandle.getStarter(AuthLauncher::class, state)
+    fun handle(state: AuthState = AuthState.startingState()): Handle<AuthState, AuthEvent, String> =
+      WorkflowPool.handle(AuthLauncher::class, state)
   }
 }
 
