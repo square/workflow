@@ -16,7 +16,7 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowPool.Type
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 
 /**
  * Defines a discrete task that a [Workflow] can execute asynchronously via [WorkflowPool],

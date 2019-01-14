@@ -15,9 +15,9 @@
  */
 package com.squareup.workflow
 
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.channels.ReceiveChannel
 
 /**
  * Models a process in the app as a stream of [states][openSubscriptionToState] of type [S],

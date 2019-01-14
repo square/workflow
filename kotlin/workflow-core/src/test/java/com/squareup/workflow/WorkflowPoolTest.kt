@@ -15,8 +15,8 @@
  */
 package com.squareup.workflow
 
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.channels.ReceiveChannel
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertEquals

@@ -27,8 +27,8 @@ import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.register
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.channels.Channel
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean

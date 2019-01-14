@@ -16,14 +16,14 @@
 package com.squareup.workflow.rx2
 
 import io.reactivex.Single
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.rx2.await
-import kotlinx.coroutines.experimental.rx2.rxSingle
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.rx2.rxSingle
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Helper for [Reactor]s that can accept events from external sources.
@@ -92,7 +92,7 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
         // subscriptions. We also make it a child of the rxSingle job so that if there's an exception,
         // it'll get cancelled automatically.
         val selectionJob = Job(parent = coroutineContext[Job])
-        kotlinx.coroutines.experimental.selects.select<Single<R>> {
+        kotlinx.coroutines.selects.select<Single<R>> {
           val selectBuilder = this
           val eventSelectBuilder = EventSelectBuilder<E, R>(selectBuilder, selectionJob)
           block(eventSelectBuilder)

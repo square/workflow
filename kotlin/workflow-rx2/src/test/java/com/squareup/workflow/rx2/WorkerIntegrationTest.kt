@@ -19,7 +19,7 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowPool
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.SingleSubject
-import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.channels.Channel
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 import java.io.IOException

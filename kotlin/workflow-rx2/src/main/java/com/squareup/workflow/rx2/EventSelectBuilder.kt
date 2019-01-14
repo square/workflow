@@ -25,12 +25,12 @@ import com.squareup.workflow.WorkflowUpdate
 import com.squareup.workflow.WorkflowPool
 import io.reactivex.Single
 import io.reactivex.Single.just
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.rx2.await
-import kotlinx.coroutines.experimental.selects.SelectBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.selects.SelectBuilder
 
 /**
  * The receiver for lambdas passed to [EventChannel.select][EventChannel.select].

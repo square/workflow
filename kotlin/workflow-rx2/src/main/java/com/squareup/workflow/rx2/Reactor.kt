@@ -20,9 +20,9 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.doLaunch
 import io.reactivex.Single
-import kotlinx.coroutines.experimental.CoroutineName
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.rx2.await
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.rx2.await
 import com.squareup.workflow.Reactor as CoroutineReactor
 
 /**

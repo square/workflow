@@ -18,11 +18,11 @@ package com.squareup.workflow
 import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.WorkflowPool.Type
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.channels.consume
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.consume
 import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
 

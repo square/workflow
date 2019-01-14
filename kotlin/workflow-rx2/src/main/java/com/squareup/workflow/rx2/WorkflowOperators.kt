@@ -18,7 +18,7 @@ package com.squareup.workflow.rx2
 import com.squareup.workflow.Workflow
 import io.reactivex.Completable
 import io.reactivex.Observable
-import kotlinx.coroutines.experimental.rx2.openSubscription
+import kotlinx.coroutines.rx2.openSubscription
 import com.squareup.workflow.switchMapState as coreSwitchMapState
 
 /**

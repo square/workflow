@@ -15,8 +15,8 @@
  */
 package com.squareup.workflow
 
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import org.junit.Test
 import java.io.IOException
 import kotlin.test.assertEquals

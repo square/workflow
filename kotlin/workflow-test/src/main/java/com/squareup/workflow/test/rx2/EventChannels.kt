@@ -19,7 +19,7 @@ package com.squareup.workflow.test.rx2
 
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.asEventChannel
-import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.channels.Channel
 
 /**
  * Creates an [EventChannel] that will send all the values passed, and then throw if another
