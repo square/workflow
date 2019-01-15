@@ -19,8 +19,8 @@ import android.view.View
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
 import com.squareup.sample.authworkflow.AuthorizingScreen
-import com.squareup.viewbuilder.LayoutViewBuilder
-import com.squareup.viewbuilder.ViewBuilder
+import com.squareup.viewbuilder.LayoutBinding
+import com.squareup.viewbuilder.ViewBinding
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -40,7 +40,7 @@ internal class AuthorizingCoordinator(private val screens: Observable<out Author
     super.detach(view)
   }
 
-  companion object : ViewBuilder<AuthorizingScreen> by LayoutViewBuilder.of(
+  companion object : ViewBinding<AuthorizingScreen> by LayoutBinding.of(
       R.layout.authorizing_layout, ::AuthorizingCoordinator
   )
 }

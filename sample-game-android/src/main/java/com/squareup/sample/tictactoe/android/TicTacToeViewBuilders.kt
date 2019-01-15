@@ -15,8 +15,8 @@
  */
 package com.squareup.sample.tictactoe.android
 
-import com.squareup.viewbuilder.ViewBuilder.Registry
+import com.squareup.viewbuilder.ViewRegistry
 
-val TicTacToeViewBuilders = Registry(
+val TicTacToeViewBuilders = ViewRegistry(
     NewGameCoordinator, GamePlayCoordinator, GameOverCoordinator
 )

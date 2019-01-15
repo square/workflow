@@ -23,28 +23,32 @@ import io.reactivex.Observable
  * probably a mistake if you find yourself creating, say, a
  * `StackScreen<MainAndModalScreen<*, *>>`.
  *
- * @throws IllegalArgumentException if [T] is [StackScreen]
+ * @throws IllegalArgumentException if [T] is [BackStackScreen]
  */
-data class StackScreen<out T : Any>(
+data class BackStackScreen<out T : Any>(
   val wrapped: T,
   private val keyExtension: String = ""
 ) {
   init {
-    require(wrapped !is StackScreen<*>) {
+    require(wrapped !is BackStackScreen<*>) {
       "Surely you didn't mean to put a stack right in a stack."
     }
   }
 
-  val key = ViewStackKey(wrapped::class.java, keyExtension)
+  val key = Key(wrapped::class.java, keyExtension)
+
+  data class Key<T : Any>(
+    val type: Class<T>,
+    val extension: String
+  )
 }
 
-data class ViewStackKey<T : Any>(
-  val type: Class<T>,
-  val extension: String
-)
-
-fun <T : Any> Observable<out StackScreen<*>>.matchingWrappedScreens(
-  screen: StackScreen<T>
+/**
+ * Filters an untyped stream of [BackStackScreen] down to those whose [BackStackScreen.key]s
+ * match that of the given [screen].
+ */
+fun <T : Any> Observable<out BackStackScreen<*>>.matching(
+  screen: BackStackScreen<T>
 ): Observable<out T> {
   return filter { it.key == screen.key }.map {
     screen.key.type.cast(it.wrapped)

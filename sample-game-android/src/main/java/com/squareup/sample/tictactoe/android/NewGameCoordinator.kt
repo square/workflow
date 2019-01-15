@@ -23,8 +23,8 @@ import com.squareup.sample.tictactoe.NewGameScreen
 import com.squareup.sample.tictactoe.RunGameEvent
 import com.squareup.sample.tictactoe.RunGameEvent.NoMore
 import com.squareup.sample.tictactoe.RunGameEvent.StartGame
-import com.squareup.viewbuilder.LayoutViewBuilder
-import com.squareup.viewbuilder.ViewBuilder
+import com.squareup.viewbuilder.LayoutBinding
+import com.squareup.viewbuilder.ViewBinding
 import com.squareup.viewbuilder.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -71,7 +71,7 @@ internal class NewGameCoordinator(
     view.setBackHandler { onEvent(NoMore) }
   }
 
-  companion object : ViewBuilder<NewGameScreen> by LayoutViewBuilder.of(
+  companion object : ViewBinding<NewGameScreen> by LayoutBinding.of(
       R.layout.new_game_layout, ::NewGameCoordinator
   )
 }

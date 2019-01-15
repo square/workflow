@@ -25,8 +25,8 @@ import com.squareup.sample.tictactoe.TakeTurnsEvent
 import com.squareup.sample.tictactoe.TakeTurnsEvent.Quit
 import com.squareup.sample.tictactoe.TakeTurnsEvent.TakeSquare
 import com.squareup.sample.tictactoe.Turn
-import com.squareup.viewbuilder.LayoutViewBuilder
-import com.squareup.viewbuilder.ViewBuilder
+import com.squareup.viewbuilder.LayoutBinding
+import com.squareup.viewbuilder.ViewBinding
 import com.squareup.viewbuilder.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -98,7 +98,7 @@ internal class GamePlayCoordinator(
     banner.text = message
   }
 
-  companion object : ViewBuilder<GamePlayScreen> by LayoutViewBuilder.of(
+  companion object : ViewBinding<GamePlayScreen> by LayoutBinding.of(
       R.layout.game_play_layout, ::GamePlayCoordinator
   ) {
     /**

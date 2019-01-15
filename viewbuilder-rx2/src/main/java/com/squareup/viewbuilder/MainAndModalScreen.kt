@@ -19,7 +19,7 @@ package com.squareup.viewbuilder
  * For flows that navigate through a series of main / body screens, sometimes covered by
  * the occasional modal dialog.
  */
-typealias StackedMainAndModalScreen<M, D> = MainAndModalScreen<StackScreen<M>, D>
+typealias StackedMainAndModalScreen<M, D> = MainAndModalScreen<BackStackScreen<M>, D>
 
 /**
  * For flows that show a [main] screen, optionally covered by a number of nested
@@ -47,9 +47,9 @@ fun <M : Any, D : Any> StackedMainAndModalScreen(
   main: M,
   modal: D? = null
 ): StackedMainAndModalScreen<M, D> {
-  return MainAndModalScreen(StackScreen(main), modal?.let { listOf(it) } ?: emptyList())
+  return MainAndModalScreen(BackStackScreen(main), modal?.let { listOf(it) } ?: emptyList())
 }
 
-fun <M : Any, D : Any> StackScreen<M>.toMainAndModal(): StackedMainAndModalScreen<M, D> {
+fun <M : Any, D : Any> BackStackScreen<M>.toMainAndModal(): StackedMainAndModalScreen<M, D> {
   return MainAndModalScreen(this)
 }
