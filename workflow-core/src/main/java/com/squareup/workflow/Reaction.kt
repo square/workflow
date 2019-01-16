@@ -16,7 +16,7 @@
 package com.squareup.workflow
 
 /**
- * Basically a monad that indicates whether a [Reactor] should enter another state ([EnterState]), with
+ * Indicates whether a [Reactor] should enter another state ([EnterState]), with
  * [EnterState.state] as the next state, or [FinishWith] the result [FinishWith.result].
  */
 @Suppress("UNUSED")
