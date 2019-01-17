@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.authworkflow.android
 
-import com.squareup.viewbuilder.ViewRegistry
+import com.squareup.viewregistry.ViewRegistry
 
 val AuthViewBuilders = ViewRegistry(
     AuthorizingCoordinator, LoginCoordinator, SecondFactorCoordinator

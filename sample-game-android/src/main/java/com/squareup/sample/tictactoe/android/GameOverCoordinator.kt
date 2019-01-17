@@ -32,9 +32,9 @@ import com.squareup.sample.tictactoe.SyncState.SAVED
 import com.squareup.sample.tictactoe.SyncState.SAVE_FAILED
 import com.squareup.sample.tictactoe.SyncState.SAVING
 import com.squareup.sample.tictactoe.android.GamePlayCoordinator.Companion.renderBoard
-import com.squareup.viewbuilder.LayoutBinding
-import com.squareup.viewbuilder.ViewBinding
-import com.squareup.viewbuilder.setBackHandler
+import com.squareup.viewregistry.LayoutBinding
+import com.squareup.viewregistry.ViewBinding
+import com.squareup.viewregistry.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 

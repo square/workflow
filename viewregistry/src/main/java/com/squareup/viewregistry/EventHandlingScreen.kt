@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2018 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.authworkflow
+package com.squareup.viewregistry
 
-import com.squareup.viewregistry.EventHandlingScreen
+/**
+ * Implemented by screens that accept events.
+ */
+interface EventHandlingScreen<out D : Any, in E : Any> {
+  val data: D
+  val onEvent: (E) -> Unit
 
-data class LoginScreen(
-  override val data: String,
-  override val onEvent: (SubmitLogin) -> Unit
-) : EventHandlingScreen<String, SubmitLogin>
+  companion object {
+    fun <E> ignoreEvents(): (E) -> Unit = { Unit }
+  }
+}

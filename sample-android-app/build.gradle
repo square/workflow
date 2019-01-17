@@ -34,7 +34,7 @@ dependencies {
   implementation project(':sample-auth-android')
   implementation project(':sample-game-common')
   implementation project(':sample-game-android')
-  implementation project(':viewbuilder-android')
+  implementation project(':viewregistry-android')
   implementation project(':workflow-rx2')
 
   implementation deps.appcompatv7

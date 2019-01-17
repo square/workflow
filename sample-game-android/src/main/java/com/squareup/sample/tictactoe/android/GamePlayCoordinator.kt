@@ -25,9 +25,9 @@ import com.squareup.sample.tictactoe.TakeTurnsEvent
 import com.squareup.sample.tictactoe.TakeTurnsEvent.Quit
 import com.squareup.sample.tictactoe.TakeTurnsEvent.TakeSquare
 import com.squareup.sample.tictactoe.Turn
-import com.squareup.viewbuilder.LayoutBinding
-import com.squareup.viewbuilder.ViewBinding
-import com.squareup.viewbuilder.setBackHandler
+import com.squareup.viewregistry.LayoutBinding
+import com.squareup.viewregistry.ViewBinding
+import com.squareup.viewregistry.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 

@@ -21,11 +21,11 @@ import android.view.View
 import com.squareup.sample.authworkflow.android.AuthViewBuilders
 import com.squareup.sample.tictactoe.ConfirmQuitScreen
 import com.squareup.sample.tictactoe.android.TicTacToeViewBuilders
-import com.squareup.viewbuilder.HandlesBack
-import com.squareup.viewbuilder.MainAndModalScreen
-import com.squareup.viewbuilder.StackedMainAndModalScreen
-import com.squareup.viewbuilder.ViewBinding
-import com.squareup.viewbuilder.ViewRegistry
+import com.squareup.viewregistry.HandlesBack
+import com.squareup.viewregistry.MainAndModalScreen
+import com.squareup.viewregistry.StackedMainAndModalScreen
+import com.squareup.viewregistry.ViewBinding
+import com.squareup.viewregistry.ViewRegistry
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable

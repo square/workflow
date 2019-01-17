@@ -20,8 +20,8 @@ import com.squareup.sample.authgameapp.ShellState.RunningGame
 import com.squareup.sample.authworkflow.AuthRenderer
 import com.squareup.sample.tictactoe.ConfirmQuitScreen
 import com.squareup.sample.tictactoe.RunGameRenderer
-import com.squareup.viewbuilder.StackedMainAndModalScreen
-import com.squareup.viewbuilder.toMainAndModal
+import com.squareup.viewregistry.StackedMainAndModalScreen
+import com.squareup.viewregistry.toMainAndModal
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool

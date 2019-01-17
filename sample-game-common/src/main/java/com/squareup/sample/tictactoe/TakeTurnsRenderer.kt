@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.tictactoe
 
-import com.squareup.viewbuilder.BackStackScreen
+import com.squareup.viewregistry.BackStackScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool

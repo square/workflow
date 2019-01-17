@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.tictactoe
 
-import com.squareup.viewbuilder.EventHandlingScreen
+import com.squareup.viewregistry.EventHandlingScreen
 
 data class NewGameScreen(
   override val onEvent: (RunGameEvent) -> Unit

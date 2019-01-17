@@ -17,7 +17,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 
 dependencies {
-  implementation project(':viewbuilder-rx2')
+  implementation project(':viewregistry')
   implementation project(':workflow-rx2')
 
   implementation deps.kotlin.stdLib.jdk6

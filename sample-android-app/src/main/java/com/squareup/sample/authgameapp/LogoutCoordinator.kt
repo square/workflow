@@ -18,8 +18,8 @@ package com.squareup.sample.authgameapp
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.coordinators.Coordinator
-import com.squareup.viewbuilder.HandlesBack.Helper.onBackPressed
-import com.squareup.viewbuilder.setBackHandler
+import com.squareup.viewregistry.HandlesBack.Helper.onBackPressed
+import com.squareup.viewregistry.setBackHandler
 import com.squareup.workflow.AnyScreen
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable

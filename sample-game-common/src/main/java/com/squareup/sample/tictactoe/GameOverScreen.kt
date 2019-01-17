@@ -16,7 +16,7 @@
 package com.squareup.sample.tictactoe
 
 import com.squareup.sample.tictactoe.RunGameState.GameOver
-import com.squareup.viewbuilder.EventHandlingScreen
+import com.squareup.viewregistry.EventHandlingScreen
 
 data class GameOverScreen(
   override val data: RunGameState.GameOver,
