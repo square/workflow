@@ -15,6 +15,8 @@
  */
 package com.squareup.viewregistry
 
+import kotlin.reflect.KClass
+
 /**
  * Wraps screens that may be shown in series, drill down or wizard style.
  * Typically these are the leaves of composite UI structures. That is, it's
@@ -33,10 +35,10 @@ data class BackStackScreen<out T : Any>(
     }
   }
 
-  val key = Key(wrapped::class.java, keyExtension)
+  val key = Key(wrapped::class, keyExtension)
 
   data class Key<T : Any>(
-    val type: Class<T>,
-    val extension: String
+    val type: KClass<T>,
+    val extension: String = ""
   )
 }

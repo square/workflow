@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.authworkflow.android
+package com.squareup.sample.tictactoe.android
 
+import com.squareup.sample.tictactoe.GameOverScreen
+import com.squareup.sample.tictactoe.GamePlayScreen
+import com.squareup.viewregistry.NoEffect
 import com.squareup.viewregistry.ViewRegistry
 
-val AuthViewBuilders = ViewRegistry(
-    AuthorizingCoordinator, LoginCoordinator, SecondFactorCoordinator
-)
+val TicTacToeViewBindings = ViewRegistry(
+    NewGameCoordinator, GamePlayCoordinator, GameOverCoordinator
+) + NoEffect(from = GamePlayScreen::class, to = GameOverScreen::class)

@@ -18,11 +18,12 @@ package com.squareup.sample.authgameapp
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.squareup.sample.authworkflow.android.AuthViewBuilders
+import com.squareup.sample.authworkflow.android.AuthViewBindings
 import com.squareup.sample.tictactoe.ConfirmQuitScreen
-import com.squareup.sample.tictactoe.android.TicTacToeViewBuilders
+import com.squareup.sample.tictactoe.android.TicTacToeViewBindings
 import com.squareup.viewregistry.HandlesBack
 import com.squareup.viewregistry.MainAndModalScreen
+import com.squareup.viewregistry.PushPopEffect
 import com.squareup.viewregistry.StackedMainAndModalScreen
 import com.squareup.viewregistry.ViewBinding
 import com.squareup.viewregistry.ViewRegistry
@@ -87,11 +88,11 @@ class ShellActivity : AppCompatActivity() {
     // TODO(ray) this never happens, add back button handling.
     subs.add(workflow.toCompletable().subscribe { finish() })
 
-    val viewFactory = buildViewFactory()
+    val viewRegistry = buildViewRegistry()
     val rootViewBinding: ViewBinding<StackedMainAndModalScreen<*, ConfirmQuitScreen>> =
-      viewFactory[MainAndModalScreen::class.jvmName]
+      viewRegistry.getBinding(MainAndModalScreen::class.jvmName)
 
-    content = rootViewBinding.buildView(screens, viewFactory, this)
+    content = rootViewBinding.buildView(screens, viewRegistry, this)
         .apply { setContentView(this) }
   }
 
@@ -111,8 +112,8 @@ class ShellActivity : AppCompatActivity() {
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component
 
-  private fun buildViewFactory(): ViewRegistry {
-    return ViewRegistry(ShellCoordinator) + AuthViewBuilders + TicTacToeViewBuilders
+  private fun buildViewRegistry(): ViewRegistry {
+    return ViewRegistry(ShellCoordinator) + AuthViewBindings + TicTacToeViewBindings + PushPopEffect
   }
 
   private companion object {

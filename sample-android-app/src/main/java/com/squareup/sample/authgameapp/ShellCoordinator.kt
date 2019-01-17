@@ -35,7 +35,7 @@ import io.reactivex.disposables.CompositeDisposable
  * more general purpose).
  *
  * Obviously in real life we would want
- * [com.squareup.sample.tictactoe.android.TicTacToeViewBuilders]
+ * [com.squareup.sample.tictactoe.android.TicTacToeViewBindings]
  * to provide its own binding for [ConfirmQuitScreen], as it does for
  * everything else. Getting there.
  */

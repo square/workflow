@@ -17,7 +17,7 @@ package com.squareup.viewregistry
 
 import android.content.Context
 import android.support.annotation.LayoutRes
-import android.transition.Scene
+import android.support.transition.Scene
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

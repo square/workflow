@@ -18,21 +18,21 @@ package com.squareup.viewregistry
 import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.Creator
-import android.transition.Scene
 import android.util.SparseArray
 import android.view.View
 import android.view.View.BaseSavedState
-import android.view.ViewGroup
 import com.squareup.viewregistry.ViewStateStack.Direction.POP
 import com.squareup.viewregistry.ViewStateStack.Direction.PUSH
 import com.squareup.viewregistry.ViewStateStack.SavedState
+import com.squareup.viewregistry.ViewStateStack.UpdateTools
 import io.reactivex.Observable
+import kotlin.reflect.full.cast
 
 /**
  * Maintains a stack of persisted [view hierarchy states][View.saveHierarchyState].
- * Does most of the work required for a container view to handle [BackStackScreen] navigation.
  *
- * When preparing to show a new screen, call [prepareToUpdate].
+ * When preparing to show a new screen, call [prepareToUpdate] and use the [UpdateTools]
+ * it returns.
  *
  * This class implements [Parcelable] so that it can be preserved from
  * a container view's own [View.saveHierarchyState] method -- call [save] first.
@@ -185,42 +185,15 @@ class ViewStateStack private constructor(
 }
 
 /**
- * Fishes in [viewRegistry] for the [ViewBinding] for type [T] and
- * uses it to instantiate a [View] to display any matching items
- * received via [screens].
+ * Ties a view to the [BackStackScreen.Key<*>] that created it.
+ * Always set by [ViewStateStack.UpdateTools.setUpNewView].
  */
-fun <T : Any> BackStackScreen<T>.buildWrappedView(
-  screens: Observable<out BackStackScreen<*>>,
-  viewRegistry: ViewRegistry,
-  container: ViewGroup
-): View {
-  val myScreens: Observable<out T> = screens.matching(this)
-  val binding: ViewBinding<T> = viewRegistry[key.type.name]
-  return binding.buildView(myScreens, viewRegistry, container)
-}
-
-/**
- * Fishes in [viewRegistry] for the [ViewBinding] for type [T] and
- * uses it to instantiate a [Scene] to display any matching items
- * received via [screens].
- */
-fun <T : Any> BackStackScreen<T>.buildWrappedScene(
-  screens: Observable<out BackStackScreen<*>>,
-  viewRegistry: ViewRegistry,
-  container: ViewGroup,
-  enterAction: ((Scene) -> Unit)? = null
-): Scene {
-  val myScreens: Observable<out T> = screens.matching(this)
-  val binding: ViewBinding<T> = viewRegistry[key.type.name]
-  return binding.buildScene(myScreens, viewRegistry, container, enterAction)
-}
-
 var View.backStackKey: BackStackScreen.Key<*>
   get() {
     return getTag(R.id.workflow_back_stack_key) as BackStackScreen.Key<*>?
         ?: throw IllegalArgumentException("No key found on $this")
   }
-  set(screenKey) = setTag(R.id.workflow_back_stack_key, screenKey)
+  private set(screenKey) = setTag(R.id.workflow_back_stack_key, screenKey)
 
 /**
  * Filters an untyped stream of [BackStackScreen] down to those whose [BackStackScreen.key]s
