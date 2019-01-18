@@ -21,11 +21,11 @@ import com.squareup.coordinators.Coordinator
 import com.squareup.sample.tictactoe.ConfirmQuitScreen
 import com.squareup.sample.tictactoe.RunGameEvent.ConfirmQuit
 import com.squareup.sample.tictactoe.RunGameEvent.ContinuePlaying
-import com.squareup.viewbuilder.LayoutBinding
-import com.squareup.viewbuilder.StackedMainAndModalScreen
-import com.squareup.viewbuilder.ViewBinding
-import com.squareup.viewbuilder.ViewRegistry
-import com.squareup.viewbuilder.BackStackFrameLayout
+import com.squareup.viewregistry.LayoutBinding
+import com.squareup.viewregistry.StackedMainAndModalScreen
+import com.squareup.viewregistry.ViewBinding
+import com.squareup.viewregistry.ViewRegistry
+import com.squareup.viewregistry.BackStackFrameLayout
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 

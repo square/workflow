@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.authworkflow
 
-import com.squareup.viewbuilder.EventHandlingScreen
+import com.squareup.viewregistry.EventHandlingScreen
 
 data class SecondFactorScreen(
   override val data: String,

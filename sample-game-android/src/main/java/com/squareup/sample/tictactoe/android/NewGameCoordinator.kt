@@ -23,9 +23,9 @@ import com.squareup.sample.tictactoe.NewGameScreen
 import com.squareup.sample.tictactoe.RunGameEvent
 import com.squareup.sample.tictactoe.RunGameEvent.NoMore
 import com.squareup.sample.tictactoe.RunGameEvent.StartGame
-import com.squareup.viewbuilder.LayoutBinding
-import com.squareup.viewbuilder.ViewBinding
-import com.squareup.viewbuilder.setBackHandler
+import com.squareup.viewregistry.LayoutBinding
+import com.squareup.viewregistry.ViewBinding
+import com.squareup.viewregistry.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 

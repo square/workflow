@@ -19,7 +19,7 @@ apply plugin: 'kotlin-android'
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
-  api project(':viewbuilder-android')
+  api project(':viewregistry-android')
   api project(':sample-game-common')
 
   api deps.appcompatv7

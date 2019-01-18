@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.authworkflow
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.vanniktech.maven.publish'
 
-import com.squareup.viewregistry.EventHandlingScreen
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
 
-data class LoginScreen(
-  override val data: String,
-  override val onEvent: (SubmitLogin) -> Unit
-) : EventHandlingScreen<String, SubmitLogin>
+android rootProject.ext.defaultAndroidConfig
+
+dependencies {
+  api project(':viewregistry')
+
+  api deps.coordinators
+  api deps.kotlin.stdLib.jdk6
+  api deps.rxjava2.rxjava2
+
+  implementation deps.kotlin.reflect
+}

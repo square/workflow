@@ -22,8 +22,8 @@ import android.widget.TextView
 import com.squareup.coordinators.Coordinator
 import com.squareup.sample.authworkflow.LoginScreen
 import com.squareup.sample.authworkflow.SubmitLogin
-import com.squareup.viewbuilder.LayoutBinding
-import com.squareup.viewbuilder.ViewBinding
+import com.squareup.viewregistry.LayoutBinding
+import com.squareup.viewregistry.ViewBinding
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 

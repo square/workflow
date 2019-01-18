@@ -17,9 +17,9 @@ package com.squareup.sample.tictactoe
 
 import com.squareup.sample.tictactoe.RunGameState.MaybeQuitting
 import com.squareup.sample.tictactoe.RunGameState.Playing
-import com.squareup.viewbuilder.EventHandlingScreen.Companion.ignoreEvents
-import com.squareup.viewbuilder.MainAndModalScreen
-import com.squareup.viewbuilder.StackedMainAndModalScreen
+import com.squareup.viewregistry.EventHandlingScreen.Companion.ignoreEvents
+import com.squareup.viewregistry.MainAndModalScreen
+import com.squareup.viewregistry.StackedMainAndModalScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
