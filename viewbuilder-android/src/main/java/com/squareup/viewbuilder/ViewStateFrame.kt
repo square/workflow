@@ -20,6 +20,10 @@ import android.os.Parcelable
 import android.os.Parcelable.Creator
 import android.util.SparseArray
 
+/**
+ * Used by [ViewStateStack] to record the [viewState] data for the view identified
+ * by [key], which is expected to match the `toString()` of a [BackStackScreen.key].
+ */
 internal data class ViewStateFrame(
   val key: String,
   val viewState: SparseArray<Parcelable>

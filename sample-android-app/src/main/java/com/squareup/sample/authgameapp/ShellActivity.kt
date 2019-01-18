@@ -24,8 +24,8 @@ import com.squareup.sample.tictactoe.android.TicTacToeViewBuilders
 import com.squareup.viewbuilder.HandlesBack
 import com.squareup.viewbuilder.MainAndModalScreen
 import com.squareup.viewbuilder.StackedMainAndModalScreen
-import com.squareup.viewbuilder.ViewBuilder
-import com.squareup.viewbuilder.ViewBuilder.Registry
+import com.squareup.viewbuilder.ViewBinding
+import com.squareup.viewbuilder.ViewRegistry
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable
@@ -88,10 +88,10 @@ class ShellActivity : AppCompatActivity() {
     subs.add(workflow.toCompletable().subscribe { finish() })
 
     val viewFactory = buildViewFactory()
-    val rootViewBuilder: ViewBuilder<StackedMainAndModalScreen<*, ConfirmQuitScreen>> =
+    val rootViewBinding: ViewBinding<StackedMainAndModalScreen<*, ConfirmQuitScreen>> =
       viewFactory[MainAndModalScreen::class.jvmName]
 
-    content = rootViewBuilder.buildView(screens, viewFactory, this)
+    content = rootViewBinding.buildView(screens, viewFactory, this)
         .apply { setContentView(this) }
   }
 
@@ -111,8 +111,8 @@ class ShellActivity : AppCompatActivity() {
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component
 
-  private fun buildViewFactory(): ViewBuilder.Registry {
-    return Registry(ShellCoordinator) + AuthViewBuilders + TicTacToeViewBuilders
+  private fun buildViewFactory(): ViewRegistry {
+    return ViewRegistry(ShellCoordinator) + AuthViewBuilders + TicTacToeViewBuilders
   }
 
   private companion object {

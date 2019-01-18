@@ -61,7 +61,7 @@ interface HandlesBack {
             HandlesBack::class.simpleName
       }
 
-      setTag(R.id.back_handler, handlesBack)
+      setTag(R.id.workflow_back_handler, handlesBack)
     }
 
     /**
@@ -71,7 +71,7 @@ interface HandlesBack {
      */
     @JvmStatic
     fun onBackPressed(view: View): Boolean {
-      var handler: HandlesBack? = view.getTag(R.id.back_handler) as HandlesBack?
+      var handler: HandlesBack? = view.getTag(R.id.workflow_back_handler) as HandlesBack?
 
       if (view is HandlesBack) {
         check(handler == null) { "Should be impossible to have both tag and interface" }

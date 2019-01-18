@@ -21,10 +21,11 @@ import com.squareup.coordinators.Coordinator
 import com.squareup.sample.tictactoe.ConfirmQuitScreen
 import com.squareup.sample.tictactoe.RunGameEvent.ConfirmQuit
 import com.squareup.sample.tictactoe.RunGameEvent.ContinuePlaying
-import com.squareup.viewbuilder.LayoutViewBuilder
+import com.squareup.viewbuilder.LayoutBinding
 import com.squareup.viewbuilder.StackedMainAndModalScreen
-import com.squareup.viewbuilder.ViewBuilder
-import com.squareup.viewbuilder.ViewStackCoordinator
+import com.squareup.viewbuilder.ViewBinding
+import com.squareup.viewbuilder.ViewRegistry
+import com.squareup.viewbuilder.BackStackFrameLayout
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -40,15 +41,8 @@ import io.reactivex.disposables.CompositeDisposable
  */
 class ShellCoordinator(
   private val screens: Observable<out StackedMainAndModalScreen<*, ConfirmQuitScreen>>,
-  builders: ViewBuilder.Registry
+  private val viewRegistry: ViewRegistry
 ) : Coordinator() {
-
-  /**
-   * We delegate most of the container duties to a [ViewStackCoordinator], which
-   * knows all about driving [R.layout.view_stack_layout] to show off a
-   * stream of [com.squareup.viewbuilder.StackScreen].
-   */
-  private val bodyCoordinator = ViewStackCoordinator(screens.map { it.main }, builders)
 
   private val subs = CompositeDisposable()
   private var dialog: AlertDialog? = null
@@ -56,7 +50,8 @@ class ShellCoordinator(
   override fun attach(view: View) {
     super.attach(view)
 
-    bodyCoordinator.attach(view)
+    val stackLayout = view.findViewById<BackStackFrameLayout>(R.id.view_stack)
+    stackLayout.takeScreens(screens.map { mainAndModal -> mainAndModal.main }, viewRegistry)
 
     subs.add(screens.subscribe { screen ->
       with(screen.modals) {
@@ -78,7 +73,6 @@ class ShellCoordinator(
     // before this point. Try to use a lifecycle observer to clean that up.
     tearDownDialog()
 
-    bodyCoordinator.detach(view)
     super.detach(view)
   }
 
@@ -107,6 +101,6 @@ class ShellCoordinator(
     dialog = null
   }
 
-  companion object : ViewBuilder<StackedMainAndModalScreen<*, ConfirmQuitScreen>>
-  by LayoutViewBuilder.of(R.layout.view_stack_layout, ::ShellCoordinator)
+  companion object : ViewBinding<StackedMainAndModalScreen<*, ConfirmQuitScreen>>
+  by LayoutBinding.of(R.layout.view_stack_layout, ::ShellCoordinator)
 }

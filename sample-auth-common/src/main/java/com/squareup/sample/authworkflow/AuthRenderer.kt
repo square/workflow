@@ -19,17 +19,17 @@ import com.squareup.sample.authworkflow.AuthState.Authorizing
 import com.squareup.sample.authworkflow.AuthState.AuthorizingSecondFactor
 import com.squareup.sample.authworkflow.AuthState.LoginPrompt
 import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
-import com.squareup.viewbuilder.StackScreen
+import com.squareup.viewbuilder.BackStackScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 
-object AuthRenderer : Renderer<AuthState, AuthEvent, StackScreen<Any>> {
+object AuthRenderer : Renderer<AuthState, AuthEvent, BackStackScreen<Any>> {
   override fun render(
     state: AuthState,
     workflow: WorkflowInput<AuthEvent>,
     workflows: WorkflowPool
-  ): StackScreen<Any> = StackScreen(
+  ): BackStackScreen<Any> = BackStackScreen(
       when (state) {
         is LoginPrompt -> LoginScreen(state.errorMessage, workflow::sendEvent)
 

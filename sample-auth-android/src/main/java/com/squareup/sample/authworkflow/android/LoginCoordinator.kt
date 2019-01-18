@@ -22,8 +22,8 @@ import android.widget.TextView
 import com.squareup.coordinators.Coordinator
 import com.squareup.sample.authworkflow.LoginScreen
 import com.squareup.sample.authworkflow.SubmitLogin
-import com.squareup.viewbuilder.LayoutViewBuilder
-import com.squareup.viewbuilder.ViewBuilder
+import com.squareup.viewbuilder.LayoutBinding
+import com.squareup.viewbuilder.ViewBinding
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -59,7 +59,7 @@ internal class LoginCoordinator(private val screens: Observable<out LoginScreen>
     }
   }
 
-  companion object : ViewBuilder<LoginScreen> by LayoutViewBuilder.of(
+  companion object : ViewBinding<LoginScreen> by LayoutBinding.of(
       R.layout.login_layout, ::LoginCoordinator
   )
 }

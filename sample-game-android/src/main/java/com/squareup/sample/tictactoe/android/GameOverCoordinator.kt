@@ -32,8 +32,8 @@ import com.squareup.sample.tictactoe.SyncState.SAVED
 import com.squareup.sample.tictactoe.SyncState.SAVE_FAILED
 import com.squareup.sample.tictactoe.SyncState.SAVING
 import com.squareup.sample.tictactoe.android.GamePlayCoordinator.Companion.renderBoard
-import com.squareup.viewbuilder.LayoutViewBuilder
-import com.squareup.viewbuilder.ViewBuilder
+import com.squareup.viewbuilder.LayoutBinding
+import com.squareup.viewbuilder.ViewBinding
 import com.squareup.viewbuilder.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -122,7 +122,7 @@ internal class GameOverCoordinator(
   }
 
   /** Note how easily  we're sharing this layout with [GamePlayCoordinator]. */
-  companion object : ViewBuilder<GameOverScreen> by LayoutViewBuilder.of(
+  companion object : ViewBinding<GameOverScreen> by LayoutBinding.of(
       R.layout.game_play_layout, ::GameOverCoordinator
   )
 }

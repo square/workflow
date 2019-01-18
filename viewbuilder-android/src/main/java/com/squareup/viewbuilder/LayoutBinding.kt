@@ -17,20 +17,20 @@ package com.squareup.viewbuilder
 
 import android.content.Context
 import android.support.annotation.LayoutRes
+import android.transition.Scene
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.coordinators.Coordinator
 import com.squareup.coordinators.Coordinators
-import com.squareup.viewbuilder.ViewBuilder.Registry
 import io.reactivex.Observable
 
 /**
- * Takes a [layoutId] and a [coordinatorConstructor] method and implements
- * [ViewBuilder].
+ * A [ViewBinding] built from a [layoutId] and a [coordinatorConstructor].
+ * (Use [BuilderBinding] to create views from code.)
  *
  * Typical usage is to have a [Coordinator]'s `companion object` implement
- * [ViewBuilder] by delegating to one of these, tied to the layout resource
+ * [ViewBinding] by delegating to one of these, tied to the layout resource
  * it typically expects to drive.
  *
  *    class NewGameCoordinator(
@@ -42,35 +42,32 @@ import io.reactivex.Observable
  *      )
  *    }
  *
- * This pattern allows us to assemble [ViewBuilder.Registry]'s out of the
+ * This pattern allows us to assemble a [ViewRegistry] out of the
  * [Coordinator] classes themselves.
  *
- *    val TicTacToeViewBuilders = Registry(
+ *    val TicTacToeViewBuilders = ViewRegistry(
  *        NewGameCoordinator, GamePlayCoordinator, GameOverCoordinator
  *    )
  *
  * Also note that two flavors of [coordinatorConstructor] are supported. Every
  * [Coordinator] must accept an `[Observable]<out [T]>`. Optionally, they can
- * also have a second [ViewBuilder.Registry] argument, to allow recursive calls
- * to render nested screens. Containers like [ViewStackCoordinator] make use of this.
- *
- * The great thing is that this will all fall apart in a matter of hours or
- * days as we sort out `TransitionManager` support!
+ * also have a second [ViewRegistry] argument, to allow recursive calls
+ * to render nested screens.
  */
-class LayoutViewBuilder<T : Any> private constructor(
+class LayoutBinding<T : Any> private constructor(
   override val type: String,
   @LayoutRes private val layoutId: Int,
-  private val coordinatorConstructor: (Observable<out T>, Registry) -> Coordinator
-) : ViewBuilder<T> {
+  private val coordinatorConstructor: (Observable<out T>, ViewRegistry) -> Coordinator
+) : ViewBinding<T> {
   constructor(
     type: Class<T>,
     @LayoutRes layoutId: Int,
-    coordinatorConstructor: (Observable<out T>, Registry) -> Coordinator
+    coordinatorConstructor: (Observable<out T>, ViewRegistry) -> Coordinator
   ) : this(type.name, layoutId, coordinatorConstructor)
 
   override fun buildView(
     screens: Observable<out T>,
-    builders: Registry,
+    viewRegistry: ViewRegistry,
     contextForNewView: Context,
     container: ViewGroup?
   ): View {
@@ -79,7 +76,25 @@ class LayoutViewBuilder<T : Any> private constructor(
         .inflate(layoutId, container, false)
         .apply {
           Coordinators.bind(this) {
-            coordinatorConstructor(screens, builders)
+            coordinatorConstructor(screens, viewRegistry)
+          }
+        }
+  }
+
+  override fun buildScene(
+    screens: Observable<out T>,
+    viewRegistry: ViewRegistry,
+    contextForNewView: Context,
+    container: ViewGroup,
+    enterAction: ((Scene) -> Unit)?
+  ): Scene {
+    return Scene.getSceneForLayout(container, layoutId, contextForNewView)
+        .apply {
+          setEnterAction {
+            if (enterAction != null) enterAction(this)
+            viewOrNull()?.let {
+              Coordinators.bind(it) { coordinatorConstructor(screens, viewRegistry) }
+            }
           }
         }
   }
@@ -88,15 +103,13 @@ class LayoutViewBuilder<T : Any> private constructor(
     inline fun <reified T : Any> of(
       @LayoutRes layoutId: Int,
       noinline coordinatorConstructor: (Observable<out T>) -> Coordinator
-    ) = of(
-        layoutId
-    ) { o: Observable<out T>, _ -> coordinatorConstructor(o) }
+    ) = of(layoutId) { screens: Observable<out T>, _ -> coordinatorConstructor(screens) }
 
     inline fun <reified T : Any> of(
       @LayoutRes layoutId: Int,
-      noinline coordinatorConstructor: (Observable<out T>, Registry) -> Coordinator
-    ): LayoutViewBuilder<T> {
-      return LayoutViewBuilder(
+      noinline coordinatorConstructor: (Observable<out T>, ViewRegistry) -> Coordinator
+    ): LayoutBinding<T> {
+      return LayoutBinding(
           T::class.java, layoutId, coordinatorConstructor
       )
     }

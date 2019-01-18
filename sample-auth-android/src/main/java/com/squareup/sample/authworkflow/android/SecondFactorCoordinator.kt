@@ -22,8 +22,8 @@ import android.widget.TextView
 import com.squareup.coordinators.Coordinator
 import com.squareup.sample.authworkflow.SecondFactorScreen
 import com.squareup.sample.authworkflow.SubmitSecondFactor
-import com.squareup.viewbuilder.LayoutViewBuilder
-import com.squareup.viewbuilder.ViewBuilder
+import com.squareup.viewbuilder.LayoutBinding
+import com.squareup.viewbuilder.ViewBinding
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -58,7 +58,7 @@ internal class SecondFactorCoordinator(private val screens: Observable<out Secon
     }
   }
 
-  companion object : ViewBuilder<SecondFactorScreen> by LayoutViewBuilder.of(
+  companion object : ViewBinding<SecondFactorScreen> by LayoutBinding.of(
       R.layout.second_factor_layout, ::SecondFactorCoordinator
   )
 }

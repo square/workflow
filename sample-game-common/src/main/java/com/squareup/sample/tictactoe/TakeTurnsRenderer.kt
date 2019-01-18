@@ -15,15 +15,15 @@
  */
 package com.squareup.sample.tictactoe
 
-import com.squareup.viewbuilder.StackScreen
+import com.squareup.viewbuilder.BackStackScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 
-object TakeTurnsRenderer : Renderer<Turn, TakeTurnsEvent, StackScreen<GamePlayScreen>> {
+object TakeTurnsRenderer : Renderer<Turn, TakeTurnsEvent, BackStackScreen<GamePlayScreen>> {
   override fun render(
     state: Turn,
     workflow: WorkflowInput<TakeTurnsEvent>,
     workflows: WorkflowPool
-  ): StackScreen<GamePlayScreen> = StackScreen(GamePlayScreen(state, workflow::sendEvent))
+  ): BackStackScreen<GamePlayScreen> = BackStackScreen(GamePlayScreen(state, workflow::sendEvent))
 }
