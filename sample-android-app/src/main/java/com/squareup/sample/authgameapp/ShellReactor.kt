@@ -27,6 +27,7 @@ import com.squareup.workflow.Reaction
 import com.squareup.workflow.Running
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.abandonWorkflow
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor

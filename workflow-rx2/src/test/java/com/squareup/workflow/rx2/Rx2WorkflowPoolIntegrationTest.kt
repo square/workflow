@@ -21,9 +21,10 @@ import com.squareup.workflow.Finished
 import com.squareup.workflow.Reaction
 import com.squareup.workflow.Running
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowUpdate
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPool.Handle
+import com.squareup.workflow.WorkflowUpdate
+import com.squareup.workflow.abandonWorkflow
 import com.squareup.workflow.register
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver

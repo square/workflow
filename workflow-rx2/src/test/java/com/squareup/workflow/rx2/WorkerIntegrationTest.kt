@@ -17,6 +17,7 @@ package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.abandonWorker
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.SingleSubject
 import kotlinx.coroutines.experimental.channels.Channel

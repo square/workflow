@@ -21,8 +21,9 @@ import com.squareup.workflow.Finished
 import com.squareup.workflow.Running
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowUpdate
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.WorkflowUpdate
+import com.squareup.workflow.awaitWorkerResult
 import io.reactivex.Single
 import io.reactivex.Single.just
 import kotlinx.coroutines.experimental.CoroutineScope
