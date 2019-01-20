@@ -24,6 +24,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.WorkflowUpdate
+import com.squareup.workflow.abandonWorkflow
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Background
 import com.squareup.workflow.rx2.Rx2ReactorIntegrationTest.OuterEvent.Cancel

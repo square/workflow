@@ -22,12 +22,17 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.channels.consume
 import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
 
 /**
- * Runs [Workflow] and [Worker]s on demand.
+ * Creates a new [WorkflowPool].
+ */
+@Suppress("FunctionName")
+fun WorkflowPool(): WorkflowPool = RealWorkflowPool()
+
+/**
+ * Runs [Workflow] and [Worker]s on demand. Create by calling the `WorkflowPool` function.
  *
  * To run a [Workflow]:
  *
@@ -36,7 +41,7 @@ import kotlin.reflect.KClass
  *
  * To run a [Worker], call [awaitWorkerResult]. (A worker is effectively its own [Launcher].)
  */
-class WorkflowPool {
+interface WorkflowPool {
   /**
    * Represents the type parameters of a [Launcher] in reified form.
    *
@@ -124,12 +129,7 @@ class WorkflowPool {
     val state: S
   )
 
-  private class WorkflowEntry(val workflow: Workflow<*, *, *>)
-
-  private val launchers = mutableMapOf<Type<*, *, *>, Launcher<*, *, *>>()
-  private val workflows = mutableMapOf<Id<*, *, *>, WorkflowEntry>()
-
-  @get:TestOnly val peekWorkflowsCount get() = workflows.values.size
+  @get:TestOnly val peekWorkflowsCount: Int
 
   /**
    * Registers the [Launcher] to be used to create workflows that match its [Launcher.workflowType],
@@ -140,9 +140,7 @@ class WorkflowPool {
   fun <S : Any, E : Any, O : Any> register(
     launcher: Launcher<S, E, O>,
     type: Type<S, E, O>
-  ) {
-    launchers[type] = launcher
-  }
+  )
 
   /**
    * Starts the [Workflow] described by [handle] if it wasn't already running.
@@ -161,57 +159,17 @@ class WorkflowPool {
    */
   suspend fun <S : Any, E : Any, O : Any> awaitWorkflowUpdate(
     handle: Handle<S, E, O>
-  ): WorkflowUpdate<S, E, O> {
-    val workflow = requireWorkflow(handle)
-    workflow.openSubscriptionToState()
-        .consume {
-          removeCompletedWorkflowAfter(handle.id) {
-            var state = receiveOrNull()
-            // Skip all the states that match the handle's state.
-            while (state == handle.state) {
-              state = receiveOrNull()
-            }
-            return state
-                ?.let { Running(handle.copy(state = it)) }
-                ?: Finished(workflow.await())
-          }
-        }
-  }
-
-  /**
-   * Suspends until the given [worker] produces its result. If it wasn't already running,
-   * starts it with the given [input]. The caller must either consume the result, or
-   * else call [abandonWorker].
-   *
-   * @throws kotlinx.coroutines.experimental.CancellationException If the worker is
-   * [abandoned][abandonWorker].
-   *
-   * @see workerResult
-   */
-  suspend inline fun <reified I : Any, reified O : Any> awaitWorkerResult(
-    worker: Worker<I, O>,
-    input: I,
-    name: String = ""
-  ): O = awaitWorkerResult(worker, input, name, worker.workflowType)
+  ): WorkflowUpdate<S, E, O>
 
   /**
    * Hides the actual logic of starting processes from being inline in external code.
    */
-  @PublishedApi
-  internal suspend fun <I : Any, O : Any> awaitWorkerResult(
+  suspend fun <I : Any, O : Any> awaitWorkerResult(
     worker: Worker<I, O>,
     input: I,
     name: String,
     type: Type<I, Nothing, O>
-  ): O {
-    register(worker.asLauncher(), type)
-    val handle = Handle(type.makeWorkflowId(name), input)
-    val workflow = requireWorkflow(handle)
-
-    removeCompletedWorkflowAfter(handle.id) {
-      return workflow.await()
-    }
-  }
+  ): O
 
   /**
    * Returns a [WorkflowInput] that will route events to the identified [Workflow],
@@ -222,40 +180,9 @@ class WorkflowPool {
    */
   fun <E : Any> input(
     handle: Handle<*, E, *>
-  ): WorkflowInput<E> = object : WorkflowInput<E> {
-    override fun sendEvent(event: E) {
-      workflows[handle.id]?.let {
-        @Suppress("UNCHECKED_CAST")
-        (it.workflow as WorkflowInput<E>).sendEvent(event)
-      }
-    }
-  }
+  ): WorkflowInput<E>
 
-  @PublishedApi
-  internal fun abandonWorkflow(id: Id<*, *, *>) {
-    workflows[id]?.workflow?.cancel()
-  }
-
-  /**
-   * Abandons the identified workflow if it was already running. If it wasn't, this is a no-op.
-   *
-   * To abandon a [Worker], use [abandonWorker].
-   *
-   * @see abandonAll
-   */
-  fun abandonWorkflow(handle: Handle<*, *, *>) = abandonWorkflow(handle.id)
-
-  /**
-   * Abandons the identified [Worker] if it was already running. If it wasn't, this is a no-op.
-   *
-   * To abandon a nested worker, use [abandonWorker].
-   *
-   * @see abandonAll
-   */
-  inline fun <reified I : Any, reified O : Any> abandonWorker(
-    worker: Worker<I, O>,
-    name: String = ""
-  ) = abandonWorkflow(worker.workflowType.makeWorkflowId(name))
+  fun abandonWorkflow(id: Id<*, *, *>)
 
   /**
    * Abandons all workflows currently running in this pool.
@@ -263,60 +190,7 @@ class WorkflowPool {
    * @see abandonWorkflow
    * @see abandonWorker
    */
-  fun abandonAll() {
-    workflows.values.forEach { it.workflow.cancel() }
-  }
-
-  private fun <S : Any, E : Any, O : Any> launcher(
-    type: Type<S, E, O>
-  ): Launcher<S, E, O> {
-    val launcher = launchers[type]
-    check(launcher != null) {
-      "Expected launcher for \"$type\". Did you forget to call WorkflowPool.register()?"
-    }
-    @Suppress("UNCHECKED_CAST")
-    return launcher as Launcher<S, E, O>
-  }
-
-  private fun <S : Any, E : Any, O : Any> requireWorkflow(
-    handle: Handle<S, E, O>
-  ): Workflow<S, E, O> {
-    // Some complexity here to handle workflows that complete the moment
-    // they are started. We want to return the short-lived workflow so that its
-    // result can be processed, but we also need to make sure it doesn't linger
-    // in the map.
-
-    @Suppress("UNCHECKED_CAST")
-    var workflow = workflows[handle.id]?.workflow as Workflow<S, E, O>?
-
-    if (workflow == null) {
-      workflow = launcher(handle.id.workflowType).launch(handle.state, this)
-
-      val entry = WorkflowEntry(workflow)
-      // This entry will eventually be removed from the map by removeCompletedWorkflowAfter.
-      workflows[handle.id] = entry
-    }
-    return workflow
-  }
-
-  /**
-   * Ensures that the workflow identified by [id] is removed from the pool map before returning,
-   * iff that workflow is completed after [block] returns or throws.
-   *
-   * **This function must be used any time a workflow result is about to be reported.**
-   */
-  private inline fun <R : Any> removeCompletedWorkflowAfter(
-    id: Id<*, *, *>,
-    block: () -> R
-  ): R = try {
-    block()
-  } finally {
-    workflows[id]?.let { workflow ->
-      if (workflow.workflow.isCompleted) {
-        workflows -= id
-      }
-    }
-  }
+  fun abandonAll()
 
   companion object {
     /**
@@ -337,6 +211,43 @@ class WorkflowPool {
     ): Handle<Unit, E, O> = handle(launcherType, Unit, name)
   }
 }
+
+/**
+ * Suspends until the given [worker] produces its result. If it wasn't already running,
+ * starts it with the given [input]. The caller must either consume the result, or
+ * else call [abandonWorker].
+ *
+ * @throws kotlinx.coroutines.experimental.CancellationException If the worker is
+ * [abandoned][abandonWorker].
+ *
+ * @see workerResult
+ */
+suspend inline fun <reified I : Any, reified O : Any> WorkflowPool.awaitWorkerResult(
+  worker: Worker<I, O>,
+  input: I,
+  name: String = ""
+): O = awaitWorkerResult(worker, input, name, worker.workflowType)
+
+/**
+ * Abandons the identified workflow if it was already running. If it wasn't, this is a no-op.
+ *
+ * To abandon a [Worker], use [abandonWorker].
+ *
+ * @see WorkflowPool.abandonAll
+ */
+fun WorkflowPool.abandonWorkflow(handle: Handle<*, *, *>) = abandonWorkflow(handle.id)
+
+/**
+ * Abandons the identified [Worker] if it was already running. If it wasn't, this is a no-op.
+ *
+ * To abandon a nested worker, use [abandonWorker].
+ *
+ * @see WorkflowPool.abandonAll
+ */
+inline fun <reified I : Any, reified O : Any> WorkflowPool.abandonWorker(
+  worker: Worker<I, O>,
+  name: String = ""
+) = abandonWorkflow(worker.workflowType.makeWorkflowId(name))
 
 /**
  * Registers the [Launcher] to be used to create workflows that match its [Launcher.workflowType],
@@ -403,12 +314,3 @@ inline val <reified S : Any, reified E : Any, reified O : Any>
 inline val <reified S : Any, reified E : Any, reified O : Any>
     KClass<out Launcher<S, E, O>>.workflowType: Type<S, E, O>
   get() = Type(S::class, E::class, O::class)
-
-private fun <I : Any, O : Any> Worker<I, O>.asLauncher() = object : Launcher<I, Nothing, O> {
-  override fun launch(
-    initialState: I,
-    workflows: WorkflowPool
-  ): Workflow<@UnsafeVariance I, Nothing, O> = GlobalScope.workflow(Unconfined) { _, _ ->
-    call(initialState)
-  }
-}

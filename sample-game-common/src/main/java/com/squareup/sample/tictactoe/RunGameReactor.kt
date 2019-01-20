@@ -44,6 +44,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.WorkflowPool.Launcher
+import com.squareup.workflow.abandonWorker
 import com.squareup.workflow.register
 import com.squareup.workflow.rx2.EventChannel
 import com.squareup.workflow.rx2.Reactor

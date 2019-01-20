@@ -24,7 +24,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @Suppress("DeferredResultUnused", "MemberVisibilityCanBePrivate")
-class WorkflowPoolTest {
+class RealWorkflowPoolTest {
   companion object {
     const val NEW = "*NEW*"
     const val STOP = "*STOP*"
@@ -60,9 +60,9 @@ class WorkflowPoolTest {
     }
   }
 
-  val myReactor = MyReactor()
+  private val myReactor = MyReactor()
 
-  val pool = WorkflowPool().apply { register(myReactor) }
+  private val pool = RealWorkflowPool().apply { register(myReactor) }
 
   private fun handle(
     state: String = "",
