@@ -19,11 +19,17 @@ import com.squareup.workflow.WorkflowPool.Handle
 import com.squareup.workflow.WorkflowPool.Id
 import com.squareup.workflow.WorkflowPool.Launcher
 import com.squareup.workflow.WorkflowPool.Type
+import com.squareup.workflow.WorkflowPoolMonitorEvent.Abandoned
+import com.squareup.workflow.WorkflowPoolMonitorEvent.Launched
+import com.squareup.workflow.WorkflowPoolMonitorEvent.ReceivedEvent
+import com.squareup.workflow.WorkflowPoolMonitorEvent.Registered
+import com.squareup.workflow.WorkflowPoolMonitorEvent.RemovedFromPool
+import com.squareup.workflow.WorkflowPoolMonitorEvent.UpdateRequested
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.consume
 
-internal class RealWorkflowPool : WorkflowPool {
+internal class RealWorkflowPool(private val monitor: WorkflowPoolMonitor?) : WorkflowPool {
 
   private class WorkflowEntry(val workflow: Workflow<*, *, *>)
 
@@ -37,11 +43,13 @@ internal class RealWorkflowPool : WorkflowPool {
     type: Type<S, E, O>
   ) {
     launchers[type] = launcher
+    monitor.report { Registered(type, launcher) }
   }
 
   override suspend fun <S : Any, E : Any, O : Any> awaitWorkflowUpdate(
     handle: Handle<S, E, O>
   ): WorkflowUpdate<S, E, O> {
+    monitor.report { UpdateRequested(handle.id, handle.state) }
     val workflow = requireWorkflow(handle)
     workflow.openSubscriptionToState()
         .consume {
@@ -51,9 +59,16 @@ internal class RealWorkflowPool : WorkflowPool {
             while (state == handle.state) {
               state = receiveOrNull()
             }
-            return state
-                ?.let { Running(handle.copy(state = it)) }
-                ?: Finished(workflow.await())
+
+            return if (state != null) {
+              monitor.report { WorkflowPoolMonitorEvent.StateChanged(handle.id, state) }
+              Running(handle.copy(state = state))
+            } else {
+              val result = workflow.await()
+              // TODO finished should be reported outside of this method, ideally.
+              monitor.report { WorkflowPoolMonitorEvent.Finished(handle.id, result) }
+              Finished(result)
+            }
           }
         }
   }
@@ -64,12 +79,16 @@ internal class RealWorkflowPool : WorkflowPool {
     name: String,
     type: Type<I, Nothing, O>
   ): O {
-    register(worker.asLauncher(), type)
     val handle = Handle(type.makeWorkflowId(name), input)
+    monitor.report { UpdateRequested(handle.id, handle.state) }
+
+    register(worker.asLauncher(), type)
     val workflow = requireWorkflow(handle)
 
     removeCompletedWorkflowAfter(handle.id) {
-      return workflow.await()
+      val result = workflow.await()
+      monitor.report { WorkflowPoolMonitorEvent.Finished(handle.id, result) }
+      return result
     }
   }
 
@@ -78,6 +97,7 @@ internal class RealWorkflowPool : WorkflowPool {
   ): WorkflowInput<E> = object : WorkflowInput<E> {
     override fun sendEvent(event: E) {
       workflows[handle.id]?.let {
+        monitor.report { ReceivedEvent(handle.id, event) }
         @Suppress("UNCHECKED_CAST")
         (it.workflow as WorkflowInput<E>).sendEvent(event)
       }
@@ -85,11 +105,17 @@ internal class RealWorkflowPool : WorkflowPool {
   }
 
   override fun abandonWorkflow(id: Id<*, *, *>) {
-    workflows[id]?.workflow?.cancel()
+    workflows[id]?.let {
+      monitor.report { Abandoned(id) }
+      it.workflow.cancel()
+    }
   }
 
   override fun abandonAll() {
-    workflows.values.forEach { it.workflow.cancel() }
+    workflows.forEach { (id, entry) ->
+      monitor.report { Abandoned(id) }
+      entry.workflow.cancel()
+    }
   }
 
   private fun <S : Any, E : Any, O : Any> launcher(
@@ -120,6 +146,8 @@ internal class RealWorkflowPool : WorkflowPool {
       val entry = WorkflowEntry(workflow)
       // This entry will eventually be removed from the map by removeCompletedWorkflowAfter.
       workflows[handle.id] = entry
+
+      monitor.report { Launched(handle.id, handle.state) }
     }
     return workflow
   }
@@ -139,9 +167,13 @@ internal class RealWorkflowPool : WorkflowPool {
     workflows[id]?.let { workflow ->
       if (workflow.workflow.isCompleted) {
         workflows -= id
+        monitor.report { RemovedFromPool(id) }
       }
     }
   }
+
+  private inline fun WorkflowPoolMonitor?.report(eventProvider: () -> WorkflowPoolMonitorEvent) =
+    report(this@RealWorkflowPool, eventProvider)
 }
 
 private fun <I : Any, O : Any> Worker<I, O>.asLauncher() = object : Launcher<I, Nothing, O> {

@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
  * Creates a new [WorkflowPool].
  */
 @Suppress("FunctionName")
-fun WorkflowPool(): WorkflowPool = RealWorkflowPool()
+fun WorkflowPool(monitor: WorkflowPoolMonitor? = null): WorkflowPool = RealWorkflowPool(monitor)
 
 /**
  * Runs [Workflow] and [Worker]s on demand. Create by calling the `WorkflowPool` function.
@@ -76,6 +76,8 @@ interface WorkflowPool {
       other is Type<*, *, *> -> types.contentEquals(other.types)
       else -> false
     }
+
+    override fun toString(): String = "WorkflowPool.Type(${types.joinToString { it.java.name }})"
   }
 
   /**
@@ -103,8 +105,7 @@ interface WorkflowPool {
    * Unique identifier for a particular [Workflow] to be run by a [WorkflowPool].
    * See [Type.makeWorkflowId] for details.
    */
-  data class Id<S : Any, in E : Any, out O : Any>
-  internal constructor(
+  data class Id<S : Any, in E : Any, out O : Any>(
     val name: String,
     val workflowType: Type<S, E, O>
   )

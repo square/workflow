@@ -62,7 +62,7 @@ class RealWorkflowPoolTest {
 
   private val myReactor = MyReactor()
 
-  private val pool = RealWorkflowPool().apply { register(myReactor) }
+  private val pool = RealWorkflowPool(null).apply { register(myReactor) }
 
   private fun handle(
     state: String = "",
