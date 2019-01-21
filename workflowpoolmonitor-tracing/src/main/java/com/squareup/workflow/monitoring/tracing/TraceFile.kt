@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include ':sample-android-app'
-include ':sample-auth-android'
-include ':sample-auth-common'
-include ':sample-game-android'
-include ':sample-game-common'
-include ':viewregistry-android'
-include ':viewregistry'
-include ':workflow-core'
-include ':workflow-rx2'
-include ':workflow-test'
-include ':workflowpoolmonitor-tracing'
+package com.squareup.workflow.monitoring.tracing
+
+import com.squareup.moshi.Json
+
+internal data class TraceFile(
+  @Json(name = "traceEvents") val events: List<TraceEvent>,
+  val otherData: Map<String, Any> = emptyMap()
+)

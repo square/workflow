@@ -40,6 +40,7 @@ buildscript {
       'mavenPublishPlugin': '0.6.0',
       'mockito': '2.7.5',
       'mockitoKotlin': '1.5.0',
+      'moshiVersion': '1.8.0',
       'rxjava2Extensions': '0.20.4',
   ]
 
@@ -49,6 +50,7 @@ buildscript {
       'appcompatv7': "com.android.support:appcompat-v7:${versions.supportVersion}",
       'coordinators': "com.squareup.coordinators:coordinators:${versions.coordinators}",
       'design': "com.android.support:design:${versions.supportVersion}",
+      'moshi': "com.squareup.moshi:moshi:${versions.moshiVersion}",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:${versions.rxandroid2}",
       'timber': "com.jakewharton.timber:timber:${versions.timberVersion}",
 
@@ -62,8 +64,10 @@ buildscript {
           ],
           'coroutines': [
               'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinCoroutines}",
-              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.kotlinCoroutines}"
+              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.kotlinCoroutines}",
+              'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinCoroutines}"
           ],
+          'moshi': "com.squareup.moshi:moshi-kotlin:${versions.moshiVersion}",
           'reflect': "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
           'test': [
               'common': "org.jetbrains.kotlin:kotlin-test-common",

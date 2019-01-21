@@ -36,9 +36,11 @@ dependencies {
   implementation project(':sample-game-android')
   implementation project(':viewregistry-android')
   implementation project(':workflow-rx2')
+  implementation project(':workflowpoolmonitor-tracing')
 
   implementation deps.appcompatv7
   implementation deps.design
+  implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.reflect
   implementation deps.okio
   implementation deps.rxandroid2
