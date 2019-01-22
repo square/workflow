@@ -37,6 +37,7 @@ dependencies {
   implementation project(':viewregistry-android')
   implementation project(':workflow-rx2')
   implementation project(':workflowpoolmonitor-tracing')
+  implementation project(':workflowpoolmonitor-webview')
 
   implementation deps.appcompatv7
   implementation deps.design

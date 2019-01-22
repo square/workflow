@@ -119,6 +119,11 @@ class ShellActivity : AppCompatActivity(), CoroutineScope {
         delay(5000)
       }
     }
+
+    with(component.workflowWebview) {
+      start()
+      Timber.d("Workflow inspector listening on port $port…")
+    }
   }
 
   override fun onBackPressed() {
@@ -134,6 +139,7 @@ class ShellActivity : AppCompatActivity(), CoroutineScope {
     subs.clear()
     job.cancel()
     component.workflowTracer.dispose()
+    component.workflowWebview.stop()
     super.onDestroy()
   }
 

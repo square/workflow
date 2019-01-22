@@ -37,6 +37,7 @@ buildscript {
       'kotlin': '1.2.61',
       'kotlinCoroutines': '0.26.1',
       'ktlintPlugin': '5.1.0',
+      'ktorVersion': '0.9.5',
       'mavenPublishPlugin': '0.6.0',
       'mockito': '2.7.5',
       'mockitoKotlin': '1.5.0',
@@ -74,6 +75,11 @@ buildscript {
               'annotations': "org.jetbrains.kotlin:kotlin-test-annotations-common",
               'jdk': "org.jetbrains.kotlin:kotlin-test-junit",
               'mockito': "com.nhaarman:mockito-kotlin-kt1.1:${versions.mockitoKotlin}"
+          ],
+          'ktor': [
+            'serverCore':  "io.ktor:ktor-server-core:${versions.ktorVersion}",
+            'serverJetty': "io.ktor:ktor-server-jetty:${versions.ktorVersion}",
+            'htmlBuilder': "io.ktor:ktor-html-builder:${versions.ktorVersion}",
           ]
       ],
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
@@ -141,6 +147,9 @@ subprojects {
     mavenCentral()
     jcenter()
     google()
+    
+    // For pre-1.0.0 Ktor.
+    maven { url "https://dl.bintray.com/kotlin/ktor/" }
   }
 
   apply plugin: "org.jlleitschuh.gradle.ktlint"

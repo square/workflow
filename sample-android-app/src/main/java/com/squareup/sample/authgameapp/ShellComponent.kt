@@ -23,6 +23,7 @@ import com.squareup.sample.tictactoe.TakeTurnsReactor
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.WorkflowPoolMonitor
 import com.squareup.workflow.monitoring.tracing.TracingWorkflowPoolMonitor
+import com.squareup.workflow.monitoring.webview.WebViewWorkflowPoolMonitor
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import timber.log.Timber
 
@@ -33,9 +34,12 @@ internal class ShellComponent {
 
   val workflowTracer = TracingWorkflowPoolMonitor()
 
+  val workflowWebview = WebViewWorkflowPoolMonitor(8123, workflowTracer)
+
   val workflowPoolMonitor: WorkflowPoolMonitor = WorkflowPoolMonitor.merge(
       TimberWorkflowPoolMonitor(),
-      workflowTracer
+      workflowTracer,
+      workflowWebview
   )
 
   val workflowPool = WorkflowPool(workflowPoolMonitor)
