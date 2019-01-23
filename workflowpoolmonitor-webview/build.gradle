@@ -36,6 +36,7 @@ dependencies {
   implementation deps.kotlin.moshi
   implementation deps.kotlin.reflect
   implementation deps.moshi
+  implementation "org.slf4j:slf4j-simple:1.7.25"
 
   testImplementation deps.kotlin.test.jdk
 }

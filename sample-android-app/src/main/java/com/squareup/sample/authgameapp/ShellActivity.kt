@@ -31,15 +31,7 @@ import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
 import timber.log.Timber
-import java.io.File
-import kotlin.coroutines.experimental.CoroutineContext
 import kotlin.reflect.jvm.jvmName
 
 /**
@@ -51,7 +43,7 @@ import kotlin.reflect.jvm.jvmName
  *   to each game view)
  *
  */
-class ShellActivity : AppCompatActivity(), CoroutineScope {
+class ShellActivity : AppCompatActivity() {
   private lateinit var component: ShellComponent
 
   /** Workflow decides what we're doing. */
@@ -69,12 +61,8 @@ class ShellActivity : AppCompatActivity(), CoroutineScope {
   private lateinit var content: View
 
   private val subs = CompositeDisposable()
-  private val job = Job()
 
   private var latestSnapshot = Snapshot.EMPTY
-
-  override val coroutineContext: CoroutineContext
-    get() = Job() + Dispatchers.Main
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -106,20 +94,6 @@ class ShellActivity : AppCompatActivity(), CoroutineScope {
     content = rootViewBinding.buildView(screens, viewFactory, this)
         .apply { setContentView(this) }
 
-    val traceFile = File(getExternalFilesDir(null), "workflow-trace.json")
-    Timber.i("Writing traces to $traceFile every 5 seconds…")
-    launch {
-      while (true) {
-        try {
-          component.workflowTracer.writeTraceFile(traceFile)
-          Timber.d("Wrote trace file.")
-        } catch (e: Throwable) {
-          Timber.w(e, "Failed to write trace file.")
-        }
-        delay(5000)
-      }
-    }
-
     with(component.workflowWebview) {
       start()
       Timber.d("Workflow inspector listening on port $port…")
@@ -137,8 +111,6 @@ class ShellActivity : AppCompatActivity(), CoroutineScope {
 
   override fun onDestroy() {
     subs.clear()
-    job.cancel()
-    component.workflowTracer.dispose()
     component.workflowWebview.stop()
     super.onDestroy()
   }

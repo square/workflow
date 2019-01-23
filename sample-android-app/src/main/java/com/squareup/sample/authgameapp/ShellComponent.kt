@@ -32,13 +32,10 @@ import timber.log.Timber
  */
 internal class ShellComponent {
 
-  val workflowTracer = TracingWorkflowPoolMonitor()
-
-  val workflowWebview = WebViewWorkflowPoolMonitor(8123, workflowTracer)
+  val workflowWebview = WebViewWorkflowPoolMonitor(port = 8123)
 
   val workflowPoolMonitor: WorkflowPoolMonitor = WorkflowPoolMonitor.merge(
       TimberWorkflowPoolMonitor(),
-      workflowTracer,
       workflowWebview
   )
 

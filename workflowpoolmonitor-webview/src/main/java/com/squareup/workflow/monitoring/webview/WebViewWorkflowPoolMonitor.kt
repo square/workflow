@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.squareup.workflow.monitoring.webview
 
 import com.squareup.workflow.WorkflowPool
@@ -5,9 +20,13 @@ import com.squareup.workflow.WorkflowPoolMonitor
 import com.squareup.workflow.WorkflowPoolMonitorEvent
 import com.squareup.workflow.monitoring.tracing.TracingWorkflowPoolMonitor
 import io.ktor.application.call
-import io.ktor.html.respondHtml
+import io.ktor.application.install
+import io.ktor.features.CallLogging
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.content.defaultResource
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import io.ktor.response.header
 import io.ktor.response.respondOutputStream
 import io.ktor.response.respondTextWriter
@@ -17,16 +36,8 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.jetty.Jetty
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
-import kotlinx.html.a
-import kotlinx.html.body
-import kotlinx.html.div
-import kotlinx.html.head
-import kotlinx.html.id
-import kotlinx.html.p
-import kotlinx.html.script
-import kotlinx.html.title
-import kotlinx.html.unsafe
 import okio.Okio.sink
+import org.slf4j.event.Level.INFO
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 private val CONTENT_TYPE_EVENT_STREAM = ContentType.parse("text/event-stream")
@@ -48,39 +59,15 @@ class WebViewWorkflowPoolMonitor(
   private val eventChannel = BroadcastChannel<WorkflowPoolMonitorEvent>(capacity = 5000)
 
   private val server = embeddedServer(Jetty, port, host) {
+
+    install(CallLogging) {
+      level = INFO
+    }
+
     routing {
-      get("/") {
-        call.respondHtml {
-          head {
-            title { +"Workflow Inspector" }
-          }
-          body {
-            div { a(href = "/workflow_trace.json") { +"Download Trace File" } }
-
-            p { +"Events:" }
-
-            div {
-              id = "result"
-            }
-
-            script {
-              unsafe {
-                +"""
-                  var source = new EventSource("/state_updates");
-                  source.onmessage = function(event) {
-                    document.getElementById("result").innerHTML += event.data + "<br/>";
-                  };
-                  source.onerror = function(e) {
-                    console.log("event source failed:", e);
-                  };
-                  source.onopen = function(e) {
-                    console.log("event source opened: ", e);
-                  };
-                """.trimIndent()
-              }
-            }
-          }
-        }
+      static("/") {
+        resources("/static_web")
+        defaultResource("index.html", "/static_web")
       }
 
       get("/state_updates") {
@@ -107,8 +94,8 @@ class WebViewWorkflowPoolMonitor(
     }
   }
 
-  fun start() {
-    server.start(wait = false)
+  fun start(wait: Boolean = false) {
+    server.start(wait)
   }
 
   fun stop() {
@@ -123,6 +110,7 @@ class WebViewWorkflowPoolMonitor(
     pool: WorkflowPool,
     event: WorkflowPoolMonitorEvent
   ) {
+    tracingMonitor.report(pool, event)
     eventChannel.offer(event)
   }
 }
