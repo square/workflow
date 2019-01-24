@@ -16,7 +16,7 @@
 package com.squareup.viewregistry
 
 import android.content.Context
-import android.transition.Scene
+import android.support.transition.Scene
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Observable

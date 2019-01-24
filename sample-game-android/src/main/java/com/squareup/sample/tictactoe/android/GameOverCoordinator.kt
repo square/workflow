@@ -84,7 +84,7 @@ internal class GameOverCoordinator(
       }
       SAVE_FAILED -> {
         button1.isEnabled = true
-        button1.text = "Save Failed Try Again"
+        button1.text = "Unsaved"
         button1.setOnClickListener { screen.onEvent(TrySaveAgain) }
       }
       SAVED -> {

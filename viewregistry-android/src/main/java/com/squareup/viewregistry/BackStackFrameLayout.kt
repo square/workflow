@@ -17,15 +17,11 @@ package com.squareup.viewregistry
 
 import android.content.Context
 import android.os.Parcelable
-import android.transition.Slide
-import android.transition.TransitionManager
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import com.squareup.viewregistry.ViewStateStack.Direction.PUSH
 import io.reactivex.Observable
 
 /**
@@ -58,24 +54,16 @@ class BackStackFrameLayout(
     screens: Observable<out BackStackScreen<*>>,
     viewRegistry: ViewRegistry
   ) {
+    showing?.let { if (it.backStackKey == newScreen.key) return }
+
     val updateTools = viewStateStack.prepareToUpdate(newScreen.key)
-    var slideEdge: Int? = null
 
-    showing?.let {
-      if (it.backStackKey == newScreen.key) return
-
-      updateTools.saveOldView(it)
-      slideEdge = if (updateTools.direction == PUSH) Gravity.END else Gravity.START
-    }
-
-    val newScene = newScreen
-        .buildWrappedScene(screens, viewRegistry, this) { scene ->
-          scene.viewOrNull()
-              ?.let { updateTools.setUpNewView(it) }
+    showing
+        ?.let {
+          viewRegistry.getEffect(it.backStackKey, newScreen.key, updateTools.direction)
+              .execute(it, newScreen, screens, viewRegistry, this, updateTools)
         }
-    slideEdge
-        ?.let { TransitionManager.go(newScene, Slide(it)) }
-        ?: TransitionManager.go(newScene)
+        ?: NoEffect.execute(this, newScreen, screens, viewRegistry, updateTools)
   }
 
   override fun onBackPressed(): Boolean {

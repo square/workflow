@@ -28,6 +28,7 @@ dependencies {
   api deps.coordinators
   api deps.kotlin.stdLib.jdk6
   api deps.rxjava2.rxjava2
+  api deps.transition
 
   implementation deps.kotlin.reflect
 }
