@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.viewregistry.BackStackScreen.Key
 import com.squareup.viewregistry.ViewStateStack.Direction
-import com.squareup.viewregistry.ViewStateStack.UpdateTools
 import io.reactivex.Observable
 import kotlin.reflect.KClass
 
@@ -40,10 +39,10 @@ class NoEffect(
     screens: Observable<out BackStackScreen<*>>,
     viewRegistry: ViewRegistry,
     container: ViewGroup,
-    tools: UpdateTools
+    setUpNewView: (View) -> Unit,
+    direction: Direction
   ) {
-    tools.saveOldView(from)
-    execute(container, to, screens, viewRegistry, tools)
+    execute(to, screens, viewRegistry, container, setUpNewView)
   }
 
   companion object : BackStackEffect by NoEffect() {
@@ -52,15 +51,15 @@ class NoEffect(
      * Empties [container] and makes [to] its only child.
      */
     fun execute(
-      container: ViewGroup,
       to: BackStackScreen<*>,
       screens: Observable<out BackStackScreen<*>>,
       viewRegistry: ViewRegistry,
-      tools: UpdateTools
+      container: ViewGroup,
+      setUpNewView: (View) -> Unit
     ) {
       container.removeAllViews()
       val newView = to.buildWrappedView(screens, viewRegistry, container)
-          .apply { tools.setUpNewView(this) }
+          .apply { setUpNewView(this) }
       container.addView(newView)
     }
   }

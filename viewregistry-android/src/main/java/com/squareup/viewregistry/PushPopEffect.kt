@@ -7,8 +7,8 @@ import android.support.transition.TransitionSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.viewregistry.ViewStateStack.Direction
 import com.squareup.viewregistry.ViewStateStack.Direction.PUSH
-import com.squareup.viewregistry.ViewStateStack.UpdateTools
 import io.reactivex.Observable
 
 /**
@@ -24,18 +24,17 @@ object PushPopEffect : BackStackEffect {
     screens: Observable<out BackStackScreen<*>>,
     viewRegistry: ViewRegistry,
     container: ViewGroup,
-    tools: UpdateTools
+    setUpNewView: (View) -> Unit,
+    direction: Direction
   ) {
     val newScene = to
         .buildWrappedScene(screens, viewRegistry, container) { scene ->
           scene.viewOrNull()
-              ?.let { tools.setUpNewView(it) }
+              ?.let { setUpNewView(it) }
         }
 
-    tools.saveOldView(from)
-
-    val outEdge = if (tools.direction == PUSH) Gravity.START else Gravity.END
-    val inEdge = if (tools.direction == PUSH) Gravity.END else Gravity.START
+    val outEdge = if (direction == PUSH) Gravity.START else Gravity.END
+    val inEdge = if (direction == PUSH) Gravity.END else Gravity.START
 
     val outSet = TransitionSet()
         .addTransition(Slide(outEdge).addTarget(from))
