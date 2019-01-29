@@ -3,7 +3,7 @@ package com.squareup.viewregistry
 import android.support.transition.Scene
 import android.view.View
 import android.view.ViewGroup
-import com.squareup.viewregistry.ViewStateStack.UpdateTools
+import com.squareup.viewregistry.ViewStateStack.Direction
 import io.reactivex.Observable
 import kotlin.reflect.jvm.jvmName
 
@@ -37,6 +37,9 @@ interface BackStackEffect {
    *
    *  - You can use [buildWrappedView] or [buildWrappedScene] to give the new view
    *    its expected stream of properly typed screen objects.
+   *
+   *  - You must call [setUpNewView] on the incoming view before it is attached
+   *    to the window.
    */
   fun execute(
     from: View,
@@ -44,7 +47,8 @@ interface BackStackEffect {
     screens: Observable<out BackStackScreen<*>>,
     viewRegistry: ViewRegistry,
     container: ViewGroup,
-    tools: UpdateTools
+    setUpNewView: (View) -> Unit,
+    direction: Direction
   )
 }
 

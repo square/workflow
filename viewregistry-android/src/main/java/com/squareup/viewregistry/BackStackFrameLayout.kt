@@ -60,10 +60,25 @@ class BackStackFrameLayout(
 
     showing
         ?.let {
+          updateTools.saveOldView(it)
           viewRegistry.getEffect(it.backStackKey, newScreen.key, updateTools.direction)
-              .execute(it, newScreen, screens, viewRegistry, this, updateTools)
+              .execute(
+                  from = it,
+                  to = newScreen,
+                  screens = screens,
+                  viewRegistry = viewRegistry,
+                  container = this,
+                  setUpNewView = updateTools::setUpNewView,
+                  direction = updateTools.direction
+              )
         }
-        ?: NoEffect.execute(this, newScreen, screens, viewRegistry, updateTools)
+        ?: NoEffect.execute(
+            newScreen,
+            screens,
+            viewRegistry,
+            this,
+            updateTools::setUpNewView
+        )
   }
 
   override fun onBackPressed(): Boolean {
