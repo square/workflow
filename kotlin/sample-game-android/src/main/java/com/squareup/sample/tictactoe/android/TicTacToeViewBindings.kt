@@ -17,8 +17,8 @@ package com.squareup.sample.tictactoe.android
 
 import com.squareup.sample.tictactoe.GameOverScreen
 import com.squareup.sample.tictactoe.GamePlayScreen
-import com.squareup.viewregistry.NoEffect
 import com.squareup.viewregistry.ViewRegistry
+import com.squareup.viewregistry.backstack.NoEffect
 
 val TicTacToeViewBindings = ViewRegistry(
     NewGameCoordinator, GamePlayCoordinator, GameOverCoordinator

@@ -114,6 +114,9 @@ class BuilderBinding<T : Any> private constructor(
   }
 }
 
+/**
+ * Subscribes [update] to [source] only while this [View] is attached to a window.
+ */
 fun <S : Any> View.takeWhileAttached(
   source: Observable<S>,
   update: (S) -> Unit

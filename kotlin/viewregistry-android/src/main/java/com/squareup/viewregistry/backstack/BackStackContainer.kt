@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.viewregistry
+package com.squareup.viewregistry.backstack
 
 import android.content.Context
 import android.os.Parcelable
@@ -22,14 +22,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import com.squareup.viewregistry.BackStackScreen
+import com.squareup.viewregistry.BuilderBinding
+import com.squareup.viewregistry.HandlesBack
+import com.squareup.viewregistry.ViewBinding
+import com.squareup.viewregistry.ViewRegistry
+import com.squareup.viewregistry.backstack.ViewStateStack.SavedState
+import com.squareup.viewregistry.takeWhileAttached
 import io.reactivex.Observable
 
 /**
  * A container view that can display a stream of [BackStackScreen] instances.
+ *
  * This view is back button friendly -- it implements [HandlesBack], delegating
  * to displayed views that implement that interface themselves.
  */
-class BackStackFrameLayout(
+class BackStackContainer(
   context: Context,
   attributeSet: AttributeSet?
 ) : FrameLayout(context, attributeSet), HandlesBack {
@@ -89,11 +97,11 @@ class BackStackFrameLayout(
 
   override fun onSaveInstanceState(): Parcelable {
     showing?.let { viewStateStack.save(it) }
-    return ViewStateStack.SavedState(super.onSaveInstanceState(), viewStateStack)
+    return SavedState(super.onSaveInstanceState(), viewStateStack)
   }
 
   override fun onRestoreInstanceState(state: Parcelable) {
-    (state as? ViewStateStack.SavedState)
+    (state as? SavedState)
         ?.let {
           restored = it.viewStateStack
           super.onRestoreInstanceState(state.superState)
@@ -105,7 +113,7 @@ class BackStackFrameLayout(
   by BuilderBinding(
       type = BackStackScreen::class.java,
       builder = { screens, builders, context, _ ->
-        BackStackFrameLayout(context).apply {
+        BackStackContainer(context).apply {
           layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
           takeScreens(screens, builders)
         }

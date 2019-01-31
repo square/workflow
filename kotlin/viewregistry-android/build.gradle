@@ -30,5 +30,6 @@ dependencies {
   api deps.rxjava2.rxjava2
   api deps.transition
 
+  implementation deps.appcompatv7
   implementation deps.kotlin.reflect
 }

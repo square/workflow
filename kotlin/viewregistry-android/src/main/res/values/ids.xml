@@ -17,6 +17,6 @@
 <resources>
   <!-- View Tag used for back button handlers. See HandlesBack.Helper -->
   <item type="id" name="workflow_back_handler"/>
-  <!-- View Tag holding the Screen.Key associated with a view. -->
+  <!-- View Tag holding the BackStackScreen.Key associated with a view. -->
   <item type="id" name="workflow_back_stack_key"/>
 </resources>

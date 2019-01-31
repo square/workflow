@@ -18,8 +18,8 @@ package com.squareup.sample.authgameapp
 import com.squareup.sample.authgameapp.ShellState.Authenticating
 import com.squareup.sample.authgameapp.ShellState.RunningGame
 import com.squareup.sample.authworkflow.AuthRenderer
-import com.squareup.sample.tictactoe.ConfirmQuitScreen
 import com.squareup.sample.tictactoe.RunGameRenderer
+import com.squareup.viewregistry.AlertScreen
 import com.squareup.viewregistry.StackedMainAndModalScreen
 import com.squareup.viewregistry.toMainAndModal
 import com.squareup.workflow.Renderer
@@ -27,17 +27,13 @@ import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.render
 
-/**
- * TODO(rjrjr): it's weird and distracting that the specific modal type (ConfirmQuitScreen) leaks
- * all the way up here, but it'll do until we have a more general Alert story.
- */
 object ShellRenderer :
-    Renderer<ShellState, Nothing, StackedMainAndModalScreen<*, ConfirmQuitScreen>> {
+    Renderer<ShellState, Nothing, StackedMainAndModalScreen<*, AlertScreen>> {
   override fun render(
     state: ShellState,
     workflow: WorkflowInput<Nothing>,
     workflows: WorkflowPool
-  ): StackedMainAndModalScreen<*, ConfirmQuitScreen> {
+  ): StackedMainAndModalScreen<*, AlertScreen> {
     return when (state) {
       is Authenticating -> AuthRenderer.render(state.authWorkflow, workflows).toMainAndModal()
 
