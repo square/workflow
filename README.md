@@ -1,5 +1,7 @@
 # workflow
 
+Workflow: an architecture that allows composable state machines to drive UI navigation and content, where the state machines are cleanly separated from UI code.
+
 _**This project is currently experimental and the API subject to breaking changes without notice.**
 Follow Square's engineering blog, [The Corner](https://medium.com/square-corner-blog), to see when this project becomes stable._
 
