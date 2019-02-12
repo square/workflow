@@ -29,6 +29,7 @@ dependencies {
   api deps.kotlin.coroutines.core
 
   implementation deps.kotlin.reflect
+  implementation 'com.squareup.retrofit2:retrofit:2.5.0'
 
   testImplementation deps.kotlin.test.jdk
 }

@@ -19,4 +19,5 @@ apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
   implementation project(':workflow-rx2')
+
 }

@@ -1,38 +1,84 @@
-'use strict';
+const {
+  Button,
+  colors,
+  createMuiTheme,
+  darkBaseTheme,
+  getMuiTheme,
+  CssBaseline,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Icon,
+  MuiThemeProvider,
+  Typography,
+  withStyles,
+} = window['material-ui'];
 
-const e = React.createElement;
+const muiTheme = getMuiTheme(darkBaseTheme);
 
-class WorkflowInspectorApp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {liked: false};
-  }
+const styles = theme => ({
+  root: {
+    textAlign: 'center',
+    paddingTop: theme.spacing.unit * 20,
+  },
+  icon: {
+    marginRight: theme.spacing.unit,
+  },
+});
+
+class Index extends React.Component {
+  state = {
+    open: false,
+  };
+
+  handleClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
+  handleClick = () => {
+    this.setState({
+      open: true,
+    });
+  };
 
   render() {
-    // if (this.state.liked) {
-    //   return 'You liked this.';
-    // }
-    //
-    // return <button onClick={() => this.setState({liked: true})}>Like</button>;
-    return <div>
-      <header className="page-header">
-        <div className="page-title">Workflow Web Inspector</div>
-      </header>
-      <nav className="page-nav">
-        <ul>
-          <li><a onClick={() => true}>All Workflow Events</a></li>
-          <li>
-            <button onClick={() => this.downloadTraceFile()}>Download Trace File</button>
-          </li>
-        </ul>
-      </nav>
-    </div>;
-  }
-
-  downloadTraceFile() {
-    document.location.href = "/workflow_trace.json"
+    const {classes} = this.props;
+    const {open} = this.state;
+    return (
+        <MuiThemeProvider>
+          <div className={classes.root}>
+            <CssBaseline/>
+            <Dialog open={open} onClose={this.handleClose}>
+              <DialogTitle>Super Secret Password</DialogTitle>
+              <DialogContent>
+                <DialogContentText>1-2-3-4-5</DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button color="primary" onClick={this.handleClose}>
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <Typography variant="h4" gutterBottom>
+              Material-UI
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              example project
+            </Typography>
+            <Button variant="contained" color="secondary" onClick={this.handleClick}>
+              <Icon className={classes.icon}>fingerprint</Icon>
+              Super Secret Password
+            </Button>
+          </div>
+        </MuiThemeProvider>
+    );
   }
 }
 
-const domContainer = document.querySelector('#react_container');
-ReactDOM.render(e(WorkflowInspectorApp), domContainer);
+const App = withStyles(styles)(Index);
+
+ReactDOM.render(<App/>, document.getElementById('root'));
