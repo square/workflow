@@ -1,16 +1,4 @@
-language: android
-
-jdk:
-  - oraclejdk8
-
-before_install:
-  - mkdir "$ANDROID_HOME/licenses" || true
-  - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
-
-env:
-  global:
-    - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
-    - secure: "gFmZ18DktyZonExeAYGT4HtCodvAbRcH94AImWG6DrJZFzGkRSN//s1AjrgkAL/jZ4lLuoxyCs1nBoX2U83LmpJ8KxLIhU/45JlJgmD1tnE2zdFim6dHN+J6Yj7MCWqD5KO6E0dJickTJG2XzFu0oN3vBn7sETliQHzlw2lw8ME="
+sudo: false
 
 branches:
   except:
@@ -19,10 +7,19 @@ branches:
 notifications:
   email: false
 
-sudo: false
-
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.m2
+matrix:
+  include:
+    - language: android
+      jdk: oraclejdk8
+      env:
+        - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
+        - secure: "gFmZ18DktyZonExeAYGT4HtCodvAbRcH94AImWG6DrJZFzGkRSN//s1AjrgkAL/jZ4lLuoxyCs1nBoX2U83LmpJ8KxLIhU/45JlJgmD1tnE2zdFim6dHN+J6Yj7MCWqD5KO6E0dJickTJG2XzFu0oN3vBn7sETliQHzlw2lw8ME="
+      before_install:
+        - cd kotlin
+        - mkdir "$ANDROID_HOME/licenses" || true
+        - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
+      cache:
+        directories:
+          - $HOME/.gradle/caches/
+          - $HOME/.gradle/wrapper/
+          - $HOME/.m2
