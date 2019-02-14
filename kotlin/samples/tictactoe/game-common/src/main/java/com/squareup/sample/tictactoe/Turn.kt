@@ -85,9 +85,8 @@ val Player.other: Player
 typealias Board = List<List<Player?>>
 
 internal fun Board.isFull(): Boolean {
-  return asSequence().flatten().firstOrNull { it != null }
-      ?.let { false }
-      ?: true
+  asSequence().flatten().forEach { if (it == null) return false }
+  return true
 }
 
 internal fun Board.hasVictory(): Boolean {

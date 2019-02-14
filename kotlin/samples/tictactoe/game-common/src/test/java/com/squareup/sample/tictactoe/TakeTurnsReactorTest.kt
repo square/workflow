@@ -15,6 +15,7 @@
  */
 package com.squareup.sample.tictactoe
 
+import com.squareup.sample.tictactoe.Ending.Draw
 import com.squareup.sample.tictactoe.Ending.Quitted
 import com.squareup.sample.tictactoe.Ending.Victory
 import com.squareup.sample.tictactoe.Player.O
@@ -52,11 +53,15 @@ class TakeTurnsReactorTest {
     val workflow = TakeTurnsReactor().launch(Turn("higgledy", "piggledy"), WorkflowPool())
     val tester = workflow.result.test() as TestObserver<CompletedGame>
 
-    workflow.sendEvent(TakeSquare(0, 0))
-    workflow.sendEvent(TakeSquare(1, 0))
-    workflow.sendEvent(TakeSquare(0, 1))
-    workflow.sendEvent(TakeSquare(1, 1))
-    workflow.sendEvent(TakeSquare(0, 2))
+    workflow.sendEvent(TakeSquare(0, 0)) // x
+    tester.assertNotTerminated()
+    workflow.sendEvent(TakeSquare(1, 0)) // o
+    tester.assertNotTerminated()
+    workflow.sendEvent(TakeSquare(0, 1)) // x
+    tester.assertNotTerminated()
+    workflow.sendEvent(TakeSquare(1, 1)) // o
+    tester.assertNotTerminated()
+    workflow.sendEvent(TakeSquare(0, 2)) // x
 
     tester.assertTerminated()
 
@@ -69,6 +74,31 @@ class TakeTurnsReactorTest {
             )
         )
     tester.assertValue(CompletedGame(Victory, expectedLastTurn))
+  }
+
+  @Test fun draw() {
+    val penultimateTurn = Turn("higgledy", "piggledy")
+        .copy(
+            playing = X,
+            board = listOf(
+                listOf(X, O, X),
+                listOf(O, O, X),
+                listOf(X, null, O)
+            )
+        )
+
+    val expectedLastTurn = penultimateTurn.copy(board = listOf(
+        listOf(X, O, X),
+        listOf(O, O, X),
+        listOf(X, X, O)
+    ))
+
+    val workflow = TakeTurnsReactor().launch(penultimateTurn, WorkflowPool())
+    val tester = workflow.result.test() as TestObserver<CompletedGame>
+    workflow.sendEvent(TakeSquare(2, 1))
+
+    tester.assertTerminated()
+    tester.assertValue(CompletedGame(Draw, expectedLastTurn))
   }
 
   @Test fun `picking an already picked square enters same state`() {
