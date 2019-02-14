@@ -15,11 +15,11 @@
  */
 rootProject.name = "workflow"
 
-include ':sample-android-app'
-include ':sample-auth-android'
-include ':sample-auth-common'
-include ':sample-game-android'
-include ':sample-game-common'
+include ':samples:tictactoe:android-app'
+include ':samples:tictactoe:auth-android'
+include ':samples:tictactoe:auth-common'
+include ':samples:tictactoe:game-android'
+include ':samples:tictactoe:game-common'
 include ':viewregistry-android'
 include ':viewregistry'
 include ':workflow-core'
