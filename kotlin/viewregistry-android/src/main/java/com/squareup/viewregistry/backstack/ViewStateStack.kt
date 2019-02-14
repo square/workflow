@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.viewregistry
+package com.squareup.viewregistry.backstack
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -21,10 +21,13 @@ import android.os.Parcelable.Creator
 import android.util.SparseArray
 import android.view.View
 import android.view.View.BaseSavedState
-import com.squareup.viewregistry.ViewStateStack.Direction.POP
-import com.squareup.viewregistry.ViewStateStack.Direction.PUSH
-import com.squareup.viewregistry.ViewStateStack.SavedState
-import com.squareup.viewregistry.ViewStateStack.UpdateTools
+import com.squareup.viewregistry.BackStackScreen
+import com.squareup.viewregistry.BackStackScreen.Key
+import com.squareup.viewregistry.R
+import com.squareup.viewregistry.backstack.ViewStateStack.Direction.POP
+import com.squareup.viewregistry.backstack.ViewStateStack.Direction.PUSH
+import com.squareup.viewregistry.backstack.ViewStateStack.SavedState
+import com.squareup.viewregistry.backstack.ViewStateStack.UpdateTools
 import io.reactivex.Observable
 import kotlin.reflect.full.cast
 
@@ -77,7 +80,7 @@ class ViewStateStack private constructor(
    * To be called when the container is ready to create and show the view for
    * a new [BackStackScreen]. Returns [UpdateTools] to help get the job done.
    */
-  fun prepareToUpdate(newScreenKey: BackStackScreen.Key<*>): UpdateTools {
+  fun prepareToUpdate(newScreenKey: Key<*>): UpdateTools {
     val popIndex = viewStates.indexOfFirst { it.key == newScreenKey.toString() }
     if (popIndex < 0) {
       return object : UpdateTools {
@@ -188,18 +191,18 @@ class ViewStateStack private constructor(
  * Ties a view to the [BackStackScreen.Key<*>] that created it.
  * Always set by [ViewStateStack.UpdateTools.setUpNewView].
  */
-var View.backStackKey: BackStackScreen.Key<*>
+var View.backStackKey: Key<*>
   get() {
-    return getTag(R.id.workflow_back_stack_key) as BackStackScreen.Key<*>?
+    return getTag(R.id.workflow_back_stack_key) as Key<*>?
         ?: throw IllegalArgumentException("No key found on $this")
   }
   private set(screenKey) = setTag(R.id.workflow_back_stack_key, screenKey)
 
 /**
- * Filters an untyped stream of [BackStackScreen] down to those whose [BackStackScreen.key]s
- * match that of the given [screen].
+ * Maps an untyped stream of [BackStackScreen] down to the [BackStackScreen.wrapped]
+ * that match the parameter type of [screen].
  */
-fun <T : Any> Observable<out BackStackScreen<*>>.matching(
+fun <T : Any> Observable<out BackStackScreen<*>>.mapToWrappedMatching(
   screen: BackStackScreen<T>
 ): Observable<out T> {
   return filter { it.key == screen.key }.map {

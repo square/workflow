@@ -19,14 +19,16 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.squareup.sample.authworkflow.android.AuthViewBindings
-import com.squareup.sample.tictactoe.ConfirmQuitScreen
 import com.squareup.sample.tictactoe.android.TicTacToeViewBindings
+import com.squareup.viewregistry.AlertScreen
 import com.squareup.viewregistry.HandlesBack
 import com.squareup.viewregistry.MainAndModalScreen
-import com.squareup.viewregistry.PushPopEffect
 import com.squareup.viewregistry.StackedMainAndModalScreen
 import com.squareup.viewregistry.ViewBinding
 import com.squareup.viewregistry.ViewRegistry
+import com.squareup.viewregistry.backstack.BackStackContainer
+import com.squareup.viewregistry.backstack.PushPopEffect
+import com.squareup.viewregistry.modal.MainAndModalContainer
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable
@@ -58,7 +60,7 @@ class ShellActivity : AppCompatActivity() {
    * More interesting apps have richer, bespoke root screens, to handle
    * things like their specific status bars, menu drawers, whatever.
    */
-  private lateinit var screens: Observable<out StackedMainAndModalScreen<*, ConfirmQuitScreen>>
+  private lateinit var screens: Observable<out StackedMainAndModalScreen<*, AlertScreen>>
   private lateinit var content: View
 
   private val subs = CompositeDisposable()
@@ -89,7 +91,7 @@ class ShellActivity : AppCompatActivity() {
     subs.add(workflow.toCompletable().subscribe { finish() })
 
     val viewRegistry = buildViewRegistry()
-    val rootViewBinding: ViewBinding<StackedMainAndModalScreen<*, ConfirmQuitScreen>> =
+    val rootViewBinding: ViewBinding<StackedMainAndModalScreen<*, AlertScreen>> =
       viewRegistry.getBinding(MainAndModalScreen::class.jvmName)
 
     content = rootViewBinding.buildView(screens, viewRegistry, this)
@@ -113,7 +115,9 @@ class ShellActivity : AppCompatActivity() {
   override fun onRetainCustomNonConfigurationInstance(): Any = component
 
   private fun buildViewRegistry(): ViewRegistry {
-    return ViewRegistry(ShellCoordinator) + AuthViewBindings + TicTacToeViewBindings + PushPopEffect
+    return ViewRegistry(
+        MainAndModalContainer, BackStackContainer
+    ) + AuthViewBindings + TicTacToeViewBindings + PushPopEffect
   }
 
   private companion object {

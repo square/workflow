@@ -1,9 +1,15 @@
-package com.squareup.viewregistry
+package com.squareup.viewregistry.backstack
 
 import android.support.transition.Scene
 import android.view.View
 import android.view.ViewGroup
-import com.squareup.viewregistry.ViewStateStack.Direction
+import com.squareup.viewregistry.BackStackScreen
+import com.squareup.viewregistry.BackStackScreen.Key
+import com.squareup.viewregistry.ViewBinding
+import com.squareup.viewregistry.ViewRegistry
+import com.squareup.viewregistry.backstack.ViewStateStack.Direction
+import com.squareup.viewregistry.buildScene
+import com.squareup.viewregistry.buildView
 import io.reactivex.Observable
 import kotlin.reflect.jvm.jvmName
 
@@ -25,8 +31,8 @@ interface BackStackEffect {
    * can handle all transitions.
    */
   fun matches(
-    from: BackStackScreen.Key<*>,
-    to: BackStackScreen.Key<*>,
+    from: Key<*>,
+    to: Key<*>,
     direction: ViewStateStack.Direction
   ): Boolean = true
 
@@ -35,7 +41,7 @@ interface BackStackEffect {
    *
    *  - You can use [View.backStackKey] to extract the key associated with [from].
    *
-   *  - You can use [buildWrappedView] or [buildWrappedScene] to give the new view
+   *  - You can use [viewForWrappedScreen] or [sceneForWrappedScreen] to give the new view
    *    its expected stream of properly typed screen objects.
    *
    *  - You must call [setUpNewView] on the incoming view before it is attached
@@ -55,30 +61,30 @@ interface BackStackEffect {
 /**
  * Fishes in [viewRegistry] for the [ViewBinding] for type [T] and
  * uses it to instantiate a [View] to display any matching items
- * received via [screens].
+ * received via [backstackScreens].
  */
-fun <T : Any> BackStackScreen<T>.buildWrappedView(
-  screens: Observable<out BackStackScreen<*>>,
+fun <T : Any> BackStackScreen<T>.viewForWrappedScreen(
+  backstackScreens: Observable<out BackStackScreen<*>>,
   viewRegistry: ViewRegistry,
   container: ViewGroup
 ): View {
-  val myScreens: Observable<out T> = screens.matching(this)
+  val wrappedScreens: Observable<out T> = backstackScreens.mapToWrappedMatching(this)
   val binding: ViewBinding<T> = viewRegistry.getBinding(key.type.jvmName)
-  return binding.buildView(myScreens, viewRegistry, container)
+  return binding.buildView(wrappedScreens, viewRegistry, container)
 }
 
 /**
  * Fishes in [viewRegistry] for the [ViewBinding] for type [T] and
  * uses it to instantiate a [Scene] to display any matching items
- * received via [screens].
+ * received via [backstackScreens].
  */
-fun <T : Any> BackStackScreen<T>.buildWrappedScene(
-  screens: Observable<out BackStackScreen<*>>,
+fun <T : Any> BackStackScreen<T>.sceneForWrappedScreen(
+  backstackScreens: Observable<out BackStackScreen<*>>,
   viewRegistry: ViewRegistry,
   container: ViewGroup,
   enterAction: ((Scene) -> Unit)? = null
 ): Scene {
-  val myScreens: Observable<out T> = screens.matching(this)
+  val wrappedScreens: Observable<out T> = backstackScreens.mapToWrappedMatching(this)
   val binding: ViewBinding<T> = viewRegistry.getBinding(key.type.jvmName)
-  return binding.buildScene(myScreens, viewRegistry, container, enterAction)
+  return binding.buildScene(wrappedScreens, viewRegistry, container, enterAction)
 }

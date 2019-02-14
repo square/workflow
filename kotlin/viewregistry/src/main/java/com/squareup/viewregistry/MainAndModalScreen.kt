@@ -17,7 +17,7 @@ package com.squareup.viewregistry
 
 /**
  * For flows that navigate through a series of main / body screens, sometimes covered by
- * the occasional modal dialog.
+ * the occasional modal.
  */
 typealias StackedMainAndModalScreen<M, D> = MainAndModalScreen<BackStackScreen<M>, D>
 

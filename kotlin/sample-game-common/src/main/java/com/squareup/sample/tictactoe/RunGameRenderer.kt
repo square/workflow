@@ -15,24 +15,33 @@
  */
 package com.squareup.sample.tictactoe
 
+import com.squareup.sample.tictactoe.RunGameEvent.ConfirmQuit
+import com.squareup.sample.tictactoe.RunGameEvent.ContinuePlaying
 import com.squareup.sample.tictactoe.RunGameState.MaybeQuitting
 import com.squareup.sample.tictactoe.RunGameState.Playing
+import com.squareup.viewregistry.AlertScreen
+import com.squareup.viewregistry.AlertScreen.Button.NEGATIVE
+import com.squareup.viewregistry.AlertScreen.Button.NEUTRAL
+import com.squareup.viewregistry.AlertScreen.Button.POSITIVE
+import com.squareup.viewregistry.AlertScreen.Event.ButtonClicked
+import com.squareup.viewregistry.AlertScreen.Event.Canceled
 import com.squareup.viewregistry.EventHandlingScreen.Companion.ignoreEvents
 import com.squareup.viewregistry.MainAndModalScreen
 import com.squareup.viewregistry.StackedMainAndModalScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.adaptEvents
 import com.squareup.workflow.render
 
 object RunGameRenderer :
-    Renderer<RunGameState, RunGameEvent, StackedMainAndModalScreen<*, ConfirmQuitScreen>> {
+    Renderer<RunGameState, RunGameEvent, StackedMainAndModalScreen<*, AlertScreen>> {
 
   override fun render(
     state: RunGameState,
     workflow: WorkflowInput<RunGameEvent>,
     workflows: WorkflowPool
-  ): StackedMainAndModalScreen<*, ConfirmQuitScreen> {
+  ): StackedMainAndModalScreen<*, AlertScreen> {
     return when (state) {
 
       is Playing -> {
@@ -45,7 +54,23 @@ object RunGameRenderer :
 
       is MaybeQuitting -> StackedMainAndModalScreen(
           GamePlayScreen(state.completedGame.lastTurn, ignoreEvents()),
-          ConfirmQuitScreen(workflow::sendEvent)
+          AlertScreen(
+              workflow.adaptEvents<AlertScreen.Event, RunGameEvent> { alertEvent ->
+                when (alertEvent) {
+                  is ButtonClicked -> when (alertEvent.button) {
+                    POSITIVE -> ConfirmQuit
+                    NEGATIVE -> ContinuePlaying
+                    NEUTRAL -> throw IllegalArgumentException()
+                  }
+                  Canceled -> ContinuePlaying
+                }
+              }::sendEvent,
+              buttons = mapOf(
+                  POSITIVE to "I Quit",
+                  NEGATIVE to "No"
+              ),
+              message = "Do you really want to concede the game?"
+          )
       )
 
       is RunGameState.GameOver -> StackedMainAndModalScreen(

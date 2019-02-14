@@ -15,6 +15,10 @@
  */
 package com.squareup.viewregistry
 
+import com.squareup.viewregistry.backstack.BackStackEffect
+import com.squareup.viewregistry.backstack.NoEffect
+import com.squareup.viewregistry.backstack.ViewStateStack
+
 /**
  * A collection of [ViewBinding]s and [BackStackEffect]s that can be used to render
  * the stream of screen models emitted by a workflow (via [ViewBinding]), and the

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.tictactoe
+package com.squareup.viewregistry
 
-import com.squareup.viewregistry.EventHandlingScreen
+/**
+ * Models a typical "You sure about that?" alert box.
+ */
+data class AlertScreen(
+  val onEvent: (Event) -> Unit,
+  val buttons: Map<Button, String> = emptyMap(),
+  val message: String = "",
+  val title: String = "",
+  val cancelable: Boolean = true
+) {
+  enum class Button {
+    POSITIVE,
+    NEGATIVE,
+    NEUTRAL
+  }
 
-data class ConfirmQuitScreen(
-  override val onEvent: (RunGameEvent) -> Unit
-) : EventHandlingScreen<Unit, RunGameEvent> {
-  override val data = Unit
+  sealed class Event {
+    data class ButtonClicked(
+      val button: Button
+    ) : Event()
+
+    object Canceled : Event()
+  }
 }

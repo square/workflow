@@ -1,9 +1,11 @@
-package com.squareup.viewregistry
+package com.squareup.viewregistry.backstack
 
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.viewregistry.BackStackScreen
 import com.squareup.viewregistry.BackStackScreen.Key
-import com.squareup.viewregistry.ViewStateStack.Direction
+import com.squareup.viewregistry.ViewRegistry
+import com.squareup.viewregistry.backstack.ViewStateStack.Direction
 import io.reactivex.Observable
 import kotlin.reflect.KClass
 
@@ -58,7 +60,7 @@ class NoEffect(
       setUpNewView: (View) -> Unit
     ) {
       container.removeAllViews()
-      val newView = to.buildWrappedView(screens, viewRegistry, container)
+      val newView = to.viewForWrappedScreen(screens, viewRegistry, container)
           .apply { setUpNewView(this) }
       container.addView(newView)
     }

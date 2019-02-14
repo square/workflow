@@ -1,4 +1,4 @@
-package com.squareup.viewregistry
+package com.squareup.viewregistry.backstack
 
 import android.support.transition.Fade
 import android.support.transition.Slide
@@ -7,8 +7,11 @@ import android.support.transition.TransitionSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import com.squareup.viewregistry.ViewStateStack.Direction
-import com.squareup.viewregistry.ViewStateStack.Direction.PUSH
+import com.squareup.viewregistry.BackStackScreen
+import com.squareup.viewregistry.ViewRegistry
+import com.squareup.viewregistry.backstack.ViewStateStack.Direction
+import com.squareup.viewregistry.backstack.ViewStateStack.Direction.PUSH
+import com.squareup.viewregistry.viewOrNull
 import io.reactivex.Observable
 
 /**
@@ -27,11 +30,10 @@ object PushPopEffect : BackStackEffect {
     setUpNewView: (View) -> Unit,
     direction: Direction
   ) {
-    val newScene = to
-        .buildWrappedScene(screens, viewRegistry, container) { scene ->
-          scene.viewOrNull()
-              ?.let { setUpNewView(it) }
-        }
+    val newScene = to.sceneForWrappedScreen(screens, viewRegistry, container) { scene ->
+      scene.viewOrNull()
+          ?.let { setUpNewView(it) }
+    }
 
     val outEdge = if (direction == PUSH) Gravity.START else Gravity.END
     val inEdge = if (direction == PUSH) Gravity.END else Gravity.START
