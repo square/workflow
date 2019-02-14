@@ -30,10 +30,10 @@ android {
 }
 
 dependencies {
-  implementation project(':sample-auth-common')
-  implementation project(':sample-auth-android')
-  implementation project(':sample-game-common')
-  implementation project(':sample-game-android')
+  implementation project(':samples:tictactoe:auth-common')
+  implementation project(':samples:tictactoe:auth-android')
+  implementation project(':samples:tictactoe:game-common')
+  implementation project(':samples:tictactoe:game-android')
   implementation project(':viewregistry-android')
   implementation project(':workflow-rx2')
 
