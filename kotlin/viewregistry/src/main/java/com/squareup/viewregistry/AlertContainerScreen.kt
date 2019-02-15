@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.gameworkflow
+package com.squareup.viewregistry
 
-data class GamePlayScreen(
-  val gameState: Turn = Turn(),
-  val onEvent: (TakeTurnsEvent) -> Unit = { }
-)
+/**
+ * May show a stack of [AlertScreen] over a [baseScreen].
+ *
+ * @param B the type of [baseScreen]
+ */
+data class AlertContainerScreen<B : Any>(
+  override val baseScreen: B,
+  override val modals: List<AlertScreen> = emptyList()
+) : HasModals<B, AlertScreen> {
+  constructor(
+    baseScreen: B,
+    alert: AlertScreen
+  ) : this(baseScreen, listOf(alert))
+
+  constructor(
+    baseScreen: B,
+    vararg alerts: AlertScreen
+  ) : this(baseScreen, alerts.toList())
+}

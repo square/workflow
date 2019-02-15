@@ -75,11 +75,10 @@ internal class GameOverCoordinator(
     screen: GameOverScreen
   ) {
     exitItem.setOnMenuItemClickListener {
-      screen.onEvent(NoMore)
+      screen.onEvent(PlayAgain)
       true
     }
-    // Start a new game when they hit the back button.
-    view.setBackHandler { screen.onEvent(PlayAgain) }
+    view.setBackHandler { screen.onEvent(NoMore) }
 
     when (screen.endGameState.syncState) {
       SAVING -> {

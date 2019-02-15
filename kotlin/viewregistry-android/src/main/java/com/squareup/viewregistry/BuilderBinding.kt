@@ -46,7 +46,7 @@ import io.reactivex.disposables.Disposable
  *          type = MyScreen::class.java,
  *          builder = { screens, builders, context, _ ->
  *            MyView(context).apply {
- *              layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+ *              layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
  *              takeWhileAttached(screens, ::showMyScreen)
  *            }
  *      )

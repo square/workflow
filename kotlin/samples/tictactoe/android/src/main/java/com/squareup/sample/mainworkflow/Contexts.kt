@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.gameworkflow
+package com.squareup.sample.mainworkflow
 
-data class GamePlayScreen(
-  val gameState: Turn = Turn(),
-  val onEvent: (TakeTurnsEvent) -> Unit = { }
-)
+import android.content.Context
+import android.view.Display
+import android.view.WindowManager
+import com.squareup.sample.tictactoe.R
+
+val Context.isTablet: Boolean get() = resources.getBoolean(R.bool.is_tablet)
+
+val Context.windowManager: WindowManager
+  get() = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+val Context.display: Display get() = windowManager.defaultDisplay

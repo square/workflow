@@ -15,29 +15,40 @@
  */
 package com.squareup.sample.mainworkflow
 
+import com.squareup.sample.authworkflow.AuthRenderer
+import com.squareup.sample.gameworkflow.GamePlayScreen
+import com.squareup.sample.gameworkflow.RunGameRenderer
 import com.squareup.sample.mainworkflow.MainState.Authenticating
 import com.squareup.sample.mainworkflow.MainState.RunningGame
-import com.squareup.sample.authworkflow.AuthRenderer
-import com.squareup.sample.gameworkflow.RunGameRenderer
-import com.squareup.viewregistry.AlertScreen
-import com.squareup.viewregistry.StackedMainAndModalScreen
-import com.squareup.viewregistry.toMainAndModal
+import com.squareup.sample.panel.PanelContainerScreen
+import com.squareup.sample.panel.asPanelOver
+import com.squareup.viewregistry.AlertContainerScreen
+import com.squareup.viewregistry.BackStackScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.render
 
-object MainRenderer :
-    Renderer<MainState, Nothing, StackedMainAndModalScreen<*, AlertScreen>> {
+typealias RootScreen = AlertContainerScreen<PanelContainerScreen<*, *>>
+
+object MainRenderer : Renderer<MainState, Nothing, RootScreen> {
   override fun render(
     state: MainState,
     workflow: WorkflowInput<Nothing>,
     workflows: WorkflowPool
-  ): StackedMainAndModalScreen<*, AlertScreen> {
+  ): RootScreen {
     return when (state) {
-      is Authenticating -> AuthRenderer.render(state.authWorkflow, workflows).toMainAndModal()
+      is Authenticating -> {
+        val authScreen: BackStackScreen<*> = AuthRenderer.render(state.authWorkflow, workflows)
+        val emptyGameScreen = GamePlayScreen()
 
-      is RunningGame -> RunGameRenderer.render(state.runGameWorkflow, workflows)
+        AlertContainerScreen(authScreen.asPanelOver(emptyGameScreen))
+      }
+
+      is RunningGame -> {
+        val (baseScreen, alerts) = RunGameRenderer.render(state.runGameWorkflow, workflows)
+        AlertContainerScreen(baseScreen, alerts)
+      }
     }
   }
 }

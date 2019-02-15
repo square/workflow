@@ -21,7 +21,7 @@ import kotlin.reflect.KClass
  * Wraps screens that may be shown in series, drill down or wizard style.
  * Typically these are the leaves of composite UI structures. That is, it's
  * probably a mistake if you find yourself creating, say, a
- * `StackScreen<MainAndModalScreen<*, *>>`.
+ * `BackStackScreen<AlertContainerScreen<*>>`.
  *
  * @throws IllegalArgumentException if [T] is [BackStackScreen]
  */

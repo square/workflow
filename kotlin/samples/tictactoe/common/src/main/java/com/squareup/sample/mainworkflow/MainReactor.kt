@@ -47,7 +47,7 @@ typealias MainWorkflow = Workflow<MainState, LogOut, Unit>
  */
 object LogOut
 
-internal class MainReactor(
+class MainReactor(
   private val runGameLauncher: RunGameLauncher,
   private val authLauncher: AuthLauncher
 ) : Reactor<MainState, LogOut, Unit> {
