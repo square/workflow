@@ -31,5 +31,6 @@ dependencies {
   api deps.transition
 
   implementation deps.appcompatv7
+  implementation deps.constraintLayout
   implementation deps.kotlin.reflect
 }

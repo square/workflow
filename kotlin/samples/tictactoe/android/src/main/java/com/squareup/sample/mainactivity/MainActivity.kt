@@ -19,19 +19,19 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.squareup.sample.authworkflow.AuthViewBindings
+import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.mainworkflow.MainRenderer
 import com.squareup.sample.mainworkflow.MainState
 import com.squareup.sample.mainworkflow.MainWorkflow
-import com.squareup.sample.gameworkflow.TicTacToeViewBindings
-import com.squareup.viewregistry.AlertScreen
+import com.squareup.sample.panel.PanelContainer
+import com.squareup.viewregistry.AlertContainer
+import com.squareup.viewregistry.AlertContainerScreen
 import com.squareup.viewregistry.HandlesBack
-import com.squareup.viewregistry.MainAndModalScreen
-import com.squareup.viewregistry.StackedMainAndModalScreen
+import com.squareup.viewregistry.ModalContainer
 import com.squareup.viewregistry.ViewBinding
 import com.squareup.viewregistry.ViewRegistry
 import com.squareup.viewregistry.backstack.BackStackContainer
 import com.squareup.viewregistry.backstack.PushPopEffect
-import com.squareup.viewregistry.modal.MainAndModalContainer
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable
@@ -45,9 +45,7 @@ import kotlin.reflect.jvm.jvmName
  *
  * - preserving workflow state via the activity bundle
  * - simple two layer container, with body views and dialogs
- * - customizing stock views via wrapping (when we add a logout button
- *   to each game view)
- *
+ * - TODO: customizing stock views via wrapping (when we add a logout button to each game view)
  */
 class MainActivity : AppCompatActivity() {
   private lateinit var component: MainComponent
@@ -55,15 +53,7 @@ class MainActivity : AppCompatActivity() {
   /** Workflow decides what we're doing. */
   private lateinit var workflow: MainWorkflow
 
-  /**
-   * TODO(ray) Weird interim state, bad example: IRL this would be
-   * something like `Observable<out StackedMainAndModalScreen<*, *>>`,
-   * but dialog support is nascent.
-   *
-   * More interesting apps have richer, bespoke root screens, to handle
-   * things like their specific status bars, menu drawers, whatever.
-   */
-  private lateinit var screens: Observable<out StackedMainAndModalScreen<*, AlertScreen>>
+  private lateinit var screens: Observable<out AlertContainerScreen<*>>
   private lateinit var content: View
 
   private val subs = CompositeDisposable()
@@ -90,15 +80,19 @@ class MainActivity : AppCompatActivity() {
           latestSnapshot = it.toSnapshot()
           Timber.d("showing: %s", it)
         }
-        .map { state -> MainRenderer.render(state, workflow, component.workflowPool) }
+        .map { state ->
+          val rendered = MainRenderer.render(state, workflow, component.workflowPool)
+          Timber.d("rendered: %s", rendered)
+          rendered
+        }
 
     // When the workflow fires its one and only result, quit the app.
     // TODO(ray) this never happens, add back button handling.
     subs.add(workflow.toCompletable().subscribe { finish() })
 
     val viewRegistry = buildViewRegistry()
-    val rootViewBinding: ViewBinding<StackedMainAndModalScreen<*, AlertScreen>> =
-      viewRegistry.getBinding(MainAndModalScreen::class.jvmName)
+    val rootViewBinding: ViewBinding<AlertContainerScreen<*>> =
+      viewRegistry.getBinding(AlertContainerScreen::class.jvmName)
 
     content = rootViewBinding.buildView(screens, viewRegistry, this)
         .apply { setContentView(this) }
@@ -125,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun buildViewRegistry(): ViewRegistry {
     return ViewRegistry(
-        MainAndModalContainer, BackStackContainer
+        AlertContainer, ModalContainer, BackStackContainer, PanelContainer
     ) + AuthViewBindings + TicTacToeViewBindings + PushPopEffect
   }
 
