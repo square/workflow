@@ -24,12 +24,12 @@ import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 
-object AuthRenderer : Renderer<AuthState, AuthEvent, BackStackScreen<Any>> {
+object AuthRenderer : Renderer<AuthState, AuthEvent, BackStackScreen<*>> {
   override fun render(
     state: AuthState,
     workflow: WorkflowInput<AuthEvent>,
     workflows: WorkflowPool
-  ): BackStackScreen<Any> = BackStackScreen(
+  ): BackStackScreen<*> = BackStackScreen(
       when (state) {
         is LoginPrompt -> LoginScreen(state.errorMessage, workflow::sendEvent)
 

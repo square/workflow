@@ -31,6 +31,7 @@ import com.squareup.sample.gameworkflow.RunGameResult.FinishedPlaying
 import com.squareup.sample.gameworkflow.RunGameState.Companion
 import com.squareup.sample.gameworkflow.RunGameState.GameOver
 import com.squareup.sample.gameworkflow.RunGameState.MaybeQuitting
+import com.squareup.sample.gameworkflow.RunGameState.MaybeQuittingForSure
 import com.squareup.sample.gameworkflow.RunGameState.NewGame
 import com.squareup.sample.gameworkflow.RunGameState.Playing
 import com.squareup.sample.gameworkflow.SyncState.SAVED
@@ -120,9 +121,17 @@ class RunGameReactor(
 
       is MaybeQuitting -> {
         onEvent<ConfirmQuit> {
-          EnterState(
-              GameOver(state.completedGame)
-          )
+          EnterState(MaybeQuittingForSure(state.completedGame))
+        }
+
+        onEvent<ContinuePlaying> {
+          EnterState(Playing(state.completedGame.lastTurn))
+        }
+      }
+
+      is MaybeQuittingForSure -> {
+        onEvent<ConfirmQuit> {
+          EnterState(GameOver(state.completedGame))
         }
 
         onEvent<ContinuePlaying> {

@@ -48,6 +48,7 @@ buildscript {
 
       'appcompatv7': "com.android.support:appcompat-v7:${versions.supportVersion}",
       'coordinators': "com.squareup.coordinators:coordinators:${versions.coordinators}",
+      'constraintLayout': "com.android.support.constraint:constraint-layout:1.1.2",
       'design': "com.android.support:design:${versions.supportVersion}",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:${versions.rxandroid2}",
       'timber': "com.jakewharton.timber:timber:${versions.timberVersion}",

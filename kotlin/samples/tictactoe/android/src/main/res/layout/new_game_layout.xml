@@ -18,67 +18,67 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-
-  <Space
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"
-      />
-
-  <GridLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:columnCount="2"
-      android:paddingLeft="100dp"
-      android:paddingRight="100dp"
+      android:orientation="vertical"
       >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/player_x"
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         />
 
-    <EditText
-        android:id="@+id/player_X"
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="left"
-        android:hint="@string/player_x"
-        android:inputType="textCapWords"
-        />
+        android:columnCount="2"
+        android:paddingLeft="100dp"
+        android:paddingRight="100dp"
+        >
 
-    <TextView
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/player_x"
+          />
+
+      <EditText
+          android:id="@+id/player_X"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="left"
+          android:hint="@string/player_x"
+          android:inputType="textCapWords"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/player_o"
+          />
+
+      <EditText
+          android:id="@+id/player_O"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="left"
+          android:hint="@string/player_o"
+          android:inputType="textCapWords"
+          />
+
+    </GridLayout>
+
+    <Button
+        android:id="@+id/start_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/player_o"
+        android:layout_gravity="center"
+        android:text="@string/let_s_play"
         />
 
-    <EditText
-        android:id="@+id/player_O"
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:hint="@string/player_o"
-        android:inputType="textCapWords"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         />
 
-  </GridLayout>
-
-  <Button
-      android:id="@+id/start_game"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:text="@string/let_s_play"
-      />
-
-  <Space
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"
-      />
-
-</LinearLayout>
+  </LinearLayout>

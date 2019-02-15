@@ -46,6 +46,8 @@ sealed class RunGameState {
 
   internal data class MaybeQuitting(val completedGame: CompletedGame) : RunGameState()
 
+  internal data class MaybeQuittingForSure(val completedGame: CompletedGame) : RunGameState()
+
   data class GameOver(
     val completedGame: CompletedGame,
     val syncState: SyncState = SAVING
@@ -64,6 +66,7 @@ sealed class RunGameState {
           sink.writeUtf8WithLength(defaultOName)
         }
         is MaybeQuitting -> sink.writeByteStringWithLength(completedGame.toSnapshot().bytes)
+        is MaybeQuittingForSure -> sink.writeByteStringWithLength(completedGame.toSnapshot().bytes)
         is GameOver -> sink.writeByteStringWithLength(completedGame.toSnapshot().bytes)
       }
     }
@@ -92,6 +95,12 @@ sealed class RunGameState {
           )
 
           MaybeQuitting::class.jvmName -> MaybeQuitting(
+              CompletedGame.fromSnapshot(
+                  source.readByteStringWithLength()
+              )
+          )
+
+          MaybeQuittingForSure::class.jvmName -> MaybeQuittingForSure(
               CompletedGame.fromSnapshot(
                   source.readByteStringWithLength()
               )

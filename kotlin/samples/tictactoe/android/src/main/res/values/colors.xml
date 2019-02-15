@@ -20,5 +20,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="dark_cell">#CCCCCC</color>
     <color name="light_cell">#EEEEEE</color>
+    <color name="panelBody">#FFFFFF</color>
     <color name="symbol">#6a1b9a</color>
 </resources>
