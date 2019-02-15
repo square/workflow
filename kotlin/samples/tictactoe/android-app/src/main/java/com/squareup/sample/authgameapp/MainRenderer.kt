@@ -19,23 +19,23 @@ import com.squareup.sample.authgameapp.MainState.Authenticating
 import com.squareup.sample.authgameapp.MainState.RunningGame
 import com.squareup.sample.authworkflow.AuthRenderer
 import com.squareup.sample.tictactoe.RunGameRenderer
-import com.squareup.viewregistry.AlertScreen
-import com.squareup.viewregistry.StackedMainAndModalScreen
-import com.squareup.viewregistry.toMainAndModal
+import com.squareup.viewregistry.AlertContainerScreen
+import com.squareup.viewregistry.toAlertContainerScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.render
 
 object MainRenderer :
-    Renderer<MainState, Nothing, StackedMainAndModalScreen<*, AlertScreen>> {
+    Renderer<MainState, Nothing, AlertContainerScreen<*>> {
   override fun render(
     state: MainState,
     workflow: WorkflowInput<Nothing>,
     workflows: WorkflowPool
-  ): StackedMainAndModalScreen<*, AlertScreen> {
+  ): AlertContainerScreen<*> {
     return when (state) {
-      is Authenticating -> AuthRenderer.render(state.authWorkflow, workflows).toMainAndModal()
+      is Authenticating ->
+        AuthRenderer.render(state.authWorkflow, workflows).toAlertContainerScreen()
 
       is RunningGame -> RunGameRenderer.render(state.runGameWorkflow, workflows)
     }

@@ -16,9 +16,25 @@
 package com.squareup.viewregistry
 
 /**
+ * For flows that show a [baseScreen], optionally covered by a number of nested [Alert]s.
+ *
+ * @param alerts A list of [Alert] to show over [baseScreen].
+ * @param B the type of the [baseScreen].
+ */
+data class AlertContainerScreen<out B : Any>(
+  val baseScreen: B,
+  val alerts: List<Alert> = emptyList()
+) {
+  constructor(
+    baseScreen: B,
+    alert: Alert
+  ) : this(baseScreen, listOf(alert))
+}
+
+/**
  * Models a typical "You sure about that?" alert box.
  */
-data class AlertScreen(
+data class Alert(
   val onEvent: (Event) -> Unit,
   val buttons: Map<Button, String> = emptyMap(),
   val message: String = "",
@@ -32,10 +48,11 @@ data class AlertScreen(
   }
 
   sealed class Event {
-    data class ButtonClicked(
-      val button: Button
-    ) : Event()
+    data class ButtonClicked(val button: Button) : Event()
 
     object Canceled : Event()
   }
 }
+
+fun <M : Any> BackStackScreen<M>.toAlertContainerScreen():
+    AlertContainerScreen<BackStackScreen<M>> = AlertContainerScreen(this)
