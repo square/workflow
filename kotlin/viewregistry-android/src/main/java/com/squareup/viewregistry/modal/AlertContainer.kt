@@ -15,7 +15,6 @@
  */
 package com.squareup.viewregistry.modal
 
-import android.app.Dialog
 import android.content.Context
 import android.support.v7.app.AlertDialog
 import android.util.AttributeSet
@@ -25,15 +24,15 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import com.squareup.coordinators.Coordinator
 import com.squareup.coordinators.Coordinators
-import com.squareup.viewregistry.AlertScreen
-import com.squareup.viewregistry.AlertScreen.Button.NEGATIVE
-import com.squareup.viewregistry.AlertScreen.Button.NEUTRAL
-import com.squareup.viewregistry.AlertScreen.Button.POSITIVE
-import com.squareup.viewregistry.AlertScreen.Event.ButtonClicked
-import com.squareup.viewregistry.AlertScreen.Event.Canceled
+import com.squareup.viewregistry.Alert
+import com.squareup.viewregistry.Alert.Button.NEGATIVE
+import com.squareup.viewregistry.Alert.Button.NEUTRAL
+import com.squareup.viewregistry.Alert.Button.POSITIVE
+import com.squareup.viewregistry.Alert.Event.ButtonClicked
+import com.squareup.viewregistry.Alert.Event.Canceled
+import com.squareup.viewregistry.AlertContainerScreen
 import com.squareup.viewregistry.BuilderBinding
 import com.squareup.viewregistry.HandlesBack
-import com.squareup.viewregistry.MainAndModalScreen
 import com.squareup.viewregistry.ViewBinding
 import com.squareup.viewregistry.ViewRegistry
 import com.squareup.viewregistry.buildView
@@ -44,19 +43,17 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlin.reflect.jvm.jvmName
 
 /**
- * A container view that can display a stream of [MainAndModalScreen] instances.
- * Also provides special handling for [AlertScreen]s found in [MainAndModalScreen.modals],
- * using [AlertDialog] to show them.
+ * A container view that can display a stream of [AlertContainerScreen]s using [AlertDialog]s.
  *
  * This view is back button friendly -- it implements [HandlesBack], delegating
- * to displayed views that implement that interface themselves.
+ * to the view for the [AlertContainerScreen.baseScreen] if it implements that interface.
  */
-class MainAndModalContainer
+class AlertContainer
 @JvmOverloads constructor(
   context: Context,
   attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet), HandlesBack {
-  private val body: View? get() = getChildAt(0)
+  private val base: View? get() = getChildAt(0)
   private var dialogs: List<DialogRef> = emptyList()
   private val takeScreensSubs = CompositeDisposable()
 
@@ -87,11 +84,11 @@ class MainAndModalContainer
   override fun onBackPressed(): Boolean {
     // This should only be hit if there are no dialogs showing, so we only
     // need to consider the body.
-    return (body as? HandlesBack)?.onBackPressed() == true
+    return (base as? HandlesBack)?.onBackPressed() == true
   }
 
   fun takeScreens(
-    screens: Observable<out MainAndModalScreen<*, *>>,
+    screens: Observable<out AlertContainerScreen<*>>,
     viewRegistry: ViewRegistry
   ) {
     takeScreensSubs.clear()
@@ -100,13 +97,13 @@ class MainAndModalContainer
     // if takeScreens() is called again. It's fine, though:  the switchMap in whileAttached()
     // ensures that we're only subscribed to it while this view is attached to a window.
 
-    // Create a new body view each time the type of [MainAndModalScreen.main] changes.
+    // Create a new body view each time the type of [AlertContainerScreen.base] changes.
     takeScreensSubs.add(screens
         .whileAttached()
-        .distinctUntilChanged { screen -> screen.main::class }
+        .distinctUntilChanged { containerScreen -> containerScreen.baseScreen::class }
         .subscribe {
           removeAllViews()
-          addView(it.viewForMain(screens, viewRegistry, this))
+          addView(it.viewForBase(screens, viewRegistry, this))
         }
     )
 
@@ -114,14 +111,14 @@ class MainAndModalContainer
     // any new ones, throw away any stale ones.
     takeScreensSubs.add(screens
         .whileAttached()
-        .subscribe { mainAndModal ->
+        .subscribe { containerScreen ->
           val newDialogs = mutableListOf<DialogRef>()
-          for ((i, modalScreen) in mainAndModal.modals.withIndex()) {
+          for ((i, alert) in containerScreen.alerts.withIndex()) {
             newDialogs +=
-              if (dialogs.size < i && dialogs[i].screen::class == modalScreen::class) {
+              if (dialogs.size < i && dialogs[i].alert::class == alert::class) {
                 dialogs[i]
               } else {
-                DialogRef(modalScreen, mainAndModal.showDialog(i, screens, viewRegistry, this))
+                DialogRef(alert, containerScreen.showDialog(i))
               }
           }
 
@@ -131,7 +128,7 @@ class MainAndModalContainer
     )
   }
 
-  private fun showAlert(alertScreen: AlertScreen): AlertDialog {
+  private fun showAlert(alertScreen: Alert): AlertDialog {
     val builder = AlertDialog.Builder(context)
 
     if (alertScreen.cancelable) {
@@ -166,27 +163,17 @@ class MainAndModalContainer
     attached.switchMap { isAttached -> if (isAttached) this else never<T>() }
 
   private class DialogRef(
-    val screen: Any,
-    val dialog: Dialog
+    val alert: Alert,
+    val dialog: AlertDialog
   )
 
-  private fun <D : Any> MainAndModalScreen<*, D>.showDialog(
-    index: Int,
-    mainAndModalScreens: Observable<out MainAndModalScreen<*, *>>,
-    viewRegistry: ViewRegistry,
-    container: ViewGroup
-  ): Dialog {
-    (modals[index] as? AlertScreen)?.let { return showAlert(it) }
+  private fun AlertContainerScreen<*>.showDialog(index: Int): AlertDialog = showAlert(alerts[index])
 
-    // https://github.com/square/workflow/issues/58
-    TODO("Non-alerts are not supported yet.")
-  }
-
-  companion object : ViewBinding<MainAndModalScreen<*, *>>
+  companion object : ViewBinding<AlertContainerScreen<*>>
   by BuilderBinding(
-      type = MainAndModalScreen::class.java,
+      type = AlertContainerScreen::class.java,
       builder = { screens, builders, context, _ ->
-        MainAndModalContainer(context).apply {
+        AlertContainer(context).apply {
           layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
           takeScreens(screens, builders)
         }
@@ -194,18 +181,18 @@ class MainAndModalContainer
   )
 }
 
-fun <T : Any> MainAndModalScreen<T, *>.viewForMain(
-  mainAndModalScreens: Observable<out MainAndModalScreen<*, *>>,
+fun <T : Any> AlertContainerScreen<T>.viewForBase(
+  containerScreens: Observable<out AlertContainerScreen<*>>,
   viewRegistry: ViewRegistry,
   container: ViewGroup
 ): View {
-  val mainScreens: Observable<out T> = mainAndModalScreens.mapToMainMatching(this)
-  val binding: ViewBinding<T> = viewRegistry.getBinding(main::class.jvmName)
-  return binding.buildView(mainScreens, viewRegistry, container)
+  val baseScreens: Observable<out T> = containerScreens.mapToBaseMatching(this)
+  val binding: ViewBinding<T> = viewRegistry.getBinding(baseScreen::class.jvmName)
+  return binding.buildView(baseScreens, viewRegistry, container)
 }
 
-fun <T : Any> Observable<out MainAndModalScreen<*, *>>.mapToMainMatching(
-  screen: MainAndModalScreen<T, *>
+fun <T : Any> Observable<out AlertContainerScreen<*>>.mapToBaseMatching(
+  screen: AlertContainerScreen<T>
 ): Observable<out T> {
-  return map { it.main }.ofType(screen.main::class.java)
+  return map { it.baseScreen }.ofType(screen.baseScreen::class.java)
 }

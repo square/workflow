@@ -19,15 +19,14 @@ import com.squareup.sample.tictactoe.RunGameEvent.ConfirmQuit
 import com.squareup.sample.tictactoe.RunGameEvent.ContinuePlaying
 import com.squareup.sample.tictactoe.RunGameState.MaybeQuitting
 import com.squareup.sample.tictactoe.RunGameState.Playing
-import com.squareup.viewregistry.AlertScreen
-import com.squareup.viewregistry.AlertScreen.Button.NEGATIVE
-import com.squareup.viewregistry.AlertScreen.Button.NEUTRAL
-import com.squareup.viewregistry.AlertScreen.Button.POSITIVE
-import com.squareup.viewregistry.AlertScreen.Event.ButtonClicked
-import com.squareup.viewregistry.AlertScreen.Event.Canceled
+import com.squareup.viewregistry.Alert
+import com.squareup.viewregistry.Alert.Button.NEGATIVE
+import com.squareup.viewregistry.Alert.Button.NEUTRAL
+import com.squareup.viewregistry.Alert.Button.POSITIVE
+import com.squareup.viewregistry.Alert.Event.ButtonClicked
+import com.squareup.viewregistry.Alert.Event.Canceled
 import com.squareup.viewregistry.EventHandlingScreen.Companion.ignoreEvents
-import com.squareup.viewregistry.MainAndModalScreen
-import com.squareup.viewregistry.StackedMainAndModalScreen
+import com.squareup.viewregistry.AlertContainerScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
@@ -35,27 +34,27 @@ import com.squareup.workflow.adaptEvents
 import com.squareup.workflow.render
 
 object RunGameRenderer :
-    Renderer<RunGameState, RunGameEvent, StackedMainAndModalScreen<*, AlertScreen>> {
+    Renderer<RunGameState, RunGameEvent, AlertContainerScreen<*>> {
 
   override fun render(
     state: RunGameState,
     workflow: WorkflowInput<RunGameEvent>,
     workflows: WorkflowPool
-  ): StackedMainAndModalScreen<*, AlertScreen> {
+  ): AlertContainerScreen<*> {
     return when (state) {
 
       is Playing -> {
         return TakeTurnsRenderer
             .render(state.takingTurns, workflows)
-            .let { MainAndModalScreen(it) }
+            .let { AlertContainerScreen(it) }
       }
 
-      is RunGameState.NewGame -> StackedMainAndModalScreen(NewGameScreen(workflow::sendEvent))
+      is RunGameState.NewGame -> AlertContainerScreen(NewGameScreen(workflow::sendEvent))
 
-      is MaybeQuitting -> StackedMainAndModalScreen(
+      is MaybeQuitting -> AlertContainerScreen(
           GamePlayScreen(state.completedGame.lastTurn, ignoreEvents()),
-          AlertScreen(
-              workflow.adaptEvents<AlertScreen.Event, RunGameEvent> { alertEvent ->
+          Alert(
+              workflow.adaptEvents<Alert.Event, RunGameEvent> { alertEvent ->
                 when (alertEvent) {
                   is ButtonClicked -> when (alertEvent.button) {
                     POSITIVE -> ConfirmQuit
@@ -73,7 +72,7 @@ object RunGameRenderer :
           )
       )
 
-      is RunGameState.GameOver -> StackedMainAndModalScreen(
+      is RunGameState.GameOver -> AlertContainerScreen(
           GameOverScreen(state, workflow::sendEvent)
       )
     }
