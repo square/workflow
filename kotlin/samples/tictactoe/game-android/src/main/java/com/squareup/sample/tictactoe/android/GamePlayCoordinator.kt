@@ -88,7 +88,7 @@ internal class GamePlayCoordinator(
   private fun renderPlayer(turn: Turn) {
     val yourTurn = turn.players[turn.playing]
     val mark = turn.playing.name
-    val message = String.format("%s, place your %s", yourTurn, mark)
+    val message = yourTurn?.let { "$yourTurn, place your $mark" } ?: "Place your $mark"
     toolbar.title = message
   }
 

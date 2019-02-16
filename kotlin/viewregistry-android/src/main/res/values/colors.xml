@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="PANEL_BODY">#FFFFFF</color>
+  <color name="PANEL_SCRIM">#80444444</color>
+</resources>

@@ -20,13 +20,15 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.squareup.sample.authworkflow.android.AuthViewBindings
 import com.squareup.sample.tictactoe.android.TicTacToeViewBindings
+import com.squareup.viewregistry.AlertContainer
 import com.squareup.viewregistry.AlertContainerScreen
 import com.squareup.viewregistry.HandlesBack
+import com.squareup.viewregistry.PanelContainer
+import com.squareup.viewregistry.PanelContainerScreen
 import com.squareup.viewregistry.ViewBinding
 import com.squareup.viewregistry.ViewRegistry
 import com.squareup.viewregistry.backstack.BackStackContainer
 import com.squareup.viewregistry.backstack.PushPopEffect
-import com.squareup.viewregistry.modal.AlertContainer
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.rx2.state
 import com.squareup.workflow.rx2.toCompletable
@@ -72,7 +74,10 @@ class MainActivity : AppCompatActivity() {
           latestSnapshot = it.toSnapshot()
           Timber.d("showing: %s", it)
         }
-        .map { state -> MainRenderer.render(state, workflow, component.workflowPool) }
+        .map { state -> val rendered = MainRenderer.render(state, workflow, component.workflowPool)
+          Timber.d("rendered: %s", rendered)
+          rendered
+        }
 
     // When the workflow fires its one and only result, quit the app.
     // TODO(ray) this never happens, add back button handling.
@@ -104,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun buildViewRegistry(): ViewRegistry {
     return ViewRegistry(
-        AlertContainer, BackStackContainer
+        AlertContainer, PanelContainer, BackStackContainer
     ) + AuthViewBindings + TicTacToeViewBindings + PushPopEffect
   }
 

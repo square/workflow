@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'com.vanniktech.maven.publish'
+package com.squareup.viewregistry
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+/**
+ * Models a typical "You sure about that?" alert box.
+ */
+data class AlertScreen(
+  val onEvent: (Event) -> Unit,
+  val buttons: Map<Button, String> = emptyMap(),
+  val message: String = "",
+  val title: String = "",
+  val cancelable: Boolean = true
+) {
+  enum class Button {
+    POSITIVE,
+    NEGATIVE,
+    NEUTRAL
+  }
 
-android rootProject.ext.defaultAndroidConfig
+  sealed class Event {
+    data class ButtonClicked(val button: Button) : Event()
 
-dependencies {
-  api project(':viewregistry')
-
-  api deps.coordinators
-  api deps.kotlin.stdLib.jdk6
-  api deps.rxjava2.rxjava2
-  api deps.transition
-
-  implementation deps.appcompatv7
-  implementation deps.constraintLayout
-  implementation deps.kotlin.reflect
+    object Canceled : Event()
+  }
 }

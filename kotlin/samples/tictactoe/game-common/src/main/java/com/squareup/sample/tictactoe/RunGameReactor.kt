@@ -30,6 +30,7 @@ import com.squareup.sample.tictactoe.RunGameResult.CanceledStart
 import com.squareup.sample.tictactoe.RunGameResult.FinishedPlaying
 import com.squareup.sample.tictactoe.RunGameState.GameOver
 import com.squareup.sample.tictactoe.RunGameState.MaybeQuitting
+import com.squareup.sample.tictactoe.RunGameState.MaybeQuittingForSure
 import com.squareup.sample.tictactoe.RunGameState.NewGame
 import com.squareup.sample.tictactoe.RunGameState.Playing
 import com.squareup.sample.tictactoe.SyncState.SAVED
@@ -115,6 +116,18 @@ class RunGameReactor(
       }
 
       is MaybeQuitting -> {
+        onEvent<ConfirmQuit> {
+          EnterState(
+              MaybeQuittingForSure(state.completedGame)
+          )
+        }
+
+        onEvent<ContinuePlaying> {
+          EnterState(Playing(state.completedGame.lastTurn))
+        }
+      }
+
+      is MaybeQuittingForSure -> {
         onEvent<ConfirmQuit> {
           EnterState(
               GameOver(state.completedGame)

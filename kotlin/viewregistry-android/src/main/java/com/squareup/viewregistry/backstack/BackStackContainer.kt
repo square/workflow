@@ -112,10 +112,10 @@ class BackStackContainer(
   companion object : ViewBinding<BackStackScreen<*>>
   by BuilderBinding(
       type = BackStackScreen::class.java,
-      builder = { screens, builders, context, _ ->
+      builder = { screens, viewRegistry, context, _ ->
         BackStackContainer(context).apply {
           layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-          takeScreens(screens, builders)
+          takeScreens(screens, viewRegistry)
         }
       }
   )

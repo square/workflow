@@ -18,26 +18,42 @@ package com.squareup.sample.authgameapp
 import com.squareup.sample.authgameapp.MainState.Authenticating
 import com.squareup.sample.authgameapp.MainState.RunningGame
 import com.squareup.sample.authworkflow.AuthRenderer
+import com.squareup.sample.tictactoe.GamePlayScreen
 import com.squareup.sample.tictactoe.RunGameRenderer
 import com.squareup.viewregistry.AlertContainerScreen
-import com.squareup.viewregistry.toAlertContainerScreen
+import com.squareup.viewregistry.BackStackScreen
+import com.squareup.viewregistry.PanelContainerScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.render
 
+typealias RootScreen = AlertContainerScreen<PanelContainerScreen<*>>
+
 object MainRenderer :
-    Renderer<MainState, Nothing, AlertContainerScreen<*>> {
+    Renderer<MainState, Nothing, RootScreen> {
   override fun render(
     state: MainState,
     workflow: WorkflowInput<Nothing>,
     workflows: WorkflowPool
-  ): AlertContainerScreen<*> {
+  ): RootScreen {
     return when (state) {
-      is Authenticating ->
-        AuthRenderer.render(state.authWorkflow, workflows).toAlertContainerScreen()
+      is Authenticating -> {
+        val authScreen: BackStackScreen<*> = AuthRenderer.render(state.authWorkflow, workflows)
+        val emptyGameScreen = BackStackScreen<Any>(GamePlayScreen())
 
-      is RunningGame -> RunGameRenderer.render(state.runGameWorkflow, workflows)
+        val panelContainerScreen = PanelContainerScreen(
+            baseScreen = emptyGameScreen,
+            panel = authScreen
+        )
+
+        AlertContainerScreen(panelContainerScreen)
+      }
+
+      is RunningGame -> {
+        val (baseScreen, alerts) = RunGameRenderer.render(state.runGameWorkflow, workflows)
+        AlertContainerScreen(baseScreen, alerts)
+      }
     }
   }
 }
