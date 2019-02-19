@@ -15,10 +15,10 @@
  */
 package com.squareup.sample.tictactoe.android
 
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Toolbar
 import com.squareup.coordinators.Coordinator
 import com.squareup.sample.tictactoe.CompletedGame
 import com.squareup.sample.tictactoe.Ending.Draw
@@ -45,20 +45,23 @@ internal class GameOverCoordinator(
   private val subs = CompositeDisposable()
 
   private lateinit var board: ViewGroup
-  private lateinit var banner: TextView
-  private lateinit var button1: Button
-  private lateinit var button2: Button
+  private lateinit var toolbar: Toolbar
+  private lateinit var saveItem: MenuItem
+  private lateinit var exitItem: MenuItem
 
   override fun attach(view: View) {
     super.attach(view)
 
     board = view.findViewById(R.id.board_view)
-    banner = view.findViewById(R.id.game_banner)
-    button1 = view.findViewById(R.id.game_banner_button_1)
-    button2 = view.findViewById(R.id.game_banner_button_2)
+    toolbar = view.findViewById(R.id.toolbar)
 
-    button2.visibility = View.VISIBLE
-    button2.text = view.resources.getText(R.string.exit)
+    with(toolbar.menu) {
+      saveItem = add("")
+      exitItem = add(R.string.exit)
+    }
+
+    saveItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+    exitItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
 
     subs.add(screens.subscribe { s -> update(view, s) })
   }
@@ -72,43 +75,42 @@ internal class GameOverCoordinator(
     view: View,
     screen: GameOverScreen
   ) {
-    button2.setOnClickListener { screen.onEvent(NoMore) }
+    exitItem.setOnMenuItemClickListener {
+      screen.onEvent(NoMore)
+      true
+    }
     // Start a new game when they hit the back button.
     view.setBackHandler { screen.onEvent(PlayAgain) }
 
     when (screen.data.syncState) {
       SAVING -> {
-        button1.isEnabled = false
-        button1.text = "…saving…"
-        button1.setOnClickListener(null)
+        saveItem.isEnabled = false
+        saveItem.title = "saving…"
+        saveItem.setOnMenuItemClickListener(null)
       }
       SAVE_FAILED -> {
-        button1.isEnabled = true
-        button1.text = "Unsaved"
-        button1.setOnClickListener { screen.onEvent(TrySaveAgain) }
+        saveItem.isEnabled = true
+        saveItem.title = "Unsaved"
+        saveItem.setOnMenuItemClickListener {
+          screen.onEvent(TrySaveAgain)
+          true
+        }
       }
       SAVED -> {
-        button1.visibility = View.GONE
-        button1.setOnClickListener(null)
+        saveItem.isVisible = false
+        saveItem.setOnMenuItemClickListener(null)
       }
     }
 
-    renderGame(board, banner, screen.data.completedGame)
+    renderGame(screen.data.completedGame)
   }
 
-  private fun renderGame(
-    board: ViewGroup,
-    banner: TextView,
-    completedGame: CompletedGame
-  ) {
-    renderResult(banner, completedGame)
+  private fun renderGame(completedGame: CompletedGame) {
+    renderResult(completedGame)
     renderBoard(board, completedGame.lastTurn.board)
   }
 
-  private fun renderResult(
-    textView: TextView,
-    completedGame: CompletedGame
-  ) {
+  private fun renderResult(completedGame: CompletedGame) {
     val player = completedGame.lastTurn.playing
     val playerName = completedGame.lastTurn.players[player]
 
@@ -118,7 +120,7 @@ internal class GameOverCoordinator(
       Quitted -> "$playerName ($player) is a quitter!"
     }
 
-    textView.text = message
+    toolbar.title = message
   }
 
   /** Note how easily  we're sharing this layout with [GamePlayCoordinator]. */
