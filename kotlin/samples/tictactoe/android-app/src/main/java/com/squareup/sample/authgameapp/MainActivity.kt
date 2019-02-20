@@ -46,11 +46,11 @@ import kotlin.reflect.jvm.jvmName
  *   to each game view)
  *
  */
-class ShellActivity : AppCompatActivity() {
-  private lateinit var component: ShellComponent
+class MainActivity : AppCompatActivity() {
+  private lateinit var component: MainComponent
 
   /** Workflow decides what we're doing. */
-  private lateinit var workflow: ShellWorkflow
+  private lateinit var workflow: MainWorkflow
 
   /**
    * TODO(ray) Weird interim state, bad example: IRL this would be
@@ -70,13 +70,13 @@ class ShellActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    component = lastCustomNonConfigurationInstance as? ShellComponent ?: ShellComponent()
+    component = lastCustomNonConfigurationInstance as? MainComponent ?: MainComponent()
 
     val initialState = savedInstanceState?.getParcelable<ParceledSnapshot>(SNAPSHOT_NAME)
-        ?.snapshot?.bytes?.let { ShellState.fromSnapshot(it) }
-        ?: ShellState.startingState()
+        ?.snapshot?.bytes?.let { MainState.fromSnapshot(it) }
+        ?: MainState.startingState()
 
-    workflow = component.shellReactor()
+    workflow = component.mainReactor()
         .launch(initialState, component.workflowPool)
 
     screens = workflow.state
@@ -84,7 +84,7 @@ class ShellActivity : AppCompatActivity() {
           latestSnapshot = it.toSnapshot()
           Timber.d("showing: %s", it)
         }
-        .map { state -> ShellRenderer.render(state, workflow, component.workflowPool) }
+        .map { state -> MainRenderer.render(state, workflow, component.workflowPool) }
 
     // When the workflow fires its one and only result, quit the app.
     // TODO(ray) this never happens, add back button handling.
@@ -121,6 +121,6 @@ class ShellActivity : AppCompatActivity() {
   }
 
   private companion object {
-    val SNAPSHOT_NAME = ShellActivity::class.jvmName + "-snapshot"
+    val SNAPSHOT_NAME = MainActivity::class.jvmName + "-snapshot"
   }
 }

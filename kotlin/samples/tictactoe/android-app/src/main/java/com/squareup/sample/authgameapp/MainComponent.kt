@@ -27,13 +27,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 /**
  * Pretend generated code of a pretend DI framework.
  */
-internal class ShellComponent {
+internal class MainComponent {
 
   val workflowPool = WorkflowPool()
 
   private val authService = AuthService()
 
-  fun shellReactor() = ShellReactor(gameReactor(), authReactor())
+  fun mainReactor() = MainReactor(gameReactor(), authReactor())
 
   private fun authReactor() = AuthReactor(authService, mainThread())
 

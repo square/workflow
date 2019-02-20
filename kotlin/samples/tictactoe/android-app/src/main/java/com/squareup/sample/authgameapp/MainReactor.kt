@@ -15,8 +15,8 @@
  */
 package com.squareup.sample.authgameapp
 
-import com.squareup.sample.authgameapp.ShellState.Authenticating
-import com.squareup.sample.authgameapp.ShellState.RunningGame
+import com.squareup.sample.authgameapp.MainState.Authenticating
+import com.squareup.sample.authgameapp.MainState.RunningGame
 import com.squareup.sample.authworkflow.AuthLauncher
 import com.squareup.sample.authworkflow.AuthReactor
 import com.squareup.sample.tictactoe.RunGameLauncher
@@ -40,22 +40,22 @@ import io.reactivex.Single
  * Delegates to [AuthReactor] and [RunGameReactor]. Responsible only for deciding
  * what to do as each nested workflow ends.
  */
-typealias ShellWorkflow = Workflow<ShellState, LogOut, Unit>
+typealias MainWorkflow = Workflow<MainState, LogOut, Unit>
 
 /**
- * Only event handled by [ShellReactor].
+ * Only event handled by [MainReactor].
  */
 object LogOut
 
-internal class ShellReactor(
+internal class MainReactor(
   private val runGameLauncher: RunGameLauncher,
   private val authLauncher: AuthLauncher
-) : Reactor<ShellState, LogOut, Unit> {
+) : Reactor<MainState, LogOut, Unit> {
 
   override fun launch(
-    initialState: ShellState,
+    initialState: MainState,
     workflows: WorkflowPool
-  ): ShellWorkflow {
+  ): MainWorkflow {
     workflows.register(runGameLauncher)
     workflows.register(authLauncher)
 
@@ -63,14 +63,14 @@ internal class ShellReactor(
   }
 
   override fun onReact(
-    state: ShellState,
+    state: MainState,
     events: EventChannel<LogOut>,
     workflows: WorkflowPool
-  ): Single<out Reaction<ShellState, Unit>> = when (state) {
+  ): Single<out Reaction<MainState, Unit>> = when (state) {
     is Authenticating -> events.select {
       workflows.onWorkflowUpdate(state.authWorkflow) {
         when (it) {
-          is Running -> EnterState<ShellState>(Authenticating(it.handle))
+          is Running -> EnterState<MainState>(Authenticating(it.handle))
           is Finished -> EnterState(RunningGame())
         }
       }
