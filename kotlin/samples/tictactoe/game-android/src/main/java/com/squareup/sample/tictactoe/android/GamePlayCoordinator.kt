@@ -18,7 +18,6 @@ package com.squareup.sample.tictactoe.android
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toolbar
 import com.squareup.coordinators.Coordinator
 import com.squareup.sample.tictactoe.Board
 import com.squareup.sample.tictactoe.GamePlayScreen
@@ -38,13 +37,17 @@ internal class GamePlayCoordinator(
   private val subs = CompositeDisposable()
 
   private lateinit var board: ViewGroup
-  private lateinit var toolbar: Toolbar
+  private lateinit var banner: TextView
 
   override fun attach(view: View) {
     super.attach(view)
 
     board = view.findViewById(R.id.board_view)
-    toolbar = view.findViewById(R.id.toolbar)
+    banner = view.findViewById(R.id.game_banner)
+    view.findViewById<View>(R.id.game_banner_button_1)
+        .visibility = View.INVISIBLE
+    view.findViewById<View>(R.id.game_banner_button_2)
+        .visibility = View.INVISIBLE
 
     subs.add(screens.subscribe { update(view, it) })
   }
@@ -58,7 +61,7 @@ internal class GamePlayCoordinator(
     view: View,
     screen: GamePlayScreen
   ) {
-    renderPlayer(screen.data)
+    renderPlayer(banner, screen.data)
     renderBoard(board, screen.data.board)
 
     setCellClickListeners(board, screen.data, screen.onEvent)
@@ -85,11 +88,14 @@ internal class GamePlayCoordinator(
     }
   }
 
-  private fun renderPlayer(turn: Turn) {
+  private fun renderPlayer(
+    banner: TextView,
+    turn: Turn
+  ) {
     val yourTurn = turn.players[turn.playing]
     val mark = turn.playing.name
     val message = String.format("%s, place your %s", yourTurn, mark)
-    toolbar.title = message
+    banner.text = message
   }
 
   companion object : ViewBinding<GamePlayScreen> by LayoutBinding.of(
