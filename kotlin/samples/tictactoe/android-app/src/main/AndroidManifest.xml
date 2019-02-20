@@ -25,7 +25,7 @@
       android:allowBackup="true"
       >
 
-    <activity android:name=".ShellActivity">
+    <activity android:name=".MainActivity">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>

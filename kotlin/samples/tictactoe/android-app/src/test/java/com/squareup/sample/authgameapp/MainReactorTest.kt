@@ -1,7 +1,7 @@
 package com.squareup.sample.authgameapp
 
-import com.squareup.sample.authgameapp.ShellState.Authenticating
-import com.squareup.sample.authgameapp.ShellState.RunningGame
+import com.squareup.sample.authgameapp.MainState.Authenticating
+import com.squareup.sample.authgameapp.MainState.RunningGame
 import com.squareup.sample.authworkflow.AuthEvent
 import com.squareup.sample.authworkflow.AuthLauncher
 import com.squareup.sample.authworkflow.AuthState
@@ -17,9 +17,9 @@ import org.junit.Test
 
 /**
  * Demonstrates writing unit test of a composite Reactor. Note how
- * we pass in fakes for the reactors nested by [ShellReactor].
+ * we pass in fakes for the reactors nested by [MainReactor].
  */
-class ShellReactorTest {
+class MainReactorTest {
   private val pool = WorkflowPool()
 
   private val runGame = object : RunGameLauncher,
@@ -28,7 +28,7 @@ class ShellReactorTest {
   private val auth = object : AuthLauncher,
       TestLauncher<AuthState, AuthEvent, String>() {}
 
-  private val workflow = ShellReactor(runGame, auth).launch(ShellState.startingState(), pool)
+  private val workflow = MainReactor(runGame, auth).launch(MainState.startingState(), pool)
 
   @Test fun `starts in auth`() {
     val tester = workflow.state.test()

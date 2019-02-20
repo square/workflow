@@ -15,8 +15,8 @@
  */
 package com.squareup.sample.authgameapp
 
-import com.squareup.sample.authgameapp.ShellState.Authenticating
-import com.squareup.sample.authgameapp.ShellState.RunningGame
+import com.squareup.sample.authgameapp.MainState.Authenticating
+import com.squareup.sample.authgameapp.MainState.RunningGame
 import com.squareup.sample.authworkflow.AuthRenderer
 import com.squareup.sample.tictactoe.RunGameRenderer
 import com.squareup.viewregistry.AlertScreen
@@ -27,10 +27,10 @@ import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 import com.squareup.workflow.render
 
-object ShellRenderer :
-    Renderer<ShellState, Nothing, StackedMainAndModalScreen<*, AlertScreen>> {
+object MainRenderer :
+    Renderer<MainState, Nothing, StackedMainAndModalScreen<*, AlertScreen>> {
   override fun render(
-    state: ShellState,
+    state: MainState,
     workflow: WorkflowInput<Nothing>,
     workflows: WorkflowPool
   ): StackedMainAndModalScreen<*, AlertScreen> {
