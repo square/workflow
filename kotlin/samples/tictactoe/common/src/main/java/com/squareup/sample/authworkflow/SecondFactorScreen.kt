@@ -15,9 +15,7 @@
  */
 package com.squareup.sample.authworkflow
 
-import com.squareup.viewregistry.EventHandlingScreen
-
 data class SecondFactorScreen(
-  override val data: String,
-  override val onEvent: (SubmitSecondFactor) -> Unit
-) : EventHandlingScreen<String, SubmitSecondFactor>
+  val errorMessage: String,
+  val submit: (SubmitSecondFactor) -> Unit
+)
