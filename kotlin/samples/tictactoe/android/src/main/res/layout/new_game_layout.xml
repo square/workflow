@@ -27,23 +27,45 @@
       android:layout_weight="1"
       />
 
-  <EditText
-      android:id="@+id/player_X"
+  <GridLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:gravity="center"
-      android:hint="@string/player_x"
-      android:inputType="textCapWords"
-      />
+      android:columnCount="2"
+      android:paddingLeft="100dp"
+      android:paddingRight="100dp"
+      >
 
-  <EditText
-      android:id="@+id/player_O"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center"
-      android:hint="@string/player_o"
-      android:inputType="textCapWords"
-      />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/player_x"
+        />
+
+    <EditText
+        android:id="@+id/player_X"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:hint="@string/player_x"
+        android:inputType="textCapWords"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/player_o"
+        />
+
+    <EditText
+        android:id="@+id/player_O"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:hint="@string/player_o"
+        android:inputType="textCapWords"
+        />
+
+  </GridLayout>
 
   <Button
       android:id="@+id/start_game"

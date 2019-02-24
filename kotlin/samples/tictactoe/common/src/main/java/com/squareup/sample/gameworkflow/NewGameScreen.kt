@@ -18,7 +18,7 @@ package com.squareup.sample.gameworkflow
 import com.squareup.viewregistry.EventHandlingScreen
 
 data class NewGameScreen(
+  val defaultNameX: String,
+  val defaultNameO: String,
   override val onEvent: (RunGameEvent) -> Unit
-) : EventHandlingScreen<Unit, RunGameEvent> {
-  override val data = Unit
-}
+) : EventHandlingScreen<RunGameEvent>

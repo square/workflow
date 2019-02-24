@@ -53,7 +53,11 @@ object RunGameRenderer :
       }
 
       is NewGame -> StackedMainAndModalScreen(
-          NewGameScreen(workflow::sendEvent)
+          NewGameScreen(
+              state.defaultXName,
+              state.defaultOName,
+              workflow::sendEvent
+          )
       )
 
       is MaybeQuitting -> StackedMainAndModalScreen(
