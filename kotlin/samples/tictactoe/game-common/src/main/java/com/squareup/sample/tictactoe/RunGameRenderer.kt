@@ -50,7 +50,13 @@ object RunGameRenderer :
             .let { MainAndModalScreen(it) }
       }
 
-      is RunGameState.NewGame -> StackedMainAndModalScreen(NewGameScreen(workflow::sendEvent))
+      is RunGameState.NewGame -> StackedMainAndModalScreen(
+          NewGameScreen(
+              state.defaultXName,
+              state.defaultOName,
+              workflow::sendEvent
+          )
+      )
 
       is MaybeQuitting -> StackedMainAndModalScreen(
           GamePlayScreen(state.completedGame.lastTurn, ignoreEvents()),

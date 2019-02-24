@@ -18,8 +18,7 @@ package com.squareup.viewregistry
 /**
  * Implemented by screens that accept events.
  */
-interface EventHandlingScreen<out D : Any, in E : Any> {
-  val data: D
+interface EventHandlingScreen<in E : Any> {
   val onEvent: (E) -> Unit
 
   companion object {

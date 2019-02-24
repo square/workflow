@@ -58,10 +58,10 @@ internal class GamePlayCoordinator(
     view: View,
     screen: GamePlayScreen
   ) {
-    renderPlayer(screen.data)
-    renderBoard(board, screen.data.board)
+    renderPlayer(screen.gameState)
+    renderBoard(board, screen.gameState.board)
 
-    setCellClickListeners(board, screen.data, screen.onEvent)
+    setCellClickListeners(board, screen.gameState, screen.onEvent)
     view.setBackHandler { screen.onEvent(Quit) }
   }
 

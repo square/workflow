@@ -52,7 +52,7 @@ internal class LoginCoordinator(private val screens: Observable<out LoginScreen>
   }
 
   private fun update(screen: LoginScreen) {
-    error.text = screen.data
+    error.text = screen.errorMessage
 
     button.setOnClickListener {
       screen.onEvent(SubmitLogin(email.text.toString(), password.text.toString()))

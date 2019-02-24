@@ -51,7 +51,7 @@ internal class SecondFactorCoordinator(private val screens: Observable<out Secon
   }
 
   private fun update(screen: SecondFactorScreen) {
-    error.text = screen.data
+    error.text = screen.errorMessage
 
     button.setOnClickListener {
       screen.onEvent(SubmitSecondFactor(secondFactor.text.toString()))
