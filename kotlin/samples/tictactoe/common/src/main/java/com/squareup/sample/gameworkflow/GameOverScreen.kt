@@ -15,10 +15,9 @@
  */
 package com.squareup.sample.gameworkflow
 
-import com.squareup.sample.gameworkflow.RunGameState.GameOver
 import com.squareup.viewregistry.EventHandlingScreen
 
 data class GameOverScreen(
-  override val data: RunGameState.GameOver,
+  val endGameState: RunGameState.GameOver,
   override val onEvent: (RunGameEvent) -> Unit
-) : EventHandlingScreen<GameOver, RunGameEvent>
+) : EventHandlingScreen<RunGameEvent>

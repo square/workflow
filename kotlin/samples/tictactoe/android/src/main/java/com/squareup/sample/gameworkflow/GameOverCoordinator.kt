@@ -81,7 +81,7 @@ internal class GameOverCoordinator(
     // Start a new game when they hit the back button.
     view.setBackHandler { screen.onEvent(PlayAgain) }
 
-    when (screen.data.syncState) {
+    when (screen.endGameState.syncState) {
       SAVING -> {
         saveItem.isEnabled = false
         saveItem.title = "saving…"
@@ -101,7 +101,7 @@ internal class GameOverCoordinator(
       }
     }
 
-    renderGame(screen.data.completedGame)
+    renderGame(screen.endGameState.completedGame)
   }
 
   private fun renderGame(completedGame: CompletedGame) {
