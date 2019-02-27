@@ -117,9 +117,7 @@ class RunGameReactor(
 
       is MaybeQuitting -> {
         onEvent<ConfirmQuit> {
-          EnterState(
-              MaybeQuittingForSure(state.completedGame)
-          )
+          EnterState(MaybeQuittingForSure(state.completedGame))
         }
 
         onEvent<ContinuePlaying> {
@@ -129,9 +127,7 @@ class RunGameReactor(
 
       is MaybeQuittingForSure -> {
         onEvent<ConfirmQuit> {
-          EnterState(
-              GameOver(state.completedGame)
-          )
+          EnterState(GameOver(state.completedGame))
         }
 
         onEvent<ContinuePlaying> {

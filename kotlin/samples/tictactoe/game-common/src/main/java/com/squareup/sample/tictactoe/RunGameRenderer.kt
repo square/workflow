@@ -28,7 +28,6 @@ import com.squareup.viewregistry.AlertScreen.Button.POSITIVE
 import com.squareup.viewregistry.AlertScreen.Event
 import com.squareup.viewregistry.AlertScreen.Event.ButtonClicked
 import com.squareup.viewregistry.AlertScreen.Event.Canceled
-import com.squareup.viewregistry.BackStackScreen
 import com.squareup.viewregistry.EventHandlingScreen.Companion.ignoreEvents
 import com.squareup.viewregistry.PanelContainerScreen
 import com.squareup.workflow.Renderer
@@ -52,7 +51,7 @@ object RunGameRenderer :
       is Playing -> simpleScreen(TakeTurnsRenderer.render(state.takingTurns, workflows))
 
       is RunGameState.NewGame -> {
-        val emptyGameScreen = BackStackScreen<Any>(GamePlayScreen())
+        val emptyGameScreen = GamePlayScreen()
         panelScreen(
             base = emptyGameScreen,
             panel = NewGameScreen(
@@ -69,7 +68,7 @@ object RunGameRenderer :
       )
 
       is MaybeQuittingForSure -> nestedAlertsScreen(
-          BackStackScreen(GamePlayScreen(state.completedGame.lastTurn, ignoreEvents())),
+          GamePlayScreen(state.completedGame.lastTurn, ignoreEvents()),
           maybeQuitScreen(workflow),
           maybeQuitScreen(workflow, "Really?", "Yes God damn it!", "Sigh, no")
       )

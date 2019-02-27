@@ -19,5 +19,5 @@ import com.squareup.viewregistry.EventHandlingScreen
 
 data class GamePlayScreen(
   val gameState: Turn = Turn(),
-  override val onEvent: (TakeTurnsEvent) -> Unit = { Unit }
+  override val onEvent: (TakeTurnsEvent) -> Unit = { }
 ) : EventHandlingScreen<TakeTurnsEvent>
