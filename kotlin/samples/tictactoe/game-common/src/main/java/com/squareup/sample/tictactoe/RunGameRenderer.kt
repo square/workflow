@@ -70,7 +70,7 @@ object RunGameRenderer :
       is MaybeQuittingForSure -> nestedAlertsScreen(
           GamePlayScreen(state.completedGame.lastTurn, ignoreEvents()),
           maybeQuitScreen(workflow),
-          maybeQuitScreen(workflow, "Really?", "Yes God damn it!", "Sigh, no")
+          maybeQuitScreen(workflow, "Really?", "Yes!!", "Sigh, no")
       )
 
       is RunGameState.GameOver -> simpleScreen(GameOverScreen(state, workflow::sendEvent))

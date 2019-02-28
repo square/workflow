@@ -23,7 +23,7 @@ class PanelContainer
    * Always returns `true`, because a view created to display one [BackStackScreen]
    * can display any [BackStackScreen].
    */
-  override fun BackStackScreen<*>.matches(modalScreen: BackStackScreen<*>) = true
+  override fun BackStackScreen<*>.matches(nextModal: BackStackScreen<*>) = true
 
   override fun showDialog(
     modalScreen: BackStackScreen<*>,

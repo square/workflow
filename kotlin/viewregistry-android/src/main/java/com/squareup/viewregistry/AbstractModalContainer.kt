@@ -101,8 +101,9 @@ abstract class AbstractModalContainer<M : Any>
 
   /**
    * Returns true if the new screen can be shown by the dialog that was created for the receiver.
+   * Default implementation compares equality of the receiver and the new screen.
    */
-  protected abstract fun M.matches(modalScreen: M): Boolean
+  protected open fun M.matches(nextModal: M): Boolean = this == nextModal
 
   protected abstract fun showDialog(
     modalScreen: M,

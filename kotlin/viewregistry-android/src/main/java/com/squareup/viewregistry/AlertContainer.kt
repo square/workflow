@@ -36,15 +36,6 @@ class AlertContainer
   attributeSet: AttributeSet? = null
 ) : AbstractModalContainer<AlertScreen>(context, attributeSet) {
 
-  /**
-   * Show a new dialog if content changes.
-   */
-  override fun AlertScreen.matches(modalScreen: AlertScreen): Boolean {
-    // Swizzle out the event handler before comparing, so that we're equal if
-    // everything we display is equal.
-    return this == modalScreen.copy(onEvent = onEvent)
-  }
-
   override fun showDialog(
     modalScreen: AlertScreen,
     screens: Observable<out AlertScreen>,
