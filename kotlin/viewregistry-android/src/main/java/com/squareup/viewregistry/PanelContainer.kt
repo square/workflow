@@ -1,18 +1,11 @@
 package com.squareup.viewregistry
 
-import android.R.style
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND
-import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
-import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
-import com.squareup.viewregistry.R.layout
 import io.reactivex.Observable
 import kotlin.math.min
 import kotlin.reflect.jvm.jvmName
@@ -56,25 +49,21 @@ class PanelContainer
     */
 
     return Dialog(context).apply {
-      setContentView(layout.panel_container)
       setCancelable(false)
-      val body = findViewById<ViewGroup>(R.id.panelBody)
+      setContentView(view)
+      window.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.PANEL_BODY)))
 
       if (context.isTablet) {
         val displayMetrics = context.displayMetrics
         val size = min(displayMetrics.widthPixels, displayMetrics.heightPixels)
 
         if (context.isPortrait) {
-          body.layoutParams.height = size
+          window.setLayout(MATCH_PARENT, size)
         } else {
-          body.layoutParams.width = size
+          window.setLayout(size, MATCH_PARENT)
         }
       }
 
-      body.addView(view)
-      window.setLayout(MATCH_PARENT, MATCH_PARENT)
-      window.clearFlags(FLAG_DIM_BEHIND)
-      window.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.PANEL_SCRIM)))
       show()
     }
   }
