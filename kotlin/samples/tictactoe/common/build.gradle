@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = "workflow"
+apply plugin: 'java'
+apply plugin: 'kotlin'
 
-include ':samples:tictactoe:android'
-include ':samples:tictactoe:common'
-include ':viewregistry-android'
-include ':viewregistry'
-include ':workflow-core'
-include ':workflow-rx2'
-include ':workflow-test'
+dependencies {
+  implementation project(':viewregistry')
+  implementation project(':workflow-rx2')
+
+  implementation deps.kotlin.stdLib.jdk6
+  implementation deps.kotlin.reflect
+  implementation deps.rxjava2.rxjava2
+
+  testImplementation deps.test.assertj
+  testImplementation deps.test.hamcrestCore
+  testImplementation deps.test.junit
+  testImplementation deps.rxjava2.extensions
+  testImplementation project(':workflow-test')
+}

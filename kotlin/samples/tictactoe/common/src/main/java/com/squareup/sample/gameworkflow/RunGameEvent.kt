@@ -13,12 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = "workflow"
+package com.squareup.sample.gameworkflow
 
-include ':samples:tictactoe:android'
-include ':samples:tictactoe:common'
-include ':viewregistry-android'
-include ':viewregistry'
-include ':workflow-core'
-include ':workflow-rx2'
-include ':workflow-test'
+/**
+ * The events accepted by [RunGameReactor].
+ */
+sealed class RunGameEvent {
+  data class StartGame(
+    val x: String,
+    val o: String
+  ) : RunGameEvent()
+
+  object ConfirmQuit : RunGameEvent()
+
+  object ContinuePlaying : RunGameEvent()
+
+  object PlayAgain : RunGameEvent()
+
+  object NoMore : RunGameEvent()
+
+  object TrySaveAgain : RunGameEvent()
+}
