@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = "workflow"
+package com.squareup.sample.gameworkflow
 
-include ':samples:tictactoe:android'
-include ':samples:tictactoe:common'
-include ':viewregistry-android'
-include ':viewregistry'
-include ':workflow-core'
-include ':workflow-rx2'
-include ':workflow-test'
+/**
+ * Events accepted by [TakeTurnsReactor].
+ */
+sealed class TakeTurnsEvent {
+  data class TakeSquare(
+    val row: Int,
+    val col: Int
+  ) : TakeTurnsEvent()
+
+  object Quit : TakeTurnsEvent()
+}
