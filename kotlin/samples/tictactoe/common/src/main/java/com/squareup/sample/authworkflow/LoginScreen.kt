@@ -15,9 +15,7 @@
  */
 package com.squareup.sample.authworkflow
 
-import com.squareup.viewregistry.EventHandlingScreen
-
 data class LoginScreen(
-  override val data: String,
-  override val onEvent: (SubmitLogin) -> Unit
-) : EventHandlingScreen<String, SubmitLogin>
+  val errorMessage: String,
+  val logIn: (SubmitLogin) -> Unit
+)

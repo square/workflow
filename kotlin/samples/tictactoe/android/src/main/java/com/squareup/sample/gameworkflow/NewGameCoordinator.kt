@@ -45,7 +45,7 @@ internal class NewGameCoordinator(
     playerO = view.findViewById(R.id.player_O)
     button = view.findViewById(R.id.start_game)
 
-    subs.add(screens.map { it.onEvent }
+    subs.add(screens.map { it }
         .subscribe { this.update(view, it) })
   }
 
@@ -56,10 +56,13 @@ internal class NewGameCoordinator(
 
   private fun update(
     view: View,
-    onEvent: (RunGameEvent) -> Unit
+    screen: NewGameScreen
   ) {
+    if (playerX.text.isBlank()) playerX.setText(screen.defaultNameX)
+    if (playerO.text.isBlank()) playerO.setText(screen.defaultNameO)
+
     button.setOnClickListener {
-      onEvent(
+      screen.onEvent(
           StartGame(
               playerX.text.toString(),
               playerO.text.toString()
@@ -67,7 +70,7 @@ internal class NewGameCoordinator(
       )
     }
 
-    view.setBackHandler { onEvent(NoMore) }
+    view.setBackHandler { screen.onEvent(NoMore) }
   }
 
   companion object : ViewBinding<NewGameScreen> by LayoutBinding.of(

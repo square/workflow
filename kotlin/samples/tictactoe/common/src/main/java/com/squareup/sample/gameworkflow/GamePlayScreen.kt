@@ -15,9 +15,7 @@
  */
 package com.squareup.sample.gameworkflow
 
-import com.squareup.viewregistry.EventHandlingScreen
-
 data class GamePlayScreen(
-  override val data: Turn,
-  override val onEvent: (TakeTurnsEvent) -> Unit
-) : EventHandlingScreen<Turn, TakeTurnsEvent>
+  val gameState: Turn,
+  val onEvent: (TakeTurnsEvent) -> Unit
+)

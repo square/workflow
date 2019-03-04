@@ -27,7 +27,6 @@ import com.squareup.viewregistry.AlertScreen.Button.NEUTRAL
 import com.squareup.viewregistry.AlertScreen.Button.POSITIVE
 import com.squareup.viewregistry.AlertScreen.Event.ButtonClicked
 import com.squareup.viewregistry.AlertScreen.Event.Canceled
-import com.squareup.viewregistry.EventHandlingScreen.Companion.ignoreEvents
 import com.squareup.viewregistry.MainAndModalScreen
 import com.squareup.viewregistry.StackedMainAndModalScreen
 import com.squareup.workflow.Renderer
@@ -53,13 +52,15 @@ object RunGameRenderer :
       }
 
       is NewGame -> StackedMainAndModalScreen(
-          NewGameScreen(workflow::sendEvent)
+          NewGameScreen(
+              state.defaultXName,
+              state.defaultOName,
+              workflow::sendEvent
+          )
       )
 
       is MaybeQuitting -> StackedMainAndModalScreen(
-          GamePlayScreen(
-              state.completedGame.lastTurn, ignoreEvents()
-          ),
+          GamePlayScreen(state.completedGame.lastTurn) {},
           AlertScreen(
               workflow.adaptEvents<AlertScreen.Event, RunGameEvent> { alertEvent ->
                 when (alertEvent) {
