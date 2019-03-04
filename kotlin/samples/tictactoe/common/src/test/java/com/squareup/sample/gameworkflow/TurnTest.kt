@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = "workflow"
+package com.squareup.sample.gameworkflow
 
-include ':samples:tictactoe:android'
-include ':samples:tictactoe:common'
-include ':viewregistry-android'
-include ':viewregistry'
-include ':workflow-core'
-include ':workflow-rx2'
-include ':workflow-test'
+import org.assertj.core.api.Java6Assertions.assertThat
+import org.junit.Test
+
+class TurnTest {
+  @Test fun `read write turn`() {
+    val before = Turn("able", "baker")
+    val out = before.toSnapshot()
+    val after = Turn.fromSnapshot(out.bytes)
+    assertThat(after).isEqualTo(before)
+  }
+}
