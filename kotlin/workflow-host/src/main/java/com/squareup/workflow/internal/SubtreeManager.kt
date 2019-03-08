@@ -22,8 +22,8 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.writeByteStringWithLength
-import kotlinx.coroutines.experimental.selects.SelectBuilder
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.selects.SelectBuilder
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Responsible for tracking child workflows, starting them and tearing them down when necessary. Also

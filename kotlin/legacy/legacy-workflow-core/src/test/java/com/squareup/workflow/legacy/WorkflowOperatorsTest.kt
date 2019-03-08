@@ -15,13 +15,15 @@
  */
 package com.squareup.workflow.legacy
 
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.consume
-import kotlinx.coroutines.experimental.channels.produce
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -31,7 +33,13 @@ import kotlin.test.assertTrue
 
 class WorkflowOperatorsTest {
 
+  private class ExpectedException : RuntimeException()
+
   private val scope = CoroutineScope(Unconfined)
+
+  @BeforeTest fun setUp() {
+    assertTrue(scope.isActive)
+  }
 
   @Test fun `adaptEvents works`() {
     val source = scope.workflow<Nothing, String, String> { _, events ->
@@ -51,7 +59,7 @@ class WorkflowOperatorsTest {
       events.receive()
     }
     val withAdaptedEvents: Workflow<Nothing, Int, String> = source.adaptEvents {
-      throw ExpectedException
+      throw ExpectedException()
     }
 
     assertFailsWith<ExpectedException> { withAdaptedEvents.sendEvent(42) }
@@ -71,10 +79,9 @@ class WorkflowOperatorsTest {
       it.toString()
     }
 
-    withAdaptedEvents.cancel(ExpectedException)
+    withAdaptedEvents.cancel(ExpectedException())
 
     assertTrue(sourceCancellation is CancellationException)
-    assertEquals(ExpectedException, sourceCancellation!!.cause)
   }
 
   @Test fun `mapState works`() {
@@ -107,7 +114,7 @@ class WorkflowOperatorsTest {
       state.send(42)
     }
     val withMappedStates: Workflow<Int, Unit, Unit> = source.mapState {
-      throw ExpectedException
+      throw ExpectedException()
     }
 
     withMappedStates.openSubscriptionToState()
@@ -123,7 +130,7 @@ class WorkflowOperatorsTest {
   @Test fun `mapState forwards error from source`() {
     val source = scope.workflow<Int, Unit, Unit> { _, events ->
       events.receive()
-      throw ExpectedException
+      throw ExpectedException()
     }
     val withMappedStates = source.mapState {
       it * 2
@@ -150,9 +157,8 @@ class WorkflowOperatorsTest {
     val withMappedStates = source.mapState { it }
 
     assertNull(sourceCancellation)
-    withMappedStates.cancel(ExpectedException)
+    withMappedStates.cancel(ExpectedException())
     assertTrue(sourceCancellation is CancellationException)
-    assertEquals(ExpectedException, sourceCancellation!!.cause)
   }
 
   @Test fun `switchMapState forwards all transformed values when not preempted`() {
@@ -289,7 +295,7 @@ class WorkflowOperatorsTest {
       state.send(42)
     }
     val withMappedStates: Workflow<Int, Unit, Unit> = source.switchMapState {
-      throw ExpectedException
+      throw ExpectedException()
     }
 
     withMappedStates.openSubscriptionToState()
@@ -308,7 +314,7 @@ class WorkflowOperatorsTest {
       state.send(42)
     }
     val withMappedStates: Workflow<Int, Unit, Unit> = source.switchMapState {
-      Channel<Int>().apply { cancel(ExpectedException) }
+      Channel<Int>().apply { cancel(ExpectedException()) }
     }
 
     withMappedStates.openSubscriptionToState()
@@ -324,7 +330,7 @@ class WorkflowOperatorsTest {
   @Test fun `switchMapState forwards error from source`() {
     val source = scope.workflow<Int, Unit, Unit> { _, events ->
       events.receive()
-      throw ExpectedException
+      throw ExpectedException()
     }
     val withMappedStates: Workflow<Int, Unit, Unit> = source.switchMapState {
       produce {
@@ -355,7 +361,7 @@ class WorkflowOperatorsTest {
           withMappedStates.sendEvent(Unit)
 
           assertFalse(transformedChannel.isClosedForSend)
-          this.cancel(ExpectedException)
+          this.cancel(ExpectedException())
           assertTrue(transformedChannel.isClosedForSend)
         }
   }
@@ -372,9 +378,8 @@ class WorkflowOperatorsTest {
     val withMappedStates = source.switchMapState { produce { send(it) } }
 
     assertNull(sourceCancellation)
-    withMappedStates.cancel(ExpectedException)
+    withMappedStates.cancel(ExpectedException())
     assertTrue(sourceCancellation is CancellationException)
-    assertEquals(ExpectedException, sourceCancellation!!.cause)
   }
 
   @Test fun `mapResult works`() {
@@ -397,7 +402,7 @@ class WorkflowOperatorsTest {
       return@workflow 42
     }
     val withMappedResult: Workflow<Int, Unit, Unit> = source.mapResult {
-      throw ExpectedException
+      throw ExpectedException()
     }
 
     assertFalse(withMappedResult.isCompleted)
@@ -408,7 +413,7 @@ class WorkflowOperatorsTest {
   @Test fun `mapResult forwards error from source`() {
     val source = scope.workflow<Nothing, Unit, Int> { _, events ->
       events.receive()
-      throw ExpectedException
+      throw ExpectedException()
     }
     val withMappedResult = source.mapResult {
       it * 2
@@ -431,12 +436,7 @@ class WorkflowOperatorsTest {
     val withMappedResult = source.mapResult { it }
 
     assertNull(sourceCancellation)
-    withMappedResult.cancel(ExpectedException)
+    withMappedResult.cancel(ExpectedException())
     assertTrue(sourceCancellation is CancellationException)
-    assertEquals(ExpectedException, sourceCancellation!!.cause)
-  }
-
-  private companion object {
-    object ExpectedException : RuntimeException()
   }
 }

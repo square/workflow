@@ -19,7 +19,7 @@ import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.onSuspending
 import com.squareup.workflow.testing.testFromStart
-import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.CompletableDeferred
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

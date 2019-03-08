@@ -18,11 +18,11 @@ package com.squareup.workflow.legacy
 import com.squareup.workflow.legacy.WorkflowPool.Handle
 import com.squareup.workflow.legacy.WorkflowPool.Launcher
 import com.squareup.workflow.legacy.WorkflowPool.Type
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.channels.consume
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.consume
 import org.jetbrains.annotations.TestOnly
 import kotlin.reflect.KClass
 
@@ -154,7 +154,7 @@ class WorkflowPool {
    * running, call [awaitWorkflowUpdate] again with the [Running.handle] returned from the
    * previous call.
    *
-   * @throws kotlinx.coroutines.experimental.CancellationException If the nested workflow is
+   * @throws kotlinx.coroutines.CancellationException If the nested workflow is
    * [abandoned][abandonWorkflow].
    *
    * @see workflowUpdate
@@ -183,7 +183,7 @@ class WorkflowPool {
    * starts it with the given [input]. The caller must either consume the result, or
    * else call [abandonWorker].
    *
-   * @throws kotlinx.coroutines.experimental.CancellationException If the worker is
+   * @throws kotlinx.coroutines.CancellationException If the worker is
    * [abandoned][abandonWorker].
    *
    * @see workerResult

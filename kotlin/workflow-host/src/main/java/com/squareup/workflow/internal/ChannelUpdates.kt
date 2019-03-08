@@ -18,8 +18,8 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.ChannelUpdate.Closed
 import com.squareup.workflow.ChannelUpdate.Value
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.selects.SelectBuilder
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.selects.SelectBuilder
 
 /**
  * Like [ReceiveChannel.onReceiveOrNull], but uses [ChannelUpdate] to differentiate between closure

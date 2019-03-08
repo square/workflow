@@ -20,14 +20,14 @@ import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.internal.WorkflowId
 import com.squareup.workflow.internal.WorkflowNode
 import com.squareup.workflow.internal.id
-import kotlinx.coroutines.experimental.cancel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.produce
-import kotlinx.coroutines.experimental.isActive
-import kotlinx.coroutines.experimental.selects.select
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.selects.select
 import org.jetbrains.annotations.TestOnly
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.EmptyCoroutineContext
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Provides a stream of [updates][Update] from a tree of [Workflow]s.

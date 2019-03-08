@@ -21,16 +21,17 @@ import com.squareup.workflow.legacy.Finished
 import com.squareup.workflow.legacy.Running
 import com.squareup.workflow.legacy.Worker
 import com.squareup.workflow.legacy.Workflow
-import com.squareup.workflow.legacy.WorkflowUpdate
 import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.WorkflowUpdate
 import io.reactivex.Single
 import io.reactivex.Single.just
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.rx2.await
-import kotlinx.coroutines.experimental.selects.SelectBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.selects.SelectBuilder
 
 /**
  * The receiver for lambdas passed to [EventChannel.select][EventChannel.select].
@@ -98,7 +99,9 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
   fun <S : Any, E : Any, O : Any> WorkflowPool.onWorkflowUpdate(
     handle: WorkflowPool.Handle<S, E, O>,
     handler: (WorkflowUpdate<S, E, O>) -> R
-  ) = onSuspending(handler) { awaitWorkflowUpdate(handle) }
+  ) = onSuspending(handler) {
+    awaitWorkflowUpdate(handle)
+  }
 
   /**
    * Selected when the given [worker] produces its result. If [worker] wasn't already running,
@@ -117,8 +120,10 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
     worker: Worker<I, O>,
     input: I,
     name: String = "",
-    crossinline handler: (O) -> R
-  ) = onSuspending(handler) { awaitWorkerResult(worker, input, name) }
+    noinline handler: (O) -> R
+  ) = onSuspending(handler) {
+    awaitWorkerResult(worker, input, name)
+  }
 
   /**
    * Defines a case that is selected when `single` completes successfully, and is passed the value
@@ -151,12 +156,12 @@ class EventSelectBuilder<E : Any, R : Any> internal constructor(
    * practice because [EventSelectBuilder] makes no guarantees about thread safety and so it already
    * relies on external synchronization.
    */
-  @PublishedApi internal inline fun <T> onSuspending(
-    crossinline handler: (T) -> R,
-    crossinline block: suspend () -> T
+  @PublishedApi internal fun <T> onSuspending(
+    handler: (T) -> R,
+    block: suspend () -> T
   ) {
     with(builder) {
-      scope.async { block() }
+      scope.async(start = UNDISPATCHED) { block() }
           .onAwait { just(handler(it)) }
     }
   }

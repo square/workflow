@@ -19,9 +19,10 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.WorkflowHost.Factory
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.cancel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import org.jetbrains.annotations.TestOnly
 
 /**
@@ -83,6 +84,7 @@ fun <StateT : Any, OutputT : Any, RenderingT : Any>
     ) = testFromState(Unit, initialState, block)
 // @formatter:on
 
+@UseExperimental(InternalCoroutinesApi::class)
 private fun <O : Any, R : Any> test(
   testBlock: (WorkflowTester<O, R>) -> Unit,
   starter: (Factory) -> WorkflowHost<O, R>

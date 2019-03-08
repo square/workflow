@@ -21,9 +21,9 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.ReceiveChannel
 
 /**
  * An implementation of [WorkflowContext] that builds a [Behavior] via [buildBehavior].

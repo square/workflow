@@ -22,8 +22,8 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.onSuspending
 import io.reactivex.Observable
 import io.reactivex.Single
-import kotlinx.coroutines.experimental.rx2.await
-import kotlinx.coroutines.experimental.rx2.openSubscription
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.rx2.openSubscription
 
 /**
  * Subscribes to [single] and invokes [handler] with the value it emits.
@@ -76,9 +76,5 @@ internal fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, Outp
   idempotenceKey: Any,
   handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
 ) = onReceiveRaw({
-  observable
-      .doOnError {
-        println("error: $it")
-      }
-      .openSubscription()
+  observable.openSubscription()
 }, idempotenceKey, handler)
