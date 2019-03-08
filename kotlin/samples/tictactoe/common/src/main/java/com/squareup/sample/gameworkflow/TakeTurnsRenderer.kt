@@ -15,17 +15,14 @@
  */
 package com.squareup.sample.gameworkflow
 
-import com.squareup.viewregistry.BackStackScreen
 import com.squareup.workflow.Renderer
 import com.squareup.workflow.WorkflowInput
 import com.squareup.workflow.WorkflowPool
 
-object TakeTurnsRenderer : Renderer<Turn, TakeTurnsEvent, BackStackScreen<GamePlayScreen>> {
+object TakeTurnsRenderer : Renderer<Turn, TakeTurnsEvent, GamePlayScreen> {
   override fun render(
     state: Turn,
     workflow: WorkflowInput<TakeTurnsEvent>,
     workflows: WorkflowPool
-  ): BackStackScreen<GamePlayScreen> = BackStackScreen(
-      GamePlayScreen(state, workflow::sendEvent)
-  )
+  ): GamePlayScreen = GamePlayScreen(state, workflow::sendEvent)
 }
