@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.Snapshot
@@ -102,6 +104,8 @@ private fun <O : Any, R : Any> test(
     throw e
   } finally {
     if (error != null) {
+      // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+      @Suppress("DEPRECATION")
       val cancelled = context.cancel(error)
       if (!cancelled) {
         val cancellationCause = context[Job]!!.getCancellationException()

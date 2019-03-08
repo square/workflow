@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.legacy
 
 import kotlinx.coroutines.CancellationException
@@ -79,6 +81,8 @@ class WorkflowOperatorsTest {
       it.toString()
     }
 
+    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+    @Suppress("DEPRECATION")
     withAdaptedEvents.cancel(ExpectedException())
 
     assertTrue(sourceCancellation is CancellationException)
@@ -157,6 +161,8 @@ class WorkflowOperatorsTest {
     val withMappedStates = source.mapState { it }
 
     assertNull(sourceCancellation)
+    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+    @Suppress("DEPRECATION")
     withMappedStates.cancel(ExpectedException())
     assertTrue(sourceCancellation is CancellationException)
   }
@@ -314,7 +320,11 @@ class WorkflowOperatorsTest {
       state.send(42)
     }
     val withMappedStates: Workflow<Int, Unit, Unit> = source.switchMapState {
-      Channel<Int>().apply { cancel(ExpectedException()) }
+      Channel<Int>().apply {
+        // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+        @Suppress("DEPRECATION")
+        cancel(ExpectedException())
+      }
     }
 
     withMappedStates.openSubscriptionToState()
@@ -361,6 +371,8 @@ class WorkflowOperatorsTest {
           withMappedStates.sendEvent(Unit)
 
           assertFalse(transformedChannel.isClosedForSend)
+          // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+          @Suppress("DEPRECATION")
           this.cancel(ExpectedException())
           assertTrue(transformedChannel.isClosedForSend)
         }
@@ -378,6 +390,8 @@ class WorkflowOperatorsTest {
     val withMappedStates = source.switchMapState { produce { send(it) } }
 
     assertNull(sourceCancellation)
+    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+    @Suppress("DEPRECATION")
     withMappedStates.cancel(ExpectedException())
     assertTrue(sourceCancellation is CancellationException)
   }
@@ -436,6 +450,8 @@ class WorkflowOperatorsTest {
     val withMappedResult = source.mapResult { it }
 
     assertNull(sourceCancellation)
+    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+    @Suppress("DEPRECATION")
     withMappedResult.cancel(ExpectedException())
     assertTrue(sourceCancellation is CancellationException)
   }

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.legacy
 
 import kotlinx.coroutines.CoroutineScope
@@ -113,6 +115,8 @@ fun <S : Any, E : Any, O1 : Any, O2 : Any> Workflow<S, E, O1>.mapResult(
   // Propagate cancellation upstream.
   transformedResult.invokeOnCompletion { cause ->
     if (cause != null) {
+      // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+      @Suppress("DEPRECATION")
       this@mapResult.cancel(cause)
     }
   }

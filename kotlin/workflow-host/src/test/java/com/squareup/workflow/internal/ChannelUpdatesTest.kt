@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.ChannelUpdate
@@ -80,6 +82,8 @@ class ChannelUpdatesTest {
 
   @Test fun handlesError() {
     val channel = Channel<String>()
+    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+    @Suppress("DEPRECATION")
     channel.cancel(ExpectedException())
 
     assertFailsWith<ExpectedException> {

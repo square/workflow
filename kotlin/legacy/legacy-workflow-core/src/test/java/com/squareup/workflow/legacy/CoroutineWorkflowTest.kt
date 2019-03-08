@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.legacy
 
 import kotlinx.coroutines.CancellationException
@@ -172,6 +174,23 @@ class CoroutineWorkflowTest : CoroutineScope {
   }
 
   @Test fun `block gets original cancellation reason`() {
+    lateinit var cancelReason: Throwable
+    val workflow = workflow<Nothing, Nothing, Nothing> { _, _ ->
+      suspendCancellableCoroutine<Nothing> { continuation ->
+        continuation.invokeOnCancellation {
+          cancelReason = it!!
+        }
+      }
+    }
+    testContext.triggerActions()
+    workflow.cancel()
+
+    assertTrue(cancelReason is CancellationException)
+    assertNull(cancelReason.cause)
+  }
+
+  @Suppress("DEPRECATION")
+  @Test fun `block gets original cancellation reason - deprecated cancel`() {
     lateinit var cancelReason: Throwable
     val workflow = workflow<Nothing, Nothing, Nothing> { _, _ ->
       suspendCancellableCoroutine<Nothing> { continuation ->

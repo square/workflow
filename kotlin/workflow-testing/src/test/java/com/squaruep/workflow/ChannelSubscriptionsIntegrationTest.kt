@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squaruep.workflow
 
 import com.squareup.workflow.Snapshot
@@ -165,6 +167,8 @@ class ChannelSubscriptionsIntegrationTest {
       workflow.testFromStart(true) { host ->
         assertFalse(host.hasOutput)
 
+        // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+        @Suppress("DEPRECATION")
         channel.cancel(IOException("fail"))
         assertSame(Closed, host.awaitNextOutput())
         assertFalse(host.hasOutput)

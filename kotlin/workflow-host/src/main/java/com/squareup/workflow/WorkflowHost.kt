@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowHost.Factory
@@ -139,6 +141,8 @@ internal fun <I : Any, S : Any, O : Any, R : Any> WorkflowNode<I, S, O, R>.start
   } catch (e: Throwable) {
     // For some reason the exception gets masked if we don't explicitly pass it to cancel the
     // producer coroutine ourselves here.
+    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+    @Suppress("DEPRECATION")
     coroutineContext.cancel(e)
     throw e
   } finally {
