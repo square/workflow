@@ -39,6 +39,7 @@ import kotlin.math.min
  */
 object PanelContainer : ViewBinding<PanelContainerScreen<*, *>>
 by ModalContainer.forContainerScreen(
+    R.id.tic_tac_workflow_panel_container,
     modalDecorator = { panelBody ->
       PanelBodyWrapper(panelBody.context).apply { addView(panelBody) }
     })

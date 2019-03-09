@@ -15,6 +15,7 @@
  */
 package com.squareup.sample.authworkflow
 
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -23,6 +24,7 @@ import com.squareup.coordinators.Coordinator
 import com.squareup.sample.tictactoe.R
 import com.squareup.viewregistry.LayoutBinding
 import com.squareup.viewregistry.ViewBinding
+import com.squareup.viewregistry.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -30,6 +32,7 @@ internal class SecondFactorCoordinator(private val screens: Observable<out Secon
     Coordinator() {
   private val subs = CompositeDisposable()
 
+  private lateinit var toolbar: Toolbar
   private lateinit var error: TextView
   private lateinit var secondFactor: EditText
   private lateinit var button: Button
@@ -37,11 +40,12 @@ internal class SecondFactorCoordinator(private val screens: Observable<out Secon
   override fun attach(view: View) {
     super.attach(view)
 
+    toolbar = view.findViewById(R.id.second_factor_toolbar)
     error = view.findViewById(R.id.second_factor_error_message)
     secondFactor = view.findViewById(R.id.second_factor)
     button = view.findViewById(R.id.second_factor_submit_button)
 
-    subs.add(screens.subscribe { this.update(it) })
+    subs.add(screens.subscribe { this.update(it, view) })
   }
 
   override fun detach(view: View) {
@@ -49,7 +53,13 @@ internal class SecondFactorCoordinator(private val screens: Observable<out Secon
     super.detach(view)
   }
 
-  private fun update(screen: SecondFactorScreen) {
+  private fun update(
+    screen: SecondFactorScreen,
+    view: View
+  ) {
+    view.setBackHandler { screen.cancel() }
+    toolbar.setNavigationOnClickListener { screen.cancel() }
+
     error.text = screen.errorMessage
 
     button.setOnClickListener {

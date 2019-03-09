@@ -74,6 +74,7 @@ class AuthReactor(
       is Authorizing -> doLogin(state.event)
       is SecondFactorPrompt -> events.select {
         onEvent<SubmitSecondFactor> { EnterState(AuthorizingSecondFactor(state.tempToken, it)) }
+        onEvent<CancelSecondFactor> { EnterState(LoginPrompt()) }
       }
       is AuthorizingSecondFactor -> doSecondFactor(state)
     }

@@ -80,6 +80,7 @@ internal class AlertContainer
       type = AlertContainerScreen::class.java,
       builder = { screens, viewRegistry, context, _ ->
         AlertContainer(context, dialogThemeResId = dialogThemeResId).apply {
+          id = R.id.workflow_alert_container
           layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
           takeScreens(screens, viewRegistry)
         }

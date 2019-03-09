@@ -17,6 +17,7 @@ package com.squareup.viewregistry
 
 import android.app.Dialog
 import android.content.Context
+import android.support.annotation.IdRes
 import android.support.annotation.StyleRes
 import android.util.AttributeSet
 import android.view.View
@@ -62,6 +63,7 @@ internal class ModalViewContainer
   }
 
   class Binding<H : HasModals<*, *>>(
+    @IdRes id: Int,
     type: Class<H>,
     @StyleRes dialogThemeResId: Int = 0,
     modalDecorator: (View) -> View = { it }
@@ -74,6 +76,7 @@ internal class ModalViewContainer
             modalDecorator = modalDecorator,
             dialogThemeResId = dialogThemeResId
         ).apply {
+          this.id = id
           layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
           takeScreens(screens, viewRegistry)
         }
