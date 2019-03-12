@@ -26,3 +26,5 @@ data class SubmitLogin(
 ) : AuthEvent()
 
 data class SubmitSecondFactor(val secondFactor: String) : AuthEvent()
+
+object CancelSecondFactor : AuthEvent()

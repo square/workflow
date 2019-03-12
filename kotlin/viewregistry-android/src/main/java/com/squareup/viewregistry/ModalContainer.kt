@@ -17,11 +17,19 @@ package com.squareup.viewregistry
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
+import android.os.Parcelable.Creator
+import android.support.annotation.IdRes
 import android.support.annotation.StyleRes
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.squareup.viewregistry.ModalContainer.Companion.forAlertContainerScreen
+import com.squareup.viewregistry.ModalContainer.Companion.forContainerScreen
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -43,6 +51,9 @@ abstract class ModalContainer<M : Any>
   private val base: View? get() = getChildAt(0)
   private var dialogs: List<DialogRef<M>> = emptyList()
   private val takeScreensSubs = CompositeDisposable()
+
+  private var restoredBaseViewState: SparseArray<Parcelable>? = null
+  private var restoredDialogBundles: List<TypeAndBundle>? = null
 
   private val attached = BehaviorSubject.createDefault<Boolean>(false)
 
@@ -84,7 +95,12 @@ abstract class ModalContainer<M : Any>
         .distinctUntilChanged { containerScreen -> containerScreen.baseScreen::class }
         .subscribe {
           removeAllViews()
-          addView(it.viewForBase(screens, viewRegistry, this))
+          val newView = it.viewForBase(screens, viewRegistry, this)
+          restoredBaseViewState?.let {
+            restoredBaseViewState = null
+            newView.restoreHierarchyState(it)
+          }
+          addView(newView)
         }
     )
 
@@ -106,6 +122,13 @@ abstract class ModalContainer<M : Any>
           }
 
           (dialogs - newDialogs).forEach { it.dialog.hide() }
+
+          restoredDialogBundles?.let {
+            restoredDialogBundles = null
+            if (it.size == newDialogs.size) {
+              it.zip(newDialogs) { viewState, dialogRef -> dialogRef.restore(viewState) }
+            }
+          }
           dialogs = newDialogs
         }
     )
@@ -126,6 +149,24 @@ abstract class ModalContainer<M : Any>
     viewRegistry: ViewRegistry
   ): Dialog
 
+  override fun onSaveInstanceState(): Parcelable {
+    return SavedState(
+        super.onSaveInstanceState(),
+        SparseArray<Parcelable>().also { array -> base?.saveHierarchyState(array) },
+        dialogs.map { it.save() }
+    )
+  }
+
+  override fun onRestoreInstanceState(state: Parcelable) {
+    (state as? SavedState)
+        ?.let {
+          restoredBaseViewState = it.baseViewState
+          restoredDialogBundles = it.dialogBundles
+          super.onRestoreInstanceState(state.superState)
+        }
+        ?: super.onRestoreInstanceState(state)
+  }
+
   private fun HasModals<*, M>.showDialog(
     index: Int,
     screens: Observable<out M>,
@@ -135,10 +176,46 @@ abstract class ModalContainer<M : Any>
   private fun <T> Observable<T>.whileAttached(): Observable<T> =
     attached.switchMap { isAttached -> if (isAttached) this else Observable.never<T>() }
 
-  private class DialogRef<M>(
+  internal data class TypeAndBundle(
+    val screenType: String,
+    val bundle: Bundle
+  ) : Parcelable {
+    override fun describeContents(): Int = 0
+
+    override fun writeToParcel(
+      parcel: Parcel,
+      flags: Int
+    ) {
+      parcel.writeString(screenType)
+      parcel.writeBundle(bundle)
+    }
+
+    companion object CREATOR : Creator<TypeAndBundle> {
+      override fun createFromParcel(parcel: Parcel): TypeAndBundle {
+        val type = parcel.readString()
+        val bundle = parcel.readBundle(TypeAndBundle::class.java.classLoader)
+        return TypeAndBundle(type, bundle)
+      }
+
+      override fun newArray(size: Int): Array<TypeAndBundle?> = arrayOfNulls(size)
+    }
+  }
+
+  private class DialogRef<M : Any>(
     val screen: M,
     val dialog: Dialog
-  )
+  ) {
+    fun save(): TypeAndBundle {
+      val saved = dialog.window.saveHierarchyState()
+      return TypeAndBundle(screen::class.jvmName, saved)
+    }
+
+    fun restore(typeAndBundle: TypeAndBundle) {
+      if (screen::class.jvmName == typeAndBundle.screenType) {
+        dialog.window.restoreHierarchyState(typeAndBundle.bundle)
+      }
+    }
+  }
 
   private fun <T : Any> HasModals<T, *>.viewForBase(
     containerScreens: Observable<out HasModals<*, *>>,
@@ -161,6 +238,43 @@ abstract class ModalContainer<M : Any>
       .map { it.modals[index] }
       .ofType(screen.modals[index]::class.java)
 
+  private class SavedState : BaseSavedState {
+    constructor(
+      superState: Parcelable,
+      bodyState: SparseArray<Parcelable>,
+      dialogBundles: List<TypeAndBundle>
+    ) : super(superState) {
+      this.baseViewState = bodyState
+      this.dialogBundles = dialogBundles
+    }
+
+    constructor(source: Parcel) : super(source) {
+      @Suppress("UNCHECKED_CAST")
+      this.baseViewState = source.readSparseArray(SavedState::class.java.classLoader)
+          as SparseArray<Parcelable>
+      this.dialogBundles = mutableListOf<TypeAndBundle>().apply {
+        source.readTypedList(this, TypeAndBundle.CREATOR)
+      }
+    }
+
+    val baseViewState: SparseArray<Parcelable>
+    val dialogBundles: List<TypeAndBundle>
+
+    override fun writeToParcel(
+      out: Parcel,
+      flags: Int
+    ) {
+      super.writeToParcel(out, flags)
+      out.writeTypedList(dialogBundles)
+    }
+
+    companion object CREATOR : Creator<SavedState> {
+      override fun createFromParcel(source: Parcel): SavedState = SavedState(source)
+
+      override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
+    }
+  }
+
   companion object {
     /**
      * Creates a [ViewBinding] to show the [AlertScreen]s of an [AlertContainerScreen]
@@ -182,6 +296,9 @@ abstract class ModalContainer<M : Any>
      * applied to the dialog window; and/or provide a [function][modalDecorator] to decorate
      * the view to set as the [dialog's content][Dialog.setContentView].
      *
+     * @param id a unique identifier for containers of this type, allowing them to participate
+     * view persistence
+     *
      * @param dialogThemeResId a style resource describing the theme to use for dialog
      * windows. Defaults to `0` to use the default dialog theme.
      *
@@ -189,8 +306,10 @@ abstract class ModalContainer<M : Any>
      * it is passed to [android.app.Dialog.setContentView]. Defaults to making no changes.
      */
     inline fun <reified H : HasModals<*, *>> forContainerScreen(
+      @IdRes id: Int,
       @StyleRes dialogThemeResId: Int = 0,
       noinline modalDecorator: (View) -> View = { it }
-    ): ViewBinding<H> = ModalViewContainer.Binding(H::class.java, dialogThemeResId, modalDecorator)
+    ): ViewBinding<H> =
+      ModalViewContainer.Binding(id, H::class.java, dialogThemeResId, modalDecorator)
   }
 }

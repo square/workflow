@@ -25,6 +25,7 @@ import android.widget.FrameLayout
 import com.squareup.viewregistry.BackStackScreen
 import com.squareup.viewregistry.BuilderBinding
 import com.squareup.viewregistry.HandlesBack
+import com.squareup.viewregistry.R
 import com.squareup.viewregistry.ViewBinding
 import com.squareup.viewregistry.ViewRegistry
 import com.squareup.viewregistry.backstack.ViewStateStack.SavedState
@@ -114,6 +115,7 @@ class BackStackContainer(
       type = BackStackScreen::class.java,
       builder = { screens, viewRegistry, context, _ ->
         BackStackContainer(context).apply {
+          id = R.id.workflow_back_stack_container
           layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
           takeScreens(screens, viewRegistry)
         }
