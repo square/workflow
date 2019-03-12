@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+## Version 0.8.0
+
+_2019-3-12_
+
+ * Breaking change, `ViewBuilder` is now `ViewBinder`. Adds `buildScene()`
+   method. (#57)
+
+ * `BackStackEffect` allows configuration of transition effects between `BackStackScreen`s.
+
+ * `ModalContainer` adds support for `AlertDialog` and custom views in `Dialog` windows.
+
+ * Sample app consolidated to two modules, `samples/tictactoe/android` and 
+   `samples/tictactoe/common`. Various `Shell*` classes in sample renamed to `Main*`.
+
+ * Breaking change, `EventHandlingScreen` interface eliminated. It wasn't useful.
+
 ## Version 0.7.0
 
 _2019-1-4_
