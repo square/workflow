@@ -1,8 +1,8 @@
 {
-  "name": "gatsby-starter-default",
-  "description": "Gatsby default starter",
+  "name": "workflow-docs",
+  "description": "Documentation for the Workflow library",
   "version": "1.0.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Square, Inc",
   "dependencies": {
     "aphrodite": "^2.2.3",
     "gatsby": "^2.0.0",
@@ -16,6 +16,7 @@
     "gatsby-source-filesystem": "^2.0.1",
     "gatsby-transformer-javascript-frontmatter": "^2.0.0",
     "gatsby-transformer-remark": "^2.1.6",
+    "gh-pages": "^2.0.1",
     "mdast-util-to-hast": "^3.0.2",
     "react": "^16.5.1",
     "react-dom": "^16.5.1",
@@ -27,20 +28,21 @@
     "remark": "^9.0.0"
   },
   "keywords": [
-    "gatsby"
+    "workflow"
   ],
   "license": "MIT",
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write '**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test specified\" && exit 0",
+    "deploy": "gatsby build --prefix-paths && gh-pages -d public"
   },
   "devDependencies": {
     "prettier": "^1.14.2"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+    "url": "https://github.com/square/workflow"
   }
 }

@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: '/pages/~TDONNELLY/workflowdocs/master/browse',
+  pathPrefix: '/workflow',
   siteMetadata: {
     title: 'Workflow',
   },
