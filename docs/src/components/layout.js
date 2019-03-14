@@ -52,8 +52,8 @@ const Layout = ({ children }) => (
         <Helmet
           title={data.site.siteMetadata.title}
           meta={[
-            { name: 'description', content: 'Sample' },
-            { name: 'keywords', content: 'sample, something' },
+            { name: 'description', content: 'A reactive application architecture for Swift and Kotlin' },
+            { name: 'keywords', content: 'workflow, kotlin, swift, reactive' },
           ]}
         >
           <html lang="en" className={css(styles.html)} />
