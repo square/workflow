@@ -18,5 +18,5 @@ apply plugin: 'kotlin'
 apply plugin: 'com.vanniktech.maven.publish'
 
 dependencies {
-  implementation project(':workflow-rx2')
+  implementation project(':legacy:workflow-rx2')
 }
