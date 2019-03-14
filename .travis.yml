@@ -34,8 +34,6 @@ matrix:
     - language: node_js
       node_js:
         - "stable"
-      env:
-        - secure: "T1YsALLEax0UZwjOTmnuUCDQsh5Xiyh5Li2AfPw+z3o8hwwU01Q6DFgaHAZxYIY17OKNaJ69k419jkKFBD7gQT5bkgkFjNNLC3mVZ/ydxIgbmk8jx+GDte18JsJ4vdZY5ErJPAMDGhjjQnyn/73nNgonPt97ISYSrTokomK6iJ48Su0B2tVwDISrC2y2gFtcSpFhoDAp5NchhnhI+9925yTG1p0O0yrflgz2gfRKc+DZg+hUyoyjqOztAqOHwKuywsgv8xoxTyMAtWsF7G1VR8Vo45P3WgZxiYw3snmHGw44m+ZqwTVTuYMV2HOf/hFKj0jDQ9JJ2SXh28Di3eJhKuia+hLrTV3ZNfNHThbzeaNGrUG5ohR/J8k1wc5oWvYpbUy2Kv5ACf34iEdO4BvaQ3DSNY/6eNZO3RJ4Z9eVQbOSxXRrckbK41RNjS5eVHahBA+bkjlSsq/aR/MvsaErRCrmZ1AX3BdiJ/5SeSlgTQF62VUJQVAETLFNQZ3s4w6i2VkfflfOTFHA3VNARUchD20/tNZ9PBRDK7+o/k61Sw6FTkC1PNKRhQKjnenYfST+lQsB78GENVwUoVqGSTuUMT7E+sGpAKM6TWiWt79dtZ8KrZvV2GtfXYU08ZAg9N0PJVftAZDualSji0MAG6FO12fHAX6OHMUkSvFGj9lFL0g="
       cache:
         directories:
           - node_modules
@@ -48,7 +46,7 @@ matrix:
         provider: pages
         skip-cleanup: true
         github-token: $GITHUB_TOKEN
-        local-dir: public
+        local-dir: docs/public
         target-branch: gh-pages
         on:
           branch: master
