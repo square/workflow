@@ -22,7 +22,7 @@ public class AnyWorkflowTests: XCTestCase {
             }
         let node = WorkflowNode(workflow: PassthroughWorkflow(child: workflow))
 
-        XCTAssertEqual(node.render(), "fdsadsa")
+        XCTAssertEqual(node.render(), "fdsadsa-nope")
     }
 
 }
