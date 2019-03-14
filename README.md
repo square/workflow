@@ -23,4 +23,4 @@ More documentation and samples will be coming soon!
 
 ### Kotlin
 
-See [RELEASING.md](kotlin/RELEASING.md).
+See [kotlin/RELEASING.md](kotlin/RELEASING.md).
