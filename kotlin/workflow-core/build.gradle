@@ -25,10 +25,10 @@ kotlin.experimental.coroutines 'enable'
 dependencies {
   compileOnly deps.annotations.intellij
 
-  // For Snapshot.
-  api project(':legacy:legacy-workflow-rx2')
   api deps.kotlin.stdLib.jdk7
   api deps.kotlin.coroutines.core
+  // For Snapshot.
+  api deps.okio
 
   implementation deps.kotlin.reflect
 

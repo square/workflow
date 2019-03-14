@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.legacy.Snapshot
 import com.squareup.workflow.WorkflowHost.Factory
 import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.internal.WorkflowId

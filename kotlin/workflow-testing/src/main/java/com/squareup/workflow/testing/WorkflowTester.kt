@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow.testing
 
-import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.WorkflowHost
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.channels.Channel

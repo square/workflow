@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput

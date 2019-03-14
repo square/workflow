@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow.testing
 
-import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.WorkflowHost.Factory

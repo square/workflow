@@ -15,14 +15,14 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.legacy.Snapshot
-import com.squareup.workflow.legacy.parse
-import com.squareup.workflow.legacy.readByteStringWithLength
+import com.squareup.workflow.Snapshot
+import com.squareup.workflow.parse
+import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.ChannelUpdate.Closed
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
-import com.squareup.workflow.legacy.writeByteStringWithLength
+import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.experimental.CoroutineName
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Job

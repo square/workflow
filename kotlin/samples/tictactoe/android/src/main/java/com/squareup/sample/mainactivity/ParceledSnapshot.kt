@@ -17,7 +17,7 @@ package com.squareup.sample.mainactivity
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.Snapshot
 import okio.ByteString
 
 internal class ParceledSnapshot(val snapshot: Snapshot) : Parcelable {

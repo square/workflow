@@ -15,10 +15,10 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.legacy.parse
-import com.squareup.workflow.legacy.readUtf8WithLength
+import com.squareup.workflow.parse
+import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.legacy.writeUtf8WithLength
+import com.squareup.workflow.writeUtf8WithLength
 import okio.Buffer
 import okio.ByteString
 import kotlin.reflect.KClass

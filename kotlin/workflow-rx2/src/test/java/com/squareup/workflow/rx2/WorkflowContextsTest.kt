@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowContext

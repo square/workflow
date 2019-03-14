@@ -15,8 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.legacy.Snapshot
-
 /**
  * A convenience function to implement a [Workflow] that doesn't have any internal state. Such a
  * workflow doesn't need to worry about initial state or snapshotting, so the entire workflow can

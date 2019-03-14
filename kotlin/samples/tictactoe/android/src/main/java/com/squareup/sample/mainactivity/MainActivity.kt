@@ -31,7 +31,7 @@ import com.squareup.viewregistry.ViewBinding
 import com.squareup.viewregistry.ViewRegistry
 import com.squareup.viewregistry.backstack.BackStackContainer
 import com.squareup.viewregistry.backstack.PushPopEffect
-import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.legacy.rx2.state
 import com.squareup.workflow.legacy.rx2.toCompletable
 import io.reactivex.Observable

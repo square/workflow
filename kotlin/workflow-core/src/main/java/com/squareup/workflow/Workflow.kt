@@ -15,8 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.legacy.Snapshot
-
 /**
  * A composable, optionally-stateful object that can [handle events][WorkflowContext.makeSink],
  * [delegate to children][WorkflowContext.compose], [subscribe][onReceive] to arbitrary streams from

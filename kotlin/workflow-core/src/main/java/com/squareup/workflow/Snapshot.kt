@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.legacy
+package com.squareup.workflow
 
 import okio.Buffer
 import okio.BufferedSink
@@ -24,26 +24,27 @@ import java.lang.Float.floatToRawIntBits
 import java.lang.Float.intBitsToFloat
 
 /**
- * **NB:** This class is not quite deprecated yet, but it will be _very_ soon.
- *
- * A lazy wrapper of [ByteString]. Allows [ScreenWorkflow]s to capture their state
- * frequently, without worrying about performing unnecessary serialization work.
+ * A lazy wrapper of [ByteString]. Allows [Workflow]s to capture their state frequently, without
+ * worrying about performing unnecessary serialization work.
  */
 class Snapshot
 private constructor(private val toByteString: () -> ByteString) {
 
   companion object {
     @JvmField
-    val EMPTY = Snapshot.of(ByteString.EMPTY)
+    val EMPTY = of(ByteString.EMPTY)
 
     @JvmStatic
-    fun of(string: String): Snapshot = Snapshot { ByteString.encodeUtf8(string) }
+    fun of(string: String): Snapshot =
+      Snapshot { encodeUtf8(string) }
 
     @JvmStatic
-    fun of(byteString: ByteString): Snapshot = Snapshot { byteString }
+    fun of(byteString: ByteString): Snapshot =
+      Snapshot { byteString }
 
     @JvmStatic
-    fun of(lazy: () -> ByteString): Snapshot = Snapshot(lazy)
+    fun of(lazy: () -> ByteString): Snapshot =
+      Snapshot(lazy)
 
     @JvmStatic
     fun of(integer: Int): Snapshot {
@@ -57,10 +58,11 @@ private constructor(private val toByteString: () -> ByteString) {
 
     /** Create a snapshot by writing to a nice ergonomic [BufferedSink]. */
     @JvmStatic
-    fun write(lazy: (BufferedSink) -> Unit): Snapshot = of {
-      Buffer().apply(lazy)
-          .readByteString()
-    }
+    fun write(lazy: (BufferedSink) -> Unit): Snapshot =
+      of {
+        Buffer().apply(lazy)
+            .readByteString()
+      }
   }
 
   @get:JvmName("bytes")

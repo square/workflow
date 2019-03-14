@@ -27,6 +27,8 @@ dependencies {
   compileOnly deps.annotations.androidSupport
 
   api project(':legacy:legacy-workflow-core')
+  // For Snapshot.
+  api project(':workflow-core')
   api deps.kotlin.stdLib.jdk6
   api deps.kotlin.coroutines.core
   api deps.okio

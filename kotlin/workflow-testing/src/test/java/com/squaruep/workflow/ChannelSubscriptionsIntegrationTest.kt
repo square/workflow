@@ -15,7 +15,7 @@
  */
 package com.squaruep.workflow
 
-import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.ChannelUpdate.Closed
 import com.squareup.workflow.ChannelUpdate.Value
