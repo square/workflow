@@ -31,3 +31,6 @@ local.properties
 # Intellij
 *.iml
 .idea/
+
+# cocoapods-generate
+gen/
