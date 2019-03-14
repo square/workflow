@@ -20,16 +20,16 @@ import com.squareup.sample.authworkflow.AuthState.Authorizing
 import com.squareup.sample.authworkflow.AuthState.AuthorizingSecondFactor
 import com.squareup.sample.authworkflow.AuthState.LoginPrompt
 import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
-import com.squareup.workflow.EnterState
-import com.squareup.workflow.FinishWith
-import com.squareup.workflow.Reaction
-import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.WorkflowPool.Handle
-import com.squareup.workflow.WorkflowPool.Launcher
-import com.squareup.workflow.rx2.EventChannel
-import com.squareup.workflow.rx2.Reactor
-import com.squareup.workflow.rx2.doLaunch
+import com.squareup.workflow.legacy.EnterState
+import com.squareup.workflow.legacy.FinishWith
+import com.squareup.workflow.legacy.Reaction
+import com.squareup.workflow.legacy.Workflow
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.WorkflowPool.Handle
+import com.squareup.workflow.legacy.WorkflowPool.Launcher
+import com.squareup.workflow.legacy.rx2.EventChannel
+import com.squareup.workflow.legacy.rx2.Reactor
+import com.squareup.workflow.legacy.rx2.doLaunch
 import io.reactivex.Scheduler
 import io.reactivex.Single
 

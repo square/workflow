@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.gameworkflow
+package com.squareup.workflow.legacy
 
-import com.squareup.workflow.legacy.Renderer
-import com.squareup.workflow.legacy.WorkflowInput
-import com.squareup.workflow.legacy.WorkflowPool
+/**
+ * Wraps exceptions thrown by [Reactor.onReact] or the Singles emitted from it.
+ *
+ * The message includes the name of the [Reactor] class and the result of calling [toString] on the
+ * state of the `Reactor` at the time the exception was thrown.
+ */
+class ReactorException(
+  cause: Throwable,
+  val reactor: Reactor<*, *, *>,
+  val reactorState: Any
+) : RuntimeException(cause) {
 
-object TakeTurnsRenderer : Renderer<Turn, TakeTurnsEvent, GamePlayScreen> {
-  override fun render(
-    state: Turn,
-    workflow: WorkflowInput<TakeTurnsEvent>,
-    workflows: WorkflowPool
-  ): GamePlayScreen = GamePlayScreen(state, workflow::sendEvent)
+  override val message: String
+    get() = "Reactor $reactor @ $reactorState " +
+        "threw ${cause!!.javaClass.simpleName}: ${cause.message}"
 }

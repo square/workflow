@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.gameworkflow
+@file:JvmName("WorkflowInputs")
 
-import com.squareup.workflow.legacy.Renderer
-import com.squareup.workflow.legacy.WorkflowInput
-import com.squareup.workflow.legacy.WorkflowPool
+package com.squareup.workflow.legacy
 
-object TakeTurnsRenderer : Renderer<Turn, TakeTurnsEvent, GamePlayScreen> {
-  override fun render(
-    state: Turn,
-    workflow: WorkflowInput<TakeTurnsEvent>,
-    workflows: WorkflowPool
-  ): GamePlayScreen = GamePlayScreen(state, workflow::sendEvent)
-}
+import io.reactivex.functions.Consumer
+
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("Wouldn't you rather be using Kotlin?")
+fun <E> forJava(handler: Consumer<E>): WorkflowInput<E> =
+  WorkflowInput { handler.accept(it) }

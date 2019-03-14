@@ -15,10 +15,10 @@
  */
 package com.squareup.sample.gameworkflow
 
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.parse
-import com.squareup.workflow.readByteStringWithLength
-import com.squareup.workflow.writeByteStringWithLength
+import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.legacy.parse
+import com.squareup.workflow.legacy.readByteStringWithLength
+import com.squareup.workflow.legacy.writeByteStringWithLength
 import okio.ByteString
 
 /**

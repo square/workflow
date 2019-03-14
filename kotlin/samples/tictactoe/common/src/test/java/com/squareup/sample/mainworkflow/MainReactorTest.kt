@@ -9,9 +9,9 @@ import com.squareup.sample.gameworkflow.RunGameEvent
 import com.squareup.sample.gameworkflow.RunGameLauncher
 import com.squareup.sample.gameworkflow.RunGameResult
 import com.squareup.sample.gameworkflow.RunGameState
-import com.squareup.workflow.FinishWith
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.rx2.state
+import com.squareup.workflow.legacy.FinishWith
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.rx2.state
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 

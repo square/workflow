@@ -20,9 +20,9 @@ import com.squareup.sample.authworkflow.AuthState.AuthorizingSecondFactor
 import com.squareup.sample.authworkflow.AuthState.LoginPrompt
 import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
 import com.squareup.viewregistry.BackStackScreen
-import com.squareup.workflow.Renderer
-import com.squareup.workflow.WorkflowInput
-import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.legacy.Renderer
+import com.squareup.workflow.legacy.WorkflowInput
+import com.squareup.workflow.legacy.WorkflowPool
 
 object AuthRenderer : Renderer<AuthState, AuthEvent, BackStackScreen<*>> {
   override fun render(

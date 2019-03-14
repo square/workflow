@@ -16,13 +16,13 @@
 package com.squareup.sample.gameworkflow
 
 import com.squareup.sample.gameworkflow.SyncState.SAVING
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.parse
-import com.squareup.workflow.readByteStringWithLength
-import com.squareup.workflow.readUtf8WithLength
-import com.squareup.workflow.writeByteStringWithLength
-import com.squareup.workflow.writeUtf8WithLength
+import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.parse
+import com.squareup.workflow.legacy.readByteStringWithLength
+import com.squareup.workflow.legacy.readUtf8WithLength
+import com.squareup.workflow.legacy.writeByteStringWithLength
+import com.squareup.workflow.legacy.writeUtf8WithLength
 import okio.ByteString
 import kotlin.reflect.jvm.jvmName
 

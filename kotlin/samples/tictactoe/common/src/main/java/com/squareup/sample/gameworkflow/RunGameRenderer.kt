@@ -30,11 +30,11 @@ import com.squareup.viewregistry.AlertScreen.Button.POSITIVE
 import com.squareup.viewregistry.AlertScreen.Event
 import com.squareup.viewregistry.AlertScreen.Event.ButtonClicked
 import com.squareup.viewregistry.AlertScreen.Event.Canceled
-import com.squareup.workflow.Renderer
-import com.squareup.workflow.WorkflowInput
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.adaptEvents
-import com.squareup.workflow.render
+import com.squareup.workflow.legacy.Renderer
+import com.squareup.workflow.legacy.WorkflowInput
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.adaptEvents
+import com.squareup.workflow.legacy.render
 
 object RunGameRenderer :
     Renderer<RunGameState, RunGameEvent, AlertContainerScreen<PanelContainerScreen<*, *>>> {

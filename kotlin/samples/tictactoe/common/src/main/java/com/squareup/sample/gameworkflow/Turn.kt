@@ -17,10 +17,10 @@ package com.squareup.sample.gameworkflow
 
 import com.squareup.sample.gameworkflow.Player.O
 import com.squareup.sample.gameworkflow.Player.X
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.parse
-import com.squareup.workflow.readUtf8WithLength
-import com.squareup.workflow.writeUtf8WithLength
+import com.squareup.workflow.legacy.Snapshot
+import com.squareup.workflow.legacy.parse
+import com.squareup.workflow.legacy.readUtf8WithLength
+import com.squareup.workflow.legacy.writeUtf8WithLength
 import okio.ByteString
 
 /**
