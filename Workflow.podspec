@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name         = 'Workflow'
-  s.version      = '0.1.0'
+  s.version      = '0.8.0'
   s.summary      = 'Reactive application architecture'
   s.homepage     = 'https://www.github.com/square/workflow'
   s.license      = 'Apache License, Version 2.0'
   s.author       = 'Square'
-  s.source       = { :git => 'https://github.com/square/workflow.git' }
+  s.source       = { :git => 'https://github.com/square/workflow.git', :tag => s.version }
 
   s.swift_versions = ['4.2']
   s.ios.deployment_target = '9.3'
