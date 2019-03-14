@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = "workflow"
+package com.squareup.workflow.v2
 
-include ':legacy:legacy-workflow-core'
-include ':legacy:legacy-workflow-rx2'
-include ':legacy:legacy-workflow-test'
-include ':samples:tictactoe:android'
-include ':samples:tictactoe:common'
-include ':viewregistry-android'
-include ':viewregistry'
-include ':workflow-core'
-include ':workflow-host'
-include ':workflow-rx2'
-include ':workflow-testing'
+/**
+ * Tests for code in this module lives in the `pure-v2-testing` module.
+ */
+@Suppress("unused")
+class EmptyTest
