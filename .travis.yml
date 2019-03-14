@@ -30,7 +30,7 @@ matrix:
       - gem update --system
       - gem install bundler
       script:
-      - bundle exec pod lib lint Workflow.podspec --allow-warnings
+      - bundle exec pod lib lint Workflow.podspec --allow-warnings --verbose
     - language: node_js
       node_js:
         - "stable"
