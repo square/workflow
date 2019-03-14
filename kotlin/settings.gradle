@@ -15,10 +15,14 @@
  */
 rootProject.name = "workflow"
 
+include ':legacy:legacy-workflow-core'
+include ':legacy:legacy-workflow-rx2'
+include ':legacy:legacy-workflow-test'
 include ':samples:tictactoe:android'
 include ':samples:tictactoe:common'
 include ':viewregistry-android'
 include ':viewregistry'
 include ':workflow-core'
+include ':workflow-host'
 include ':workflow-rx2'
-include ':workflow-test'
+include ':workflow-testing'

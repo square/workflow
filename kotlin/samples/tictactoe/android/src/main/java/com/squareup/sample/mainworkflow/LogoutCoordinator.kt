@@ -21,7 +21,7 @@ import com.squareup.coordinators.Coordinator
 import com.squareup.sample.tictactoe.R.id
 import com.squareup.viewregistry.HandlesBack.Helper.onBackPressed
 import com.squareup.viewregistry.setBackHandler
-import com.squareup.workflow.AnyScreen
+import com.squareup.workflow.legacy.AnyScreen
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 

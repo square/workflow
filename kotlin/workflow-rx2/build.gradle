@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,15 @@ kotlin.experimental.coroutines 'enable'
 
 dependencies {
   compileOnly deps.annotations.intellij
-  compileOnly deps.annotations.androidSupport
 
   api project(':workflow-core')
-  api deps.kotlin.stdLib.jdk6
+  api deps.kotlin.stdLib.jdk7
   api deps.kotlin.coroutines.core
-  api deps.okio
   api deps.rxjava2.rxjava2
 
   implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect
 
-  testImplementation deps.test.assertj
-  testImplementation deps.test.hamcrestCore
-  testImplementation deps.test.junit
+  testImplementation project(':workflow-testing')
   testImplementation deps.kotlin.test.jdk
-  testImplementation deps.kotlin.test.mockito
-  testImplementation deps.test.mockito
-  testImplementation deps.rxjava2.extensions
 }

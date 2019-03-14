@@ -1,6 +1,6 @@
 # workflow-core
 
-This module contains the core workflow logic that exposes coroutine-based APIs.
+This module contains the core workflow APIs.
 
 ## Notes on Dispatchers
 

@@ -15,9 +15,9 @@
  */
 package com.squareup.sample.gameworkflow
 
-import com.squareup.workflow.Renderer
-import com.squareup.workflow.WorkflowInput
-import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.legacy.Renderer
+import com.squareup.workflow.legacy.WorkflowInput
+import com.squareup.workflow.legacy.WorkflowPool
 
 object TakeTurnsRenderer : Renderer<Turn, TakeTurnsEvent, GamePlayScreen> {
   override fun render(

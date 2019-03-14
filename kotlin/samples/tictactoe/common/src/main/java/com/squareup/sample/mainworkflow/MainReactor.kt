@@ -21,16 +21,16 @@ import com.squareup.sample.authworkflow.AuthLauncher
 import com.squareup.sample.authworkflow.AuthReactor
 import com.squareup.sample.gameworkflow.RunGameLauncher
 import com.squareup.sample.gameworkflow.RunGameReactor
-import com.squareup.workflow.EnterState
-import com.squareup.workflow.Finished
-import com.squareup.workflow.Reaction
-import com.squareup.workflow.Running
-import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.register
-import com.squareup.workflow.rx2.EventChannel
-import com.squareup.workflow.rx2.Reactor
-import com.squareup.workflow.rx2.doLaunch
+import com.squareup.workflow.legacy.EnterState
+import com.squareup.workflow.legacy.Finished
+import com.squareup.workflow.legacy.Reaction
+import com.squareup.workflow.legacy.Running
+import com.squareup.workflow.legacy.Workflow
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.register
+import com.squareup.workflow.legacy.rx2.EventChannel
+import com.squareup.workflow.legacy.rx2.Reactor
+import com.squareup.workflow.legacy.rx2.doLaunch
 import io.reactivex.Single
 
 /**

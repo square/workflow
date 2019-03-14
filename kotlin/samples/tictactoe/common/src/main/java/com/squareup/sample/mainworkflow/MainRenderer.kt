@@ -24,10 +24,10 @@ import com.squareup.sample.panel.PanelContainerScreen
 import com.squareup.sample.panel.asPanelOver
 import com.squareup.viewregistry.AlertContainerScreen
 import com.squareup.viewregistry.BackStackScreen
-import com.squareup.workflow.Renderer
-import com.squareup.workflow.WorkflowInput
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.render
+import com.squareup.workflow.legacy.Renderer
+import com.squareup.workflow.legacy.WorkflowInput
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.render
 
 typealias RootScreen = AlertContainerScreen<PanelContainerScreen<*, *>>
 
