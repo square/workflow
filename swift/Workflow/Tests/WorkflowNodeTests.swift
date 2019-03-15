@@ -37,15 +37,18 @@ final class WorkflowNodeTests: XCTestCase {
 
         var outputs: [WorkflowType.Output] = []
 
+        let expectation = XCTestExpectation(description: "Node output")
+
         node.onOutput = { value in
             if let output = value.outputEvent {
                 outputs.append(output)
+                expectation.fulfill()
             }
         }
 
         rendering.aRendering.someoneTappedTheButton()
 
-        RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        wait(for: [expectation], timeout: 1.0)
 
         XCTAssertEqual(outputs, [WorkflowType.Output.childADidSomething(.helloWorld)])
     }
@@ -60,17 +63,21 @@ final class WorkflowNodeTests: XCTestCase {
 
         let node = WorkflowNode(workflow: workflow)
 
+        let expectation = XCTestExpectation(description: "State Change")
         var stateChangeCount = 0
 
         node.onOutput = { _ in
             stateChangeCount += 1
+            if stateChangeCount == 3 {
+                expectation.fulfill()
+            }
         }
 
         node.render().aRendering.toggle()
         node.render().aRendering.toggle()
         node.render().aRendering.toggle()
 
-        RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        wait(for: [expectation], timeout: 1.0)
 
         XCTAssertEqual(stateChangeCount, 3)
     }
@@ -89,13 +96,15 @@ final class WorkflowNodeTests: XCTestCase {
 
         var emittedDebugInfo: [WorkflowUpdateDebugInfo] = []
 
+        let expectation = XCTestExpectation(description: "Output")
         node.onOutput = { value in
             emittedDebugInfo.append(value.debugInfo)
+            expectation.fulfill()
         }
 
         rendering.aRendering.someoneTappedTheButton()
 
-        RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+        wait(for: [expectation], timeout: 1.0)
 
         XCTAssertEqual(emittedDebugInfo.count, 1)
 
@@ -193,7 +202,7 @@ final class WorkflowNodeTests: XCTestCase {
 
             func run() -> SignalProducer<Int, NoError> {
                 return SignalProducer{ observer, lifetime in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
                         observer.send(value: 1)
                         observer.send(value: 2)
                         observer.sendCompleted()
@@ -202,18 +211,23 @@ final class WorkflowNodeTests: XCTestCase {
             }
         }
 
+        let expectation = XCTestExpectation(description: "Test Worker")
         var outputs: [Int] = []
 
         let node = WorkflowNode(workflow: WF())
         node.onOutput = { output in
             if let outputInt = output.outputEvent {
                 outputs.append(outputInt)
+
+                if outputs.count == 2 {
+                    expectation.fulfill()
+                }
             }
         }
 
         node.render()
 
-        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        wait(for: [expectation], timeout: 1.0)
 
         XCTAssertEqual(outputs, [1, 2])
     }
