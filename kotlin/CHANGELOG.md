@@ -7,15 +7,15 @@ _2019-3-12_
 
  * Breaking change, `ViewBuilder` is now `ViewBinder`. Adds `buildScene()`
    method. (#57)
-
  * `BackStackEffect` allows configuration of transition effects between `BackStackScreen`s.
-
  * `ModalContainer` adds support for `AlertDialog` and custom views in `Dialog` windows.
-
  * Sample app consolidated to two modules, `samples/tictactoe/android` and 
    `samples/tictactoe/common`. Various `Shell*` classes in sample renamed to `Main*`.
-
  * Breaking change, `EventHandlingScreen` interface eliminated. It wasn't useful.
+ * Breaking change, `workflow-core`, `workflow-rx2`, and `workflow-test` modules moved to legacy
+   folder, given `legacy-` prefix (module and maven artifact), and code moved to `legacy` package.
+   None of these modules should be used in new code, they will be deleted soon.
+ * Workflows have been completely rewritten and are now almost identical to Swift workflows.
 
 ## Version 0.7.0
 
