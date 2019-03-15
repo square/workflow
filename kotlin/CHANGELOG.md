@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.8.1
+
+_2019-3-15_
+
+ * Bumps Kotlin to v1.2.71.
+
 ## Version 0.8.0
 
 _2019-3-12_
