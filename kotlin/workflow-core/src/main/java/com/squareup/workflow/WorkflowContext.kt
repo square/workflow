@@ -178,6 +178,20 @@ fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRe
 /**
  * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit output.
  */
+fun <InputT : Any, StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
+    WorkflowContext<StateT, OutputT>.compose(
+// Intellij refuses to format this parameter list correctly because of the weird line break,
+// and detekt will complain about it.
+// @formatter:off
+      child: Workflow<InputT, ChildStateT, Nothing, ChildRenderingT>,
+      input: InputT,
+      key: String = ""
+    ): ChildRenderingT = compose(child, input, key) { WorkflowAction.noop() }
+// @formatter:on
+
+/**
+ * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit output.
+ */
 fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
 // Intellij refuses to format this parameter list correctly because of the weird line break,

@@ -23,6 +23,8 @@ import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.cancel
 import org.jetbrains.annotations.TestOnly
+import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
@@ -31,12 +33,13 @@ import org.jetbrains.annotations.TestOnly
  */
 // @formatter:off
 @TestOnly
-fun <InputT : Any, OutputT : Any, RenderingT : Any>
+fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
     Workflow<InputT, *, OutputT, RenderingT>.testFromStart(
       input: InputT,
       snapshot: Snapshot? = null,
-      block: (WorkflowTester<OutputT, RenderingT>) -> Unit
-    ) = test(block) { it.run(this, input, snapshot) }
+      context: CoroutineContext = EmptyCoroutineContext,
+      block: (WorkflowTester<OutputT, RenderingT>) -> T
+    ): T = test(block, context) { it.run(this, input, snapshot) }
 // @formatter:on
 
 /**
@@ -45,10 +48,11 @@ fun <InputT : Any, OutputT : Any, RenderingT : Any>
  * All workflow-related coroutines are cancelled when the block exits.
  */
 @TestOnly
-fun <OutputT : Any, RenderingT : Any> Workflow<Unit, *, OutputT, RenderingT>.testFromStart(
+fun <T, OutputT : Any, RenderingT : Any> Workflow<Unit, *, OutputT, RenderingT>.testFromStart(
   snapshot: Snapshot? = null,
-  block: (WorkflowTester<OutputT, RenderingT>) -> Unit
-) = testFromStart(Unit, snapshot, block)
+  context: CoroutineContext = EmptyCoroutineContext,
+  block: (WorkflowTester<OutputT, RenderingT>) -> T
+): T = testFromStart(Unit, snapshot, context, block)
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
@@ -59,12 +63,13 @@ fun <OutputT : Any, RenderingT : Any> Workflow<Unit, *, OutputT, RenderingT>.tes
  */
 // @formatter:off
 @TestOnly
-fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
+fun <T, InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
     Workflow<InputT, StateT, OutputT, RenderingT>.testFromState(
       input: InputT,
       initialState: StateT,
-      block: (WorkflowTester<OutputT, RenderingT>) -> Unit
-    ) = test(block) { it.runTestFromState(this, input, initialState) }
+      context: CoroutineContext = EmptyCoroutineContext,
+      block: (WorkflowTester<OutputT, RenderingT>) -> T
+    ): T = test(block, context) { it.runTestFromState(this, input, initialState) }
 // @formatter:on
 
 /**
@@ -79,22 +84,24 @@ fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
 fun <StateT : Any, OutputT : Any, RenderingT : Any>
     Workflow<Unit, StateT, OutputT, RenderingT>.testFromState(
       initialState: StateT,
+      context: CoroutineContext = EmptyCoroutineContext,
       block: (WorkflowTester<OutputT, RenderingT>) -> Unit
-    ) = testFromState(Unit, initialState, block)
+    ) = testFromState(Unit, initialState, context, block)
 // @formatter:on
 
-private fun <O : Any, R : Any> test(
-  testBlock: (WorkflowTester<O, R>) -> Unit,
+private fun <T, O : Any, R : Any> test(
+  testBlock: (WorkflowTester<O, R>) -> T,
+  baseContext: CoroutineContext,
   starter: (Factory) -> WorkflowHost<O, R>
-) {
-  val context = Job() + Dispatchers.Unconfined
+): T {
+  val context = Dispatchers.Unconfined + baseContext + Job(parent = baseContext[Job])
   val host = WorkflowHost.Factory(context)
       .let(starter)
       .let { WorkflowTester(it, context) }
 
   var error: Throwable? = null
   try {
-    testBlock(host)
+    return testBlock(host)
   } catch (e: Throwable) {
     error = e
     throw e
@@ -104,7 +111,7 @@ private fun <O : Any, R : Any> test(
       if (!cancelled) {
         val cancellationCause = context[Job]!!.getCancellationException()
             .cause
-        if (cancellationCause != error) {
+        if (cancellationCause != error && cancellationCause != null) {
           error.addSuppressed(cancellationCause)
         }
       }

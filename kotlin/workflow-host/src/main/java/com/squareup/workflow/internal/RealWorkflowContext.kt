@@ -81,7 +81,7 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
         key: String,
         handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
       ): ChildRenderingT {
-  // @formatter:on
+    // @formatter:on
     val id = child.id(key)
     val case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT> =
       WorkflowOutputCase(child, id, input, handler)

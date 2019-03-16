@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squaruep.workflow
+package com.squareup.workflow
 
-import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.ChannelUpdate.Closed
 import com.squareup.workflow.ChannelUpdate.Value
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowContext
-import com.squareup.workflow.onReceive
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.experimental.TimeoutCancellationException
 import kotlinx.coroutines.experimental.channels.Channel

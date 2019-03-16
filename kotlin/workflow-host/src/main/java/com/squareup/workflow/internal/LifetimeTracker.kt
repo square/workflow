@@ -61,8 +61,17 @@ internal class LifetimeTracker<FactoryT, KeyT : Any, DisposableT>(
    * [Starts][start] [factories] with [keys][getKey] not already present in this manager,
    * and [disposes+removes][dispose] disposables for those that aren't present in [factories].
    */
-  fun track(factories: Iterable<FactoryT>) {
+  fun track(factories: List<FactoryT>) {
     val latestKeys = factories.associateBy(getKey)
+
+    // If these sizes don't match, there was at least one duplicate key.
+    require(factories.size == latestKeys.size) {
+      val duplicates = factories.groupBy(getKey)
+          .filterValues { it.size > 1 }
+          .entries
+          .joinToString(separator = "\n") { (key, values) -> "\t${values.size}×$key" }
+      "Expected all keys to be unique. Duplicates: $duplicates"
+    }
 
     for ((key, factory) in latestKeys) {
       ensureStarted(key, factory)

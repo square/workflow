@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squaruep.workflow
+package com.squareup.workflow
 
-import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.onSuspending
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlin.test.Test
