@@ -7,6 +7,9 @@ Pod::Spec.new do |s|
   s.author       = 'Square'
   s.source       = { :git => 'https://github.com/square/workflow.git', :tag => s.version }
 
+  # 1.7 is needed for `swift_versions` support
+  s.cocoapods_version = '>= 1.7.0.beta.1'
+
   s.swift_versions = ['4.2']
   s.ios.deployment_target = '9.3'
 
