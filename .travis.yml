@@ -10,6 +10,7 @@ notifications:
 matrix:
   include:
     - language: android
+      name: "Android"
       jdk: oraclejdk8
       env:
         - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
@@ -24,14 +25,30 @@ matrix:
           - $HOME/.gradle/wrapper/
           - $HOME/.m2
     - language: swift
+      name: "Swift - Cocoapods (Xcode 10.1)"
       os: osx
       osx_image: xcode10.1
       before_install:
-      - gem update --system
-      - gem install bundler
+        - gem update --system
+        - gem install bundler
       script:
-      - bundle exec pod lib lint Workflow.podspec --allow-warnings
+        - bundle exec pod lib lint Workflow.podspec --allow-warnings
+    - language: swift
+      name: "Swift - SPM (Xcode 10.1)"
+      os: osx
+      osx_image: xcode10.1
+      cache:
+        directories:
+          - .build
+      before_install:
+        - gem update --system
+        - gem install bundler
+        - swift --version
+        - swift build --verbose
+      script:
+        - swift test
     - language: node_js
+      name: "Documentation"
       node_js:
         - "stable"
       cache:
