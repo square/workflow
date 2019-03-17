@@ -21,7 +21,7 @@ import com.squareup.sample.mainworkflow.MainReactor
 import com.squareup.sample.gameworkflow.RealGameLog
 import com.squareup.sample.gameworkflow.RunGameReactor
 import com.squareup.sample.gameworkflow.TakeTurnsReactor
-import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.legacy.WorkflowPool
 import timber.log.Timber
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 

@@ -22,11 +22,11 @@ import com.squareup.sample.gameworkflow.Player.O
 import com.squareup.sample.gameworkflow.Player.X
 import com.squareup.sample.gameworkflow.TakeTurnsEvent.Quit
 import com.squareup.sample.gameworkflow.TakeTurnsEvent.TakeSquare
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.rx2.result
-import com.squareup.workflow.rx2.state
-import com.squareup.workflow.test.assertFinish
-import com.squareup.workflow.test.assertTransition
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.rx2.result
+import com.squareup.workflow.legacy.rx2.state
+import com.squareup.workflow.legacy.test.assertFinish
+import com.squareup.workflow.legacy.test.assertTransition
 import io.reactivex.observers.TestObserver
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test

@@ -20,15 +20,15 @@ import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
 import com.squareup.sample.gameworkflow.TakeTurnsEvent.Quit
 import com.squareup.sample.gameworkflow.TakeTurnsEvent.TakeSquare
-import com.squareup.workflow.EnterState
-import com.squareup.workflow.FinishWith
-import com.squareup.workflow.Reaction
-import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.WorkflowPool.Handle
-import com.squareup.workflow.rx2.EventChannel
-import com.squareup.workflow.rx2.Reactor
-import com.squareup.workflow.rx2.doLaunch
+import com.squareup.workflow.legacy.EnterState
+import com.squareup.workflow.legacy.FinishWith
+import com.squareup.workflow.legacy.Reaction
+import com.squareup.workflow.legacy.Workflow
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.WorkflowPool.Handle
+import com.squareup.workflow.legacy.rx2.EventChannel
+import com.squareup.workflow.legacy.rx2.Reactor
+import com.squareup.workflow.legacy.rx2.doLaunch
 import io.reactivex.Single
 
 /**

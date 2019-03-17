@@ -20,24 +20,30 @@ import com.squareup.sample.authworkflow.AuthState.AuthorizingSecondFactor
 import com.squareup.sample.authworkflow.AuthState.LoginPrompt
 import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
 import com.squareup.viewregistry.BackStackScreen
-import com.squareup.workflow.Renderer
-import com.squareup.workflow.WorkflowInput
-import com.squareup.workflow.WorkflowPool
+import com.squareup.workflow.legacy.Renderer
+import com.squareup.workflow.legacy.WorkflowInput
+import com.squareup.workflow.legacy.WorkflowPool
 
-object AuthRenderer : Renderer<AuthState, AuthEvent, BackStackScreen<Any>> {
+object AuthRenderer : Renderer<AuthState, AuthEvent, BackStackScreen<*>> {
   override fun render(
     state: AuthState,
     workflow: WorkflowInput<AuthEvent>,
     workflows: WorkflowPool
-  ): BackStackScreen<Any> = BackStackScreen(
-      when (state) {
-        is LoginPrompt -> LoginScreen(state.errorMessage, workflow::sendEvent)
+  ): BackStackScreen<*> =
+    when (state) {
+      is LoginPrompt -> BackStackScreen(LoginScreen(state.errorMessage, workflow::sendEvent))
 
-        is Authorizing -> AuthorizingScreen("Logging in…")
+      is Authorizing -> BackStackScreen(AuthorizingScreen("Logging in…"))
 
-        is AuthorizingSecondFactor -> AuthorizingScreen("Submitting one time token…")
+      // We give this one a uniquing key so that it pushes rather than pops
+      // the first Authorizing screen.
+      is AuthorizingSecondFactor -> BackStackScreen(
+          AuthorizingScreen("Submitting one time token…"),
+          "2fa"
+      )
 
-        is SecondFactorPrompt -> SecondFactorScreen(state.errorMessage, workflow::sendEvent)
-      }
-  )
+      is SecondFactorPrompt -> BackStackScreen(
+          SecondFactorScreen(state.errorMessage, workflow::sendEvent)
+      )
+    }
 }

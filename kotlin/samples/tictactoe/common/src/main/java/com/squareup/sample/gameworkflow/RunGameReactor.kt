@@ -30,25 +30,26 @@ import com.squareup.sample.gameworkflow.RunGameResult.CanceledStart
 import com.squareup.sample.gameworkflow.RunGameResult.FinishedPlaying
 import com.squareup.sample.gameworkflow.RunGameState.GameOver
 import com.squareup.sample.gameworkflow.RunGameState.MaybeQuitting
+import com.squareup.sample.gameworkflow.RunGameState.MaybeQuittingForSure
 import com.squareup.sample.gameworkflow.RunGameState.NewGame
 import com.squareup.sample.gameworkflow.RunGameState.Playing
 import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
-import com.squareup.workflow.EnterState
-import com.squareup.workflow.FinishWith
-import com.squareup.workflow.Finished
-import com.squareup.workflow.Reaction
-import com.squareup.workflow.Running
-import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowPool
-import com.squareup.workflow.WorkflowPool.Handle
-import com.squareup.workflow.WorkflowPool.Launcher
-import com.squareup.workflow.register
-import com.squareup.workflow.rx2.EventChannel
-import com.squareup.workflow.rx2.Reactor
-import com.squareup.workflow.rx2.doLaunch
-import com.squareup.workflow.rx2.singleWorker
+import com.squareup.workflow.legacy.EnterState
+import com.squareup.workflow.legacy.FinishWith
+import com.squareup.workflow.legacy.Finished
+import com.squareup.workflow.legacy.Reaction
+import com.squareup.workflow.legacy.Running
+import com.squareup.workflow.legacy.Workflow
+import com.squareup.workflow.legacy.WorkflowPool
+import com.squareup.workflow.legacy.WorkflowPool.Handle
+import com.squareup.workflow.legacy.WorkflowPool.Launcher
+import com.squareup.workflow.legacy.register
+import com.squareup.workflow.legacy.rx2.EventChannel
+import com.squareup.workflow.legacy.rx2.Reactor
+import com.squareup.workflow.legacy.rx2.doLaunch
+import com.squareup.workflow.legacy.rx2.singleWorker
 import io.reactivex.Single
 
 enum class RunGameResult {
@@ -123,9 +124,17 @@ class RunGameReactor(
 
       is MaybeQuitting -> {
         onEvent<ConfirmQuit> {
-          EnterState(
-              GameOver(state.completedGame)
-          )
+          EnterState(MaybeQuittingForSure(state.completedGame))
+        }
+
+        onEvent<ContinuePlaying> {
+          EnterState(Playing(state.completedGame.lastTurn))
+        }
+      }
+
+      is MaybeQuittingForSure -> {
+        onEvent<ConfirmQuit> {
+          EnterState(GameOver(state.completedGame))
         }
 
         onEvent<ContinuePlaying> {

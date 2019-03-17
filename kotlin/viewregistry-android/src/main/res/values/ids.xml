@@ -19,4 +19,8 @@
   <item type="id" name="workflow_back_handler"/>
   <!-- View Tag holding the BackStackScreen.Key associated with a view. -->
   <item type="id" name="workflow_back_stack_key"/>
+  <!-- ID used by AlertContainer to opt in to view persistence. -->
+  <item type="id" name="workflow_alert_container"/>
+  <!-- ID used by BackStackContainer to opt in to view persistence. -->
+  <item type="id" name="workflow_back_stack_container"/>
 </resources>

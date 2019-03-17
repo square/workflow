@@ -20,7 +20,7 @@ android rootProject.ext.defaultAndroidConfig
 
 android {
   defaultConfig {
-    applicationId "com.squareup.sample.authgameapp"
+    applicationId "com.squareup.sample.tictacworkflow"
     minSdkVersion versions.minSdkVersion
     multiDexEnabled true
     targetSdkVersion versions.targetSdkVersion
@@ -32,7 +32,7 @@ android {
 dependencies {
   implementation project(':samples:tictactoe:common')
   implementation project(':viewregistry-android')
-  implementation project(':workflow-rx2')
+  implementation project(':legacy:legacy-workflow-rx2')
 
   implementation deps.appcompatv7
   implementation deps.design

@@ -16,6 +16,6 @@
 package com.squareup.sample.gameworkflow
 
 data class GamePlayScreen(
-  val gameState: Turn,
-  val onEvent: (TakeTurnsEvent) -> Unit
+  val gameState: Turn = Turn(),
+  val onEvent: (TakeTurnsEvent) -> Unit = { }
 )

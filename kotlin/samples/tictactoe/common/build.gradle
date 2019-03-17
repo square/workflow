@@ -18,7 +18,7 @@ apply plugin: 'kotlin'
 
 dependencies {
   implementation project(':viewregistry')
-  implementation project(':workflow-rx2')
+  implementation project(':legacy:legacy-workflow-rx2')
 
   implementation deps.kotlin.stdLib.jdk6
   implementation deps.kotlin.reflect
@@ -28,5 +28,5 @@ dependencies {
   testImplementation deps.test.hamcrestCore
   testImplementation deps.test.junit
   testImplementation deps.rxjava2.extensions
-  testImplementation project(':workflow-test')
+  testImplementation project(':legacy:legacy-workflow-test')
 }
