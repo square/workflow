@@ -179,6 +179,8 @@ final class WorkflowNodeTests: XCTestCase {
             struct State {}
 
             typealias Output = Int
+            
+            typealias Rendering = Void
 
             func makeInitialState() -> WF.State {
                 return State()
@@ -317,13 +319,6 @@ extension CompositeWorkflow.Output: Equatable where A.Output: Equatable, B.Outpu
     }
 }
 
-extension Never: Equatable {
-    public static func ==(lhs: Never, rhs: Never) -> Bool {
-        switch (lhs, rhs) {}
-    }
-}
-
-
 /// Has no state or output, simply renders a reversed string
 fileprivate struct SimpleWorkflow: Workflow {
     var string: String
@@ -399,6 +394,8 @@ extension EventEmittingWorkflow {
 fileprivate struct StateTransitioningWorkflow: Workflow {
 
     typealias State = Bool
+    
+    typealias Output = Never
 
     struct Rendering {
         var toggle: () -> Void
@@ -438,3 +435,9 @@ fileprivate struct StateTransitioningWorkflow: Workflow {
 
 
 }
+
+#if compiler(>=5.0)
+// Never gains Equatable and Hashable conformance in Swift 5
+#else
+extension Never: Equatable {}
+#endif
