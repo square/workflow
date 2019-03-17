@@ -32,6 +32,7 @@ matrix:
         - gem update --system
         - gem install bundler
       script:
+        - bundle exec pod repo update
         - bundle exec pod lib lint Workflow.podspec --allow-warnings
     - language: swift
       name: "Swift - SPM (Xcode 10.1)"

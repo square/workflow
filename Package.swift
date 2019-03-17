@@ -11,7 +11,7 @@ let package = Package(
             targets: ["Workflow"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", from: "4.0.0")
+        .package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", from: "5.0.0")
     ],
     targets: [
         .target(

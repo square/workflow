@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
 
   s.source_files = 'swift/Workflow/Sources/*.swift'
 
-  s.dependency 'ReactiveSwift'
+  s.dependency 'ReactiveSwift', '~> 5.0.0'
   s.dependency 'Result'
  
   s.test_spec 'Tests' do |test_spec|
