@@ -38,6 +38,13 @@ local.properties
 # cocoapods-generate
 gen/
 
+# CocoaPods
+Pods/
+
 # Swift Package Manager
 .build/
 Package.resolved
+
+# Xcode
+xcuserdata
+*.xcworkspace
