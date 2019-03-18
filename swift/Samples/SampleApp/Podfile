@@ -1,0 +1,7 @@
+source 'https://github.com/CocoaPods/Specs.git'
+project 'SampleApp.xcodeproj'
+platform :ios, '9.3'
+
+target 'SampleApp' do
+    pod 'Workflow', path: '../../../Workflow.podspec', :testspecs => ['Tests']
+end

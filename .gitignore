@@ -41,3 +41,12 @@ gen/
 # Swift Package Manager
 .build/
 Package.resolved
+
+# CocoaPods
+Pods/
+
+# Xcode
+xcuserdata/
+
+# Sample workspace
+SampleApp.xcworkspace
