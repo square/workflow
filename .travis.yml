@@ -25,7 +25,7 @@ matrix:
           - $HOME/.gradle/wrapper/
           - $HOME/.m2
     - language: swift
-      name: "Swift - Cocoapods (Xcode 10.1)"
+      name: "Swift - Workflow - Cocoapods (Xcode 10.1)"
       os: osx
       osx_image: xcode10.1
       xcode_workspace: SampleApp.xcworkspace
@@ -39,11 +39,39 @@ matrix:
         - bundle exec pod repo update
         - bundle exec pod install
     - language: swift
-      name: "Swift - Cocoapods (Xcode 10.2)"
+      name: "Swift - WorkflowUI - Cocoapods (Xcode 10.1)"
+      os: osx
+      osx_image: xcode10.1
+      xcode_workspace: SampleApp.xcworkspace
+      xcode_scheme: WorkflowUI-Unit-Tests
+      xcode_destination: platform=iOS Simulator,OS=10.1,name=iPad Pro (9.7-inch)
+      before_install:
+        - gem update --system
+        - gem install bundler
+        - bundle install
+        - cd swift/Samples/SampleApp
+        - bundle exec pod repo update
+        - bundle exec pod install
+    - language: swift
+      name: "Swift - Workflow - Cocoapods (Xcode 10.2)"
       os: osx
       osx_image: xcode10.2
       xcode_workspace: SampleApp.xcworkspace
       xcode_scheme: Workflow-Unit-Tests
+      xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
+      before_install:
+        - gem update --system
+        - gem install bundler
+        - bundle install
+        - cd swift/Samples/SampleApp
+        - bundle exec pod repo update
+        - bundle exec pod install
+    - language: swift
+      name: "Swift - WorkflowUI - Cocoapods (Xcode 10.2)"
+      os: osx
+      osx_image: xcode10.2
+      xcode_workspace: SampleApp.xcworkspace
+      xcode_scheme: WorkflowUI-Unit-Tests
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
         - gem update --system

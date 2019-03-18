@@ -10,7 +10,14 @@ struct TestScreen: Screen {
     var string: String
 }
 
-class TestScreenViewController: ScreenViewController<TestScreen> {}
+final class TestScreenViewController: ScreenViewController<TestScreen> {
+    var onScreenChange: (() -> Void)? = nil
+
+    override func screenDidChange(from previousScreen: TestScreen) {
+        super.screenDidChange(from: previousScreen)
+        onScreenChange?()
+    }
+}
 
 
 class ContainerViewControllerTests: XCTestCase {
@@ -38,11 +45,18 @@ class ContainerViewControllerTests: XCTestCase {
         let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
 
         withExtendedLifetime(container) {
-            observer.send(value: 2)
 
-            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+            let expectation = XCTestExpectation(description: "View Controller updated")
 
             let vc = container.renderer.currentScreenViewController as! TestScreenViewController
+            vc.onScreenChange = {
+                expectation.fulfill()
+            }
+
+            observer.send(value: 2)
+
+            wait(for: [expectation], timeout: 1.0)
+
             XCTAssertEqual("2", vc.screen.string)
         }
     }
@@ -53,15 +67,17 @@ class ContainerViewControllerTests: XCTestCase {
         let workflow = MockWorkflow(subscription: signal)
         let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
 
-        var outputCalled = false
+        let expectation = XCTestExpectation(description: "Output")
+
         let disposable = container.output.observeValues { value in
             XCTAssertEqual(3, value)
-            outputCalled = true
+            expectation.fulfill()
         }
 
         observer.send(value: 3)
-        RunLoop.current.run(until: Date().addingTimeInterval(0.1))
-        XCTAssertTrue(outputCalled)
+
+        wait(for: [expectation], timeout: 1.0)
+
         disposable?.dispose()
     }
 }

@@ -6,7 +6,6 @@ import XCTest
 fileprivate struct ScreenA: Screen {}
 fileprivate struct ScreenB: Screen {}
 
-fileprivate protocol ViewType {}
 fileprivate class ViewA: ScreenViewController<ScreenA> {}
 fileprivate class ViewB: ScreenViewController<ScreenB> {}
 fileprivate class ViewC: ScreenViewController<ScreenA> {}

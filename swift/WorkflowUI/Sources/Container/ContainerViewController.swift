@@ -4,7 +4,7 @@ import Result
 import Workflow
 
 
-/// Binds a root workflow to a renderable view controller.
+/// Drives view controllers from a root Workflow.
 public final class ContainerViewController<Output>: UIViewController {
 
     /// Emits output events from the bound workflow.

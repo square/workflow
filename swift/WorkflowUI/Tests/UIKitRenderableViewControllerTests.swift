@@ -1,10 +1,3 @@
-//
-//  UIKitRenderableViewControllerTests.swift
-//  WorkflowUI-Unit-Tests
-//
-//  Created by Dave Apgar on 9/6/18.
-//
-
 import XCTest
 @testable import WorkflowUI
 

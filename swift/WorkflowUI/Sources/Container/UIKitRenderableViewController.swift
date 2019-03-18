@@ -2,7 +2,7 @@ import UIKit
 import ReactiveSwift
 
 
-/// An implementation of `Renderable` that displays screens as view controllers.
+/// Internal helper to display the current screen within a ContainerViewController
 internal final class UIKitRenderableViewController: UIViewController {
 
     private(set) internal var currentScreenViewController: AnyScreenViewController? = nil
@@ -16,10 +16,6 @@ internal final class UIKitRenderableViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
 
     func render(screen: Screen) {

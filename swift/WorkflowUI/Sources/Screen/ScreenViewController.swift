@@ -1,5 +1,4 @@
 import UIKit
-import ReactiveSwift
 
 
 /// Abstract superclass for view controllers that participate in the Container / ViewRegistry architecture.
