@@ -16,6 +16,12 @@
 package com.squareup.workflow
 
 /**
+ * A [Workflow] that has no state.
+ */
+typealias StatelessWorkflow<InputT, OutputT, RenderingT> =
+    Workflow<InputT, Unit, OutputT, RenderingT>
+
+/**
  * A convenience function to implement a [Workflow] that doesn't have any internal state. Such a
  * workflow doesn't need to worry about initial state or snapshotting, so the entire workflow can
  * be defined as a single [compose][Workflow.compose] function.
@@ -30,7 +36,7 @@ fun <InputT : Any, OutputT : Any, RenderingT : Any> StatelessWorkflow(
     input: InputT,
     context: WorkflowContext<Unit, OutputT>
   ) -> RenderingT
-): Workflow<InputT, Unit, OutputT, RenderingT> =
+): StatelessWorkflow<InputT, OutputT, RenderingT> =
   object : Workflow<InputT, Unit, OutputT, RenderingT> {
     override fun initialState(input: InputT) = Unit
 
@@ -50,7 +56,7 @@ fun <InputT : Any, OutputT : Any, RenderingT : Any> StatelessWorkflow(
 @Suppress("FunctionName")
 fun <OutputT : Any, RenderingT : Any> StatelessWorkflow(
   compose: (context: WorkflowContext<Unit, OutputT>) -> RenderingT
-): Workflow<Unit, Unit, OutputT, RenderingT> =
+): StatelessWorkflow<Unit, OutputT, RenderingT> =
   StatelessWorkflow { _: Unit, context: WorkflowContext<Unit, OutputT> ->
     compose(context)
   }
