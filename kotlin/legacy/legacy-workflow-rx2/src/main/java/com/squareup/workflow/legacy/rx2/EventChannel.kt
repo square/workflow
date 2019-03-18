@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.legacy.rx2
 
 import io.reactivex.Single
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.rx2.await
-import kotlinx.coroutines.experimental.rx2.rxSingle
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.rx2.rxSingle
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Helper for [Reactor]s that can accept events from external sources.
@@ -92,7 +94,7 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
         // subscriptions. We also make it a child of the rxSingle job so that if there's an exception,
         // it'll get cancelled automatically.
         val selectionJob = Job(parent = coroutineContext[Job])
-        kotlinx.coroutines.experimental.selects.select<Single<R>> {
+        kotlinx.coroutines.selects.select<Single<R>> {
           val selectBuilder = this
           val eventSelectBuilder = EventSelectBuilder<E, R>(selectBuilder, selectionJob)
           block(eventSelectBuilder)
@@ -120,9 +122,15 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
             // win get unsubscribed.
             .also { selectionJob.cancel() }
       } catch (cancellation: CancellationException) {
-        // The select was cancelled, which means the workflow was abandoned and we're about to get
-        // unsubscribed from. Don't propagate the error, just never emit/return.
-        suspendCoroutine<Nothing> { }
+        val cause = cancellation.cause
+        if (cause == null) {
+          // The select was cancelled normally, which means the workflow was abandoned and we're
+          // about to get unsubscribed from. Don't propagate the error, just never emit/return.
+          suspendCoroutine<Nothing> { }
+        } else {
+          // The select actually failed, so rethrow the actual exception.
+          throw cause
+        }
       }
     }
   }

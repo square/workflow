@@ -20,8 +20,6 @@ apply plugin: 'com.vanniktech.maven.publish'
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
-kotlin.experimental.coroutines 'enable'
-
 dependencies {
   api deps.kotlin.stdLib.jdk6
   api deps.okio

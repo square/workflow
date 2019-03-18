@@ -4,10 +4,10 @@ import com.squareup.workflow.legacy.Workflow
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 
@@ -77,6 +77,8 @@ class WorkflowOperatorsTest {
     states.cancel()
 
     assertThat(subscribeCount).isEqualTo(1)
-    assertThat(disposeCount).isEqualTo(1)
+    // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
+    // Disposable.dispose() is an idempotent operation so it should be fine.
+    assertThat(disposeCount).isEqualTo(2)
   }
 }

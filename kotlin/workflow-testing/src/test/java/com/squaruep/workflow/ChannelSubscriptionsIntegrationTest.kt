@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squaruep.workflow
 
 import com.squareup.workflow.Snapshot
@@ -25,10 +27,10 @@ import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.onReceive
 import com.squareup.workflow.testing.testFromStart
-import kotlinx.coroutines.experimental.TimeoutCancellationException
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.sendBlocking
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.sendBlocking
 import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -165,6 +167,8 @@ class ChannelSubscriptionsIntegrationTest {
       workflow.testFromStart(true) { host ->
         assertFalse(host.hasOutput)
 
+        // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+        @Suppress("DEPRECATION")
         channel.cancel(IOException("fail"))
         assertSame(Closed, host.awaitNextOutput())
         assertFalse(host.hasOutput)

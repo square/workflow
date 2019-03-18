@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.WorkflowHost.Factory
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.cancel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import org.jetbrains.annotations.TestOnly
 
 /**
@@ -83,6 +86,7 @@ fun <StateT : Any, OutputT : Any, RenderingT : Any>
     ) = testFromState(Unit, initialState, block)
 // @formatter:on
 
+@UseExperimental(InternalCoroutinesApi::class)
 private fun <O : Any, R : Any> test(
   testBlock: (WorkflowTester<O, R>) -> Unit,
   starter: (Factory) -> WorkflowHost<O, R>
@@ -100,6 +104,8 @@ private fun <O : Any, R : Any> test(
     throw e
   } finally {
     if (error != null) {
+      // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+      @Suppress("DEPRECATION")
       val cancelled = context.cancel(error)
       if (!cancelled) {
         val cancellationCause = context[Job]!!.getCancellationException()

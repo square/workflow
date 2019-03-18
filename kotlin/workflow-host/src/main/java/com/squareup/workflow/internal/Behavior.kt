@@ -18,9 +18,9 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.channels.ReceiveChannel
 
 /**
  * An immutable description of the things a [Workflow] would like to do as the result of calling its

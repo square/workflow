@@ -18,7 +18,7 @@ package com.squareup.workflow.legacy.rx2
 import com.squareup.workflow.legacy.Worker
 import com.squareup.workflow.legacy.worker
 import io.reactivex.Single
-import kotlinx.coroutines.experimental.rx2.await
+import kotlinx.coroutines.rx2.await
 
 /**
  * Creates a [Worker] that will pass its input value to [block], then subscribe to the returned

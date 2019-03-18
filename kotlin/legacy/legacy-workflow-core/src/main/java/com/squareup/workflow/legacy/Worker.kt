@@ -16,7 +16,7 @@
 package com.squareup.workflow.legacy
 
 import com.squareup.workflow.legacy.WorkflowPool.Type
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 
 /**
  * Defines a discrete task that a [Workflow] can execute asynchronously via [WorkflowPool],
@@ -76,9 +76,9 @@ import kotlinx.coroutines.experimental.Deferred
  * ## Note on Dispatchers
  *
  * Workers are always invoked with the
- * [Unconfined][kotlinx.coroutines.experimental.Dispatchers.Unconfined] dispatcher. If a worker
+ * [Unconfined][kotlinx.coroutines.Dispatchers.Unconfined] dispatcher. If a worker
  * needs a specific dispatcher (e.g. to do IO), it should use
- * [withContext][kotlinx.coroutines.experimental.withContext].
+ * [withContext][kotlinx.coroutines.withContext].
  */
 interface Worker<in I : Any, out O : Any> {
   /**

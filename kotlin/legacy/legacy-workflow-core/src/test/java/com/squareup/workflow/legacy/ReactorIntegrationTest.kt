@@ -28,8 +28,8 @@ import com.squareup.workflow.legacy.ReactorIntegrationTest.OuterState.RunningEch
 import com.squareup.workflow.legacy.ReactorIntegrationTest.OuterState.RunningImmediateJob
 import com.squareup.workflow.legacy.ReactorIntegrationTest.StringEchoer
 import com.squareup.workflow.legacy.WorkflowPool.Handle
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.selects.select
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.selects.select
 import org.junit.Test
 import kotlin.test.assertEquals
 
