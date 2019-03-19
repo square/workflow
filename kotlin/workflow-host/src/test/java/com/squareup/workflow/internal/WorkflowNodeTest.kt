@@ -15,14 +15,14 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.Snapshot
 import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.ChannelUpdate.Closed
 import com.squareup.workflow.ChannelUpdate.Value
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.makeUnitSink
 import com.squareup.workflow.onReceive
 import kotlinx.coroutines.experimental.Dispatchers
@@ -41,9 +41,40 @@ import kotlin.test.fail
 
 class WorkflowNodeTest {
 
+  private interface StringWorkflow : Workflow<String, String, String, String> {
+    override fun snapshotState(state: String): Snapshot = fail("not expected")
+    override fun restoreState(snapshot: Snapshot): String = fail("not expected")
+  }
+
+  private class InputRenderingWorkflow(
+    private val onInputChanged: (String, String, String) -> String
+  ) : StringWorkflow {
+
+    override fun initialState(input: String): String {
+      return "starting:$input"
+    }
+
+    override fun onInputChanged(
+      old: String,
+      new: String,
+      state: String
+    ): String = onInputChanged.invoke(old, new, state)
+
+    override fun compose(
+      input: String,
+      state: String,
+      context: WorkflowContext<String, String>
+    ): String {
+      return """
+        input:$input
+        state:$state
+      """.trimIndent()
+    }
+  }
+
   private val context: CoroutineContext = Dispatchers.Unconfined
 
-  @Test fun inputs_arePassedToOnChanged() {
+  @Test fun `inputs are passed to on changed`() {
     val oldAndNewInputs = mutableListOf<Pair<String, String>>()
     val workflow = InputRenderingWorkflow { old, new, state ->
       oldAndNewInputs += old to new
@@ -56,7 +87,7 @@ class WorkflowNodeTest {
     assertEquals(listOf("foo" to "foo2"), oldAndNewInputs)
   }
 
-  @Test fun inputs_areRendered() {
+  @Test fun `inputs are rendered`() {
     val workflow = InputRenderingWorkflow { old, new, _ ->
       "$old->$new"
     }
@@ -81,7 +112,7 @@ class WorkflowNodeTest {
     )
   }
 
-  @Test fun acceptsEvent() {
+  @Test fun `accepts event`() {
     lateinit var eventHandler: (String) -> Unit
     val workflow = object : StringWorkflow {
       override fun initialState(input: String): String = input
@@ -109,7 +140,7 @@ class WorkflowNodeTest {
     assertEquals("tick:event", result)
   }
 
-  @Test fun throwsOnSubsequentEventsOnSameRendering() {
+  @Test fun `throws on subsequent events on same rendering`() {
     lateinit var eventHandler: (String) -> Unit
     val workflow = object : StringWorkflow {
       override fun initialState(input: String): String = input
@@ -141,7 +172,7 @@ class WorkflowNodeTest {
     )
   }
 
-  @Test fun subscriptions_detectsValue() {
+  @Test fun `subscriptions detects value`() {
     val channel = Channel<String>(capacity = 1)
     var update: ChannelUpdate<String>? = null
     val workflow = object : StringWorkflow {
@@ -192,7 +223,7 @@ class WorkflowNodeTest {
     assertEquals("update:${Value("element")}", output)
   }
 
-  @Test fun subscriptions_detectsClose() {
+  @Test fun `subscriptions detects close`() {
     val channel = Channel<String>(capacity = 0)
     var update: ChannelUpdate<String>? = null
     val workflow = object : StringWorkflow {
@@ -231,7 +262,7 @@ class WorkflowNodeTest {
     assertEquals("update:$Closed", output)
   }
 
-  @Test fun subscriptions_unsubscribes() {
+  @Test fun `subscriptions unsubscribes`() {
     val channel = Channel<String>(capacity = 0)
     lateinit var doClose: () -> Unit
     val workflow = object : StringWorkflow {
@@ -275,37 +306,6 @@ class WorkflowNodeTest {
       node.compose(workflow, "")
 
       assertTrue(channel.isClosedForSend)
-    }
-  }
-
-  private interface StringWorkflow : Workflow<String, String, String, String> {
-    override fun snapshotState(state: String): Snapshot = TODO("not expected")
-    override fun restoreState(snapshot: Snapshot): String = TODO("not expected")
-  }
-
-  private class InputRenderingWorkflow(
-    private val onInputChanged: (String, String, String) -> String
-  ) : StringWorkflow {
-
-    override fun initialState(input: String): String {
-      return "starting:$input"
-    }
-
-    override fun onInputChanged(
-      old: String,
-      new: String,
-      state: String
-    ): String = onInputChanged.invoke(old, new, state)
-
-    override fun compose(
-      input: String,
-      state: String,
-      context: WorkflowContext<String, String>
-    ): String {
-      return """
-        input:$input
-        state:$state
-      """.trimIndent()
     }
   }
 }

@@ -52,7 +52,7 @@ class ChannelUpdatesTest {
     }
   }
 
-  @Test fun emitsValue() {
+  @Test fun `emits value`() {
     val channel = Channel<String>(1)
     channel.offer("foo")
 
@@ -65,7 +65,7 @@ class ChannelUpdatesTest {
     assertEquals(Value("foo"), result)
   }
 
-  @Test fun emitsClose() {
+  @Test fun `emits close`() {
     val channel = Channel<String>()
     channel.close()
 
@@ -78,7 +78,7 @@ class ChannelUpdatesTest {
     assertEquals(Closed, result)
   }
 
-  @Test fun handlesError() {
+  @Test fun `handles error`() {
     val channel = Channel<String>()
     channel.cancel(ExpectedException())
 

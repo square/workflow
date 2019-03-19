@@ -33,7 +33,7 @@ import kotlin.test.fail
 
 class WorkflowContextsTest {
 
-  @Test fun onSuccess_handlesValue_whenEmittedDuringListen() {
+  @Test fun `onSuccess handles value when emitted during listen`() {
     var subscriptions = 0
     var disposals = 0
     val singleSubject = SingleSubject.create<String>()
@@ -61,7 +61,7 @@ class WorkflowContextsTest {
     }
   }
 
-  @Test fun onSuccess_unsubscribes() {
+  @Test fun `onSuccess unsubscribes`() {
     var subscriptions = 0
     var disposals = 0
     lateinit var doClose: () -> Unit

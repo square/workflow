@@ -17,9 +17,9 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealWorkflowContext.Composer
 import com.squareup.workflow.internal.RealWorkflowContextTest.TestComposer.Rendering
@@ -76,7 +76,7 @@ class RealWorkflowContextTest {
     ): RC = fail()
   }
 
-  @Test fun makeSink_completesUpdate() {
+  @Test fun `make sink completes update`() {
     val context = RealWorkflowContext<String, String>(PoisonComposer())
     val expectedUpdate = noop<String, String>()
     val handler = context.makeSink<String> { expectedUpdate }
@@ -90,7 +90,7 @@ class RealWorkflowContextTest {
     assertSame(expectedUpdate, actualUpdate)
   }
 
-  @Test fun makeSink_getsEvent() {
+  @Test fun `make sink gets event`() {
     val context = RealWorkflowContext<String, String>(PoisonComposer())
     val handler = context.makeSink<String> { event -> emitOutput(event) }
 
@@ -103,7 +103,7 @@ class RealWorkflowContextTest {
     assertEquals("foo", output)
   }
 
-  @Test fun compose_works() {
+  @Test fun `compose works`() {
     val context = RealWorkflowContext(TestComposer())
     val workflow = TestWorkflow()
 

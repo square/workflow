@@ -58,7 +58,7 @@ class LifetimeTrackerTest {
     assertEquals(0, disposableCount)
   }
 
-  @Test fun ensure_startsNewFactory() {
+  @Test fun `ensure starts new factory`() {
     tracker.ensure("foo")
     assertEquals(1, disposableCount)
     assertEquals("foo", tracker.lifetimes.getValue("foo").name)
@@ -69,7 +69,7 @@ class LifetimeTrackerTest {
     assertEquals("bar", tracker.lifetimes.getValue("bar").name)
   }
 
-  @Test fun track_startsNewFactories() {
+  @Test fun `track starts new factories`() {
     tracker.track(listOf("foo"))
     assertEquals(1, disposableCount)
     assertEquals("foo", tracker.lifetimes.getValue("foo").name)
@@ -81,7 +81,7 @@ class LifetimeTrackerTest {
     assertEquals("baz", tracker.lifetimes.getValue("baz").name)
   }
 
-  @Test fun track_disposesMissingFactories() {
+  @Test fun `track disposes missing factories`() {
     tracker.track(listOf("foo"))
     assertEquals(1, disposableCount)
     assertTrue("foo" in tracker.lifetimes)
