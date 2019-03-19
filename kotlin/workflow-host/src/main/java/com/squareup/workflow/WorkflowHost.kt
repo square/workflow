@@ -15,10 +15,12 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowDebugger.NullDebugger
 import com.squareup.workflow.WorkflowHost.Factory
 import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.internal.WorkflowId
 import com.squareup.workflow.internal.WorkflowNode
+import com.squareup.workflow.internal.WorkflowOutput
 import com.squareup.workflow.internal.id
 import kotlinx.coroutines.experimental.cancel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
@@ -56,7 +58,10 @@ interface WorkflowHost<out OutputT : Any, out RenderingT : Any> {
   /**
    * Inject one of these to start root [Workflow]s.
    */
-  class Factory(private val baseContext: CoroutineContext) {
+  class Factory(
+    private val baseContext: CoroutineContext,
+    private val debugger: WorkflowDebugger = NullDebugger
+  ) {
 
     /**
      * Creates a [WorkflowHost] to run [workflow].
@@ -100,7 +105,8 @@ interface WorkflowHost<out OutputT : Any, out RenderingT : Any> {
       val workflowId = workflow.id()
       return object : WorkflowHost<OutputT, RenderingT> {
         val node = WorkflowNode(workflowId, workflow, input, null, baseContext, initialState)
-        override val updates: ReceiveChannel<Update<OutputT, RenderingT>> = node.start(workflow, input)
+        override val updates: ReceiveChannel<Update<OutputT, RenderingT>> =
+          node.start(workflow, input, debugger)
       }
     }
 
@@ -112,7 +118,8 @@ interface WorkflowHost<out OutputT : Any, out RenderingT : Any> {
       context: CoroutineContext
     ): WorkflowHost<OutputT, RenderingT> = object : WorkflowHost<OutputT, RenderingT> {
       val node = WorkflowNode(id, workflow, input, snapshot, baseContext + context)
-      override val updates: ReceiveChannel<Update<OutputT, RenderingT>> = node.start(workflow, input)
+      override val updates: ReceiveChannel<Update<OutputT, RenderingT>> =
+        node.start(workflow, input, debugger)
     }
   }
 }
@@ -122,17 +129,24 @@ interface WorkflowHost<out OutputT : Any, out RenderingT : Any> {
  */
 internal fun <I : Any, S : Any, O : Any, R : Any> WorkflowNode<I, S, O, R>.start(
   workflow: Workflow<I, S, O, R>,
-  input: I
+  input: I,
+  debugger: WorkflowDebugger?
 ): ReceiveChannel<Update<O, R>> = produce(capacity = 0) {
   try {
-    var output: O? = null
+    var output: WorkflowOutput<O?>? = null
+
     while (isActive) {
-      val rendering = compose(workflow, input)
+      val (rendering, debugSnapshot) = compose(workflow, input)
+      if (output == null) {
+        debugger?.onInitialState(debugSnapshot)
+      } else {
+        debugger?.onUpdate(debugSnapshot, output.debugInfo)
+      }
       val snapshot = snapshot(workflow)
-      send(Update(rendering, snapshot, output))
+      send(Update(rendering, snapshot, output?.value))
       // Tick _might_ return an output, but if it returns null, it means the state or a child
       // probably changed, so we should re-compose/snapshot and emit again.
-      output = select {
+      output = select<WorkflowOutput<O?>> {
         tick(this) { it }
       }
     }

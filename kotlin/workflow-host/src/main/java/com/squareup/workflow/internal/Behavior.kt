@@ -18,6 +18,7 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowHierarchyDebugSnapshot
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
@@ -32,7 +33,8 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 internal data class Behavior<StateT : Any, out OutputT : Any>(
   val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,
   val subscriptionCases: List<SubscriptionCase<*, StateT, OutputT>>,
-  val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>
+  val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>,
+  val childDebugSnapshots: List<WorkflowHierarchyDebugSnapshot.Child>
 ) {
 
   // @formatter:off
@@ -42,12 +44,12 @@ internal data class Behavior<StateT : Any, out OutputT : Any>(
       ParentStateT : Any,
       out ParentOutputT : Any
       >(
-        val workflow: Workflow<*, *, ChildOutputT, *>,
-        val id: WorkflowId<ChildInputT, *, ChildOutputT, *>,
-        val input: ChildInputT,
-        val handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
-      ) {
-      // @formatter:off
+    val workflow: Workflow<*, *, ChildOutputT, *>,
+    val id: WorkflowId<ChildInputT, *, ChildOutputT, *>,
+    val input: ChildInputT,
+    val handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
+  ) {
+    // @formatter:off
     @Suppress("UNCHECKED_CAST")
     fun acceptChildOutput(output: Any): WorkflowAction<ParentStateT, ParentOutputT> =
       handler(output as ChildOutputT)

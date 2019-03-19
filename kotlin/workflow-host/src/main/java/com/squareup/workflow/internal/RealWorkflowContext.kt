@@ -19,6 +19,8 @@ import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.WorkflowHierarchyDebugSnapshot
+import com.squareup.workflow.WorkflowHierarchyDebugSnapshot.Child
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import kotlinx.coroutines.experimental.CompletableDeferred
@@ -38,12 +40,13 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
       child: Workflow<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
       id: WorkflowId<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
       input: ChildInputT
-    ): ChildRenderingT
+    ): Pair<ChildRenderingT, WorkflowHierarchyDebugSnapshot>
   }
 
   private val nextUpdateFromEvent = CompletableDeferred<WorkflowAction<StateT, OutputT>>()
   private val subscriptionCases = mutableListOf<SubscriptionCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
+  private val childDebugSnapshots = mutableListOf<Child>()
 
   override fun <EventT : Any> makeSink(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
       (EventT) -> Unit {
@@ -86,7 +89,9 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
     val case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT> =
       WorkflowOutputCase(child, id, input, handler)
     childCases += case
-    return composer.compose(case, child, id, input)
+    val (rendering, debugSnapshot) = composer.compose(case, child, id, input)
+    childDebugSnapshots += Child("${child.javaClass.name}:$key", debugSnapshot)
+    return rendering
   }
 
   /**
@@ -95,6 +100,7 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   fun buildBehavior(): Behavior<StateT, OutputT> = Behavior(
       childCases = childCases.toList(),
       subscriptionCases = subscriptionCases.toList(),
-      nextActionFromEvent = nextUpdateFromEvent
+      nextActionFromEvent = nextUpdateFromEvent,
+      childDebugSnapshots = childDebugSnapshots.toList()
   )
 }

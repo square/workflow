@@ -15,13 +15,17 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.parse
-import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.ChannelUpdate.Closed
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowHierarchyDebugSnapshot
+import com.squareup.workflow.WorkflowUpdateDebugInfo
+import com.squareup.workflow.WorkflowUpdateDebugInfo.Kind.ChildDidUpdate
+import com.squareup.workflow.WorkflowUpdateDebugInfo.Kind.DidUpdate
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
+import com.squareup.workflow.parse
+import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.experimental.CoroutineName
 import kotlinx.coroutines.experimental.CoroutineScope
@@ -94,7 +98,7 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
   fun compose(
     workflow: Workflow<InputT, StateT, OutputT, RenderingT>,
     input: InputT
-  ): RenderingT {
+  ): Pair<RenderingT, WorkflowHierarchyDebugSnapshot> {
     updateInputAndState(workflow, input)
 
     val context = RealWorkflowContext(subtreeManager)
@@ -105,7 +109,13 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
     subtreeManager.track(behavior.childCases)
     subscriptionTracker.track(behavior.subscriptionCases)
 
-    return rendering
+    val debugSnapshot = WorkflowHierarchyDebugSnapshot(
+        workflowType = id.type.java.name,
+        stateDescription = state.toString(),
+        children = behavior.childDebugSnapshots
+    )
+
+    return Pair(rendering, debugSnapshot)
   }
 
   /**
@@ -128,17 +138,28 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
    * It is an error to call this method after calling [cancel].
    */
   fun <T : Any> tick(
-    selector: SelectBuilder<T?>,
-    handler: (OutputT) -> T?
+    selector: SelectBuilder<WorkflowOutput<T?>>,
+    handler: (WorkflowOutput<OutputT>) -> WorkflowOutput<T?>
   ) {
-    fun acceptUpdate(action: WorkflowAction<StateT, OutputT>): T? {
+    fun acceptUpdate(
+      action: WorkflowAction<StateT, OutputT>,
+      kind: WorkflowUpdateDebugInfo.Kind
+    ): WorkflowOutput<T?> {
       val (newState, output) = action(state)
       state = newState
-      return output?.let(handler)
+
+      val debugInfo = WorkflowUpdateDebugInfo(id.toString(), kind)
+      return if (output != null) {
+        handler(WorkflowOutput(output, debugInfo))
+      } else {
+        WorkflowOutput(null, debugInfo)
+      }
     }
 
     // Listen for any child workflow updates.
-    subtreeManager.tickChildren(selector, ::acceptUpdate)
+    subtreeManager.tickChildren(selector) { action, debugInfo ->
+      acceptUpdate(action, ChildDidUpdate(debugInfo))
+    }
 
     // Listen for any subscription updates.
     subscriptionTracker.lifetimes
@@ -150,14 +171,14 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
               subscription.tombstone = true
             }
             val update = case.acceptUpdate(channelUpdate)
-            acceptUpdate(update)
+            acceptUpdate(update, DidUpdate(DidUpdate.Source.Subscription))
           }
         }
 
     // Listen for any events.
     with(selector) {
       behavior.nextActionFromEvent.onAwait { update ->
-        acceptUpdate(update)
+        acceptUpdate(update, DidUpdate(DidUpdate.Source.External))
       }
     }
   }

@@ -35,7 +35,9 @@ internal data class WorkflowId<in InputT : Any, StateT : Any, out OutputT : Any,
 internal constructor(
   internal val type: KClass<out Workflow<InputT, StateT, OutputT, RenderingT>>,
   internal val name: String = ""
-)
+) {
+  override fun toString(): String ="${type.java.name}:$name"
+}
 
 @Suppress("unused")
 internal fun <W : Workflow<P, S, O, R>, P : Any, S : Any, O : Any, R : Any>

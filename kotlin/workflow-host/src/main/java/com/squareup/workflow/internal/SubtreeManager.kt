@@ -16,11 +16,13 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.parse
-import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowHierarchyDebugSnapshot
+import com.squareup.workflow.WorkflowUpdateDebugInfo
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
+import com.squareup.workflow.parse
+import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.experimental.selects.SelectBuilder
 import kotlin.coroutines.experimental.CoroutineContext
@@ -57,7 +59,7 @@ internal class SubtreeManager<StateT : Any, OutputT : Any>(
         child: Workflow<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
         id: WorkflowId<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
         input: ChildInputT
-      ): ChildRenderingT {
+      ): Pair<ChildRenderingT, WorkflowHierarchyDebugSnapshot> {
   // @formatter:on
     // Start tracking this case so we can be ready to compose it.
     @Suppress("UNCHECKED_CAST")
@@ -80,13 +82,13 @@ internal class SubtreeManager<StateT : Any, OutputT : Any>(
    * is managing.
    */
   fun <T : Any> tickChildren(
-    selector: SelectBuilder<T?>,
-    handler: (WorkflowAction<StateT, OutputT>) -> T?
+    selector: SelectBuilder<WorkflowOutput<T?>>,
+    handler: (WorkflowAction<StateT, OutputT>, WorkflowUpdateDebugInfo) -> WorkflowOutput<T?>
   ) {
     for ((case, host) in hostLifetimeTracker.lifetimes) {
       host.tick(selector) { output ->
-        val componentUpdate = case.acceptChildOutput(output)
-        return@tick handler(componentUpdate)
+        val workflowAction = case.acceptChildOutput(output.value)
+        return@tick handler(workflowAction, output.debugInfo)
       }
     }
   }

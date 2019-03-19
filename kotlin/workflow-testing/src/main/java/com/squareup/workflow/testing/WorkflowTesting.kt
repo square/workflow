@@ -17,6 +17,7 @@ package com.squareup.workflow.testing
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowDebugger.StdoutDebugger
 import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.WorkflowHost.Factory
 import kotlinx.coroutines.experimental.Dispatchers
@@ -33,10 +34,10 @@ import org.jetbrains.annotations.TestOnly
 @TestOnly
 fun <InputT : Any, OutputT : Any, RenderingT : Any>
     Workflow<InputT, *, OutputT, RenderingT>.testFromStart(
-      input: InputT,
-      snapshot: Snapshot? = null,
-      block: (WorkflowTester<OutputT, RenderingT>) -> Unit
-    ) = test(block) { it.run(this, input, snapshot) }
+  input: InputT,
+  snapshot: Snapshot? = null,
+  block: (WorkflowTester<OutputT, RenderingT>) -> Unit
+) = test(block) { it.run(this, input, snapshot) }
 // @formatter:on
 
 /**
@@ -61,10 +62,10 @@ fun <OutputT : Any, RenderingT : Any> Workflow<Unit, *, OutputT, RenderingT>.tes
 @TestOnly
 fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
     Workflow<InputT, StateT, OutputT, RenderingT>.testFromState(
-      input: InputT,
-      initialState: StateT,
-      block: (WorkflowTester<OutputT, RenderingT>) -> Unit
-    ) = test(block) { it.runTestFromState(this, input, initialState) }
+  input: InputT,
+  initialState: StateT,
+  block: (WorkflowTester<OutputT, RenderingT>) -> Unit
+) = test(block) { it.runTestFromState(this, input, initialState) }
 // @formatter:on
 
 /**
@@ -78,9 +79,9 @@ fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
 @TestOnly
 fun <StateT : Any, OutputT : Any, RenderingT : Any>
     Workflow<Unit, StateT, OutputT, RenderingT>.testFromState(
-      initialState: StateT,
-      block: (WorkflowTester<OutputT, RenderingT>) -> Unit
-    ) = testFromState(Unit, initialState, block)
+  initialState: StateT,
+  block: (WorkflowTester<OutputT, RenderingT>) -> Unit
+) = testFromState(Unit, initialState, block)
 // @formatter:on
 
 private fun <O : Any, R : Any> test(
@@ -88,7 +89,7 @@ private fun <O : Any, R : Any> test(
   starter: (Factory) -> WorkflowHost<O, R>
 ) {
   val context = Job() + Dispatchers.Unconfined
-  val host = WorkflowHost.Factory(context)
+  val host = WorkflowHost.Factory(context, StdoutDebugger)
       .let(starter)
       .let { WorkflowTester(it, context) }
 
