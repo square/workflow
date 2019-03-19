@@ -5,4 +5,7 @@ platform :ios, '9.3'
 target 'SampleApp' do
     pod 'Workflow', path: '../../../Workflow.podspec', :testspecs => ['Tests']
     pod 'WorkflowUI', path: '../../../WorkflowUI.podspec', :testspecs => ['Tests']
+
+    pod 'BackStack', path: '../BackStack/BackStack.podspec'
+    pod 'Emoji', path: '../Emoji/Emoji.podspec'
 end

@@ -1,4 +1,11 @@
 PODS:
+  - BackStack (1.0.0):
+    - Workflow
+    - WorkflowUI
+  - Emoji (1.0.0):
+    - BackStack
+    - Workflow
+    - WorkflowUI
   - ReactiveSwift (5.0.0):
     - Result (~> 4.1)
   - Result (4.1.0)
@@ -14,6 +21,8 @@ PODS:
     - Workflow (= 0.9.0)
 
 DEPENDENCIES:
+  - BackStack (from `../BackStack/BackStack.podspec`)
+  - Emoji (from `../Emoji/Emoji.podspec`)
   - Workflow (from `../../../Workflow.podspec`)
   - Workflow/Tests (from `../../../Workflow.podspec`)
   - WorkflowUI (from `../../../WorkflowUI.podspec`)
@@ -25,17 +34,23 @@ SPEC REPOS:
     - Result
 
 EXTERNAL SOURCES:
+  BackStack:
+    :path: "../BackStack/BackStack.podspec"
+  Emoji:
+    :path: "../Emoji/Emoji.podspec"
   Workflow:
     :path: "../../../Workflow.podspec"
   WorkflowUI:
     :path: "../../../WorkflowUI.podspec"
 
 SPEC CHECKSUMS:
+  BackStack: ab542da93f3084f619d2aaac4850223bdbb9ac79
+  Emoji: dbc4efabb71da15312fd6ecd9fbeb3ec8eda11ba
   ReactiveSwift: bd4c122943593e67cb441409370c5c1e3cb32791
   Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
   Workflow: 6e762952020350811263e4b9f86b0602d648697a
   WorkflowUI: c2abc926af699a3106fef7756beacfe97f0f134f
 
-PODFILE CHECKSUM: 8c910e56d3d340a0b799d55de20ace8bb4f25e6e
+PODFILE CHECKSUM: ef4c1c350197ce9495b91fdb9ce0c3ff22d0fa87
 
 COCOAPODS: 1.7.0.beta.2

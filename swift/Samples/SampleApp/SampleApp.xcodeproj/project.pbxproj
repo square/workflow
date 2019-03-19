@@ -9,9 +9,12 @@
 /* Begin PBXBuildFile section */
 		221F6AAA223F6B5000981516 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 221F6AA0223F6B4F00981516 /* Assets.xcassets */; };
 		221F6AAB223F6B5000981516 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 221F6AA1223F6B4F00981516 /* LaunchScreen.storyboard */; };
-		221F6AAE223F6B5000981516 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221F6AA8223F6B5000981516 /* ViewController.swift */; };
 		221F6AAF223F6B5000981516 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221F6AA9223F6B5000981516 /* AppDelegate.swift */; };
 		3CA502C6C27333EF2544FF75 /* libPods-SampleApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C43DF0525491915384DD5B9B /* libPods-SampleApp.a */; };
+		97496BDE22418A3400F9D6AB /* RootWorkflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97496BDD22418A3400F9D6AB /* RootWorkflow.swift */; };
+		97496BE022418B1900F9D6AB /* Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97496BDF22418B1900F9D6AB /* Sample.swift */; };
+		97496BE222418B8400F9D6AB /* SamplePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97496BE122418B8400F9D6AB /* SamplePickerViewController.swift */; };
+		97496BE422418B9300F9D6AB /* SamplePickerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97496BE322418B9300F9D6AB /* SamplePickerScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,9 +22,12 @@
 		221F6AA0223F6B4F00981516 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		221F6AA2223F6B4F00981516 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		221F6AA6223F6B4F00981516 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		221F6AA8223F6B5000981516 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		221F6AA9223F6B5000981516 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4907CAC860D2FC1CBC2A648D /* Pods-SampleApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleApp.release.xcconfig"; path = "Target Support Files/Pods-SampleApp/Pods-SampleApp.release.xcconfig"; sourceTree = "<group>"; };
+		97496BDD22418A3400F9D6AB /* RootWorkflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootWorkflow.swift; sourceTree = "<group>"; };
+		97496BDF22418B1900F9D6AB /* Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sample.swift; sourceTree = "<group>"; };
+		97496BE122418B8400F9D6AB /* SamplePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplePickerViewController.swift; sourceTree = "<group>"; };
+		97496BE322418B9300F9D6AB /* SamplePickerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplePickerScreen.swift; sourceTree = "<group>"; };
 		C43DF0525491915384DD5B9B /* libPods-SampleApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SampleApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE31D68261E5FA0E4E10C238 /* Pods-SampleApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleApp.debug.xcconfig"; path = "Target Support Files/Pods-SampleApp/Pods-SampleApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -78,8 +84,11 @@
 		221F6AA7223F6B5000981516 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				221F6AA8223F6B5000981516 /* ViewController.swift */,
 				221F6AA9223F6B5000981516 /* AppDelegate.swift */,
+				97496BDD22418A3400F9D6AB /* RootWorkflow.swift */,
+				97496BE322418B9300F9D6AB /* SamplePickerScreen.swift */,
+				97496BE122418B8400F9D6AB /* SamplePickerViewController.swift */,
+				97496BDF22418B1900F9D6AB /* Sample.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -98,7 +107,6 @@
 				DE31D68261E5FA0E4E10C238 /* Pods-SampleApp.debug.xcconfig */,
 				4907CAC860D2FC1CBC2A648D /* Pods-SampleApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -198,8 +206,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97496BE222418B8400F9D6AB /* SamplePickerViewController.swift in Sources */,
+				97496BE422418B9300F9D6AB /* SamplePickerScreen.swift in Sources */,
 				221F6AAF223F6B5000981516 /* AppDelegate.swift in Sources */,
-				221F6AAE223F6B5000981516 /* ViewController.swift in Sources */,
+				97496BE022418B1900F9D6AB /* Sample.swift in Sources */,
+				97496BDE22418A3400F9D6AB /* RootWorkflow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +350,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = MM763NMPEA;
 				INFOPLIST_FILE = "$(SRCROOT)/Configuration/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -357,6 +369,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = MM763NMPEA;
 				INFOPLIST_FILE = "$(SRCROOT)/Configuration/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
