@@ -15,10 +15,10 @@
  */
 package com.squaruep.workflow
 
-import com.squareup.workflow.Snapshot
 import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.ChannelUpdate.Closed
 import com.squareup.workflow.ChannelUpdate.Value
+import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
@@ -38,6 +38,49 @@ import kotlin.test.assertSame
 import kotlin.test.fail
 
 class ChannelSubscriptionsIntegrationTest {
+
+  /**
+   * Workflow that has a single Boolean state: whether to subscribe to [channel] or not.
+   *
+   * The initial value for the state is taken from the input. After that, the input is ignored.
+   *
+   * [compose] returns a setter that will change the subscription state.
+   */
+  private class SubscriberWorkflow(
+    private val channel: Channel<String>
+  ) : Workflow<Boolean, Boolean, ChannelUpdate<String>, (setSubscribed: Boolean) -> Unit> {
+
+    var subscriptions = 0
+      private set
+
+    var cancellations = 0
+      private set
+
+    init {
+      channel.invokeOnClose { cancellations++ }
+    }
+
+    override fun initialState(input: Boolean): Boolean = input
+
+    override fun compose(
+      input: Boolean,
+      state: Boolean,
+      context: WorkflowContext<Boolean, ChannelUpdate<String>>
+    ): (Boolean) -> Unit {
+      if (state) {
+        context.onReceive({ subscribe() }) { update -> emitOutput(update) }
+      }
+      return context.makeSink { subscribe -> enterState(subscribe) }
+    }
+
+    override fun snapshotState(state: Boolean) = Snapshot.EMPTY
+    override fun restoreState(snapshot: Snapshot): Boolean = fail()
+
+    private fun subscribe(): ReceiveChannel<String> {
+      subscriptions++
+      return channel
+    }
+  }
 
   private val channel = Channel<String>()
   private val workflow = SubscriberWorkflow(channel)
@@ -81,7 +124,7 @@ class ChannelSubscriptionsIntegrationTest {
     }
   }
 
-  @Test fun subscribesOnlyOnceAcrossMultipleComposes() {
+  @Test fun `subscribes only once across multiple composes`() {
     workflow.testFromStart(true) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
@@ -118,7 +161,7 @@ class ChannelSubscriptionsIntegrationTest {
     }
   }
 
-  @Test fun reportsEmissions() {
+  @Test fun `reports emissions`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -132,7 +175,7 @@ class ChannelSubscriptionsIntegrationTest {
     }
   }
 
-  @Test fun reportsClose() {
+  @Test fun `reports close`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -147,7 +190,7 @@ class ChannelSubscriptionsIntegrationTest {
     }
   }
 
-  @Test fun reportsCloseAfterEmission() {
+  @Test fun `reports close after emission`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -160,7 +203,7 @@ class ChannelSubscriptionsIntegrationTest {
     }
   }
 
-  @Test fun reportsError() {
+  @Test fun `reports error`() {
     assertFailsWith<IOException> {
       workflow.testFromStart(true) { host ->
         assertFalse(host.hasOutput)
@@ -169,49 +212,6 @@ class ChannelSubscriptionsIntegrationTest {
         assertSame(Closed, host.awaitNextOutput())
         assertFalse(host.hasOutput)
       }
-    }
-  }
-
-  /**
-   * Workflow that has a single Boolean state: whether to subscribe to [channel] or not.
-   *
-   * The initial value for the state is taken from the input. After that, the input is ignored.
-   *
-   * [compose] returns a setter that will change the subscription state.
-   */
-  private class SubscriberWorkflow(
-    private val channel: Channel<String>
-  ) : Workflow<Boolean, Boolean, ChannelUpdate<String>, (setSubscribed: Boolean) -> Unit> {
-
-    var subscriptions = 0
-      private set
-
-    var cancellations = 0
-      private set
-
-    init {
-      channel.invokeOnClose { cancellations++ }
-    }
-
-    override fun initialState(input: Boolean): Boolean = input
-
-    override fun compose(
-      input: Boolean,
-      state: Boolean,
-      context: WorkflowContext<Boolean, ChannelUpdate<String>>
-    ): (Boolean) -> Unit {
-      if (state) {
-        context.onReceive({ subscribe() }) { update -> emitOutput(update) }
-      }
-      return context.makeSink { subscribe -> enterState(subscribe) }
-    }
-
-    override fun snapshotState(state: Boolean) = Snapshot.EMPTY
-    override fun restoreState(snapshot: Snapshot): Boolean = fail()
-
-    private fun subscribe(): ReceiveChannel<String> {
-      subscriptions++
-      return channel
     }
   }
 }

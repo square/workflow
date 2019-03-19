@@ -28,7 +28,9 @@ import kotlin.test.fail
 
 class SuspendingSubscriptionIntegrationTest {
 
-  @Test fun handlesValue() {
+  private class ExpectedException : RuntimeException()
+
+  @Test fun `handles value`() {
     val deferred = CompletableDeferred<String>()
     val workflow = StatelessWorkflow<String, Unit> { context ->
       context.onSuspending({ deferred.await() }, Unit) {
@@ -49,7 +51,7 @@ class SuspendingSubscriptionIntegrationTest {
     }
   }
 
-  @Test fun handlesError() {
+  @Test fun `handles error`() {
     val workflow = StatelessWorkflow<String, Unit> { context ->
       context.onSuspending({ throw ExpectedException() }, Unit) {
         fail("Shouldn't get here.")
@@ -64,6 +66,4 @@ class SuspendingSubscriptionIntegrationTest {
       }
     }
   }
-
-  private class ExpectedException : RuntimeException()
 }

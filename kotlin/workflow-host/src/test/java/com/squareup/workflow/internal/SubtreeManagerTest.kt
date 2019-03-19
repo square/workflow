@@ -62,7 +62,7 @@ class SubtreeManagerTest {
 
   private val context = Dispatchers.Unconfined
 
-  @Test fun compose_startsNewChild() {
+  @Test fun `compose starts new child`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
@@ -73,7 +73,7 @@ class SubtreeManagerTest {
     assertEquals(1, workflow.started)
   }
 
-  @Test fun compose_doesntStartExistingChild() {
+  @Test fun `compose doesn't start existing child`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
@@ -85,7 +85,7 @@ class SubtreeManagerTest {
     assertEquals(1, workflow.started)
   }
 
-  @Test fun compose_returnsChildRendering() {
+  @Test fun `compose returns child rendering`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
@@ -97,7 +97,7 @@ class SubtreeManagerTest {
     assertEquals("initialState:input", composeState)
   }
 
-  @Test fun tickChildren_handlesChildOutput() {
+  @Test fun `tick children handles child output`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()

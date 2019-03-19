@@ -78,7 +78,7 @@ class SubscriptionsTest {
   private val subject = PublishSubject.create<String>()
   private val workflow = SubscriberWorkflow(subject)
 
-  @Test fun observable_subscribes() {
+  @Test fun `observable subscribes`() {
     workflow.testFromStart(false) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(0, workflow.subscriptions)
@@ -104,7 +104,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_unsubscribes() {
+  @Test fun `observable unsubscribes`() {
     workflow.testFromStart(true) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
@@ -117,7 +117,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_subscribesOnlyOnceAcrossMultipleComposes() {
+  @Test fun `observable subscribes only once across multiple composes`() {
     workflow.testFromStart(true) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
@@ -133,7 +133,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_resubscribes() {
+  @Test fun `observable resubscribes`() {
     workflow.testFromStart(true) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
@@ -154,7 +154,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_reportsEmissions() {
+  @Test fun `observable reports emissions`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -168,7 +168,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_reportsClose() {
+  @Test fun `observable reports close`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -183,7 +183,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_reportsCloseAfterEmission() {
+  @Test fun `observable reports close after emission`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -196,8 +196,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_reportsError() {
-
+  @Test fun `observable reports error`() {
     assertFailsWith<IOException> {
       workflow.testFromStart(true) { host ->
         assertFalse(host.hasOutput)
