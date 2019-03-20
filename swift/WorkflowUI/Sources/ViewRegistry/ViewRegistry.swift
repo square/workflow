@@ -10,18 +10,21 @@ import ReactiveSwift
 public struct ViewRegistry {
 
     /// Defines a closure that instantiates a live view instance.
-    private typealias Factory<T: Screen> = (T, ViewRegistry) -> AnyScreenViewController
+    private typealias Factory<T: Screen> = (T, ViewRegistry) -> ScreenViewController<T>
 
     private var factories: [ObjectIdentifier:Any] = [:]
 
     /// Initializes an empty registry.
-    public init() {}
+    public init() {
+        // `AnyScreen` is a WorkflowUI primitive; all view registries should support them.
+        register(screenViewControllerType: AnyScreenViewController.self)
+    }
 
     /// Convenience registration method that wraps a simple `UIViewController` in a `ScreenViewController` to provide convenient
     /// update methods.
     public mutating func register<ViewControllerType, ScreenType>(screenViewControllerType: ViewControllerType.Type) where ViewControllerType: ScreenViewController<ScreenType> {
 
-        let factory: Factory<ScreenType> = { screen, registry -> AnyScreenViewController in
+        let factory: Factory<ScreenType> = { screen, registry -> ScreenViewController<ScreenType> in
             return ViewControllerType(screen: screen, viewRegistry: registry)
         }
         factories[ObjectIdentifier(ScreenType.self)] = factory
@@ -37,7 +40,7 @@ public struct ViewRegistry {
     ///
     /// Note that you must check `canProvideView(for:)` before calling this method. Calling `provideView(for:)`
     /// with a screen type that was not previously registered is a programmer error, and the application will crash.
-    internal func provideView<T>(for screen: T) -> AnyScreenViewController where T : Screen {
+    internal func provideView<T>(for screen: T) -> ScreenViewController<T> where T : Screen {
         guard let factory = factories[ObjectIdentifier(T.self)] as? Factory<T> else {
             fatalError("The screen type \(T.self) was not registered with the view registry.")
         }
