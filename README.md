@@ -22,6 +22,4 @@ More documentation and samples will be coming soon!
 
 ## Releasing and Deploying
 
-### Kotlin
-
-See [kotlin/RELEASING.md](kotlin/RELEASING.md).
+See [RELEASING.md](RELEASING.md).
