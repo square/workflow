@@ -18,13 +18,14 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
+import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.compose
-import com.squareup.workflow.makeUnitSink
+import com.squareup.workflow.invoke
 import com.squareup.workflow.onReceive
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
@@ -128,7 +129,7 @@ class WorkflowNodeTest {
         state: String,
         context: WorkflowContext<String, String>
       ): String {
-        eventHandler = context.makeSink { event -> emitOutput(event) }
+        eventHandler = context.onEvent { event -> emitOutput(event) }
         return ""
       }
     }
@@ -156,7 +157,7 @@ class WorkflowNodeTest {
         state: String,
         context: WorkflowContext<String, String>
       ): String {
-        eventHandler = context.makeSink { event -> emitOutput(event) }
+        eventHandler = context.onEvent { event -> emitOutput(event) }
         return ""
       }
     }
@@ -270,7 +271,7 @@ class WorkflowNodeTest {
 
   @Test fun `subscriptions unsubscribes`() {
     val channel = Channel<String>(capacity = 0)
-    lateinit var doClose: () -> Unit
+    lateinit var doClose: EventHandler<Unit>
     val workflow = object : StringWorkflow {
       override fun initialState(input: String): String = input
 
@@ -284,7 +285,7 @@ class WorkflowNodeTest {
             context.onReceive({ channel }) {
               emitOutput("update:$it")
             }
-            doClose = context.makeUnitSink {
+            doClose = context.onEvent {
               enterState("finished")
             }
           }

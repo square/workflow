@@ -52,7 +52,7 @@ class SubtreeManagerTest {
       input: String,
       state: String,
       context: WorkflowContext<String, String>
-    ): Rendering = Rendering(input, state, context.makeSink {
+    ): Rendering = Rendering(input, state, context.onEvent {
       emitOutput("workflow output:$it")
     })
 

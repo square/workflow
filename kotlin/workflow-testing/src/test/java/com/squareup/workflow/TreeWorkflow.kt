@@ -59,7 +59,7 @@ internal class TreeWorkflow(
 
     return Rendering(
         data = "$name:$state",
-        setData = context.makeSink { newState ->
+        setData = context.onEvent { newState ->
           WorkflowAction.enterState(
               newState
           )

@@ -15,6 +15,7 @@
  */
 package com.squareup.workflow.internal
 
+import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowContext
@@ -46,9 +47,9 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   private val subscriptionCases = mutableListOf<SubscriptionCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
 
-  override fun <EventT : Any> makeSink(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
-      (EventT) -> Unit {
-    return { event ->
+  override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
+      EventHandler<EventT> {
+    return EventHandler { event ->
       // Run the handler synchronously, so we only have to emit the resulting action and don't need the
       // update channel to be generic on each event type.
       val update = handler(event)
