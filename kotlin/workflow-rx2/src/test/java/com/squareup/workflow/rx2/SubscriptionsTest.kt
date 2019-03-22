@@ -16,9 +16,9 @@
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.ChannelUpdate
-import com.squareup.workflow.ChannelUpdate.Closed
-import com.squareup.workflow.ChannelUpdate.Value
+import com.squareup.workflow.util.ChannelUpdate
+import com.squareup.workflow.util.ChannelUpdate.Closed
+import com.squareup.workflow.util.ChannelUpdate.Value
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput

@@ -15,15 +15,16 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.ChannelUpdate
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
+import com.squareup.workflow.util.ChannelUpdate
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlin.reflect.KType
 
 /**
  * An implementation of [WorkflowContext] that builds a [Behavior] via [buildBehavior].
@@ -61,16 +62,13 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
     }
   }
 
-  override fun <E> onReceiveRaw(
+  override fun <E> onReceive(
     channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    idempotenceKey: Any,
+    type: KType,
+    key: String,
     handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
   ) {
-    subscriptionCases += SubscriptionCase(
-        channelProvider,
-        idempotenceKey,
-        handler
-    )
+    subscriptionCases += SubscriptionCase(channelProvider, Pair(type, key), handler)
   }
 
   // @formatter:off

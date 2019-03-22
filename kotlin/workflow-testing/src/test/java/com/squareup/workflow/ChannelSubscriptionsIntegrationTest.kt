@@ -15,11 +15,12 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.ChannelUpdate.Closed
-import com.squareup.workflow.ChannelUpdate.Value
+import com.squareup.workflow.util.ChannelUpdate.Closed
+import com.squareup.workflow.util.ChannelUpdate.Value
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
+import com.squareup.workflow.util.ChannelUpdate
 import kotlinx.coroutines.experimental.TimeoutCancellationException
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
