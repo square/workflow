@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage     = 'https://www.github.com/square/workflow'
   s.license      = 'Apache License, Version 2.0'
   s.author       = 'Square'
-  s.source       = { :git => 'https://github.com/square/workflow.git', :tag => s.version }
+  s.source       = { :git => 'https://github.com/square/workflow.git', :tag => "v#{s.version}" }
 
   # 1.7 is needed for `swift_versions` support
   s.cocoapods_version = '>= 1.7.0.beta.1'
