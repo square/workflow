@@ -79,7 +79,7 @@ class RealWorkflowContextTest {
   @Test fun `make sink completes update`() {
     val context = RealWorkflowContext<String, String>(PoisonComposer())
     val expectedUpdate = noop<String, String>()
-    val handler = context.makeSink<String> { expectedUpdate }
+    val handler = context.onEvent<String> { expectedUpdate }
     assertFalse(context.buildBehavior().nextActionFromEvent.isCompleted)
 
     handler("")
@@ -92,7 +92,7 @@ class RealWorkflowContextTest {
 
   @Test fun `make sink gets event`() {
     val context = RealWorkflowContext<String, String>(PoisonComposer())
-    val handler = context.makeSink<String> { event -> emitOutput(event) }
+    val handler = context.onEvent<String> { event -> emitOutput(event) }
 
     handler("foo")
 

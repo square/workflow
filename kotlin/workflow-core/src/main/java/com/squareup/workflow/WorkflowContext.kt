@@ -31,7 +31,7 @@ import kotlin.reflect.KType
  *
  * ## Handling Events
  *
- * See [makeSink], [makeUnitSink].
+ * See [onEvent].
  *
  * ## Handling External Reactive Streams
  *
@@ -47,8 +47,6 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * Given a function that takes an [event][EventT] and can mutate the state or emit an output, returns
    * a function that will perform that workflow update when called with an event.
    * The returned function is valid until the next [compose][Workflow.compose] pass.
-   * If you don't need to pass event data in, you can just use `Unit` as your event type, or use
-   * [makeUnitSink] to get a function that doesn't have any parameters.
    *
    * For example, if you have a rendering type of `Screen`:
    *
@@ -62,16 +60,17 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    *    return Screen(
    *      button1Label = "Hello",
    *      button2Label = "World",
-   *      onClick = context.makeSink { buttonIndex ->
+   *      onClick = context.onEvent { buttonIndex ->
    *        emitOutput("Button $buttonIndex clicked!")
    *      }
    *    )
    *
    * @param handler A function that returns the [WorkflowAction] to perform when the event handler
    * is invoked.
-   * @see makeUnitSink
    */
-  fun <EventT : Any> makeSink(handler: (EventT) -> WorkflowAction<StateT, OutputT>): (EventT) -> Unit
+  fun <EventT : Any> onEvent(
+    handler: (EventT) -> WorkflowAction<StateT, OutputT>
+  ): EventHandler<EventT>
 
   /**
    * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to, and
@@ -124,21 +123,6 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
     key: String = "",
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT
-}
-
-/**
- * Returns a function that will invoke [handler] when called.
- *
- * This is a convenience function that is equivalent to calling [makeSink][WorkflowContext.makeSink]
- * and then passing `Unit` to the resulting sink.
- *
- * @see WorkflowContext.makeSink
- */
-fun <StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.makeUnitSink(
-  handler: () -> WorkflowAction<StateT, OutputT>
-): () -> Unit {
-  val sink = makeSink<Unit> { handler() }
-  return { sink(Unit) }
 }
 
 /**

@@ -66,7 +66,7 @@ class ChannelSubscriptionsIntegrationTest {
       if (state) {
         context.onReceive({ subscribe() }) { update -> emitOutput(update) }
       }
-      return context.makeSink { subscribe -> enterState(subscribe) }
+      return context.onEvent { subscribe -> enterState(subscribe) }
     }
 
     override fun snapshotState(state: Boolean) = Snapshot.EMPTY
