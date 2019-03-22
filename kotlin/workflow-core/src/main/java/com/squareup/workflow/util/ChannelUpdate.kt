@@ -13,10 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow
+package com.squareup.workflow.util
 
 /**
- * Tests for code in this module lives in the `pure-v2-testing` module.
+ * Provides a more definitive signal between "[value emitted][Value]" and "[channel closed][Closed]"
+ * for channels that may contain nullable values.
  */
-@Suppress("unused")
-class EmptyTest
+sealed class ChannelUpdate<out E> {
+
+  /**
+   * Indicates a [value] was received from the channel.
+   *
+   * @param value The value received from the channel.
+   */
+  data class Value<out E>(val value: E) : ChannelUpdate<E>()
+
+  /**
+   * Indicates that the channel was closed, and will never emit any more values.
+   */
+  object Closed : ChannelUpdate<Nothing>()
+}

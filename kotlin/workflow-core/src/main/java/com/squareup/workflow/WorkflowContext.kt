@@ -15,12 +15,15 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.ChannelUpdate.Value
+import com.squareup.workflow.util.ChannelUpdate
+import com.squareup.workflow.util.ChannelUpdate.Value
+import com.squareup.workflow.util.KTypes
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
+import kotlin.reflect.KType
 
 /**
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
@@ -74,8 +77,7 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to, and
    * will send anything emitted on the channel to [handler] as a [ChannelUpdate].
    *
-   * This method ensures that only one subscription is active at a time for the given idempotence key,
-   * where idempotence keys are compared using [equals].
+   * This method ensures that only one subscription is active at a time for the given [type]+[key].
    * If this method is called in two or more consecutive [Workflow.compose] invocations with the same
    * key, [channelProvider] will only be invoked for the first one, and the returned channel will be
    * re-used for all subsequent invocations, until a [Workflow.compose] invocation does _not_ call this
@@ -83,17 +85,18 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * with the assumption that cancelling the channel will release any resources allocated by the
    * [channelProvider].
    *
-   * **This method is intended for library authors**, since a unique idempotence key must be specified
-   * explicitly. Most code will want to call one of the variants that accepts a [String] `key`
-   * parameter (i.e. [onReceive]). See [IdempotenceKey] for factory methods to derive keys from types.
-   *
+   * @param type The [KType] that represents both the type of data source (e.g. `ReceiveChannel` or
+   * `Deferred`) and the element type [E].
+   * @param key An optional string key that is used to distinguish between subscriptions of the same
+   * [type].
    * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
    *
    * @see onReceive
    */
-  fun <E> onReceiveRaw(
+  fun <E> onReceive(
     channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    idempotenceKey: Any,
+    type: KType,
+    key: String = "",
     handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
   )
 
@@ -111,6 +114,9 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    *
    * After this method returns, if something happens that trigger's one of `child`'s handlers, and
    * that handler emits an output, the function passed as [handler] will be invoked with that output.
+   *
+   * @param key An optional string key that is used to distinguish between workflows of the same
+   * type.
    */
   fun <ChildInputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
     child: Workflow<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
@@ -147,17 +153,19 @@ fun <StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.makeUnitSink(
  * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will release
  * any resources allocated by the [channelProvider].
  *
+ * @param key An optional string key that is used to distinguish between subscriptions of the same type.
  * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
  *
- * @see WorkflowContext.onReceiveRaw
+ * @see WorkflowContext.onReceive
  */
 inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, OutputT>.onReceive(
   noinline channelProvider: CoroutineScope.() -> ReceiveChannel<T>,
   key: String = "",
   noinline handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
-) = onReceiveRaw(
+) = onReceive(
     channelProvider,
-    IdempotenceKey.fromGenericType(ReceiveChannel::class, T::class, key = key),
+    KTypes.fromGenericType(ReceiveChannel::class, T::class),
+    key,
     handler
 )
 
@@ -205,7 +213,10 @@ fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
 /**
  * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
  * invoked for a given deferred+key, it will not be invoked again until an invocation of
- * [Workflow.compose] that does _not_ call this method with that deferred+key.
+ * [Workflow.compose] that does _not_ call this method with that deferred+[key].
+ *
+ * @param key An optional string key that is used to distinguish between subscriptions of the same
+ * type.
  */
 inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
   deferred: Deferred<T>,
@@ -213,36 +224,53 @@ inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, Outp
   noinline handler: (T) -> WorkflowAction<StateT, OutputT>
 ) = onDeferred(
     deferred,
-    IdempotenceKey.fromGenericType(Deferred::class, T::class, key = key),
+    KTypes.fromGenericType(Deferred::class, T::class),
+    key,
     handler
 )
 
-@PublishedApi
-internal fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
+/**
+ * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
+ * invoked for a given deferred+key, it will not be invoked again until an invocation of
+ * [Workflow.compose] that does _not_ call this method with that deferred+[key].
+ *
+ * @param type The [KType] that represents both the type of data source (e.g. `Deferred`) and the
+ * element type [T].
+ * @param key An optional string key that is used to distinguish between subscriptions of the same
+ * [type].
+ */
+fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
   deferred: Deferred<T>,
-  idempotenceKey: Any,
+  type: KType,
+  key: String = "",
   handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onSuspending({ deferred.await() }, idempotenceKey, handler)
+) = onSuspending({ deferred.await() }, type, key, handler)
 
 /**
  * This function is provided as a helper for writing [WorkflowContext] extension functions, it
  * should not be used by general application code.
  *
+ * @param type The [KType] that represents both the type of data source (e.g. `Deferred`) and the
+ * element type [T].
+ * @param key An optional string key that is used to distinguish between subscriptions of the same
+ * [type].
  * @param function A suspending function that is invoked in a coroutine that will be a child of this
  * state machine. The function will be cancelled if the state machine is cancelled.
  */
 fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuspending(
   function: suspend () -> T,
-  idempotenceKey: Any,
+  type: KType,
+  key: String = "",
   handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onReceiveRaw(
+) = onReceive(
     { wrapInNeverClosingChannel(function) },
-    idempotenceKey,
+    type,
+    key,
     { update ->
       if (update !is Value) {
         throw AssertionError("Suspend function channel should never close.")
       }
-      return@onReceiveRaw handler(update.value)
+      return@onReceive handler(update.value)
     }
 )
 
