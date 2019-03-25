@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,24 @@
  */
 package com.squareup.sample.gameworkflow
 
-/**
- * Events accepted by [TakeTurnsReactor].
- */
-sealed class TakeTurnsEvent {
-  data class TakeSquare(
-    val row: Int,
-    val col: Int
-  ) : TakeTurnsEvent()
+import com.squareup.sample.gameworkflow.Player.O
+import com.squareup.sample.gameworkflow.Player.X
 
-  object Quit : TakeTurnsEvent()
+/**
+ * The X's and O's of a Tic Tac Toe game.
+ */
+enum class Player {
+  X,
+  O
+}
+
+val Player.other: Player
+  get() = when (this) {
+    X -> O
+    O -> X
+  }
+
+fun Player.name(playerInfo: PlayerInfo) = when (this) {
+  X -> playerInfo.xName
+  O -> playerInfo.oName
 }

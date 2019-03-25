@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.authworkflow
+package com.squareup.sample.gameworkflow
 
-/**
- * Events accepted by the [AuthReactor].
- */
-sealed class AuthEvent
+import org.assertj.core.api.Java6Assertions.assertThat
+import org.junit.Test
 
-data class SubmitLogin(
-  val email: String,
-  val password: String
-) : AuthEvent()
-
-data class SubmitSecondFactor(val secondFactor: String) : AuthEvent()
-
-object CancelSecondFactor : AuthEvent()
+class PlayerInfoTest {
+  @Test fun readWriteTurn() {
+    val before = PlayerInfo("able", "baker")
+    val out = before.toSnapshot()
+    val after = PlayerInfo.fromSnapshot(out.bytes)
+    assertThat(after).isEqualTo(before)
+  }
+}

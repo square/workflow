@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,36 +17,28 @@ package com.squareup.sample.gameworkflow
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.parse
+import com.squareup.workflow.readUtf8WithLength
+import com.squareup.workflow.writeUtf8WithLength
 import okio.ByteString
 
 /**
- * The [lastTurn] of a tic tac toe game, and its [ending]. Serves as the
- * result type for [TakeTurnsWorkflow].
+ * Defines the names of the players of a Tic Tac Toe game.
  */
-data class CompletedGame(
-  val ending: Ending,
-  val lastTurn: Turn = Turn()
+data class PlayerInfo(
+  val xName: String = "",
+  val oName: String = ""
 ) {
-
-  fun toSnapshot(): Snapshot {
-    return Snapshot.write { sink ->
-      sink.writeInt(ending.ordinal)
-    }
+  fun toSnapshot(): Snapshot = Snapshot.write { sink ->
+    sink.writeUtf8WithLength(xName)
+    sink.writeUtf8WithLength(oName)
   }
 
   companion object {
-    fun fromSnapshot(byteString: ByteString): CompletedGame {
-      return byteString.parse { source ->
-        CompletedGame(
-            Ending.values()[source.readInt()]
-        )
-      }
+    fun fromSnapshot(byteString: ByteString): PlayerInfo = byteString.parse {
+      PlayerInfo(
+          it.readUtf8WithLength(),
+          it.readUtf8WithLength()
+      )
     }
   }
-}
-
-enum class Ending {
-  Victory,
-  Draw,
-  Quitted
 }

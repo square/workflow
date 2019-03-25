@@ -18,8 +18,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="dark_cell">#CCCCCC</color>
-    <color name="light_cell">#EEEEEE</color>
+    <color name="game_background">#efe0f9</color>
+    <color name="game_dark_cell">#CCCCCC</color>
+    <color name="game_light_cell">#EEEEEE</color>
     <color name="panelBody">#FFFFFF</color>
-    <color name="symbol">#6a1b9a</color>
 </resources>

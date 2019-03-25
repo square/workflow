@@ -32,10 +32,13 @@ android {
 dependencies {
   implementation project(':samples:tictactoe:common')
   implementation project(':viewregistry-android')
-  implementation project(':legacy:legacy-workflow-rx2')
+  implementation project(':workflow-core')
+  implementation project(':workflow-host')
 
   implementation deps.appcompatv7
+  implementation deps.constraint_layout
   implementation deps.design
+  implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect
   implementation deps.okio
   implementation deps.rxandroid2
