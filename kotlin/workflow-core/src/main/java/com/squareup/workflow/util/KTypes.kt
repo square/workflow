@@ -20,8 +20,6 @@ import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVariance
 import kotlin.reflect.KVariance.INVARIANT
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.starProjectedType
 
 /**
  * Helpers for creating common [KType]s.
@@ -37,8 +35,33 @@ object KTypes {
   fun fromGenericType(
     type: KClassifier,
     typeArgument: KClassifier
-  ): KType = type.createType(listOf(typeArgument.project()))
-
-  private fun KClassifier.project(variance: KVariance = INVARIANT): KTypeProjection =
-    KTypeProjection(variance, starProjectedType)
+  ): KType =
+  // TODO https://github.com/square/workflow/issues/211 When we can use real reflection, replace
+  // this with: type.createType(listOf(typeArgument.project()))
+    FakeKType(type, listOf(typeArgument.project()))
 }
+
+/**
+ * Fake, simplified version of [kotlin.reflect.KType] since the version of Buck we're using
+ * internally blows up whenever you try doing anything more than `::class` with reflection.
+ * See [#211](https://github.com/square/workflow/issues/211).
+ */
+private data class FakeKType(
+  override val classifier: KClassifier,
+  override val arguments: List<KTypeProjection>,
+  override val isMarkedNullable: Boolean = false
+) : KType {
+  override fun toString(): String = "$classifier<${arguments.joinToString()}>"
+}
+
+private fun KClassifier.project(variance: KVariance = INVARIANT): KTypeProjection =
+  KTypeProjection(variance, fakeStarProjectedType)
+
+/**
+ * Workaround for https://github.com/square/workflow/issues/211, for
+ * [kotlin.reflect.full.starProjectedType].
+ *
+ * TODO https://github.com/square/workflow/issues/211 When we can use real reflection, delete.
+ */
+private val KClassifier.fakeStarProjectedType: KType
+  get() = FakeKType(this, listOf(KTypeProjection.STAR))
