@@ -15,14 +15,15 @@
  */
 package com.squareup.workflow.rx2
 
+import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
-import com.squareup.workflow.makeUnitSink
+import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.invoke
 import com.squareup.workflow.testing.testFromStart
 import io.reactivex.subjects.SingleSubject
 import kotlin.test.Test
@@ -33,7 +34,7 @@ import kotlin.test.fail
 
 class WorkflowContextsTest {
 
-  @Test fun onSuccess_handlesValue_whenEmittedDuringListen() {
+  @Test fun `onSuccess handles value when emitted during listen`() {
     var subscriptions = 0
     var disposals = 0
     val singleSubject = SingleSubject.create<String>()
@@ -61,10 +62,10 @@ class WorkflowContextsTest {
     }
   }
 
-  @Test fun onSuccess_unsubscribes() {
+  @Test fun `onSuccess unsubscribes`() {
     var subscriptions = 0
     var disposals = 0
-    lateinit var doClose: () -> Unit
+    lateinit var doClose: EventHandler<Unit>
     val singleSubject = SingleSubject.create<Unit>()
     val single = singleSubject
         .doOnSubscribe { subscriptions++ }
@@ -79,7 +80,7 @@ class WorkflowContextsTest {
       ) {
         if (state) {
           context.onSuccess(single) { noop() }
-          doClose = context.makeUnitSink { enterState(false) }
+          doClose = context.onEvent { enterState(false) }
         }
       }
 

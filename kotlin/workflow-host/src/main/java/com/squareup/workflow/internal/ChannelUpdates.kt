@@ -17,9 +17,9 @@
 
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.ChannelUpdate
-import com.squareup.workflow.ChannelUpdate.Closed
-import com.squareup.workflow.ChannelUpdate.Value
+import com.squareup.workflow.util.ChannelUpdate
+import com.squareup.workflow.util.ChannelUpdate.Closed
+import com.squareup.workflow.util.ChannelUpdate.Value
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.selects.SelectBuilder
 

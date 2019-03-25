@@ -17,9 +17,9 @@
 
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.ChannelUpdate
-import com.squareup.workflow.ChannelUpdate.Closed
-import com.squareup.workflow.ChannelUpdate.Value
+import com.squareup.workflow.util.ChannelUpdate
+import com.squareup.workflow.util.ChannelUpdate.Closed
+import com.squareup.workflow.util.ChannelUpdate.Value
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -54,7 +54,7 @@ class ChannelUpdatesTest {
     }
   }
 
-  @Test fun emitsValue() {
+  @Test fun `emits value`() {
     val channel = Channel<String>(1)
     channel.offer("foo")
 
@@ -67,7 +67,7 @@ class ChannelUpdatesTest {
     assertEquals(Value("foo"), result)
   }
 
-  @Test fun emitsClose() {
+  @Test fun `emits close`() {
     val channel = Channel<String>()
     channel.close()
 
@@ -80,7 +80,7 @@ class ChannelUpdatesTest {
     assertEquals(Closed, result)
   }
 
-  @Test fun handlesError() {
+  @Test fun `handles error`() {
     val channel = Channel<String>()
     // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
     @Suppress("DEPRECATION")

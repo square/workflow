@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squaruep.workflow
+package com.squareup.workflow
 
-import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.onSuspending
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CompletableDeferred
+import kotlin.reflect.full.starProjectedType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.fail
 
+private val UnitKType = Unit::class.starProjectedType
+
 class SuspendingSubscriptionIntegrationTest {
 
-  @Test fun handlesValue() {
+  private class ExpectedException : RuntimeException()
+
+  @Test fun `handles value`() {
     val deferred = CompletableDeferred<String>()
     val workflow = StatelessWorkflow<String, Unit> { context ->
-      context.onSuspending({ deferred.await() }, Unit) {
+      context.onSuspending({ deferred.await() }, UnitKType) {
         emitOutput("output:$it")
       }
     }
@@ -49,9 +52,9 @@ class SuspendingSubscriptionIntegrationTest {
     }
   }
 
-  @Test fun handlesError() {
+  @Test fun `handles error`() {
     val workflow = StatelessWorkflow<String, Unit> { context ->
-      context.onSuspending({ throw ExpectedException() }, Unit) {
+      context.onSuspending({ throw ExpectedException() }, UnitKType) {
         fail("Shouldn't get here.")
       }
     }
@@ -64,6 +67,4 @@ class SuspendingSubscriptionIntegrationTest {
       }
     }
   }
-
-  private class ExpectedException : RuntimeException()
 }

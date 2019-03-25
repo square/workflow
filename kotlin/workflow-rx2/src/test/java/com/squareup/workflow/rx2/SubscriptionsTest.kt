@@ -15,15 +15,15 @@
  */
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.ChannelUpdate
-import com.squareup.workflow.ChannelUpdate.Closed
-import com.squareup.workflow.ChannelUpdate.Value
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.testing.testFromStart
+import com.squareup.workflow.util.ChannelUpdate
+import com.squareup.workflow.util.ChannelUpdate.Closed
+import com.squareup.workflow.util.ChannelUpdate.Value
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.TimeoutCancellationException
@@ -68,7 +68,7 @@ class SubscriptionsTest {
       if (state) {
         context.onNext(observable) { update -> emitOutput(update) }
       }
-      return context.makeSink { subscribe -> enterState(subscribe) }
+      return context.onEvent { subscribe -> enterState(subscribe) }
     }
 
     override fun snapshotState(state: Boolean) = Snapshot.EMPTY
@@ -78,7 +78,7 @@ class SubscriptionsTest {
   private val subject = PublishSubject.create<String>()
   private val workflow = SubscriberWorkflow(subject)
 
-  @Test fun observable_subscribes() {
+  @Test fun `observable subscribes`() {
     workflow.testFromStart(false) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(0, workflow.subscriptions)
@@ -106,7 +106,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_unsubscribes() {
+  @Test fun `observable unsubscribes`() {
     workflow.testFromStart(true) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
@@ -121,7 +121,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_subscribesOnlyOnceAcrossMultipleComposes() {
+  @Test fun `observable subscribes only once across multiple composes`() {
     workflow.testFromStart(true) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
@@ -137,7 +137,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_resubscribes() {
+  @Test fun `observable resubscribes`() {
     workflow.testFromStart(true) { host ->
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
@@ -160,7 +160,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_reportsEmissions() {
+  @Test fun `observable reports emissions`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -174,7 +174,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_reportsClose() {
+  @Test fun `observable reports close`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -189,7 +189,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_reportsCloseAfterEmission() {
+  @Test fun `observable reports close after emission`() {
     workflow.testFromStart(true) { host ->
       assertFalse(host.hasOutput)
 
@@ -202,8 +202,7 @@ class SubscriptionsTest {
     }
   }
 
-  @Test fun observable_reportsError() {
-
+  @Test fun `observable reports error`() {
     assertFailsWith<IOException> {
       workflow.testFromStart(true) { host ->
         assertFalse(host.hasOutput)

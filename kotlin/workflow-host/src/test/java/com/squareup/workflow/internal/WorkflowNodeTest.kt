@@ -17,17 +17,23 @@
 
 package com.squareup.workflow.internal
 
+import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.ChannelUpdate
-import com.squareup.workflow.ChannelUpdate.Closed
-import com.squareup.workflow.ChannelUpdate.Value
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.makeUnitSink
+import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.compose
+import com.squareup.workflow.invoke
 import com.squareup.workflow.onReceive
+import com.squareup.workflow.parse
+import com.squareup.workflow.readUtf8WithLength
+import com.squareup.workflow.util.ChannelUpdate
+import com.squareup.workflow.util.ChannelUpdate.Closed
+import com.squareup.workflow.util.ChannelUpdate.Value
+import com.squareup.workflow.writeUtf8WithLength
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
@@ -38,14 +44,46 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class WorkflowNodeTest {
 
+  private interface StringWorkflow : Workflow<String, String, String, String> {
+    override fun snapshotState(state: String): Snapshot = fail("not expected")
+    override fun restoreState(snapshot: Snapshot): String = fail("not expected")
+  }
+
+  private class InputRenderingWorkflow(
+    private val onInputChanged: (String, String, String) -> String
+  ) : StringWorkflow {
+
+    override fun initialState(input: String): String {
+      return "starting:$input"
+    }
+
+    override fun onInputChanged(
+      old: String,
+      new: String,
+      state: String
+    ): String = onInputChanged.invoke(old, new, state)
+
+    override fun compose(
+      input: String,
+      state: String,
+      context: WorkflowContext<String, String>
+    ): String {
+      return """
+        input:$input
+        state:$state
+      """.trimIndent()
+    }
+  }
+
   private val context: CoroutineContext = Dispatchers.Unconfined
 
-  @Test fun inputs_arePassedToOnChanged() {
+  @Test fun `inputs are passed to on changed`() {
     val oldAndNewInputs = mutableListOf<Pair<String, String>>()
     val workflow = InputRenderingWorkflow { old, new, state ->
       oldAndNewInputs += old to new
@@ -58,7 +96,7 @@ class WorkflowNodeTest {
     assertEquals(listOf("foo" to "foo2"), oldAndNewInputs)
   }
 
-  @Test fun inputs_areRendered() {
+  @Test fun `inputs are rendered`() {
     val workflow = InputRenderingWorkflow { old, new, _ ->
       "$old->$new"
     }
@@ -83,7 +121,7 @@ class WorkflowNodeTest {
     )
   }
 
-  @Test fun acceptsEvent() {
+  @Test fun `accepts event`() {
     lateinit var eventHandler: (String) -> Unit
     val workflow = object : StringWorkflow {
       override fun initialState(input: String): String = input
@@ -93,7 +131,7 @@ class WorkflowNodeTest {
         state: String,
         context: WorkflowContext<String, String>
       ): String {
-        eventHandler = context.makeSink { event -> emitOutput(event) }
+        eventHandler = context.onEvent { event -> emitOutput(event) }
         return ""
       }
     }
@@ -111,7 +149,7 @@ class WorkflowNodeTest {
     assertEquals("tick:event", result)
   }
 
-  @Test fun throwsOnSubsequentEventsOnSameRendering() {
+  @Test fun `throws on subsequent events on same rendering`() {
     lateinit var eventHandler: (String) -> Unit
     val workflow = object : StringWorkflow {
       override fun initialState(input: String): String = input
@@ -121,7 +159,7 @@ class WorkflowNodeTest {
         state: String,
         context: WorkflowContext<String, String>
       ): String {
-        eventHandler = context.makeSink { event -> emitOutput(event) }
+        eventHandler = context.onEvent { event -> emitOutput(event) }
         return ""
       }
     }
@@ -143,7 +181,7 @@ class WorkflowNodeTest {
     )
   }
 
-  @Test fun subscriptions_detectsValue() {
+  @Test fun `subscriptions detects value`() {
     val channel = Channel<String>(capacity = 1)
     var update: ChannelUpdate<String>? = null
     val workflow = object : StringWorkflow {
@@ -194,7 +232,7 @@ class WorkflowNodeTest {
     assertEquals("update:${Value("element")}", output)
   }
 
-  @Test fun subscriptions_detectsClose() {
+  @Test fun `subscriptions detects close`() {
     val channel = Channel<String>(capacity = 0)
     var update: ChannelUpdate<String>? = null
     val workflow = object : StringWorkflow {
@@ -233,9 +271,9 @@ class WorkflowNodeTest {
     assertEquals("update:$Closed", output)
   }
 
-  @Test fun subscriptions_unsubscribes() {
+  @Test fun `subscriptions unsubscribes`() {
     val channel = Channel<String>(capacity = 0)
-    lateinit var doClose: () -> Unit
+    lateinit var doClose: EventHandler<Unit>
     val workflow = object : StringWorkflow {
       override fun initialState(input: String): String = input
 
@@ -249,7 +287,7 @@ class WorkflowNodeTest {
             context.onReceive({ channel }) {
               emitOutput("update:$it")
             }
-            doClose = context.makeUnitSink {
+            doClose = context.onEvent {
               enterState("finished")
             }
           }
@@ -280,34 +318,208 @@ class WorkflowNodeTest {
     }
   }
 
-  private interface StringWorkflow : Workflow<String, String, String, String> {
-    override fun snapshotState(state: String): Snapshot = TODO("not expected")
-    override fun restoreState(snapshot: Snapshot): String = TODO("not expected")
+  @Test fun snapshots_nonEmpty_withoutChildren() {
+    val workflow = object : Workflow<String, String, Nothing, String> {
+      override fun initialState(input: String): String = input
+
+      override fun compose(
+        input: String,
+        state: String,
+        context: WorkflowContext<String, Nothing>
+      ): String {
+        return state
+      }
+
+      override fun snapshotState(state: String): Snapshot = Snapshot.write {
+        it.writeUtf8WithLength("state:$state")
+      }
+
+      override fun restoreState(snapshot: Snapshot): String = snapshot.bytes.parse {
+        it.readUtf8WithLength()
+            .removePrefix("state:")
+      }
+    }
+    val originalNode = WorkflowNode(
+        workflow.id(),
+        workflow,
+        initialInput = "initial input",
+        snapshot = null,
+        baseContext = Unconfined
+    )
+
+    assertEquals("initial input", originalNode.compose(workflow, "foo"))
+    val snapshot = originalNode.snapshot(workflow)
+    assertNotEquals(0, snapshot.bytes.size())
+
+    val restoredNode = WorkflowNode(
+        workflow.id(),
+        workflow,
+        // This input should be ignored, since snapshot is non-null.
+        initialInput = "new input",
+        snapshot = snapshot,
+        baseContext = Unconfined
+    )
+    assertEquals("initial input", restoredNode.compose(workflow, "foo"))
   }
 
-  private class InputRenderingWorkflow(
-    private val onInputChanged: (String, String, String) -> String
-  ) : StringWorkflow {
+  @Test fun snapshots_empty_withoutChildren() {
+    val workflow = object : Workflow<String, String, Nothing, String> {
+      override fun initialState(input: String): String = input
 
-    override fun initialState(input: String): String {
-      return "starting:$input"
+      override fun compose(
+        input: String,
+        state: String,
+        context: WorkflowContext<String, Nothing>
+      ): String {
+        return state
+      }
+
+      override fun snapshotState(state: String): Snapshot = Snapshot.EMPTY
+
+      override fun restoreState(snapshot: Snapshot): String = "restored"
+    }
+    val originalNode = WorkflowNode(
+        workflow.id(),
+        workflow,
+        initialInput = "initial input",
+        snapshot = null,
+        baseContext = Unconfined
+    )
+
+    assertEquals("initial input", originalNode.compose(workflow, "foo"))
+    val snapshot = originalNode.snapshot(workflow)
+    assertNotEquals(0, snapshot.bytes.size())
+
+    val restoredNode = WorkflowNode(
+        workflow.id(),
+        workflow,
+        // This input should be ignored, since snapshot is non-null.
+        initialInput = "new input",
+        snapshot = snapshot,
+        baseContext = Unconfined
+    )
+    assertEquals("restored", restoredNode.compose(workflow, "foo"))
+  }
+
+  @Test fun snapshots_nonEmpty_withChildren() {
+    var restoredChildState: String? = null
+    var restoredParentState: String? = null
+    val childWorkflow = object : Workflow<String, String, Nothing, String> {
+      override fun initialState(input: String): String = input
+
+      override fun compose(
+        input: String,
+        state: String,
+        context: WorkflowContext<String, Nothing>
+      ): String {
+        return state
+      }
+
+      override fun snapshotState(state: String): Snapshot = Snapshot.write {
+        it.writeUtf8WithLength("child state:$state")
+      }
+
+      override fun restoreState(snapshot: Snapshot): String = snapshot.bytes.parse {
+        it.readUtf8WithLength()
+            .removePrefix("child state:")
+            .also { state -> restoredChildState = state }
+      }
+    }
+    val parentWorkflow = object : Workflow<String, String, Nothing, String> {
+      override fun initialState(input: String): String = input
+
+      override fun compose(
+        input: String,
+        state: String,
+        context: WorkflowContext<String, Nothing>
+      ): String {
+        val childRendering = context.compose(childWorkflow, "child input")
+        return "$state|$childRendering"
+      }
+
+      override fun snapshotState(state: String): Snapshot = Snapshot.write {
+        it.writeUtf8WithLength("parent state:$state")
+      }
+
+      override fun restoreState(snapshot: Snapshot): String = snapshot.bytes.parse {
+        it.readUtf8WithLength()
+            .removePrefix("parent state:")
+            .also { state -> restoredParentState = state }
+      }
     }
 
-    override fun onInputChanged(
-      old: String,
-      new: String,
-      state: String
-    ): String = onInputChanged.invoke(old, new, state)
+    val originalNode = WorkflowNode(
+        parentWorkflow.id(),
+        parentWorkflow,
+        initialInput = "initial input",
+        snapshot = null,
+        baseContext = Unconfined
+    )
 
-    override fun compose(
-      input: String,
-      state: String,
-      context: WorkflowContext<String, String>
-    ): String {
-      return """
-        input:$input
-        state:$state
-      """.trimIndent()
+    assertEquals("initial input|child input", originalNode.compose(parentWorkflow, "foo"))
+    val snapshot = originalNode.snapshot(parentWorkflow)
+    assertNotEquals(0, snapshot.bytes.size())
+
+    val restoredNode = WorkflowNode(
+        parentWorkflow.id(),
+        parentWorkflow,
+        // This input should be ignored, since snapshot is non-null.
+        initialInput = "new input",
+        snapshot = snapshot,
+        baseContext = Unconfined
+    )
+    assertEquals("initial input|child input", restoredNode.compose(parentWorkflow, "foo"))
+    assertEquals("child input", restoredChildState)
+    assertEquals("initial input", restoredParentState)
+  }
+
+  @Test fun snapshot_counts() {
+    var snapshotCalls = 0
+    var restoreCalls = 0
+    // Track the number of times the snapshot is actually serialized, not snapshotState is called.
+    var snapshotWrites = 0
+    val workflow = object : Workflow<Unit, Unit, Nothing, Unit> {
+      override fun initialState(input: Unit) = Unit
+
+      override fun compose(
+        input: Unit,
+        state: Unit,
+        context: WorkflowContext<Unit, Nothing>
+      ) = Unit
+
+      override fun snapshotState(state: Unit): Snapshot {
+        snapshotCalls++
+        return Snapshot.write {
+          snapshotWrites++
+        }
+      }
+
+      override fun restoreState(snapshot: Snapshot) {
+        restoreCalls++
+      }
     }
+    val node = WorkflowNode(workflow.id(), workflow, Unit, null, Unconfined)
+
+    assertEquals(0, snapshotCalls)
+    assertEquals(0, snapshotWrites)
+    assertEquals(0, restoreCalls)
+
+    val snapshot = node.snapshot(workflow)
+
+    assertEquals(1, snapshotCalls)
+    assertEquals(0, snapshotWrites)
+    assertEquals(0, restoreCalls)
+
+    snapshot.bytes
+
+    assertEquals(1, snapshotCalls)
+    assertEquals(1, snapshotWrites)
+    assertEquals(0, restoreCalls)
+
+    WorkflowNode(workflow.id(), workflow, Unit, snapshot, Unconfined)
+
+    assertEquals(1, snapshotCalls)
+    assertEquals(1, snapshotWrites)
+    assertEquals(1, restoreCalls)
   }
 }

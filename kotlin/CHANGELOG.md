@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+## Version 0.9.1
+
+_2019-3-25_
+
+ * Workaround #211 by implementing `KType` ourselves.
+
+## Version 0.9.0
+
+_2019-3-22_
+
+ * Reverts Kotlin back to v1.2.61.
+ * Make a StatelessWorkflow typealias and a hideState() extension function.
+ * Fix the exception thrown by `WorkflowTester` when an exception is thrown inside test block.
+ * Use explicit `KType` + `String` parameters instead of Any for idempotence key for subscriptions.
+ * Make a `EventHandler` type to return from `makeSink`, and rename `makeSink` to `onEvent`.
+
 ## Version 0.8.1
 
 _2019-3-15_
