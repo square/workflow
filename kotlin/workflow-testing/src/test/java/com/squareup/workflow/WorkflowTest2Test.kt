@@ -5,14 +5,29 @@ import kotlin.test.Test
 class WorkflowTest2Test {
 
   @Test fun stuff() {
+    val wut = WUT()
     testWorkflow { context ->
       TODO("What should this block look like?")
+      context.assertCompose(wut, "input")
     }
   }
 }
 
+private interface TestWorkflowContext {
+
+  fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any> assertCompose(
+    child: Workflow<InputT, StateT, OutputT, RenderingT>,
+    input: InputT
+  ): ComposeAssertion<RenderingT>
+}
+
+private interface ComposeAssertion<RenderingT : Any> {
+
+
+}
+
 private fun testWorkflow(
-  block: (WorkflowContext<Nothing, Nothing>) -> Unit
+  block: (TestWorkflowContext) -> Unit
 ) {
 
 }
