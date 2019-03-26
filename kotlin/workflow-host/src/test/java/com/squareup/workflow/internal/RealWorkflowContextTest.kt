@@ -16,6 +16,7 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.noop
@@ -36,23 +37,23 @@ class RealWorkflowContextTest {
 
     data class Rendering(
       val case: WorkflowOutputCase<*, *, *, *>,
-      val child: Workflow<*, *, *, *>,
-      val id: WorkflowId<*, *, *, *>,
+      val child: Workflow<*, *, *>,
+      val id: WorkflowId<*, *, *>,
       val input: Any
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <IC : Any, SC : Any, OC : Any, RC : Any> compose(
+    override fun <IC : Any, OC : Any, RC : Any> compose(
       case: WorkflowOutputCase<IC, OC, String, String>,
-      child: Workflow<IC, SC, OC, RC>,
-      id: WorkflowId<IC, SC, OC, RC>,
+      child: Workflow<IC, OC, RC>,
+      id: WorkflowId<IC, OC, RC>,
       input: IC
     ): RC {
       return Rendering(case, child, id, input) as RC
     }
   }
 
-  private class TestWorkflow : Workflow<String, String, String, Rendering> {
+  private class TestWorkflow : StatefulWorkflow<String, String, String, Rendering>() {
     override fun initialState(input: String): String = fail()
 
     override fun compose(
@@ -68,10 +69,10 @@ class RealWorkflowContextTest {
   }
 
   private class PoisonComposer<S : Any, O : Any> : Composer<S, O> {
-    override fun <IC : Any, SC : Any, OC : Any, RC : Any> compose(
+    override fun <IC : Any, OC : Any, RC : Any> compose(
       case: WorkflowOutputCase<IC, OC, S, O>,
-      child: Workflow<IC, SC, OC, RC>,
-      id: WorkflowId<IC, SC, OC, RC>,
+      child: Workflow<IC, OC, RC>,
+      id: WorkflowId<IC, OC, RC>,
       input: IC
     ): RC = fail()
   }
@@ -114,7 +115,7 @@ class RealWorkflowContextTest {
     assertSame(workflow, child)
     assertEquals(workflow.id("key"), id)
     assertEquals("input", input)
-    assertEquals<Workflow<*, *, *, *>>(workflow, case.workflow)
+    assertEquals<Workflow<*, *, *>>(workflow, case.workflow)
     assertEquals(workflow.id("key"), case.id)
     assertEquals("input", case.input)
 

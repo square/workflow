@@ -16,14 +16,14 @@
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.testing.testFromStart
 import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
-import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowContext
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.testing.testFromStart
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.TimeoutCancellationException
@@ -46,7 +46,7 @@ class SubscriptionsTest {
    */
   private class SubscriberWorkflow(
     subject: Observable<String>
-  ) : Workflow<Boolean, Boolean, ChannelUpdate<String>, (setSubscribed: Boolean) -> Unit> {
+  ) : StatefulWorkflow<Boolean, Boolean, ChannelUpdate<String>, (Boolean) -> Unit>() {
 
     var subscriptions = 0
       private set

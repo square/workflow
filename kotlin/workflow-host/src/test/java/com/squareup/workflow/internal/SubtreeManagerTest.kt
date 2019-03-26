@@ -16,10 +16,10 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
 import kotlinx.coroutines.experimental.Dispatchers
@@ -33,7 +33,7 @@ import kotlin.test.fail
 
 class SubtreeManagerTest {
 
-  private class TestWorkflow : Workflow<String, String, String, Rendering> {
+  private class TestWorkflow : StatefulWorkflow<String, String, String, Rendering>() {
 
     var started = 0
 

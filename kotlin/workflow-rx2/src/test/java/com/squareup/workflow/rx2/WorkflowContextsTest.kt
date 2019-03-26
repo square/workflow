@@ -17,8 +17,8 @@ package com.squareup.workflow.rx2
 
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.StatelessWorkflow
-import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
@@ -70,7 +70,7 @@ class WorkflowContextsTest {
     val single = singleSubject
         .doOnSubscribe { subscriptions++ }
         .doOnDispose { disposals++ }
-    val workflow = object : Workflow<Unit, Boolean, Nothing, Unit> {
+    val workflow = object : StatefulWorkflow<Unit, Boolean, Nothing, Unit>() {
       override fun initialState(input: Unit): Boolean = true
 
       override fun compose(

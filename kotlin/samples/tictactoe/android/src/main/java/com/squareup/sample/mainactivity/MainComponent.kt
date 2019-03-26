@@ -16,9 +16,12 @@
 package com.squareup.sample.mainactivity
 
 import com.squareup.sample.authworkflow.AuthService
+import com.squareup.sample.authworkflow.AuthWorkflow
 import com.squareup.sample.authworkflow.RealAuthWorkflow
 import com.squareup.sample.gameworkflow.RealGameLog
 import com.squareup.sample.gameworkflow.RealRunGameWorkflow
+import com.squareup.sample.gameworkflow.RealTakeTurnsWorkflow
+import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.gameworkflow.TakeTurnsWorkflow
 import com.squareup.sample.mainworkflow.MainWorkflow
 import com.squareup.sample.mainworkflow.RootScreen
@@ -42,13 +45,13 @@ internal class MainComponent {
 
   private fun mainWorkflow() = MainWorkflow(authWorkflow(), gameWorkflow())
 
-  private fun authWorkflow() = RealAuthWorkflow(authService)
+  private fun authWorkflow(): AuthWorkflow = RealAuthWorkflow(authService)
 
   private fun gameLog() = RealGameLog(mainThread())
 
-  private fun gameWorkflow() = RealRunGameWorkflow(takeTurnsWorkflow(), gameLog())
+  private fun gameWorkflow(): RunGameWorkflow = RealRunGameWorkflow(takeTurnsWorkflow(), gameLog())
 
-  private fun takeTurnsWorkflow() = TakeTurnsWorkflow()
+  private fun takeTurnsWorkflow(): TakeTurnsWorkflow = RealTakeTurnsWorkflow()
 
   private fun workflowHost(snapshot: Snapshot?) = workflowHostFactory.run(mainWorkflow(), snapshot)
 

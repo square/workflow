@@ -15,12 +15,9 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.util.ChannelUpdate
-import com.squareup.workflow.util.ChannelUpdate.Closed
-import com.squareup.workflow.util.ChannelUpdate.Value
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.Workflow
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
@@ -29,6 +26,9 @@ import com.squareup.workflow.invoke
 import com.squareup.workflow.onReceive
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
+import com.squareup.workflow.util.ChannelUpdate
+import com.squareup.workflow.util.ChannelUpdate.Closed
+import com.squareup.workflow.util.ChannelUpdate.Value
 import com.squareup.workflow.writeUtf8WithLength
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.Dispatchers.Unconfined
@@ -48,14 +48,14 @@ import kotlin.test.fail
 
 class WorkflowNodeTest {
 
-  private interface StringWorkflow : Workflow<String, String, String, String> {
+  private abstract class StringWorkflow : StatefulWorkflow<String, String, String, String>() {
     override fun snapshotState(state: String): Snapshot = fail("not expected")
     override fun restoreState(snapshot: Snapshot): String = fail("not expected")
   }
 
   private class InputRenderingWorkflow(
     private val onInputChanged: (String, String, String) -> String
-  ) : StringWorkflow {
+  ) : StringWorkflow() {
 
     override fun initialState(input: String): String {
       return "starting:$input"
@@ -121,7 +121,7 @@ class WorkflowNodeTest {
 
   @Test fun `accepts event`() {
     lateinit var eventHandler: (String) -> Unit
-    val workflow = object : StringWorkflow {
+    val workflow = object : StringWorkflow() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -149,7 +149,7 @@ class WorkflowNodeTest {
 
   @Test fun `throws on subsequent events on same rendering`() {
     lateinit var eventHandler: (String) -> Unit
-    val workflow = object : StringWorkflow {
+    val workflow = object : StringWorkflow() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -182,7 +182,7 @@ class WorkflowNodeTest {
   @Test fun `subscriptions detects value`() {
     val channel = Channel<String>(capacity = 1)
     var update: ChannelUpdate<String>? = null
-    val workflow = object : StringWorkflow {
+    val workflow = object : StringWorkflow() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -233,7 +233,7 @@ class WorkflowNodeTest {
   @Test fun `subscriptions detects close`() {
     val channel = Channel<String>(capacity = 0)
     var update: ChannelUpdate<String>? = null
-    val workflow = object : StringWorkflow {
+    val workflow = object : StringWorkflow() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -272,7 +272,7 @@ class WorkflowNodeTest {
   @Test fun `subscriptions unsubscribes`() {
     val channel = Channel<String>(capacity = 0)
     lateinit var doClose: EventHandler<Unit>
-    val workflow = object : StringWorkflow {
+    val workflow = object : StringWorkflow() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -317,7 +317,7 @@ class WorkflowNodeTest {
   }
 
   @Test fun snapshots_nonEmpty_withoutChildren() {
-    val workflow = object : Workflow<String, String, Nothing, String> {
+    val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -361,7 +361,7 @@ class WorkflowNodeTest {
   }
 
   @Test fun snapshots_empty_withoutChildren() {
-    val workflow = object : Workflow<String, String, Nothing, String> {
+    val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -402,7 +402,7 @@ class WorkflowNodeTest {
   @Test fun snapshots_nonEmpty_withChildren() {
     var restoredChildState: String? = null
     var restoredParentState: String? = null
-    val childWorkflow = object : Workflow<String, String, Nothing, String> {
+    val childWorkflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -423,7 +423,7 @@ class WorkflowNodeTest {
             .also { state -> restoredChildState = state }
       }
     }
-    val parentWorkflow = object : Workflow<String, String, Nothing, String> {
+    val parentWorkflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(input: String): String = input
 
       override fun compose(
@@ -476,7 +476,7 @@ class WorkflowNodeTest {
     var restoreCalls = 0
     // Track the number of times the snapshot is actually serialized, not snapshotState is called.
     var snapshotWrites = 0
-    val workflow = object : Workflow<Unit, Unit, Nothing, Unit> {
+    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
       override fun initialState(input: Unit) = Unit
 
       override fun compose(

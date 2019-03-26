@@ -44,6 +44,7 @@ import com.squareup.viewregistry.AlertScreen.Event.ButtonClicked
 import com.squareup.viewregistry.AlertScreen.Event.Canceled
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
@@ -61,7 +62,7 @@ enum class RunGameResult {
  * that build on [RunGameWorkflow] decoupled from it, for ease of testing.
  */
 interface RunGameWorkflow :
-    Workflow<Unit, RunGameState, RunGameResult, AlertContainerScreen<PanelContainerScreen<*, *>>>
+    Workflow<Unit, RunGameResult, AlertContainerScreen<PanelContainerScreen<*, *>>>
 
 /**
  * Runs the screens around a Tic Tac Toe game: prompts for player names, runs a
@@ -71,7 +72,9 @@ interface RunGameWorkflow :
 class RealRunGameWorkflow(
   private val takeTurnsWorkflow: TakeTurnsWorkflow,
   private val gameLog: GameLog
-) : RunGameWorkflow {
+) : RunGameWorkflow,
+    StatefulWorkflow<Unit, RunGameState, RunGameResult,
+        AlertContainerScreen<PanelContainerScreen<*, *>>>() {
 
   override fun initialState(input: Unit): RunGameState = NewGame()
 

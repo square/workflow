@@ -21,12 +21,15 @@ import com.squareup.sample.gameworkflow.Ending.Victory
 import com.squareup.sample.gameworkflow.GamePlayScreen.Event.Quit
 import com.squareup.sample.gameworkflow.GamePlayScreen.Event.TakeSquare
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.WorkflowContext
+
+interface TakeTurnsWorkflow : Workflow<PlayerInfo, CompletedGame, GamePlayScreen>
 
 /**
  * Models the turns of a Tic Tac Toe game, alternating between [Player.X]
@@ -35,7 +38,8 @@ import com.squareup.workflow.WorkflowContext
  *
  * http://go/sf-taketurns
  */
-class TakeTurnsWorkflow : Workflow<PlayerInfo, Turn, CompletedGame, GamePlayScreen> {
+class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
+    StatefulWorkflow<PlayerInfo, Turn, CompletedGame, GamePlayScreen>() {
 
   override fun initialState(input: PlayerInfo) = Turn()
 
