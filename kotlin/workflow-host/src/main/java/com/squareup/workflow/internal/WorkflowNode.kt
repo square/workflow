@@ -15,13 +15,13 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
+import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.experimental.CoroutineName
 import kotlinx.coroutines.experimental.CoroutineScope
@@ -38,7 +38,7 @@ import kotlin.coroutines.experimental.CoroutineContext
  * [Workflow.initialState].
  */
 internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>(
-  val id: WorkflowId<InputT, StateT, OutputT, RenderingT>,
+  val id: WorkflowId<InputT, OutputT, RenderingT>,
   workflow: Workflow<InputT, StateT, OutputT, RenderingT>,
   initialInput: InputT,
   snapshot: Snapshot?,
@@ -91,22 +91,12 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
    * [WorkflowContext][com.squareup.workflow.WorkflowContext] to give its children a chance to
    * compose themselves and aggregate those child renderings.
    */
+  @Suppress("UNCHECKED_CAST")
   fun compose(
-    workflow: Workflow<InputT, StateT, OutputT, RenderingT>,
+    workflow: Workflow<InputT, *, OutputT, RenderingT>,
     input: InputT
-  ): RenderingT {
-    updateInputAndState(workflow, input)
-
-    val context = RealWorkflowContext(subtreeManager)
-    val rendering = workflow.compose(input, state, context)
-
-    behavior = context.buildBehavior()
-    // Start new children/subscriptions, and drop old ones.
-    subtreeManager.track(behavior.childCases)
-    subscriptionTracker.track(behavior.subscriptionCases)
-
-    return rendering
-  }
+  ): RenderingT =
+    composeWithStateType(workflow as Workflow<InputT, StateT, OutputT, RenderingT>, input)
 
   /**
    * Walk the tree of state machines again, this time gathering snapshots and aggregating them
@@ -170,6 +160,27 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
    */
   fun cancel() {
     coroutineContext.cancel()
+  }
+
+  /**
+   * Contains the actual logic for [compose], after we've casted the passed-in [Workflow]'s
+   * state type to our `StateT`.
+   */
+  private fun composeWithStateType(
+    workflow: Workflow<InputT, StateT, OutputT, RenderingT>,
+    input: InputT
+  ): RenderingT {
+    updateInputAndState(workflow, input)
+
+    val context = RealWorkflowContext(subtreeManager)
+    val rendering = workflow.compose(input, state, context)
+
+    behavior = context.buildBehavior()
+    // Start new children/subscriptions, and drop old ones.
+    subtreeManager.track(behavior.childCases)
+    subscriptionTracker.track(behavior.subscriptionCases)
+
+    return rendering
   }
 
   private fun updateInputAndState(

@@ -37,15 +37,15 @@ class RealWorkflowContextTest {
     data class Rendering(
       val case: WorkflowOutputCase<*, *, *, *>,
       val child: Workflow<*, *, *, *>,
-      val id: WorkflowId<*, *, *, *>,
+      val id: WorkflowId<*, *, *>,
       val input: Any
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <IC : Any, SC : Any, OC : Any, RC : Any> compose(
+    override fun <IC : Any, OC : Any, RC : Any> compose(
       case: WorkflowOutputCase<IC, OC, String, String>,
-      child: Workflow<IC, SC, OC, RC>,
-      id: WorkflowId<IC, SC, OC, RC>,
+      child: Workflow<IC, *, OC, RC>,
+      id: WorkflowId<IC, OC, RC>,
       input: IC
     ): RC {
       return Rendering(case, child, id, input) as RC
@@ -68,10 +68,10 @@ class RealWorkflowContextTest {
   }
 
   private class PoisonComposer<S : Any, O : Any> : Composer<S, O> {
-    override fun <IC : Any, SC : Any, OC : Any, RC : Any> compose(
+    override fun <IC : Any, OC : Any, RC : Any> compose(
       case: WorkflowOutputCase<IC, OC, S, O>,
-      child: Workflow<IC, SC, OC, RC>,
-      id: WorkflowId<IC, SC, OC, RC>,
+      child: Workflow<IC, *, OC, RC>,
+      id: WorkflowId<IC, OC, RC>,
       input: IC
     ): RC = fail()
   }

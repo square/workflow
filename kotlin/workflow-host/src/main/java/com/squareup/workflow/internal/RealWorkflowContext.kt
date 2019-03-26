@@ -35,10 +35,10 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
 ) : WorkflowContext<StateT, OutputT> {
 
   interface Composer<StateT : Any, in OutputT : Any> {
-    fun <ChildInputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
+    fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
       case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
-      child: Workflow<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
-      id: WorkflowId<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
+      child: Workflow<ChildInputT, *, ChildOutputT, ChildRenderingT>,
+      id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
       input: ChildInputT
     ): ChildRenderingT
   }
@@ -73,9 +73,9 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   }
 
   // @formatter:off
-  override fun <ChildInputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRenderingT : Any>
+  override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
       compose(
-        child: Workflow<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
+        child: Workflow<ChildInputT, *, ChildOutputT, ChildRenderingT>,
         input: ChildInputT,
         key: String,
         handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>

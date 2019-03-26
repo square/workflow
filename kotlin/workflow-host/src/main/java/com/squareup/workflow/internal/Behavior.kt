@@ -44,7 +44,7 @@ internal data class Behavior<StateT : Any, out OutputT : Any>(
       out ParentOutputT : Any
       >(
         val workflow: Workflow<*, *, ChildOutputT, *>,
-        val id: WorkflowId<ChildInputT, *, ChildOutputT, *>,
+        val id: WorkflowId<ChildInputT, ChildOutputT, *>,
         val input: ChildInputT,
         val handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
       ) {
