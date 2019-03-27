@@ -33,6 +33,7 @@ class WorkflowOperatorsTest {
           .delay { downstreamTrigger.skip(n++.toLong()) }
     }
 
+    @Suppress("UNCHECKED_CAST")
     val states = mapped.state.test() as TestObserver<Char>
 
     downstreamTrigger.onNext(Unit)
