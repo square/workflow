@@ -19,11 +19,11 @@ package com.squareup.viewregistry
  * Models a typical "You sure about that?" alert box.
  */
 data class AlertScreen(
-  val onEvent: (Event) -> Unit,
   val buttons: Map<Button, String> = emptyMap(),
   val message: String = "",
   val title: String = "",
-  val cancelable: Boolean = true
+  val cancelable: Boolean = true,
+  val onEvent: (Event) -> Unit
 ) {
   enum class Button {
     POSITIVE,

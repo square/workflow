@@ -77,11 +77,11 @@ interface WorkflowHost<out OutputT : Any, out RenderingT : Any> {
       context: CoroutineContext = EmptyCoroutineContext
     ): WorkflowHost<OutputT, RenderingT> = run(workflow.id(), workflow, input, snapshot, context)
 
-    fun <S : Any, O : Any, R : Any> run(
-      workflow: Workflow<Unit, S, O, R>,
+    fun <StateT : Any, OutputT : Any, RenderingT : Any> run(
+      workflow: Workflow<Unit, StateT, OutputT, RenderingT>,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext
-    ): WorkflowHost<O, R> = run(workflow.id(), workflow, Unit, snapshot, context)
+    ): WorkflowHost<OutputT, RenderingT> = run(workflow.id(), workflow, Unit, snapshot, context)
 
     /**
      * Creates a [WorkflowHost] that runs [workflow] starting from [initialState].

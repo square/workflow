@@ -15,22 +15,21 @@
  */
 package com.squareup.sample.gameworkflow
 
+import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toolbar
 import com.squareup.coordinators.Coordinator
-import com.squareup.sample.tictactoe.R
 import com.squareup.sample.gameworkflow.Ending.Draw
 import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
-import com.squareup.sample.gameworkflow.RunGameEvent.NoMore
-import com.squareup.sample.gameworkflow.RunGameEvent.PlayAgain
-import com.squareup.sample.gameworkflow.RunGameEvent.TrySaveAgain
+import com.squareup.sample.gameworkflow.GameOverScreen.Event.Exit
+import com.squareup.sample.gameworkflow.GameOverScreen.Event.PlayAgain
+import com.squareup.sample.gameworkflow.GameOverScreen.Event.TrySaveAgain
 import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
-import com.squareup.sample.gameworkflow.GamePlayCoordinator.Companion.renderBoard
+import com.squareup.sample.tictactoe.R
 import com.squareup.viewregistry.LayoutBinding
 import com.squareup.viewregistry.ViewBinding
 import com.squareup.viewregistry.setBackHandler
@@ -43,7 +42,7 @@ internal class GameOverCoordinator(
 
   private val subs = CompositeDisposable()
 
-  private lateinit var board: ViewGroup
+  private lateinit var boardView: ViewGroup
   private lateinit var toolbar: Toolbar
   private lateinit var saveItem: MenuItem
   private lateinit var exitItem: MenuItem
@@ -51,8 +50,8 @@ internal class GameOverCoordinator(
   override fun attach(view: View) {
     super.attach(view)
 
-    board = view.findViewById(R.id.board_view)
-    toolbar = view.findViewById(R.id.toolbar)
+    boardView = view.findViewById(R.id.game_play_board)
+    toolbar = view.findViewById(R.id.game_play_toolbar)
 
     with(toolbar.menu) {
       saveItem = add("")
@@ -78,7 +77,7 @@ internal class GameOverCoordinator(
       screen.onEvent(PlayAgain)
       true
     }
-    view.setBackHandler { screen.onEvent(NoMore) }
+    view.setBackHandler { screen.onEvent(Exit) }
 
     when (screen.endGameState.syncState) {
       SAVING -> {
@@ -100,25 +99,42 @@ internal class GameOverCoordinator(
       }
     }
 
-    renderGame(screen.endGameState.completedGame)
+    renderGame(
+        boardView, toolbar, screen.endGameState.completedGame, screen.endGameState.playerInfo
+    )
   }
 
-  private fun renderGame(completedGame: CompletedGame) {
-    renderResult(completedGame)
-    renderBoard(board, completedGame.lastTurn.board)
+  private fun renderGame(
+    boardView: ViewGroup,
+    toolbar: Toolbar,
+    completedGame: CompletedGame,
+    playerInfo: PlayerInfo
+  ) {
+    renderResult(toolbar, completedGame, playerInfo)
+    completedGame.lastTurn.board.render(boardView)
   }
 
-  private fun renderResult(completedGame: CompletedGame) {
-    val player = completedGame.lastTurn.playing
-    val playerName = completedGame.lastTurn.players[player]
+  private fun renderResult(
+    toolbar: Toolbar,
+    completedGame: CompletedGame,
+    playerInfo: PlayerInfo
+  ) {
+    val symbol = completedGame.lastTurn.playing.symbol
+    val playerName = completedGame.lastTurn.playing.name(playerInfo)
 
-    val message: String = when (completedGame.ending) {
-      Victory -> "The $player's have it, $playerName wins!"
-      Draw -> "It's a draw."
-      Quitted -> "$playerName ($player) is a quitter!"
+    toolbar.title = if (playerName.isEmpty()) {
+      when (completedGame.ending) {
+        Victory -> "$symbol wins!"
+        Draw -> "It's a draw."
+        Quitted -> "$symbol is a quitter!"
+      }
+    } else {
+      when (completedGame.ending) {
+        Victory -> "The $symbol's have it, $playerName wins!"
+        Draw -> "It's a draw."
+        Quitted -> "$playerName ($symbol) is a quitter!"
+      }
     }
-
-    toolbar.title = message
   }
 
   /** Note how easily  we're sharing this layout with [GamePlayCoordinator]. */

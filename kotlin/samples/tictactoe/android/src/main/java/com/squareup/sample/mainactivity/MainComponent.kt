@@ -15,35 +15,60 @@
  */
 package com.squareup.sample.mainactivity
 
-import com.squareup.sample.authworkflow.AuthReactor
 import com.squareup.sample.authworkflow.AuthService
-import com.squareup.sample.mainworkflow.MainReactor
+import com.squareup.sample.authworkflow.RealAuthWorkflow
 import com.squareup.sample.gameworkflow.RealGameLog
-import com.squareup.sample.gameworkflow.RunGameReactor
-import com.squareup.sample.gameworkflow.TakeTurnsReactor
-import com.squareup.workflow.legacy.WorkflowPool
-import timber.log.Timber
+import com.squareup.sample.gameworkflow.RealRunGameWorkflow
+import com.squareup.sample.gameworkflow.TakeTurnsWorkflow
+import com.squareup.sample.mainworkflow.MainWorkflow
+import com.squareup.sample.mainworkflow.RootScreen
+import com.squareup.workflow.Snapshot
+import com.squareup.workflow.WorkflowHost
+import com.squareup.workflow.WorkflowHost.Update
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.rx2.asObservable
+import timber.log.Timber
 
 /**
  * Pretend generated code of a pretend DI framework.
  */
 internal class MainComponent {
 
-  val workflowPool = WorkflowPool()
+  private val workflowHostFactory = WorkflowHost.Factory(Dispatchers.Unconfined)
 
   private val authService = AuthService()
 
-  fun mainReactor() = MainReactor(gameReactor(), authReactor())
+  private fun mainWorkflow() = MainWorkflow(authWorkflow(), gameWorkflow())
 
-  private fun authReactor() = AuthReactor(authService, mainThread())
+  private fun authWorkflow() = RealAuthWorkflow(authService)
 
   private fun gameLog() = RealGameLog(mainThread())
 
-  private fun gameReactor() =
-    RunGameReactor(takeTurnsReactor(), gameLog())
+  private fun gameWorkflow() = RealRunGameWorkflow(takeTurnsWorkflow(), gameLog())
 
-  private fun takeTurnsReactor() = TakeTurnsReactor()
+  private fun takeTurnsWorkflow() = TakeTurnsWorkflow()
+
+  private fun workflowHost(snapshot: Snapshot?) = workflowHostFactory.run(mainWorkflow(), snapshot)
+
+  private var updates: Observable<Update<Unit, RootScreen>>? = null
+
+  fun updates(snapshot: Snapshot?): Observable<Update<Unit, RootScreen>> {
+    if (updates == null) {
+      val host = workflowHost(snapshot)
+
+      @Suppress("EXPERIMENTAL_FEATURE_WARNING")
+      updates = host.updates.asObservable(Dispatchers.Unconfined)
+          .doOnNext { Timber.d("showing: %s", it.rendering) }
+          .replay(1)
+          .autoConnect()
+
+      // autoConnect() is leaky (it's never disposed), but we want it to run
+      // forever so ¯\_(ツ)_/¯.
+    }
+    return updates!!
+  }
 
   companion object {
     init {

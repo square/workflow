@@ -20,9 +20,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
-import com.squareup.sample.mainworkflow.MainRenderer
-import com.squareup.sample.mainworkflow.MainState
-import com.squareup.sample.mainworkflow.MainWorkflow
+import com.squareup.sample.mainworkflow.RootScreen
 import com.squareup.sample.panel.PanelContainer
 import com.squareup.viewregistry.AlertContainerScreen
 import com.squareup.viewregistry.HandlesBack
@@ -32,11 +30,8 @@ import com.squareup.viewregistry.ViewRegistry
 import com.squareup.viewregistry.backstack.BackStackContainer
 import com.squareup.viewregistry.backstack.PushPopEffect
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.legacy.rx2.state
-import com.squareup.workflow.legacy.rx2.toCompletable
-import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import timber.log.Timber
 import kotlin.reflect.jvm.jvmName
 
 /**
@@ -49,10 +44,6 @@ import kotlin.reflect.jvm.jvmName
 class MainActivity : AppCompatActivity() {
   private lateinit var component: MainComponent
 
-  /** Workflow decides what we're doing. */
-  private lateinit var workflow: MainWorkflow
-
-  private lateinit var screens: Observable<out AlertContainerScreen<*>>
   private lateinit var content: View
 
   private val subs = CompositeDisposable()
@@ -65,31 +56,17 @@ class MainActivity : AppCompatActivity() {
     component = lastCustomNonConfigurationInstance as? MainComponent
         ?: MainComponent()
 
-    val initialState = savedInstanceState?.getParcelable<ParceledSnapshot>(
-        SNAPSHOT_NAME
-    )
-        ?.snapshot?.bytes?.let { MainState.fromSnapshot(it) }
-        ?: MainState.startingState()
+    val snapshot = savedInstanceState?.getParcelable<ParceledSnapshot>(SNAPSHOT_NAME)
+        ?.snapshot
+    val updates = component.updates(snapshot)
 
-    workflow = component.mainReactor()
-        .launch(initialState, component.workflowPool)
-
-    screens = workflow.state
-        .doOnNext {
-          latestSnapshot = it.toSnapshot()
-          Timber.d("showing: %s", it)
-        }
-        .map { state ->
-          MainRenderer.render(state, workflow, component.workflowPool)
-              .also { Timber.d("rendered: %s", it) }
-        }
-
-    // When the workflow fires its one and only result, quit the app.
-    // TODO(ray) this never happens, add back button handling.
-    subs.add(workflow.toCompletable().subscribe { finish() })
+    val screens = updates
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext { latestSnapshot = it.snapshot }
+        .map { it.rendering }
 
     val viewRegistry = buildViewRegistry()
-    val rootViewBinding: ViewBinding<AlertContainerScreen<*>> =
+    val rootViewBinding: ViewBinding<RootScreen> =
       viewRegistry.getBinding(AlertContainerScreen::class.jvmName)
 
     content = rootViewBinding.buildView(screens, viewRegistry, this)
