@@ -56,6 +56,7 @@ internal class PanelBodyWrapper
   attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet) {
   init {
+    @Suppress("DEPRECATION")
     background = ColorDrawable(resources.getColor(R.color.panelBody))
   }
 

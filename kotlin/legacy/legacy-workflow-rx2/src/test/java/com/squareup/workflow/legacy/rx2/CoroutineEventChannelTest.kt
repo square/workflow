@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// This test tests code that is marked as deprecated, so we can ignore those warnings.
+@file:Suppress("DEPRECATION")
+
 package com.squareup.workflow.legacy.rx2
 
 import com.squareup.workflow.legacy.Finished
@@ -307,6 +310,7 @@ class CoroutineEventChannelTest {
 
   @Test fun `onWorkerResult succeeds`() {
     val trigger = CompletableSubject.create()
+    @Suppress("RedundantLambdaArrow")
     val worker = singleWorker { it: String ->
       trigger.andThen(just("worker: $it"))
     }

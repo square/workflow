@@ -53,6 +53,7 @@ class TakeTurnsReactorTest {
   @Test fun `x wins`() {
     val workflow = TakeTurnsReactor()
         .launch(Turn("higgledy", "piggledy"), WorkflowPool())
+    @Suppress("UNCHECKED_CAST")
     val tester = workflow.result.test() as TestObserver<CompletedGame>
 
     workflow.sendEvent(TakeSquare(0, 0)) // x
@@ -101,6 +102,7 @@ class TakeTurnsReactorTest {
 
     val workflow = TakeTurnsReactor()
         .launch(penultimateTurn, WorkflowPool())
+    @Suppress("UNCHECKED_CAST")
     val tester = workflow.result.test() as TestObserver<CompletedGame>
     workflow.sendEvent(TakeSquare(2, 1))
 
