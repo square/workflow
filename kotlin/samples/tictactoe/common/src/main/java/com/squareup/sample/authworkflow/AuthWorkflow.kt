@@ -27,6 +27,7 @@ import com.squareup.sample.authworkflow.SecondFactorScreen.Event.CancelSecondFac
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
 import com.squareup.viewregistry.BackStackScreen
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
@@ -37,7 +38,7 @@ import com.squareup.workflow.rx2.onSuccess
  * We define this otherwise redundant interface to keep composite workflows
  * that build on [AuthWorkflow] decoupled from it, for ease of testing.
  */
-interface AuthWorkflow : Workflow<Unit, AuthState, String, BackStackScreen<*>>
+interface AuthWorkflow : Workflow<Unit, String, BackStackScreen<*>>
 
 /**
  * Runs a set of login screens and pretends to produce an auth token,
@@ -49,7 +50,8 @@ interface AuthWorkflow : Workflow<Unit, AuthState, String, BackStackScreen<*>>
  * Includes a 2fa path for email addresses that include the string "2fa".
  * Token is "1234".
  */
-class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow {
+class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
+    StatefulWorkflow<Unit, AuthState, String, BackStackScreen<*>>() {
 
   override fun initialState(input: Unit): AuthState = LoginPrompt()
 

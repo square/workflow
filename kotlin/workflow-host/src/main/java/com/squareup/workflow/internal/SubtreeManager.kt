@@ -16,11 +16,12 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.parse
-import com.squareup.workflow.readByteStringWithLength
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
+import com.squareup.workflow.parse
+import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.experimental.selects.SelectBuilder
 import kotlin.coroutines.experimental.CoroutineContext
@@ -51,19 +52,19 @@ internal class SubtreeManager<StateT : Any, OutputT : Any>(
     )
 
   // @formatter:off
-  override fun <ChildInputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRenderingT : Any>
+  override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
       compose(
         case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
-        child: Workflow<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
-        id: WorkflowId<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
+        child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
+        id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
         input: ChildInputT
       ): ChildRenderingT {
   // @formatter:on
     // Start tracking this case so we can be ready to compose it.
     @Suppress("UNCHECKED_CAST")
-    val host = hostLifetimeTracker.ensure(case) as
-        WorkflowNode<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>
-    return host.compose(child, input)
+    val childNode = hostLifetimeTracker.ensure(case) as
+        WorkflowNode<ChildInputT, *, ChildOutputT, ChildRenderingT>
+    return childNode.compose(child.asStatefulWorkflow(), input)
   }
 
   /**
@@ -98,7 +99,7 @@ internal class SubtreeManager<StateT : Any, OutputT : Any>(
     return Snapshot.write { sink ->
       val childSnapshots = hostLifetimeTracker.lifetimes
           .entries
-          .map { (case, host) -> host.id to host.snapshot(case.workflow) }
+          .map { (case, host) -> host.id to host.snapshot(case.workflow.asStatefulWorkflow()) }
       sink.writeInt(childSnapshots.size)
       for ((id, snapshot) in childSnapshots) {
         sink.writeByteStringWithLength(id.toByteString())
@@ -129,8 +130,8 @@ internal class SubtreeManager<StateT : Any, OutputT : Any>(
   private fun <IC : Any, OC : Any> WorkflowOutputCase<IC, OC, StateT, OutputT>.createNode():
       WorkflowNode<IC, *, OC, *> =
     WorkflowNode(
-        id as WorkflowId<IC, Any, OC, Any>,
-        workflow as Workflow<IC, Any, OC, Any>,
+        id,
+        workflow.asStatefulWorkflow() as StatefulWorkflow<IC, *, OC, *>,
         input,
         snapshotCache[id],
         contextForChildren

@@ -25,6 +25,7 @@ import com.squareup.sample.panel.PanelContainerScreen
 import com.squareup.sample.panel.asPanelOver
 import com.squareup.viewregistry.AlertContainerScreen
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
@@ -42,7 +43,7 @@ typealias RootScreen = AlertContainerScreen<PanelContainerScreen<*, *>>
 class MainWorkflow(
   private val authWorkflow: AuthWorkflow,
   private val runGameWorkflow: RunGameWorkflow
-) : Workflow<Unit, MainState, Unit, RootScreen> {
+) : StatefulWorkflow<Unit, MainState, Unit, RootScreen>() {
 
   override fun initialState(input: Unit): MainState = Authenticating
 

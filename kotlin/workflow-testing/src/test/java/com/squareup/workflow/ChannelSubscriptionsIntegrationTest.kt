@@ -44,7 +44,7 @@ class ChannelSubscriptionsIntegrationTest {
    */
   private class SubscriberWorkflow(
     private val channel: Channel<String>
-  ) : Workflow<Boolean, Boolean, ChannelUpdate<String>, (setSubscribed: Boolean) -> Unit> {
+  ) : StatefulWorkflow<Boolean, Boolean, ChannelUpdate<String>, (Boolean) -> Unit>() {
 
     var subscriptions = 0
       private set

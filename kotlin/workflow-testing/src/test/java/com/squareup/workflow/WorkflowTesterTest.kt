@@ -72,7 +72,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from initial state`() {
-    val workflow = object : Workflow<Unit, Unit, Nothing, Unit> {
+    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
       override fun initialState(input: Unit) {
         throw ExpectedException()
       }
@@ -102,7 +102,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from snapshot state`() {
-    val workflow = object : Workflow<Unit, Unit, Nothing, Unit> {
+    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
       override fun initialState(input: Unit) {
         // Noop
       }
@@ -132,7 +132,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from restore state`() {
-    val workflow = object : Workflow<Unit, Unit, Nothing, Unit> {
+    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
       override fun initialState(input: Unit) {
       }
 

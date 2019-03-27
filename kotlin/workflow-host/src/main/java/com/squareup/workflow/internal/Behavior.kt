@@ -25,7 +25,7 @@ import kotlin.reflect.KType
 
 /**
  * An immutable description of the things a [Workflow] would like to do as the result of calling its
- * [Workflow.compose] method. A `Behavior` is built up by calling methods on a
+ * `compose` method. A `Behavior` is built up by calling methods on a
  * [WorkflowContext][com.squareup.workflow.WorkflowContext] ([RealWorkflowContext] in particular).
  *
  * @see RealWorkflowContext
@@ -43,8 +43,8 @@ internal data class Behavior<StateT : Any, out OutputT : Any>(
       ParentStateT : Any,
       out ParentOutputT : Any
       >(
-        val workflow: Workflow<*, *, ChildOutputT, *>,
-        val id: WorkflowId<ChildInputT, *, ChildOutputT, *>,
+        val workflow: Workflow<*, ChildOutputT, *>,
+        val id: WorkflowId<ChildInputT, ChildOutputT, *>,
         val input: ChildInputT,
         val handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
       ) {

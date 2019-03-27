@@ -27,7 +27,7 @@ import kotlin.reflect.KType
 
 /**
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
- * a [compose][Workflow.compose] function.
+ * a `compose` function.
  *
  * ## Handling Events
  *
@@ -117,8 +117,8 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * @param key An optional string key that is used to distinguish between workflows of the same
    * type.
    */
-  fun <ChildInputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
-    child: Workflow<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
+  fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
+    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
     input: ChildInputT,
     key: String = "",
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
@@ -156,12 +156,12 @@ inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, Outp
 /**
  * Convenience alias of [WorkflowContext.compose] for workflows that don't take input.
  */
-fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRenderingT : Any>
+fun <StateT : Any, OutputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<Unit, ChildStateT, ChildOutputT, ChildRenderingT>,
+      child: Workflow<Unit, ChildOutputT, ChildRenderingT>,
       key: String = "",
       handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
     ): ChildRenderingT = compose(child, Unit, key, handler)
@@ -170,12 +170,12 @@ fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRe
 /**
  * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit output.
  */
-fun <InputT : Any, StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
+fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<InputT, ChildStateT, Nothing, ChildRenderingT>,
+      child: Workflow<InputT, Nothing, ChildRenderingT>,
       input: InputT,
       key: String = ""
     ): ChildRenderingT = compose(child, input, key) { WorkflowAction.noop() }
@@ -184,12 +184,12 @@ fun <InputT : Any, StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderin
 /**
  * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit output.
  */
-fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
+fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<Unit, ChildStateT, Nothing, ChildRenderingT>,
+      child: Workflow<Unit, Nothing, ChildRenderingT>,
       key: String = ""
     ): ChildRenderingT = compose(child, Unit, key) { WorkflowAction.noop() }
 // @formatter:on
@@ -197,7 +197,7 @@ fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
 /**
  * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
  * invoked for a given deferred+key, it will not be invoked again until an invocation of
- * [Workflow.compose] that does _not_ call this method with that deferred+[key].
+ * `compose` that does _not_ call this method with that deferred+[key].
  *
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * type.
@@ -216,7 +216,7 @@ inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, Outp
 /**
  * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
  * invoked for a given deferred+key, it will not be invoked again until an invocation of
- * [Workflow.compose] that does _not_ call this method with that deferred+[key].
+ * `compose` that does _not_ call this method with that deferred+[key].
  *
  * @param type The [KType] that represents both the type of data source (e.g. `Deferred`) and the
  * element type [T].

@@ -36,7 +36,7 @@ class TakeTurnsWorkflowTest {
   }
 
   @Test fun startsGameWithGivenNames() {
-    TakeTurnsWorkflow().testFromStart(PlayerInfo("higgledy", "piggledy")) { workflow ->
+    RealTakeTurnsWorkflow().testFromStart(PlayerInfo("higgledy", "piggledy")) { workflow ->
       val (x, o) = workflow.awaitNextRendering().playerInfo
 
       Assertions.assertThat(x)
@@ -47,7 +47,7 @@ class TakeTurnsWorkflowTest {
   }
 
   @Test fun xWins() {
-    TakeTurnsWorkflow().testFromStart(PlayerInfo("higgledy", "piggledy")) { workflow ->
+    RealTakeTurnsWorkflow().testFromStart(PlayerInfo("higgledy", "piggledy")) { workflow ->
       workflow.takeSquare(TakeSquare(0, 0))
       workflow.takeSquare(TakeSquare(1, 0))
       workflow.takeSquare(TakeSquare(0, 1))

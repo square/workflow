@@ -15,13 +15,14 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
+import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.experimental.CoroutineName
 import kotlinx.coroutines.experimental.CoroutineScope
@@ -35,11 +36,11 @@ import kotlin.coroutines.experimental.CoroutineContext
  * A node in a state machine tree. Manages the actual state for a given [Workflow].
  *
  * @param initialState Allows unit tests to start the node from a given state, instead of calling
- * [Workflow.initialState].
+ * [StatefulWorkflow.initialState].
  */
 internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>(
-  val id: WorkflowId<InputT, StateT, OutputT, RenderingT>,
-  workflow: Workflow<InputT, StateT, OutputT, RenderingT>,
+  val id: WorkflowId<InputT, OutputT, RenderingT>,
+  workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
   initialInput: InputT,
   snapshot: Snapshot?,
   baseContext: CoroutineContext,
@@ -91,31 +92,23 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
    * [WorkflowContext][com.squareup.workflow.WorkflowContext] to give its children a chance to
    * compose themselves and aggregate those child renderings.
    */
+  @Suppress("UNCHECKED_CAST")
   fun compose(
-    workflow: Workflow<InputT, StateT, OutputT, RenderingT>,
+    workflow: StatefulWorkflow<InputT, *, OutputT, RenderingT>,
     input: InputT
-  ): RenderingT {
-    updateInputAndState(workflow, input)
-
-    val context = RealWorkflowContext(subtreeManager)
-    val rendering = workflow.compose(input, state, context)
-
-    behavior = context.buildBehavior()
-    // Start new children/subscriptions, and drop old ones.
-    subtreeManager.track(behavior.childCases)
-    subscriptionTracker.track(behavior.subscriptionCases)
-
-    return rendering
-  }
+  ): RenderingT =
+    composeWithStateType(workflow as StatefulWorkflow<InputT, StateT, OutputT, RenderingT>, input)
 
   /**
    * Walk the tree of state machines again, this time gathering snapshots and aggregating them
    * automatically.
    */
-  fun snapshot(workflow: Workflow<*, *, *, *>): Snapshot {
+  fun snapshot(workflow: StatefulWorkflow<*, *, *, *>): Snapshot {
     val childrenSnapshot = subtreeManager.createChildrenSnapshot()
     @Suppress("UNCHECKED_CAST")
-    return childrenSnapshot.withState(workflow as Workflow<InputT, StateT, OutputT, RenderingT>)
+    return childrenSnapshot.withState(
+        workflow as StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
+    )
   }
 
   /**
@@ -172,8 +165,29 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
     coroutineContext.cancel()
   }
 
+  /**
+   * Contains the actual logic for [compose], after we've casted the passed-in [Workflow]'s
+   * state type to our `StateT`.
+   */
+  private fun composeWithStateType(
+    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
+    input: InputT
+  ): RenderingT {
+    updateInputAndState(workflow, input)
+
+    val context = RealWorkflowContext(subtreeManager)
+    val rendering = workflow.compose(input, state, context)
+
+    behavior = context.buildBehavior()
+    // Start new children/subscriptions, and drop old ones.
+    subtreeManager.track(behavior.childCases)
+    subscriptionTracker.track(behavior.subscriptionCases)
+
+    return rendering
+  }
+
   private fun updateInputAndState(
-    workflow: Workflow<InputT, StateT, OutputT, RenderingT>,
+    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
     newInput: InputT
   ) {
     state = workflow.onInputChanged(lastInput, newInput, state)
@@ -181,7 +195,9 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
   }
 
   /** @see Snapshot.parsePartial */
-  private fun Snapshot.withState(workflow: Workflow<InputT, StateT, OutputT, RenderingT>): Snapshot {
+  private fun Snapshot.withState(
+    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
+  ): Snapshot {
     val stateSnapshot = workflow.snapshotState(state)
     return Snapshot.write { sink ->
       sink.writeByteStringWithLength(stateSnapshot.bytes)
@@ -189,15 +205,18 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
     }
   }
 
-  private fun Snapshot.restoreState(workflow: Workflow<InputT, StateT, OutputT, RenderingT>): StateT {
+  private fun Snapshot.restoreState(
+    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
+  ): StateT {
     val (state, childrenSnapshot) = parsePartial(workflow)
     subtreeManager.restoreChildrenFromSnapshot(childrenSnapshot)
     return state
   }
 
   /** @see Snapshot.withState */
-  private fun Snapshot.parsePartial(workflow: Workflow<InputT, StateT, OutputT, RenderingT>):
-      Pair<StateT, Snapshot> =
+  private fun Snapshot.parsePartial(
+    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
+  ): Pair<StateT, Snapshot> =
     bytes.parse { source ->
       val stateSnapshot = source.readByteStringWithLength()
       val childrenSnapshot = source.readByteString()

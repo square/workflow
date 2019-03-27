@@ -23,7 +23,7 @@ import com.squareup.workflow.TreeWorkflow.Rendering
 internal class TreeWorkflow(
   private val name: String,
   private vararg val children: TreeWorkflow
-) : Workflow<String, String, Nothing, Rendering> {
+) : StatefulWorkflow<String, String, Nothing, Rendering>() {
 
   class Rendering(
     val data: String,

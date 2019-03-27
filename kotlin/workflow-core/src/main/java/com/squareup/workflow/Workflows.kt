@@ -24,26 +24,10 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 // and detekt will complain about it.
 // @formatter:off
 fun <InputT : Any, OutputT : Any, FromRenderingT : Any, ToRenderingT : Any>
-    Workflow<InputT, *, OutputT, FromRenderingT>.mapRendering(
+    Workflow<InputT, OutputT, FromRenderingT>.mapRendering(
       transform: (FromRenderingT) -> ToRenderingT
-    ): StatelessWorkflow<InputT, OutputT, ToRenderingT> = StatelessWorkflow { input, context ->
+    ): Workflow<InputT, OutputT, ToRenderingT> = StatelessWorkflow { input, context ->
 // @formatter:on
   context.compose(this@mapRendering, input) { emitOutput(it) }
       .let(transform)
 }
-
-/**
- * Returns a rendering that directly delegates to this [Workflow] but masks its state type.
- *
- * Useful for exposing a stateful workflow as part of a public API when you don't want your state
- * type to be public.
- */
-// Intellij refuses to format this parameter list correctly because of the weird line break,
-// and detekt will complain about it.
-// @formatter:off
-fun <InputT : Any, OutputT : Any, RenderingT : Any>
-    Workflow<InputT, *, OutputT, RenderingT>.hideState():
-    StatelessWorkflow<InputT, OutputT, RenderingT> = StatelessWorkflow { input, context ->
-      context.compose(this@hideState, input) { emitOutput(it) }
-    }
-// @formatter:on
