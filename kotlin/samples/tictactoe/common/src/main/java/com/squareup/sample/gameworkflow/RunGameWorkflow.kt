@@ -76,7 +76,11 @@ class RealRunGameWorkflow(
     StatefulWorkflow<Unit, RunGameState, RunGameResult,
         AlertContainerScreen<PanelContainerScreen<*, *>>>() {
 
-  override fun initialState(input: Unit): RunGameState = NewGame()
+  override fun initialState(
+    input: Unit,
+    snapshot: Snapshot?
+  ): RunGameState = snapshot?.let { RunGameState.fromSnapshot(snapshot.bytes) }
+      ?: NewGame()
 
   override fun compose(
     input: Unit,
@@ -180,10 +184,6 @@ class RealRunGameWorkflow(
   }
 
   override fun snapshotState(state: RunGameState): Snapshot = state.toSnapshot()
-
-  override fun restoreState(snapshot: Snapshot): RunGameState {
-    return RunGameState.fromSnapshot(snapshot.bytes)
-  }
 
   private fun nestedAlertsScreen(
     base: Any,

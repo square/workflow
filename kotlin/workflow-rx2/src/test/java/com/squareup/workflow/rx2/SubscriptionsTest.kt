@@ -33,7 +33,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertSame
-import kotlin.test.fail
 
 class SubscriptionsTest {
 
@@ -58,7 +57,10 @@ class SubscriptionsTest {
         .doOnSubscribe { subscriptions++ }
         .doOnDispose { disposals++ }
 
-    override fun initialState(input: Boolean): Boolean = input
+    override fun initialState(
+      input: Boolean,
+      snapshot: Snapshot?
+    ): Boolean = input
 
     override fun compose(
       input: Boolean,
@@ -72,7 +74,6 @@ class SubscriptionsTest {
     }
 
     override fun snapshotState(state: Boolean) = Snapshot.EMPTY
-    override fun restoreState(snapshot: Snapshot): Boolean = fail()
   }
 
   private val subject = PublishSubject.create<String>()

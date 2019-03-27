@@ -22,6 +22,7 @@ import kotlinx.coroutines.experimental.JobCancellationException
 import kotlinx.coroutines.experimental.channels.ClosedReceiveChannelException
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.fail
 
 class WorkflowTesterTest {
@@ -73,7 +74,11 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when workflow throws from initial state`() {
     val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(input: Unit) {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ) {
+        assertNull(snapshot)
         throw ExpectedException()
       }
 
@@ -85,13 +90,7 @@ class WorkflowTesterTest {
         fail()
       }
 
-      override fun snapshotState(state: Unit): Snapshot {
-        fail()
-      }
-
-      override fun restoreState(snapshot: Snapshot) {
-        fail()
-      }
+      override fun snapshotState(state: Unit): Snapshot = fail()
     }
 
     assertFailsWith<ExpectedException> {
@@ -103,7 +102,11 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when workflow throws from snapshot state`() {
     val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(input: Unit) {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ) {
+        assertNull(snapshot)
         // Noop
       }
 
@@ -115,13 +118,7 @@ class WorkflowTesterTest {
         // Noop
       }
 
-      override fun snapshotState(state: Unit): Snapshot {
-        throw ExpectedException()
-      }
-
-      override fun restoreState(snapshot: Snapshot) {
-        fail()
-      }
+      override fun snapshotState(state: Unit): Snapshot = throw ExpectedException()
     }
 
     assertFailsWith<ExpectedException> {
@@ -133,7 +130,13 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when workflow throws from restore state`() {
     val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(input: Unit) {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ) {
+        if (snapshot != null) {
+          throw ExpectedException()
+        }
       }
 
       override fun compose(
@@ -144,10 +147,6 @@ class WorkflowTesterTest {
       }
 
       override fun snapshotState(state: Unit): Snapshot = Snapshot.EMPTY
-
-      override fun restoreState(snapshot: Snapshot) {
-        throw ExpectedException()
-      }
     }
 
     // Get a valid snapshot (can't use Snapshot.EMPTY).

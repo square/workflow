@@ -54,7 +54,10 @@ class RealWorkflowContextTest {
   }
 
   private class TestWorkflow : StatefulWorkflow<String, String, String, Rendering>() {
-    override fun initialState(input: String): String = fail()
+    override fun initialState(
+      input: String,
+      snapshot: Snapshot?
+    ): String = fail()
 
     override fun compose(
       input: String,
@@ -65,7 +68,6 @@ class RealWorkflowContextTest {
     }
 
     override fun snapshotState(state: String): Snapshot = fail()
-    override fun restoreState(snapshot: Snapshot): String = fail()
   }
 
   private class PoisonComposer<S : Any, O : Any> : Composer<S, O> {

@@ -30,7 +30,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlin.test.fail
 
 class WorkflowContextsTest {
 
@@ -71,7 +70,10 @@ class WorkflowContextsTest {
         .doOnSubscribe { subscriptions++ }
         .doOnDispose { disposals++ }
     val workflow = object : StatefulWorkflow<Unit, Boolean, Nothing, Unit>() {
-      override fun initialState(input: Unit): Boolean = true
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ): Boolean = true
 
       override fun compose(
         input: Unit,
@@ -85,7 +87,6 @@ class WorkflowContextsTest {
       }
 
       override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
-      override fun restoreState(snapshot: Snapshot): Boolean = fail("not expected")
     }
 
     assertEquals(0, subscriptions)

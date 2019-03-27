@@ -73,7 +73,10 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
    */
   final override fun asStatefulWorkflow(): StatefulWorkflow<InputT, *, OutputT, RenderingT> =
     object : StatefulWorkflow<InputT, Unit, OutputT, RenderingT>() {
-      override fun initialState(input: InputT) = Unit
+      override fun initialState(
+        input: InputT,
+        snapshot: Snapshot?
+      ) = Unit
 
       @Suppress("UNCHECKED_CAST")
       override fun compose(
@@ -83,7 +86,6 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
       ): RenderingT = compose(input, context as WorkflowContext<Nothing, OutputT>)
 
       override fun snapshotState(state: Unit) = Snapshot.EMPTY
-      override fun restoreState(snapshot: Snapshot) = Unit
     }
 }
 

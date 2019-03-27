@@ -43,7 +43,10 @@ class SubtreeManagerTest {
       val eventHandler: (String) -> Unit
     )
 
-    override fun initialState(input: String): String {
+    override fun initialState(
+      input: String,
+      snapshot: Snapshot?
+    ): String {
       started++
       return "initialState:$input"
     }
@@ -57,7 +60,6 @@ class SubtreeManagerTest {
     })
 
     override fun snapshotState(state: String) = fail()
-    override fun restoreState(snapshot: Snapshot) = fail()
   }
 
   private val context = Dispatchers.Unconfined
