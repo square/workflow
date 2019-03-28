@@ -35,10 +35,10 @@ import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.rx2.onSuccess
 
 /**
- * We define this otherwise redundant interface to keep composite workflows
+ * We define this otherwise redundant typealias to keep composite workflows
  * that build on [AuthWorkflow] decoupled from it, for ease of testing.
  */
-interface AuthWorkflow : Workflow<Unit, String, BackStackScreen<*>>
+typealias AuthWorkflow = Workflow<Unit, String, BackStackScreen<*>>
 
 /**
  * Runs a set of login screens and pretends to produce an auth token,
