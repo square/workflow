@@ -80,8 +80,8 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
     )
 
   private var state: StateT = initialState
-      ?: snapshot?.restoreState(workflow)
-      ?: workflow.initialState(initialInput)
+      ?: snapshot?.restoreState(initialInput, workflow)
+      ?: workflow.initialState(initialInput, snapshot = null)
 
   private var lastInput: InputT = initialInput
 
@@ -206,21 +206,23 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
   }
 
   private fun Snapshot.restoreState(
+    input: InputT,
     workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
   ): StateT {
-    val (state, childrenSnapshot) = parsePartial(workflow)
+    val (state, childrenSnapshot) = parsePartial(input, workflow)
     subtreeManager.restoreChildrenFromSnapshot(childrenSnapshot)
     return state
   }
 
   /** @see Snapshot.withState */
   private fun Snapshot.parsePartial(
+    input: InputT,
     workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
   ): Pair<StateT, Snapshot> =
     bytes.parse { source ->
       val stateSnapshot = source.readByteStringWithLength()
       val childrenSnapshot = source.readByteString()
-      val state = workflow.restoreState(Snapshot.of(stateSnapshot))
+      val state = workflow.initialState(input, Snapshot.of(stateSnapshot))
       return Pair(state, Snapshot.of(childrenSnapshot))
     }
 }

@@ -43,7 +43,12 @@ internal class TreeWorkflow(
     }
   }
 
-  override fun initialState(input: String): String = input
+  override fun initialState(
+    input: String,
+    snapshot: Snapshot?
+  ): String = snapshot?.bytes?.parse {
+    it.readUtf8WithLength()
+  } ?: input
 
   override fun compose(
     input: String,
@@ -72,8 +77,4 @@ internal class TreeWorkflow(
     Snapshot.write {
       it.writeUtf8WithLength(state)
     }
-
-  override fun restoreState(snapshot: Snapshot): String = snapshot.bytes.parse {
-    it.readUtf8WithLength()
-  }
 }

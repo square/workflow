@@ -53,7 +53,10 @@ interface AuthWorkflow : Workflow<Unit, String, BackStackScreen<*>>
 class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
     StatefulWorkflow<Unit, AuthState, String, BackStackScreen<*>>() {
 
-  override fun initialState(input: Unit): AuthState = LoginPrompt()
+  override fun initialState(
+    input: Unit,
+    snapshot: Snapshot?
+  ): AuthState = LoginPrompt()
 
   override fun compose(
     input: Unit,
@@ -122,11 +125,6 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
    * It'd be silly to restore an in progress login session, so saves nothing.
    */
   override fun snapshotState(state: AuthState): Snapshot = Snapshot.EMPTY
-
-  /**
-   * [snapshotState] saves nothing, so always start from the [initialState].
-   */
-  override fun restoreState(snapshot: Snapshot): AuthState = initialState(Unit)
 
   private val AuthResponse.isLoginFailure: Boolean
     get() = token.isEmpty() && errorMessage.isNotEmpty()

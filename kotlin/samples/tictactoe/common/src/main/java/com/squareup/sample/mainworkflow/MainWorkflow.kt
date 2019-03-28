@@ -45,7 +45,11 @@ class MainWorkflow(
   private val runGameWorkflow: RunGameWorkflow
 ) : StatefulWorkflow<Unit, MainState, Unit, RootScreen>() {
 
-  override fun initialState(input: Unit): MainState = Authenticating
+  override fun initialState(
+    input: Unit,
+    snapshot: Snapshot?
+  ): MainState = snapshot?.let { MainState.fromSnapshot(snapshot.bytes) }
+      ?: Authenticating
 
   override fun compose(
     input: Unit,
@@ -63,8 +67,4 @@ class MainWorkflow(
   }
 
   override fun snapshotState(state: MainState): Snapshot = state.toSnapshot()
-
-  override fun restoreState(snapshot: Snapshot): MainState {
-    return MainState.fromSnapshot(snapshot.bytes)
-  }
 }

@@ -66,8 +66,17 @@ abstract class StatefulWorkflow<
   /**
    * Called from [WorkflowContext.compose] when the state machine is first started, to get the
    * initial state.
+   *
+   * @param snapshot
+   * If the workflow is being created fresh, [snapshot] will be null.
+   * If the workflow is being restored from a [Snapshot], [snapshot] will be the last value
+   * returned from [snapshotState], and implementations that return something other than
+   * [Snapshot.EMPTY] should create their initial state by parsing their snapshot.
    */
-  abstract fun initialState(input: InputT): StateT
+  abstract fun initialState(
+    input: InputT,
+    snapshot: Snapshot?
+  ): StateT
 
   /**
    * Called from [WorkflowContext.compose] instead of [initialState] when the workflow is already
@@ -119,19 +128,9 @@ abstract class StatefulWorkflow<
    * If the workflow does not have any state, or should always be started from scratch, return
    * [Snapshot.EMPTY] from this method.
    *
-   * @see restoreState
+   * @see initialState
    */
   abstract fun snapshotState(state: StateT): Snapshot
-
-  /**
-   * Deserialize a state value from a [Snapshot] previously created with [snapshotState].
-   *
-   * If the workflow should always be started from scratch, this method can just ignore the snapshot
-   * and return the initial state.
-   *
-   * @see snapshotState
-   */
-  abstract fun restoreState(snapshot: Snapshot): StateT
 
   /**
    * Satisfies the [Workflow] interface by returning `this`.

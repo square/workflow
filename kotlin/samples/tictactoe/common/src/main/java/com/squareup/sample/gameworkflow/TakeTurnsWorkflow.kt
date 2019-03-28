@@ -41,7 +41,10 @@ interface TakeTurnsWorkflow : Workflow<PlayerInfo, CompletedGame, GamePlayScreen
 class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
     StatefulWorkflow<PlayerInfo, Turn, CompletedGame, GamePlayScreen>() {
 
-  override fun initialState(input: PlayerInfo) = Turn()
+  override fun initialState(
+    input: PlayerInfo,
+    snapshot: Snapshot?
+  ): Turn = Turn()
 
   override fun compose(
     input: PlayerInfo,
@@ -76,5 +79,4 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
   }
 
   override fun snapshotState(state: Turn) = Snapshot.EMPTY
-  override fun restoreState(snapshot: Snapshot) = Turn()
 }

@@ -43,6 +43,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -50,14 +51,17 @@ class WorkflowNodeTest {
 
   private abstract class StringWorkflow : StatefulWorkflow<String, String, String, String>() {
     override fun snapshotState(state: String): Snapshot = fail("not expected")
-    override fun restoreState(snapshot: Snapshot): String = fail("not expected")
   }
 
   private class InputRenderingWorkflow(
     private val onInputChanged: (String, String, String) -> String
   ) : StringWorkflow() {
 
-    override fun initialState(input: String): String {
+    override fun initialState(
+      input: String,
+      snapshot: Snapshot?
+    ): String {
+      assertNull(snapshot)
       return "starting:$input"
     }
 
@@ -122,7 +126,13 @@ class WorkflowNodeTest {
   @Test fun `accepts event`() {
     lateinit var eventHandler: (String) -> Unit
     val workflow = object : StringWorkflow() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String {
+        assertNull(snapshot)
+        return input
+      }
 
       override fun compose(
         input: String,
@@ -150,7 +160,13 @@ class WorkflowNodeTest {
   @Test fun `throws on subsequent events on same rendering`() {
     lateinit var eventHandler: (String) -> Unit
     val workflow = object : StringWorkflow() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String {
+        assertNull(snapshot)
+        return input
+      }
 
       override fun compose(
         input: String,
@@ -183,7 +199,13 @@ class WorkflowNodeTest {
     val channel = Channel<String>(capacity = 1)
     var update: ChannelUpdate<String>? = null
     val workflow = object : StringWorkflow() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String {
+        assertNull(snapshot)
+        return input
+      }
 
       override fun compose(
         input: String,
@@ -234,7 +256,13 @@ class WorkflowNodeTest {
     val channel = Channel<String>(capacity = 0)
     var update: ChannelUpdate<String>? = null
     val workflow = object : StringWorkflow() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String {
+        assertNull(snapshot)
+        return input
+      }
 
       override fun compose(
         input: String,
@@ -273,7 +301,13 @@ class WorkflowNodeTest {
     val channel = Channel<String>(capacity = 0)
     lateinit var doClose: EventHandler<Unit>
     val workflow = object : StringWorkflow() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String {
+        assertNull(snapshot)
+        return input
+      }
 
       override fun compose(
         input: String,
@@ -316,25 +350,24 @@ class WorkflowNodeTest {
     }
   }
 
-  @Test fun snapshots_nonEmpty_withoutChildren() {
+  @Test fun `snapshots non-empty without children`() {
     val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String = snapshot?.bytes?.parse {
+        it.readUtf8WithLength()
+            .removePrefix("state:")
+      } ?: input
 
       override fun compose(
         input: String,
         state: String,
         context: WorkflowContext<String, Nothing>
-      ): String {
-        return state
-      }
+      ): String = state
 
       override fun snapshotState(state: String): Snapshot = Snapshot.write {
         it.writeUtf8WithLength("state:$state")
-      }
-
-      override fun restoreState(snapshot: Snapshot): String = snapshot.bytes.parse {
-        it.readUtf8WithLength()
-            .removePrefix("state:")
       }
     }
     val originalNode = WorkflowNode(
@@ -360,9 +393,12 @@ class WorkflowNodeTest {
     assertEquals("initial input", restoredNode.compose(workflow, "foo"))
   }
 
-  @Test fun snapshots_empty_withoutChildren() {
+  @Test fun `snapshots empty without children`() {
     val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String = if (snapshot != null) "restored" else input
 
       override fun compose(
         input: String,
@@ -373,8 +409,6 @@ class WorkflowNodeTest {
       }
 
       override fun snapshotState(state: String): Snapshot = Snapshot.EMPTY
-
-      override fun restoreState(snapshot: Snapshot): String = "restored"
     }
     val originalNode = WorkflowNode(
         workflow.id(),
@@ -399,11 +433,18 @@ class WorkflowNodeTest {
     assertEquals("restored", restoredNode.compose(workflow, "foo"))
   }
 
-  @Test fun snapshots_nonEmpty_withChildren() {
+  @Test fun `snapshots non-empty with children`() {
     var restoredChildState: String? = null
     var restoredParentState: String? = null
     val childWorkflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String = snapshot?.bytes?.parse {
+        it.readUtf8WithLength()
+            .removePrefix("child state:")
+            .also { state -> restoredChildState = state }
+      } ?: input
 
       override fun compose(
         input: String,
@@ -416,15 +457,16 @@ class WorkflowNodeTest {
       override fun snapshotState(state: String): Snapshot = Snapshot.write {
         it.writeUtf8WithLength("child state:$state")
       }
-
-      override fun restoreState(snapshot: Snapshot): String = snapshot.bytes.parse {
-        it.readUtf8WithLength()
-            .removePrefix("child state:")
-            .also { state -> restoredChildState = state }
-      }
     }
     val parentWorkflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(input: String): String = input
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String = snapshot?.bytes?.parse {
+        it.readUtf8WithLength()
+            .removePrefix("parent state:")
+            .also { state -> restoredParentState = state }
+      } ?: input
 
       override fun compose(
         input: String,
@@ -437,12 +479,6 @@ class WorkflowNodeTest {
 
       override fun snapshotState(state: String): Snapshot = Snapshot.write {
         it.writeUtf8WithLength("parent state:$state")
-      }
-
-      override fun restoreState(snapshot: Snapshot): String = snapshot.bytes.parse {
-        it.readUtf8WithLength()
-            .removePrefix("parent state:")
-            .also { state -> restoredParentState = state }
       }
     }
 
@@ -471,13 +507,20 @@ class WorkflowNodeTest {
     assertEquals("initial input", restoredParentState)
   }
 
-  @Test fun snapshot_counts() {
+  @Test fun `snapshot counts`() {
     var snapshotCalls = 0
     var restoreCalls = 0
     // Track the number of times the snapshot is actually serialized, not snapshotState is called.
     var snapshotWrites = 0
     val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(input: Unit) = Unit
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ) {
+        if (snapshot != null) {
+          restoreCalls++
+        }
+      }
 
       override fun compose(
         input: Unit,
@@ -490,10 +533,6 @@ class WorkflowNodeTest {
         return Snapshot.write {
           snapshotWrites++
         }
-      }
-
-      override fun restoreState(snapshot: Snapshot) {
-        restoreCalls++
       }
     }
     val node = WorkflowNode(workflow.id(), workflow, Unit, null, Unconfined)
@@ -519,5 +558,50 @@ class WorkflowNodeTest {
     assertEquals(1, snapshotCalls)
     assertEquals(1, snapshotWrites)
     assertEquals(1, restoreCalls)
+  }
+
+  @Test fun `restore gets input`() {
+    val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String = snapshot?.bytes?.parse {
+        // Tags the restored state with the input so we can check it.
+        val deserialized = it.readUtf8WithLength()
+        return@parse "input:$input|state:$deserialized"
+      } ?: input
+
+      override fun compose(
+        input: String,
+        state: String,
+        context: WorkflowContext<String, Nothing>
+      ): String {
+        return state
+      }
+
+      override fun snapshotState(state: String): Snapshot = Snapshot.write {
+        it.writeUtf8WithLength(state)
+      }
+    }
+    val originalNode = WorkflowNode(
+        workflow.id(),
+        workflow,
+        initialInput = "initial input",
+        snapshot = null,
+        baseContext = Unconfined
+    )
+
+    assertEquals("initial input", originalNode.compose(workflow, "foo"))
+    val snapshot = originalNode.snapshot(workflow)
+    assertNotEquals(0, snapshot.bytes.size())
+
+    val restoredNode = WorkflowNode(
+        workflow.id(),
+        workflow,
+        initialInput = "new input",
+        snapshot = snapshot,
+        baseContext = Unconfined
+    )
+    assertEquals("input:new input|state:initial input", restoredNode.compose(workflow, "foo"))
   }
 }

@@ -15,12 +15,12 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.util.ChannelUpdate.Closed
-import com.squareup.workflow.util.ChannelUpdate.Value
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
 import com.squareup.workflow.util.ChannelUpdate
+import com.squareup.workflow.util.ChannelUpdate.Closed
+import com.squareup.workflow.util.ChannelUpdate.Value
 import kotlinx.coroutines.experimental.TimeoutCancellationException
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
@@ -31,7 +31,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertSame
-import kotlin.test.fail
 
 class ChannelSubscriptionsIntegrationTest {
 
@@ -56,7 +55,10 @@ class ChannelSubscriptionsIntegrationTest {
       channel.invokeOnClose { cancellations++ }
     }
 
-    override fun initialState(input: Boolean): Boolean = input
+    override fun initialState(
+      input: Boolean,
+      snapshot: Snapshot?
+    ): Boolean = input
 
     override fun compose(
       input: Boolean,
@@ -70,7 +72,6 @@ class ChannelSubscriptionsIntegrationTest {
     }
 
     override fun snapshotState(state: Boolean) = Snapshot.EMPTY
-    override fun restoreState(snapshot: Snapshot): Boolean = fail()
 
     private fun subscribe(): ReceiveChannel<String> {
       subscriptions++
