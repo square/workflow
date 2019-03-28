@@ -1,11 +1,3 @@
----
-title: Workflow Documentation
-index: 0
-navigation:
-    visible: true
-    path: documentation
----
-
 # Workflow Documentation
 
 
@@ -61,3 +53,10 @@ This is typically conventional platform-specific UI code. One important note is 
 ### Events
 
 In order for the application to actually do anything, the workflow needs to receive events from the UI. When the user interacts with the application by, for example, tapping a button, the workflow receives that event – which may trigger a simple state transition, or more complex behavior such as a network request.
+
+## Next Steps
+
+ * [Concepts](concepts.md)
+ * [FAQ](faq.md)
+ * [Swift Docs](swift/index.md)
+ * [Kotlin Docs](kotlin/index.md)

@@ -1,11 +1,3 @@
----
-title: FAQ
-index: 100
-navigation:
-    visible: true
-    path: documentation
----
-
 # Frequently Asked Questions
 
 

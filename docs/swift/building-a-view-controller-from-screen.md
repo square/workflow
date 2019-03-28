@@ -1,11 +1,3 @@
----
-title: Building a View Controller from a Screen
-index: 5
-navigation:
-    visible: true
-    path: documentation
----
-
 # Building a View Controller from a Screen
 
 Now that we have a workflow, we need a way to map our screen to an actual view controller.

@@ -1,11 +1,3 @@
----
-title: Building a Workflow
-index: 3
-navigation:
-    visible: true
-    path: documentation
----
-
 # Building a Workflow
 
 
