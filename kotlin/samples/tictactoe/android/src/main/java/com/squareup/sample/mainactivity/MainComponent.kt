@@ -21,10 +21,10 @@ import com.squareup.sample.authworkflow.RealAuthWorkflow
 import com.squareup.sample.gameworkflow.RealGameLog
 import com.squareup.sample.gameworkflow.RealRunGameWorkflow
 import com.squareup.sample.gameworkflow.RealTakeTurnsWorkflow
+import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.gameworkflow.TakeTurnsWorkflow
 import com.squareup.sample.mainworkflow.MainWorkflow
-import com.squareup.sample.mainworkflow.RootScreen
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.WorkflowHost.Update
@@ -55,9 +55,9 @@ internal class MainComponent {
 
   private fun workflowHost(snapshot: Snapshot?) = workflowHostFactory.run(mainWorkflow(), snapshot)
 
-  private var updates: Observable<Update<Unit, RootScreen>>? = null
+  private var updates: Observable<Update<Unit, RunGameScreen>>? = null
 
-  fun updates(snapshot: Snapshot?): Observable<Update<Unit, RootScreen>> {
+  fun updates(snapshot: Snapshot?): Observable<Update<Unit, RunGameScreen>> {
     if (updates == null) {
       val host = workflowHost(snapshot)
 

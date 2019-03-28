@@ -19,8 +19,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.squareup.sample.authworkflow.AuthViewBindings
+import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
-import com.squareup.sample.mainworkflow.RootScreen
 import com.squareup.sample.panel.PanelContainer
 import com.squareup.viewregistry.AlertContainerScreen
 import com.squareup.viewregistry.HandlesBack
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         .map { it.rendering }
 
     val viewRegistry = buildViewRegistry()
-    val rootViewBinding: ViewBinding<RootScreen> =
+    val rootViewBinding: ViewBinding<RunGameScreen> =
       viewRegistry.getBinding(AlertContainerScreen::class.jvmName)
 
     content = rootViewBinding.buildView(screens, viewRegistry, this)

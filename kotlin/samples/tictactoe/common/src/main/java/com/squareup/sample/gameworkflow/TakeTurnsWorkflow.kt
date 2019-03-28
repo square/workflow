@@ -29,7 +29,7 @@ import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.WorkflowContext
 
-interface TakeTurnsWorkflow : Workflow<PlayerInfo, CompletedGame, GamePlayScreen>
+typealias TakeTurnsWorkflow = Workflow<PlayerInfo, CompletedGame, GamePlayScreen>
 
 /**
  * Models the turns of a Tic Tac Toe game, alternating between [Player.X]

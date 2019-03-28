@@ -57,12 +57,13 @@ enum class RunGameResult {
   FinishedPlaying
 }
 
+typealias RunGameScreen = AlertContainerScreen<PanelContainerScreen<*, *>>
+
 /**
- * We define this otherwise redundant interface to keep composite workflows
+ * We define this otherwise redundant typealias to keep composite workflows
  * that build on [RunGameWorkflow] decoupled from it, for ease of testing.
  */
-interface RunGameWorkflow :
-    Workflow<Unit, RunGameResult, AlertContainerScreen<PanelContainerScreen<*, *>>>
+typealias RunGameWorkflow = Workflow<Unit, RunGameResult, RunGameScreen>
 
 /**
  * Runs the screens around a Tic Tac Toe game: prompts for player names, runs a
@@ -74,7 +75,7 @@ class RealRunGameWorkflow(
   private val gameLog: GameLog
 ) : RunGameWorkflow,
     StatefulWorkflow<Unit, RunGameState, RunGameResult,
-        AlertContainerScreen<PanelContainerScreen<*, *>>>() {
+        RunGameScreen>() {
 
   override fun initialState(
     input: Unit,
@@ -86,7 +87,7 @@ class RealRunGameWorkflow(
     input: Unit,
     state: RunGameState,
     context: WorkflowContext<RunGameState, RunGameResult>
-  ): AlertContainerScreen<PanelContainerScreen<*, *>> {
+  ): RunGameScreen {
     return when (state) {
       is NewGame -> {
         val emptyGameScreen = GamePlayScreen()
@@ -188,25 +189,25 @@ class RealRunGameWorkflow(
   private fun nestedAlertsScreen(
     base: Any,
     vararg alerts: AlertScreen
-  ): AlertContainerScreen<PanelContainerScreen<*, *>> {
+  ): RunGameScreen {
     return AlertContainerScreen(PanelContainerScreen<Any, Any>(base), *alerts)
   }
 
   private fun alertScreen(
     base: Any,
     alert: AlertScreen
-  ): AlertContainerScreen<PanelContainerScreen<*, *>> {
+  ): RunGameScreen {
     return AlertContainerScreen(PanelContainerScreen<Any, Any>(base), alert)
   }
 
   private fun subflowScreen(
     base: Any,
     subflow: Any
-  ): AlertContainerScreen<PanelContainerScreen<*, *>> {
+  ): RunGameScreen {
     return AlertContainerScreen(subflow.asPanelOver(base))
   }
 
-  private fun simpleScreen(screen: Any): AlertContainerScreen<PanelContainerScreen<*, *>> {
+  private fun simpleScreen(screen: Any): RunGameScreen {
     return AlertContainerScreen(PanelContainerScreen<Any, Any>(screen))
   }
 
