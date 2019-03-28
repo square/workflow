@@ -18,12 +18,13 @@ package com.squareup.workflow.rx2
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.StatelessWorkflow
+import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.invoke
+import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
 import io.reactivex.subjects.SingleSubject
 import kotlin.test.Test
@@ -40,7 +41,7 @@ class WorkflowContextsTest {
     val single = singleSubject
         .doOnSubscribe { subscriptions++ }
         .doOnDispose { disposals++ }
-    val workflow = StatelessWorkflow<String, Unit> { context ->
+    val workflow = Workflow.stateless<String, Unit> { context ->
       context.onSuccess(single) { emitOutput(it) }
     }
 

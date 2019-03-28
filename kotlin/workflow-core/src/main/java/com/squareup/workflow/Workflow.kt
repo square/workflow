@@ -48,8 +48,8 @@ package com.squareup.workflow
  * ### [Stateless Workflows][StatelessWorkflow]
  *
  * If your workflow simply needs to delegate to other workflows, maybe transforming inputs, outputs,
- * or renderings, implement the [StatelessWorkflow] interface, or simply pass a lambda to the
- * `StatelessWorkflow` function.
+ * or renderings, extend [StatelessWorkflow], or just pass a lambda to the [stateless] function
+ * below.
  *
  * @param InputT Typically a data class that is used to pass configuration information or bits of
  * state that the workflow can always get from its parent and needn't duplicate in its own state.
@@ -73,4 +73,10 @@ interface Workflow<in InputT : Any, out OutputT : Any, out RenderingT : Any> {
    * the common API required for [WorkflowContext.compose] to do its work.
    */
   fun asStatefulWorkflow(): StatefulWorkflow<InputT, *, OutputT, RenderingT>
+
+  /**
+   * Empty companion serves as a hook point to allow us to create `Workflow.foo`
+   * extension methods elsewhere.
+   */
+  companion object
 }

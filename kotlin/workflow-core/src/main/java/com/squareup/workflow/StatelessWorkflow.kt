@@ -15,21 +15,10 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+
 /**
- * A composable object that can [handle events][WorkflowContext.onEvent],
- * [delegate to children][WorkflowContext.compose], and [subscribe][onReceive] to arbitrary streams
- * from the outside world.
- *
- * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
- * [rendering][RenderingT]. To that end, a workflow may recursively ask other workflows to render
- * themselves, subscribe to data streams from the outside world, and handle events both from its
- * [renderings][WorkflowContext.onEvent] and from workflows it's delegated to (its "children"). A
- * `Workflow` may also emit [output events][OutputT] up to its parent `Workflow`.
- *
- * Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows
- * are started as necessary whenever another workflow asks for them, and are cleaned up automatically
- * when they're no longer needed. [Input][InputT] propagates down the tree, [outputs][OutputT] and
- * [renderings][RenderingT] propagate up the tree.
+ * Minimal implementation of [Workflow] that maintains no state of its own.
  *
  * @param InputT Typically a data class that is used to pass configuration information or bits of
  * state that the workflow can always get from its parent and needn't duplicate in its own state.
@@ -90,20 +79,18 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
 }
 
 /**
- * A convenience function to implement [StatelessWorkflow] by just passing the
- * [compose][StatelessWorkflow.compose] function as a lambda.
+ * Returns a stateless [Workflow] via the given [compose] function.
  *
- * Note that while a stateless workflow doesn't have any _internal_ state of its own, it may use
- * [input][InputT] received from its parent, and it may compose child workflows that do have their own
- * internal state.
+ * Note that while the returned workflow doesn't have any _internal_ state of its own, it may use
+ * [input][InputT] received from its parent, and it may compose child workflows that do have
+ * their own internal state.
  */
-@Suppress("FunctionName")
-fun <InputT : Any, OutputT : Any, RenderingT : Any> StatelessWorkflow(
+fun <InputT : Any, OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
   compose: (
     input: InputT,
     context: WorkflowContext<Nothing, OutputT>
   ) -> RenderingT
-): StatelessWorkflow<InputT, OutputT, RenderingT> =
+): Workflow<InputT, OutputT, RenderingT> =
   object : StatelessWorkflow<InputT, OutputT, RenderingT>() {
     override fun compose(
       input: InputT,
@@ -112,12 +99,39 @@ fun <InputT : Any, OutputT : Any, RenderingT : Any> StatelessWorkflow(
   }
 
 /**
- * A version of [StatelessWorkflow] that doesn't have any input data either.
+ * Returns a stateless [Workflow] that ignores input via the given [compose] function.
+ *
+ * Note that while the returned workflow doesn't have any _internal_ state of its own, it may
+ * compose child workflows that do have their own internal state.
  */
-@Suppress("FunctionName")
-fun <OutputT : Any, RenderingT : Any> StatelessWorkflow(
+fun <OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
   compose: (context: WorkflowContext<Nothing, OutputT>) -> RenderingT
-): StatelessWorkflow<Unit, OutputT, RenderingT> =
-  StatelessWorkflow { _: Unit, context: WorkflowContext<Nothing, OutputT> ->
+): Workflow<Unit, OutputT, RenderingT> =
+  Workflow.stateless { _: Unit, context: WorkflowContext<Nothing, OutputT> ->
     compose(context)
   }
+
+/**
+ * Returns a workflow that does nothing but echo the given [rendering].
+ * Handy for testing.
+ */
+fun <OutputT : Any, RenderingT : Any> Workflow.Companion.rendering(
+  rendering: RenderingT
+): Workflow<Unit, OutputT, RenderingT> =
+  stateless { _: Unit, _: WorkflowContext<Nothing, OutputT> -> rendering }
+
+/**
+ * Uses the given [function][transform] to transform a [Workflow] that
+ * renders [FromRenderingT] to one renders [ToRenderingT],
+ */
+// Intellij refuses to format this parameter list correctly because of the weird line break,
+// and detekt will complain about it.
+// @formatter:off
+fun <InputT : Any, OutputT : Any, FromRenderingT : Any, ToRenderingT : Any>
+    Workflow<InputT, OutputT, FromRenderingT>.mapRendering(
+      transform: (FromRenderingT) -> ToRenderingT
+    ): Workflow<InputT, OutputT, ToRenderingT> = Workflow.stateless { input, context ->
+  // @formatter:on
+  context.compose(this@mapRendering, input) { emitOutput(it) }
+      .let(transform)
+}

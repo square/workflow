@@ -28,7 +28,7 @@ import kotlin.test.fail
 class WorkflowTesterTest {
 
   @Test fun `propagates exception when block throws`() {
-    val workflow = StatelessWorkflow<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit> { }
 
     assertFailsWith<ExpectedException> {
       workflow.testFromStart {
@@ -38,7 +38,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from compose`() {
-    val workflow = StatelessWorkflow<Unit, Unit> {
+    val workflow = Workflow.stateless<Unit, Unit> {
       throw ExpectedException()
     }
 
@@ -51,7 +51,7 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when Job is cancelled in test block`() {
     val job = Job()
-    val workflow = StatelessWorkflow<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit> { }
 
     assertFailsWith<ClosedReceiveChannelException> {
       workflow.testFromStart(context = job) {
@@ -63,7 +63,7 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when Job is cancelled before starting`() {
     val job = Job().apply { cancel() }
-    val workflow = StatelessWorkflow<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit> { }
 
     assertFailsWith<JobCancellationException> {
       workflow.testFromStart(context = job) {
@@ -163,7 +163,7 @@ class WorkflowTesterTest {
   @Test fun `propagates exception when subscription throws`() {
     val deferred = CompletableDeferred<Unit>()
     deferred.completeExceptionally(ExpectedException())
-    val workflow = StatelessWorkflow<Unit, Unit> {
+    val workflow = Workflow.stateless<Unit, Unit> {
       it.onDeferred(deferred) { fail("Shouldn't get here.") }
     }
 
@@ -175,7 +175,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `does nothing when no outputs observed`() {
-    val workflow = StatelessWorkflow<Unit, Unit> {}
+    val workflow = Workflow.stateless<Unit, Unit> {}
 
     workflow.testFromStart {
       // The workflow should never start.
