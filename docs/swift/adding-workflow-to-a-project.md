@@ -1,11 +1,3 @@
----
-title: Adding Workflow to a project
-index: 2
-navigation:
-    visible: true
-    path: documentation
----
-
 # Adding Workflow to a project
 
 This document will guide you through the process of adding Workflow to an iOS project.

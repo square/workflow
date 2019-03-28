@@ -1,11 +1,3 @@
----
-title: Using a Workflow to Show UI
-index: 6
-navigation:
-    visible: true
-    path: documentation
----
-
 # Using a workflow to show UI
 
 

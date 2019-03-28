@@ -1,11 +1,3 @@
----
-title: Tooling
-index: 2
-navigation:
-    visible: true
-    path: documentation
----
-
 # Tooling
 
 

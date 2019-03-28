@@ -1,11 +1,3 @@
----
-title: Swift
-index: 3
-navigation:
-    visible: true
-    path: documentation
----
-
 # Swift
 
 The Workflow infrastructure is split into several modules.
@@ -24,3 +16,11 @@ Workflow for iOS makes extensive use of [ReactiveSwift](https://github.com/React
 - [Core Reactive Primitives](https://github.com/ReactiveCocoa/ReactiveSwift/blob/master/Documentation/ReactivePrimitives.md)
 - [Basic Operators](https://github.com/ReactiveCocoa/ReactiveSwift/blob/master/Documentation/BasicOperators.md)
 - [How does ReactiveSwift relate to RxSwift?](https://github.com/ReactiveCocoa/ReactiveSwift/blob/master/Documentation/RxComparison.md)
+
+## Next Steps
+
+ * [Tooling](tooling.md)
+ * [Adding Workflow to a Project](adding-workflow-to-a-project.md)
+ * [Building a Workflow](building-a-workflow.md)
+ * [Building a View Controller from a Screen](building-a-view-controller-from-screen.md)
+ * [Using a Workflow to Show UI](using-a-workflow-for-ui.md)

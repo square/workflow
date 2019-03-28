@@ -1,11 +1,3 @@
----
-title: Concepts
-index: 1
-navigation:
-    visible: true
-    path: documentation
----
-
 # Concepts
 
 Workflows provide a way to build complex applications out of small, isolated pieces with a predictable data flow and a consistent API contract. They are conceptually similar to components in architecture patterns such as React (though they are fully native and type-safe).
