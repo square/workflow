@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.10.0
+
+_2019-3-28_
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.9.1
 
 _2019-3-25_
