@@ -2,6 +2,12 @@
 
 ## Production Releases
 
+---
+
+***Before you begin:*** *Please make sure you are set up with [`pod trunk`](https://guides.cocoapods.org/making/getting-setup-with-trunk.html) and your CocoaPods account is a contributor to both the Workflow and WorkflowUI pods. If you need to be added as a contributor, please open a ticket requesting access, and assign it to @timdonnelly.*
+
+---
+
 1. Make sure you're on the `master` branch.
 2. In `kotlin/gradle.properties`, remove the `-SNAPSHOT` prefix from the `VERSION_NAME` property.
    E.g. `VERSION_NAME=0.1.0`
@@ -15,15 +21,20 @@
    ```
    ./gradlew clean uploadArchives
    ```
-5. Bump the version
+5. Publish to CocoaPods:
+    ```
+    bundle exec pod trunk push Workflow.podspec
+    bundle exec pod trunk push WorkflowUI.podspec
+    ```
+6. Bump the version
   - **Kotlin:** Update the `VERSION_NAME` property in `kotlin/gradle.properties` to the new snapshot 
     version, e.g. `VERSION_NAME=0.2.0-SNAPSHOT`.
   - **Swift:** Update `s.version` in `Workflow.podspec` to the new version, e.g. `0.2.0`.
-6. Commit the new snapshot version:
+7. Commit the new snapshot version:
    ```
    git commit -am "Finish releasing v0.1.0."
    ```
-7. Push your commits and tag:
+8. Push your commits and tag:
    ```
    git push origin master && git push origin v0.1.0
    ```
