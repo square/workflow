@@ -33,7 +33,7 @@ dependencies {
   implementation project(':samples:tictactoe:common')
   implementation project(':viewregistry-android')
   implementation project(':workflow-core')
-  implementation project(':workflow-host')
+  implementation project(':workflow-runtime')
 
   implementation deps.appcompatv7
   implementation deps.constraint_layout
