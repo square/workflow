@@ -96,9 +96,9 @@ abstract class ModalContainer<M : Any>
         .subscribe {
           removeAllViews()
           val newView = it.viewForBase(screens, viewRegistry, this)
-          restoredBaseViewState?.let {
+          restoredBaseViewState?.let { restoredState ->
             restoredBaseViewState = null
-            newView.restoreHierarchyState(it)
+            newView.restoreHierarchyState(restoredState)
           }
           addView(newView)
         }

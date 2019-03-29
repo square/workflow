@@ -74,6 +74,7 @@ buildscript {
               'mockito': "com.nhaarman:mockito-kotlin-kt1.1:${versions.mockitoKotlin}"
           ]
       ],
+      'dokkaAndroid': "org.jetbrains.dokka:dokka-android-gradle-plugin:${versions.dokka}",
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:${versions.mavenPublishPlugin}",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:${versions.ktlintPlugin}",
@@ -100,6 +101,7 @@ buildscript {
     classpath deps.android_gradle_plugin
     classpath deps.detekt
     classpath deps.dokka
+    classpath deps.dokkaAndroid
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
     classpath deps.mavenPublish
@@ -110,6 +112,11 @@ buildscript {
     gradlePluginPortal()
     google()
   }
+}
+
+rootProject.ext.defaultDokkaConfig = {
+    outputFormat = 'gfm'
+    outputDirectory = "$buildDir/docs"
 }
 
 rootProject.ext.defaultAndroidConfig = {

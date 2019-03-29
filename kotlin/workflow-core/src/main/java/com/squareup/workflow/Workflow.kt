@@ -43,7 +43,7 @@ package com.squareup.workflow
  * If your workflow needs to keep track of internal state, implement the [StatefulWorkflow]
  * interface. That interface has an additional type parameter, `StateT`, and allows you to specify
  * [how to create the initial state][StatefulWorkflow.initialState] and how to
- * [snapshot][StatefulWorkflow.snapshotState]/[restore][StatefulWorkflow.restoreState] your state.
+ * [snapshot][StatefulWorkflow.snapshotState]/restore your state.
  *
  * ### [Stateless Workflows][StatelessWorkflow]
  *

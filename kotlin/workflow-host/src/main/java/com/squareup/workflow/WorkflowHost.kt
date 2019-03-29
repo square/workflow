@@ -37,8 +37,7 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
 interface WorkflowHost<out OutputT : Any, out RenderingT : Any> {
 
   /**
-   * Output from a [WorkflowHost]. Emitted from [WorkflowHost.updates] after every
-   * [compose][Workflow.compose] pass.
+   * Output from a [WorkflowHost]. Emitted from [WorkflowHost.updates] after every compose pass.
    */
   data class Update<out OutputT : Any, out RenderingT : Any>(
     val rendering: RenderingT,
@@ -61,11 +60,12 @@ interface WorkflowHost<out OutputT : Any, out RenderingT : Any> {
     /**
      * Creates a [WorkflowHost] to run [workflow].
      *
-     * The workflow's initial state is determined by passing [input] to [Workflow.initialState].
+     * The workflow's initial state is determined by passing [input] to
+     * [StatefulWorkflow.initialState].
      *
      * @param workflow The workflow to start.
-     * @param input Passed to [Workflow.initialState] to determine the root workflow's initial state.
-     * If [InputT] is `Unit`, you can just omit this argument.
+     * @param input Passed to [StatefulWorkflow.initialState] to determine the root workflow's
+     * initial state. If [InputT] is `Unit`, you can just omit this argument.
      * @param snapshot If not null, used to restore the workflow.
      * @param context The [CoroutineContext] used to run the workflow tree. Added to the [Factory]'s
      * context.

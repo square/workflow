@@ -44,9 +44,9 @@ import kotlin.reflect.KType
 interface WorkflowContext<StateT : Any, in OutputT : Any> {
 
   /**
-   * Given a function that takes an [event][EventT] and can mutate the state or emit an output, returns
-   * a function that will perform that workflow update when called with an event.
-   * The returned function is valid until the next [compose][Workflow.compose] pass.
+   * Given a function that takes an [event][EventT] and can mutate the state or emit an output,
+   * returns a function that will perform that workflow update when called with an event.
+   * The returned function is valid until the next compose pass.
    *
    * For example, if you have a rendering type of `Screen`:
    *
@@ -73,16 +73,16 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
   ): EventHandler<EventT>
 
   /**
-   * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to, and
-   * will send anything emitted on the channel to [handler] as a [ChannelUpdate].
+   * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to,
+   * and will send anything emitted on the channel to [handler] as a [ChannelUpdate].
    *
    * This method ensures that only one subscription is active at a time for the given [type]+[key].
-   * If this method is called in two or more consecutive [Workflow.compose] invocations with the same
-   * key, [channelProvider] will only be invoked for the first one, and the returned channel will be
-   * re-used for all subsequent invocations, until a [Workflow.compose] invocation does _not_ call this
-   * method with an equal key. At that time, the channel will be [cancelled][ReceiveChannel.cancel],
-   * with the assumption that cancelling the channel will release any resources allocated by the
-   * [channelProvider].
+   * If this method is called in two or more consecutive `compose` invocations with the
+   * same key, [channelProvider] will only be invoked for the first one, and the returned channel
+   * will be re-used for all subsequent invocations, until a `compose` invocation does
+   * _not_ call this method with an equal key. At that time, the channel will be
+   * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will
+   * release any resources allocated by the [channelProvider].
    *
    * @param type The [KType] that represents both the type of data source (e.g. `ReceiveChannel` or
    * `Deferred`) and the element type [E].
@@ -101,18 +101,21 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
-   * [compose][Workflow.compose] method.
+   * `compose` method.
    *
-   * **Never call [Workflow.compose] directly, always do it through this context method.**
+   * **Never call [StatefulWorkflow.compose] or [StatelessWorkflow.compose] directly, always do it
+   * through this context method.**
    *
    * 1. If the child _wasn't_ already running, it will be started either from
    *    [initialState][Workflow.initialState] or its snapshot.
-   * 2. If the child _was_ already running, The workflow's [onInputChanged][Workflow.onInputChanged]
-   *    method is invoked with the previous input and this one.
-   * 3. The child's [compose][Workflow.compose] method is invoked with `input` and the child's state.
+   * 2. If the child _was_ already running, The workflow's
+   *    [onInputChanged][StatefulWorkflow.onInputChanged] method is invoked with the previous input
+   *    and this one.
+   * 3. The child's `compose` method is invoked with `input` and the child's state.
    *
    * After this method returns, if something happens that trigger's one of `child`'s handlers, and
-   * that handler emits an output, the function passed as [handler] will be invoked with that output.
+   * that handler emits an output, the function passed as [handler] will be invoked with that
+   * output.
    *
    * @param key An optional string key that is used to distinguish between workflows of the same
    * type.
@@ -130,14 +133,15 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
  * will send anything emitted on the channel to [handler] as a [ChannelUpdate].
  *
  * This method ensures that only one subscription is active at a time for the given key.
- * If this method is called in two or more consecutive [Workflow.compose] invocations with the same
+ * If this method is called in two or more consecutive `compose` invocations with the same
  * key+[channelProvider] type, the provider will only be invoked for the first one, and the returned
- * channel will be re-used for all subsequent invocations, until a [Workflow.compose] invocation does
- * _not_ call this method with an equal key+type. At that time, the channel will be
+ * channel will be re-used for all subsequent invocations, until a `compose` invocation
+ * does _not_ call this method with an equal key+type. At that time, the channel will be
  * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will release
  * any resources allocated by the [channelProvider].
  *
- * @param key An optional string key that is used to distinguish between subscriptions of the same type.
+ * @param key An optional string key that is used to distinguish between subscriptions of the same
+ * type.
  * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
  *
  * @see WorkflowContext.onReceive
@@ -168,7 +172,8 @@ fun <StateT : Any, OutputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
 // @formatter:on
 
 /**
- * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit output.
+ * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit
+ * output.
  */
 fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
@@ -182,7 +187,8 @@ fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
 // @formatter:on
 
 /**
- * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit output.
+ * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit
+ * output.
  */
 fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
