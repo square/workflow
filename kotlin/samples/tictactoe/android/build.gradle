@@ -21,9 +21,9 @@ android rootProject.ext.defaultAndroidConfig
 android {
   defaultConfig {
     applicationId "com.squareup.sample.tictacworkflow"
-    minSdkVersion versions.minSdkVersion
+    minSdkVersion versions.minSdk
     multiDexEnabled true
-    targetSdkVersion versions.targetSdkVersion
+    targetSdkVersion versions.targetSdk
     versionCode 1
     versionName "1.0.0"
   }
