@@ -18,8 +18,7 @@ package com.squareup.workflow
 /**
  * A composable, stateful object that can [handle events][WorkflowContext.onEvent],
  * [delegate to children][WorkflowContext.compose], [subscribe][onReceive] to arbitrary streams from
- * the outside world, and be [saved][snapshotState] to a serialized form to be
- * [restored][restoreState] later.
+ * the outside world, and be [saved][snapshotState] to a serialized form to be restored later.
  *
  * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
  * [rendering][RenderingT]. To that end, a workflow may keep track of internal [state][StateT],
@@ -39,7 +38,7 @@ package com.squareup.workflow
  *
  * @param StateT Typically a data class that contains all of the internal state for this workflow.
  * The state is seeded via [input][InputT] in [initialState]. It can be [serialized][snapshotState]
- * and later used to [restore][restoreState] the workflow. **Implementations of the `Workflow`
+ * and later used to restore the workflow. **Implementations of the `Workflow`
  * interface should not generally contain their own state directly.** They may inject objects like
  * instances of their child workflows, or network clients, but should not contain directly mutable
  * state. This is the only type parameter that a parent workflow needn't care about for its children,
