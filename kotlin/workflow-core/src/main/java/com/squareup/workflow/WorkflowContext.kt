@@ -40,6 +40,10 @@ import kotlin.reflect.KType
  * ## Composing Children
  *
  * See [compose].
+ *
+ * ## Handling Workflow Teardown
+ *
+ * See [onTeardown].
  */
 interface WorkflowContext<StateT : Any, in OutputT : Any> {
 
@@ -123,6 +127,18 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
     key: String = "",
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT
+
+  /**
+   * Adds an action to be invoked if the workflow is discarded by its parent before the next
+   * compose pass. Multiple hooks can be registered in the same compose pass, they will be invoked
+   * in the same order they're set. Like any other work performed through the context (e.g. calls
+   * to [compose] or [onReceive]), hooks are cleared at the start of each compose pass, so you must
+   * set any hooks you need in each compose pass.
+   *
+   * Teardown handlers should be non-blocking and execute quickly, since they are invoked
+   * synchronously during the compose pass.
+   */
+  fun onTeardown(handler: () -> Unit)
 }
 
 /**
