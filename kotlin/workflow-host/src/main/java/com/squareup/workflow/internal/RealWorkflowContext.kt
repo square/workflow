@@ -46,6 +46,7 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   private val nextUpdateFromEvent = CompletableDeferred<WorkflowAction<StateT, OutputT>>()
   private val subscriptionCases = mutableListOf<SubscriptionCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
+  private val teardownHooks = mutableListOf<() -> Unit>()
 
   override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
       EventHandler<EventT> {
@@ -88,12 +89,17 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
     return composer.compose(case, child, id, input)
   }
 
+  override fun onTeardown(handler: () -> Unit) {
+    teardownHooks += handler
+  }
+
   /**
    * Constructs an immutable [Behavior] from the context.
    */
   fun buildBehavior(): Behavior<StateT, OutputT> = Behavior(
       childCases = childCases.toList(),
       subscriptionCases = subscriptionCases.toList(),
-      nextActionFromEvent = nextUpdateFromEvent
+      nextActionFromEvent = nextUpdateFromEvent,
+      teardownHooks = teardownHooks.toList()
   )
 }

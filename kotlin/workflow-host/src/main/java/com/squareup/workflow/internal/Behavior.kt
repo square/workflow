@@ -33,7 +33,8 @@ import kotlin.reflect.KType
 internal data class Behavior<StateT : Any, out OutputT : Any>(
   val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,
   val subscriptionCases: List<SubscriptionCase<*, StateT, OutputT>>,
-  val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>
+  val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>,
+  val teardownHooks: List<() -> Unit>
 ) {
 
   // @formatter:off

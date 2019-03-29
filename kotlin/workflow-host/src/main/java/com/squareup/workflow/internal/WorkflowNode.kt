@@ -71,6 +71,15 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
    */
   override val coroutineContext = baseContext + Job(baseContext[Job]) + CoroutineName(id.toString())
 
+  init {
+    // This will get invoked whenever we are cancelled (via our cancel() method), or whenever
+    // any of our ancestor workflows are cancelled, anywhere up the tree, including whenever an
+    // exception is thrown that cancels a workflow.
+    coroutineContext[Job]!!.invokeOnCompletion {
+      behavior?.teardownHooks?.forEach { it.invoke() }
+    }
+  }
+
   private val subtreeManager = SubtreeManager<StateT, OutputT>(coroutineContext)
   private val subscriptionTracker =
     LifetimeTracker<SubscriptionCase<*, StateT, OutputT>, Any, Subscription>(
@@ -85,7 +94,7 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
 
   private var lastInput: InputT = initialInput
 
-  private lateinit var behavior: Behavior<StateT, OutputT>
+  private var behavior: Behavior<StateT, OutputT>? = null
 
   /**
    * Walk the tree of workflows, rendering each one and using
@@ -149,7 +158,7 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
 
     // Listen for any events.
     with(selector) {
-      behavior.nextActionFromEvent.onAwait { update ->
+      behavior!!.nextActionFromEvent.onAwait { update ->
         acceptUpdate(update)
       }
     }
@@ -162,6 +171,10 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
    * after calling this method.
    */
   fun cancel() {
+    // No other cleanup work should be done in this function, since it will only be invoked when
+    // this workflow is *directly* discarded by its parent (or the host).
+    // If you need to do something whenever this workflow is torn down, add it to the
+    // invokeOnCompletion handler for the Job above.
     coroutineContext.cancel()
   }
 
@@ -179,9 +192,11 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
     val rendering = workflow.compose(input, state, context)
 
     behavior = context.buildBehavior()
-    // Start new children/subscriptions, and drop old ones.
-    subtreeManager.track(behavior.childCases)
-    subscriptionTracker.track(behavior.subscriptionCases)
+        .apply {
+          // Start new children/subscriptions, and drop old ones.
+          subtreeManager.track(childCases)
+          subscriptionTracker.track(subscriptionCases)
+        }
 
     return rendering
   }

@@ -15,10 +15,12 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class CompositionIntegrationTest {
 
@@ -88,6 +90,90 @@ class CompositionIntegrationTest {
     root.testFromStart("initial input") {
       assertFailsWith<IllegalArgumentException> {
         it.awaitNextRendering()
+      }
+    }
+  }
+
+  @Test fun `all childrens teardown hooks invoked when parent discards it`() {
+    val teardowns = mutableListOf<String>()
+    val child1 = Workflow.stateless<Nothing, Unit> { context ->
+      context.onTeardown { teardowns += "child1" }
+    }
+    val child2 = Workflow.stateless<Nothing, Unit> { context ->
+      context.onTeardown { teardowns += "child2" }
+    }
+    // A workflow that will render child1 and child2 until its rendering is invoked, at which point
+    // it will compose neither of them, which should trigger the teardown callbacks.
+    val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ): Boolean = true
+
+      override fun compose(
+        input: Unit,
+        state: Boolean,
+        context: WorkflowContext<Boolean, Nothing>
+      ): () -> Unit {
+        if (state) {
+          context.compose(child1, key = "child1")
+          context.compose(child2, key = "child2")
+        }
+        return context.onEvent<Unit> { enterState(false) }::invoke
+      }
+
+      override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
+    }
+
+    root.testFromStart { tester ->
+      tester.withNextRendering { teardownChildren ->
+        assertTrue(teardowns.isEmpty())
+
+        teardownChildren()
+
+        assertEquals(listOf("child1", "child2"), teardowns)
+      }
+    }
+  }
+
+  @Test fun `nested childrens teardown hooks invoked when parent discards it`() {
+    val teardowns = mutableListOf<String>()
+    val grandchild = Workflow.stateless<Nothing, Unit> { context ->
+      context.onTeardown { teardowns += "grandchild" }
+    }
+    val child = Workflow.stateless<Nothing, Unit> { context ->
+      context.compose(grandchild)
+      context.onTeardown { teardowns += "child" }
+    }
+    // A workflow that will render child1 and child2 until its rendering is invoked, at which point
+    // it will compose neither of them, which should trigger the teardown callbacks.
+    val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ): Boolean = true
+
+      override fun compose(
+        input: Unit,
+        state: Boolean,
+        context: WorkflowContext<Boolean, Nothing>
+      ): () -> Unit {
+        if (state) {
+          context.compose(child)
+        }
+        return context.onEvent<Unit> { enterState(false) }::invoke
+      }
+
+      override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
+    }
+
+    root.testFromStart { tester ->
+      tester.withNextRendering { teardownChildren ->
+        assertTrue(teardowns.isEmpty())
+
+        teardownChildren()
+
+        assertEquals(listOf("grandchild", "child"), teardowns)
       }
     }
   }

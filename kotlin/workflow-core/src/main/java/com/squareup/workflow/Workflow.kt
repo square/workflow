@@ -51,6 +51,14 @@ package com.squareup.workflow
  * or renderings, extend [StatelessWorkflow], or just pass a lambda to the [stateless] function
  * below.
  *
+ * ## Interacting with Events and Other Workflows
+ *
+ * All workflows are passed a [WorkflowContext] in their compose methods. This context allows the
+ * workflow to interact with the outside world by doing things like listening for events,
+ * subscribing to streams of data, rendering child workflows, and performing cleanup when the
+ * workflow is about to be torn down by its parent. See the documentation on [WorkflowContext] for
+ * more information about what it can do.
+ *
  * @param InputT Typically a data class that is used to pass configuration information or bits of
  * state that the workflow can always get from its parent and needn't duplicate in its own state.
  * May be [Unit] if the workflow does not need any input data.
