@@ -17,7 +17,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 
 dependencies {
-  implementation project(':viewregistry')
+  implementation project(':workflow-ui-core')
   implementation project(':workflow-core')
   implementation project(':workflow-rx2')
 

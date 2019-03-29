@@ -15,8 +15,8 @@
  */
 package com.squareup.sample.panel
 
-import com.squareup.viewregistry.BackStackScreen
-import com.squareup.viewregistry.HasModals
+import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.HasModals
 
 /**
  * Custom modal container used in Tic Tac Workflow sample. Shows one or more

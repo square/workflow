@@ -35,13 +35,13 @@ import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
 import com.squareup.sample.panel.PanelContainerScreen
 import com.squareup.sample.panel.asPanelOver
-import com.squareup.viewregistry.AlertContainerScreen
-import com.squareup.viewregistry.AlertScreen
-import com.squareup.viewregistry.AlertScreen.Button.NEGATIVE
-import com.squareup.viewregistry.AlertScreen.Button.NEUTRAL
-import com.squareup.viewregistry.AlertScreen.Button.POSITIVE
-import com.squareup.viewregistry.AlertScreen.Event.ButtonClicked
-import com.squareup.viewregistry.AlertScreen.Event.Canceled
+import com.squareup.workflow.ui.AlertContainerScreen
+import com.squareup.workflow.ui.AlertScreen
+import com.squareup.workflow.ui.AlertScreen.Button.NEGATIVE
+import com.squareup.workflow.ui.AlertScreen.Button.NEUTRAL
+import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
+import com.squareup.workflow.ui.AlertScreen.Event.ButtonClicked
+import com.squareup.workflow.ui.AlertScreen.Event.Canceled
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -190,14 +190,18 @@ class RealRunGameWorkflow(
     base: Any,
     vararg alerts: AlertScreen
   ): RunGameScreen {
-    return AlertContainerScreen(PanelContainerScreen<Any, Any>(base), *alerts)
+    return AlertContainerScreen(
+        PanelContainerScreen<Any, Any>(base), *alerts
+    )
   }
 
   private fun alertScreen(
     base: Any,
     alert: AlertScreen
   ): RunGameScreen {
-    return AlertContainerScreen(PanelContainerScreen<Any, Any>(base), alert)
+    return AlertContainerScreen(
+        PanelContainerScreen<Any, Any>(base), alert
+    )
   }
 
   private fun subflowScreen(

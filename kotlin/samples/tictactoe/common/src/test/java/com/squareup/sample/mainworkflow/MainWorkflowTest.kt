@@ -5,7 +5,7 @@ import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.panel.PanelContainerScreen
-import com.squareup.viewregistry.BackStackScreen
+import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.rendering
@@ -51,7 +51,8 @@ class MainWorkflowTest {
     body: String = DEFAULT_RUN_GAME
   ) = RunGameScreen(PanelContainerScreen<String, String>(body))
 
-  private fun authScreen(wrapped: String = DEFAULT_AUTH) = BackStackScreen(wrapped)
+  private fun authScreen(wrapped: String = DEFAULT_AUTH) =
+    BackStackScreen(wrapped)
 
   private val RunGameScreen.panels: List<Any> get() = baseScreen.modals.map { it.wrapped }
   private val RunGameScreen.body: Any get() = baseScreen.baseScreen

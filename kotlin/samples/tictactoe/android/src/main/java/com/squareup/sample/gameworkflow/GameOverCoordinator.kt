@@ -30,9 +30,9 @@ import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
 import com.squareup.sample.tictactoe.R
-import com.squareup.viewregistry.LayoutBinding
-import com.squareup.viewregistry.ViewBinding
-import com.squareup.viewregistry.setBackHandler
+import com.squareup.workflow.ui.LayoutBinding
+import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 

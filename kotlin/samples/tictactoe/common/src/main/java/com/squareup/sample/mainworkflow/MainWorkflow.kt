@@ -23,7 +23,7 @@ import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.mainworkflow.MainState.Authenticating
 import com.squareup.sample.mainworkflow.MainState.RunningGame
 import com.squareup.sample.panel.asPanelOver
-import com.squareup.viewregistry.AlertContainerScreen
+import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow

@@ -31,7 +31,7 @@ android {
 
 dependencies {
   implementation project(':samples:tictactoe:common')
-  implementation project(':viewregistry-android')
+  implementation project(':workflow-ui-android')
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
 
