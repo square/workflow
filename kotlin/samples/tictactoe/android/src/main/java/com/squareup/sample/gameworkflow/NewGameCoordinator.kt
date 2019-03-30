@@ -19,12 +19,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import com.squareup.coordinators.Coordinator
+import com.squareup.sample.gameworkflow.NewGameScreen.Event.CancelNewGame
+import com.squareup.sample.gameworkflow.NewGameScreen.Event.StartGame
 import com.squareup.sample.tictactoe.R
-import com.squareup.sample.gameworkflow.RunGameEvent.NoMore
-import com.squareup.sample.gameworkflow.RunGameEvent.StartGame
-import com.squareup.viewregistry.LayoutBinding
-import com.squareup.viewregistry.ViewBinding
-import com.squareup.viewregistry.setBackHandler
+import com.squareup.workflow.ui.LayoutBinding
+import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -70,7 +70,7 @@ internal class NewGameCoordinator(
       )
     }
 
-    view.setBackHandler { screen.onEvent(NoMore) }
+    view.setBackHandler { screen.onEvent(CancelNewGame) }
   }
 
   companion object : ViewBinding<NewGameScreen> by LayoutBinding.of(

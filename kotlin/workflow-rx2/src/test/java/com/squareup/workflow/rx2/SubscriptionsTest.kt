@@ -16,7 +16,7 @@
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.Workflow
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
@@ -33,7 +33,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertSame
-import kotlin.test.fail
 
 class SubscriptionsTest {
 
@@ -46,7 +45,7 @@ class SubscriptionsTest {
    */
   private class SubscriberWorkflow(
     subject: Observable<String>
-  ) : Workflow<Boolean, Boolean, ChannelUpdate<String>, (setSubscribed: Boolean) -> Unit> {
+  ) : StatefulWorkflow<Boolean, Boolean, ChannelUpdate<String>, (Boolean) -> Unit>() {
 
     var subscriptions = 0
       private set
@@ -58,7 +57,10 @@ class SubscriptionsTest {
         .doOnSubscribe { subscriptions++ }
         .doOnDispose { disposals++ }
 
-    override fun initialState(input: Boolean): Boolean = input
+    override fun initialState(
+      input: Boolean,
+      snapshot: Snapshot?
+    ): Boolean = input
 
     override fun compose(
       input: Boolean,
@@ -72,7 +74,6 @@ class SubscriptionsTest {
     }
 
     override fun snapshotState(state: Boolean) = Snapshot.EMPTY
-    override fun restoreState(snapshot: Snapshot): Boolean = fail()
   }
 
   private val subject = PublishSubject.create<String>()

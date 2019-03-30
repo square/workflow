@@ -15,20 +15,20 @@
  */
 buildscript {
   ext.versions = [
-      'agpVersion': '3.2.1',
-      'buildToolsVersion': '28.0.3',
-      'minSdkVersion': 21,
-      'targetSdkVersion': 26,
-      'sourceCompatibilityVersion': JavaVersion.VERSION_1_8,
-      'targetCompatibilityVersion': JavaVersion.VERSION_1_8,
+      'agp': '3.2.1',
+      'buildTools': '28.0.3',
+      'compileSdk': '27',
+      'minSdk': 21,
+      'targetSdk': 26,
+      'sourceCompatibility': JavaVersion.VERSION_1_8,
+      'targetCompatibility': JavaVersion.VERSION_1_8,
 
       'coordinators': '0.4',
       'rxandroid2': '2.1.0',
-      'supportVersion': '26.0.2',
-      'timberVersion': '4.7.1',
+      'support': '26.0.2',
+      'timber': '4.7.1',
 
       'assertj': '2.6.0',
-      'compileSdkVersion': '27',
       'detektPlugin': '1.0.0-RC11',
       'dokka': '0.9.16',
       'hamcrest': '1.3',
@@ -44,14 +44,15 @@ buildscript {
   ]
 
   ext.deps = [
-      'android_gradle_plugin': "com.android.tools.build:gradle:${versions.agpVersion}",
+      'android_gradle_plugin': "com.android.tools.build:gradle:${versions.agp}",
 
-      'appcompatv7': "com.android.support:appcompat-v7:${versions.supportVersion}",
+      'appcompatv7': "com.android.support:appcompat-v7:${versions.support}",
       'coordinators': "com.squareup.coordinators:coordinators:${versions.coordinators}",
-      'design': "com.android.support:design:${versions.supportVersion}",
+      'constraint_layout': "com.android.support.constraint:constraint-layout:1.1.0",
+      'design': "com.android.support:design:${versions.support}",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:${versions.rxandroid2}",
-      'timber': "com.jakewharton.timber:timber:${versions.timberVersion}",
-      'transition': "com.android.support:transition:${versions.supportVersion}",
+      'timber': "com.jakewharton.timber:timber:${versions.timber}",
+      'transition': "com.android.support:transition:${versions.support}",
 
       'kotlin': [
           'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
@@ -73,6 +74,7 @@ buildscript {
               'mockito': "com.nhaarman:mockito-kotlin-kt1.1:${versions.mockitoKotlin}"
           ]
       ],
+      'dokkaAndroid': "org.jetbrains.dokka:dokka-android-gradle-plugin:${versions.dokka}",
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:${versions.mavenPublishPlugin}",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:${versions.ktlintPlugin}",
@@ -99,6 +101,7 @@ buildscript {
     classpath deps.android_gradle_plugin
     classpath deps.detekt
     classpath deps.dokka
+    classpath deps.dokkaAndroid
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
     classpath deps.mavenPublish
@@ -111,18 +114,23 @@ buildscript {
   }
 }
 
+rootProject.ext.defaultDokkaConfig = {
+    outputFormat = 'gfm'
+    outputDirectory = "$buildDir/docs"
+}
+
 rootProject.ext.defaultAndroidConfig = {
-  compileSdkVersion versions.targetSdkVersion
-  buildToolsVersion versions.buildToolsVersion
+  compileSdkVersion versions.targetSdk
+  buildToolsVersion versions.buildTools
 
   compileOptions {
-    sourceCompatibility versions.sourceCompatibilityVersion
-    targetCompatibility versions.targetCompatibilityVersion
+    sourceCompatibility versions.sourceCompatibility
+    targetCompatibility versions.targetCompatibility
   }
 
   defaultConfig {
-    minSdkVersion versions.minSdkVersion
-    targetSdkVersion versions.targetSdkVersion
+    minSdkVersion versions.minSdk
+    targetSdkVersion versions.targetSdk
     versionCode 1
     versionName "1.0"
   }

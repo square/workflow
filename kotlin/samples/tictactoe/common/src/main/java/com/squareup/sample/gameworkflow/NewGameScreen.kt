@@ -18,5 +18,14 @@ package com.squareup.sample.gameworkflow
 data class NewGameScreen(
   val defaultNameX: String,
   val defaultNameO: String,
-  val onEvent: (RunGameEvent) -> Unit
-)
+  val onEvent: (Event) -> Unit
+) {
+  sealed class Event {
+    object CancelNewGame : Event()
+
+    data class StartGame(
+      val x: String,
+      val o: String
+    ) : Event()
+  }
+}

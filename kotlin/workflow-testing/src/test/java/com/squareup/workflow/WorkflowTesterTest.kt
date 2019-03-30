@@ -21,12 +21,13 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.fail
 
 class WorkflowTesterTest {
 
   @Test fun `propagates exception when block throws`() {
-    val workflow = StatelessWorkflow<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit> { }
 
     assertFailsWith<ExpectedException> {
       workflow.testFromStart {
@@ -36,7 +37,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from compose`() {
-    val workflow = StatelessWorkflow<Unit, Unit> {
+    val workflow = Workflow.stateless<Unit, Unit> {
       throw ExpectedException()
     }
 
@@ -49,7 +50,7 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when Job is cancelled in test block`() {
     val job = Job()
-    val workflow = StatelessWorkflow<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit> { }
 
     assertFailsWith<CancellationException> {
       workflow.testFromStart(context = job) {
@@ -61,7 +62,7 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when Job is cancelled before starting`() {
     val job = Job().apply { cancel() }
-    val workflow = StatelessWorkflow<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit> { }
 
     assertFailsWith<CancellationException> {
       workflow.testFromStart(context = job) {
@@ -71,8 +72,12 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from initial state`() {
-    val workflow = object : Workflow<Unit, Unit, Nothing, Unit> {
-      override fun initialState(input: Unit) {
+    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ) {
+        assertNull(snapshot)
         throw ExpectedException()
       }
 
@@ -84,13 +89,7 @@ class WorkflowTesterTest {
         fail()
       }
 
-      override fun snapshotState(state: Unit): Snapshot {
-        fail()
-      }
-
-      override fun restoreState(snapshot: Snapshot) {
-        fail()
-      }
+      override fun snapshotState(state: Unit): Snapshot = fail()
     }
 
     assertFailsWith<ExpectedException> {
@@ -101,8 +100,12 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from snapshot state`() {
-    val workflow = object : Workflow<Unit, Unit, Nothing, Unit> {
-      override fun initialState(input: Unit) {
+    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ) {
+        assertNull(snapshot)
         // Noop
       }
 
@@ -114,13 +117,7 @@ class WorkflowTesterTest {
         // Noop
       }
 
-      override fun snapshotState(state: Unit): Snapshot {
-        throw ExpectedException()
-      }
-
-      override fun restoreState(snapshot: Snapshot) {
-        fail()
-      }
+      override fun snapshotState(state: Unit): Snapshot = throw ExpectedException()
     }
 
     assertFailsWith<ExpectedException> {
@@ -131,8 +128,14 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from restore state`() {
-    val workflow = object : Workflow<Unit, Unit, Nothing, Unit> {
-      override fun initialState(input: Unit) {
+    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ) {
+        if (snapshot != null) {
+          throw ExpectedException()
+        }
       }
 
       override fun compose(
@@ -143,10 +146,6 @@ class WorkflowTesterTest {
       }
 
       override fun snapshotState(state: Unit): Snapshot = Snapshot.EMPTY
-
-      override fun restoreState(snapshot: Snapshot) {
-        throw ExpectedException()
-      }
     }
 
     // Get a valid snapshot (can't use Snapshot.EMPTY).
@@ -163,7 +162,7 @@ class WorkflowTesterTest {
   @Test fun `propagates exception when subscription throws`() {
     val deferred = CompletableDeferred<Unit>()
     deferred.completeExceptionally(ExpectedException())
-    val workflow = StatelessWorkflow<Unit, Unit> {
+    val workflow = Workflow.stateless<Unit, Unit> {
       it.onDeferred(deferred) { fail("Shouldn't get here.") }
     }
 
@@ -175,7 +174,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `does nothing when no outputs observed`() {
-    val workflow = StatelessWorkflow<Unit, Unit> {}
+    val workflow = Workflow.stateless<Unit, Unit> {}
 
     workflow.testFromStart {
       // The workflow should never start.

@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+## Version 0.10.0
+
+_2019-3-28_
+
+ * Factor out a common parent interface for StatelessWorkflow and Workflow (now StatefulWorkflow). ([#213](https://github.com/square/workflow/issues/213))
+ * Replace restoreState with a Snapshot param to initialState. ([#220](https://github.com/square/workflow/issues/220))
+ * Moves StatelessWorkflow, Workflows.kt methods to Workflow. ([#226](https://github.com/square/workflow/pull/226))
+
 ## Version 0.9.1
 
 _2019-3-25_

@@ -18,6 +18,7 @@
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.WorkflowHost.Factory
@@ -37,7 +38,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 // @formatter:off
 @TestOnly
 fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
-    Workflow<InputT, *, OutputT, RenderingT>.testFromStart(
+    Workflow<InputT, OutputT, RenderingT>.testFromStart(
       input: InputT,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext,
@@ -51,7 +52,7 @@ fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
  * All workflow-related coroutines are cancelled when the block exits.
  */
 @TestOnly
-fun <T, OutputT : Any, RenderingT : Any> Workflow<Unit, *, OutputT, RenderingT>.testFromStart(
+fun <T, OutputT : Any, RenderingT : Any> Workflow<Unit, OutputT, RenderingT>.testFromStart(
   snapshot: Snapshot? = null,
   context: CoroutineContext = EmptyCoroutineContext,
   block: (WorkflowTester<OutputT, RenderingT>) -> T
@@ -59,15 +60,15 @@ fun <T, OutputT : Any, RenderingT : Any> Workflow<Unit, *, OutputT, RenderingT>.
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
- * [Workflow.initialState] is not called. Instead, the workflow is started from the given
- * [initialState].
+ * If the workflow is [stateful][StatefulWorkflow], [initialState][StatefulWorkflow.initialState]
+ * is not called. Instead, the workflow is started from the given [initialState].
  *
  * All workflow-related coroutines are cancelled when the block exits.
  */
 // @formatter:off
 @TestOnly
 fun <T, InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
-    Workflow<InputT, StateT, OutputT, RenderingT>.testFromState(
+    StatefulWorkflow<InputT, StateT, OutputT, RenderingT>.testFromState(
       input: InputT,
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
@@ -77,15 +78,15 @@ fun <T, InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
- * [Workflow.initialState] is not called. Instead, the workflow is started from the given
- * [initialState].
+ * If the workflow is [stateful][StatefulWorkflow], [initialState][StatefulWorkflow.initialState]
+ * is not called. Instead, the workflow is started from the given [initialState].
  *
  * All workflow-related coroutines are cancelled when the block exits.
  */
 // @formatter:off
 @TestOnly
 fun <StateT : Any, OutputT : Any, RenderingT : Any>
-    Workflow<Unit, StateT, OutputT, RenderingT>.testFromState(
+    StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.testFromState(
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
       block: (WorkflowTester<OutputT, RenderingT>) -> Unit

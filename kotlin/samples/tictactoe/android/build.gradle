@@ -21,9 +21,9 @@ android rootProject.ext.defaultAndroidConfig
 android {
   defaultConfig {
     applicationId "com.squareup.sample.tictacworkflow"
-    minSdkVersion versions.minSdkVersion
+    minSdkVersion versions.minSdk
     multiDexEnabled true
-    targetSdkVersion versions.targetSdkVersion
+    targetSdkVersion versions.targetSdk
     versionCode 1
     versionName "1.0.0"
   }
@@ -31,11 +31,14 @@ android {
 
 dependencies {
   implementation project(':samples:tictactoe:common')
-  implementation project(':viewregistry-android')
-  implementation project(':legacy:legacy-workflow-rx2')
+  implementation project(':workflow-ui-android')
+  implementation project(':workflow-core')
+  implementation project(':workflow-runtime')
 
   implementation deps.appcompatv7
+  implementation deps.constraint_layout
   implementation deps.design
+  implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect
   implementation deps.okio
   implementation deps.rxandroid2
