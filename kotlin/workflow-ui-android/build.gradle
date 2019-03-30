@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.gameworkflow
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.vanniktech.maven.publish'
 
-import com.squareup.workflow.ui.ViewRegistry
-import com.squareup.workflow.ui.backstack.NoEffect
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
 
-val TicTacToeViewBindings = ViewRegistry(
-    NewGameCoordinator,
-    GamePlayCoordinator,
-    GameOverCoordinator
-) + NoEffect(
-    from = GamePlayScreen::class, to = GameOverScreen::class
-)
+android rootProject.ext.defaultAndroidConfig
+
+dependencies {
+  api project(':workflow-ui-core')
+
+  api deps.coordinators
+  api deps.kotlin.stdLib.jdk6
+  api deps.rxjava2.rxjava2
+  api deps.transition
+
+  implementation deps.appcompatv7
+  implementation deps.kotlin.reflect
+}

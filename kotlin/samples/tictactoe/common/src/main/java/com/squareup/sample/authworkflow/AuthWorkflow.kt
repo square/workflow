@@ -25,7 +25,7 @@ import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
 import com.squareup.sample.authworkflow.LoginScreen.SubmitLogin
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.CancelSecondFactor
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
-import com.squareup.viewregistry.BackStackScreen
+import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
@@ -116,7 +116,9 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
 
         // We give this one a uniquing key so that it pushes rather than pops
         // the first Authorizing screen.
-        BackStackScreen(AuthorizingScreen("Submitting one time token…"), "2fa")
+        BackStackScreen(
+            AuthorizingScreen("Submitting one time token…"), "2fa"
+        )
       }
     }
   }

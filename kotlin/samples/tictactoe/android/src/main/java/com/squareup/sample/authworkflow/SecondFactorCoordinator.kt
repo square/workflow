@@ -23,9 +23,9 @@ import android.widget.TextView
 import com.squareup.coordinators.Coordinator
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.CancelSecondFactor
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
-import com.squareup.viewregistry.LayoutBinding
-import com.squareup.viewregistry.ViewBinding
-import com.squareup.viewregistry.setBackHandler
+import com.squareup.workflow.ui.LayoutBinding
+import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import com.squareup.sample.tictactoe.R

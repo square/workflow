@@ -25,8 +25,8 @@ import android.widget.FrameLayout
 import com.squareup.sample.mainworkflow.display
 import com.squareup.sample.mainworkflow.isTablet
 import com.squareup.sample.tictactoe.R
-import com.squareup.viewregistry.ModalContainer
-import com.squareup.viewregistry.ViewBinding
+import com.squareup.workflow.ui.ModalContainer
+import com.squareup.workflow.ui.ViewBinding
 import kotlin.math.min
 
 /**
