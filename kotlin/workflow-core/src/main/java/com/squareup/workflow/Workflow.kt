@@ -18,33 +18,50 @@ package com.squareup.workflow
 /**
  * A composable, optionally-stateful object that can [handle events][WorkflowContext.onEvent],
  * [delegate to children][WorkflowContext.compose], [subscribe][onReceive] to arbitrary streams from
- * the outside world, and be [saved][snapshotState] to a serialized form to be
- * [restored][restoreState] later.
+ * the outside world.
  *
  * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
- * [rendering][RenderingT]. To that end, a workflow may keep track of internal [state][StateT],
- * recursively ask other workflows to render themselves, subscribe to data streams from the outside
- * world, and handle events both from its [renderings][WorkflowContext.onEvent] and from workflows
- * it's delegated to (its "children"). A `Workflow` may also emit [output events][OutputT] up to its
- * parent `Workflow`.
+ * [rendering][RenderingT]. To that end, a workflow may keep track of internal
+ * [state][StatefulWorkflow], recursively ask other workflows to render themselves, subscribe to
+ * data streams from the outside world, and handle events both from its
+ * [renderings][WorkflowContext.onEvent] and from workflows it's delegated to (its "children"). A
+ * `Workflow` may also emit [output events][OutputT] up to its parent `Workflow`.
  *
  * Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows
- * are started as necessary whenever another workflow asks for them, and are cleaned up automatically
- * when they're no longer needed. [Input][InputT] propagates down the tree, [outputs][OutputT] and
- * [renderings][RenderingT] propagate up the tree.
+ * are started as necessary whenever another workflow asks for them, and are cleaned up
+ * automatically when they're no longer needed. [Input][InputT] propagates down the tree,
+ * [outputs][OutputT] and [renderings][RenderingT] propagate up the tree.
+ *
+ * ## Implementing `Workflow`
+ *
+ * The [Workflow] interface is useful as a facade for your API. You can publish an interface that
+ * extends `Workflow`, and keep the implementation (e.g. is your workflow state*ful* or
+ * state*less* a private implementation detail.
+ *
+ * ### [Stateful Workflows][StatefulWorkflow]
+ *
+ * If your workflow needs to keep track of internal state, implement the [StatefulWorkflow]
+ * interface. That interface has an additional type parameter, `StateT`, and allows you to specify
+ * [how to create the initial state][StatefulWorkflow.initialState] and how to
+ * [snapshot][StatefulWorkflow.snapshotState]/restore your state.
+ *
+ * ### [Stateless Workflows][StatelessWorkflow]
+ *
+ * If your workflow simply needs to delegate to other workflows, maybe transforming inputs, outputs,
+ * or renderings, extend [StatelessWorkflow], or just pass a lambda to the [stateless] function
+ * below.
+ *
+ * ## Interacting with Events and Other Workflows
+ *
+ * All workflows are passed a [WorkflowContext] in their compose methods. This context allows the
+ * workflow to interact with the outside world by doing things like listening for events,
+ * subscribing to streams of data, rendering child workflows, and performing cleanup when the
+ * workflow is about to be torn down by its parent. See the documentation on [WorkflowContext] for
+ * more information about what it can do.
  *
  * @param InputT Typically a data class that is used to pass configuration information or bits of
  * state that the workflow can always get from its parent and needn't duplicate in its own state.
  * May be [Unit] if the workflow does not need any input data.
- *
- * @param StateT Typically a data class that contains all of the internal state for this workflow.
- * The state is seeded via [input][InputT] in [initialState]. It can be [serialized][snapshotState]
- * and later used to [restore][restoreState] the workflow. **Implementations of the `Workflow`
- * interface should not generally contain their own state directly.** They may inject objects like
- * instances of their child workflows, or network clients, but should not contain directly mutable
- * state. This is the only type parameter that a parent workflow needn't care about for its children,
- * and may just use star (`*`) instead of specifying it. May be [Unit] if the workflow does not have
- * any internal state (see [StatelessWorkflow]).
  *
  * @param OutputT Typically a sealed class that represents "events" that this workflow can send
  * to its parent.
@@ -53,72 +70,21 @@ package com.squareup.workflow
  * @param RenderingT The value returned to this workflow's parent during [composition][compose].
  * Typically represents a "view" of this workflow's input, current state, and children's renderings.
  * A workflow that represents a UI component may use a view model as its rendering type.
+ *
+ * @see StatefulWorkflow
+ * @see StatelessWorkflow
  */
-interface Workflow<in InputT : Any, StateT : Any, out OutputT : Any, out RenderingT : Any> {
+interface Workflow<in InputT : Any, out OutputT : Any, out RenderingT : Any> {
 
   /**
-   * Called when the state machine is first started to get the initial state.
+   * Provides a [StatefulWorkflow] view of this workflow. Necessary because [StatefulWorkflow] is
+   * the common API required for [WorkflowContext.compose] to do its work.
    */
-  fun initialState(input: InputT): StateT
+  fun asStatefulWorkflow(): StatefulWorkflow<InputT, *, OutputT, RenderingT>
 
   /**
-   * Called whenever [WorkflowContext.compose] is about to get a new [input][InputT] value, to allow
-   * the workflow to modify its state in response. This method is called eagerly: `old` and `new` might
-   * be the same value, so it is up to implementing code to perform any diffing if desired.
-   *
-   * Default implementation does nothing.
+   * Empty companion serves as a hook point to allow us to create `Workflow.foo`
+   * extension methods elsewhere.
    */
-  fun onInputChanged(
-    old: InputT,
-    new: InputT,
-    state: StateT
-  ): StateT = state
-
-  /**
-   * Called at least once† any time one of the following things happens:
-   *  - This workflow's [input] changes (via the parent passing a different one in).
-   *  - This workflow's [state] changes.
-   *  - A child workflow's state changes.
-   *
-   * **Never call this method directly.** To get the rendering from a child workflow, pass the child
-   * and any required input to [WorkflowContext.compose].
-   *
-   * This method *should not* have any side effects, and in particular should not do anything that
-   * blocks the current thread. It may be called multiple times for the same state. It must do all its
-   * work by calling methods on [context].
-   *
-   * _† This method is guaranteed to be called *at least* once for every state, but may be called
-   * multiple times. Allowing this method to be invoked multiple times makes the internals simpler._
-   */
-  fun compose(
-    input: InputT,
-    state: StateT,
-    context: WorkflowContext<StateT, OutputT>
-  ): RenderingT
-
-  /**
-   * Called whenever the state changes to generate a new [Snapshot] of the state.
-   *
-   * **Snapshots must be lazy.**
-   *
-   * Serialization must not be done at the time this method is called,
-   * since the state will be snapshotted frequently but the serialized form may only be needed very
-   * rarely.
-   *
-   * If the workflow does not have any state, or should always be started from scratch, return
-   * [Snapshot.EMPTY] from this method.
-   *
-   * @see restoreState
-   */
-  fun snapshotState(state: StateT): Snapshot
-
-  /**
-   * Deserialize a state value from a [Snapshot] previously created with [snapshotState].
-   *
-   * If the workflow should always be started from scratch, this method can just ignore the snapshot
-   * and return the initial state.
-   *
-   * @see snapshotState
-   */
-  fun restoreState(snapshot: Snapshot): StateT
+  companion object
 }

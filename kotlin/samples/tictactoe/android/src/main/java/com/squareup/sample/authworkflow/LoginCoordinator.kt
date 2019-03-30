@@ -20,11 +20,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
-import com.squareup.sample.tictactoe.R
-import com.squareup.viewregistry.LayoutBinding
-import com.squareup.viewregistry.ViewBinding
+import com.squareup.sample.authworkflow.LoginScreen.SubmitLogin
+import com.squareup.workflow.ui.LayoutBinding
+import com.squareup.workflow.ui.ViewBinding
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import com.squareup.sample.tictactoe.R
 
 internal class LoginCoordinator(private val screens: Observable<out LoginScreen>) : Coordinator() {
   private val subs = CompositeDisposable()
@@ -54,7 +55,7 @@ internal class LoginCoordinator(private val screens: Observable<out LoginScreen>
     error.text = screen.errorMessage
 
     button.setOnClickListener {
-      screen.logIn(
+      screen.onEvent(
           SubmitLogin(
               email.text.toString(), password.text.toString()
           )

@@ -17,5 +17,12 @@ package com.squareup.sample.gameworkflow
 
 data class GameOverScreen(
   val endGameState: RunGameState.GameOver,
-  val onEvent: (RunGameEvent) -> Unit
-)
+  val onEvent: (Event) -> Unit
+) {
+
+  sealed class Event {
+    object TrySaveAgain : Event()
+    object PlayAgain : Event()
+    object Exit : Event()
+  }
+}

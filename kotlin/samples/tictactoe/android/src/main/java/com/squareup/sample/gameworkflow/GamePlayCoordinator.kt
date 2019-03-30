@@ -15,17 +15,16 @@
  */
 package com.squareup.sample.gameworkflow
 
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toolbar
 import com.squareup.coordinators.Coordinator
+import com.squareup.sample.gameworkflow.GamePlayScreen.Event.Quit
+import com.squareup.sample.gameworkflow.GamePlayScreen.Event.TakeSquare
 import com.squareup.sample.tictactoe.R
-import com.squareup.sample.gameworkflow.TakeTurnsEvent.Quit
-import com.squareup.sample.gameworkflow.TakeTurnsEvent.TakeSquare
-import com.squareup.viewregistry.LayoutBinding
-import com.squareup.viewregistry.ViewBinding
-import com.squareup.viewregistry.setBackHandler
+import com.squareup.workflow.ui.LayoutBinding
+import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -34,14 +33,14 @@ internal class GamePlayCoordinator(
 ) : Coordinator() {
   private val subs = CompositeDisposable()
 
-  private lateinit var board: ViewGroup
+  private lateinit var boardView: ViewGroup
   private lateinit var toolbar: Toolbar
 
   override fun attach(view: View) {
     super.attach(view)
 
-    board = view.findViewById(R.id.board_view)
-    toolbar = view.findViewById(R.id.toolbar)
+    boardView = view.findViewById(R.id.game_play_board)
+    toolbar = view.findViewById(R.id.game_play_toolbar)
 
     subs.add(screens.subscribe { update(view, it) })
   }
@@ -55,19 +54,17 @@ internal class GamePlayCoordinator(
     view: View,
     screen: GamePlayScreen
   ) {
-    renderPlayer(screen.gameState)
-    renderBoard(
-        board, screen.gameState.board
-    )
+    renderBanner(screen.gameState, screen.playerInfo)
+    screen.gameState.board.render(boardView)
 
-    setCellClickListeners(board, screen.gameState, screen.onEvent)
+    setCellClickListeners(boardView, screen.gameState) { screen.onEvent(it) }
     view.setBackHandler { screen.onEvent(Quit) }
   }
 
   private fun setCellClickListeners(
     viewGroup: ViewGroup,
     turn: Turn,
-    onEvent: (TakeTurnsEvent) -> Unit
+    takeSquareHandler: (TakeSquare) -> Unit
   ) {
     for (i in 0..8) {
       val cell = viewGroup.getChildAt(i)
@@ -78,38 +75,27 @@ internal class GamePlayCoordinator(
 
       val cellClickListener =
         if (box != null) null
-        else View.OnClickListener { onEvent(TakeSquare(row, col)) }
+        else View.OnClickListener { takeSquareHandler(TakeSquare(row, col)) }
 
       cell.setOnClickListener(cellClickListener)
     }
   }
 
-  private fun renderPlayer(turn: Turn) {
-    val yourTurn = turn.players[turn.playing]
-    val mark = turn.playing.name
-    val message = yourTurn?.let { "$yourTurn, place your $mark" } ?: "Place your $mark"
-    toolbar.title = message
+  private fun renderBanner(
+    turn: Turn,
+    playerInfo: PlayerInfo
+  ) {
+    val mark = turn.playing.symbol
+    val playerName = turn.playing.name(playerInfo)
+        .trim()
+
+    toolbar.title = when {
+      playerName.isEmpty() -> "Place your $mark"
+      else -> "$playerName, place your $mark"
+    }
   }
 
   companion object : ViewBinding<GamePlayScreen> by LayoutBinding.of(
       R.layout.game_play_layout, ::GamePlayCoordinator
-  ) {
-    /**
-     * Shared code for painting a 3 x 3 set of [TextView] cells with the values
-     * of a [Board]. Look, no subclassing.
-     */
-    internal fun renderBoard(
-      viewGroup: ViewGroup,
-      board: Board
-    ) {
-      for (i in 0..8) {
-        val row = i / 3
-        val col = i % 3
-
-        val cell = viewGroup.getChildAt(i) as TextView
-        val box = board[row][col]
-        cell.text = box?.name ?: ""
-      }
-    }
-  }
+  )
 }

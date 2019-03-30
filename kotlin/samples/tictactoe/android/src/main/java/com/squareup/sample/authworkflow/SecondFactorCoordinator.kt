@@ -21,12 +21,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
-import com.squareup.sample.tictactoe.R
-import com.squareup.viewregistry.LayoutBinding
-import com.squareup.viewregistry.ViewBinding
-import com.squareup.viewregistry.setBackHandler
+import com.squareup.sample.authworkflow.SecondFactorScreen.Event.CancelSecondFactor
+import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
+import com.squareup.workflow.ui.LayoutBinding
+import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import com.squareup.sample.tictactoe.R
 
 internal class SecondFactorCoordinator(private val screens: Observable<out SecondFactorScreen>) :
     Coordinator() {
@@ -57,15 +59,13 @@ internal class SecondFactorCoordinator(private val screens: Observable<out Secon
     screen: SecondFactorScreen,
     view: View
   ) {
-    view.setBackHandler { screen.cancel() }
-    toolbar.setNavigationOnClickListener { screen.cancel() }
+    view.setBackHandler { screen.onEvent(CancelSecondFactor) }
+    toolbar.setNavigationOnClickListener { screen.onEvent(CancelSecondFactor) }
 
     error.text = screen.errorMessage
 
     button.setOnClickListener {
-      screen.submit(
-          SubmitSecondFactor(secondFactor.text.toString())
-      )
+      screen.onEvent(SubmitSecondFactor(secondFactor.text.toString()))
     }
   }
 

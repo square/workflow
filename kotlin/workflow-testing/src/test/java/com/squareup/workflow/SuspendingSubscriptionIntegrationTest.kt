@@ -33,7 +33,7 @@ class SuspendingSubscriptionIntegrationTest {
 
   @Test fun `handles value`() {
     val deferred = CompletableDeferred<String>()
-    val workflow = StatelessWorkflow<String, Unit> { context ->
+    val workflow = Workflow.stateless<String, Unit> { context ->
       context.onSuspending({ deferred.await() }, UnitKType) {
         emitOutput("output:$it")
       }
@@ -53,7 +53,7 @@ class SuspendingSubscriptionIntegrationTest {
   }
 
   @Test fun `handles error`() {
-    val workflow = StatelessWorkflow<String, Unit> { context ->
+    val workflow = Workflow.stateless<String, Unit> { context ->
       context.onSuspending({ throw ExpectedException() }, UnitKType) {
         fail("Shouldn't get here.")
       }

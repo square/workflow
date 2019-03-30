@@ -29,7 +29,7 @@ import kotlin.reflect.KType
 
 /**
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
- * a [compose][Workflow.compose] function.
+ * a `compose` function.
  *
  * ## Handling Events
  *
@@ -42,13 +42,17 @@ import kotlin.reflect.KType
  * ## Composing Children
  *
  * See [compose].
+ *
+ * ## Handling Workflow Teardown
+ *
+ * See [onTeardown].
  */
 interface WorkflowContext<StateT : Any, in OutputT : Any> {
 
   /**
-   * Given a function that takes an [event][EventT] and can mutate the state or emit an output, returns
-   * a function that will perform that workflow update when called with an event.
-   * The returned function is valid until the next [compose][Workflow.compose] pass.
+   * Given a function that takes an [event][EventT] and can mutate the state or emit an output,
+   * returns a function that will perform that workflow update when called with an event.
+   * The returned function is valid until the next compose pass.
    *
    * For example, if you have a rendering type of `Screen`:
    *
@@ -75,16 +79,16 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
   ): EventHandler<EventT>
 
   /**
-   * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to, and
-   * will send anything emitted on the channel to [handler] as a [ChannelUpdate].
+   * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to,
+   * and will send anything emitted on the channel to [handler] as a [ChannelUpdate].
    *
    * This method ensures that only one subscription is active at a time for the given [type]+[key].
-   * If this method is called in two or more consecutive [Workflow.compose] invocations with the same
-   * key, [channelProvider] will only be invoked for the first one, and the returned channel will be
-   * re-used for all subsequent invocations, until a [Workflow.compose] invocation does _not_ call this
-   * method with an equal key. At that time, the channel will be [cancelled][ReceiveChannel.cancel],
-   * with the assumption that cancelling the channel will release any resources allocated by the
-   * [channelProvider].
+   * If this method is called in two or more consecutive `compose` invocations with the
+   * same key, [channelProvider] will only be invoked for the first one, and the returned channel
+   * will be re-used for all subsequent invocations, until a `compose` invocation does
+   * _not_ call this method with an equal key. At that time, the channel will be
+   * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will
+   * release any resources allocated by the [channelProvider].
    *
    * @param type The [KType] that represents both the type of data source (e.g. `ReceiveChannel` or
    * `Deferred`) and the element type [E].
@@ -103,28 +107,43 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
-   * [compose][Workflow.compose] method.
+   * `compose` method.
    *
-   * **Never call [Workflow.compose] directly, always do it through this context method.**
+   * **Never call [StatefulWorkflow.compose] or [StatelessWorkflow.compose] directly, always do it
+   * through this context method.**
    *
    * 1. If the child _wasn't_ already running, it will be started either from
    *    [initialState][Workflow.initialState] or its snapshot.
-   * 2. If the child _was_ already running, The workflow's [onInputChanged][Workflow.onInputChanged]
-   *    method is invoked with the previous input and this one.
-   * 3. The child's [compose][Workflow.compose] method is invoked with `input` and the child's state.
+   * 2. If the child _was_ already running, The workflow's
+   *    [onInputChanged][StatefulWorkflow.onInputChanged] method is invoked with the previous input
+   *    and this one.
+   * 3. The child's `compose` method is invoked with `input` and the child's state.
    *
    * After this method returns, if something happens that trigger's one of `child`'s handlers, and
-   * that handler emits an output, the function passed as [handler] will be invoked with that output.
+   * that handler emits an output, the function passed as [handler] will be invoked with that
+   * output.
    *
    * @param key An optional string key that is used to distinguish between workflows of the same
    * type.
    */
-  fun <ChildInputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
-    child: Workflow<ChildInputT, ChildStateT, ChildOutputT, ChildRenderingT>,
+  fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
+    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
     input: ChildInputT,
     key: String = "",
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT
+
+  /**
+   * Adds an action to be invoked if the workflow is discarded by its parent before the next
+   * compose pass. Multiple hooks can be registered in the same compose pass, they will be invoked
+   * in the same order they're set. Like any other work performed through the context (e.g. calls
+   * to [compose] or [onReceive]), hooks are cleared at the start of each compose pass, so you must
+   * set any hooks you need in each compose pass.
+   *
+   * Teardown handlers should be non-blocking and execute quickly, since they are invoked
+   * synchronously during the compose pass.
+   */
+  fun onTeardown(handler: () -> Unit)
 }
 
 /**
@@ -132,14 +151,15 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
  * will send anything emitted on the channel to [handler] as a [ChannelUpdate].
  *
  * This method ensures that only one subscription is active at a time for the given key.
- * If this method is called in two or more consecutive [Workflow.compose] invocations with the same
+ * If this method is called in two or more consecutive `compose` invocations with the same
  * key+[channelProvider] type, the provider will only be invoked for the first one, and the returned
- * channel will be re-used for all subsequent invocations, until a [Workflow.compose] invocation does
- * _not_ call this method with an equal key+type. At that time, the channel will be
+ * channel will be re-used for all subsequent invocations, until a `compose` invocation
+ * does _not_ call this method with an equal key+type. At that time, the channel will be
  * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will release
  * any resources allocated by the [channelProvider].
  *
- * @param key An optional string key that is used to distinguish between subscriptions of the same type.
+ * @param key An optional string key that is used to distinguish between subscriptions of the same
+ * type.
  * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
  *
  * @see WorkflowContext.onReceive
@@ -158,40 +178,42 @@ inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, Outp
 /**
  * Convenience alias of [WorkflowContext.compose] for workflows that don't take input.
  */
-fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildOutputT : Any, ChildRenderingT : Any>
+fun <StateT : Any, OutputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<Unit, ChildStateT, ChildOutputT, ChildRenderingT>,
+      child: Workflow<Unit, ChildOutputT, ChildRenderingT>,
       key: String = "",
       handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
     ): ChildRenderingT = compose(child, Unit, key, handler)
 // @formatter:on
 
 /**
- * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit output.
+ * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit
+ * output.
  */
-fun <InputT : Any, StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
+fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<InputT, ChildStateT, Nothing, ChildRenderingT>,
+      child: Workflow<InputT, Nothing, ChildRenderingT>,
       input: InputT,
       key: String = ""
     ): ChildRenderingT = compose(child, input, key) { WorkflowAction.noop() }
 // @formatter:on
 
 /**
- * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit output.
+ * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit
+ * output.
  */
-fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
+fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
     WorkflowContext<StateT, OutputT>.compose(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<Unit, ChildStateT, Nothing, ChildRenderingT>,
+      child: Workflow<Unit, Nothing, ChildRenderingT>,
       key: String = ""
     ): ChildRenderingT = compose(child, Unit, key) { WorkflowAction.noop() }
 // @formatter:on
@@ -199,7 +221,7 @@ fun <StateT : Any, OutputT : Any, ChildStateT : Any, ChildRenderingT : Any>
 /**
  * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
  * invoked for a given deferred+key, it will not be invoked again until an invocation of
- * [Workflow.compose] that does _not_ call this method with that deferred+[key].
+ * `compose` that does _not_ call this method with that deferred+[key].
  *
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * type.
@@ -218,7 +240,7 @@ inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, Outp
 /**
  * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
  * invoked for a given deferred+key, it will not be invoked again until an invocation of
- * [Workflow.compose] that does _not_ call this method with that deferred+[key].
+ * `compose` that does _not_ call this method with that deferred+[key].
  *
  * @param type The [KType] that represents both the type of data source (e.g. `Deferred`) and the
  * element type [T].
