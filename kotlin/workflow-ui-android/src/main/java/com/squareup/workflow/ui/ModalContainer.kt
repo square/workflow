@@ -270,6 +270,8 @@ abstract class ModalContainer<M : Any>
       flags: Int
     ) {
       super.writeToParcel(out, flags)
+      @Suppress("UNCHECKED_CAST")
+      out.writeSparseArray(baseViewState as SparseArray<Any>)
       out.writeTypedList(dialogBundles)
     }
 
