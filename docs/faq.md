@@ -40,7 +40,3 @@ Architectural patterns with weak access controls and heavy use of shared mutable
 We have seen this pattern occur repeatedly in traditional mobile applications using patterns like MVC.
 
 Workflow defines strong boundaries and contracts between separate parts of the application to ensure that our code remains predictable and maintainable as the size and complexity of the codebase grows.
-
-### Why does that cute graphic say _Wolfkrow_?
-
-Spell it backward.
