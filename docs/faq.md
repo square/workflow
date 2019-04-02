@@ -15,6 +15,12 @@
 | **Event Handling** | TK | TK | TK |
 
 
+### How is this different than MvRx?
+
+Besides being very Android and Rx specific, MvRx solves view modeling problems only
+per screen. Workflow was mainly inspired by the need to manage and compose
+navigation in apps with dozens or hundreds of screens.
+
 ### How do I get involved and/or contribute?
 
 - [Workflow is open source!](https://github.com/square/workflow)
