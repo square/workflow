@@ -22,9 +22,9 @@ import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.util.ChannelUpdate
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlin.reflect.KType
 
 /**

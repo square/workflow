@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.legacy
 
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import org.junit.Test
 import java.io.IOException
 import kotlin.test.assertEquals

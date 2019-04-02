@@ -21,8 +21,6 @@ apply plugin: 'org.jetbrains.dokka'
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
-kotlin.experimental.coroutines 'enable'
-
 dokka rootProject.ext.defaultDokkaConfig
 
 dependencies {

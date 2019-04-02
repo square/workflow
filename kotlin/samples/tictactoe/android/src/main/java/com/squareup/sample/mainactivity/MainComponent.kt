@@ -30,8 +30,8 @@ import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.WorkflowHost.Update
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.rx2.asObservable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.rx2.asObservable
 import timber.log.Timber
 
 /**
@@ -39,6 +39,7 @@ import timber.log.Timber
  */
 internal class MainComponent {
 
+  @Suppress("EXPERIMENTAL_API_USAGE")
   private val workflowHostFactory = WorkflowHost.Factory(Dispatchers.Unconfined)
 
   private val authService = AuthService()
@@ -61,7 +62,7 @@ internal class MainComponent {
     if (updates == null) {
       val host = workflowHost(snapshot)
 
-      @Suppress("EXPERIMENTAL_FEATURE_WARNING")
+      @Suppress("EXPERIMENTAL_API_USAGE")
       updates = host.updates.asObservable(Dispatchers.Unconfined)
           .doOnNext { Timber.d("showing: %s", it.rendering) }
           .replay(1)

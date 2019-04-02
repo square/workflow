@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.EventHandler
@@ -32,14 +34,14 @@ import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
 import com.squareup.workflow.writeUtf8WithLength
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.TimeoutCancellationException
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.runBlocking
-import kotlinx.coroutines.experimental.selects.select
-import kotlinx.coroutines.experimental.withTimeout
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
+import kotlinx.coroutines.withTimeout
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
