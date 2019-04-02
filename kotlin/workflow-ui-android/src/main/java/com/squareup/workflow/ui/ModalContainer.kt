@@ -155,7 +155,7 @@ abstract class ModalContainer<M : Any>
 
   override fun onSaveInstanceState(): Parcelable {
     return SavedState(
-        super.onSaveInstanceState(),
+        super.onSaveInstanceState()!!,
         SparseArray<Parcelable>().also { array -> base?.saveHierarchyState(array) },
         dialogs.map { it.save() }
     )
@@ -196,8 +196,8 @@ abstract class ModalContainer<M : Any>
 
     companion object CREATOR : Creator<TypeAndBundle> {
       override fun createFromParcel(parcel: Parcel): TypeAndBundle {
-        val type = parcel.readString()
-        val bundle = parcel.readBundle(TypeAndBundle::class.java.classLoader)
+        val type = parcel.readString()!!
+        val bundle = parcel.readBundle(TypeAndBundle::class.java.classLoader)!!
         return TypeAndBundle(type, bundle)
       }
 
@@ -210,13 +210,13 @@ abstract class ModalContainer<M : Any>
     val dialog: Dialog
   ) {
     fun save(): TypeAndBundle {
-      val saved = dialog.window.saveHierarchyState()
+      val saved = dialog.window!!.saveHierarchyState()
       return TypeAndBundle(screen::class.jvmName, saved)
     }
 
     fun restore(typeAndBundle: TypeAndBundle) {
       if (screen::class.jvmName == typeAndBundle.screenType) {
-        dialog.window.restoreHierarchyState(typeAndBundle.bundle)
+        dialog.window!!.restoreHierarchyState(typeAndBundle.bundle)
       }
     }
   }
@@ -244,7 +244,7 @@ abstract class ModalContainer<M : Any>
 
   private class SavedState : BaseSavedState {
     constructor(
-      superState: Parcelable,
+      superState: Parcelable?,
       bodyState: SparseArray<Parcelable>,
       dialogBundles: List<TypeAndBundle>
     ) : super(superState) {

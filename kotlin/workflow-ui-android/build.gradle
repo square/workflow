@@ -23,13 +23,19 @@ targetCompatibility = JavaVersion.VERSION_1_7
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
+  api project(':workflow-core')
   api project(':workflow-ui-core')
 
   api deps.coordinators
   api deps.kotlin.stdLib.jdk6
+  api deps.lifecycle
   api deps.rxjava2.rxjava2
   api deps.transition
 
+  implementation project(':workflow-runtime')
   implementation deps.appcompatv7
+  implementation deps.kotlin.coroutines.core
+  implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect
+  implementation deps.rxandroid2
 }

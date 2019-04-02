@@ -52,11 +52,11 @@ internal class ModalViewContainer
     return Dialog(context, dialogThemeResId).apply {
       setCancelable(false)
       setContentView(modalDecorator(view))
-      window.setLayout(WRAP_CONTENT, WRAP_CONTENT)
+      window!!.setLayout(WRAP_CONTENT, WRAP_CONTENT)
 
       if (dialogThemeResId == 0) {
         // If we don't set or clear the background drawable, the window cannot go full bleed.
-        window.setBackgroundDrawable(null)
+        window!!.setBackgroundDrawable(null)
       }
       show()
     }

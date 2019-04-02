@@ -17,87 +17,49 @@ package com.squareup.sample.mainactivity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import com.squareup.sample.authworkflow.AuthViewBindings
-import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
-import com.squareup.workflow.ui.AlertContainerScreen
-import com.squareup.workflow.ui.HandlesBack
 import com.squareup.workflow.ui.ModalContainer
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.PickledWorkflow
 import com.squareup.workflow.ui.ViewRegistry
+import com.squareup.workflow.ui.WorkflowActivityRunner
 import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.backstack.PushPopEffect
-import com.squareup.workflow.Snapshot
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import kotlin.reflect.jvm.jvmName
+import com.squareup.workflow.ui.setContentWorkflow
 
-/**
- * Prototype Android integration. Demonstrates:
- *
- * - preserving workflow state via the activity bundle
- * - simple two layer container, with body views and dialogs
- * - TODO: customizing stock views via wrapping (when we add a logout button to each game view)
- */
 class MainActivity : AppCompatActivity() {
   private lateinit var component: MainComponent
-
-  private lateinit var content: View
-
-  private val subs = CompositeDisposable()
-
-  private var latestSnapshot = Snapshot.EMPTY
+  private lateinit var workflowViewModel: WorkflowActivityRunner<*, *>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    val restored = savedInstanceState?.getParcelable<PickledWorkflow>(WORKFLOW_BUNDLE_KEY)
     component = lastCustomNonConfigurationInstance as? MainComponent
         ?: MainComponent()
 
-    val snapshot = savedInstanceState?.getParcelable<ParceledSnapshot>(SNAPSHOT_NAME)
-        ?.snapshot
-    val updates = component.updates(snapshot)
-
-    val screens = updates
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnNext { latestSnapshot = it.snapshot }
-        .map { it.rendering }
-
-    val viewRegistry = buildViewRegistry()
-    val rootViewBinding: ViewBinding<RunGameScreen> =
-      viewRegistry.getBinding(AlertContainerScreen::class.jvmName)
-
-    content = rootViewBinding.buildView(screens, viewRegistry, this)
-        .apply { setContentView(this) }
+    workflowViewModel = setContentWorkflow(viewRegistry, component.mainWorkflow, restored)
   }
 
   override fun onBackPressed() {
-    if (!HandlesBack.Helper.onBackPressed(content)) super.onBackPressed()
+    if (!workflowViewModel.onBackPressed(this)) super.onBackPressed()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putParcelable(SNAPSHOT_NAME, ParceledSnapshot(latestSnapshot))
-  }
-
-  override fun onDestroy() {
-    subs.clear()
-    super.onDestroy()
+    outState.putParcelable(WORKFLOW_BUNDLE_KEY, workflowViewModel.asParcelable())
   }
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component
 
-  private fun buildViewRegistry(): ViewRegistry {
-    return ViewRegistry(
+  private companion object {
+    const val WORKFLOW_BUNDLE_KEY = "workflow"
+
+    val viewRegistry = ViewRegistry(
         BackStackContainer,
         ModalContainer.forAlertContainerScreen(),
         PanelContainer
     ) + AuthViewBindings + TicTacToeViewBindings + PushPopEffect
-  }
-
-  private companion object {
-    val SNAPSHOT_NAME = MainActivity::class.jvmName + "-snapshot"
   }
 }

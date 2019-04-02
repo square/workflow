@@ -17,15 +17,16 @@ buildscript {
   ext.versions = [
       'agp': '3.2.1',
       'buildTools': '28.0.3',
-      'compileSdk': '27',
+      'compileSdk': '28',
+      'lifecycle': '1.1.1',
       'minSdk': 21,
-      'targetSdk': 26,
+      'targetSdk': 28,
       'sourceCompatibility': JavaVersion.VERSION_1_8,
       'targetCompatibility': JavaVersion.VERSION_1_8,
 
       'coordinators': '0.4',
       'rxandroid2': '2.1.0',
-      'support': '26.0.2',
+      'support': '28.0.0',
       'timber': '4.7.1',
 
       'assertj': '2.6.0',
@@ -50,6 +51,7 @@ buildscript {
       'coordinators': "com.squareup.coordinators:coordinators:${versions.coordinators}",
       'constraint_layout': "com.android.support.constraint:constraint-layout:1.1.0",
       'design': "com.android.support:design:${versions.support}",
+      'lifecycle': "android.arch.lifecycle:extensions:${versions.lifecycle}",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:${versions.rxandroid2}",
       'timber': "com.jakewharton.timber:timber:${versions.timber}",
       'transition': "com.android.support:transition:${versions.support}",

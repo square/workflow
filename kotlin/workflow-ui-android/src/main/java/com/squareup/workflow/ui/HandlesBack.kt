@@ -21,14 +21,17 @@ import com.squareup.workflow.ui.HandlesBack.Helper.setConditionalBackHandler
 /**
  * Implemented by objects that want the option to intercept back button taps.
  * Can be implemented by [View] subclasses, or can be attached to a stock view via
- * [Helper].
+ * [Helper.setBackHandler].
  *
- * When implemented by a container view, the [onBackPressed] methods or tags of their
- * subviews should be invoked first.
+ * When implemented by a container view, the [onBackPressed] methods or tags of its
+ * subviews should be invoked first, via [Helper.onBackPressed]
  *
- * The typical flow of back button handling starts in the [android.app.Activity.onBackPressed]
- * calling [onBackPressed] on its content view. Each view in turn delegates to its
- * child views to give them first say.
+ * To kick things off, override [android.app.Activity.onBackPressed] to call
+ * [WorkflowActivityRunner.onBackPressed]:
+ *
+ *     override fun onBackPressed() {
+ *       if (!workflowViewModel.onBackPressed(this)) super.onBackPressed()
+ *     }
  */
 interface HandlesBack {
   /**
