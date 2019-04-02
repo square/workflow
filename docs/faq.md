@@ -15,6 +15,12 @@
 | **Event Handling** | TK | TK | TK |
 
 
+### How is this different than MvRx?
+
+Besides being very Android and Rx specific, MvRx solves view modeling problems only
+per screen. Workflow was mainly inspired by the need to manage and compose
+navigation in apps with dozens or hundreds of screens.
+
 ### How do I get involved and/or contribute?
 
 - [Workflow is open source!](https://github.com/square/workflow)
@@ -34,3 +40,7 @@ Architectural patterns with weak access controls and heavy use of shared mutable
 We have seen this pattern occur repeatedly in traditional mobile applications using patterns like MVC.
 
 Workflow defines strong boundaries and contracts between separate parts of the application to ensure that our code remains predictable and maintainable as the size and complexity of the codebase grows.
+
+### Why does that cute graphic say _Wolfkrow_?
+
+Spell it backward.
