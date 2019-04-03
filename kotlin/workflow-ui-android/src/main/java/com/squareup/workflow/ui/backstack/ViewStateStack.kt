@@ -122,7 +122,7 @@ class ViewStateStack private constructor(
     val saved = SparseArray<Parcelable>().apply { currentView.saveHierarchyState(this) }
     val newFrame =
       ViewStateFrame(currentView.backStackKey.toString(), saved)
-    if (!viewStates.isEmpty() && viewStates.last().key == currentView.backStackKey.toString()) {
+    if (viewStates.isNotEmpty() && viewStates.last().key == currentView.backStackKey.toString()) {
       viewStates = viewStates.subList(0, viewStates.size - 1)
     }
     viewStates += newFrame
@@ -137,14 +137,14 @@ class ViewStateStack private constructor(
    */
   class SavedState : BaseSavedState {
     constructor(
-      saving: Parcelable,
+      superState: Parcelable?,
       viewStateStack: ViewStateStack
-    ) : super(saving) {
+    ) : super(superState) {
       this.viewStateStack = viewStateStack
     }
 
     constructor(source: Parcel) : super(source) {
-      this.viewStateStack = source.readParcelable(SavedState::class.java.classLoader)
+      this.viewStateStack = source.readParcelable(SavedState::class.java.classLoader)!!
     }
 
     val viewStateStack: ViewStateStack

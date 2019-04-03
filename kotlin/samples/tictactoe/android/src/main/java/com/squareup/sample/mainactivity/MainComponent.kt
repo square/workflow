@@ -21,17 +21,10 @@ import com.squareup.sample.authworkflow.RealAuthWorkflow
 import com.squareup.sample.gameworkflow.RealGameLog
 import com.squareup.sample.gameworkflow.RealRunGameWorkflow
 import com.squareup.sample.gameworkflow.RealTakeTurnsWorkflow
-import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.gameworkflow.TakeTurnsWorkflow
 import com.squareup.sample.mainworkflow.MainWorkflow
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.WorkflowHost
-import com.squareup.workflow.WorkflowHost.Update
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.rx2.asObservable
 import timber.log.Timber
 
 /**
@@ -39,12 +32,7 @@ import timber.log.Timber
  */
 internal class MainComponent {
 
-  @Suppress("EXPERIMENTAL_API_USAGE")
-  private val workflowHostFactory = WorkflowHost.Factory(Dispatchers.Unconfined)
-
   private val authService = AuthService()
-
-  private fun mainWorkflow() = MainWorkflow(authWorkflow(), gameWorkflow())
 
   private fun authWorkflow(): AuthWorkflow = RealAuthWorkflow(authService)
 
@@ -54,25 +42,7 @@ internal class MainComponent {
 
   private fun takeTurnsWorkflow(): TakeTurnsWorkflow = RealTakeTurnsWorkflow()
 
-  private fun workflowHost(snapshot: Snapshot?) = workflowHostFactory.run(mainWorkflow(), snapshot)
-
-  private var updates: Observable<Update<Unit, RunGameScreen>>? = null
-
-  fun updates(snapshot: Snapshot?): Observable<Update<Unit, RunGameScreen>> {
-    if (updates == null) {
-      val host = workflowHost(snapshot)
-
-      @Suppress("EXPERIMENTAL_API_USAGE")
-      updates = host.updates.asObservable(Dispatchers.Unconfined)
-          .doOnNext { Timber.d("showing: %s", it.rendering) }
-          .replay(1)
-          .autoConnect()
-
-      // autoConnect() is leaky (it's never disposed), but we want it to run
-      // forever so ¯\_(ツ)_/¯.
-    }
-    return updates!!
-  }
+  val mainWorkflow = MainWorkflow(authWorkflow(), gameWorkflow())
 
   companion object {
     init {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.mainactivity
+package com.squareup.workflow.ui
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.workflow.Snapshot
 import okio.ByteString
 
-internal class ParceledSnapshot(val snapshot: Snapshot) : Parcelable {
-
+/**
+ * A [Parcelable] snapshot of the most recent state of a [Workflow] managed by
+ * [WorkflowActivityRunner], for use in an `Activity`'s persistence `Bundle`.
+ * See [WorkflowActivityRunner.asParcelable] for details.
+ */
+class PickledWorkflow(internal val snapshot: Snapshot) : Parcelable {
   override fun describeContents(): Int = 0
 
   override fun writeToParcel(
@@ -29,12 +33,12 @@ internal class ParceledSnapshot(val snapshot: Snapshot) : Parcelable {
     flags: Int
   ) = dest.writeByteArray(snapshot.bytes.toByteArray())
 
-  companion object CREATOR : Parcelable.Creator<ParceledSnapshot> {
-    override fun createFromParcel(parcel: Parcel): ParceledSnapshot {
-      val bytes = parcel.createByteArray()
-      return ParceledSnapshot(Snapshot.of(ByteString.of(*bytes)))
+  companion object CREATOR : Parcelable.Creator<PickledWorkflow> {
+    override fun createFromParcel(parcel: Parcel): PickledWorkflow {
+      val bytes = parcel.createByteArray()!!
+      return PickledWorkflow(Snapshot.of(ByteString.of(*bytes)))
     }
 
-    override fun newArray(size: Int): Array<ParceledSnapshot?> = arrayOfNulls(size)
+    override fun newArray(size: Int): Array<PickledWorkflow?> = arrayOfNulls(size)
   }
 }
