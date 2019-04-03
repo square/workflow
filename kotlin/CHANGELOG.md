@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+## Version 0.11.0
+
+_2019-4-2_
+
+ * Update Kotlin and coroutines to latest versions. ([#254](https://github.com/square/workflow/issues/254))
+ * Fixed some broken kdoc links and some warnings. ([#232](https://github.com/square/workflow/issues/232))
+ * Add teardown hook on `WorkflowContext`. ([#233](https://github.com/square/workflow/issues/233))
+ * Rename modules:
+    * `workflow-host` -> `workflow-runtime` ([#240](https://github.com/square/workflow/issues/240))
+    * `viewregistry-android` -> `workflow-ui-android` ([#239](https://github.com/square/workflow/issues/239))
+    * `viewregistry` -> `workflow-ui-core` ([#239](https://github.com/square/workflow/issues/239))
+ * Fix broken Parcellable implementation in ModalContainer. ([#245](https://github.com/square/workflow/issues/245))
+ * Introduce WorkflowActivityRunner. ([#248](https://github.com/square/workflow/issues/248))
+
 ## Version 0.10.0
 
 _2019-3-28_
