@@ -384,7 +384,7 @@ class WorkflowNodeTest {
 
     assertEquals("initial input", originalNode.compose(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size())
+    assertNotEquals(0, snapshot.bytes.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
@@ -424,7 +424,7 @@ class WorkflowNodeTest {
 
     assertEquals("initial input", originalNode.compose(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size())
+    assertNotEquals(0, snapshot.bytes.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
@@ -496,7 +496,7 @@ class WorkflowNodeTest {
 
     assertEquals("initial input|child input", originalNode.compose(parentWorkflow, "foo"))
     val snapshot = originalNode.snapshot(parentWorkflow)
-    assertNotEquals(0, snapshot.bytes.size())
+    assertNotEquals(0, snapshot.bytes.size)
 
     val restoredNode = WorkflowNode(
         parentWorkflow.id(),
@@ -597,7 +597,7 @@ class WorkflowNodeTest {
 
     assertEquals("initial input", originalNode.compose(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size())
+    assertNotEquals(0, snapshot.bytes.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),

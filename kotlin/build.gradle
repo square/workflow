@@ -82,7 +82,7 @@ buildscript {
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:${versions.mavenPublishPlugin}",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:${versions.ktlintPlugin}",
       'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${versions.detektPlugin}",
-      'okio': "com.squareup.okio:okio:1.13.0",
+      'okio': "com.squareup.okio:okio:2.2.2",
       'rxjava2':[
           'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.3",
           'interop': "com.github.akarnokd:rxjava2-interop:0.11.4",

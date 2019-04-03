@@ -21,7 +21,7 @@ import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
-import okio.ByteString.encodeUtf8
+import okio.ByteString.Companion.encodeUtf8
 import java.lang.Float.floatToRawIntBits
 import java.lang.Float.intBitsToFloat
 
@@ -38,7 +38,7 @@ private constructor(private val toByteString: () -> ByteString) {
 
     @JvmStatic
     fun of(string: String): Snapshot =
-      Snapshot { encodeUtf8(string) }
+      Snapshot { string.encodeUtf8() }
 
     @JvmStatic
     fun of(byteString: ByteString): Snapshot =
@@ -113,7 +113,7 @@ fun BufferedSink.writeFloat(float: Float): BufferedSink = writeInt(floatToRawInt
 fun BufferedSource.readFloat(): Float = intBitsToFloat(readInt())
 
 fun BufferedSink.writeUtf8WithLength(str: String): BufferedSink {
-  return writeByteStringWithLength(encodeUtf8(str))
+  return writeByteStringWithLength(str.encodeUtf8())
 }
 
 fun BufferedSource.readUtf8WithLength(): String = readByteStringWithLength().utf8()
@@ -127,7 +127,7 @@ fun BufferedSource.readOptionalUtf8WithLength(): String? {
 }
 
 fun BufferedSink.writeByteStringWithLength(bytes: ByteString): BufferedSink = apply {
-  writeInt(bytes.size())
+  writeInt(bytes.size)
       .write(bytes)
 }
 
