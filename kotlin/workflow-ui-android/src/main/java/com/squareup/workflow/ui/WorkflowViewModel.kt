@@ -20,7 +20,6 @@ import android.arch.lifecycle.ViewModelProvider
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.rx2.asObservable
@@ -57,9 +56,7 @@ internal class WorkflowViewModel<OutputT : Any, RenderingT : Any>(
 
   @Suppress("EXPERIMENTAL_API_USAGE")
   val updates =
-    host.updates.asObservable(Dispatchers.Unconfined)
-        // Issue #252, try replacing this with Dispatchers.Main.immediate once that's available.
-        .observeOn(AndroidSchedulers.mainThread())
+    host.updates.asObservable(Dispatchers.Main.immediate)
         .doOnNext { lastSnapshot = it.snapshot }
         .replay(1)
         .autoConnect(1) { sub = it }

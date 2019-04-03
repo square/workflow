@@ -34,8 +34,8 @@ dependencies {
 
   implementation project(':workflow-runtime')
   implementation deps.appcompatv7
+  implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.coroutines.core
   implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect
-  implementation deps.rxandroid2
 }

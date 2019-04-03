@@ -65,6 +65,7 @@ buildscript {
               'jdk6': "org.jetbrains.kotlin:kotlin-stdlib"
           ],
           'coroutines': [
+              'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinCoroutines}",
               'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinCoroutines}",
               'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.kotlinCoroutines}"
           ],
