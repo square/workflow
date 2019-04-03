@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 // This test tests code that is marked as deprecated, so we can ignore those warnings.
-@file:Suppress("DEPRECATION")
+@file:Suppress("DEPRECATION", "EXPERIMENTAL_API_USAGE")
 
 package com.squareup.workflow.legacy.rx2
 
@@ -36,15 +36,15 @@ import io.reactivex.subjects.CompletableSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.SingleSubject
 import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.suspendCoroutine
 import kotlin.test.assertFailsWith
 import kotlin.test.fail
 
@@ -285,11 +285,11 @@ class CoroutineEventChannelTest {
               it.invokeOnCancellation { cancellations++ }
             }
           }
-          throw ExpectedException
+          throw ExpectedException()
         }
         .subscribe(resultSub)
 
-    resultSub.assertError(ExpectedException)
+    resultSub.assertError(ExpectedException::class.java)
     assertThat(cancellations).isEqualTo(1)
   }
 
@@ -297,7 +297,7 @@ class CoroutineEventChannelTest {
     val deferred = CompletableDeferred<String>()
     events.asEventChannel()
         .select<String> {
-          onSuspending({ throw ExpectedException }) { deferred.await() }
+          onSuspending({ throw ExpectedException() }) { deferred.await() }
         }
         .subscribe(resultSub)
 
@@ -305,7 +305,7 @@ class CoroutineEventChannelTest {
 
     deferred.complete("boo")
 
-    resultSub.assertError { it === ExpectedException }
+    resultSub.assertError(ExpectedException::class.java)
   }
 
   @Test fun `onWorkerResult succeeds`() {
@@ -329,7 +329,7 @@ class CoroutineEventChannelTest {
   @Test fun `onWorkerResult throws from worker`() {
     val trigger = CompletableSubject.create()
     val worker = singleWorker<String, String> {
-      trigger.andThen(Single.error<String>(ExpectedException))
+      trigger.andThen(Single.error<String>(ExpectedException()))
     }
     events.asEventChannel()
         .select<String> { pool.onWorkerResult(worker, "oops") { fail() } }
@@ -340,7 +340,7 @@ class CoroutineEventChannelTest {
 
     trigger.onComplete()
 
-    resultSub.assertError(ExpectedException)
+    resultSub.assertError(ExpectedException::class.java)
   }
 
   @Test fun `onNextDelegateReaction reports state`() {
@@ -451,11 +451,13 @@ class CoroutineEventChannelTest {
     resultSub.assertNotTerminated()
     resultSub.assertNoValues()
 
-    val e = RuntimeException("oops")
+    val e = ExpectedException()
     subject.onError(e)
 
     resultSub.assertNoValues()
-    resultSub.assertError(e)
+    // The coroutines runtime, at least in debug mode, will actually clone the exception to augment
+    // the stack trace, so we can't rely on object identity.
+    resultSub.assertError(ExpectedException::class.java)
   }
 
   @Test fun `onSuccess with onEvent when Single wins`() {
@@ -530,6 +532,7 @@ class CoroutineEventChannelTest {
         .subscribe(resultSub)
 
     resultSub.assertErrorMessage("fail")
+    assertThat(subscribeCalls).isEqualTo(1)
     assertThat(disposeCalls).isEqualTo(1)
   }
 
@@ -607,7 +610,7 @@ class CoroutineEventChannelTest {
   }
 }
 
-private object ExpectedException : RuntimeException()
+private class ExpectedException : RuntimeException()
 
 private data class DelegateWorkflowState(
   val workflow: Handle<String, String, String>

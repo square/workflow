@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.legacy
 
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.channels.BroadcastChannel
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.Channel.Factory.CONFLATED
-import kotlinx.coroutines.experimental.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.experimental.channels.ClosedSendChannelException
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.SendChannel
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.channels.ClosedSendChannelException
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Starts a coroutine in the given [context] that runs [block] to produce states and the result
@@ -36,7 +38,7 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
  * it can use to receive [events][E] from the workflow's [WorkflowInput]. The block's return value
  * is used as the workflow's result.
  * The state channel is a
- * [ConflatedBroadcastChannel][kotlinx.coroutines.experimental.channels.ConflatedBroadcastChannel],
+ * [ConflatedBroadcastChannel][kotlinx.coroutines.channels.ConflatedBroadcastChannel],
  * which means that sends will never suspend or fail, and if observers of the workflow aren't
  * receiving fast enough, they will miss intermediate states.
  * The event channel has [unlimited capacity][UNLIMITED].

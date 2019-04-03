@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.legacy.rx2
 
 import com.squareup.workflow.legacy.Workflow
 import io.reactivex.Completable
 import io.reactivex.Observable
-import kotlinx.coroutines.experimental.rx2.openSubscription
+import kotlinx.coroutines.rx2.openSubscription
 import com.squareup.workflow.legacy.switchMapState as coreSwitchMapState
 
 /**

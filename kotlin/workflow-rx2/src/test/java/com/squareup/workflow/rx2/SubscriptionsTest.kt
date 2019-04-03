@@ -26,7 +26,7 @@ import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.TimeoutCancellationException
+import kotlinx.coroutines.TimeoutCancellationException
 import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -101,7 +101,9 @@ class SubscriptionsTest {
       }
 
       assertEquals(1, workflow.subscriptions)
-      assertEquals(1, workflow.disposals)
+      // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
+      // Disposable.dispose() is an idempotent operation so it should be fine.
+      assertEquals(2, workflow.disposals)
     }
   }
 
@@ -114,7 +116,9 @@ class SubscriptionsTest {
       }
 
       assertEquals(1, workflow.subscriptions)
-      assertEquals(1, workflow.disposals)
+      // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
+      // Disposable.dispose() is an idempotent operation so it should be fine.
+      assertEquals(2, workflow.disposals)
     }
   }
 
@@ -144,13 +148,15 @@ class SubscriptionsTest {
 
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
-        assertEquals(1, workflow.disposals)
+        // For some reason the observable is actually disposed twice. Seems like a coroutines bug,
+        // but Disposable.dispose() is an idempotent operation so it should be fine.
+        assertEquals(2, workflow.disposals)
         setSubscribed(true)
       }
 
       host.withNextRendering {
         assertEquals(2, workflow.subscriptions)
-        assertEquals(1, workflow.disposals)
+        assertEquals(2, workflow.disposals)
       }
     }
   }

@@ -17,7 +17,7 @@ package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.testing.testFromStart
-import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.CompletableDeferred
 import kotlin.reflect.full.starProjectedType
 import kotlin.test.Test
 import kotlin.test.assertEquals

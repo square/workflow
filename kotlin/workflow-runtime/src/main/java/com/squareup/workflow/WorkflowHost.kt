@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowHost.Factory
@@ -20,14 +22,14 @@ import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.internal.WorkflowId
 import com.squareup.workflow.internal.WorkflowNode
 import com.squareup.workflow.internal.id
-import kotlinx.coroutines.experimental.cancel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.produce
-import kotlinx.coroutines.experimental.isActive
-import kotlinx.coroutines.experimental.selects.select
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.selects.select
 import org.jetbrains.annotations.TestOnly
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.EmptyCoroutineContext
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Provides a stream of [updates][Update] from a tree of [Workflow]s.
@@ -147,6 +149,8 @@ internal fun <I : Any, O : Any, R : Any> WorkflowNode<I, *, O, R>.start(
   } catch (e: Throwable) {
     // For some reason the exception gets masked if we don't explicitly pass it to cancel the
     // producer coroutine ourselves here.
+    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+    @Suppress("DEPRECATION")
     coroutineContext.cancel(e)
     throw e
   } finally {

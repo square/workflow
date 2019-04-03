@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.legacy
 
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.CoroutineName
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers.Unconfined
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.consume
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
-import kotlinx.coroutines.experimental.test.TestCoroutineContext
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.test.TestCoroutineContext
+import kotlin.coroutines.suspendCoroutine
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -172,6 +174,23 @@ class CoroutineWorkflowTest : CoroutineScope {
   }
 
   @Test fun `block gets original cancellation reason`() {
+    lateinit var cancelReason: Throwable
+    val workflow = workflow<Nothing, Nothing, Nothing> { _, _ ->
+      suspendCancellableCoroutine<Nothing> { continuation ->
+        continuation.invokeOnCancellation {
+          cancelReason = it!!
+        }
+      }
+    }
+    testContext.triggerActions()
+    workflow.cancel()
+
+    assertTrue(cancelReason is CancellationException)
+    assertNull(cancelReason.cause)
+  }
+
+  @Suppress("DEPRECATION")
+  @Test fun `block gets original cancellation reason - deprecated cancel`() {
     lateinit var cancelReason: Throwable
     val workflow = workflow<Nothing, Nothing, Nothing> { _, _ ->
       suspendCancellableCoroutine<Nothing> { continuation ->

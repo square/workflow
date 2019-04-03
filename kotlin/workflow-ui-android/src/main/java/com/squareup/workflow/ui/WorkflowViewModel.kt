@@ -22,8 +22,8 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.rx2.asObservable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.rx2.asObservable
 
 /**
  * The guts of [WorkflowActivityRunner]. We could have made that class itself a
@@ -41,6 +41,7 @@ internal class WorkflowViewModel<OutputT : Any, RenderingT : Any>(
     private val initialInput: InputT,
     private val restored: PickledWorkflow?
   ) : ViewModelProvider.Factory {
+    @Suppress("EXPERIMENTAL_API_USAGE")
     private val hostFactory = WorkflowHost.Factory(Dispatchers.Unconfined)
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -54,6 +55,7 @@ internal class WorkflowViewModel<OutputT : Any, RenderingT : Any>(
 
   var lastSnapshot: Snapshot = Snapshot.EMPTY
 
+  @Suppress("EXPERIMENTAL_API_USAGE")
   val updates =
     host.updates.asObservable(Dispatchers.Unconfined)
         // Issue #252, try replacing this with Dispatchers.Main.immediate once that's available.

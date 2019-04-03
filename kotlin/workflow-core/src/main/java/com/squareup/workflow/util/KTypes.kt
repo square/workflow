@@ -49,7 +49,8 @@ object KTypes {
 private data class FakeKType(
   override val classifier: KClassifier,
   override val arguments: List<KTypeProjection>,
-  override val isMarkedNullable: Boolean = false
+  override val isMarkedNullable: Boolean = false,
+  override val annotations: List<Annotation> = emptyList()
 ) : KType {
   override fun toString(): String = "$classifier<${arguments.joinToString()}>"
 }

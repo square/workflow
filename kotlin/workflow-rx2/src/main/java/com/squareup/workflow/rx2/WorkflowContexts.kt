@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.WorkflowAction
@@ -22,8 +24,8 @@ import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.KTypes
 import io.reactivex.Observable
 import io.reactivex.Single
-import kotlinx.coroutines.experimental.rx2.await
-import kotlinx.coroutines.experimental.rx2.openSubscription
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.rx2.openSubscription
 import kotlin.reflect.KType
 
 /**
