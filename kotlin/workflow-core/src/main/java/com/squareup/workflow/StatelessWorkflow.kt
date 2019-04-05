@@ -37,6 +37,22 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> :
     Workflow<InputT, OutputT, RenderingT> {
 
+  private val statefulWorkflow = object : StatefulWorkflow<InputT, Unit, OutputT, RenderingT>() {
+    override fun initialState(
+      input: InputT,
+      snapshot: Snapshot?
+    ) = Unit
+
+    @Suppress("UNCHECKED_CAST")
+    override fun compose(
+      input: InputT,
+      state: Unit,
+      context: WorkflowContext<Unit, OutputT>
+    ): RenderingT = compose(input, context as WorkflowContext<Nothing, OutputT>)
+
+    override fun snapshotState(state: Unit) = Snapshot.EMPTY
+  }
+
   /**
    * Called at least once any time one of the following things happens:
    *  - This workflow's [input] changes (via the parent passing a different one in).
@@ -59,23 +75,12 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
   /**
    * Satisfies the [Workflow] interface by wrapping `this` in a [StatefulWorkflow] with `Unit`
    * state.
+   *
+   * This method is called a few times per instance, but we don't need to allocate a new
+   * [StatefulWorkflow] every time, so we store it in a private property.
    */
   final override fun asStatefulWorkflow(): StatefulWorkflow<InputT, *, OutputT, RenderingT> =
-    object : StatefulWorkflow<InputT, Unit, OutputT, RenderingT>() {
-      override fun initialState(
-        input: InputT,
-        snapshot: Snapshot?
-      ) = Unit
-
-      @Suppress("UNCHECKED_CAST")
-      override fun compose(
-        input: InputT,
-        state: Unit,
-        context: WorkflowContext<Unit, OutputT>
-      ): RenderingT = compose(input, context as WorkflowContext<Nothing, OutputT>)
-
-      override fun snapshotState(state: Unit) = Snapshot.EMPTY
-    }
+    statefulWorkflow
 }
 
 /**
