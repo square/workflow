@@ -5,22 +5,22 @@ import Workflow
 
 
 /// Drives view controllers from a root Workflow.
-public final class ContainerViewController<Output>: UIViewController {
+public final class ContainerViewController<Output, ScreenType>: UIViewController where ScreenType: Screen {
 
     /// Emits output events from the bound workflow.
     public let output: Signal<Output, NoError>
 
-    internal let renderer: UIKitRenderableViewController
+    internal let rootViewController: ScreenViewController<ScreenType>
 
     private let workflowHost: Any
 
-    private let rendering: Property<Screen>
+    private let rendering: Property<ScreenType>
 
     private let (lifetime, token) = Lifetime.make()
 
-    private init(workflowHost: Any, rendering: Property<Screen>, output: Signal<Output, NoError>, viewRegistry: ViewRegistry) {
+    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, NoError>, viewRegistry: ViewRegistry) {
         self.workflowHost = workflowHost
-        self.renderer = UIKitRenderableViewController(viewRegistry: viewRegistry)
+        self.rootViewController = viewRegistry.provideView(for: rendering.value)
         self.rendering = rendering
         self.output = output
 
@@ -32,11 +32,9 @@ public final class ContainerViewController<Output>: UIViewController {
             .observeValues { [weak self] screen in
                 self?.render(screen: screen)
             }
-
-        render(screen: rendering.value)
     }
 
-    public convenience init<W: Workflow>(workflow: W, viewRegistry: ViewRegistry) where W.Rendering == Screen, W.Output == Output {
+    public convenience init<W: Workflow>(workflow: W, viewRegistry: ViewRegistry) where W.Rendering == ScreenType, W.Output == Output {
         let host = WorkflowHost(workflow: workflow)
         self.init(
             workflowHost: host,
@@ -45,21 +43,12 @@ public final class ContainerViewController<Output>: UIViewController {
             viewRegistry: viewRegistry)
     }
 
-    public convenience init<W: Workflow>(workflow: W, viewRegistry: ViewRegistry) where W.Rendering: Screen, W.Output == Output {
-        let host = WorkflowHost(workflow: workflow)
-        self.init(
-            workflowHost: host,
-            rendering: host.rendering.map { $0 as Screen },
-            output: host.output,
-            viewRegistry: viewRegistry)
-    }
-
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func render(screen: Screen) {
-        renderer.render(screen: screen)
+    private func render(screen: ScreenType) {
+        rootViewController.update(screen: screen)
     }
 
     override public func viewDidLoad() {
@@ -67,34 +56,34 @@ public final class ContainerViewController<Output>: UIViewController {
 
         view.backgroundColor = .white
 
-        addChild(renderer)
-        view.addSubview(renderer.view)
-        renderer.didMove(toParent: self)
+        addChild(rootViewController)
+        view.addSubview(rootViewController.view)
+        rootViewController.didMove(toParent: self)
     }
 
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        renderer.view.frame = view.bounds
+        rootViewController.view.frame = view.bounds
     }
 
     public override var childForStatusBarStyle: UIViewController? {
-        return renderer
+        return rootViewController
     }
 
     public override var childForStatusBarHidden: UIViewController? {
-        return renderer
+        return rootViewController
     }
 
     public override var childForHomeIndicatorAutoHidden: UIViewController? {
-        return renderer
+        return rootViewController
     }
 
     public override var childForScreenEdgesDeferringSystemGestures: UIViewController? {
-        return renderer
+        return rootViewController
     }
 
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return renderer.supportedInterfaceOrientations
+        return rootViewController.supportedInterfaceOrientations
     }
 
 }

@@ -34,7 +34,7 @@ class ContainerViewControllerTests: XCTestCase {
         let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
 
         withExtendedLifetime(container) {
-            let vc = container.renderer.currentScreenViewController as! TestScreenViewController
+            let vc = container.rootViewController as! TestScreenViewController
             XCTAssertEqual("0", vc.screen.string)
         }
     }
@@ -48,7 +48,7 @@ class ContainerViewControllerTests: XCTestCase {
 
             let expectation = XCTestExpectation(description: "View Controller updated")
 
-            let vc = container.renderer.currentScreenViewController as! TestScreenViewController
+            let vc = container.rootViewController as! TestScreenViewController
             vc.onScreenChange = {
                 expectation.fulfill()
             }
@@ -99,7 +99,7 @@ fileprivate struct MockWorkflow: Workflow {
 
     }
 
-    func compose(state: State, context: WorkflowContext<MockWorkflow>) -> Screen {
+    func compose(state: State, context: WorkflowContext<MockWorkflow>) -> TestScreen {
 
         context.subscribe(signal: subscription.map { output in
             return AnyWorkflowAction { state in
