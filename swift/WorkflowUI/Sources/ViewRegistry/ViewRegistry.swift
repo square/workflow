@@ -40,7 +40,7 @@ public struct ViewRegistry {
     ///
     /// Note that you must check `canProvideView(for:)` before calling this method. Calling `provideView(for:)`
     /// with a screen type that was not previously registered is a programmer error, and the application will crash.
-    internal func provideView<T>(for screen: T) -> ScreenViewController<T> where T : Screen {
+    public func provideView<T>(for screen: T) -> ScreenViewController<T> where T : Screen {
         guard let factory = factories[ObjectIdentifier(T.self)] as? Factory<T> else {
             fatalError("The screen type \(T.self) was not registered with the view registry.")
         }
