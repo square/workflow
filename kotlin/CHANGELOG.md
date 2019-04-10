@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+## Version 0.12.0
+
+_2019-4-10_
+
+ * Use kotlinx-coroutines-android and Dispatchers.Main instead of Rx's Android scheduler. ([#252](https://github.com/square/workflow/issues/252))
+ * Upgrade okio to 2.2.2.
+ * Only allocate one StatefulWorkflow per StatelessWorkflow instance.
+
 ## Version 0.11.0
 
 _2019-4-2_

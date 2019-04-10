@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+## Version 0.12.0
+
+_2019-4-10_
+
+ * Improve type safety by removing AnyScreenViewController as a base type.
+    * Replaces AnyScreenViewController with a type erased AnyScreen. This requires the compose method to output either a single typed screen, or explicitly `AnyScreen` if it may return multiple different screen types.
+
 ## Version 0.11.0
 
 _2019-4-2_
