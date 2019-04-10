@@ -16,3 +16,14 @@ public struct AnyScreen: Screen {
         return viewControllerBuilder(viewRegistry)
     }
 }
+
+
+extension Screen {
+    public func asAnyScreen() -> AnyScreen {
+        if let anyScreen = self as? AnyScreen {
+            return anyScreen
+        } else {
+            return AnyScreen(self)
+        }
+    }
+}
