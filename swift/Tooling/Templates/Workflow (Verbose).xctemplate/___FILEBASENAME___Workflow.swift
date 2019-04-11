@@ -79,8 +79,8 @@ extension ___VARIABLE_productName___Workflow {
 
 extension ___VARIABLE_productName___Workflow {
 
-    func compose(state: ___VARIABLE_productName___Workflow.State, context: WorkflowContext<___VARIABLE_productName___Workflow>) -> Screen {
-        #warning("Don't forget your compose implementation!")
-        fatalError()
+    func compose(state: ___VARIABLE_productName___Workflow.State, context: WorkflowContext<___VARIABLE_productName___Workflow>) -> String {
+        #warning("Don't forget your compose implementation and to return the correct rendering type!")
+        return "This is likely not the rendering that you want to return"
     }
 }
