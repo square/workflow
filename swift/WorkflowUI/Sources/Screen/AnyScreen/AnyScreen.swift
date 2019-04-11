@@ -5,6 +5,10 @@ public struct AnyScreen: Screen {
     private let viewControllerBuilder: (ViewRegistry) -> AnyScreenViewController.WrappedViewController
 
     public init<T: Screen>(_ screen: T) {
+        if let anyScreen = screen as? AnyScreen {
+            self = anyScreen
+            return
+        }
         self.wrappedScreen = screen
         self.viewControllerBuilder = { viewRegistry in
             return viewRegistry.provideView(for: screen)
