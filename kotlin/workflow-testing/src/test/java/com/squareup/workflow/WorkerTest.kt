@@ -18,6 +18,7 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.testing.test
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
@@ -186,14 +187,16 @@ class WorkerTest {
   @Test fun `fromChannel propagates exceptions`() {
     val worker = Worker.fromChannel {
       Channel<Unit>().apply {
-        // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-        @Suppress("DEPRECATION")
-        cancel(ExpectedException())
+        cancel(CancellationException(null, ExpectedException()))
       }
     }
 
     worker.test {
-      assertTrue(getException() is ExpectedException)
+      val causeChain = generateSequence(getException()) { it.cause }
+      assertEquals(
+          1, causeChain.count { it is ExpectedException },
+          "Expected cancellation exception cause chain to include original cause."
+      )
     }
   }
 

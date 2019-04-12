@@ -61,8 +61,7 @@ class WorkflowTesterTest {
     val workflow = Workflow.stateless<Unit, Unit> { }
 
     workflow.testFromStart(context = job) {
-      @Suppress("DEPRECATION")
-      job.cancel(ExpectedException())
+      job.cancel(CancellationException(null, ExpectedException()))
       awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }

@@ -24,10 +24,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -81,9 +83,7 @@ class WorkflowOperatorsTest {
       it.toString()
     }
 
-    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-    @Suppress("DEPRECATION")
-    withAdaptedEvents.cancel(ExpectedException())
+    withAdaptedEvents.cancel(CancellationException(null, ExpectedException()))
 
     assertTrue(sourceCancellation is CancellationException)
   }
@@ -161,9 +161,7 @@ class WorkflowOperatorsTest {
     val withMappedStates = source.mapState { it }
 
     assertNull(sourceCancellation)
-    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-    @Suppress("DEPRECATION")
-    withMappedStates.cancel(ExpectedException())
+    withMappedStates.cancel(CancellationException(null, ExpectedException()))
     assertTrue(sourceCancellation is CancellationException)
   }
 
@@ -308,7 +306,16 @@ class WorkflowOperatorsTest {
         .consume {
           assertFalse(withMappedStates.isCompleted)
           withMappedStates.sendEvent(Unit)
-          assertFailsWith<ExpectedException> { poll() }
+          assertFails { runBlocking { receive() } }
+              .also { error ->
+                // Search up the cause chain for the expected exception, since multiple CancellationExceptions
+                // may be chained together first.
+                val causeChain = generateSequence(error) { it.cause }
+                assertEquals(
+                    1, causeChain.count { it is ExpectedException },
+                    "Expected cancellation exception cause chain to include ExpectedException."
+                )
+              }
           // Exception is not sent through the result.
           assertEquals(Unit, withMappedStates.getCompleted())
         }
@@ -321,9 +328,7 @@ class WorkflowOperatorsTest {
     }
     val withMappedStates: Workflow<Int, Unit, Unit> = source.switchMapState {
       Channel<Int>().apply {
-        // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-        @Suppress("DEPRECATION")
-        cancel(ExpectedException())
+        cancel(CancellationException(null, ExpectedException()))
       }
     }
 
@@ -331,7 +336,16 @@ class WorkflowOperatorsTest {
         .consume {
           assertFalse(withMappedStates.isCompleted)
           withMappedStates.sendEvent(Unit)
-          assertFailsWith<ExpectedException> { poll() }
+          assertFails { runBlocking { receive() } }
+              .also { error ->
+                // Search up the cause chain for the expected exception, since multiple CancellationExceptions
+                // may be chained together first.
+                val causeChain = generateSequence(error) { it.cause }
+                assertEquals(
+                    1, causeChain.count { it is ExpectedException },
+                    "Expected cancellation exception cause chain to include ExpectedException."
+                )
+              }
           // Exception is not sent through the result.
           assertEquals(Unit, withMappedStates.getCompleted())
         }
@@ -371,9 +385,7 @@ class WorkflowOperatorsTest {
           withMappedStates.sendEvent(Unit)
 
           assertFalse(transformedChannel.isClosedForSend)
-          // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-          @Suppress("DEPRECATION")
-          this.cancel(ExpectedException())
+          this.cancel(CancellationException(null, ExpectedException()))
           assertTrue(transformedChannel.isClosedForSend)
         }
   }
@@ -390,9 +402,7 @@ class WorkflowOperatorsTest {
     val withMappedStates = source.switchMapState { produce { send(it) } }
 
     assertNull(sourceCancellation)
-    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-    @Suppress("DEPRECATION")
-    withMappedStates.cancel(ExpectedException())
+    withMappedStates.cancel(CancellationException(null, ExpectedException()))
     assertTrue(sourceCancellation is CancellationException)
   }
 
@@ -450,9 +460,7 @@ class WorkflowOperatorsTest {
     val withMappedResult = source.mapResult { it }
 
     assertNull(sourceCancellation)
-    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-    @Suppress("DEPRECATION")
-    withMappedResult.cancel(ExpectedException())
+    withMappedResult.cancel(CancellationException(null, ExpectedException()))
     assertTrue(sourceCancellation is CancellationException)
   }
 }
