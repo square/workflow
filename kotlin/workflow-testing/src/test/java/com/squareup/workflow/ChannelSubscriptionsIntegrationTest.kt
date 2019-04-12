@@ -23,6 +23,7 @@ import com.squareup.workflow.testing.testFromStart
 import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -203,16 +204,22 @@ class ChannelSubscriptionsIntegrationTest {
   }
 
   @Test fun `reports error`() {
-    assertFailsWith<IOException> {
+    assertFailsWith<CancellationException> {
       workflow.testFromStart(true) { host ->
         assertFalse(host.hasOutput)
 
-        // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-        @Suppress("DEPRECATION")
-        channel.cancel(IOException("fail"))
+        channel.cancel(CancellationException(null, IOException("fail")))
         assertSame(Closed, host.awaitNextOutput())
         assertFalse(host.hasOutput)
       }
+    }.also { error ->
+      // Search up the cause chain for the expected exception, since multiple CancellationExceptions
+      // may be chained together first.
+      val causeChain = generateSequence<Throwable>(error) { it.cause }
+      assertEquals(
+          1, causeChain.count { it is IOException },
+          "Expected cancellation exception cause chain to include original cause."
+      )
     }
   }
 }

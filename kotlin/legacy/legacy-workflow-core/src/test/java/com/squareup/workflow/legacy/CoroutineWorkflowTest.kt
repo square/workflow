@@ -21,6 +21,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -173,7 +174,7 @@ class CoroutineWorkflowTest : CoroutineScope {
     workflow.sendEvent(Unit)
   }
 
-  @Test fun `block gets original cancellation reason`() {
+  @Test fun `block gets original cancellation reason - null cause`() {
     lateinit var cancelReason: Throwable
     val workflow = workflow<Nothing, Nothing, Nothing> { _, _ ->
       suspendCancellableCoroutine<Nothing> { continuation ->
@@ -190,7 +191,7 @@ class CoroutineWorkflowTest : CoroutineScope {
   }
 
   @Suppress("DEPRECATION")
-  @Test fun `block gets original cancellation reason - deprecated cancel`() {
+  @Test fun `block gets original cancellation reason - non-null cause`() {
     lateinit var cancelReason: Throwable
     val workflow = workflow<Nothing, Nothing, Nothing> { _, _ ->
       suspendCancellableCoroutine<Nothing> { continuation ->
@@ -203,10 +204,16 @@ class CoroutineWorkflowTest : CoroutineScope {
     workflow.cancel(ExpectedException)
 
     assertTrue(cancelReason is CancellationException)
-    assertEquals(ExpectedException, cancelReason.cause)
+    // Search up the cause chain for the expected exception, since multiple CancellationExceptions
+    // may be chained together first.
+    val causeChain = generateSequence<Throwable>(cancelReason) { it.cause }
+    assertEquals(
+        1, causeChain.count { it === ExpectedException },
+        "Expected cancellation exception cause chain to include ExpectedException."
+    )
   }
 
   private companion object {
-    object ExpectedException : RuntimeException()
+    object ExpectedException : CancellationException()
   }
 }

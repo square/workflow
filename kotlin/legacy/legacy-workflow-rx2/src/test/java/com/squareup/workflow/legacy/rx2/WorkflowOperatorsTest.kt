@@ -78,8 +78,6 @@ class WorkflowOperatorsTest {
     states.cancel()
 
     assertThat(subscribeCount).isEqualTo(1)
-    // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
-    // Disposable.dispose() is an idempotent operation so it should be fine.
-    assertThat(disposeCount).isEqualTo(2)
+    assertThat(disposeCount).isEqualTo(1)
   }
 }

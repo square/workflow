@@ -23,7 +23,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.WorkflowContext
-import com.squareup.workflow.compose
+import com.squareup.workflow.composeChild
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealWorkflowContext.Composer
 import com.squareup.workflow.internal.RealWorkflowContextTest.TestComposer.Rendering
@@ -149,7 +149,7 @@ class RealWorkflowContextTest {
       context.onReceive<Unit>({ fail() }, Unit::class.starProjectedType) { fail() }
     }
     val child = Workflow.stateless<Nothing, Unit> { fail() }
-    assertFailsWith<IllegalStateException> { context.compose(child) }
+    assertFailsWith<IllegalStateException> { context.composeChild(child) }
     assertFailsWith<IllegalStateException> { context.buildBehavior() }
   }
 }
