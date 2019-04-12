@@ -17,7 +17,7 @@ package com.squareup.workflow
 
 /**
  * A composable, stateful object that can [handle events][WorkflowContext.onEvent],
- * [delegate to children][WorkflowContext.compose], [subscribe][onReceive] to arbitrary streams from
+ * [delegate to children][WorkflowContext.composeChild], [subscribe][onReceive] to arbitrary streams from
  * the outside world, and be [saved][snapshotState] to a serialized form to be restored later.
  *
  * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
@@ -63,7 +63,7 @@ abstract class StatefulWorkflow<
     > : Workflow<InputT, OutputT, RenderingT> {
 
   /**
-   * Called from [WorkflowContext.compose] when the state machine is first started, to get the
+   * Called from [WorkflowContext.composeChild] when the state machine is first started, to get the
    * initial state.
    *
    * @param snapshot
@@ -78,7 +78,7 @@ abstract class StatefulWorkflow<
   ): StateT
 
   /**
-   * Called from [WorkflowContext.compose] instead of [initialState] when the workflow is already
+   * Called from [WorkflowContext.composeChild] instead of [initialState] when the workflow is already
    * running. This allows the workflow to detect changes in input, and possibly change its state in
    * response. This method is called eagerly: `old` and `new` might be the same value, so it is up
    * to implementing code to perform any diffing if desired.
@@ -100,7 +100,7 @@ abstract class StatefulWorkflow<
    *    - Emits an output.
    *
    * **Never call this method directly.** To nest the rendering of a child workflow in your own,
-   * pass the child and any required input to [WorkflowContext.compose].
+   * pass the child and any required input to [WorkflowContext.composeChild].
    *
    * This method *should not* have any side effects, and in particular should not do anything that
    * blocks the current thread. It may be called multiple times for the same state. It must do all its

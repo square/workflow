@@ -17,7 +17,7 @@ package com.squareup.workflow
 
 /**
  * A composable, optionally-stateful object that can [handle events][WorkflowContext.onEvent],
- * [delegate to children][WorkflowContext.compose], [subscribe][onReceive] to arbitrary streams from
+ * [delegate to children][WorkflowContext.composeChild], [subscribe][onReceive] to arbitrary streams from
  * the outside world.
  *
  * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
@@ -67,7 +67,7 @@ package com.squareup.workflow
  * to its parent.
  * May be [Nothing] if the workflow doesn't need to emit anything.
  *
- * @param RenderingT The value returned to this workflow's parent during [composition][compose].
+ * @param RenderingT The value returned to this workflow's parent during [composition][composeChild].
  * Typically represents a "view" of this workflow's input, current state, and children's renderings.
  * A workflow that represents a UI component may use a view model as its rendering type.
  *
@@ -78,7 +78,7 @@ interface Workflow<in InputT : Any, out OutputT : Any, out RenderingT : Any> {
 
   /**
    * Provides a [StatefulWorkflow] view of this workflow. Necessary because [StatefulWorkflow] is
-   * the common API required for [WorkflowContext.compose] to do its work.
+   * the common API required for [WorkflowContext.composeChild] to do its work.
    */
   fun asStatefulWorkflow(): StatefulWorkflow<InputT, *, OutputT, RenderingT>
 

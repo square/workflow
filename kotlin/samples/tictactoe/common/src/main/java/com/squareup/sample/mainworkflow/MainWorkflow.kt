@@ -29,7 +29,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
-import com.squareup.workflow.compose
+import com.squareup.workflow.composeChild
 
 /**
  * Application specific root [Workflow], and demonstration of workflow composition.
@@ -59,13 +59,13 @@ class MainWorkflow(
     context: WorkflowContext<MainState, Unit>
   ): RunGameScreen = when (state) {
     is Authenticating -> {
-      val authScreen = context.compose(authWorkflow) { enterState(RunningGame) }
+      val authScreen = context.composeChild(authWorkflow) { enterState(RunningGame) }
       val emptyGameScreen = GamePlayScreen()
 
       AlertContainerScreen(authScreen.asPanelOver(emptyGameScreen))
     }
 
-    is RunningGame -> context.compose(runGameWorkflow) { enterState(Authenticating) }
+    is RunningGame -> context.composeChild(runGameWorkflow) { enterState(Authenticating) }
   }
 
   override fun snapshotState(state: MainState): Snapshot = state.toSnapshot()

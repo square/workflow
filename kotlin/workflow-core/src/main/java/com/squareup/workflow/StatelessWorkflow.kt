@@ -61,7 +61,7 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
    *    - Emits an output.
    *
    * **Never call this method directly.** To get the rendering from a child workflow, pass the child
-   * and any required input to [WorkflowContext.compose].
+   * and any required input to [WorkflowContext.composeChild].
    *
    * This method *should not* have any side effects, and in particular should not do anything that
    * blocks the current thread. It may be called multiple times for the same state. It must do all its
@@ -137,6 +137,6 @@ fun <InputT : Any, OutputT : Any, FromRenderingT : Any, ToRenderingT : Any>
       transform: (FromRenderingT) -> ToRenderingT
     ): Workflow<InputT, OutputT, ToRenderingT> = Workflow.stateless { input, context ->
   // @formatter:on
-  context.compose(this@mapRendering, input) { emitOutput(it) }
+  context.composeChild(this@mapRendering, input) { emitOutput(it) }
       .let(transform)
 }

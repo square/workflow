@@ -116,8 +116,8 @@ class CompositionIntegrationTest {
         context: WorkflowContext<Boolean, Nothing>
       ): () -> Unit {
         if (state) {
-          context.compose(child1, key = "child1")
-          context.compose(child2, key = "child2")
+          context.composeChild(child1, key = "child1")
+          context.composeChild(child2, key = "child2")
         }
         return context.onEvent<Unit> { enterState(false) }::invoke
       }
@@ -142,7 +142,7 @@ class CompositionIntegrationTest {
       context.onTeardown { teardowns += "grandchild" }
     }
     val child = Workflow.stateless<Nothing, Unit> { context ->
-      context.compose(grandchild)
+      context.composeChild(grandchild)
       context.onTeardown { teardowns += "child" }
     }
     // A workflow that will render child1 and child2 until its rendering is invoked, at which point
@@ -159,7 +159,7 @@ class CompositionIntegrationTest {
         context: WorkflowContext<Boolean, Nothing>
       ): () -> Unit {
         if (state) {
-          context.compose(child)
+          context.composeChild(child)
         }
         return context.onEvent<Unit> { enterState(false) }::invoke
       }
