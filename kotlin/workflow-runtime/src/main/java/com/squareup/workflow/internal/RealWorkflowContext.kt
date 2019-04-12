@@ -25,14 +25,14 @@ import com.squareup.workflow.util.ChannelUpdate
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlin.reflect.KType
+import kotlin.reflect.KClass
 
 /**
  * An implementation of [WorkflowContext] that builds a [Behavior] via [buildBehavior].
  */
 internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   private val composer: Composer<StateT, OutputT>
-) : WorkflowContext<StateT, OutputT> {
+) : WorkflowContext<StateT, OutputT>() {
 
   interface Composer<StateT : Any, in OutputT : Any> {
     fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
@@ -64,15 +64,6 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
     }
   }
 
-  override fun <E> onReceive(
-    channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    type: KType,
-    key: String,
-    handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
-  ) {
-    subscriptionCases += SubscriptionCase(channelProvider, Pair(type, key), handler)
-  }
-
   // @formatter:off
   override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
       compose(
@@ -102,4 +93,18 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
       nextActionFromEvent = nextUpdateFromEvent,
       teardownHooks = teardownHooks.toList()
   )
+
+  override fun <E> createSubscription(
+    emitterType: KClass<*>,
+    emissionType: KClass<*>,
+    key: String,
+    handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>,
+    subscribe: CoroutineScope.() -> ReceiveChannel<E>
+  ) {
+    subscriptionCases += SubscriptionCase(
+        channelProvider = subscribe,
+        idempotenceKey = Pair(TODO(), key),
+        handler = handler
+    )
+  }
 }

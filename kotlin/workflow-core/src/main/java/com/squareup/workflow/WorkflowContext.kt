@@ -19,12 +19,13 @@ package com.squareup.workflow
 
 import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Value
-import com.squareup.workflow.util.KTypes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.KType
 
 /**
@@ -47,7 +48,7 @@ import kotlin.reflect.KType
  *
  * See [onTeardown].
  */
-interface WorkflowContext<StateT : Any, in OutputT : Any> {
+abstract class WorkflowContext<StateT : Any, in OutputT : Any> {
 
   /**
    * Given a function that takes an [event][EventT] and can mutate the state or emit an output,
@@ -74,36 +75,9 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * @param handler A function that returns the [WorkflowAction] to perform when the event handler
    * is invoked.
    */
-  fun <EventT : Any> onEvent(
+  abstract fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<StateT, OutputT>
   ): EventHandler<EventT>
-
-  /**
-   * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to,
-   * and will send anything emitted on the channel to [handler] as a [ChannelUpdate].
-   *
-   * This method ensures that only one subscription is active at a time for the given [type]+[key].
-   * If this method is called in two or more consecutive `compose` invocations with the
-   * same key, [channelProvider] will only be invoked for the first one, and the returned channel
-   * will be re-used for all subsequent invocations, until a `compose` invocation does
-   * _not_ call this method with an equal key. At that time, the channel will be
-   * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will
-   * release any resources allocated by the [channelProvider].
-   *
-   * @param type The [KType] that represents both the type of data source (e.g. `ReceiveChannel` or
-   * `Deferred`) and the element type [E].
-   * @param key An optional string key that is used to distinguish between subscriptions of the same
-   * [type].
-   * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
-   *
-   * @see onReceive
-   */
-  fun <E> onReceive(
-    channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    type: KType,
-    key: String = "",
-    handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
-  )
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
@@ -126,7 +100,7 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * @param key An optional string key that is used to distinguish between workflows of the same
    * type.
    */
-  fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
+  abstract fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
     child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
     input: ChildInputT,
     key: String = "",
@@ -143,37 +117,36 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * Teardown handlers should be non-blocking and execute quickly, since they are invoked
    * synchronously during the compose pass.
    */
-  fun onTeardown(handler: () -> Unit)
-}
+  abstract fun onTeardown(handler: () -> Unit)
 
-/**
- * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to, and
- * will send anything emitted on the channel to [handler] as a [ChannelUpdate].
- *
- * This method ensures that only one subscription is active at a time for the given key.
- * If this method is called in two or more consecutive `compose` invocations with the same
- * key+[channelProvider] type, the provider will only be invoked for the first one, and the returned
- * channel will be re-used for all subsequent invocations, until a `compose` invocation
- * does _not_ call this method with an equal key+type. At that time, the channel will be
- * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will release
- * any resources allocated by the [channelProvider].
- *
- * @param key An optional string key that is used to distinguish between subscriptions of the same
- * type.
- * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
- *
- * @see WorkflowContext.onReceive
- */
-inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, OutputT>.onReceive(
-  noinline channelProvider: CoroutineScope.() -> ReceiveChannel<T>,
-  key: String = "",
-  noinline handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
-) = onReceive(
-    channelProvider,
-    KTypes.fromGenericType(ReceiveChannel::class, T::class),
-    key,
-    handler
-)
+  /**
+   * Implementation of [WorkflowContext.Companion.createSubscription].
+   */
+  protected abstract fun <E> createSubscription(
+    emitterType: KClass<*>,
+    emissionType: KClass<*>,
+    key: String,
+    handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>,
+    subscribe: CoroutineScope.() -> ReceiveChannel<E>
+  )
+
+  companion object {
+
+    /**
+     * TODO kdoc
+     * Not intended to be used by regular application code. Defined as a companion object function
+     * instead of a method with a [WorkflowContext] receiver so it doesn't show up in autocomplete.
+     */
+    fun <StateT : Any, OutputT : Any, E> createSubscription(
+      context: WorkflowContext<StateT, OutputT>,
+      emitterType: KClass<*>,
+      emissionType: KClass<*>,
+      key: String,
+      handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>,
+      subscribe: CoroutineScope.() -> ReceiveChannel<E>
+    ) = context.createSubscription(emitterType, emissionType, key, handler, subscribe)
+  }
+}
 
 /**
  * Convenience alias of [WorkflowContext.compose] for workflows that don't take input.
@@ -219,6 +192,36 @@ fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
 // @formatter:on
 
 /**
+ * Will send anything emitted on the [channel] to [handler] as a [ChannelUpdate].
+ *
+ * This method ensures that only one subscription is active at a time for the given key.
+ * If this method is called in two or more consecutive `compose` invocations with the same
+ * key+[channel] type, the provider will only be invoked for the first one, and the returned
+ * channel will be re-used for all subsequent invocations, until a `compose` invocation
+ * does _not_ call this method with an equal key+type. At that time, the channel will be
+ * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will release
+ * any resources associated with the [channel].
+ *
+ * @param key An optional string key that is used to distinguish between subscriptions of the same
+ * type.
+ * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
+ */
+inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, OutputT>.onReceive(
+  channel: ReceiveChannel<T>,
+  key: String = "",
+  noinline handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
+) {
+  WorkflowContext.createSubscription(
+      context = this,
+      emitterType = ReceiveChannel::class,
+      emissionType = T::class,
+      key = key,
+      handler = handler,
+      subscribe = { channel }
+  )
+}
+
+/**
  * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
  * invoked for a given deferred+key, it will not be invoked again until an invocation of
  * `compose` that does _not_ call this method with that deferred+[key].
@@ -230,29 +233,7 @@ inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, Outp
   deferred: Deferred<T>,
   key: String = "",
   noinline handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onDeferred(
-    deferred,
-    KTypes.fromGenericType(Deferred::class, T::class),
-    key,
-    handler
-)
-
-/**
- * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
- * invoked for a given deferred+key, it will not be invoked again until an invocation of
- * `compose` that does _not_ call this method with that deferred+[key].
- *
- * @param type The [KType] that represents both the type of data source (e.g. `Deferred`) and the
- * element type [T].
- * @param key An optional string key that is used to distinguish between subscriptions of the same
- * [type].
- */
-fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
-  deferred: Deferred<T>,
-  type: KType,
-  key: String = "",
-  handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onSuspending({ deferred.await() }, type, key, handler)
+) = onSuspending({ deferred.await() }, key, handler)
 
 /**
  * This function is provided as a helper for writing [WorkflowContext] extension functions, it
@@ -265,28 +246,31 @@ fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred
  * @param function A suspending function that is invoked in a coroutine that will be a child of this
  * state machine. The function will be cancelled if the state machine is cancelled.
  */
-fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuspending(
-  function: suspend () -> T,
-  type: KType,
+inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuspending(
+  noinline function: suspend () -> T,
   key: String = "",
-  handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onReceive(
-    { wrapInNeverClosingChannel(function) },
-    type,
-    key,
-    { update ->
-      if (update !is Value) {
-        throw AssertionError("Suspend function channel should never close.")
-      }
-      return@onReceive handler(update.value)
-    }
-)
+  crossinline handler: (T) -> WorkflowAction<StateT, OutputT>
+) {
+  WorkflowContext.createSubscription(
+      context = this,
+      emitterType = KFunction::class,
+      emissionType = T::class,
+      key = key,
+      handler = { update ->
+        if (update !is Value) {
+          throw AssertionError("Suspend function channel should never close.")
+        }
+        handler(update.value)
+      },
+      subscribe = { wrapInNeverClosingChannel(function) }
+  )
+}
 
 /**
  * Invokes [function] and returns a channel that will emit the return value of the function when it
  * returns, and then will never close.
  */
-private fun <T> CoroutineScope.wrapInNeverClosingChannel(
+@PublishedApi internal fun <T> CoroutineScope.wrapInNeverClosingChannel(
   function: suspend () -> T
 ): ReceiveChannel<T> =
   produce {
