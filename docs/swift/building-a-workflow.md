@@ -29,7 +29,7 @@ extension DemoWorkflow {
     }
     
     func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> String {
-        Return "Hello, \(name)"
+        return "Hello, \(name)"
     }
 
 }
