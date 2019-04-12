@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+## Version 0.13.0
+
+_2019-4-12_
+
+ * Upgrade Gradle to 5.x ([#113](https://github.com/square/workflow/issues/113))
+ * Upgrade AGP to 3.3.0 ([#115](https://github.com/square/workflow/issues/115))
+
 ## Version 0.12.0
 
 _2019-4-10_

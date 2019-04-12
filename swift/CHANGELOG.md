@@ -1,11 +1,17 @@
 Change Log
 ==========
 
+## Version 0.13.0
+
+_2019-4-12_
+
+ * Don't allow `AnyScreen` to wrap itself. ([#264](https://github.com/square/workflow/pull/264))
+
 ## Version 0.12.0
 
 _2019-4-10_
 
- * Improve type safety by removing AnyScreenViewController as a base type.
+ * Improve type safety by removing AnyScreenViewController as a base type. ([#200](https://github.com/square/workflow/pull/200))
     * Replaces AnyScreenViewController with a type erased AnyScreen. This requires the compose method to output either a single typed screen, or explicitly `AnyScreen` if it may return multiple different screen types.
 
 ## Version 0.11.0
