@@ -23,10 +23,13 @@ import com.squareup.workflow.Worker.Emitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlin.reflect.KClass
 
 /**
@@ -274,6 +277,19 @@ inline fun <reified T> ReceiveChannel<T>.asWorker(
 }
 
 /**
+ * Returns a [Worker] that will, when performed, emit whatever this [Flow] receives.
+ *
+ * **Warning:** The Flow API is very immature and so any breaking changes there (including in
+ * transiently-included versions) will be compounded when layering Workflow APIs on top of it.
+ * This **SHOULD NOT** be used in production code.
+ */
+@VeryExperimentalWorkflow
+@FlowPreview
+inline fun <reified T> Flow<T>.asWorker(
+  key: String = ""
+): Worker<T> = create(key) { emitAll(this@asWorker) }
+
+/**
  * Emits whatever [channel] receives on this [Emitter].
  *
  * @param closeOnCancel
@@ -299,6 +315,19 @@ suspend inline fun <T> Emitter<T>.emitAll(
       emitOutput(value)
     }
   }
+}
+
+/**
+ * Emits everything from [flow] on this [Emitter].
+ *
+ * **Warning:** The Flow API is very immature and so any breaking changes there (including in
+ * transiently-included versions) will be compounded when layering Workflow APIs on top of it.
+ * This **SHOULD NOT** be used in production code.
+ */
+@VeryExperimentalWorkflow
+@FlowPreview
+suspend inline fun <T> Emitter<T>.emitAll(flow: Flow<T>) {
+  flow.collect { emitOutput(it) }
 }
 
 /**
