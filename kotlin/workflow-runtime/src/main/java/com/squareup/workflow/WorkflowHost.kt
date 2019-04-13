@@ -22,6 +22,7 @@ import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.internal.WorkflowId
 import com.squareup.workflow.internal.WorkflowNode
 import com.squareup.workflow.internal.id
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
@@ -149,9 +150,7 @@ internal fun <I : Any, O : Any, R : Any> WorkflowNode<I, *, O, R>.start(
   } catch (e: Throwable) {
     // For some reason the exception gets masked if we don't explicitly pass it to cancel the
     // producer coroutine ourselves here.
-    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-    @Suppress("DEPRECATION")
-    coroutineContext.cancel(e)
+    coroutineContext.cancel(if (e is CancellationException) e else CancellationException(null, e))
     throw e
   } finally {
     // There's a potential race condition if the producer coroutine is cancelled before it has a chance
