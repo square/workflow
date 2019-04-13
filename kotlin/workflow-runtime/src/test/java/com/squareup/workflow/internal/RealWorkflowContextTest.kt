@@ -23,11 +23,15 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.compose
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealWorkflowContext.Composer
 import com.squareup.workflow.internal.RealWorkflowContextTest.TestComposer.Rendering
+import com.squareup.workflow.stateless
+import kotlin.reflect.full.starProjectedType
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -85,11 +89,11 @@ class RealWorkflowContextTest {
     val context = RealWorkflowContext<String, String>(PoisonComposer())
     val expectedUpdate = noop<String, String>()
     val handler = context.onEvent<String> { expectedUpdate }
-    assertFalse(context.buildBehavior().nextActionFromEvent.isCompleted)
+    val behavior = context.buildBehavior()
+    assertFalse(behavior.nextActionFromEvent.isCompleted)
 
     handler("")
 
-    val behavior = context.buildBehavior()
     assertTrue(behavior.nextActionFromEvent.isCompleted)
     val actualUpdate = behavior.nextActionFromEvent.getCompleted()
     assertSame(expectedUpdate, actualUpdate)
@@ -133,5 +137,19 @@ class RealWorkflowContextTest {
         .childCases
     assertEquals(1, childCases.size)
     assertSame(case, childCases.single())
+  }
+
+  @Test fun `all methods throw after buildBehavior`() {
+    val context = RealWorkflowContext(TestComposer())
+    context.buildBehavior()
+
+    assertFailsWith<IllegalStateException> { context.onEvent<Unit> { fail() } }
+    assertFailsWith<IllegalStateException> { context.onTeardown { fail() } }
+    assertFailsWith<IllegalStateException> {
+      context.onReceive<Unit>({ fail() }, Unit::class.starProjectedType) { fail() }
+    }
+    val child = Workflow.stateless<Nothing, Unit> { fail() }
+    assertFailsWith<IllegalStateException> { context.compose(child) }
+    assertFailsWith<IllegalStateException> { context.buildBehavior() }
   }
 }

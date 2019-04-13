@@ -48,8 +48,12 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
   private val teardownHooks = mutableListOf<() -> Unit>()
 
+  /** Used to prevent modifications to this object after [buildBehavior] is called. */
+  private var frozen = false
+
   override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
       EventHandler<EventT> {
+    checkNotFrozen()
     return EventHandler { event ->
       // Run the handler synchronously, so we only have to emit the resulting action and don't need the
       // update channel to be generic on each event type.
@@ -70,6 +74,7 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
     key: String,
     handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
   ) {
+    checkNotFrozen()
     subscriptionCases += SubscriptionCase(channelProvider, Pair(type, key), handler)
   }
 
@@ -82,6 +87,7 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
         handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
       ): ChildRenderingT {
     // @formatter:on
+    checkNotFrozen()
     val id = child.id(key)
     val case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT> =
       WorkflowOutputCase(child, id, input, handler)
@@ -90,16 +96,25 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   }
 
   override fun onTeardown(handler: () -> Unit) {
+    checkNotFrozen()
     teardownHooks += handler
   }
 
   /**
    * Constructs an immutable [Behavior] from the context.
    */
-  fun buildBehavior(): Behavior<StateT, OutputT> = Behavior(
-      childCases = childCases.toList(),
-      subscriptionCases = subscriptionCases.toList(),
-      nextActionFromEvent = nextUpdateFromEvent,
-      teardownHooks = teardownHooks.toList()
-  )
+  fun buildBehavior(): Behavior<StateT, OutputT> {
+    checkNotFrozen()
+    frozen = true
+    return Behavior(
+        childCases = childCases.toList(),
+        subscriptionCases = subscriptionCases.toList(),
+        nextActionFromEvent = nextUpdateFromEvent,
+        teardownHooks = teardownHooks.toList()
+    )
+  }
+
+  private fun checkNotFrozen() = check(!frozen) {
+    "WorkflowContext cannot be used after compose method returns."
+  }
 }
