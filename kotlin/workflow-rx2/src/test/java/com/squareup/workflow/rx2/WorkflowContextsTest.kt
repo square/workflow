@@ -27,7 +27,9 @@ import com.squareup.workflow.invoke
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
 import io.reactivex.subjects.SingleSubject
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -36,41 +38,42 @@ import kotlin.test.assertTrue
 class WorkflowContextsTest {
 
   @Test fun `onSuccess handles value when emitted during listen`() {
-    var subscriptions = 0
-    var disposals = 0
+    val subscribed = CompletableDeferred<Unit>()
+    val disposed = CompletableDeferred<Unit>()
     val singleSubject = SingleSubject.create<String>()
     val single = singleSubject
-        .doOnSubscribe { subscriptions++ }
-        .doOnDispose { disposals++ }
+        .doOnSubscribe { subscribed.complete(Unit) }
+        .doOnDispose { disposed.complete(Unit) }
     val workflow = Workflow.stateless<String, Unit> { context ->
       context.onSuccess(single) { emitOutput(it) }
     }
 
-    assertEquals(0, subscriptions)
-    assertEquals(0, disposals)
+    assertFalse(subscribed.isCompleted)
+    assertFalse(disposed.isCompleted)
 
     workflow.testFromStart { host ->
-      assertEquals(1, subscriptions)
-      assertEquals(0, disposals)
+      host.awaitNextRendering()
+      runBlocking { subscribed.await() }
+      assertFalse(disposed.isCompleted)
       assertFalse(host.hasOutput)
 
       singleSubject.onSuccess("done!")
 
+      host.awaitNextRendering()
       assertTrue(host.hasOutput)
       assertEquals("done!", host.awaitNextOutput())
-      assertEquals(1, subscriptions)
-      assertEquals(0, disposals)
+      assertFalse(disposed.isCompleted)
     }
   }
 
   @Test fun `onSuccess unsubscribes`() {
-    var subscriptions = 0
-    var disposals = 0
+    val subscribed = CompletableDeferred<Unit>()
+    val disposed = CompletableDeferred<Unit>()
     lateinit var doClose: EventHandler<Unit>
     val singleSubject = SingleSubject.create<Unit>()
     val single = singleSubject
-        .doOnSubscribe { subscriptions++ }
-        .doOnDispose { disposals++ }
+        .doOnSubscribe { subscribed.complete(Unit) }
+        .doOnDispose { disposed.complete(Unit) }
     val workflow = object : StatefulWorkflow<Unit, Boolean, Nothing, Unit>() {
       override fun initialState(
         input: Unit,
@@ -92,18 +95,19 @@ class WorkflowContextsTest {
       override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
     }
 
-    assertEquals(0, subscriptions)
-    assertEquals(0, disposals)
+    assertFalse(subscribed.isCompleted)
+    assertFalse(disposed.isCompleted)
 
     workflow.testFromStart { host ->
-      assertEquals(1, subscriptions)
-      assertEquals(0, disposals)
+      host.awaitNextRendering()
+      runBlocking { subscribed.await() }
+      assertFalse(disposed.isCompleted)
       assertFalse(host.hasOutput)
 
       doClose()
 
-      assertEquals(1, subscriptions)
-      assertEquals(1, disposals)
+      host.awaitNextRendering()
+      runBlocking { disposed.await() }
     }
   }
 }

@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import org.jetbrains.annotations.TestOnly
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -42,8 +43,11 @@ fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
       input: InputT,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: (WorkflowTester<OutputT, RenderingT>) -> T
-    ): T = test(block, context) { it.run(this, input, snapshot) }
+      block: (WorkflowTester<InputT, OutputT, RenderingT>) -> T
+    ): T = test(block, context) {
+      val inputs = Channel<InputT>(1).apply { offer(input) }
+      it.run(this, inputs, snapshot)
+    }
 // @formatter:on
 
 /**
@@ -55,7 +59,7 @@ fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
 fun <T, OutputT : Any, RenderingT : Any> Workflow<Unit, OutputT, RenderingT>.testFromStart(
   snapshot: Snapshot? = null,
   context: CoroutineContext = EmptyCoroutineContext,
-  block: (WorkflowTester<OutputT, RenderingT>) -> T
+  block: (WorkflowTester<Unit, OutputT, RenderingT>) -> T
 ): T = testFromStart(Unit, snapshot, context, block)
 
 /**
@@ -72,7 +76,7 @@ fun <T, InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
       input: InputT,
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: (WorkflowTester<OutputT, RenderingT>) -> T
+      block: (WorkflowTester<InputT, OutputT, RenderingT>) -> T
     ): T = test(block, context) { it.runTestFromState(this, input, initialState) }
 // @formatter:on
 
@@ -89,15 +93,15 @@ fun <StateT : Any, OutputT : Any, RenderingT : Any>
     StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.testFromState(
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: (WorkflowTester<OutputT, RenderingT>) -> Unit
+      block: (WorkflowTester<Unit, OutputT, RenderingT>) -> Unit
     ) = testFromState(Unit, initialState, context, block)
 // @formatter:on
 
 @UseExperimental(InternalCoroutinesApi::class)
-private fun <T, O : Any, R : Any> test(
-  testBlock: (WorkflowTester<O, R>) -> T,
+private fun <T, I : Any, O : Any, R : Any> test(
+  testBlock: (WorkflowTester<I, O, R>) -> T,
   baseContext: CoroutineContext,
-  starter: (Factory) -> WorkflowHost<O, R>
+  starter: (Factory) -> WorkflowHost<I, O, R>
 ): T {
   val context = Dispatchers.Unconfined + baseContext + Job(parent = baseContext[Job])
   val host = WorkflowHost.Factory(context)

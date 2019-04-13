@@ -17,13 +17,11 @@ package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.Job
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.assertFails
 import kotlin.test.assertTrue
 
 class CompositionIntegrationTest {
@@ -91,13 +89,17 @@ class CompositionIntegrationTest {
     )
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") {
-      assertFailsWith<IllegalArgumentException> {
-        it.awaitNextRendering()
+    assertFails {
+      root.testFromStart("initial input") { tester ->
+        tester.awaitNextRendering()
       }
+    }.let { error ->
+      val causeChain = generateSequence(error) { it.cause }
+      assertTrue(causeChain.any { it is IllegalArgumentException })
     }
   }
 
+  @Suppress("DEPRECATION")
   @Test fun `all childrens teardown hooks invoked when parent discards it`() {
     val teardowns = mutableListOf<String>()
     val child1 = Workflow.stateless<Nothing, Unit> { context ->
@@ -135,12 +137,15 @@ class CompositionIntegrationTest {
         assertTrue(teardowns.isEmpty())
 
         teardownChildren()
+      }
 
+      tester.withNextRendering {
         assertEquals(listOf("child1", "child2"), teardowns)
       }
     }
   }
 
+  @Suppress("DEPRECATION")
   @Test fun `nested childrens teardown hooks invoked when parent discards it`() {
     val teardowns = mutableListOf<String>()
     val grandchild = Workflow.stateless<Nothing, Unit> { context ->
@@ -178,7 +183,9 @@ class CompositionIntegrationTest {
         assertTrue(teardowns.isEmpty())
 
         teardownChildren()
+      }
 
+      tester.withNextRendering {
         assertEquals(listOf("grandchild", "child"), teardowns)
       }
     }
@@ -193,13 +200,9 @@ class CompositionIntegrationTest {
         snapshot: Snapshot?,
         scope: CoroutineScope
       ) {
-        scope.launch {
-          starts++
-          try {
-            suspendCancellableCoroutine<Nothing> { }
-          } catch (e: CancellationException) {
-            cancels++
-          }
+        starts++
+        scope.coroutineContext[Job]!!.invokeOnCompletion { cause ->
+          if (cause != null) cancels++
         }
       }
 
@@ -249,7 +252,9 @@ class CompositionIntegrationTest {
         assertEquals(0, cancels)
 
         runChildren(false)
+      }
 
+      tester.withNextRendering {
         assertEquals(1, starts)
         assertEquals(1, cancels)
       }

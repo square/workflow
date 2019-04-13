@@ -33,7 +33,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
-import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class SubscriptionsTest {
 
@@ -102,10 +102,12 @@ class SubscriptionsTest {
         setSubscribed(false)
       }
 
-      assertEquals(1, workflow.subscriptions)
-      // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
+      host.withNextRendering {
+        assertEquals(1, workflow.subscriptions)
+        // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
       // Disposable.dispose() is an idempotent operation so it should be fine.
       assertEquals(2, workflow.disposals)
+      }
     }
   }
 
@@ -117,10 +119,12 @@ class SubscriptionsTest {
         setSubscribed(false)
       }
 
-      assertEquals(1, workflow.subscriptions)
-      // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
+      host.withNextRendering {
+        assertEquals(1, workflow.subscriptions)
+        // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
       // Disposable.dispose() is an idempotent operation so it should be fine.
       assertEquals(2, workflow.disposals)
+      }
     }
   }
 
@@ -165,6 +169,8 @@ class SubscriptionsTest {
 
   @Test fun `observable reports emissions`() {
     workflow.testFromStart(true) { host ->
+      // Get the next rendering to unblock the pipeline so the subscription can actually occur.
+      host.awaitNextRendering()
       assertFalse(host.hasOutput)
 
       subject.onNext("hello")
@@ -179,6 +185,8 @@ class SubscriptionsTest {
 
   @Test fun `observable reports close`() {
     workflow.testFromStart(true) { host ->
+      // Get the next rendering to unblock the pipeline so the subscription can actually occur.
+      host.awaitNextRendering()
       assertFalse(host.hasOutput)
 
       subject.onComplete()
@@ -194,6 +202,8 @@ class SubscriptionsTest {
 
   @Test fun `observable reports close after emission`() {
     workflow.testFromStart(true) { host ->
+      // Get the next rendering to unblock the pipeline so the subscription can actually occur.
+      host.awaitNextRendering()
       assertFalse(host.hasOutput)
 
       subject.onNext("foo")
@@ -206,13 +216,14 @@ class SubscriptionsTest {
   }
 
   @Test fun `observable reports error`() {
-    assertFailsWith<IOException> {
-      workflow.testFromStart(true) { host ->
-        assertFalse(host.hasOutput)
+    workflow.testFromStart(true) { host ->
+      assertFalse(host.hasOutput)
 
-        subject.onError(IOException("fail"))
-        assertSame(Closed, host.awaitNextOutput())
-        assertFalse(host.hasOutput)
+      subject.onError(IOException("fail"))
+
+      host.withFailure { error ->
+        val causeChain = generateSequence(error) { it.cause }
+        assertTrue(causeChain.any { it is IOException })
       }
     }
   }

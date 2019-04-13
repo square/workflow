@@ -43,8 +43,8 @@ import kotlin.coroutines.CoroutineContext
  *  - [hasRendering], [hasOutput], [hasSnapshot]
  *    - Return `true` if the previous methods won't block.
  */
-class WorkflowTester<OutputT : Any, RenderingT : Any> @TestOnly internal constructor(
-  private val host: WorkflowHost<OutputT, RenderingT>,
+class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly internal constructor(
+  private val host: WorkflowHost<InputT, OutputT, RenderingT>,
   context: CoroutineContext
 ) {
 
@@ -163,6 +163,39 @@ class WorkflowTester<OutputT : Any, RenderingT : Any> @TestOnly internal constru
   ): T = awaitNextOutput(timeoutMs).let(block)
 
   /**
+   * Blocks until the workflow fails by throwing an exception, then returns that exception.
+   *
+   * @param timeoutMs The maximum amount of time to wait for an output to be emitted. If null,
+   * [DEFAULT_TIMEOUT_MS] will be used instead.
+   */
+  fun awaitFailure(timeoutMs: Long? = null): Throwable {
+    var error: Throwable? = null
+    runBlocking {
+      withTimeout(timeoutMs ?: DEFAULT_TIMEOUT_MS) {
+        try {
+          while (true) renderings.receive()
+        } catch (e: Throwable) {
+          error = e
+        }
+      }
+    }
+    return error!!
+  }
+
+  /**
+   * Blocks until the workflow fails by throwing an exception, then passes that exception to
+   * [block].
+   *
+   * @param timeoutMs The maximum amount of time to wait for an output to be emitted. If null,
+   * [DEFAULT_TIMEOUT_MS] will be used instead.
+   * @return The value returned from [block].
+   */
+  fun <T> withFailure(
+    timeoutMs: Long? = null,
+    block: (Throwable) -> T
+  ): T = awaitFailure(timeoutMs).let(block)
+
+  /**
    * @param drain If true, this function will consume all the values currently in the channel, and
    * return the last one.
    */
@@ -182,6 +215,6 @@ class WorkflowTester<OutputT : Any, RenderingT : Any> @TestOnly internal constru
   }
 
   companion object {
-    const val DEFAULT_TIMEOUT_MS: Long = 500
+    const val DEFAULT_TIMEOUT_MS: Long = 5000
   }
 }
