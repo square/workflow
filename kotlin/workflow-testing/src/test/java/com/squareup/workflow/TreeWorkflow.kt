@@ -57,7 +57,7 @@ internal class TreeWorkflow(
   ): Rendering {
     val childRenderings = children
         .mapIndexed { index, child ->
-          val childRendering = context.compose(child, "$input[$index]", child.name)
+          val childRendering = context.composeChild(child, "$input[$index]", child.name)
           Pair(child.name, childRendering)
         }
         .toMap()

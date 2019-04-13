@@ -41,7 +41,7 @@ import kotlin.reflect.KType
  *
  * ## Composing Children
  *
- * See [compose].
+ * See [composeChild].
  *
  * ## Handling Workflow Teardown
  *
@@ -126,7 +126,7 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * @param key An optional string key that is used to distinguish between workflows of the same
    * type.
    */
-  fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
+  fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> composeChild(
     child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
     input: ChildInputT,
     key: String = "",
@@ -137,7 +137,7 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * Adds an action to be invoked if the workflow is discarded by its parent before the next
    * compose pass. Multiple hooks can be registered in the same compose pass, they will be invoked
    * in the same order they're set. Like any other work performed through the context (e.g. calls
-   * to [compose] or [onReceive]), hooks are cleared at the start of each compose pass, so you must
+   * to [composeChild] or [onReceive]), hooks are cleared at the start of each composeChild pass, so you must
    * set any hooks you need in each compose pass.
    *
    * Teardown handlers should be non-blocking and execute quickly, since they are invoked
@@ -176,46 +176,46 @@ inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, Outp
 )
 
 /**
- * Convenience alias of [WorkflowContext.compose] for workflows that don't take input.
+ * Convenience alias of [WorkflowContext.composeChild] for workflows that don't take input.
  */
 fun <StateT : Any, OutputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
-    WorkflowContext<StateT, OutputT>.compose(
+    WorkflowContext<StateT, OutputT>.composeChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
       child: Workflow<Unit, ChildOutputT, ChildRenderingT>,
       key: String = "",
       handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
-    ): ChildRenderingT = compose(child, Unit, key, handler)
+    ): ChildRenderingT = composeChild(child, Unit, key, handler)
 // @formatter:on
 
 /**
- * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit
+ * Convenience alias of [WorkflowContext.composeChild] for workflows that don't take input or emit
  * output.
  */
 fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
-    WorkflowContext<StateT, OutputT>.compose(
+    WorkflowContext<StateT, OutputT>.composeChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
       child: Workflow<InputT, Nothing, ChildRenderingT>,
       input: InputT,
       key: String = ""
-    ): ChildRenderingT = compose(child, input, key) { WorkflowAction.noop() }
+    ): ChildRenderingT = composeChild(child, input, key) { WorkflowAction.noop() }
 // @formatter:on
 
 /**
- * Convenience alias of [WorkflowContext.compose] for workflows that don't take input or emit
+ * Convenience alias of [WorkflowContext.composeChild] for workflows that don't take input or emit
  * output.
  */
 fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
-    WorkflowContext<StateT, OutputT>.compose(
+    WorkflowContext<StateT, OutputT>.composeChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
       child: Workflow<Unit, Nothing, ChildRenderingT>,
       key: String = ""
-    ): ChildRenderingT = compose(child, Unit, key) { WorkflowAction.noop() }
+    ): ChildRenderingT = composeChild(child, Unit, key) { WorkflowAction.noop() }
 // @formatter:on
 
 /**

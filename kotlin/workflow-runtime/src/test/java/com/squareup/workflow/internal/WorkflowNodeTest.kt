@@ -24,7 +24,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
-import com.squareup.workflow.compose
+import com.squareup.workflow.composeChild
 import com.squareup.workflow.invoke
 import com.squareup.workflow.onReceive
 import com.squareup.workflow.parse
@@ -477,7 +477,7 @@ class WorkflowNodeTest {
         state: String,
         context: WorkflowContext<String, Nothing>
       ): String {
-        val childRendering = context.compose(childWorkflow, "child input")
+        val childRendering = context.composeChild(childWorkflow, "child input")
         return "$state|$childRendering"
       }
 

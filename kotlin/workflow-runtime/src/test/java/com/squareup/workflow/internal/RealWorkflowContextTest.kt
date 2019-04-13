@@ -108,11 +108,11 @@ class RealWorkflowContextTest {
     assertEquals("foo", output)
   }
 
-  @Test fun `compose works`() {
+  @Test fun `composeChild works`() {
     val context = RealWorkflowContext(TestComposer())
     val workflow = TestWorkflow()
 
-    val (case, child, id, input) = context.compose(workflow, "input", "key") { output ->
+    val (case, child, id, input) = context.composeChild(workflow, "input", "key") { output ->
       emitOutput("output:$output")
     }
 

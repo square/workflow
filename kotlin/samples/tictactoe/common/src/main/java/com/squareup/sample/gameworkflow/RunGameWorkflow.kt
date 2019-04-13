@@ -106,10 +106,10 @@ class RealRunGameWorkflow(
       }
 
       is Playing -> {
-        // context.compose starts takeTurnsWorkflow, or keeps it running if it was
+        // context.composeChild starts takeTurnsWorkflow, or keeps it running if it was
         // already going. TakeTurnsWorkflow.compose is immediately called,
         // and the GamePlayScreen it renders is immediately returned.
-        val takeTurnsScreen = context.compose(takeTurnsWorkflow, state.playerInfo) { output ->
+        val takeTurnsScreen = context.composeChild(takeTurnsWorkflow, state.playerInfo) { output ->
           when (output.ending) {
             Quitted -> enterState(MaybeQuitting(output, state.playerInfo))
             else -> enterState(GameOver(state.playerInfo, output))

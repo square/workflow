@@ -75,7 +75,7 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
 
   // @formatter:off
   override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
-      compose(
+      composeChild(
         child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
         input: ChildInputT,
         key: String,
