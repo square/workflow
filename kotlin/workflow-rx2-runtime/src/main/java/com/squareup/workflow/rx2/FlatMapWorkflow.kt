@@ -58,7 +58,9 @@ fun <InputT : Any, OutputT : Any, RenderingT : Any> Flowable<InputT>.flatMapWork
   dispatcher: CoroutineDispatcher = Dispatchers.Unconfined
 ): Flowable<Update<OutputT, RenderingT>> =
 // We're ok not having a job here because the lifetime of the coroutine will be controlled by the
-  // subscription to the resulting flowable.
+// subscription to the resulting flowable.
+// TODO(https://github.com/square/workflow/issues/298) Once Flow is stable, this implementation
+  // can just delegate to Flow.flatMapWorkflow.
   GlobalScope.rxFlowable(context = dispatcher) {
     // Convert the input stream into a channel.
     openSubscription().consume {
