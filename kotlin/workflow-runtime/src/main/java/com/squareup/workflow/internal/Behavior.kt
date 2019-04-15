@@ -17,11 +17,10 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.util.ChannelUpdate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlin.reflect.KType
+import kotlin.reflect.KClass
 
 /**
  * An immutable description of the things a [Workflow] would like to do as the result of calling its
@@ -55,13 +54,13 @@ internal data class Behavior<StateT : Any, out OutputT : Any>(
       }
       // @formatter:on
 
-  data class SubscriptionCase<E, StateT : Any, out OutputT : Any>(
+  data class SubscriptionCase<E : Any, StateT : Any, out OutputT : Any>(
     val channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    val idempotenceKey: Pair<KType, String>,
-    val handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
+    val idempotenceKey: Pair<KClass<E>, String>,
+    val handler: (E?) -> WorkflowAction<StateT, OutputT>
   ) {
     @Suppress("UNCHECKED_CAST")
-    fun acceptUpdate(value: ChannelUpdate<*>): WorkflowAction<StateT, OutputT> =
-      handler(value as ChannelUpdate<E>)
+    fun acceptUpdate(value: Any?): WorkflowAction<StateT, OutputT> =
+      handler(value as E?)
   }
 }

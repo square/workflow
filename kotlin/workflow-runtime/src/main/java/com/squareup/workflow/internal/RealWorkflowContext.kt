@@ -21,11 +21,10 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
-import com.squareup.workflow.util.ChannelUpdate
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlin.reflect.KType
+import kotlin.reflect.KClass
 
 /**
  * An implementation of [WorkflowContext] that builds a [Behavior] via [buildBehavior].
@@ -68,11 +67,11 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
     }
   }
 
-  override fun <E> onReceive(
+  override fun <E : Any> onReceive(
     channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    type: KType,
+    type: KClass<E>,
     key: String,
-    handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
+    handler: (E?) -> WorkflowAction<StateT, OutputT>
   ) {
     checkNotFrozen()
     subscriptionCases += SubscriptionCase(channelProvider, Pair(type, key), handler)

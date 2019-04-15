@@ -22,7 +22,6 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
-import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -146,13 +145,16 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
     subscriptionTracker.lifetimes
         .filter { (_, sub) -> !sub.tombstone }
         .forEach { (case, subscription) ->
-          selector.onChannelUpdate(subscription.channel) { channelUpdate ->
-            if (channelUpdate === Closed) {
-              // Set the tombstone flag so we don't continue to listen to the subscription.
-              subscription.tombstone = true
+          with(selector) {
+            @Suppress("EXPERIMENTAL_API_USAGE")
+            subscription.channel.onReceiveOrNull { maybeValue ->
+              if (maybeValue == null) {
+                // Set the tombstone flag so we don't continue to listen to the subscription.
+                subscription.tombstone = true
+              }
+              val update = case.acceptUpdate(maybeValue)
+              acceptUpdate(update)
             }
-            val update = case.acceptUpdate(channelUpdate)
-            acceptUpdate(update)
           }
         }
 

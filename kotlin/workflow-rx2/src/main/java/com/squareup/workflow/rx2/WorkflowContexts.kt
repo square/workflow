@@ -20,12 +20,11 @@ package com.squareup.workflow.rx2
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.onSuspending
-import com.squareup.workflow.util.ChannelUpdate
-import com.squareup.workflow.util.KTypes
 import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.rx2.openSubscription
+import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 /**
@@ -44,12 +43,7 @@ inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT
   single: Single<out T>,
   key: String = "",
   noinline handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onSuccess(
-    single,
-    KTypes.fromGenericType(Single::class, T::class),
-    key,
-    handler
-)
+) = onSuccess(single, T::class, key, handler)
 
 /**
  * Subscribes to [single] and invokes [handler] with the value it emits.
@@ -67,7 +61,7 @@ inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT
  */
 fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuccess(
   single: Single<out T>,
-  type: KType,
+  type: KClass<T>,
   key: String = "",
   handler: (T) -> WorkflowAction<StateT, OutputT>
 ) = onSuspending({ single.await() }, type, key, handler)
@@ -87,13 +81,8 @@ fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSu
 inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onNext(
   observable: Observable<out T>,
   key: String = "",
-  noinline handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
-) = onNext(
-    observable,
-    KTypes.fromGenericType(Observable::class, T::class),
-    key,
-    handler
-)
+  noinline handler: (T?) -> WorkflowAction<StateT, OutputT>
+) = onNext(observable, T::class, key, handler)
 
 /**
  * Subscribes to [observable] and invokes [handler] when it emits the next value.
@@ -111,7 +100,7 @@ inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT
  */
 fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onNext(
   observable: Observable<out T>,
-  type: KType,
+  type: KClass<T>,
   key: String = "",
-  handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
+  handler: (T?) -> WorkflowAction<StateT, OutputT>
 ) = onReceive({ observable.openSubscription() }, type, key, handler)

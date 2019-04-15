@@ -17,14 +17,12 @@
 
 package com.squareup.workflow
 
-import com.squareup.workflow.util.ChannelUpdate
-import com.squareup.workflow.util.ChannelUpdate.Value
-import com.squareup.workflow.util.KTypes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 /**
@@ -98,11 +96,11 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    *
    * @see onReceive
    */
-  fun <E> onReceive(
+  fun <E : Any> onReceive(
     channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    type: KType,
+    type: KClass<E>,
     key: String = "",
-    handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
+    handler: (E?) -> WorkflowAction<StateT, OutputT>
   )
 
   /**
@@ -164,16 +162,11 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
  *
  * @see WorkflowContext.onReceive
  */
-inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, OutputT>.onReceive(
-  noinline channelProvider: CoroutineScope.() -> ReceiveChannel<T>,
+inline fun <StateT : Any, OutputT : Any, reified E : Any> WorkflowContext<StateT, OutputT>.onReceive(
+  noinline channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
   key: String = "",
-  noinline handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
-) = onReceive(
-    channelProvider,
-    KTypes.fromGenericType(ReceiveChannel::class, T::class),
-    key,
-    handler
-)
+  noinline handler: (E?) -> WorkflowAction<StateT, OutputT>
+) = onReceive(channelProvider, E::class, key, handler)
 
 /**
  * Convenience alias of [WorkflowContext.composeChild] for workflows that don't take input.
@@ -226,16 +219,11 @@ fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * type.
  */
-inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
+inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
   deferred: Deferred<T>,
   key: String = "",
   noinline handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onDeferred(
-    deferred,
-    KTypes.fromGenericType(Deferred::class, T::class),
-    key,
-    handler
-)
+) = onDeferred(deferred, T::class, key, handler)
 
 /**
  * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
@@ -247,9 +235,9 @@ inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, Outp
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * [type].
  */
-fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
+fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
   deferred: Deferred<T>,
-  type: KType,
+  type: KClass<T>,
   key: String = "",
   handler: (T) -> WorkflowAction<StateT, OutputT>
 ) = onSuspending({ deferred.await() }, type, key, handler)
@@ -265,9 +253,9 @@ fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred
  * @param function A suspending function that is invoked in a coroutine that will be a child of this
  * state machine. The function will be cancelled if the state machine is cancelled.
  */
-fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuspending(
+fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuspending(
   function: suspend () -> T,
-  type: KType,
+  type: KClass<T>,
   key: String = "",
   handler: (T) -> WorkflowAction<StateT, OutputT>
 ) = onReceive(
@@ -275,10 +263,10 @@ fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuspendi
     type,
     key,
     { update ->
-      if (update !is Value) {
+      if (update == null) {
         throw AssertionError("Suspend function channel should never close.")
       }
-      return@onReceive handler(update.value)
+      return@onReceive handler(update)
     }
 )
 
