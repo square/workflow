@@ -21,7 +21,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlin.reflect.full.starProjectedType
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.fail
 
@@ -59,11 +58,12 @@ class SuspendingSubscriptionIntegrationTest {
       }
     }
 
-    assertFailsWith<ExpectedException> {
-      workflow.testFromStart { host ->
-        assertFalse(host.hasOutput)
+    workflow.testFromStart { host ->
+      assertFalse(host.hasOutput)
 
-        host.awaitNextOutput()
+      host.withFailure { error ->
+        val causeChain = generateSequence(error) { it.cause }
+        assertEquals(1, causeChain.count { it is ExpectedException })
       }
     }
   }

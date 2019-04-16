@@ -21,6 +21,7 @@ import android.os.Parcelable
 import android.support.annotation.CheckResult
 import android.support.v4.app.FragmentActivity
 import com.squareup.workflow.Workflow
+import io.reactivex.Flowable
 import io.reactivex.Observable
 
 /**
@@ -106,10 +107,10 @@ internal constructor(private val model: WorkflowViewModel<OutputT, RenderingT>) 
 fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, RenderingT>,
-  initialInput: InputT,
+  inputs: Flowable<InputT>,
   restored: PickledWorkflow?
 ): WorkflowActivityRunner<OutputT, RenderingT> {
-  val factory = WorkflowViewModel.Factory(viewRegistry, workflow, initialInput, restored)
+  val factory = WorkflowViewModel.Factory(viewRegistry, workflow, inputs, restored)
 
   // We use an Android lifecycle ViewModel to shield ourselves from configuration changes.
   // ViewModelProviders.of() uses the factory to instantiate a new instance only
@@ -141,5 +142,5 @@ fun <OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   workflow: Workflow<Unit, OutputT, RenderingT>,
   restored: PickledWorkflow?
 ): WorkflowActivityRunner<OutputT, RenderingT> {
-  return setContentWorkflow(viewRegistry, workflow, Unit, restored)
+  return setContentWorkflow(viewRegistry, workflow, Flowable.fromArray(Unit), restored)
 }

@@ -19,10 +19,10 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowHost
+import com.squareup.workflow.WorkflowHost.Update
+import com.squareup.workflow.rx2.flatMapWorkflow
+import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.rx2.asObservable
 
 /**
  * The guts of [WorkflowActivityRunner]. We could have made that class itself a
@@ -31,22 +31,20 @@ import kotlinx.coroutines.rx2.asObservable
  */
 internal class WorkflowViewModel<OutputT : Any, RenderingT : Any>(
   val viewRegistry: ViewRegistry,
-  host: WorkflowHost<OutputT, RenderingT>
+  workflowUpdates: Flowable<Update<OutputT, RenderingT>>
 ) : ViewModel() {
 
   internal class Factory<InputT : Any, OutputT : Any, RenderingT : Any>(
     private val viewRegistry: ViewRegistry,
     private val workflow: Workflow<InputT, OutputT, RenderingT>,
-    private val initialInput: InputT,
+    private val inputs: Flowable<InputT>,
     private val restored: PickledWorkflow?
   ) : ViewModelProvider.Factory {
-    @Suppress("EXPERIMENTAL_API_USAGE")
-    private val hostFactory = WorkflowHost.Factory(Dispatchers.Unconfined)
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      val host = hostFactory.run(workflow, initialInput, restored?.snapshot)
+      val workflowUpdates = inputs.flatMapWorkflow(workflow, restored?.snapshot)
       @Suppress("UNCHECKED_CAST")
-      return WorkflowViewModel(viewRegistry, host) as T
+      return WorkflowViewModel(viewRegistry, workflowUpdates) as T
     }
   }
 
@@ -56,7 +54,7 @@ internal class WorkflowViewModel<OutputT : Any, RenderingT : Any>(
 
   @Suppress("EXPERIMENTAL_API_USAGE")
   val updates =
-    host.updates.asObservable(Dispatchers.Main.immediate)
+    workflowUpdates.toObservable()
         .doOnNext { lastSnapshot = it.snapshot }
         .replay(1)
         .autoConnect(1) { sub = it }

@@ -107,8 +107,10 @@ class ChannelSubscriptionsIntegrationTest {
         setSubscribed(false)
       }
 
-      assertEquals(1, workflow.subscriptions)
-      assertEquals(1, workflow.cancellations)
+      host.withNextRendering {
+        assertEquals(1, workflow.subscriptions)
+        assertEquals(1, workflow.cancellations)
+      }
     }
   }
 
@@ -120,8 +122,10 @@ class ChannelSubscriptionsIntegrationTest {
         setSubscribed(false)
       }
 
-      assertEquals(1, workflow.subscriptions)
-      assertEquals(1, workflow.cancellations)
+      host.withNextRendering {
+        assertEquals(1, workflow.subscriptions)
+        assertEquals(1, workflow.cancellations)
+      }
     }
   }
 

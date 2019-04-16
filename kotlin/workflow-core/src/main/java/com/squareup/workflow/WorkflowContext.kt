@@ -21,6 +21,7 @@ import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Value
 import com.squareup.workflow.util.KTypes
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
@@ -259,6 +260,9 @@ fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred
  * This function is provided as a helper for writing [WorkflowContext] extension functions, it
  * should not be used by general application code.
  *
+ * The suspending function will be executed in the current stack frame ([UNDISPATCHED]). When this
+ * workflow is being torn down, the coroutine running the function will be cancelled.
+ *
  * @param type The [KType] that represents both the type of data source (e.g. `Deferred`) and the
  * element type [T].
  * @param key An optional string key that is used to distinguish between subscriptions of the same
@@ -289,10 +293,9 @@ fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuspendi
  */
 private fun <T> CoroutineScope.wrapInNeverClosingChannel(
   function: suspend () -> T
-): ReceiveChannel<T> =
-  produce {
-    send(function())
-    // We explicitly don't want to close the channel, because that would trigger an infinite loop.
-    // Instead, just suspend forever.
-    suspendCancellableCoroutine<Nothing> { }
-  }
+): ReceiveChannel<T> = produce {
+  send(function())
+  // We explicitly don't want to close the channel, because that would trigger an infinite loop.
+  // Instead, just suspend forever.
+  suspendCancellableCoroutine<Nothing> { }
+}

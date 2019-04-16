@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.squareup.workflow
 
 import com.squareup.workflow.testing.testFromStart
@@ -21,8 +23,10 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class WorkflowTesterTest {
@@ -42,9 +46,10 @@ class WorkflowTesterTest {
       throw ExpectedException()
     }
 
-    assertFailsWith<ExpectedException> {
-      workflow.testFromStart {
-        it.awaitNextRendering()
+    workflow.testFromStart {
+      it.withFailure { error ->
+        val causeChain = generateSequence(error) { it.cause }
+        assertEquals(1, causeChain.count { it is ExpectedException })
       }
     }
   }
@@ -53,10 +58,12 @@ class WorkflowTesterTest {
     val job = Job()
     val workflow = Workflow.stateless<Unit, Unit> { }
 
-    assertFailsWith<CancellationException> {
-      workflow.testFromStart(context = job) {
-        job.cancel()
-        it.awaitNextRendering()
+    workflow.testFromStart(context = job) { tester ->
+      @Suppress("DEPRECATION")
+      job.cancel(ExpectedException())
+      tester.withFailure { error ->
+        val causeChain = generateSequence(error) { it.cause }
+        assertEquals(1, causeChain.count { it is ExpectedException })
       }
     }
   }
@@ -65,9 +72,9 @@ class WorkflowTesterTest {
     val job = Job().apply { cancel() }
     val workflow = Workflow.stateless<Unit, Unit> { }
 
-    assertFailsWith<CancellationException> {
-      workflow.testFromStart(context = job) {
-        it.awaitNextRendering()
+    workflow.testFromStart(context = job) {
+      it.withFailure { error ->
+        assertTrue(error is CancellationException)
       }
     }
   }
@@ -94,9 +101,10 @@ class WorkflowTesterTest {
       override fun snapshotState(state: Unit): Snapshot = fail()
     }
 
-    assertFailsWith<ExpectedException> {
-      workflow.testFromStart {
-        it.awaitNextRendering()
+    workflow.testFromStart { tester ->
+      tester.withFailure { error ->
+        val causeChain = generateSequence(error) { it.cause }
+        assertEquals(1, causeChain.count { it is ExpectedException })
       }
     }
   }
@@ -123,9 +131,10 @@ class WorkflowTesterTest {
       override fun snapshotState(state: Unit): Snapshot = throw ExpectedException()
     }
 
-    assertFailsWith<ExpectedException> {
-      workflow.testFromStart {
-        it.awaitNextRendering()
+    workflow.testFromStart { tester ->
+      tester.withFailure { error ->
+        val causeChain = generateSequence(error) { it.cause }
+        assertEquals(1, causeChain.count { it is ExpectedException })
       }
     }
   }
@@ -156,9 +165,11 @@ class WorkflowTesterTest {
     val snapshot = workflow.testFromStart {
       it.awaitNextSnapshot()
     }
-    assertFailsWith<ExpectedException> {
-      workflow.testFromStart(snapshot) {
-        // Workflow should never start.
+
+    workflow.testFromStart(snapshot) { tester ->
+      tester.withFailure { error ->
+        val causeChain = generateSequence(error) { it.cause }
+        assertEquals(1, causeChain.count { it is ExpectedException })
       }
     }
   }
@@ -170,9 +181,10 @@ class WorkflowTesterTest {
       it.onDeferred(deferred) { fail("Shouldn't get here.") }
     }
 
-    assertFailsWith<ExpectedException> {
-      workflow.testFromStart {
-        it.awaitNextRendering()
+    workflow.testFromStart { tester ->
+      tester.withFailure { error ->
+        val causeChain = generateSequence(error) { it.cause }
+        assertEquals(1, causeChain.count { it is ExpectedException })
       }
     }
   }
