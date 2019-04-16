@@ -159,7 +159,7 @@ The context provided to the `compose(state:context:)` method defines the API thr
 
 ### The Workflow Context
 
-The useful role of children is ultimately to provide rendered values (typically screen models) via their `compose(state:context:)` implementation. To obtain that value from a child workflow, the `render(workflow:)` method is invoked on the render context.
+The useful role of children is ultimately to provide rendered values (typically screen models) via their `compose(state:context:)` implementation. To obtain that value from a child workflow, the `render(workflow:key:outputMap:)` method is invoked on the render context.
 
 When a workflow is passed into the context’s render method, the context will do the following:
 - Check if the child workflow is new or existing:
