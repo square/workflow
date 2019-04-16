@@ -32,7 +32,7 @@ import kotlin.coroutines.CoroutineContext
  */
 internal class SubtreeManager<StateT : Any, OutputT : Any>(
   private val contextForChildren: CoroutineContext
-) : RealWorkflowContext.Composer<StateT, OutputT> {
+) : RealWorkflowContext.Renderer<StateT, OutputT> {
 
   /**
    * When this manager's host is restored from a snapshot, its children snapshots are extracted into
@@ -53,18 +53,18 @@ internal class SubtreeManager<StateT : Any, OutputT : Any>(
 
   // @formatter:off
   override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
-      compose(
+      render(
         case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
         child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
         id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
         input: ChildInputT
       ): ChildRenderingT {
   // @formatter:on
-    // Start tracking this case so we can be ready to compose it.
+    // Start tracking this case so we can be ready to render it.
     @Suppress("UNCHECKED_CAST")
     val childNode = hostLifetimeTracker.ensure(case) as
         WorkflowNode<ChildInputT, *, ChildOutputT, ChildRenderingT>
-    return childNode.compose(child.asStatefulWorkflow(), input)
+    return childNode.render(child.asStatefulWorkflow(), input)
   }
 
   /**

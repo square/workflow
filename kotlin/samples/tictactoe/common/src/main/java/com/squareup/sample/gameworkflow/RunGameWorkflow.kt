@@ -85,7 +85,7 @@ class RealRunGameWorkflow(
   ): RunGameState = snapshot?.let { RunGameState.fromSnapshot(snapshot.bytes) }
       ?: NewGame()
 
-  override fun compose(
+  override fun render(
     input: Unit,
     state: RunGameState,
     context: WorkflowContext<RunGameState, RunGameResult>
@@ -108,10 +108,10 @@ class RealRunGameWorkflow(
       }
 
       is Playing -> {
-        // context.composeChild starts takeTurnsWorkflow, or keeps it running if it was
-        // already going. TakeTurnsWorkflow.compose is immediately called,
+        // context.renderChild starts takeTurnsWorkflow, or keeps it running if it was
+        // already going. TakeTurnsWorkflow.render is immediately called,
         // and the GamePlayScreen it renders is immediately returned.
-        val takeTurnsScreen = context.composeChild(takeTurnsWorkflow, state.playerInfo) { output ->
+        val takeTurnsScreen = context.renderChild(takeTurnsWorkflow, state.playerInfo) { output ->
           when (output.ending) {
             Quitted -> enterState(MaybeQuitting(output, state.playerInfo))
             else -> enterState(GameOver(state.playerInfo, output))

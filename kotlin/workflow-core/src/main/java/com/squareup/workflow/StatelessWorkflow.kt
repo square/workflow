@@ -29,7 +29,7 @@ import kotlinx.coroutines.CoroutineScope
  * to its parent.
  * May be [Nothing] if the workflow doesn't need to emit anything.
  *
- * @param RenderingT The value returned to this workflow's parent during [composition][compose].
+ * @param RenderingT The value returned to this workflow's parent during [composition][render].
  * Typically represents a "view" of this workflow's input, current state, and children's renderings.
  * A workflow that represents a UI component may use a view model as its rendering type.
  *
@@ -46,11 +46,11 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
     ) = Unit
 
     @Suppress("UNCHECKED_CAST")
-    override fun compose(
+    override fun render(
       input: InputT,
       state: Unit,
       context: WorkflowContext<Unit, OutputT>
-    ): RenderingT = compose(input, context as WorkflowContext<Nothing, OutputT>)
+    ): RenderingT = render(input, context as WorkflowContext<Nothing, OutputT>)
 
     override fun snapshotState(state: Unit) = Snapshot.EMPTY
   }
@@ -63,13 +63,13 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
    *    - Emits an output.
    *
    * **Never call this method directly.** To get the rendering from a child workflow, pass the child
-   * and any required input to [WorkflowContext.composeChild].
+   * and any required input to [WorkflowContext.renderChild].
    *
    * This method *should not* have any side effects, and in particular should not do anything that
    * blocks the current thread. It may be called multiple times for the same state. It must do all its
    * work by calling methods on [context].
    */
-  abstract fun compose(
+  abstract fun render(
     input: InputT,
     context: WorkflowContext<Nothing, OutputT>
   ): RenderingT
@@ -86,36 +86,36 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
 }
 
 /**
- * Returns a stateless [Workflow] via the given [compose] function.
+ * Returns a stateless [Workflow] via the given [render] function.
  *
  * Note that while the returned workflow doesn't have any _internal_ state of its own, it may use
- * [input][InputT] received from its parent, and it may compose child workflows that do have
+ * [input][InputT] received from its parent, and it may render child workflows that do have
  * their own internal state.
  */
 fun <InputT : Any, OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
-  compose: (
+  render: (
     input: InputT,
     context: WorkflowContext<Nothing, OutputT>
   ) -> RenderingT
 ): Workflow<InputT, OutputT, RenderingT> =
   object : StatelessWorkflow<InputT, OutputT, RenderingT>() {
-    override fun compose(
+    override fun render(
       input: InputT,
       context: WorkflowContext<Nothing, OutputT>
-    ): RenderingT = compose.invoke(input, context)
+    ): RenderingT = render.invoke(input, context)
   }
 
 /**
- * Returns a stateless [Workflow] that ignores input via the given [compose] function.
+ * Returns a stateless [Workflow] that ignores input via the given [render] function.
  *
  * Note that while the returned workflow doesn't have any _internal_ state of its own, it may
- * compose child workflows that do have their own internal state.
+ * render child workflows that do have their own internal state.
  */
 fun <OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
-  compose: (context: WorkflowContext<Nothing, OutputT>) -> RenderingT
+  render: (context: WorkflowContext<Nothing, OutputT>) -> RenderingT
 ): Workflow<Unit, OutputT, RenderingT> =
   Workflow.stateless { _: Unit, context: WorkflowContext<Nothing, OutputT> ->
-    compose(context)
+    render(context)
   }
 
 /**
@@ -139,6 +139,6 @@ fun <InputT : Any, OutputT : Any, FromRenderingT : Any, ToRenderingT : Any>
       transform: (FromRenderingT) -> ToRenderingT
     ): Workflow<InputT, OutputT, ToRenderingT> = Workflow.stateless { input, context ->
   // @formatter:on
-  context.composeChild(this@mapRendering, input) { emitOutput(it) }
+  context.renderChild(this@mapRendering, input) { emitOutput(it) }
       .let(transform)
 }

@@ -31,11 +31,11 @@ import kotlin.reflect.KType
  * An implementation of [WorkflowContext] that builds a [Behavior] via [buildBehavior].
  */
 internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
-  private val composer: Composer<StateT, OutputT>
+  private val renderer: Renderer<StateT, OutputT>
 ) : WorkflowContext<StateT, OutputT> {
 
-  interface Composer<StateT : Any, in OutputT : Any> {
-    fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> compose(
+  interface Renderer<StateT : Any, in OutputT : Any> {
+    fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> render(
       case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
       child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
       id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
@@ -80,7 +80,7 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
 
   // @formatter:off
   override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
-      composeChild(
+      renderChild(
         child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
         input: ChildInputT,
         key: String,
@@ -92,7 +92,7 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
     val case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT> =
       WorkflowOutputCase(child, id, input, handler)
     childCases += case
-    return composer.compose(case, child, id, input)
+    return renderer.render(case, child, id, input)
   }
 
   override fun onTeardown(handler: () -> Unit) {
@@ -115,6 +115,6 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   }
 
   private fun checkNotFrozen() = check(!frozen) {
-    "WorkflowContext cannot be used after compose method returns."
+    "WorkflowContext cannot be used after render method returns."
   }
 }

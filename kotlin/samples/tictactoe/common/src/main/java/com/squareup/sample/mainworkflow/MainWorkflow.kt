@@ -28,7 +28,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
-import com.squareup.workflow.composeChild
+import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.AlertContainerScreen
 import kotlinx.coroutines.CoroutineScope
 
@@ -55,19 +55,19 @@ class MainWorkflow(
   ): MainState = snapshot?.let { MainState.fromSnapshot(snapshot.bytes) }
       ?: Authenticating
 
-  override fun compose(
+  override fun render(
     input: Unit,
     state: MainState,
     context: WorkflowContext<MainState, Unit>
   ): RunGameScreen = when (state) {
     is Authenticating -> {
-      val authScreen = context.composeChild(authWorkflow) { enterState(RunningGame) }
+      val authScreen = context.renderChild(authWorkflow) { enterState(RunningGame) }
       val emptyGameScreen = GamePlayScreen()
 
       AlertContainerScreen(authScreen.asPanelOver(emptyGameScreen))
     }
 
-    is RunningGame -> context.composeChild(runGameWorkflow) { enterState(Authenticating) }
+    is RunningGame -> context.renderChild(runGameWorkflow) { enterState(Authenticating) }
   }
 
   override fun snapshotState(state: MainState): Snapshot = state.toSnapshot()

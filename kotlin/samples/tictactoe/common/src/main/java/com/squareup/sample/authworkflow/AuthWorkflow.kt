@@ -60,7 +60,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
     scope: CoroutineScope
   ): AuthState = LoginPrompt()
 
-  override fun compose(
+  override fun render(
     input: Unit,
     state: AuthState,
     context: WorkflowContext<AuthState, String>
