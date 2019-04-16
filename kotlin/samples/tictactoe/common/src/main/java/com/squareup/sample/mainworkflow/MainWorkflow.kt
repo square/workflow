@@ -23,13 +23,14 @@ import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.mainworkflow.MainState.Authenticating
 import com.squareup.sample.mainworkflow.MainState.RunningGame
 import com.squareup.sample.panel.asPanelOver
-import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.composeChild
+import com.squareup.workflow.ui.AlertContainerScreen
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Application specific root [Workflow], and demonstration of workflow composition.
@@ -49,7 +50,8 @@ class MainWorkflow(
 
   override fun initialState(
     input: Unit,
-    snapshot: Snapshot?
+    snapshot: Snapshot?,
+    scope: CoroutineScope
   ): MainState = snapshot?.let { MainState.fromSnapshot(snapshot.bytes) }
       ?: Authenticating
 

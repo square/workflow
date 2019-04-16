@@ -16,6 +16,7 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Minimal implementation of [Workflow] that maintains no state of its own.
@@ -40,7 +41,8 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
   private val statefulWorkflow = object : StatefulWorkflow<InputT, Unit, OutputT, RenderingT>() {
     override fun initialState(
       input: InputT,
-      snapshot: Snapshot?
+      snapshot: Snapshot?,
+      scope: CoroutineScope
     ) = Unit
 
     @Suppress("UNCHECKED_CAST")
