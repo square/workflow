@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.14.0
+
+_2019-4-16_
+
+ * Rename WorkflowContext.compose to composeChild. [#274](https://github.com/square/workflow/issues/274)
+ * Rename compose and composeChild to render and renderChild. [#293](https://github.com/square/workflow/issues/293)
+ * Throw if WorkflowContext is accessed after compose returns. [#273](https://github.com/square/workflow/issues/273)
+ * Pass the workflow's scope into initialState. [#286](https://github.com/square/workflow/issues/286)
+ * Add the ability to update the input for a WorkflowHost. [#282](https://github.com/square/workflow/issues/282)
+
 ## Version 0.13.0
 
 _2019-4-12_
