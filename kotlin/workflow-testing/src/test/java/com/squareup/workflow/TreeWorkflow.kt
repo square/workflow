@@ -52,14 +52,14 @@ internal class TreeWorkflow(
     it.readUtf8WithLength()
   } ?: input
 
-  override fun compose(
+  override fun render(
     input: String,
     state: String,
     context: WorkflowContext<String, Nothing>
   ): Rendering {
     val childRenderings = children
         .mapIndexed { index, child ->
-          val childRendering = context.composeChild(child, "$input[$index]", child.name)
+          val childRendering = context.renderChild(child, "$input[$index]", child.name)
           Pair(child.name, childRendering)
         }
         .toMap()

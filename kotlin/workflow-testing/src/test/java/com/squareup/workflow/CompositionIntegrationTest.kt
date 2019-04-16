@@ -81,7 +81,7 @@ class CompositionIntegrationTest {
     }
   }
 
-  @Test fun `compose fails when duplicate child key`() {
+  @Test fun `render fails when duplicate child key`() {
     val root = TreeWorkflow(
         "root",
         TreeWorkflow("leaf"),
@@ -109,7 +109,7 @@ class CompositionIntegrationTest {
       context.onTeardown { teardowns += "child2" }
     }
     // A workflow that will render child1 and child2 until its rendering is invoked, at which point
-    // it will compose neither of them, which should trigger the teardown callbacks.
+    // it will render neither of them, which should trigger the teardown callbacks.
     val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
       override fun initialState(
         input: Unit,
@@ -117,14 +117,14 @@ class CompositionIntegrationTest {
         scope: CoroutineScope
       ): Boolean = true
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Boolean,
         context: WorkflowContext<Boolean, Nothing>
       ): () -> Unit {
         if (state) {
-          context.composeChild(child1, key = "child1")
-          context.composeChild(child2, key = "child2")
+          context.renderChild(child1, key = "child1")
+          context.renderChild(child2, key = "child2")
         }
         return context.onEvent<Unit> { enterState(false) }::invoke
       }
@@ -152,11 +152,11 @@ class CompositionIntegrationTest {
       context.onTeardown { teardowns += "grandchild" }
     }
     val child = Workflow.stateless<Nothing, Unit> { context ->
-      context.composeChild(grandchild)
+      context.renderChild(grandchild)
       context.onTeardown { teardowns += "child" }
     }
     // A workflow that will render child1 and child2 until its rendering is invoked, at which point
-    // it will compose neither of them, which should trigger the teardown callbacks.
+    // it will render neither of them, which should trigger the teardown callbacks.
     val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
       override fun initialState(
         input: Unit,
@@ -164,13 +164,13 @@ class CompositionIntegrationTest {
         scope: CoroutineScope
       ): Boolean = true
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Boolean,
         context: WorkflowContext<Boolean, Nothing>
       ): () -> Unit {
         if (state) {
-          context.composeChild(child)
+          context.renderChild(child)
         }
         return context.onEvent<Unit> { enterState(false) }::invoke
       }
@@ -206,7 +206,7 @@ class CompositionIntegrationTest {
         }
       }
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Unit,
         context: WorkflowContext<Unit, Nothing>
@@ -217,7 +217,7 @@ class CompositionIntegrationTest {
     }
 
     // A workflow that will render child until its rendering is invoked, at which point
-    // it will compose neither of them, which should trigger the scope to be cancelled.
+    // it will render neither of them, which should trigger the scope to be cancelled.
     val root = object : StatefulWorkflow<Unit, Boolean, Nothing, (Boolean) -> Unit>() {
       override fun initialState(
         input: Unit,
@@ -225,13 +225,13 @@ class CompositionIntegrationTest {
         scope: CoroutineScope
       ): Boolean = false
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Boolean,
         context: WorkflowContext<Boolean, Nothing>
       ): (Boolean) -> Unit {
         if (state) {
-          context.composeChild(child)
+          context.renderChild(child)
         }
         return context.onEvent<Boolean> { enterState(it) }::invoke
       }

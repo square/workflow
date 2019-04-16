@@ -19,7 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 
 /**
  * A composable, stateful object that can [handle events][WorkflowContext.onEvent],
- * [delegate to children][WorkflowContext.composeChild], [subscribe][onReceive] to arbitrary streams from
+ * [delegate to children][WorkflowContext.renderChild], [subscribe][onReceive] to arbitrary streams from
  * the outside world, and be [saved][snapshotState] to a serialized form to be restored later.
  *
  * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
@@ -51,7 +51,7 @@ import kotlinx.coroutines.CoroutineScope
  * to its parent.
  * May be [Nothing] if the workflow doesn't need to emit anything.
  *
- * @param RenderingT The value returned to this workflow's parent during [composition][compose].
+ * @param RenderingT The value returned to this workflow's parent during [composition][render].
  * Typically represents a "view" of this workflow's input, current state, and children's renderings.
  * A workflow that represents a UI component may use a view model as its rendering type.
  *
@@ -65,7 +65,7 @@ abstract class StatefulWorkflow<
     > : Workflow<InputT, OutputT, RenderingT> {
 
   /**
-   * Called from [WorkflowContext.composeChild] when the state machine is first started, to get the
+   * Called from [WorkflowContext.renderChild] when the state machine is first started, to get the
    * initial state.
    *
    * @param snapshot
@@ -85,7 +85,7 @@ abstract class StatefulWorkflow<
   ): StateT
 
   /**
-   * Called from [WorkflowContext.composeChild] instead of [initialState] when the workflow is already
+   * Called from [WorkflowContext.renderChild] instead of [initialState] when the workflow is already
    * running. This allows the workflow to detect changes in input, and possibly change its state in
    * response. This method is called eagerly: `old` and `new` might be the same value, so it is up
    * to implementing code to perform any diffing if desired.
@@ -107,7 +107,7 @@ abstract class StatefulWorkflow<
    *    - Emits an output.
    *
    * **Never call this method directly.** To nest the rendering of a child workflow in your own,
-   * pass the child and any required input to [WorkflowContext.composeChild].
+   * pass the child and any required input to [WorkflowContext.renderChild].
    *
    * This method *should not* have any side effects, and in particular should not do anything that
    * blocks the current thread. It may be called multiple times for the same state. It must do all its
@@ -116,7 +116,7 @@ abstract class StatefulWorkflow<
    * _† This method is guaranteed to be called *at least* once for every state, but may be called
    * multiple times. Allowing this method to be invoked multiple times makes the internals simpler._
    */
-  abstract fun compose(
+  abstract fun render(
     input: InputT,
     state: StateT,
     context: WorkflowContext<StateT, OutputT>

@@ -41,7 +41,7 @@ class WorkflowTesterTest {
     }
   }
 
-  @Test fun `propagates exception when workflow throws from compose`() {
+  @Test fun `propagates exception when workflow throws from render`() {
     val workflow = Workflow.stateless<Unit, Unit> {
       throw ExpectedException()
     }
@@ -90,7 +90,7 @@ class WorkflowTesterTest {
         throw ExpectedException()
       }
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Unit,
         context: WorkflowContext<Unit, Nothing>
@@ -120,7 +120,7 @@ class WorkflowTesterTest {
         // Noop
       }
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Unit,
         context: WorkflowContext<Unit, Nothing>
@@ -151,7 +151,7 @@ class WorkflowTesterTest {
         }
       }
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Unit,
         context: WorkflowContext<Unit, Nothing>

@@ -34,7 +34,7 @@ import kotlin.reflect.KType
  * This allows us to use this method to, for example, wait for a response from a service call while
  * also moving between states in response to UI events. (Use [key] if you need to work simultaneously
  * with several `Single`s of the same type.)
- * The subscription will be disposed when `compose` returns without passing a single of the same
+ * The subscription will be disposed when `render` returns without passing a single of the same
  * type and with the same key to this method.
  *
  * @param key An optional string key that is used to distinguish between subscriptions of the same
@@ -57,7 +57,7 @@ inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT
  * This allows us to use this method to, for example, wait for a response from a service call while
  * also moving between states in response to UI events. (Use [key] if you need to work simultaneously
  * with several `Single`s of the same type.)
- * The subscription will be disposed when `compose` returns without passing a single of the same
+ * The subscription will be disposed when `render` returns without passing a single of the same
  * type and with the same key to this method.
  *
  * @param type The [KType] that represents both the type of data source (e.g. `ReceiveChannel` or
@@ -78,7 +78,7 @@ fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSu
  * This allows us to use this method to, for example, monitor a stream of values emitted by a single
  * hot observable over a series of state transitions. (Use [key] if you need to work simultaneously
  * with several `Observable`s of the same type.)
- * The subscription will be disposed when `compose` returns without passing an observable of the
+ * The subscription will be disposed when `render` returns without passing an observable of the
  * same type and with the same key to this method.
  *
  * @param key An optional string key that is used to distinguish between subscriptions of the same
@@ -101,7 +101,7 @@ inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT
  * This allows us to use this method to, for example, monitor a stream of values emitted by a single
  * hot observable over a series of state transitions. (Use [key] if you need to work simultaneously
  * with several `Observable`s of the same type.)
- * The subscription will be disposed when `compose` returns without passing an observable of the
+ * The subscription will be disposed when `render` returns without passing an observable of the
  * same type and with the same key to this method.
  *
  * @param type The [KType] that represents both the type of data source (e.g. `ReceiveChannel` or

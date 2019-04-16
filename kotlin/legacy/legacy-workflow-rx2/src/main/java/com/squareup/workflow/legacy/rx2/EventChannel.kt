@@ -72,7 +72,7 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
    *
    * This method will throw if called multiple times before either:
    * 1. an acceptable event is sent.
-   * 2. the returned `Single` is unsubscribed from. This allows you to compose the resulting single
+   * 2. the returned `Single` is unsubscribed from. This allows you to render the resulting single
    *    with other `Single`s that will preempt our emitting (e.g. timing out waiting for an event).
    *
    * If the workflow is abandoned while waiting for an event, the single will never complete. It will

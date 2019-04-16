@@ -84,7 +84,7 @@ class Screen<D : Any, E : Any>(
      *
      *    myWorkflow.getState()
      *        .map(wfState -> wfState.state[SOME_LAYER]!!)
-     *        .compose(key.filter())
+     *        .render(key.filter())
      */
     fun filter(): ObservableTransformer<AnyScreen, Screen<D, E>> =
       ObservableTransformer { observable -> observable.ofKeyType(this) }

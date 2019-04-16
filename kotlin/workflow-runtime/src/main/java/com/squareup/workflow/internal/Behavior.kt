@@ -25,7 +25,7 @@ import kotlin.reflect.KType
 
 /**
  * An immutable description of the things a [Workflow] would like to do as the result of calling its
- * `compose` method. A `Behavior` is built up by calling methods on a
+ * `render` method. A `Behavior` is built up by calling methods on a
  * [WorkflowContext][com.squareup.workflow.WorkflowContext] ([RealWorkflowContext] in particular).
  *
  * @see RealWorkflowContext

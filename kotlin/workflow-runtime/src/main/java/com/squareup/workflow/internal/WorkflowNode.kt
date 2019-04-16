@@ -99,14 +99,14 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
   /**
    * Walk the tree of workflows, rendering each one and using
    * [WorkflowContext][com.squareup.workflow.WorkflowContext] to give its children a chance to
-   * compose themselves and aggregate those child renderings.
+   * render themselves and aggregate those child renderings.
    */
   @Suppress("UNCHECKED_CAST")
-  fun compose(
+  fun render(
     workflow: StatefulWorkflow<InputT, *, OutputT, RenderingT>,
     input: InputT
   ): RenderingT =
-    composeWithStateType(workflow as StatefulWorkflow<InputT, StateT, OutputT, RenderingT>, input)
+    renderWithStateType(workflow as StatefulWorkflow<InputT, StateT, OutputT, RenderingT>, input)
 
   /**
    * Walk the tree of state machines again, this time gathering snapshots and aggregating them
@@ -125,7 +125,7 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
    *
    * Walk the tree of state machines, asking each one to wait for its next event. If something happen
    * that results in an output, that output is returned. Null means something happened that requires
-   * a re-compose, e.g. my state changed or a child state changed.
+   * a re-render, e.g. my state changed or a child state changed.
    *
    * It is an error to call this method after calling [cancel].
    */
@@ -179,17 +179,17 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
   }
 
   /**
-   * Contains the actual logic for [compose], after we've casted the passed-in [Workflow]'s
+   * Contains the actual logic for [render], after we've casted the passed-in [Workflow]'s
    * state type to our `StateT`.
    */
-  private fun composeWithStateType(
+  private fun renderWithStateType(
     workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
     input: InputT
   ): RenderingT {
     updateInputAndState(workflow, input)
 
     val context = RealWorkflowContext(subtreeManager)
-    val rendering = workflow.compose(input, state, context)
+    val rendering = workflow.render(input, state, context)
 
     behavior = context.buildBehavior()
         .apply {

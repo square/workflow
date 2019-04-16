@@ -23,10 +23,10 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.WorkflowContext
-import com.squareup.workflow.composeChild
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
-import com.squareup.workflow.internal.RealWorkflowContext.Composer
-import com.squareup.workflow.internal.RealWorkflowContextTest.TestComposer.Rendering
+import com.squareup.workflow.internal.RealWorkflowContext.Renderer
+import com.squareup.workflow.internal.RealWorkflowContextTest.TestRenderer.Rendering
+import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateless
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.full.starProjectedType
@@ -40,7 +40,7 @@ import kotlin.test.fail
 
 class RealWorkflowContextTest {
 
-  private class TestComposer : Composer<String, String> {
+  private class TestRenderer : Renderer<String, String> {
 
     data class Rendering(
       val case: WorkflowOutputCase<*, *, *, *>,
@@ -50,7 +50,7 @@ class RealWorkflowContextTest {
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <IC : Any, OC : Any, RC : Any> compose(
+    override fun <IC : Any, OC : Any, RC : Any> render(
       case: WorkflowOutputCase<IC, OC, String, String>,
       child: Workflow<IC, OC, RC>,
       id: WorkflowId<IC, OC, RC>,
@@ -67,7 +67,7 @@ class RealWorkflowContextTest {
       scope: CoroutineScope
     ): String = fail()
 
-    override fun compose(
+    override fun render(
       input: String,
       state: String,
       context: WorkflowContext<String, String>
@@ -78,8 +78,8 @@ class RealWorkflowContextTest {
     override fun snapshotState(state: String): Snapshot = fail()
   }
 
-  private class PoisonComposer<S : Any, O : Any> : Composer<S, O> {
-    override fun <IC : Any, OC : Any, RC : Any> compose(
+  private class PoisonRenderer<S : Any, O : Any> : Renderer<S, O> {
+    override fun <IC : Any, OC : Any, RC : Any> render(
       case: WorkflowOutputCase<IC, OC, S, O>,
       child: Workflow<IC, OC, RC>,
       id: WorkflowId<IC, OC, RC>,
@@ -88,7 +88,7 @@ class RealWorkflowContextTest {
   }
 
   @Test fun `make sink completes update`() {
-    val context = RealWorkflowContext<String, String>(PoisonComposer())
+    val context = RealWorkflowContext<String, String>(PoisonRenderer())
     val expectedUpdate = noop<String, String>()
     val handler = context.onEvent<String> { expectedUpdate }
     val behavior = context.buildBehavior()
@@ -102,7 +102,7 @@ class RealWorkflowContextTest {
   }
 
   @Test fun `make sink gets event`() {
-    val context = RealWorkflowContext<String, String>(PoisonComposer())
+    val context = RealWorkflowContext<String, String>(PoisonRenderer())
     val handler = context.onEvent<String> { event -> emitOutput(event) }
 
     handler("foo")
@@ -115,10 +115,10 @@ class RealWorkflowContextTest {
   }
 
   @Test fun `composeChild works`() {
-    val context = RealWorkflowContext(TestComposer())
+    val context = RealWorkflowContext(TestRenderer())
     val workflow = TestWorkflow()
 
-    val (case, child, id, input) = context.composeChild(workflow, "input", "key") { output ->
+    val (case, child, id, input) = context.renderChild(workflow, "input", "key") { output ->
       emitOutput("output:$output")
     }
 
@@ -142,7 +142,7 @@ class RealWorkflowContextTest {
   }
 
   @Test fun `all methods throw after buildBehavior`() {
-    val context = RealWorkflowContext(TestComposer())
+    val context = RealWorkflowContext(TestRenderer())
     context.buildBehavior()
 
     assertFailsWith<IllegalStateException> { context.onEvent<Unit> { fail() } }
@@ -151,7 +151,7 @@ class RealWorkflowContextTest {
       context.onReceive<Unit>({ fail() }, Unit::class.starProjectedType) { fail() }
     }
     val child = Workflow.stateless<Nothing, Unit> { fail() }
-    assertFailsWith<IllegalStateException> { context.composeChild(child) }
+    assertFailsWith<IllegalStateException> { context.renderChild(child) }
     assertFailsWith<IllegalStateException> { context.buildBehavior() }
   }
 }

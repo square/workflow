@@ -24,7 +24,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
-import com.squareup.workflow.composeChild
+import com.squareup.workflow.renderChild
 import com.squareup.workflow.invoke
 import com.squareup.workflow.onReceive
 import com.squareup.workflow.parse
@@ -77,7 +77,7 @@ class WorkflowNodeTest {
       state: String
     ): String = onInputChanged.invoke(old, new, state)
 
-    override fun compose(
+    override fun render(
       input: String,
       state: String,
       context: WorkflowContext<String, String>
@@ -99,7 +99,7 @@ class WorkflowNodeTest {
     }
     val node = WorkflowNode(workflow.id(), workflow, "foo", null, context)
 
-    node.compose(workflow, "foo2")
+    node.render(workflow, "foo2")
 
     assertEquals(listOf("foo" to "foo2"), oldAndNewInputs)
   }
@@ -110,7 +110,7 @@ class WorkflowNodeTest {
     }
     val node = WorkflowNode(workflow.id(), workflow, "foo", null, context)
 
-    val rendering = node.compose(workflow, "foo2")
+    val rendering = node.render(workflow, "foo2")
 
     assertEquals(
         """
@@ -119,7 +119,7 @@ class WorkflowNodeTest {
         """.trimIndent(), rendering
     )
 
-    val rendering2 = node.compose(workflow, "foo3")
+    val rendering2 = node.render(workflow, "foo3")
 
     assertEquals(
         """
@@ -141,7 +141,7 @@ class WorkflowNodeTest {
         return input
       }
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, String>
@@ -152,7 +152,7 @@ class WorkflowNodeTest {
     }
     val node = WorkflowNode(workflow.id(), workflow, "", null, context)
 
-    node.compose(workflow, "")
+    node.render(workflow, "")
     eventHandler("event")
     val result = runBlocking {
       withTimeout(10) {
@@ -176,7 +176,7 @@ class WorkflowNodeTest {
         return input
       }
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, String>
@@ -187,7 +187,7 @@ class WorkflowNodeTest {
     }
     val node = WorkflowNode(workflow.id(), workflow, "", null, context)
 
-    node.compose(workflow, "")
+    node.render(workflow, "")
     eventHandler("event")
 
     val e = assertFailsWith<IllegalStateException> {
@@ -216,7 +216,7 @@ class WorkflowNodeTest {
         return input
       }
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, String>
@@ -232,7 +232,7 @@ class WorkflowNodeTest {
     val node = WorkflowNode(workflow.id(), workflow, "", null, context)
 
     assertEquals(null, update)
-    node.compose(workflow, "")
+    node.render(workflow, "")
     assertEquals(null, update)
 
     // Shouldn't have the update yet, since we haven't sent anything.
@@ -274,7 +274,7 @@ class WorkflowNodeTest {
         return input
       }
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, String>
@@ -290,7 +290,7 @@ class WorkflowNodeTest {
     val node = WorkflowNode(workflow.id(), workflow, "", null, context)
 
     assertEquals(null, update)
-    node.compose(workflow, "")
+    node.render(workflow, "")
     assertEquals(null, update)
 
     channel.close()
@@ -320,7 +320,7 @@ class WorkflowNodeTest {
         return input
       }
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, String>
@@ -341,7 +341,7 @@ class WorkflowNodeTest {
     val node = WorkflowNode(workflow.id(), workflow, "listen", null, context)
 
     runBlocking {
-      node.compose(workflow, "listen")
+      node.render(workflow, "listen")
       assertFalse(channel.isClosedForSend)
       doClose()
 
@@ -355,7 +355,7 @@ class WorkflowNodeTest {
       assertFalse(channel.isClosedForSend)
 
       // This should close the channel.
-      node.compose(workflow, "")
+      node.render(workflow, "")
 
       assertTrue(channel.isClosedForSend)
     }
@@ -372,7 +372,7 @@ class WorkflowNodeTest {
             .removePrefix("state:")
       } ?: input
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, Nothing>
@@ -390,7 +390,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial input", originalNode.compose(workflow, "foo"))
+    assertEquals("initial input", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
@@ -402,7 +402,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial input", restoredNode.compose(workflow, "foo"))
+    assertEquals("initial input", restoredNode.render(workflow, "foo"))
   }
 
   @Test fun `snapshots empty without children`() {
@@ -413,7 +413,7 @@ class WorkflowNodeTest {
         scope: CoroutineScope
       ): String = if (snapshot != null) "restored" else input
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, Nothing>
@@ -431,7 +431,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial input", originalNode.compose(workflow, "foo"))
+    assertEquals("initial input", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
@@ -443,7 +443,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("restored", restoredNode.compose(workflow, "foo"))
+    assertEquals("restored", restoredNode.render(workflow, "foo"))
   }
 
   @Test fun `snapshots non-empty with children`() {
@@ -460,7 +460,7 @@ class WorkflowNodeTest {
             .also { state -> restoredChildState = state }
       } ?: input
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, Nothing>
@@ -483,12 +483,12 @@ class WorkflowNodeTest {
             .also { state -> restoredParentState = state }
       } ?: input
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, Nothing>
       ): String {
-        val childRendering = context.composeChild(childWorkflow, "child input")
+        val childRendering = context.renderChild(childWorkflow, "child input")
         return "$state|$childRendering"
       }
 
@@ -505,7 +505,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial input|child input", originalNode.compose(parentWorkflow, "foo"))
+    assertEquals("initial input|child input", originalNode.render(parentWorkflow, "foo"))
     val snapshot = originalNode.snapshot(parentWorkflow)
     assertNotEquals(0, snapshot.bytes.size)
 
@@ -517,7 +517,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial input|child input", restoredNode.compose(parentWorkflow, "foo"))
+    assertEquals("initial input|child input", restoredNode.render(parentWorkflow, "foo"))
     assertEquals("child input", restoredChildState)
     assertEquals("initial input", restoredParentState)
   }
@@ -538,7 +538,7 @@ class WorkflowNodeTest {
         }
       }
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Unit,
         context: WorkflowContext<Unit, Nothing>
@@ -588,7 +588,7 @@ class WorkflowNodeTest {
         return@parse "input:$input|state:$deserialized"
       } ?: input
 
-      override fun compose(
+      override fun render(
         input: String,
         state: String,
         context: WorkflowContext<String, Nothing>
@@ -608,7 +608,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial input", originalNode.compose(workflow, "foo"))
+    assertEquals("initial input", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
@@ -619,7 +619,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("input:new input|state:initial input", restoredNode.compose(workflow, "foo"))
+    assertEquals("input:new input|state:initial input", restoredNode.render(workflow, "foo"))
   }
 
   @Test fun `invokes teardown hooks in order on cancel`() {
@@ -629,7 +629,7 @@ class WorkflowNodeTest {
       context.onTeardown { teardowns += 2 }
     }
     val node = WorkflowNode(workflow.id(), workflow.asStatefulWorkflow(), Unit, null, Unconfined)
-    node.compose(workflow.asStatefulWorkflow(), Unit)
+    node.render(workflow.asStatefulWorkflow(), Unit)
 
     assertTrue(teardowns.isEmpty())
 

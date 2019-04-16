@@ -42,7 +42,7 @@ class SubscriptionsTest {
    *
    * The initial value for the state is taken from the input. After that, the input is ignored.
    *
-   * [compose] returns a setter that will change the subscription state.
+   * [render] returns a setter that will change the subscription state.
    */
   private class SubscriberWorkflow(
     subject: Observable<String>
@@ -64,7 +64,7 @@ class SubscriptionsTest {
       scope: CoroutineScope
     ): Boolean = input
 
-    override fun compose(
+    override fun render(
       input: Boolean,
       state: Boolean,
       context: WorkflowContext<Boolean, ChannelUpdate<String>>

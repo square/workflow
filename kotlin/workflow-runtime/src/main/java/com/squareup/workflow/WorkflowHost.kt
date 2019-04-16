@@ -44,7 +44,7 @@ import kotlin.coroutines.coroutineContext
 interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any> {
 
   /**
-   * Output from a [WorkflowHost]. Emitted from [WorkflowHost.updates] after every compose pass.
+   * Output from a [WorkflowHost]. Emitted from [WorkflowHost.updates] after every render pass.
    */
   data class Update<out OutputT : Any, out RenderingT : Any>(
     val rendering: RenderingT,
@@ -170,13 +170,13 @@ suspend fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any> runWor
       // Manually implement `ensureActive()` until we're on coroutines 1.2.x.
       if (!isActive) throw coroutineContext[Job]!!.getCancellationException()
 
-      val rendering = rootNode.compose(workflow, input)
+      val rendering = rootNode.render(workflow, input)
       val snapshot = rootNode.snapshot(workflow)
 
       onUpdate(Update(rendering, snapshot, output))
 
       // Tick _might_ return an output, but if it returns null, it means the state or a child
-      // probably changed, so we should re-compose/snapshot and emit again.
+      // probably changed, so we should re-render/snapshot and emit again.
       output = select {
         // Stop trying to read from the inputs channel after it's closed.
         if (!inputsClosed) {
@@ -188,7 +188,7 @@ suspend fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any> runWor
               input = newInput
             }
             // No output. Returning from the select will go to the top of the loop to do another
-            // compose pass.
+            // render pass.
             return@onReceiveOrNull null
           }
         }

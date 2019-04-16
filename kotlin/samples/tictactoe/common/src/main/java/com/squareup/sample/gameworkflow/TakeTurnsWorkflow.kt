@@ -48,7 +48,7 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
     scope: CoroutineScope
   ): Turn = Turn()
 
-  override fun compose(
+  override fun render(
     input: PlayerInfo,
     state: Turn,
     context: WorkflowContext<Turn, CompletedGame>

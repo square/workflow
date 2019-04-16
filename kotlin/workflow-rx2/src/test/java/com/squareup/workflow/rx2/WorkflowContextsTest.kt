@@ -81,7 +81,7 @@ class WorkflowContextsTest {
         scope: CoroutineScope
       ): Boolean = true
 
-      override fun compose(
+      override fun render(
         input: Unit,
         state: Boolean,
         context: WorkflowContext<Boolean, Nothing>

@@ -55,7 +55,7 @@ class SubtreeManagerTest {
       return "initialState:$input"
     }
 
-    override fun compose(
+    override fun render(
       input: String,
       state: String,
       context: WorkflowContext<String, String>
@@ -68,37 +68,37 @@ class SubtreeManagerTest {
 
   private val context = Dispatchers.Unconfined
 
-  @Test fun `compose starts new child`() {
+  @Test fun `render starts new child`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
     val input = "input"
     val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) { fail() }
 
-    manager.compose(case, workflow, id, input)
+    manager.render(case, workflow, id, input)
     assertEquals(1, workflow.started)
   }
 
-  @Test fun `compose doesn't start existing child`() {
+  @Test fun `render doesn't start existing child`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
     val input = "input"
     val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) { fail() }
 
-    manager.compose(case, workflow, id, input)
-    manager.compose(case, workflow, id, input)
+    manager.render(case, workflow, id, input)
+    manager.render(case, workflow, id, input)
     assertEquals(1, workflow.started)
   }
 
-  @Test fun `compose returns child rendering`() {
+  @Test fun `render returns child rendering`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
     val input = "input"
     val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) { fail() }
 
-    val (composeInput, composeState) = manager.compose(case, workflow, id, input)
+    val (composeInput, composeState) = manager.render(case, workflow, id, input)
     assertEquals("input", composeInput)
     assertEquals("initialState:input", composeState)
   }
@@ -114,7 +114,7 @@ class SubtreeManagerTest {
 
     // Initialize the child so tickChildren has something to work with, and so that we can send
     // an event to trigger an output.
-    val (_, _, eventHandler) = manager.compose(case, workflow, id, "input")
+    val (_, _, eventHandler) = manager.render(case, workflow, id, "input")
 
     runBlocking {
       val tickOutput = async {
