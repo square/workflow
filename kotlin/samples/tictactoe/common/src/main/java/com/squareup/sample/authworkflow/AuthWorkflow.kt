@@ -25,7 +25,6 @@ import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
 import com.squareup.sample.authworkflow.LoginScreen.SubmitLogin
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.CancelSecondFactor
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
-import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
@@ -33,6 +32,8 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.rx2.onSuccess
+import com.squareup.workflow.ui.BackStackScreen
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * We define this otherwise redundant typealias to keep composite workflows
@@ -55,7 +56,8 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
 
   override fun initialState(
     input: Unit,
-    snapshot: Snapshot?
+    snapshot: Snapshot?,
+    scope: CoroutineScope
   ): AuthState = LoginPrompt()
 
   override fun compose(

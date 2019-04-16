@@ -143,6 +143,7 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
    * Teardown handlers should be non-blocking and execute quickly, since they are invoked
    * synchronously during the compose pass.
    */
+  @Deprecated("Use the CoroutineScope parameter to initialState.")
   fun onTeardown(handler: () -> Unit)
 }
 

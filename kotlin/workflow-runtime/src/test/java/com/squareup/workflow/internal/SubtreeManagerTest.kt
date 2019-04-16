@@ -24,6 +24,7 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -47,7 +48,8 @@ class SubtreeManagerTest {
 
     override fun initialState(
       input: String,
-      snapshot: Snapshot?
+      snapshot: Snapshot?,
+      scope: CoroutineScope
     ): String {
       started++
       return "initialState:$input"

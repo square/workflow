@@ -51,6 +51,7 @@ import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowContext
 import com.squareup.workflow.invoke
 import com.squareup.workflow.rx2.onSuccess
+import kotlinx.coroutines.CoroutineScope
 
 enum class RunGameResult {
   CanceledStart,
@@ -79,7 +80,8 @@ class RealRunGameWorkflow(
 
   override fun initialState(
     input: Unit,
-    snapshot: Snapshot?
+    snapshot: Snapshot?,
+    scope: CoroutineScope
   ): RunGameState = snapshot?.let { RunGameState.fromSnapshot(snapshot.bytes) }
       ?: NewGame()
 

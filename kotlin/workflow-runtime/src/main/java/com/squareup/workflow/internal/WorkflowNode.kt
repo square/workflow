@@ -90,7 +90,7 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
 
   private var state: StateT = initialState
       ?: snapshot?.restoreState(initialInput, workflow)
-      ?: workflow.initialState(initialInput, snapshot = null)
+      ?: workflow.initialState(initialInput, snapshot = null, scope = this)
 
   private var lastInput: InputT = initialInput
 
@@ -237,7 +237,7 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
     bytes.parse { source ->
       val stateSnapshot = source.readByteStringWithLength()
       val childrenSnapshot = source.readByteString()
-      val state = workflow.initialState(input, Snapshot.of(stateSnapshot))
+      val state = workflow.initialState(input, Snapshot.of(stateSnapshot), this@WorkflowNode)
       return Pair(state, Snapshot.of(childrenSnapshot))
     }
 }

@@ -15,6 +15,8 @@
  */
 package com.squareup.workflow
 
+import kotlinx.coroutines.CoroutineScope
+
 /**
  * A composable, stateful object that can [handle events][WorkflowContext.onEvent],
  * [delegate to children][WorkflowContext.composeChild], [subscribe][onReceive] to arbitrary streams from
@@ -71,10 +73,15 @@ abstract class StatefulWorkflow<
    * If the workflow is being restored from a [Snapshot], [snapshot] will be the last value
    * returned from [snapshotState], and implementations that return something other than
    * [Snapshot.EMPTY] should create their initial state by parsing their snapshot.
+   * @param scope
+   * The [CoroutineScope] in which this workflow lives. The scope will be cancelled when the
+   * workflow is being torn down, so this scope can be used to start coroutines to track the
+   * lifetime of the workflow "session".
    */
   abstract fun initialState(
     input: InputT,
-    snapshot: Snapshot?
+    snapshot: Snapshot?,
+    scope: CoroutineScope
   ): StateT
 
   /**

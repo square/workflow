@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+@file:Suppress("EXPERIMENTAL_API_USAGE", "DEPRECATION")
 
 package com.squareup.workflow.internal
 
@@ -28,6 +28,7 @@ import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealWorkflowContext.Composer
 import com.squareup.workflow.internal.RealWorkflowContextTest.TestComposer.Rendering
 import com.squareup.workflow.stateless
+import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.full.starProjectedType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -62,7 +63,8 @@ class RealWorkflowContextTest {
   private class TestWorkflow : StatefulWorkflow<String, String, String, Rendering>() {
     override fun initialState(
       input: String,
-      snapshot: Snapshot?
+      snapshot: Snapshot?,
+      scope: CoroutineScope
     ): String = fail()
 
     override fun compose(

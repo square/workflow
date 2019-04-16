@@ -17,6 +17,10 @@ package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -107,7 +111,8 @@ class CompositionIntegrationTest {
     val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?
+        snapshot: Snapshot?,
+        scope: CoroutineScope
       ): Boolean = true
 
       override fun compose(
@@ -150,7 +155,8 @@ class CompositionIntegrationTest {
     val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?
+        snapshot: Snapshot?,
+        scope: CoroutineScope
       ): Boolean = true
 
       override fun compose(
@@ -174,6 +180,78 @@ class CompositionIntegrationTest {
         teardownChildren()
 
         assertEquals(listOf("grandchild", "child"), teardowns)
+      }
+    }
+  }
+
+  @Test fun `childrens' initialState scope is run during child session`() {
+    var starts = 0
+    var cancels = 0
+    val child = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?,
+        scope: CoroutineScope
+      ) {
+        scope.launch {
+          starts++
+          try {
+            suspendCancellableCoroutine<Nothing> { }
+          } catch (e: CancellationException) {
+            cancels++
+          }
+        }
+      }
+
+      override fun compose(
+        input: Unit,
+        state: Unit,
+        context: WorkflowContext<Unit, Nothing>
+      ) {
+      }
+
+      override fun snapshotState(state: Unit) = Snapshot.EMPTY
+    }
+
+    // A workflow that will render child until its rendering is invoked, at which point
+    // it will compose neither of them, which should trigger the scope to be cancelled.
+    val root = object : StatefulWorkflow<Unit, Boolean, Nothing, (Boolean) -> Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?,
+        scope: CoroutineScope
+      ): Boolean = false
+
+      override fun compose(
+        input: Unit,
+        state: Boolean,
+        context: WorkflowContext<Boolean, Nothing>
+      ): (Boolean) -> Unit {
+        if (state) {
+          context.composeChild(child)
+        }
+        return context.onEvent<Boolean> { enterState(it) }::invoke
+      }
+
+      override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
+    }
+
+    root.testFromStart { tester ->
+      tester.withNextRendering { runChildren ->
+        assertEquals(0, starts)
+        assertEquals(0, cancels)
+
+        runChildren(true)
+      }
+
+      tester.withNextRendering { runChildren ->
+        assertEquals(1, starts)
+        assertEquals(0, cancels)
+
+        runChildren(false)
+
+        assertEquals(1, starts)
+        assertEquals(1, cancels)
       }
     }
   }

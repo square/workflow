@@ -28,6 +28,7 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.WorkflowContext
+import kotlinx.coroutines.CoroutineScope
 
 typealias TakeTurnsWorkflow = Workflow<PlayerInfo, CompletedGame, GamePlayScreen>
 
@@ -43,7 +44,8 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
 
   override fun initialState(
     input: PlayerInfo,
-    snapshot: Snapshot?
+    snapshot: Snapshot?,
+    scope: CoroutineScope
   ): Turn = Turn()
 
   override fun compose(

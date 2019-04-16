@@ -26,6 +26,7 @@ import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.TimeoutCancellationException
 import java.io.IOException
 import kotlin.test.Test
@@ -59,7 +60,8 @@ class SubscriptionsTest {
 
     override fun initialState(
       input: Boolean,
-      snapshot: Snapshot?
+      snapshot: Snapshot?,
+      scope: CoroutineScope
     ): Boolean = input
 
     override fun compose(

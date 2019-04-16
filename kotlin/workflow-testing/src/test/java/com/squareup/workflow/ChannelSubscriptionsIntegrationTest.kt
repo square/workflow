@@ -24,6 +24,7 @@ import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -60,7 +61,8 @@ class ChannelSubscriptionsIntegrationTest {
 
     override fun initialState(
       input: Boolean,
-      snapshot: Snapshot?
+      snapshot: Snapshot?,
+      scope: CoroutineScope
     ): Boolean = input
 
     override fun compose(

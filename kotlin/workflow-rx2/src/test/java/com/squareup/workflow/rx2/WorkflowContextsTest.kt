@@ -27,6 +27,7 @@ import com.squareup.workflow.invoke
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
 import io.reactivex.subjects.SingleSubject
+import kotlinx.coroutines.CoroutineScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -73,7 +74,8 @@ class WorkflowContextsTest {
     val workflow = object : StatefulWorkflow<Unit, Boolean, Nothing, Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?
+        snapshot: Snapshot?,
+        scope: CoroutineScope
       ): Boolean = true
 
       override fun compose(
