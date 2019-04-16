@@ -20,7 +20,6 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -83,22 +82,16 @@ class ChannelUpdatesTest {
 
   @Test fun `handles error`() {
     val channel = Channel<String>()
-    channel.cancel(CancellationException(null, ExpectedException()))
+    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+    @Suppress("DEPRECATION")
+    channel.cancel(ExpectedException())
 
-    assertFailsWith<CancellationException> {
+    assertFailsWith<ExpectedException> {
       runBlocking {
         select<ChannelUpdate<String>> {
           onChannelUpdate(channel) { it }
         }
       }
-    }.also { error ->
-      // Search up the cause chain for the expected exception, since multiple CancellationExceptions
-      // may be chained together first.
-      val causeChain = generateSequence<Throwable>(error) { it.cause }
-      assertEquals(
-          1, causeChain.count { it is ExpectedException },
-          "Expected cancellation exception cause chain to include original cause."
-      )
     }
   }
 

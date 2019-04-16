@@ -21,7 +21,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
-import kotlinx.coroutines.CancellationException
+import com.squareup.workflow.WorkflowHost.Factory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -97,7 +97,7 @@ fun <StateT : Any, OutputT : Any, RenderingT : Any>
 private fun <T, O : Any, R : Any> test(
   testBlock: (WorkflowTester<O, R>) -> T,
   baseContext: CoroutineContext,
-  starter: (WorkflowHost.Factory) -> WorkflowHost<O, R>
+  starter: (Factory) -> WorkflowHost<O, R>
 ): T {
   val context = Dispatchers.Unconfined + baseContext + Job(parent = baseContext[Job])
   val host = WorkflowHost.Factory(context)
@@ -112,13 +112,15 @@ private fun <T, O : Any, R : Any> test(
     throw e
   } finally {
     if (error != null) {
-      context.cancel(
-          if (error is CancellationException) error else CancellationException(null, error)
-      )
-      val cancellationCause = context[Job]!!.getCancellationException()
-          .cause
-      if (cancellationCause != error && cancellationCause != null) {
-        error.addSuppressed(cancellationCause)
+      // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
+      @Suppress("DEPRECATION")
+      val cancelled = context.cancel(error)
+      if (!cancelled) {
+        val cancellationCause = context[Job]!!.getCancellationException()
+            .cause
+        if (cancellationCause != error && cancellationCause != null) {
+          error.addSuppressed(cancellationCause)
+        }
       }
     } else {
       // Cancel the Job to ensure everything gets cleaned up.

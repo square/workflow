@@ -123,7 +123,7 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
             .also { selectionJob.cancel() }
       } catch (cancellation: CancellationException) {
         val cause = cancellation.cause
-        if (cause == null || cause is CancellationException) {
+        if (cause == null) {
           // The select was cancelled normally, which means the workflow was abandoned and we're
           // about to get unsubscribed from. Don't propagate the error, just never emit/return.
           suspendCoroutine<Nothing> { }
