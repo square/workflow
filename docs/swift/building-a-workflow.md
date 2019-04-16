@@ -116,7 +116,7 @@ func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> Screen {
 
 ## State
 
-Some workflows do not need state at all – they simple render values based on the values they were initialized with. But for more complicated workflows, state management is critical. For example, a multi-screen flow only functions if we are able to define all of the possible steps (model the state), remember which one we are currently on (persist state), and move to other steps in the future (transition state).
+Some workflows do not need state at all – they simply render values based on the values they were initialized with. But for more complicated workflows, state management is critical. For example, a multi-screen flow only functions if we are able to define all of the possible steps (model the state), remember which one we are currently on (persist state), and move to other steps in the future (transition state).
 
 To define your workflow's state, simply implement the associatedtype `State` via an enum or struct.
 
@@ -159,7 +159,7 @@ The context provided to the `compose(state:context:)` method defines the API thr
 
 ### The Workflow Context
 
-The useful role of children is ultimately to provide rendered values (typically screen models) via their `compose(state:context:)` implementation. To obtain that value from a child workflow, the 'render(_ workflow:key:)` method is invoked on the render context.
+The useful role of children is ultimately to provide rendered values (typically screen models) via their `compose(state:context:)` implementation. To obtain that value from a child workflow, the `render(workflow:key:outputMap:)` method is invoked on the render context.
 
 When a workflow is passed into the context’s render method, the context will do the following:
 - Check if the child workflow is new or existing:
