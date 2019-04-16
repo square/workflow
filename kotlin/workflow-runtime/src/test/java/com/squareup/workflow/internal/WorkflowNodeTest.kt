@@ -18,21 +18,21 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.EventHandler
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.Worker.OutputOrFinished
+import com.squareup.workflow.Worker.OutputOrFinished.Finished
+import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.RenderContext
-import com.squareup.workflow.renderChild
+import com.squareup.workflow.asWorker
 import com.squareup.workflow.invoke
-import com.squareup.workflow.onReceive
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
+import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateless
-import com.squareup.workflow.util.ChannelUpdate
-import com.squareup.workflow.util.ChannelUpdate.Closed
-import com.squareup.workflow.util.ChannelUpdate.Value
 import com.squareup.workflow.writeUtf8WithLength
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -203,9 +203,9 @@ class WorkflowNodeTest {
     )
   }
 
-  @Test fun `subscriptions detects value`() {
+  @Test fun `worker gets value`() {
     val channel = Channel<String>(capacity = 1)
-    var update: ChannelUpdate<String>? = null
+    var update: OutputOrFinished<String>? = null
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
@@ -221,7 +221,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        context.onReceive({ channel }) {
+        context.onWorkerOutputOrFinished(channel.asWorker()) {
           check(update == null)
           update = it
           emitOutput("update:$it")
@@ -257,13 +257,13 @@ class WorkflowNodeTest {
       }
     }
 
-    assertEquals(Value("element"), update)
-    assertEquals("update:${Value("element")}", output)
+    assertEquals(Output("element"), update)
+    assertEquals("update:${Output("element")}", output)
   }
 
-  @Test fun `subscriptions detects close`() {
+  @Test fun `worker gets close`() {
     val channel = Channel<String>(capacity = 0)
-    var update: ChannelUpdate<String>? = null
+    var update: OutputOrFinished<String>? = null
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
@@ -279,7 +279,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        context.onReceive({ channel }) {
+        context.onWorkerOutputOrFinished(channel.asWorker()) {
           check(update == null)
           update = it
           emitOutput("update:$it")
@@ -303,11 +303,11 @@ class WorkflowNodeTest {
       }
     }
 
-    assertEquals(Closed, update)
-    assertEquals("update:$Closed", output)
+    assertEquals(Finished, update)
+    assertEquals("update:$Finished", output)
   }
 
-  @Test fun `subscriptions unsubscribes`() {
+  @Test fun `worker is cancelled`() {
     val channel = Channel<String>(capacity = 0)
     lateinit var doClose: EventHandler<Unit>
     val workflow = object : StringWorkflow() {
@@ -327,7 +327,7 @@ class WorkflowNodeTest {
       ): String {
         when (state) {
           "listen" -> {
-            context.onReceive({ channel }) {
+            context.onWorkerOutputOrFinished(channel.asWorker(closeOnCancel = true)) {
               emitOutput("update:$it")
             }
             doClose = context.onEvent {

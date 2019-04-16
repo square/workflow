@@ -17,12 +17,13 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.Worker.OutputOrFinished.Finished
+import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.internal.Behavior.SubscriptionCase
+import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
-import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -48,20 +49,13 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
 ) : CoroutineScope {
 
   /**
-   * Tracks a [ReceiveChannel] that represents a "subscription" to an observable data source, and
-   * a [flag][tombstone] that indicates whether the data source has reported that it's been closed
-   * to the workflow.
-   *
-   * The tombstone flag is `false` when the source is "closed" (channel closed, observable complete,
-   * etc.) and then it is set to `true` so that the close will not be delivered again.
-   *
-   * When [tombstone] is `true`, the subscription will never deliver any more updates to the workflow.
-   *
-   * Terminal subscriptions are kept around so that they won't be unsubscribed and resubscribed to
-   * on the next render pass.
+   * Holds the channel representing the outputs of a worker, as well as a tombstone flag that is
+   * true after the worker has finished and we've reported that fact to the workflow. This is to
+   * prevent the workflow from entering an infinite loop of getting `Finished` events if it
+   * continues to listen to the worker after it finishes.
    */
-  private class Subscription(
-    val channel: ReceiveChannel<*>,
+  private class WorkerSession(
+    val channel: ReceiveChannel<Output<*>>,
     var tombstone: Boolean = false
   )
 
@@ -81,11 +75,11 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
   }
 
   private val subtreeManager = SubtreeManager<StateT, OutputT>(coroutineContext)
-  private val subscriptionTracker =
-    LifetimeTracker<SubscriptionCase<*, StateT, OutputT>, Any, Subscription>(
-        getKey = { case -> case.idempotenceKey },
-        start = { case -> Subscription(case.channelProvider.invoke(this)) },
-        dispose = { _, subscription -> subscription.channel.cancel() }
+  private val workerTracker =
+    LifetimeTracker<WorkerCase<*, StateT, OutputT>, Any, WorkerSession>(
+        getKey = { case -> case },
+        start = { case -> WorkerSession(launchWorker(case.worker)) },
+        dispose = { _, session -> session.channel.cancel() }
     )
 
   private var state: StateT = initialState
@@ -143,15 +137,15 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
     subtreeManager.tickChildren(selector, ::acceptUpdate)
 
     // Listen for any subscription updates.
-    subscriptionTracker.lifetimes
-        .filter { (_, sub) -> !sub.tombstone }
-        .forEach { (case, subscription) ->
-          selector.onChannelUpdate(subscription.channel) { channelUpdate ->
-            if (channelUpdate === Closed) {
+    workerTracker.lifetimes
+        .filter { (_, session) -> !session.tombstone }
+        .forEach { (case, session) ->
+          selector.onReceiveOutputOrFinished(session.channel) { outputOrFinished ->
+            if (outputOrFinished === Finished) {
               // Set the tombstone flag so we don't continue to listen to the subscription.
-              subscription.tombstone = true
+              session.tombstone = true
             }
-            val update = case.acceptUpdate(channelUpdate)
+            val update = case.acceptUpdate(outputOrFinished)
             acceptUpdate(update)
           }
         }
@@ -193,9 +187,9 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
 
     behavior = context.buildBehavior()
         .apply {
-          // Start new children/subscriptions, and drop old ones.
+          // Start new children/workers, and drop old ones.
           subtreeManager.track(childCases)
-          subscriptionTracker.track(subscriptionCases)
+          workerTracker.track(workerCases)
         }
 
     return rendering

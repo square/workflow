@@ -16,16 +16,14 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.EventHandler
+import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Worker
+import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.RenderContext
-import com.squareup.workflow.internal.Behavior.SubscriptionCase
+import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
-import com.squareup.workflow.util.ChannelUpdate
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlin.reflect.KType
 
 /**
  * An implementation of [RenderContext] that builds a [Behavior] via [buildBehavior].
@@ -44,7 +42,7 @@ internal class RealRenderContext<StateT : Any, OutputT : Any>(
   }
 
   private val nextUpdateFromEvent = CompletableDeferred<WorkflowAction<StateT, OutputT>>()
-  private val subscriptionCases = mutableListOf<SubscriptionCase<*, StateT, OutputT>>()
+  private val workerCases = mutableListOf<WorkerCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
   private val teardownHooks = mutableListOf<() -> Unit>()
 
@@ -68,16 +66,6 @@ internal class RealRenderContext<StateT : Any, OutputT : Any>(
     }
   }
 
-  override fun <E> onReceive(
-    channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    type: KType,
-    key: String,
-    handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
-  ) {
-    checkNotFrozen()
-    subscriptionCases += SubscriptionCase(channelProvider, Pair(type, key), handler)
-  }
-
   // @formatter:off
   override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
       renderChild(
@@ -95,6 +83,15 @@ internal class RealRenderContext<StateT : Any, OutputT : Any>(
     return renderer.render(case, child, id, input)
   }
 
+  override fun <T> onWorkerOutputOrFinished(
+    worker: Worker<T>,
+    key: String,
+    handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
+  ) {
+    checkNotFrozen()
+    workerCases += WorkerCase(worker, key, handler)
+  }
+
   override fun onTeardown(handler: () -> Unit) {
     checkNotFrozen()
     teardownHooks += handler
@@ -108,7 +105,7 @@ internal class RealRenderContext<StateT : Any, OutputT : Any>(
     frozen = true
     return Behavior(
         childCases = childCases.toList(),
-        subscriptionCases = subscriptionCases.toList(),
+        workerCases = workerCases.toList(),
         nextActionFromEvent = nextUpdateFromEvent,
         teardownHooks = teardownHooks.toList()
     )

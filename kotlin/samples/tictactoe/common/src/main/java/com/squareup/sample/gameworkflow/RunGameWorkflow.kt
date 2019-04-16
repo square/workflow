@@ -35,6 +35,16 @@ import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
 import com.squareup.sample.panel.PanelContainerScreen
 import com.squareup.sample.panel.asPanelOver
+import com.squareup.workflow.EventHandler
+import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.invoke
+import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
 import com.squareup.workflow.ui.AlertScreen.Button.NEGATIVE
@@ -42,15 +52,6 @@ import com.squareup.workflow.ui.AlertScreen.Button.NEUTRAL
 import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
 import com.squareup.workflow.ui.AlertScreen.Event.ButtonClicked
 import com.squareup.workflow.ui.AlertScreen.Event.Canceled
-import com.squareup.workflow.EventHandler
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.RenderContext
-import com.squareup.workflow.invoke
-import com.squareup.workflow.rx2.onSuccess
 import kotlinx.coroutines.CoroutineScope
 
 enum class RunGameResult {
@@ -155,7 +156,7 @@ class RealRunGameWorkflow(
 
       is GameOver -> {
         if (state.syncState == SAVING) {
-          context.onSuccess(gameLog.logGame(state.completedGame)) { result ->
+          context.onWorkerOutput(gameLog.logGame(state.completedGame).asWorker()) { result ->
             when (result) {
               TRY_LATER -> enterState(state.copy(syncState = SAVE_FAILED))
               LOGGED -> enterState(state.copy(syncState = SAVED))

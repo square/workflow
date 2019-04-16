@@ -5,14 +5,14 @@ import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.panel.PanelContainerScreen
-import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.rendering
-import com.squareup.workflow.rx2.onSuccess
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
-import io.reactivex.Single
+import com.squareup.workflow.ui.BackStackScreen
 import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 
@@ -35,7 +35,7 @@ class MainWorkflowTest {
 
   @Test fun `starts game on auth`() {
     val authWorkflow: AuthWorkflow = Workflow.stateless { context ->
-      context.onSuccess(Single.just(Unit)) { emitOutput("auth") }
+      context.onWorkerOutput(Worker.from { Unit }) { emitOutput("auth") }
       authScreen()
     }
 

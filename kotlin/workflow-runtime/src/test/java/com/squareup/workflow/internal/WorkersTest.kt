@@ -17,9 +17,9 @@
 
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.util.ChannelUpdate
-import com.squareup.workflow.util.ChannelUpdate.Closed
-import com.squareup.workflow.util.ChannelUpdate.Value
+import com.squareup.workflow.Worker.OutputOrFinished
+import com.squareup.workflow.Worker.OutputOrFinished.Finished
+import com.squareup.workflow.Worker.OutputOrFinished.Output
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -32,15 +32,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 
-class ChannelUpdatesTest {
+class WorkersTest {
 
   @Test fun suspends() {
-    val channel = Channel<String>(1)
+    val channel = Channel<Output<String>>(1)
 
     runBlocking {
       val result = GlobalScope.async(Dispatchers.Unconfined) {
-        select<ChannelUpdate<String>> {
-          onChannelUpdate(channel) { it }
+        select<OutputOrFinished<String>> {
+          onReceiveOutputOrFinished(channel) { it }
         }
       }
 
@@ -54,42 +54,42 @@ class ChannelUpdatesTest {
     }
   }
 
-  @Test fun `emits value`() {
-    val channel = Channel<String>(1)
-    channel.offer("foo")
+  @Test fun `emits output`() {
+    val channel = Channel<Output<String>>(1)
+    channel.offer(Output("foo"))
 
     val result = runBlocking {
-      select<ChannelUpdate<String>> {
-        onChannelUpdate(channel) { it }
+      select<OutputOrFinished<String>> {
+        onReceiveOutputOrFinished(channel) { it }
       }
     }
 
-    assertEquals(Value("foo"), result)
+    assertEquals(Output("foo"), result)
   }
 
-  @Test fun `emits close`() {
-    val channel = Channel<String>()
+  @Test fun `emits finished`() {
+    val channel = Channel<Output<String>>(0)
     channel.close()
 
     val result = runBlocking {
-      select<ChannelUpdate<String>> {
-        onChannelUpdate(channel) { it }
+      select<OutputOrFinished<String>> {
+        onReceiveOutputOrFinished(channel) { it }
       }
     }
 
-    assertEquals(Closed, result)
+    assertEquals(Finished, result)
   }
 
   @Test fun `handles error`() {
-    val channel = Channel<String>()
+    val channel = Channel<Output<String>>()
     // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
     @Suppress("DEPRECATION")
     channel.cancel(ExpectedException())
 
     assertFailsWith<ExpectedException> {
       runBlocking {
-        select<ChannelUpdate<String>> {
-          onChannelUpdate(channel) { it }
+        select<OutputOrFinished<String>> {
+          onReceiveOutputOrFinished(channel) { it }
         }
       }
     }
