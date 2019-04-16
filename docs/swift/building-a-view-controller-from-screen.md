@@ -5,7 +5,7 @@ Now that we have a workflow, we need a way to map our screen to an actual view c
 
 ## `ScreenViewController`
 
-The `ScreenViewController` provides a baseclass the hides the plumbing of updating a view controller from a view model update.
+The `ScreenViewController` provides a base class that hides the plumbing of updating a view controller from a view model update.
 
 ```swift
 struct DemoScreen: Screen {
