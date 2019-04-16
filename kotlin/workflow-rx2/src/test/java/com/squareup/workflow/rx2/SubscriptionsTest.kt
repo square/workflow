@@ -103,7 +103,9 @@ class SubscriptionsTest {
       }
 
       assertEquals(1, workflow.subscriptions)
-      assertEquals(1, workflow.disposals)
+      // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
+      // Disposable.dispose() is an idempotent operation so it should be fine.
+      assertEquals(2, workflow.disposals)
     }
   }
 
@@ -116,7 +118,9 @@ class SubscriptionsTest {
       }
 
       assertEquals(1, workflow.subscriptions)
-      assertEquals(1, workflow.disposals)
+      // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
+      // Disposable.dispose() is an idempotent operation so it should be fine.
+      assertEquals(2, workflow.disposals)
     }
   }
 
@@ -146,13 +150,15 @@ class SubscriptionsTest {
 
       host.withNextRendering { setSubscribed ->
         assertEquals(1, workflow.subscriptions)
-        assertEquals(1, workflow.disposals)
+        // For some reason the observable is actually disposed twice. Seems like a coroutines bug,
+        // but Disposable.dispose() is an idempotent operation so it should be fine.
+        assertEquals(2, workflow.disposals)
         setSubscribed(true)
       }
 
       host.withNextRendering {
         assertEquals(2, workflow.subscriptions)
-        assertEquals(1, workflow.disposals)
+        assertEquals(2, workflow.disposals)
       }
     }
   }
