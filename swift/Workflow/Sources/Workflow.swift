@@ -48,16 +48,37 @@ public protocol Workflow: AnyWorkflowConvertible {
     /// is commonly a view / screen model.
     associatedtype Rendering
 
+    /// `SideEffects` defines work performed in `makeInitialState`,
+    /// `workflowDidChange` or from a `WorkflowAction`.
+    ///
+    /// - Note:
+    /// Side effects provide no mechanism for information coming back in to a
+    /// Workflow. For work that should affect this workflow’s state, see
+    /// `Worker`s.
+    associatedtype SideEffect = Never
+
     /// This method is invoked once when a workflow node comes into existence.
     ///
+    /// - Parameter context: The side effect context collects any requested side
+    ///                      effects to be performed when this workflow node
+    ///                      comes into existence.
     /// - Returns: The initial state for the workflow.
-    func makeInitialState() -> State
+    func makeInitialState(context: inout SideEffectContext<Self>) -> State
 
     /// Called when a new workflow is passed down from the parent to an existing workflow node.
     ///
     /// - Parameter previousWorkflow: The workflow before the update.
     /// - Parameter state: The current state.
-    func workflowDidChange(from previousWorkflow: Self, state: inout State)
+    /// - Parameter context: The side effect context collects any requested side
+    ///                      effects to be performed as a result of this
+    ///                      workflow change.
+    func workflowDidChange(from previousWorkflow: Self, state: inout State, context: inout SideEffectContext<Self>)
+
+    /// Called when this workflow requests a side effect. This is the moment to
+    /// do the work described by the given `SideEffect`.
+    ///
+    /// - Parameter sideEffect: The side effect to be performed.
+    func perform(sideEffect: SideEffect)
 
     /// Called to "compose" the current state into `Rendering`. A workflow's `Rendering` type is commonly a view or
     /// screen model.
@@ -68,6 +89,15 @@ public protocol Workflow: AnyWorkflowConvertible {
     ///                      then used to invoke `context.render(_ workflow:)`, which returns the child's `Rendering`
     ///                      type after creating or updating the nested workflow.
     func compose(state: State, context: WorkflowContext<Self>) -> Rendering
+
+}
+
+extension Workflow where SideEffect == Never {
+
+    /// When `SideEffect` is `Never`, there is no valid implementation of this
+    /// method (it can never be called).
+    public func perform(sideEffect: Never) {
+    }
 
 }
 

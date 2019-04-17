@@ -82,6 +82,64 @@ final class WorkflowNodeTests: XCTestCase {
         XCTAssertEqual(stateChangeCount, 3)
     }
 
+    func test_childWorkflowsEmitSideEffects() {
+
+        var sideEffects: [SideEffectWorkflow.SideEffect] = []
+
+        let workflow = CompositeWorkflow(
+            a: SideEffectWorkflow(
+                string: "Hello",
+                sideEffectsHandler: { sideEffects.append($0) }),
+            b: SimpleWorkflow(string: "World"))
+
+        let node = WorkflowNode(workflow: workflow)
+
+        func awaitingOutput(perform work: () -> Void) {
+            let expectation = XCTestExpectation(description: "Output")
+            node.onOutput = { value in
+                expectation.fulfill()
+            }
+            work()
+            wait(for: [expectation], timeout: 1.0)
+        }
+
+        awaitingOutput {
+            node.render().aRendering.someoneTappedButtonA()
+        }
+
+        awaitingOutput {
+            node.render().aRendering.someoneTappedButtonB()
+        }
+
+        node.update(
+            workflow: CompositeWorkflow(
+                a: SideEffectWorkflow(
+                    string: "Other",
+                    sideEffectsHandler: { sideEffects.append($0) }),
+                b: SimpleWorkflow(string: "World")))
+
+        awaitingOutput {
+            node.render().aRendering.someoneTappedButtonB()
+        }
+
+        awaitingOutput {
+            node.render().aRendering.someoneTappedButtonA()
+        }
+
+        XCTAssertEqual(
+            sideEffects,
+            [
+                .initial("Hello"),
+                .actionA,
+                .actionB,
+                .change(from: "Hello", to: "Other"),
+                .actionB,
+                .actionA,
+            ]
+        )
+
+    }
+
     func test_debugUpdateInfo() {
 
         typealias WorkflowType = CompositeWorkflow<EventEmittingWorkflow, SimpleWorkflow>
@@ -182,11 +240,11 @@ final class WorkflowNodeTests: XCTestCase {
             
             typealias Rendering = Void
 
-            func makeInitialState() -> WF.State {
+            func makeInitialState(context: inout SideEffectContext<WF>) -> WF.State {
                 return State()
             }
 
-            func workflowDidChange(from previousWorkflow: WF, state: inout WF.State) {
+            func workflowDidChange(from previousWorkflow: WF, state: inout WF.State, context: inout SideEffectContext<WF>) {
 
             }
 
@@ -265,7 +323,7 @@ extension CompositeWorkflow {
 
         typealias WorkflowType = CompositeWorkflow<A, B>
 
-        func apply(toState state: inout CompositeWorkflow<A, B>.State) -> CompositeWorkflow<A, B>.Output? {
+        func apply(toState state: inout CompositeWorkflow<A, B>.State, context: inout SideEffectContext<CompositeWorkflow<A, B>>) -> CompositeWorkflow<A, B>.Output? {
             switch self {
             case .a(let childOutput):
                 return .childADidSomething(childOutput)
@@ -275,11 +333,11 @@ extension CompositeWorkflow {
         }
     }
 
-    func makeInitialState() -> CompositeWorkflow<A, B>.State {
+    func makeInitialState(context: inout SideEffectContext<CompositeWorkflow<A, B>>) -> CompositeWorkflow<A, B>.State {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: CompositeWorkflow<A, B>, state: inout State) {
+    func workflowDidChange(from previousWorkflow: CompositeWorkflow<A, B>, state: inout State, context: inout SideEffectContext<CompositeWorkflow<A, B>>) {
 
     }
 
@@ -325,11 +383,11 @@ fileprivate struct SimpleWorkflow: Workflow {
 
     struct State {}
 
-    func makeInitialState() -> State {
+    func makeInitialState(context: inout SideEffectContext<SimpleWorkflow>) -> State {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: SimpleWorkflow, state: inout State) {
+    func workflowDidChange(from previousWorkflow: SimpleWorkflow, state: inout State, context: inout SideEffectContext<SimpleWorkflow>) {
 
     }
 
@@ -355,7 +413,7 @@ extension EventEmittingWorkflow {
         var someoneTappedTheButton: () -> Void
     }
 
-    func makeInitialState() -> State {
+    func makeInitialState(context: inout SideEffectContext<EventEmittingWorkflow>) -> State {
         return State()
     }
 
@@ -364,7 +422,7 @@ extension EventEmittingWorkflow {
 
         typealias WorkflowType = EventEmittingWorkflow
 
-        func apply(toState state: inout EventEmittingWorkflow.State) -> EventEmittingWorkflow.Output? {
+        func apply(toState state: inout EventEmittingWorkflow.State, context: inout SideEffectContext<EventEmittingWorkflow>) -> EventEmittingWorkflow.Output? {
             switch self {
             case .tapped:
                 return .helloWorld
@@ -376,7 +434,7 @@ extension EventEmittingWorkflow {
         case helloWorld
     }
 
-    func workflowDidChange(from previousWorkflow: EventEmittingWorkflow, state: inout State) {
+    func workflowDidChange(from previousWorkflow: EventEmittingWorkflow, state: inout State, context: inout SideEffectContext<EventEmittingWorkflow>) {
 
     }
 
@@ -402,11 +460,11 @@ fileprivate struct StateTransitioningWorkflow: Workflow {
         var currentValue: Bool
     }
 
-    func makeInitialState() -> Bool {
+    func makeInitialState(context: inout SideEffectContext<StateTransitioningWorkflow>) -> Bool {
         return false
     }
 
-    func workflowDidChange(from previousWorkflow: StateTransitioningWorkflow, state: inout Bool) {
+    func workflowDidChange(from previousWorkflow: StateTransitioningWorkflow, state: inout Bool, context: inout SideEffectContext<StateTransitioningWorkflow>) {
         
     }
 
@@ -424,7 +482,7 @@ fileprivate struct StateTransitioningWorkflow: Workflow {
 
         typealias WorkflowType = StateTransitioningWorkflow
 
-        func apply(toState state: inout Bool) -> Never? {
+        func apply(toState state: inout Bool, context: inout SideEffectContext<StateTransitioningWorkflow>) -> Never? {
             switch self {
             case .toggle:
                 state.toggle()
@@ -435,6 +493,75 @@ fileprivate struct StateTransitioningWorkflow: Workflow {
 
 
 }
+
+
+/// Renders to a model that contains a callback, which in turn sends an output event.
+fileprivate struct SideEffectWorkflow: Workflow {
+    var string: String
+    var sideEffectsHandler: (SideEffect) -> Void
+}
+
+extension SideEffectWorkflow {
+
+    struct State {
+
+    }
+
+    struct Rendering {
+        var someoneTappedButtonA: () -> Void
+        var someoneTappedButtonB: () -> Void
+    }
+
+    enum SideEffect: Equatable {
+        case initial(String)
+        case change(from: String, to: String)
+        case actionA
+        case actionB
+    }
+
+    func makeInitialState(context: inout SideEffectContext<SideEffectWorkflow>) -> State {
+        context.perform(sideEffect: .initial(string))
+        return State()
+    }
+
+    func workflowDidChange(from previousWorkflow: SideEffectWorkflow, state: inout State, context: inout SideEffectContext<SideEffectWorkflow>) {
+        if string != previousWorkflow.string {
+            context.perform(sideEffect: .change(from: previousWorkflow.string, to: string))
+        }
+    }
+
+    func perform(sideEffect: SideEffect) {
+        sideEffectsHandler(sideEffect)
+    }
+
+    enum Event: Equatable, WorkflowAction {
+        case tappedA
+        case tappedB
+
+        typealias WorkflowType = SideEffectWorkflow
+
+        func apply(toState state: inout State, context: inout SideEffectContext<SideEffectWorkflow>) -> Output? {
+            switch self {
+            case .tappedA:
+                context.perform(sideEffect: .actionA)
+                return nil
+            case .tappedB:
+                context.perform(sideEffect: .actionB)
+                return nil
+            }
+        }
+    }
+
+    func compose(state: State, context: WorkflowContext<SideEffectWorkflow>) -> Rendering {
+
+        let sink = context.makeSink(of: Event.self)
+
+        return Rendering(
+            someoneTappedButtonA: { sink.send(.tappedA) },
+            someoneTappedButtonB: { sink.send(.tappedB) })
+    }
+}
+
 
 #if compiler(>=5.0)
 // Never gains Equatable and Hashable conformance in Swift 5

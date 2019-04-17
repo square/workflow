@@ -36,11 +36,11 @@ extension PassthroughWorkflow {
 
     struct State {}
 
-    func makeInitialState() -> State {
+    func makeInitialState(context: inout SideEffectContext<PassthroughWorkflow>) -> State {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: PassthroughWorkflow<Rendering>, state: inout State) {
+    func workflowDidChange(from previousWorkflow: PassthroughWorkflow<Rendering>, state: inout State, context: inout SideEffectContext<PassthroughWorkflow>) {
 
     }
 
@@ -62,11 +62,11 @@ extension SimpleWorkflow {
 
     struct State {}
 
-    func makeInitialState() -> State {
+    func makeInitialState(context: inout SideEffectContext<SimpleWorkflow>) -> State {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: SimpleWorkflow, state: inout State) {
+    func workflowDidChange(from previousWorkflow: SimpleWorkflow, state: inout State, context: inout SideEffectContext<SimpleWorkflow>) {
 
     }
 

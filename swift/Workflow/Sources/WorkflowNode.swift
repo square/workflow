@@ -19,7 +19,14 @@ final class WorkflowNode<WorkflowType: Workflow> {
         
         /// Get the initial state
         self.workflow = workflow
-        self.state = workflow.makeInitialState()
+
+        var context = SideEffectContext<WorkflowType>()
+        self.state = workflow.makeInitialState(context: &context)
+
+        /// Perform side effects
+        for sideEffect in context.sideEffects {
+            workflow.perform(sideEffect: sideEffect)
+        }
 
         subtreeManager.onUpdate = { [weak self] output in
             self?.handle(subtreeOutput: output)
@@ -34,8 +41,15 @@ final class WorkflowNode<WorkflowType: Workflow> {
 
         switch subtreeOutput {
         case .update(let event, let source):
+            var context = SideEffectContext<WorkflowType>()
+
             /// Apply the update to the current state
-            let outputEvent = event.apply(toState: &state)
+            let outputEvent = event.apply(toState: &state, context: &context)
+
+            /// Perform side effects
+            for sideEffect in context.sideEffects {
+                workflow.perform(sideEffect: sideEffect)
+            }
 
             /// Finally, we tell the outside world that our state has changed (including an output event if it exists).
             output = Output(
@@ -66,8 +80,17 @@ final class WorkflowNode<WorkflowType: Workflow> {
 
     /// Updates the workflow.
     func update(workflow: WorkflowType) {
-        workflow.workflowDidChange(from: self.workflow, state: &state)
+        let previousWorkflow = self.workflow
         self.workflow = workflow
+
+        var context = SideEffectContext<WorkflowType>()
+
+        self.workflow.workflowDidChange(from: previousWorkflow, state: &state, context: &context)
+
+        /// Perform side effects
+        for sideEffect in context.sideEffects {
+            self.workflow.perform(sideEffect: sideEffect)
+        }
     }
 
     func makeDebugSnapshot() -> WorkflowHierarchyDebugSnapshot {

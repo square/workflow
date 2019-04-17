@@ -91,18 +91,18 @@ fileprivate struct MockWorkflow: Workflow {
 
     typealias Output = Int
 
-    func makeInitialState() -> State {
+    func makeInitialState(context: inout SideEffectContext<MockWorkflow>) -> State {
         return 0
     }
 
-    func workflowDidChange(from previousWorkflow: MockWorkflow, state: inout State) {
+    func workflowDidChange(from previousWorkflow: MockWorkflow, state: inout State, context: inout SideEffectContext<MockWorkflow>) {
 
     }
 
     func compose(state: State, context: WorkflowContext<MockWorkflow>) -> TestScreen {
 
         context.subscribe(signal: subscription.map { output in
-            return AnyWorkflowAction { state in
+            return AnyWorkflowAction { state, context in
                 state = output
                 return output
             }

@@ -24,11 +24,11 @@ extension ___VARIABLE_productName___Workflow {
 
     }
 
-    func makeInitialState() -> ___VARIABLE_productName___Workflow.State {
+    func makeInitialState(context: inout SideEffectContext<___VARIABLE_productName___Workflow>) -> ___VARIABLE_productName___Workflow.State {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: ___VARIABLE_productName___Workflow, state: inout State) {
+    func workflowDidChange(from previousWorkflow: ___VARIABLE_productName___Workflow, state: inout State, context: inout SideEffectContext<___VARIABLE_productName___Workflow>) {
 
     }
 }
@@ -42,7 +42,7 @@ extension ___VARIABLE_productName___Workflow {
 
         typealias WorkflowType = ___VARIABLE_productName___Workflow
 
-        func apply(toState state: inout ___VARIABLE_productName___Workflow.State) -> ___VARIABLE_productName___Workflow.Output? {
+        func apply(toState state: inout ___VARIABLE_productName___Workflow.State, context: inout SideEffectContext<___VARIABLE_productName___Workflow>) -> ___VARIABLE_productName___Workflow.Output? {
 
             switch self {
                 // Update state and produce an optional output based on which action was received.

@@ -119,7 +119,7 @@ extension WorkflowContext {
     public func makeSink<Event>(of eventType: Event.Type, onEvent: @escaping (Event, inout WorkflowType.State) -> WorkflowType.Output?) -> Sink<Event> {
         return makeSink(of: AnyWorkflowAction.self)
             .contraMap { event in
-                return AnyWorkflowAction<WorkflowType> { state in
+                return AnyWorkflowAction<WorkflowType> { state, context in
                     return onEvent(event, &state)
                 }
             }
@@ -135,7 +135,7 @@ extension WorkflowContext {
 
     public func awaitResult<W>(for worker: W, onOutput: @escaping (W.Output, inout WorkflowType.State) -> WorkflowType.Output?) where W: Worker {
         awaitResult(for: worker) { output in
-            return AnyWorkflowAction<WorkflowType> { state in
+            return AnyWorkflowAction<WorkflowType> { state, context in
                 return onOutput(output, &state)
             }
         }

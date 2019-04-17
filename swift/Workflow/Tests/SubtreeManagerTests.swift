@@ -116,11 +116,11 @@ fileprivate struct ParentWorkflow: Workflow {
     typealias Event = TestWorkflow.Output
     typealias Output = Never
 
-    func makeInitialState() -> State {
+    func makeInitialState(context: inout SideEffectContext<ParentWorkflow>) -> ParentWorkflow.State {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout State) {
+    func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout State, context: inout SideEffectContext<ParentWorkflow>) {
 
     }
 
@@ -143,7 +143,7 @@ fileprivate struct TestWorkflow: Workflow {
         case changeState
         case sendOutput
 
-        func apply(toState state: inout TestWorkflow.State) -> TestWorkflow.Output? {
+        func apply(toState state: inout TestWorkflow.State, context: inout SideEffectContext<TestWorkflow>) -> TestWorkflow.Output? {
             switch self {
             case .changeState:
                 switch state {
@@ -161,11 +161,11 @@ fileprivate struct TestWorkflow: Workflow {
         case helloWorld
     }
 
-    func makeInitialState() -> State {
+    func makeInitialState(context: inout SideEffectContext<TestWorkflow>) -> State {
         return .foo
     }
 
-    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State) {
+    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State, context: inout SideEffectContext<TestWorkflow>) {
 
     }
 

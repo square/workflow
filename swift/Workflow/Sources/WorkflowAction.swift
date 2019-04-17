@@ -9,10 +9,12 @@ public protocol WorkflowAction {
     ///
     /// - Parameter state: The current state of the workflow. The state is passed as an `inout` param, allowing actions
     ///                    to modify state during application.
+    /// - Parameter context: The side effect context collects any requested side effects to be performed as a result of
+    ///                      this action.
     ///
     /// - Returns: An optional output event for the workflow. If an output event is returned, it will be passed up
     ///            the workflow hierarchy to this workflow's parent.
-    func apply(toState state: inout WorkflowType.State) -> WorkflowType.Output?
+    func apply(toState state: inout WorkflowType.State, context: inout SideEffectContext<WorkflowType>) -> WorkflowType.Output?
 
 }
 
@@ -23,7 +25,7 @@ public protocol WorkflowAction {
 /// or to a closure that implements the `apply` logic.
 public struct AnyWorkflowAction<WorkflowType: Workflow>: WorkflowAction {
 
-    private let _apply: (inout WorkflowType.State) -> WorkflowType.Output?
+    private let _apply: (inout WorkflowType.State, inout SideEffectContext<WorkflowType>) -> WorkflowType.Output?
 
     /// Creates a type-erased workflow action that wraps the given instance.
     ///
@@ -33,18 +35,18 @@ public struct AnyWorkflowAction<WorkflowType: Workflow>: WorkflowAction {
             self = anyEvent
             return
         }
-        _apply = { return base.apply(toState: &$0) }
+        _apply = { return base.apply(toState: &$0, context: &$1) }
     }
 
     /// Creates a type-erased workflow action with the given `apply` implementation.
     ///
     /// - Parameter apply: the apply function for the resulting action.
-    public init(_ apply: @escaping (inout WorkflowType.State) -> WorkflowType.Output?) {
+    public init(_ apply: @escaping (inout WorkflowType.State, inout SideEffectContext<WorkflowType>) -> WorkflowType.Output?) {
         _apply = apply
     }
 
-    public func apply(toState state: inout WorkflowType.State) -> WorkflowType.Output? {
-        return _apply(&state)
+    public func apply(toState state: inout WorkflowType.State, context: inout SideEffectContext<WorkflowType>) -> WorkflowType.Output? {
+        return _apply(&state, &context)
     }
 
 }
@@ -55,15 +57,25 @@ extension AnyWorkflowAction {
     ///
     /// - Parameter output: The output event to send when this action is applied.
     public init(sendingOutput output: WorkflowType.Output) {
-        self = AnyWorkflowAction { state in
+        self = AnyWorkflowAction { state, context in
             return output
+        }
+    }
+
+    /// Creates a type-erased workflow action that simply requests a given side effect.
+    ///
+    /// - Parameter sideEffect: The side effect to perform when this action is applied.
+    public init(performingSideEffect sideEffect: WorkflowType.SideEffect) {
+        self = AnyWorkflowAction { state, context in
+            context.perform(sideEffect: sideEffect)
+            return nil
         }
     }
 
     /// Creates a type-erased workflow action that does nothing (it leaves state unchanged and does not emit an output
     /// event).
     public static var identity: AnyWorkflowAction<WorkflowType> {
-        return AnyWorkflowAction { state in
+        return AnyWorkflowAction { state, context in
             return nil
         }
     }
