@@ -63,7 +63,7 @@ The workflow context:
 In order for us to see the anything in our app, we'll need to return a `Screen` that can be turned into a view controller:
 
 ```swift
-    func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> Screen {
+    func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> DemoScreen {
         return DemoScreen(title: "A nice title")
     }
 ```
@@ -107,10 +107,13 @@ Note that the `compose(state:context:)` method is called after every state chang
 Since we have a way of expressing an event from our UI, we can now use the callback on our view model to send that event back to the workflow:
 
 ```swift
-func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> Screen {
+func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> DemoScreen {
+    // Create a sink of our Action type so we can send actions back to the workflow.
+    let sink = context.makeSink(of: Action.self)
+
     return DemoScreen(
         title: "A nice title",
-        onTap: context.makeEventHandler(action: Action.refreshButtonTapped)
+        onTap: { sink.send(Action.refreshButtonTapped) }
 }
 ```
 
@@ -140,9 +143,55 @@ struct WelcomeFlowWorkflow: Workflow {
 
 *__Note:__ Workflows (and their `State`) should always be implemented through value types (structs and enums) due to the way the framework handles state changes. This means that you can never capture references to `self`, but the consistent flow of data pays dividends – try this architecture for a while and we are confident that you will see the benefits.*
 
-## Workers
+## Workers, or "Asynchronous work the workflow needs done"
 
-Workers provide a declarative interface to units of asyncronous work (such as network requests).
+A workflow may need to do some amount of asynchronous work (such as a network request, reading from a sqlite database, etc). Workers provide a declarative interface to units of asynchronous work.
+
+To do something asynchronously, we define a worker that has an Output type and defines a `run` method that that returns a Reactive Swift `SignalProducer`. When this worker will be run, the SignalProducer is subscribed to starting the async task.
+
+```swift
+struct AsyncWorker: Worker {
+
+    enum Output {
+        case success(String)
+        case error(Error)
+    }
+
+    func run() -> SignalProducer<NetworkWorker.Output, NoError> {
+        return SignalProducer(value: .success("We did it"))
+            .delay(1.0, on: QueueScheduler.main)
+    }
+
+    func isEquivalent(to otherWorker: NetworkWorker) -> Bool {
+        return true
+    }
+}
+```
+
+Because a Worker is a declarative representation of work, it also needs to define an `isEquivalent` to guarantee that we are not running more than one at the same time. For the simple example above, it is always considered equivalent as we want only one of this type of worker running at a time.
+
+In order to start asynchronous work, the workflow requests it in the compose method, looking something like:
+
+```swift
+    public func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> DemoScreen {
+
+        context.awaitResult(for: AsyncWorker()) { output -> Action in
+            switch output {
+            case .success(let result):
+                return Action.asyncSuccess(result)
+            case .error(let error):
+                return Action.asyncFailure(error)
+
+            }
+        }
+    }
+```
+
+When the context is told to await a result from a worker, the context will do the following:
+- Check if there is already a worker running of the same type:
+  - If there is not, or `isEquivalent` is false, call `run` on the worker and subscribe to the SignalProducer
+  - If there is already a worker running and isEquivalent is true, continue to wait for it to produce an output.
+- When the SignalProducer from the Worker returns an output, it is mapped to an Action and handled the same way as any other action.
 
 ## Output Events
 
@@ -159,12 +208,12 @@ The context provided to the `compose(state:context:)` method defines the API thr
 
 ### The Workflow Context
 
-The useful role of children is ultimately to provide rendered values (typically screen models) via their `compose(state:context:)` implementation. To obtain that value from a child workflow, the `render(workflow:key:outputMap:)` method is invoked on the render context.
+The useful role of children is ultimately to provide rendered values (typically screen models) via their `compose(state:context:)` implementation. To obtain that value from a child workflow, the `rendered(with context:key:)` method is invoked on the child workflow.
 
-When a workflow is passed into the context’s render method, the context will do the following:
+When a workflow is rendered with the context, the context will do the following:
 - Check if the child workflow is new or existing:
- - If a workflow with the same type was used during the last render pass, the existing child workflow will be updated with the new workflow.
- - Otherwise, a new child workflow node will be initialized.
+  - If a workflow with the same type was used during the last render pass, the existing child workflow will be updated with the new workflow.
+  - Otherwise, a new child workflow node will be initialized.
 - The child workflow's `compose(state:context:)` method is called.
 - The rendered value is returned.
 
@@ -175,7 +224,7 @@ struct ParentWorkflow: Workflow {
 
     func compose(state: State, context: WorkflowContext<ParentWorkflow>) -> String {
         let childWorkflow = ChildWorkflow(text: "Hello, World")
-        return context.render(childWorkflow) /// returns "dlroW ,olleH"
+        return childWorkflow.rendered(with: context)
     }
 
 }
