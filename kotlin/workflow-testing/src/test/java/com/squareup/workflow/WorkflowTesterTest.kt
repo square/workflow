@@ -60,7 +60,7 @@ class WorkflowTesterTest {
 
     workflow.testFromStart(context = job) { tester ->
       @Suppress("DEPRECATION")
-      job.cancel(ExpectedException())
+      job.cancel(CancellationException(null, ExpectedException()))
       tester.withFailure { error ->
         val causeChain = generateSequence(error) { it.cause }
         assertEquals(1, causeChain.count { it is ExpectedException })

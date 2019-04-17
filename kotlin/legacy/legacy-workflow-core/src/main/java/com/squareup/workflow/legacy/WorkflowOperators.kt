@@ -17,6 +17,7 @@
 
 package com.squareup.workflow.legacy
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers.Unconfined
@@ -93,7 +94,20 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
         // leave the consumeEach loop but the produce coroutine will wait for this child coroutine
         // to complete (structured concurrency) before closing the downstream channel.
         transformerJob = launch {
-          transform(upstreamState).toChannel(downstreamChannel)
+          try {
+            transform(upstreamState).toChannel(downstreamChannel)
+          } catch (e: Throwable) {
+            // Actual errors should be propagated, cancellation should interrupt forwarding
+            // the current transformed channel but allow the next one to continue.
+            // However, there may be multiple nested CancellationExceptions wrapping the actual
+            // exception, so we have to go digging.
+            val causeChain = generateSequence(e) { it.cause }
+            causeChain.firstOrNull { it !is CancellationException }
+                ?.let { realException ->
+                  downstreamChannel.close(realException)
+                  throw realException
+                }
+          }
         }
       }
     }
@@ -114,10 +128,13 @@ fun <S : Any, E : Any, O1 : Any, O2 : Any> Workflow<S, E, O1>.mapResult(
 
   // Propagate cancellation upstream.
   transformedResult.invokeOnCompletion { cause ->
-    if (cause != null) {
-      // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-      @Suppress("DEPRECATION")
+    this@mapResult.cancel(
+        if (cause is CancellationException) cause else CancellationException(null, cause)
+    )
+    if (cause is CancellationException) {
       this@mapResult.cancel(cause)
+    } else if (cause != null) {
+      this@mapResult.cancel(CancellationException(null, cause))
     }
   }
 
