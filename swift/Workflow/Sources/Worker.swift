@@ -3,7 +3,7 @@ import Result
 
 /// Workers define a unit of asynchronous work.
 ///
-/// During a compose pass, a workflow can ask the context to await the result of a worker.
+/// During a render pass, a workflow can ask the context to await the result of a worker.
 ///
 /// When this occurs, the context checks to see if there is already a running worker of the same type.
 /// If there is, and if the workers are 'equivalent', the context leaves the existing worker running.

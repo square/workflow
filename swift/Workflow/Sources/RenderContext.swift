@@ -1,9 +1,9 @@
 import ReactiveSwift
 import Result
 
-/// `WorkflowContext` is the composition point for the workflow tree.
+/// `RenderContext` is the composition point for the workflow tree.
 ///
-/// During a compose pass, a workflow may want to defer to a child
+/// During a render pass, a workflow may want to defer to a child
 /// workflow to render some portion of its content. For example,
 /// a workflow that renders to a split-screen view model might
 /// delegate to child A for the left side, and child B for the right
@@ -29,9 +29,9 @@ import Result
 /// If the parent had not rendered a child of the same type in the previous
 /// render pass, a new child workflow node is generated.
 ///
-/// The infrastructure then performs a compose pass on the child to obtain its
+/// The infrastructure then performs a render pass on the child to obtain its
 /// `Rendering` value, which is then returned to the caller.
-public class WorkflowContext<WorkflowType: Workflow>: WorkflowContextType {
+public class RenderContext<WorkflowType: Workflow>: RenderContextType {
 
     private (set) var isValid = true
     
@@ -48,7 +48,7 @@ public class WorkflowContext<WorkflowType: Workflow>: WorkflowContextType {
     /// - Parameter outputMap: A closure that transforms the child's output type into `Action`.
     /// - Parameter key: A string that uniquely identifies this child.
     ///
-    /// - Returns: The `Rendering` result of the child's `compose` method.
+    /// - Returns: The `Rendering` result of the child's `render` method.
     public func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child : Workflow, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
         fatalError()
     }
@@ -65,14 +65,14 @@ public class WorkflowContext<WorkflowType: Workflow>: WorkflowContextType {
         isValid = false
     }
     
-    // API to allow custom context implementations to power a workflow context
-    static func make<T: WorkflowContextType>(implementation: T) -> WorkflowContext<WorkflowType> where T.WorkflowType == WorkflowType {
-        return ConcreteWorkflowContext(implementation)
+    // API to allow custom context implementations to power a render context
+    static func make<T: RenderContextType>(implementation: T) -> RenderContext<WorkflowType> where T.WorkflowType == WorkflowType {
+        return ConcreteRenderContext(implementation)
     }
 
-    // Private subclass that forwards render calls to a wrapped implementation. This is the only `WorkflowContext` class
+    // Private subclass that forwards render calls to a wrapped implementation. This is the only `RenderContext` class
     // that is ever instantiated.
-    private final class ConcreteWorkflowContext<T: WorkflowContextType>: WorkflowContext where WorkflowType == T.WorkflowType {
+    private final class ConcreteRenderContext<T: RenderContextType>: RenderContext where WorkflowType == T.WorkflowType {
 
         let implementation: T
 
@@ -98,7 +98,7 @@ public class WorkflowContext<WorkflowType: Workflow>: WorkflowContextType {
         }
         
         private func assertStillValid() {
-            assert(isValid, "A `WorkflowContext` instance was used outside of the workflow's `render` method. It is a programmer error to capture a context in a closure or otherwise cause it to be used outside of the `render` method.")
+            assert(isValid, "A `RenderContext` instance was used outside of the workflow's `render` method. It is a programmer error to capture a context in a closure or otherwise cause it to be used outside of the `render` method.")
         }
 
     }
@@ -106,7 +106,7 @@ public class WorkflowContext<WorkflowType: Workflow>: WorkflowContextType {
 }
 
 
-internal protocol WorkflowContextType: class {
+internal protocol RenderContextType: class {
     associatedtype WorkflowType: Workflow
 
     func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child: Workflow, Action: WorkflowAction, Action.WorkflowType == WorkflowType
@@ -118,7 +118,7 @@ internal protocol WorkflowContextType: class {
 }
 
 
-extension WorkflowContext {
+extension RenderContext {
 
     public func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
         let (signal, observer) = Signal<AnyWorkflowAction<WorkflowType>, NoError>.pipe()
@@ -140,7 +140,7 @@ extension WorkflowContext {
 
 }
 
-extension WorkflowContext {
+extension RenderContext {
 
     public func awaitResult<W>(for worker: W) where W : Worker, W.Output : WorkflowAction, WorkflowType == W.Output.WorkflowType {
         awaitResult(for: worker, outputMap: { $0 })

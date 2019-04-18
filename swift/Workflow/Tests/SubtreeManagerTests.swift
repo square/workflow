@@ -106,7 +106,7 @@ final class SubtreeManagerTests: XCTestCase {
     func test_invalidatesContextAfterRender() {
         let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
         
-        var escapingContext: WorkflowContext<ParentWorkflow>! = nil
+        var escapingContext: RenderContext<ParentWorkflow>! = nil
         
         _ = manager.render { context -> TestViewModel in
             XCTAssertTrue(context.isValid)
@@ -141,7 +141,7 @@ fileprivate struct ParentWorkflow: Workflow {
 
     }
 
-    func compose(state: State, context: WorkflowContext<ParentWorkflow>) -> Never {
+    func render(state: State, context: RenderContext<ParentWorkflow>) -> Never {
         fatalError()
     }
 }
@@ -186,7 +186,7 @@ fileprivate struct TestWorkflow: Workflow {
 
     }
 
-    func compose(state: State, context: WorkflowContext<TestWorkflow>) -> TestViewModel {
+    func render(state: State, context: RenderContext<TestWorkflow>) -> TestViewModel {
 
         let sink = context.makeSink(of: Event.self)
 
