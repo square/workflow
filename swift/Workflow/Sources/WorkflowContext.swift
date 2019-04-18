@@ -33,6 +33,8 @@ import Result
 /// `Rendering` value, which is then returned to the caller.
 public class WorkflowContext<WorkflowType: Workflow>: WorkflowContextType {
 
+    private (set) var isValid = true
+    
     // Ensure that this class can never be initialized externally
     private init() {}
 
@@ -58,9 +60,13 @@ public class WorkflowContext<WorkflowType: Workflow>: WorkflowContextType {
     public func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
         fatalError()
     }
-
+    
+    final func invalidate() {
+        isValid = false
+    }
+    
     // API to allow custom context implementations to power a workflow context
-    internal static func make<T: WorkflowContextType>(implementation: T) -> WorkflowContext<WorkflowType> where T.WorkflowType == WorkflowType {
+    static func make<T: WorkflowContextType>(implementation: T) -> WorkflowContext<WorkflowType> where T.WorkflowType == WorkflowType {
         return ConcreteWorkflowContext(implementation)
     }
 
@@ -76,16 +82,23 @@ public class WorkflowContext<WorkflowType: Workflow>: WorkflowContextType {
         }
 
         override func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where WorkflowType == Action.WorkflowType, Child : Workflow, Action : WorkflowAction {
+            assertStillValid()
             return implementation.render(workflow: workflow, key: key, outputMap: outputMap)
         }
 
         override func subscribe<Action>(signal: Signal<Action, NoError>) where WorkflowType == Action.WorkflowType, Action : WorkflowAction {
+            assertStillValid()
             return implementation.subscribe(signal: signal)
         }
 
 
         override func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+            assertStillValid()
             implementation.awaitResult(for: worker, outputMap: outputMap)
+        }
+        
+        private func assertStillValid() {
+            assert(isValid, "A `WorkflowContext` instance was used outside of the workflow's `render` method. It is a programmer error to capture a context in a closure or otherwise cause it to be used outside of the `render` method.")
         }
 
     }

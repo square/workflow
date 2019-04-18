@@ -41,6 +41,8 @@ extension WorkflowNode {
 
             /// Pass the context into the closure to allow a render to take place
             let rendering = actions(wrapped)
+            
+            wrapped.invalidate()
 
             /// After the render is complete, assign children using *only the children that were used during the render
             /// pass.* This means that any pre-existing children that were *not* used during the render pass are removed

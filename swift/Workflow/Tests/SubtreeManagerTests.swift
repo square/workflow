@@ -102,6 +102,23 @@ final class SubtreeManagerTests: XCTestCase {
 
         XCTAssertEqual(changeCount, 2)
     }
+    
+    func test_invalidatesContextAfterRender() {
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        
+        var escapingContext: WorkflowContext<ParentWorkflow>! = nil
+        
+        _ = manager.render { context -> TestViewModel in
+            XCTAssertTrue(context.isValid)
+            escapingContext = context
+            return context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.identity })
+        }
+        
+        XCTAssertFalse(escapingContext.isValid)
+    }
 
 }
 
