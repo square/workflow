@@ -9,35 +9,52 @@
 ---
 
 1. Make sure you're on the `master` branch.
+
 2. In `kotlin/gradle.properties`, remove the `-SNAPSHOT` prefix from the `VERSION_NAME` property.
    E.g. `VERSION_NAME=0.1.0`
-   Update `swift/CHANGELOG.md` and `kotlin/CHANGELOG.md` with the changes since the last release.
+   Update `CHANGELOG.md` with the changes since the last release.
+
 3. Create a commit and tag the commit with the version number:
    ```
    git commit -am "Releasing v0.1.0."
    git tag v0.1.0
    ```
+
 4. Upload the artifacts:
    ```
    ./gradlew clean uploadArchives
    ```
+
 5. Publish to CocoaPods:
     ```
     bundle exec pod trunk push Workflow.podspec
     bundle exec pod trunk push WorkflowUI.podspec
     ```
+
 6. Bump the version
   - **Kotlin:** Update the `VERSION_NAME` property in `kotlin/gradle.properties` to the new snapshot 
     version, e.g. `VERSION_NAME=0.2.0-SNAPSHOT`.
   - **Swift:** Update `s.version` in `Workflow.podspec` to the new version, e.g. `0.2.0`.
+
 7. Commit the new snapshot version:
    ```
    git commit -am "Finish releasing v0.1.0."
    ```
+
 8. Push your commits and tag:
    ```
    git push origin master && git push origin v0.1.0
    ```
+
+9. Create the release on GitHub:
+     1. Go to the [Releases](https://github.com/square/workflow/releases) page for the GitHub project.
+     2. Click "Draft a new release".
+     3. Enter the tag name you just pushed.
+     4. Title the release with the same name as the tag.
+     5. Copy & paste the changelog entry for this release into the description.
+     6. If this is a pre-release version, check the pre-release box.
+     7. Hit "Publish release".
+
 
 ---
 
