@@ -21,7 +21,6 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
-import com.squareup.workflow.WorkflowHost.Factory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -101,7 +100,7 @@ fun <StateT : Any, OutputT : Any, RenderingT : Any>
 private fun <T, I : Any, O : Any, R : Any> test(
   testBlock: (WorkflowTester<I, O, R>) -> T,
   baseContext: CoroutineContext,
-  starter: (Factory) -> WorkflowHost<I, O, R>
+  starter: (WorkflowHost.Factory) -> WorkflowHost<I, O, R>
 ): T {
   val context = Dispatchers.Unconfined + baseContext + Job(parent = baseContext[Job])
   val host = WorkflowHost.Factory(context)
