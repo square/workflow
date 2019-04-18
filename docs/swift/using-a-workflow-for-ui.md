@@ -63,4 +63,4 @@ let container = ContainerViewController(
     viewRegistry: viewRegistry)
 ```
 
-Now, when the `ContainerViewController` is shown, it will start the workflow and `compose` will be called returning the `DemoScreen`. The container will use the view registry to map the `DemoScreen` to a `DemoScreenViewController` and add it to the view hierarchy to display.
+Now, when the `ContainerViewController` is shown, it will start the workflow and `render` will be called returning the `DemoScreen`. The container will use the view registry to map the `DemoScreen` to a `DemoScreenViewController` and add it to the view hierarchy to display.

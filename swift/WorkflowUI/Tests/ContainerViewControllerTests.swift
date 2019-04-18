@@ -99,7 +99,7 @@ fileprivate struct MockWorkflow: Workflow {
 
     }
 
-    func compose(state: State, context: WorkflowContext<MockWorkflow>) -> TestScreen {
+    func render(state: State, context: RenderContext<MockWorkflow>) -> TestScreen {
 
         context.subscribe(signal: subscription.map { output in
             return AnyWorkflowAction { state in

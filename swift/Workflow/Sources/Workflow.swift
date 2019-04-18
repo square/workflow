@@ -8,8 +8,8 @@ import Result
 /// ***
 ///
 /// A workflow node comes into existence after its parent produces
-/// an instance of that workflow and uses it during a compose pass (see the
-/// `compose` method for more details).
+/// an instance of that workflow and uses it during a render pass (see the
+/// `render` method for more details).
 ///
 /// - If this is the first time the parent has rendered a child of
 ///   this type, a new workflow node is created. The workflow
@@ -22,16 +22,16 @@ import Result
 ///   to allow the workflow to respond to the change.
 ///
 /// ***
-/// **Compose**
+/// **Render**
 /// ***
 /// After a workflow node has been created, or any time its state changes,
-/// a compose pass occurs. The compose pass takes the workflow that was passed
+/// a render pass occurs. The render pass takes the workflow that was passed
 /// down from the parent along with the current state and generates a value
 /// of type `Rendering`. In a common case, a workflpw might render to a screen
 /// model for display.
 ///
 /// ```
-/// func compose(state: State, context: WorkflowContext<Self>) -> MyScreenModel {
+/// func render(state: State, context: RenderContext<Self>) -> MyScreenModel {
 ///     return MyScreenModel()
 /// }
 /// ```
@@ -44,7 +44,7 @@ public protocol Workflow: AnyWorkflowConvertible {
     /// `Output` defines the type that can be emitted as output events.
     associatedtype Output = Never
 
-    /// `Rendering` is the type that is produced by the `compose` method: it
+    /// `Rendering` is the type that is produced by the `render` method: it
     /// is commonly a view / screen model.
     associatedtype Rendering
 
@@ -59,7 +59,7 @@ public protocol Workflow: AnyWorkflowConvertible {
     /// - Parameter state: The current state.
     func workflowDidChange(from previousWorkflow: Self, state: inout State)
 
-    /// Called to "compose" the current state into `Rendering`. A workflow's `Rendering` type is commonly a view or
+    /// Called to "render" the current state into `Rendering`. A workflow's `Rendering` type is commonly a view or
     /// screen model.
     ///
     /// - Parameter state: The current state.
@@ -67,7 +67,7 @@ public protocol Workflow: AnyWorkflowConvertible {
     ///                      workflow, instantiate it based on the current state. The newly instantiated workflow is
     ///                      then used to invoke `context.render(_ workflow:)`, which returns the child's `Rendering`
     ///                      type after creating or updating the nested workflow.
-    func compose(state: State, context: WorkflowContext<Self>) -> Rendering
+    func render(state: State, context: RenderContext<Self>) -> Rendering
 
 }
 

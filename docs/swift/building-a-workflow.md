@@ -28,7 +28,7 @@ extension DemoWorkflow {
 
     }
     
-    func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> String {
+    func render(state: State, context: RenderContext<DemoWorkflow>) -> String {
         return "Hello, \(name)"
     }
 
@@ -39,23 +39,23 @@ A type conforming to `Workflow` represents a single node in the workflow tree. I
 
 Configuration parameters, strings, network services… If your workflow needs access to a value or object that it cannot create itself, they should be passed into the workflow's initializer.
 
-Every workflow defines its own `State` type to contain any data that should persist through subsequent compose passes.
+Every workflow defines its own `State` type to contain any data that should persist through subsequent render passes.
 
-## Compose
+## Render
 
-Workflows are only useful when they render a value for use by their parent (or, if they are the root workflow, for display). This type is very commonly a view model, or `Screen`. The `compose(state:context:)` method has a couple of parameters, so we’ll work through them one by one.
+Workflows are only useful when they render a value for use by their parent (or, if they are the root workflow, for display). This type is very commonly a view model, or `Screen`. The `render(state:context:)` method has a couple of parameters, so we’ll work through them one by one.
 
 ```swift
-func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> Rendering
+func render(state: State, context: RenderContext<DemoWorkflow>) -> Rendering
 ```
 
 ### `state`
 
-Contains a value of type `State` to provide access to the current state. Any time the state of workflow changes, `compose` is called again to take into account the change in state.
+Contains a value of type `State` to provide access to the current state. Any time the state of workflow changes, `render` is called again to take into account the change in state.
 
 ### `context`
 
-The workflow context:
+The render context:
 - provides a way for a workflow to defer to nested (child) workflows to generate some or all of its rendered output. We’ll walk through that process later on when we cover composition.
 - allows a workflow to request the execution of asynchronous tasks (`Worker`s)
 - generates event handlers for use in constructing view models.
@@ -63,7 +63,7 @@ The workflow context:
 In order for us to see the anything in our app, we'll need to return a `Screen` that can be turned into a view controller:
 
 ```swift
-    func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> DemoScreen {
+    func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
         return DemoScreen(title: "A nice title")
     }
 ```
@@ -102,12 +102,12 @@ There are two things that the `apply(toState:)` method is responsible for:
 - Transitioning state
 - (Optionally) emitting an output event
 
-Note that the `compose(state:context:)` method is called after every state change, so you can be sure that any state changes will be reflected.
+Note that the `render(state:context:)` method is called after every state change, so you can be sure that any state changes will be reflected.
 
 Since we have a way of expressing an event from our UI, we can now use the callback on our view model to send that event back to the workflow:
 
 ```swift
-func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> DemoScreen {
+func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
     // Create a sink of our Action type so we can send actions back to the workflow.
     let sink = context.makeSink(of: Action.self)
 
@@ -170,10 +170,10 @@ struct AsyncWorker: Worker {
 
 Because a Worker is a declarative representation of work, it also needs to define an `isEquivalent` to guarantee that we are not running more than one at the same time. For the simple example above, it is always considered equivalent as we want only one of this type of worker running at a time.
 
-In order to start asynchronous work, the workflow requests it in the compose method, looking something like:
+In order to start asynchronous work, the workflow requests it in the render method, looking something like:
 
 ```swift
-    public func compose(state: State, context: WorkflowContext<DemoWorkflow>) -> DemoScreen {
+    public func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
 
         context.awaitResult(for: AsyncWorker()) { output -> Action in
             switch output {
@@ -204,17 +204,17 @@ Workflows can define an output type, which may then be returned by Actions.
 
 Composition is the primary tool that we can use to manage complexity in a growing application. Workflows should always be kept small enough to be understandable – less than 150 lines is a good target. By composing together multiple workflows, complex problems can be broken down into individual pieces that can be quickly understood by other developers (including future you).
 
-The context provided to the `compose(state:context:)` method defines the API through which composition is made possible.
+The context provided to the `render(state:context:)` method defines the API through which composition is made possible.
 
-### The Workflow Context
+### The Render Context
 
-The useful role of children is ultimately to provide rendered values (typically screen models) via their `compose(state:context:)` implementation. To obtain that value from a child workflow, the `rendered(with context:key:)` method is invoked on the child workflow.
+The useful role of children is ultimately to provide rendered values (typically screen models) via their `render(state:context:)` implementation. To obtain that value from a child workflow, the `rendered(with context:key:)` method is invoked on the child workflow.
 
 When a workflow is rendered with the context, the context will do the following:
 - Check if the child workflow is new or existing:
   - If a workflow with the same type was used during the last render pass, the existing child workflow will be updated with the new workflow.
   - Otherwise, a new child workflow node will be initialized.
-- The child workflow's `compose(state:context:)` method is called.
+- The child workflow's `render(state:context:)` method is called.
 - The rendered value is returned.
 
 In practice, this looks something like this:
@@ -222,7 +222,7 @@ In practice, this looks something like this:
 ```swift
 struct ParentWorkflow: Workflow {
 
-    func compose(state: State, context: WorkflowContext<ParentWorkflow>) -> String {
+    func render(state: State, context: RenderContext<ParentWorkflow>) -> String {
         let childWorkflow = ChildWorkflow(text: "Hello, World")
         return childWorkflow.rendered(with: context)
     }
@@ -235,7 +235,7 @@ struct ChildWorkflow: Workflow {
 
     // ...
 
-    func compose(state: State, context: WorkflowContext<ChildWorkflow>) -> String {
+    func render(state: State, context: RenderContext<ChildWorkflow>) -> String {
         return String(text.reversed())
     }
 }

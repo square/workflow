@@ -44,7 +44,7 @@ extension PassthroughWorkflow {
 
     }
 
-    func compose(state: State, context: WorkflowContext<PassthroughWorkflow<Rendering>>) -> Rendering {
+    func render(state: State, context: RenderContext<PassthroughWorkflow<Rendering>>) -> Rendering {
         return child.rendered(with: context)
     }
 
@@ -70,7 +70,7 @@ extension SimpleWorkflow {
 
     }
 
-    func compose(state: State, context: WorkflowContext<SimpleWorkflow>) -> String {
+    func render(state: State, context: RenderContext<SimpleWorkflow>) -> String {
         return String(string.reversed())
     }
 

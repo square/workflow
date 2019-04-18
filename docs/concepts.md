@@ -30,31 +30,31 @@ public protocol Workflow: AnyWorkflowConvertible {
 
     func workflowDidChange(from previousWorkflow: Self, state: inout State)
 
-    func compose(state: State, context: WorkflowContext<Self>) -> Rendering
+    func render(state: State, context: RenderContext<Self>) -> Rendering
 
 }
 
 ```
 
 ```kotlin
-interface Workflow<in I : Any, S : Any, out O : Any, out R : Any> {
+interface Workflow<in InputT : Any, StateT : Any, out OutputT : Any, out RenderingT : Any> {
 
-  fun initialState(input: I): S
+  fun initialState(input: InputT): StateT
 
   fun onInputChanged(
-    old: I,
-    new: I,
-    state: S
-  ): S = state
+    old: InputT,
+    new: InputT,
+    state: StateT
+  ): StateT = state
 
-  fun compose(
-    input: I,
-    state: S,
-    context: WorkflowContext<S, O>
-  ): R
+  fun render(
+    input: InputT,
+    state: StateT,
+    context: RenderContext<StateT, OutputT>
+  ): RenderingT
 
-  fun snapshotState(state: S): Snapshot
-  fun restoreState(snapshot: Snapshot): S
+  fun snapshotState(state: StateT): Snapshot
+  fun restoreState(snapshot: Snapshot): StateT
 
 }
 
@@ -91,35 +91,35 @@ When the workflow is first started, it is queried for an initial state value. Fr
 
 ### Workflows produce an external representation of their state via `Rendering`
 
-Immediately after starting up, or after a state transition occurs, a workflow will have its `compose(state:context:)` method called. This method is responsible for creating and returning a value of type `Rendering`. You can think of `Rendering` as the "external state" of the workflow. While a workflow's internal state may contain more detailed or comprehensive state, the `Rendering` (external state) is a type that is useful outside of the workflow.
+Immediately after starting up, or after a state transition occurs, a workflow will have its `render(state:context:)` method called. This method is responsible for creating and returning a value of type `Rendering`. You can think of `Rendering` as the "external state" of the workflow. While a workflow's internal state may contain more detailed or comprehensive state, the `Rendering` (external state) is a type that is useful outside of the workflow.
 
 When building an interactive application, the `Rendering` type is commonly (but not always) a view model that will drive the UI layer.
 
 
 ### Workflows form a hierarchy (they may have children)
 
-As they produce a `Rendering` value, it is common for workflows to delegate some portion of that work to a _child workflow_. This is also done via the `WorkflowContext` that is passed into the `compose` method. In order to delegate to a child, the parent workflow instantiates the child within the `compose` method. The parent then calls `compose` on the context, with the child workflow as the single argument. The infrastructure will spin up the child workflow (including initializing its initial state) if this is the first time this child has been used, or, if the child was also used on the previous `compose` pass, the existing child will be updated. Either way, `compose` will ultimately be called on the child (by the Workflow infrastructure), and the resulting `Child.Rendering` value will be returned to the parent.
+As they produce a `Rendering` value, it is common for workflows to delegate some portion of that work to a _child workflow_. This is also done via the `RenderContext` that is passed into the `render` method. In order to delegate to a child, the parent workflow instantiates the child within the `render` method. The parent then calls `render` on the context, with the child workflow as the single argument. The infrastructure will spin up the child workflow (including initializing its initial state) if this is the first time this child has been used, or, if the child was also used on the previous `render` pass, the existing child will be updated. Either way, `render` will ultimately be called on the child (by the Workflow infrastructure), and the resulting `Child.Rendering` value will be returned to the parent.
 
 This allows a parent to return complex `Rendering` types (such as a view model representing the entire UI state of an application) without needing to model all of that complexity within a single workflow.
 
 
 ### Workflows can respond to UI events
 
-The `WorkflowContext` that is passed into `compose` as the second parameter provides some useful tools to assist in creating the `Rendering` value. 
+The `RenderContext` that is passed into `render` as the second parameter provides some useful tools to assist in creating the `Rendering` value.
 
-If a workflow is producing a view model, it is common to need an event handler to respond to UI events. The `WorkflowContext` has API to create an event handler that, when called, will advance the workflow by dispatching an action back to the workflow.
+If a workflow is producing a view model, it is common to need an event handler to respond to UI events. The `RenderContext` has API to create an event handler that, when called, will advance the workflow by dispatching an action back to the workflow.
 
 
 ### Workflows can subscribe to external event sources
 
-If a workflow needs to respond to some external event source (e.g. push notifications), the workflow can ask the context to listen to those events from within the `compose` method.
+If a workflow needs to respond to some external event source (e.g. push notifications), the workflow can ask the context to listen to those events from within the `render` method.
 
 
 ### Workflows can perform asynchronous tasks (Workers)
 
 `Workers` are very similar in concept to child workflows. Unlike child workflows, however, workers do not have a `Rendering` type; they only exist to perform a single asynchronous task before sending an output event back up the tree to their parent.
 
-A workflow can ask the infrastructure to await the result of a worker by handing that worker to the context within a call to the `compose` method.
+A workflow can ask the infrastructure to await the result of a worker by handing that worker to the context within a call to the `render` method.
 
 ### Workflows are advanced by `Action`s
 

@@ -9,7 +9,7 @@
 |---|---|---|---|
 | **Modularity** | `Component` | TK | `Workflow` is analogous to React's `Component` |
 | **State** | Each `Component` has a `state` property that is read directly and updated via a `setState` method. | State is called `Model` in Elm. | `Workflow`s have an associated state type. The state can only be updated when the input changes, or with a `WorkflowAction`. |
-| **Views** | `Component`s have a `render` method that returns a tree of elements. | Elm applications have a `view` function that returns a tree of elements. | Since workflows are not tied to any particular UI view layer, they can have an arbitrary rendering type. The `compose()` method returns this type. |
+| **Views** | `Component`s have a `render` method that returns a tree of elements. | Elm applications have a `view` function that returns a tree of elements. | Since workflows are not tied to any particular UI view layer, they can have an arbitrary rendering type. The `render()` method returns this type. |
 | **Dependencies** | React allows parent components to pass "props" down to their children. | TK | In Swift, `Workflow`s are often structs that need to be initialized with their dependencies and configuration data from their parent. In Kotlin, they have a separate type parameter (`InputT`) that is always passed down from the parent. `Workflow` instances can also inject dependencies, and play nicely with dependency injection frameworks.
 | **Composability** | TK | TK | TK |
 | **Event Handling** | TK | TK | TK |

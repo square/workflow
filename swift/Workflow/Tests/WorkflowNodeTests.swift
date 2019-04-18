@@ -190,7 +190,7 @@ final class WorkflowNodeTests: XCTestCase {
 
             }
 
-            func compose(state: WF.State, context: WorkflowContext<WF>) -> Void {
+            func render(state: WF.State, context: RenderContext<WF>) -> Void {
                 context.awaitResult(for: TestWorker()) { output in
                     return AnyWorkflowAction(sendingOutput: output)
                 }
@@ -285,7 +285,7 @@ extension CompositeWorkflow {
 
 
 
-    func compose(state: State, context: WorkflowContext<CompositeWorkflow<A, B>>) -> Rendering {
+    func render(state: State, context: RenderContext<CompositeWorkflow<A, B>>) -> Rendering {
 
 
         return Rendering(
@@ -333,7 +333,7 @@ fileprivate struct SimpleWorkflow: Workflow {
 
     }
 
-    func compose(state: State, context: WorkflowContext<SimpleWorkflow>) -> String {
+    func render(state: State, context: RenderContext<SimpleWorkflow>) -> String {
         return String(string.reversed())
     }
 
@@ -380,7 +380,7 @@ extension EventEmittingWorkflow {
 
     }
 
-    func compose(state: State, context: WorkflowContext<EventEmittingWorkflow>) -> Rendering {
+    func render(state: State, context: RenderContext<EventEmittingWorkflow>) -> Rendering {
 
 
         let sink = context.makeSink(of: Event.self)
@@ -410,7 +410,7 @@ fileprivate struct StateTransitioningWorkflow: Workflow {
         
     }
 
-    func compose(state: State, context: WorkflowContext<StateTransitioningWorkflow>) -> Rendering {
+    func render(state: State, context: RenderContext<StateTransitioningWorkflow>) -> Rendering {
 
         let sink = context.makeSink(of: Event.self)
 

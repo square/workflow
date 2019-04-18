@@ -58,7 +58,7 @@ final class WorkflowNode<WorkflowType: Workflow> {
     func render() -> WorkflowType.Rendering {
         return subtreeManager.render { context in
             return workflow
-                .compose(
+                .render(
                     state: state,
                     context: context)
         }

@@ -30,14 +30,14 @@ extension WorkflowNode {
         }
 
         /// Performs an update pass using the given closure.
-        func render<Rendering>(_ actions: (WorkflowContext<WorkflowType>) -> Rendering) -> Rendering {
+        func render<Rendering>(_ actions: (RenderContext<WorkflowType>) -> Rendering) -> Rendering {
 
             /// Create a workflow context containing the existing children
             let context = Context(
                 originalChildWorkflows: childWorkflows,
                 originalChildWorkers: childWorkers)
 
-            let wrapped = WorkflowContext.make(implementation: context)
+            let wrapped = RenderContext.make(implementation: context)
 
             /// Pass the context into the closure to allow a render to take place
             let rendering = actions(wrapped)
@@ -108,7 +108,7 @@ extension WorkflowNode.SubtreeManager {
 extension WorkflowNode.SubtreeManager {
 
     /// The workflow context implementation used by the subtree manager.
-    fileprivate final class Context: WorkflowContextType {
+    fileprivate final class Context: RenderContextType {
         
         private let originalChildWorkflows: [ChildKey:AnyChildWorkflow]
         private (set) internal var usedChildWorkflows: [ChildKey:AnyChildWorkflow]
