@@ -14,11 +14,11 @@ struct DemoScreen: Screen {
 }
 
 
-class DemoScreenViewController: ScreenViewController<SimpleScreen> {
+class DemoScreenViewController: ScreenViewController<DemoScreen> {
 
     private let button: UIButton
 
-    required init(screen: SimpleScreen, viewRegistry: ViewRegistry) {
+    required init(screen: DemoScreen, viewRegistry: ViewRegistry) {
         button = UIButton()
         super.init(screen: screen, viewRegistry: viewRegistry)
 
@@ -39,12 +39,12 @@ class DemoScreenViewController: ScreenViewController<SimpleScreen> {
         button.frame = view.bounds
     }
 
-    override func screenDidChange(from previousScreen: SimpleScreen) {
+    override func screenDidChange(from previousScreen: DemoScreen) {
         super.screenDidChange(from: previousScreen)
         update(screen: screen)
     }
 
-    private func update(screen: SimpleScreen) {
+    private func update(screen: DemoScreen) {
         button.setTitle(screen.title, for: .normal)
     }
 
@@ -54,3 +54,10 @@ class DemoScreenViewController: ScreenViewController<SimpleScreen> {
 
 }
 ```
+
+### Lifecycle
+
+1) When the view controller is first created, it is given the initial screen value. In the example, we create the button and set the title for it via the `update` method.
+2) The view loads as normal, adding the button the hierarchy and setting up the `target:action` for the button being pressed.
+3) The button is tapped. When the callback is called, we call the `onTap` closure passed into the screen. The workflow will handle this event, update its state, and a new screen will be rendered.
+4) The updated screen is passed to the view controller via the `screenDidChange(from previousScreen:)` method. Again, the view controller updates the title of the button based on what was passed in the screen.
