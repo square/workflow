@@ -21,6 +21,7 @@ import com.squareup.workflow.WorkflowHost.Factory
 import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.internal.WorkflowNode
 import com.squareup.workflow.internal.id
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -35,6 +36,8 @@ import org.jetbrains.annotations.TestOnly
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.coroutineContext
+
+private val DEFAULT_WORKFLOW_COROUTINE_NAME = CoroutineName("WorkflowHost")
 
 /**
  * Provides a stream of [updates][Update] from a tree of [Workflow]s.
@@ -86,7 +89,8 @@ interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any>
       context: CoroutineContext = EmptyCoroutineContext
     ): WorkflowHost<InputT, OutputT, RenderingT> =
       object : WorkflowHost<InputT, OutputT, RenderingT> {
-        private val scope = CoroutineScope(context)
+        // Put the coroutine name first so the passed-in contexts can override it.
+        private val scope = CoroutineScope(DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext + context)
 
         override val updates: ReceiveChannel<Update<OutputT, RenderingT>> =
           scope.produce(capacity = 0) {
@@ -121,7 +125,10 @@ interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any>
     ): WorkflowHost<InputT, OutputT, RenderingT> =
       object : WorkflowHost<InputT, OutputT, RenderingT> {
         override val updates: ReceiveChannel<Update<OutputT, RenderingT>> =
-          GlobalScope.produce(capacity = 0, context = baseContext) {
+          GlobalScope.produce(
+              capacity = 0,
+              context = DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext
+          ) {
             runWorkflowTree(
                 workflow = workflow.asStatefulWorkflow(),
                 inputs = channelOf(input),
