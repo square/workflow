@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.14.1
+
+_2019-4-18_
+
+ * Fix for WorkflowHost.Factory not using baseContext. ([#306](https://github.com/square/workflow/pull/306))
+
 ## Version 0.14.0
 
 _2019-4-16_
