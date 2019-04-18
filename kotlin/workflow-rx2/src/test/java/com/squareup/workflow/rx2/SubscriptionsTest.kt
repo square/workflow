@@ -169,8 +169,6 @@ class SubscriptionsTest {
 
   @Test fun `observable reports emissions`() {
     workflow.testFromStart(true) { host ->
-      // Get the next rendering to unblock the pipeline so the subscription can actually occur.
-      host.awaitNextRendering()
       assertFalse(host.hasOutput)
 
       subject.onNext("hello")
@@ -185,8 +183,6 @@ class SubscriptionsTest {
 
   @Test fun `observable reports close`() {
     workflow.testFromStart(true) { host ->
-      // Get the next rendering to unblock the pipeline so the subscription can actually occur.
-      host.awaitNextRendering()
       assertFalse(host.hasOutput)
 
       subject.onComplete()
@@ -202,8 +198,6 @@ class SubscriptionsTest {
 
   @Test fun `observable reports close after emission`() {
     workflow.testFromStart(true) { host ->
-      // Get the next rendering to unblock the pipeline so the subscription can actually occur.
-      host.awaitNextRendering()
       assertFalse(host.hasOutput)
 
       subject.onNext("foo")

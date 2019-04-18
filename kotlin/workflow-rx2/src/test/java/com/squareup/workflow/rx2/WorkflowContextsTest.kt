@@ -52,14 +52,12 @@ class WorkflowContextsTest {
     assertFalse(disposed.isCompleted)
 
     workflow.testFromStart { host ->
-      host.awaitNextRendering()
       runBlocking { subscribed.await() }
       assertFalse(disposed.isCompleted)
       assertFalse(host.hasOutput)
 
       singleSubject.onSuccess("done!")
 
-      host.awaitNextRendering()
       assertTrue(host.hasOutput)
       assertEquals("done!", host.awaitNextOutput())
       assertFalse(disposed.isCompleted)
@@ -99,14 +97,12 @@ class WorkflowContextsTest {
     assertFalse(disposed.isCompleted)
 
     workflow.testFromStart { host ->
-      host.awaitNextRendering()
       runBlocking { subscribed.await() }
       assertFalse(disposed.isCompleted)
       assertFalse(host.hasOutput)
 
       doClose()
 
-      host.awaitNextRendering()
       runBlocking { disposed.await() }
     }
   }
