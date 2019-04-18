@@ -21,7 +21,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +58,7 @@ class SubtreeManagerTest {
     override fun render(
       input: String,
       state: String,
-      context: WorkflowContext<String, String>
+      context: RenderContext<String, String>
     ): Rendering = Rendering(input, state, context.onEvent {
       emitOutput("workflow output:$it")
     })

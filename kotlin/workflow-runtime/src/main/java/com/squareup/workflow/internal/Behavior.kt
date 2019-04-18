@@ -26,9 +26,9 @@ import kotlin.reflect.KType
 /**
  * An immutable description of the things a [Workflow] would like to do as the result of calling its
  * `render` method. A `Behavior` is built up by calling methods on a
- * [WorkflowContext][com.squareup.workflow.WorkflowContext] ([RealWorkflowContext] in particular).
+ * [RenderContext][com.squareup.workflow.RenderContext] ([RealRenderContext] in particular).
  *
- * @see RealWorkflowContext
+ * @see RealRenderContext
  */
 internal data class Behavior<StateT : Any, out OutputT : Any>(
   val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,

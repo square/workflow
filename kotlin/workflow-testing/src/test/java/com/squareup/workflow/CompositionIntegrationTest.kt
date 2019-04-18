@@ -120,7 +120,7 @@ class CompositionIntegrationTest {
       override fun render(
         input: Unit,
         state: Boolean,
-        context: WorkflowContext<Boolean, Nothing>
+        context: RenderContext<Boolean, Nothing>
       ): () -> Unit {
         if (state) {
           context.renderChild(child1, key = "child1")
@@ -167,7 +167,7 @@ class CompositionIntegrationTest {
       override fun render(
         input: Unit,
         state: Boolean,
-        context: WorkflowContext<Boolean, Nothing>
+        context: RenderContext<Boolean, Nothing>
       ): () -> Unit {
         if (state) {
           context.renderChild(child)
@@ -209,7 +209,7 @@ class CompositionIntegrationTest {
       override fun render(
         input: Unit,
         state: Unit,
-        context: WorkflowContext<Unit, Nothing>
+        context: RenderContext<Unit, Nothing>
       ) {
       }
 
@@ -228,7 +228,7 @@ class CompositionIntegrationTest {
       override fun render(
         input: Unit,
         state: Boolean,
-        context: WorkflowContext<Boolean, Nothing>
+        context: RenderContext<Boolean, Nothing>
       ): (Boolean) -> Unit {
         if (state) {
           context.renderChild(child)

@@ -16,15 +16,15 @@
 package com.squareup.workflow
 
 /**
- * A composable, optionally-stateful object that can [handle events][WorkflowContext.onEvent],
- * [delegate to children][WorkflowContext.renderChild], [subscribe][onReceive] to arbitrary streams from
+ * A composable, optionally-stateful object that can [handle events][RenderContext.onEvent],
+ * [delegate to children][RenderContext.renderChild], [subscribe][onReceive] to arbitrary streams from
  * the outside world.
  *
  * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
  * [rendering][RenderingT]. To that end, a workflow may keep track of internal
  * [state][StatefulWorkflow], recursively ask other workflows to render themselves, subscribe to
  * data streams from the outside world, and handle events both from its
- * [renderings][WorkflowContext.onEvent] and from workflows it's delegated to (its "children"). A
+ * [renderings][RenderContext.onEvent] and from workflows it's delegated to (its "children"). A
  * `Workflow` may also emit [output events][OutputT] up to its parent `Workflow`.
  *
  * Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows
@@ -53,10 +53,10 @@ package com.squareup.workflow
  *
  * ## Interacting with Events and Other Workflows
  *
- * All workflows are passed a [WorkflowContext] in their render methods. This context allows the
+ * All workflows are passed a [RenderContext] in their render methods. This context allows the
  * workflow to interact with the outside world by doing things like listening for events,
  * subscribing to streams of data, rendering child workflows, and performing cleanup when the
- * workflow is about to be torn down by its parent. See the documentation on [WorkflowContext] for
+ * workflow is about to be torn down by its parent. See the documentation on [RenderContext] for
  * more information about what it can do.
  *
  * @param InputT Typically a data class that is used to pass configuration information or bits of
@@ -78,7 +78,7 @@ interface Workflow<in InputT : Any, out OutputT : Any, out RenderingT : Any> {
 
   /**
    * Provides a [StatefulWorkflow] view of this workflow. Necessary because [StatefulWorkflow] is
-   * the common API required for [WorkflowContext.renderChild] to do its work.
+   * the common API required for [RenderContext.renderChild] to do its work.
    */
   fun asStatefulWorkflow(): StatefulWorkflow<InputT, *, OutputT, RenderingT>
 

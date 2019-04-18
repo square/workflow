@@ -19,7 +19,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.testing.testFromStart
 import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Closed
@@ -67,7 +67,7 @@ class SubscriptionsTest {
     override fun render(
       input: Boolean,
       state: Boolean,
-      context: WorkflowContext<Boolean, ChannelUpdate<String>>
+      context: RenderContext<Boolean, ChannelUpdate<String>>
     ): (Boolean) -> Unit {
       if (state) {
         context.onNext(observable) { update -> emitOutput(update) }

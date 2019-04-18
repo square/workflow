@@ -32,7 +32,7 @@ import kotlin.coroutines.CoroutineContext
  */
 internal class SubtreeManager<StateT : Any, OutputT : Any>(
   private val contextForChildren: CoroutineContext
-) : RealWorkflowContext.Renderer<StateT, OutputT> {
+) : RealRenderContext.Renderer<StateT, OutputT> {
 
   /**
    * When this manager's host is restored from a snapshot, its children snapshots are extracted into

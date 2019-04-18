@@ -49,8 +49,8 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
     override fun render(
       input: InputT,
       state: Unit,
-      context: WorkflowContext<Unit, OutputT>
-    ): RenderingT = render(input, context as WorkflowContext<Nothing, OutputT>)
+      context: RenderContext<Unit, OutputT>
+    ): RenderingT = render(input, context as RenderContext<Nothing, OutputT>)
 
     override fun snapshotState(state: Unit) = Snapshot.EMPTY
   }
@@ -63,7 +63,7 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
    *    - Emits an output.
    *
    * **Never call this method directly.** To get the rendering from a child workflow, pass the child
-   * and any required input to [WorkflowContext.renderChild].
+   * and any required input to [RenderContext.renderChild].
    *
    * This method *should not* have any side effects, and in particular should not do anything that
    * blocks the current thread. It may be called multiple times for the same state. It must do all its
@@ -71,7 +71,7 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
    */
   abstract fun render(
     input: InputT,
-    context: WorkflowContext<Nothing, OutputT>
+    context: RenderContext<Nothing, OutputT>
   ): RenderingT
 
   /**
@@ -95,13 +95,13 @@ abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT : Any> 
 fun <InputT : Any, OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
   render: (
     input: InputT,
-    context: WorkflowContext<Nothing, OutputT>
+    context: RenderContext<Nothing, OutputT>
   ) -> RenderingT
 ): Workflow<InputT, OutputT, RenderingT> =
   object : StatelessWorkflow<InputT, OutputT, RenderingT>() {
     override fun render(
       input: InputT,
-      context: WorkflowContext<Nothing, OutputT>
+      context: RenderContext<Nothing, OutputT>
     ): RenderingT = render.invoke(input, context)
   }
 
@@ -112,9 +112,9 @@ fun <InputT : Any, OutputT : Any, RenderingT : Any> Workflow.Companion.stateless
  * render child workflows that do have their own internal state.
  */
 fun <OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
-  render: (context: WorkflowContext<Nothing, OutputT>) -> RenderingT
+  render: (context: RenderContext<Nothing, OutputT>) -> RenderingT
 ): Workflow<Unit, OutputT, RenderingT> =
-  Workflow.stateless { _: Unit, context: WorkflowContext<Nothing, OutputT> ->
+  Workflow.stateless { _: Unit, context: RenderContext<Nothing, OutputT> ->
     render(context)
   }
 
@@ -125,7 +125,7 @@ fun <OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
 fun <OutputT : Any, RenderingT : Any> Workflow.Companion.rendering(
   rendering: RenderingT
 ): Workflow<Unit, OutputT, RenderingT> =
-  stateless { _: Unit, _: WorkflowContext<Nothing, OutputT> -> rendering }
+  stateless { _: Unit, _: RenderContext<Nothing, OutputT> -> rendering }
 
 /**
  * Uses the given [function][transform] to transform a [Workflow] that

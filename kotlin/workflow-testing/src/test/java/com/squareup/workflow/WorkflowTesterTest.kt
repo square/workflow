@@ -93,7 +93,7 @@ class WorkflowTesterTest {
       override fun render(
         input: Unit,
         state: Unit,
-        context: WorkflowContext<Unit, Nothing>
+        context: RenderContext<Unit, Nothing>
       ) {
         fail()
       }
@@ -123,7 +123,7 @@ class WorkflowTesterTest {
       override fun render(
         input: Unit,
         state: Unit,
-        context: WorkflowContext<Unit, Nothing>
+        context: RenderContext<Unit, Nothing>
       ) {
         // Noop
       }
@@ -154,7 +154,7 @@ class WorkflowTesterTest {
       override fun render(
         input: Unit,
         state: Unit,
-        context: WorkflowContext<Unit, Nothing>
+        context: RenderContext<Unit, Nothing>
       ) {
       }
 

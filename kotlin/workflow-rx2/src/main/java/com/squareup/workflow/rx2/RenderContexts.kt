@@ -18,7 +18,7 @@
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.onSuspending
 import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.KTypes
@@ -40,7 +40,7 @@ import kotlin.reflect.KType
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * type.
  */
-inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuccess(
+inline fun <reified T : Any, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onSuccess(
   single: Single<out T>,
   key: String = "",
   noinline handler: (T) -> WorkflowAction<StateT, OutputT>
@@ -65,7 +65,7 @@ inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * [type].
  */
-fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuccess(
+fun <T : Any, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onSuccess(
   single: Single<out T>,
   type: KType,
   key: String = "",
@@ -84,7 +84,7 @@ fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSu
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * type.
  */
-inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onNext(
+inline fun <reified T : Any, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onNext(
   observable: Observable<out T>,
   key: String = "",
   noinline handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
@@ -109,7 +109,7 @@ inline fun <reified T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * [type].
  */
-fun <T : Any, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onNext(
+fun <T : Any, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onNext(
   observable: Observable<out T>,
   type: KType,
   key: String = "",
