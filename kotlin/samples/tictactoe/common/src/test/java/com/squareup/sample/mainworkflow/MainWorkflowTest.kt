@@ -41,9 +41,6 @@ class MainWorkflowTest {
 
     MainWorkflow(authWorkflow, runGameWorkflow()).testFromStart { tester ->
       tester.withNextRendering { screen ->
-        assertThat(screen.panels).containsOnly(DEFAULT_AUTH)
-      }
-      tester.withNextRendering { screen ->
         assertThat(screen.panels).isEmpty()
         assertThat(screen.body).isEqualTo(DEFAULT_RUN_GAME)
       }
