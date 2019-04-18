@@ -48,7 +48,7 @@ import kotlin.reflect.KType
  *
  * See [onTeardown].
  */
-interface WorkflowContext<StateT : Any, in OutputT : Any> {
+interface RenderContext<StateT : Any, in OutputT : Any> {
 
   /**
    * Given a function that takes an [event][EventT] and can mutate the state or emit an output,
@@ -164,9 +164,9 @@ interface WorkflowContext<StateT : Any, in OutputT : Any> {
  * type.
  * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
  *
- * @see WorkflowContext.onReceive
+ * @see RenderContext.onReceive
  */
-inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, OutputT>.onReceive(
+inline fun <StateT : Any, OutputT : Any, reified T> RenderContext<StateT, OutputT>.onReceive(
   noinline channelProvider: CoroutineScope.() -> ReceiveChannel<T>,
   key: String = "",
   noinline handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
@@ -178,10 +178,10 @@ inline fun <StateT : Any, OutputT : Any, reified T> WorkflowContext<StateT, Outp
 )
 
 /**
- * Convenience alias of [WorkflowContext.renderChild] for workflows that don't take input.
+ * Convenience alias of [RenderContext.renderChild] for workflows that don't take input.
  */
 fun <StateT : Any, OutputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
-    WorkflowContext<StateT, OutputT>.renderChild(
+    RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
@@ -192,11 +192,11 @@ fun <StateT : Any, OutputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
 // @formatter:on
 
 /**
- * Convenience alias of [WorkflowContext.renderChild] for workflows that don't take input or emit
+ * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
  * output.
  */
 fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
-    WorkflowContext<StateT, OutputT>.renderChild(
+    RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
@@ -207,11 +207,11 @@ fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
 // @formatter:on
 
 /**
- * Convenience alias of [WorkflowContext.renderChild] for workflows that don't take input or emit
+ * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
  * output.
  */
 fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
-    WorkflowContext<StateT, OutputT>.renderChild(
+    RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
@@ -228,7 +228,7 @@ fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * type.
  */
-inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
+inline fun <reified T, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onDeferred(
   deferred: Deferred<T>,
   key: String = "",
   noinline handler: (T) -> WorkflowAction<StateT, OutputT>
@@ -249,7 +249,7 @@ inline fun <reified T, StateT : Any, OutputT : Any> WorkflowContext<StateT, Outp
  * @param key An optional string key that is used to distinguish between subscriptions of the same
  * [type].
  */
-fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred(
+fun <T, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onDeferred(
   deferred: Deferred<T>,
   type: KType,
   key: String = "",
@@ -257,7 +257,7 @@ fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred
 ) = onSuspending({ deferred.await() }, type, key, handler)
 
 /**
- * This function is provided as a helper for writing [WorkflowContext] extension functions, it
+ * This function is provided as a helper for writing [RenderContext] extension functions, it
  * should not be used by general application code.
  *
  * The suspending function will be executed in the current stack frame ([UNDISPATCHED]). When this
@@ -270,7 +270,7 @@ fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onDeferred
  * @param function A suspending function that is invoked in a coroutine that will be a child of this
  * state machine. The function will be cancelled if the state machine is cancelled.
  */
-fun <T, StateT : Any, OutputT : Any> WorkflowContext<StateT, OutputT>.onSuspending(
+fun <T, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onSuspending(
   function: suspend () -> T,
   type: KType,
   key: String = "",

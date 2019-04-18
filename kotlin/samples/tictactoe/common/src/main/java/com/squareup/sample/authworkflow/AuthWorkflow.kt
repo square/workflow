@@ -30,7 +30,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.rx2.onSuccess
 import com.squareup.workflow.ui.BackStackScreen
 import kotlinx.coroutines.CoroutineScope
@@ -63,7 +63,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
   override fun render(
     input: Unit,
     state: AuthState,
-    context: WorkflowContext<AuthState, String>
+    context: RenderContext<AuthState, String>
   ): BackStackScreen<*> {
     return when (state) {
       is LoginPrompt -> {

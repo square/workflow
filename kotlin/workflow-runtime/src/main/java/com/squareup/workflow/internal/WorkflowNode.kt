@@ -98,7 +98,7 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
 
   /**
    * Walk the tree of workflows, rendering each one and using
-   * [WorkflowContext][com.squareup.workflow.WorkflowContext] to give its children a chance to
+   * [RenderContext][com.squareup.workflow.RenderContext] to give its children a chance to
    * render themselves and aggregate those child renderings.
    */
   @Suppress("UNCHECKED_CAST")
@@ -188,7 +188,7 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
   ): RenderingT {
     updateInputAndState(workflow, input)
 
-    val context = RealWorkflowContext(subtreeManager)
+    val context = RealRenderContext(subtreeManager)
     val rendering = workflow.render(input, state, context)
 
     behavior = context.buildBehavior()

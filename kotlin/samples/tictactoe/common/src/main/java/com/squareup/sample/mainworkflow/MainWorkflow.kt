@@ -27,7 +27,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.AlertContainerScreen
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +58,7 @@ class MainWorkflow(
   override fun render(
     input: Unit,
     state: MainState,
-    context: WorkflowContext<MainState, Unit>
+    context: RenderContext<MainState, Unit>
   ): RunGameScreen = when (state) {
     is Authenticating -> {
       val authScreen = context.renderChild(authWorkflow) { enterState(RunningGame) }

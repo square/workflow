@@ -22,7 +22,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.invoke
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
@@ -35,7 +35,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class WorkflowContextsTest {
+class RenderContextsTest {
 
   @Test fun `onSuccess handles value when emitted during listen`() {
     val subscribed = CompletableDeferred<Unit>()
@@ -82,7 +82,7 @@ class WorkflowContextsTest {
       override fun render(
         input: Unit,
         state: Boolean,
-        context: WorkflowContext<Boolean, Nothing>
+        context: RenderContext<Boolean, Nothing>
       ) {
         if (state) {
           context.onSuccess(single) { noop() }

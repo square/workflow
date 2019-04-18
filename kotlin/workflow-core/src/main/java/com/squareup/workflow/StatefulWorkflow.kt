@@ -18,14 +18,14 @@ package com.squareup.workflow
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * A composable, stateful object that can [handle events][WorkflowContext.onEvent],
- * [delegate to children][WorkflowContext.renderChild], [subscribe][onReceive] to arbitrary streams from
+ * A composable, stateful object that can [handle events][RenderContext.onEvent],
+ * [delegate to children][RenderContext.renderChild], [subscribe][onReceive] to arbitrary streams from
  * the outside world, and be [saved][snapshotState] to a serialized form to be restored later.
  *
  * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
  * [rendering][RenderingT]. To that end, a workflow may keep track of internal [state][StateT],
  * recursively ask other workflows to render themselves, subscribe to data streams from the outside
- * world, and handle events both from its [renderings][WorkflowContext.onEvent] and from workflows
+ * world, and handle events both from its [renderings][RenderContext.onEvent] and from workflows
  * it's delegated to (its "children"). A `Workflow` may also emit [output events][OutputT] up to its
  * parent `Workflow`.
  *
@@ -65,7 +65,7 @@ abstract class StatefulWorkflow<
     > : Workflow<InputT, OutputT, RenderingT> {
 
   /**
-   * Called from [WorkflowContext.renderChild] when the state machine is first started, to get the
+   * Called from [RenderContext.renderChild] when the state machine is first started, to get the
    * initial state.
    *
    * @param snapshot
@@ -85,7 +85,7 @@ abstract class StatefulWorkflow<
   ): StateT
 
   /**
-   * Called from [WorkflowContext.renderChild] instead of [initialState] when the workflow is already
+   * Called from [RenderContext.renderChild] instead of [initialState] when the workflow is already
    * running. This allows the workflow to detect changes in input, and possibly change its state in
    * response. This method is called eagerly: `old` and `new` might be the same value, so it is up
    * to implementing code to perform any diffing if desired.
@@ -107,7 +107,7 @@ abstract class StatefulWorkflow<
    *    - Emits an output.
    *
    * **Never call this method directly.** To nest the rendering of a child workflow in your own,
-   * pass the child and any required input to [WorkflowContext.renderChild].
+   * pass the child and any required input to [RenderContext.renderChild].
    *
    * This method *should not* have any side effects, and in particular should not do anything that
    * blocks the current thread. It may be called multiple times for the same state. It must do all its
@@ -119,7 +119,7 @@ abstract class StatefulWorkflow<
   abstract fun render(
     input: InputT,
     state: StateT,
-    context: WorkflowContext<StateT, OutputT>
+    context: RenderContext<StateT, OutputT>
   ): RenderingT
 
   /**

@@ -18,7 +18,7 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.internal.Behavior.SubscriptionCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.util.ChannelUpdate
@@ -28,11 +28,11 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlin.reflect.KType
 
 /**
- * An implementation of [WorkflowContext] that builds a [Behavior] via [buildBehavior].
+ * An implementation of [RenderContext] that builds a [Behavior] via [buildBehavior].
  */
-internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
+internal class RealRenderContext<StateT : Any, OutputT : Any>(
   private val renderer: Renderer<StateT, OutputT>
-) : WorkflowContext<StateT, OutputT> {
+) : RenderContext<StateT, OutputT> {
 
   interface Renderer<StateT : Any, in OutputT : Any> {
     fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> render(
@@ -115,6 +115,6 @@ internal class RealWorkflowContext<StateT : Any, OutputT : Any>(
   }
 
   private fun checkNotFrozen() = check(!frozen) {
-    "WorkflowContext cannot be used after render method returns."
+    "RenderContext cannot be used after render method returns."
   }
 }

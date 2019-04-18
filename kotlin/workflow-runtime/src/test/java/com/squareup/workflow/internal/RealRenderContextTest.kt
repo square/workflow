@@ -22,10 +22,10 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.noop
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
-import com.squareup.workflow.internal.RealWorkflowContext.Renderer
-import com.squareup.workflow.internal.RealWorkflowContextTest.TestRenderer.Rendering
+import com.squareup.workflow.internal.RealRenderContext.Renderer
+import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateless
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +38,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-class RealWorkflowContextTest {
+class RealRenderContextTest {
 
   private class TestRenderer : Renderer<String, String> {
 
@@ -70,7 +70,7 @@ class RealWorkflowContextTest {
     override fun render(
       input: String,
       state: String,
-      context: WorkflowContext<String, String>
+      context: RenderContext<String, String>
     ): Rendering {
       fail("This shouldn't actually be called.")
     }
@@ -88,7 +88,7 @@ class RealWorkflowContextTest {
   }
 
   @Test fun `make sink completes update`() {
-    val context = RealWorkflowContext<String, String>(PoisonRenderer())
+    val context = RealRenderContext<String, String>(PoisonRenderer())
     val expectedUpdate = noop<String, String>()
     val handler = context.onEvent<String> { expectedUpdate }
     val behavior = context.buildBehavior()
@@ -102,7 +102,7 @@ class RealWorkflowContextTest {
   }
 
   @Test fun `make sink gets event`() {
-    val context = RealWorkflowContext<String, String>(PoisonRenderer())
+    val context = RealRenderContext<String, String>(PoisonRenderer())
     val handler = context.onEvent<String> { event -> emitOutput(event) }
 
     handler("foo")
@@ -115,7 +115,7 @@ class RealWorkflowContextTest {
   }
 
   @Test fun `composeChild works`() {
-    val context = RealWorkflowContext(TestRenderer())
+    val context = RealRenderContext(TestRenderer())
     val workflow = TestWorkflow()
 
     val (case, child, id, input) = context.renderChild(workflow, "input", "key") { output ->
@@ -142,7 +142,7 @@ class RealWorkflowContextTest {
   }
 
   @Test fun `all methods throw after buildBehavior`() {
-    val context = RealWorkflowContext(TestRenderer())
+    val context = RealRenderContext(TestRenderer())
     context.buildBehavior()
 
     assertFailsWith<IllegalStateException> { context.onEvent<Unit> { fail() } }

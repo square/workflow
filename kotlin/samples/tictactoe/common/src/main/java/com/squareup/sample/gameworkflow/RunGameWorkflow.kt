@@ -48,7 +48,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.invoke
 import com.squareup.workflow.rx2.onSuccess
 import kotlinx.coroutines.CoroutineScope
@@ -88,7 +88,7 @@ class RealRunGameWorkflow(
   override fun render(
     input: Unit,
     state: RunGameState,
-    context: WorkflowContext<RunGameState, RunGameResult>
+    context: RenderContext<RunGameState, RunGameResult>
   ): RunGameScreen {
     return when (state) {
       is NewGame -> {

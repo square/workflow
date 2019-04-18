@@ -67,7 +67,7 @@ class ChannelSubscriptionsIntegrationTest {
     override fun render(
       input: Boolean,
       state: Boolean,
-      context: WorkflowContext<Boolean, ChannelUpdate<String>>
+      context: RenderContext<Boolean, ChannelUpdate<String>>
     ): (Boolean) -> Unit {
       if (state) {
         context.onReceive({ subscribe() }) { update -> emitOutput(update) }

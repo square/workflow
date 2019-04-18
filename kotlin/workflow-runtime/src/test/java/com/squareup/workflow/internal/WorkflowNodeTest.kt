@@ -23,7 +23,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowContext
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.invoke
 import com.squareup.workflow.onReceive
@@ -80,7 +80,7 @@ class WorkflowNodeTest {
     override fun render(
       input: String,
       state: String,
-      context: WorkflowContext<String, String>
+      context: RenderContext<String, String>
     ): String {
       return """
         input:$input
@@ -144,7 +144,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, String>
+        context: RenderContext<String, String>
       ): String {
         eventHandler = context.onEvent { event -> emitOutput(event) }
         return ""
@@ -179,7 +179,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, String>
+        context: RenderContext<String, String>
       ): String {
         eventHandler = context.onEvent { event -> emitOutput(event) }
         return ""
@@ -219,7 +219,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, String>
+        context: RenderContext<String, String>
       ): String {
         context.onReceive({ channel }) {
           check(update == null)
@@ -277,7 +277,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, String>
+        context: RenderContext<String, String>
       ): String {
         context.onReceive({ channel }) {
           check(update == null)
@@ -323,7 +323,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, String>
+        context: RenderContext<String, String>
       ): String {
         when (state) {
           "listen" -> {
@@ -375,7 +375,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, Nothing>
+        context: RenderContext<String, Nothing>
       ): String = state
 
       override fun snapshotState(state: String): Snapshot = Snapshot.write {
@@ -416,7 +416,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, Nothing>
+        context: RenderContext<String, Nothing>
       ): String {
         return state
       }
@@ -463,7 +463,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, Nothing>
+        context: RenderContext<String, Nothing>
       ): String {
         return state
       }
@@ -486,7 +486,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, Nothing>
+        context: RenderContext<String, Nothing>
       ): String {
         val childRendering = context.renderChild(childWorkflow, "child input")
         return "$state|$childRendering"
@@ -541,7 +541,7 @@ class WorkflowNodeTest {
       override fun render(
         input: Unit,
         state: Unit,
-        context: WorkflowContext<Unit, Nothing>
+        context: RenderContext<Unit, Nothing>
       ) = Unit
 
       override fun snapshotState(state: Unit): Snapshot {
@@ -591,7 +591,7 @@ class WorkflowNodeTest {
       override fun render(
         input: String,
         state: String,
-        context: WorkflowContext<String, Nothing>
+        context: RenderContext<String, Nothing>
       ): String {
         return state
       }
