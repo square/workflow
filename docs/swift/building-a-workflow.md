@@ -150,19 +150,19 @@ A workflow may need to do some amount of asynchronous work (such as a network re
 To do something asynchronously, we define a worker that has an Output type and defines a `run` method that that returns a Reactive Swift `SignalProducer`. When this worker will be run, the SignalProducer is subscribed to starting the async task.
 
 ```swift
-struct AsyncWorker: Worker {
+struct RefreshWorker: Worker {
 
     enum Output {
         case success(String)
         case error(Error)
     }
 
-    func run() -> SignalProducer<NetworkWorker.Output, NoError> {
-        return SignalProducer(value: .success("We did it"))
+    func run() -> SignalProducer<RefreshWorker.Output, NoError> {
+        return SignalProducer(value: .success("We did it!"))
             .delay(1.0, on: QueueScheduler.main)
     }
 
-    func isEquivalent(to otherWorker: NetworkWorker) -> Bool {
+    func isEquivalent(to otherWorker: RefreshWorker) -> Bool {
         return true
     }
 }
@@ -175,12 +175,12 @@ In order to start asynchronous work, the workflow requests it in the render meth
 ```swift
     public func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
 
-        context.awaitResult(for: AsyncWorker()) { output -> Action in
+        context.awaitResult(for: RefreshWorker()) { output -> Action in
             switch output {
             case .success(let result):
-                return Action.asyncSuccess(result)
+                return Action.refreshComplete(result)
             case .error(let error):
-                return Action.asyncFailure(error)
+                return Action.refreshError(error)
 
             }
         }
