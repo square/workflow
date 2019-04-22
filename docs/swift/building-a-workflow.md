@@ -157,12 +157,12 @@ struct AsyncWorker: Worker {
         case error(Error)
     }
 
-    func run() -> SignalProducer<NetworkWorker.Output, NoError> {
+    func run() -> SignalProducer<AsyncWorker.Output, NoError> {
         return SignalProducer(value: .success("We did it"))
             .delay(1.0, on: QueueScheduler.main)
     }
 
-    func isEquivalent(to otherWorker: NetworkWorker) -> Bool {
+    func isEquivalent(to otherWorker: AsyncWorker) -> Bool {
         return true
     }
 }
