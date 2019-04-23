@@ -43,9 +43,9 @@ fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext,
       block: (WorkflowTester<InputT, OutputT, RenderingT>) -> T
-    ): T = test(block, context) {
-      val inputs = Channel<InputT>(1).apply { offer(input) }
-      it.run(this, inputs, snapshot)
+    ): T = test(block, context) { factory, inputs ->
+      inputs.offer(input)
+      factory.run(this, inputs, snapshot)
     }
 // @formatter:on
 
@@ -76,7 +76,10 @@ fun <T, InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
       block: (WorkflowTester<InputT, OutputT, RenderingT>) -> T
-    ): T = test(block, context) { it.runTestFromState(this, input, initialState) }
+    ): T = test(block, context) { factory, inputs ->
+      inputs.offer(input)
+      factory.runTestFromState(this, inputs, initialState)
+    }
 // @formatter:on
 
 /**
@@ -100,12 +103,14 @@ fun <StateT : Any, OutputT : Any, RenderingT : Any>
 private fun <T, I : Any, O : Any, R : Any> test(
   testBlock: (WorkflowTester<I, O, R>) -> T,
   baseContext: CoroutineContext,
-  starter: (WorkflowHost.Factory) -> WorkflowHost<I, O, R>
+  starter: (WorkflowHost.Factory, inputs: Channel<I>) -> WorkflowHost<I, O, R>
 ): T {
   val context = Dispatchers.Unconfined + baseContext + Job(parent = baseContext[Job])
+  val inputs = Channel<I>(capacity = 1)
+  @Suppress("ReplaceSingleLineLet")
   val host = WorkflowHost.Factory(context)
-      .let(starter)
-      .let { WorkflowTester(it, context) }
+      .let { starter(it, inputs) }
+      .let { WorkflowTester(inputs, it, context) }
 
   var error: Throwable? = null
   try {

@@ -15,18 +15,15 @@
  */
 package com.squareup.workflow.rx2
 
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.StatelessWorkflow
+import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.testing.testFromStart
 import com.squareup.workflow.util.ChannelUpdate
 import com.squareup.workflow.util.ChannelUpdate.Closed
 import com.squareup.workflow.util.ChannelUpdate.Value
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.TimeoutCancellationException
 import java.io.IOException
 import kotlin.test.Test
@@ -46,7 +43,7 @@ class SubscriptionsTest {
    */
   private class SubscriberWorkflow(
     subject: Observable<String>
-  ) : StatefulWorkflow<Boolean, Boolean, ChannelUpdate<String>, (Boolean) -> Unit>() {
+  ) : StatelessWorkflow<Boolean, ChannelUpdate<String>, Unit>() {
 
     var subscriptions = 0
       private set
@@ -58,24 +55,14 @@ class SubscriptionsTest {
         .doOnSubscribe { subscriptions++ }
         .doOnDispose { disposals++ }
 
-    override fun initialState(
-      input: Boolean,
-      snapshot: Snapshot?,
-      scope: CoroutineScope
-    ): Boolean = input
-
     override fun render(
       input: Boolean,
-      state: Boolean,
-      context: RenderContext<Boolean, ChannelUpdate<String>>
-    ): (Boolean) -> Unit {
-      if (state) {
+      context: RenderContext<Nothing, ChannelUpdate<String>>
+    ) {
+      if (input) {
         context.onNext(observable) { update -> emitOutput(update) }
       }
-      return context.onEvent { subscribe -> enterState(subscribe) }
     }
-
-    override fun snapshotState(state: Boolean) = Snapshot.EMPTY
   }
 
   private val subject = PublishSubject.create<String>()
@@ -83,58 +70,58 @@ class SubscriptionsTest {
 
   @Test fun `observable subscribes`() {
     workflow.testFromStart(false) { host ->
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(0, workflow.subscriptions)
         assertEquals(0, workflow.disposals)
-        setSubscribed(true)
+        host.sendInput(true)
       }
 
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.disposals)
         // Should still only be subscribed once.
-        setSubscribed(true)
+        host.sendInput(true)
       }
 
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.disposals)
-        setSubscribed(false)
+        host.sendInput(false)
       }
 
       host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
-      // Disposable.dispose() is an idempotent operation so it should be fine.
-      assertEquals(2, workflow.disposals)
+        // Disposable.dispose() is an idempotent operation so it should be fine.
+        assertEquals(2, workflow.disposals)
       }
     }
   }
 
   @Test fun `observable unsubscribes`() {
     workflow.testFromStart(true) { host ->
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.disposals)
-        setSubscribed(false)
+        host.sendInput(false)
       }
 
       host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         // For some reason the observable is actually disposed twice. Seems like a coroutines bug, but
-      // Disposable.dispose() is an idempotent operation so it should be fine.
-      assertEquals(2, workflow.disposals)
+        // Disposable.dispose() is an idempotent operation so it should be fine.
+        assertEquals(2, workflow.disposals)
       }
     }
   }
 
   @Test fun `observable subscribes only once across multiple composes`() {
     workflow.testFromStart(true) { host ->
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.disposals)
         // Should preserve subscriptions.
-        setSubscribed(true)
+        host.sendInput(true)
       }
 
       host.withNextRendering {
@@ -146,18 +133,18 @@ class SubscriptionsTest {
 
   @Test fun `observable resubscribes`() {
     workflow.testFromStart(true) { host ->
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.disposals)
-        setSubscribed(false)
+        host.sendInput(false)
       }
 
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         // For some reason the observable is actually disposed twice. Seems like a coroutines bug,
         // but Disposable.dispose() is an idempotent operation so it should be fine.
         assertEquals(2, workflow.disposals)
-        setSubscribed(true)
+        host.sendInput(true)
       }
 
       host.withNextRendering {

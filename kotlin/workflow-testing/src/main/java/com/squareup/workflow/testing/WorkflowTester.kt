@@ -23,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -44,6 +45,7 @@ import kotlin.coroutines.CoroutineContext
  *    - Return `true` if the previous methods won't block.
  */
 class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly internal constructor(
+  private val inputs: SendChannel<InputT>,
   private val host: WorkflowHost<InputT, OutputT, RenderingT>,
   context: CoroutineContext
 ) {
@@ -84,6 +86,17 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
   val hasOutput: Boolean get() = !outputs.isEmptyOrClosed
 
   private val ReceiveChannel<*>.isEmptyOrClosed get() = isEmpty || isClosedForReceive
+
+  /**
+   * Sends [input] to the workflow-under-test.
+   */
+  fun sendInput(input: InputT) {
+    runBlocking {
+      withTimeout(DEFAULT_TIMEOUT_MS) {
+        inputs.send(input)
+      }
+    }
+  }
 
   /**
    * Blocks until the workflow emits a rendering, then returns it.

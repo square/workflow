@@ -120,7 +120,7 @@ interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any>
     @TestOnly
     fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any> runTestFromState(
       workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-      input: InputT,
+      inputs: ReceiveChannel<InputT>,
       initialState: StateT
     ): WorkflowHost<InputT, OutputT, RenderingT> =
       object : WorkflowHost<InputT, OutputT, RenderingT> {
@@ -131,7 +131,7 @@ interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any>
           ) {
             runWorkflowTree(
                 workflow = workflow.asStatefulWorkflow(),
-                inputs = channelOf(input),
+                inputs = inputs,
                 initialSnapshot = null,
                 initialState = initialState,
                 onUpdate = ::send
