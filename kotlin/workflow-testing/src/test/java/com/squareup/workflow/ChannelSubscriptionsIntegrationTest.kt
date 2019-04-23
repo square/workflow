@@ -217,4 +217,44 @@ class ChannelSubscriptionsIntegrationTest {
       }
     }
   }
+
+  // See https://github.com/square/workflow/issues/261.
+  @Test fun `onReceive closes over latest state`() {
+    val trigger = Channel<Unit>()
+    val workflow = object : StatefulWorkflow<Unit, Int, Int, (Unit) -> Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?,
+        scope: CoroutineScope
+      ) = 0
+
+      override fun render(
+        input: Unit,
+        state: Int,
+        context: RenderContext<Int, Int>
+      ): (Unit) -> Unit {
+        context.onReceive({ trigger }) { emitOutput(state) }
+        return context.onEvent { enterState(state + 1) }
+      }
+
+      override fun snapshotState(state: Int) = Snapshot.EMPTY
+    }
+
+    workflow.testFromStart { tester ->
+      trigger.offer(Unit)
+      assertEquals(0, tester.awaitNextOutput())
+
+      tester.awaitNextRendering()
+          .invoke(Unit)
+      trigger.offer(Unit)
+
+      assertEquals(1, tester.awaitNextOutput())
+
+      tester.awaitNextRendering()
+          .invoke(Unit)
+      trigger.offer(Unit)
+
+      assertEquals(2, tester.awaitNextOutput())
+    }
+  }
 }
