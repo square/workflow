@@ -98,7 +98,6 @@ internal class SubtreeManager<StateT : Any, OutputT : Any>(
   fun createChildrenSnapshot(): Snapshot {
     return Snapshot.write { sink ->
       val childSnapshots = hostLifetimeTracker.lifetimes
-          .entries
           .map { (case, host) -> host.id to host.snapshot(case.workflow.asStatefulWorkflow()) }
       sink.writeInt(childSnapshots.size)
       for ((id, snapshot) in childSnapshots) {

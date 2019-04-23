@@ -43,11 +43,11 @@ internal class LifetimeTracker<FactoryT, KeyT : Any, DisposableT>(
   private val factoriesByKey = mutableMapOf<KeyT, FactoryT>()
   private val disposablesByKey = mutableMapOf<KeyT, DisposableT>()
 
-  val lifetimes: Map<FactoryT, DisposableT>
+  val lifetimes: List<Pair<FactoryT, DisposableT>>
     get() = factoriesByKey.entries.map { (key, provider) ->
       val lifetime = disposablesByKey.getValue(key)
       provider to lifetime
-    }.toMap()
+    }
 
   /**
    * Additively track a possibly-new provider.
@@ -89,12 +89,15 @@ internal class LifetimeTracker<FactoryT, KeyT : Any, DisposableT>(
     key: KeyT,
     factory: FactoryT
   ): DisposableT {
-    return if (key !in factoriesByKey) {
-      factoriesByKey[key] = factory
+    val existingFactory = factoriesByKey.put(key, factory)
+    return if (existingFactory == null) {
+      // This is the first time we're seeing this key/factory, start it up and start tracking.
+      check(key !in disposablesByKey)
       start(factory).also {
         disposablesByKey[key] = it
       }
     } else {
+      // We're already tracking this factory.
       disposablesByKey.getValue(key)
     }
   }

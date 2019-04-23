@@ -15,10 +15,12 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -258,6 +260,49 @@ class CompositionIntegrationTest {
         assertEquals(1, starts)
         assertEquals(1, cancels)
       }
+    }
+  }
+
+  // See https://github.com/square/workflow/issues/261.
+  @Test fun `renderChild closes over latest state`() {
+    val triggerChildOutput = Channel<Unit>()
+    val child = Workflow.stateless<Unit, Unit> { context ->
+      context.onReceive({ triggerChildOutput }) { emitOutput(Unit) }
+    }
+    val workflow = object : StatefulWorkflow<Unit, Int, Int, (Unit) -> Unit>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?,
+        scope: CoroutineScope
+      ) = 0
+
+      override fun render(
+        input: Unit,
+        state: Int,
+        context: RenderContext<Int, Int>
+      ): (Unit) -> Unit {
+        context.renderChild(child) { emitOutput(state) }
+        return context.onEvent { enterState(state + 1) }
+      }
+
+      override fun snapshotState(state: Int) = Snapshot.EMPTY
+    }
+
+    workflow.testFromStart { tester ->
+      triggerChildOutput.offer(Unit)
+      assertEquals(0, tester.awaitNextOutput())
+
+      tester.awaitNextRendering()
+          .invoke(Unit)
+      triggerChildOutput.offer(Unit)
+
+      assertEquals(1, tester.awaitNextOutput())
+
+      tester.awaitNextRendering()
+          .invoke(Unit)
+      triggerChildOutput.offer(Unit)
+
+      assertEquals(2, tester.awaitNextOutput())
     }
   }
 }
