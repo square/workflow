@@ -46,7 +46,7 @@ class ChannelSubscriptionsIntegrationTest {
    */
   private class SubscriberWorkflow(
     private val channel: Channel<String>
-  ) : StatefulWorkflow<Boolean, Boolean, ChannelUpdate<String>, (Boolean) -> Unit>() {
+  ) : StatelessWorkflow<Boolean, ChannelUpdate<String>, Unit>() {
 
     var subscriptions = 0
       private set
@@ -58,24 +58,14 @@ class ChannelSubscriptionsIntegrationTest {
       channel.invokeOnClose { cancellations++ }
     }
 
-    override fun initialState(
-      input: Boolean,
-      snapshot: Snapshot?,
-      scope: CoroutineScope
-    ): Boolean = input
-
     override fun render(
       input: Boolean,
-      state: Boolean,
-      context: RenderContext<Boolean, ChannelUpdate<String>>
-    ): (Boolean) -> Unit {
-      if (state) {
+      context: RenderContext<Nothing, ChannelUpdate<String>>
+    ) {
+      if (input) {
         context.onReceive({ subscribe() }) { update -> emitOutput(update) }
       }
-      return context.onEvent { subscribe -> enterState(subscribe) }
     }
-
-    override fun snapshotState(state: Boolean) = Snapshot.EMPTY
 
     private fun subscribe(): ReceiveChannel<String> {
       subscriptions++
@@ -88,23 +78,25 @@ class ChannelSubscriptionsIntegrationTest {
 
   @Test fun subscribes() {
     workflow.testFromStart(false) { host ->
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(0, workflow.subscriptions)
         assertEquals(0, workflow.cancellations)
-        setSubscribed(true)
       }
 
-      host.withNextRendering { setSubscribed ->
+      host.sendInput(true)
+
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.cancellations)
-        // Should still only be subscribed once.
-        setSubscribed(true)
       }
 
-      host.withNextRendering { setSubscribed ->
+      // Should still only be subscribed once.
+      host.sendInput(true)
+
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.cancellations)
-        setSubscribed(false)
+        host.sendInput(false)
 
         assertEquals(1, workflow.subscriptions)
         assertEquals(1, workflow.cancellations)
@@ -114,10 +106,10 @@ class ChannelSubscriptionsIntegrationTest {
 
   @Test fun unsubscribes() {
     workflow.testFromStart(true) { host ->
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.cancellations)
-        setSubscribed(false)
+        host.sendInput(false)
 
         assertEquals(1, workflow.subscriptions)
         assertEquals(1, workflow.cancellations)
@@ -127,11 +119,11 @@ class ChannelSubscriptionsIntegrationTest {
 
   @Test fun `subscribes only once across multiple composes`() {
     workflow.testFromStart(true) { host ->
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.cancellations)
         // Should preserve subscriptions.
-        setSubscribed(true)
+        host.sendInput(true)
       }
 
       host.withNextRendering {
@@ -143,16 +135,16 @@ class ChannelSubscriptionsIntegrationTest {
 
   @Test fun resubscribes() {
     workflow.testFromStart(true) { host ->
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(0, workflow.cancellations)
-        setSubscribed(false)
+        host.sendInput(false)
       }
 
-      host.withNextRendering { setSubscribed ->
+      host.withNextRendering {
         assertEquals(1, workflow.subscriptions)
         assertEquals(1, workflow.cancellations)
-        setSubscribed(true)
+        host.sendInput(true)
       }
 
       host.withNextRendering {

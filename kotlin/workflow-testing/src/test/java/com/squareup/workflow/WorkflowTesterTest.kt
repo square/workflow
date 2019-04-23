@@ -31,6 +31,8 @@ import kotlin.test.fail
 
 class WorkflowTesterTest {
 
+  private class ExpectedException : RuntimeException()
+
   @Test fun `propagates exception when block throws`() {
     val workflow = Workflow.stateless<Unit, Unit> { }
 
@@ -197,5 +199,13 @@ class WorkflowTesterTest {
     }
   }
 
-  private class ExpectedException : RuntimeException()
+  @Test fun `workflow gets inputs from sendInput`() {
+    val workflow = Workflow.stateless<String, Nothing, String> { input, _ -> input }
+
+    workflow.testFromStart("one") {
+      assertEquals("one", it.awaitNextRendering())
+      it.sendInput("two")
+      assertEquals("two", it.awaitNextRendering())
+    }
+  }
 }
