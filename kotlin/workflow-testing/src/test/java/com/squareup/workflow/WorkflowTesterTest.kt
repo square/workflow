@@ -176,11 +176,11 @@ class WorkflowTesterTest {
     }
   }
 
-  @Test fun `propagates exception when subscription throws`() {
+  @Test fun `propagates exception when worker throws`() {
     val deferred = CompletableDeferred<Unit>()
     deferred.completeExceptionally(ExpectedException())
     val workflow = Workflow.stateless<Unit, Unit> {
-      it.onDeferred(deferred) { fail("Shouldn't get here.") }
+      it.onWorkerOutput(deferred.asWorker()) { fail("Shouldn't get here.") }
     }
 
     workflow.testFromStart { tester ->
@@ -206,6 +206,22 @@ class WorkflowTesterTest {
       assertEquals("one", it.awaitNextRendering())
       it.sendInput("two")
       assertEquals("two", it.awaitNextRendering())
+    }
+  }
+
+  @Test fun `sendInput duplicate values all trigger render passes`() {
+    var renders = 0
+    val input = "input"
+    val workflow = Workflow.stateless<String, Nothing, Unit> { _, _ -> renders++ }
+
+    workflow.testFromStart(input) {
+      assertEquals(1, renders)
+
+      it.sendInput(input)
+      assertEquals(2, renders)
+
+      it.sendInput(input)
+      assertEquals(3, renders)
     }
   }
 }

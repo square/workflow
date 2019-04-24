@@ -17,16 +17,9 @@
 
 package com.squareup.workflow
 
-import com.squareup.workflow.util.ChannelUpdate
-import com.squareup.workflow.util.ChannelUpdate.Value
-import com.squareup.workflow.util.KTypes
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.reflect.KType
+import com.squareup.workflow.Worker.OutputOrFinished
+import com.squareup.workflow.Worker.OutputOrFinished.Finished
+import com.squareup.workflow.Worker.OutputOrFinished.Output
 
 /**
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
@@ -36,17 +29,13 @@ import kotlin.reflect.KType
  *
  * See [onEvent].
  *
- * ## Handling External Reactive Streams
+ * ## Performing Asynchronous Work
  *
- * See [onReceive], [onDeferred], and [onSuspending].
+ * See [onWorkerOutput], [onWorkerOutputOrFinished], and [runningWorker].
  *
  * ## Composing Children
  *
  * See [renderChild].
- *
- * ## Handling Workflow Teardown
- *
- * See [onTeardown].
  */
 interface RenderContext<StateT : Any, in OutputT : Any> {
 
@@ -80,33 +69,6 @@ interface RenderContext<StateT : Any, in OutputT : Any> {
   ): EventHandler<EventT>
 
   /**
-   * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to,
-   * and will send anything emitted on the channel to [handler] as a [ChannelUpdate].
-   *
-   * This method ensures that only one subscription is active at a time for the given [type]+[key].
-   * If this method is called in two or more consecutive `render` invocations with the
-   * same key, [channelProvider] will only be invoked for the first one, and the returned channel
-   * will be re-used for all subsequent invocations, until a `render` invocation does
-   * _not_ call this method with an equal key. At that time, the channel will be
-   * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will
-   * release any resources allocated by the [channelProvider].
-   *
-   * @param type The [KType] that represents both the type of data source (e.g. `ReceiveChannel` or
-   * `Deferred`) and the element type [E].
-   * @param key An optional string key that is used to distinguish between subscriptions of the same
-   * [type].
-   * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
-   *
-   * @see onReceive
-   */
-  fun <E> onReceive(
-    channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    type: KType,
-    key: String = "",
-    handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
-  )
-
-  /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
    * `render` method.
    *
@@ -135,11 +97,23 @@ interface RenderContext<StateT : Any, in OutputT : Any> {
   ): ChildRenderingT
 
   /**
+   * Ensures [worker] is running. When the [Worker] emits an output or finishes, [handler] is called
+   * to determine the [WorkflowAction] to take.
+   *
+   * @param key An optional string key that is used to distinguish between identical [Worker]s.
+   */
+  fun <T> onWorkerOutputOrFinished(
+    worker: Worker<T>,
+    key: String = "",
+    handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
+  )
+
+  /**
    * Adds an action to be invoked if the workflow is discarded by its parent before the next
    * render pass. Multiple hooks can be registered in the same render pass, they will be invoked
    * in the same order they're set. Like any other work performed through the context (e.g. calls
-   * to [renderChild] or [onReceive]), hooks are cleared at the start of each renderChild pass, so you must
-   * set any hooks you need in each render pass.
+   * to [renderChild] or [onWorkerOutput]), hooks are cleared at the start of each render pass, so
+   * you must set any hooks you need in each render pass.
    *
    * Teardown handlers should be non-blocking and execute quickly, since they are invoked
    * synchronously during the render pass.
@@ -147,35 +121,6 @@ interface RenderContext<StateT : Any, in OutputT : Any> {
   @Deprecated("Use the CoroutineScope parameter to initialState.")
   fun onTeardown(handler: () -> Unit)
 }
-
-/**
- * Ensures that the [channel][ReceiveChannel] returned from [channelProvider] is subscribed to, and
- * will send anything emitted on the channel to [handler] as a [ChannelUpdate].
- *
- * This method ensures that only one subscription is active at a time for the given key.
- * If this method is called in two or more consecutive `render` invocations with the same
- * key+[channelProvider] type, the provider will only be invoked for the first one, and the returned
- * channel will be re-used for all subsequent invocations, until a `render` invocation
- * does _not_ call this method with an equal key+type. At that time, the channel will be
- * [cancelled][ReceiveChannel.cancel], with the assumption that cancelling the channel will release
- * any resources allocated by the [channelProvider].
- *
- * @param key An optional string key that is used to distinguish between subscriptions of the same
- * type.
- * @param handler A function that returns the [WorkflowAction] to perform when the channel emits.
- *
- * @see RenderContext.onReceive
- */
-inline fun <StateT : Any, OutputT : Any, reified T> RenderContext<StateT, OutputT>.onReceive(
-  noinline channelProvider: CoroutineScope.() -> ReceiveChannel<T>,
-  key: String = "",
-  noinline handler: (ChannelUpdate<T>) -> WorkflowAction<StateT, OutputT>
-) = onReceive(
-    channelProvider,
-    KTypes.fromGenericType(ReceiveChannel::class, T::class),
-    key,
-    handler
-)
 
 /**
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take input.
@@ -221,81 +166,33 @@ fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
 // @formatter:on
 
 /**
- * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
- * invoked for a given deferred+key, it will not be invoked again until an invocation of
- * `render` that does _not_ call this method with that deferred+[key].
+ * Ensures [worker] is running. When the [Worker] emits an output, [handler] is called
+ * to determine the [WorkflowAction] to take. If the [Worker] finishes without emitting anything,
+ * throws a [NoSuchElementException].
  *
- * @param key An optional string key that is used to distinguish between subscriptions of the same
- * type.
+ * @param key An optional string key that is used to distinguish between identical [Worker]s.
+ * @throws NoSuchElementException If the worker finished without emitting a value.
  */
-inline fun <reified T, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onDeferred(
-  deferred: Deferred<T>,
-  key: String = "",
-  noinline handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onDeferred(
-    deferred,
-    KTypes.fromGenericType(Deferred::class, T::class),
-    key,
-    handler
-)
-
-/**
- * Will wait for [deferred] to complete, then pass its value to [handler]. Once the handler has been
- * invoked for a given deferred+key, it will not be invoked again until an invocation of
- * `render` that does _not_ call this method with that deferred+[key].
- *
- * @param type The [KType] that represents both the type of data source (e.g. `Deferred`) and the
- * element type [T].
- * @param key An optional string key that is used to distinguish between subscriptions of the same
- * [type].
- */
-fun <T, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onDeferred(
-  deferred: Deferred<T>,
-  type: KType,
+fun <StateT : Any, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
+  worker: Worker<T>,
   key: String = "",
   handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onSuspending({ deferred.await() }, type, key, handler)
-
-/**
- * This function is provided as a helper for writing [RenderContext] extension functions, it
- * should not be used by general application code.
- *
- * The suspending function will be executed in the current stack frame ([UNDISPATCHED]). When this
- * workflow is being torn down, the coroutine running the function will be cancelled.
- *
- * @param type The [KType] that represents both the type of data source (e.g. `Deferred`) and the
- * element type [T].
- * @param key An optional string key that is used to distinguish between subscriptions of the same
- * [type].
- * @param function A suspending function that is invoked in a coroutine that will be a child of this
- * state machine. The function will be cancelled if the state machine is cancelled.
- */
-fun <T, StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.onSuspending(
-  function: suspend () -> T,
-  type: KType,
-  key: String = "",
-  handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onReceive(
-    { wrapInNeverClosingChannel(function) },
-    type,
-    key,
-    { update ->
-      if (update !is Value) {
-        throw AssertionError("Suspend function channel should never close.")
-      }
-      return@onReceive handler(update.value)
+) = onWorkerOutputOrFinished(worker, key) { outputOrFinished ->
+  when (outputOrFinished) {
+    is Output -> handler(outputOrFinished.value)
+    Finished -> {
+      throw NoSuchElementException("Expected Worker (key=$key) to emit an output: $worker")
     }
-)
+  }
+}
 
 /**
- * Invokes [function] and returns a channel that will emit the return value of the function when it
- * returns, and then will never close.
+ * Ensures a [Worker] that never emits anything is running. Since [worker] can't emit anything,
+ * it can't trigger any [WorkflowAction]s.
+ *
+ * @param key An optional string key that is used to distinguish between identical [Worker]s.
  */
-private fun <T> CoroutineScope.wrapInNeverClosingChannel(
-  function: suspend () -> T
-): ReceiveChannel<T> = produce {
-  send(function())
-  // We explicitly don't want to close the channel, because that would trigger an infinite loop.
-  // Instead, just suspend forever.
-  suspendCancellableCoroutine<Nothing> { }
-}
+fun <StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
+  worker: Worker<Nothing>,
+  key: String = ""
+) = onWorkerOutputOrFinished(worker, key) { throw AssertionError("Worker<Nothing> emitted $it") }

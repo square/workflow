@@ -15,13 +15,11 @@
  */
 package com.squareup.workflow.internal
 
+import com.squareup.workflow.Worker
+import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.util.ChannelUpdate
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlin.reflect.KType
 
 /**
  * An immutable description of the things a [Workflow] would like to do as the result of calling its
@@ -32,7 +30,7 @@ import kotlin.reflect.KType
  */
 internal data class Behavior<StateT : Any, out OutputT : Any>(
   val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,
-  val subscriptionCases: List<SubscriptionCase<*, StateT, OutputT>>,
+  val workerCases: List<WorkerCase<*, StateT, OutputT>>,
   val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>,
   val teardownHooks: List<() -> Unit>
 ) {
@@ -55,13 +53,28 @@ internal data class Behavior<StateT : Any, out OutputT : Any>(
       }
       // @formatter:on
 
-  data class SubscriptionCase<E, StateT : Any, out OutputT : Any>(
-    val channelProvider: CoroutineScope.() -> ReceiveChannel<E>,
-    val idempotenceKey: Pair<KType, String>,
-    val handler: (ChannelUpdate<E>) -> WorkflowAction<StateT, OutputT>
+  data class WorkerCase<T, StateT : Any, out OutputT : Any>(
+    val worker: Worker<T>,
+    val key: String,
+    val handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
   ) {
     @Suppress("UNCHECKED_CAST")
-    fun acceptUpdate(value: ChannelUpdate<*>): WorkflowAction<StateT, OutputT> =
-      handler(value as ChannelUpdate<E>)
+    fun acceptUpdate(value: OutputOrFinished<*>): WorkflowAction<StateT, OutputT> =
+      handler(value as OutputOrFinished<T>)
+
+    /** Override `equals` so this class can be used as its own key. */
+    override fun equals(other: Any?): Boolean =
+      other is WorkerCase<*, *, *> &&
+          worker.doesSameWorkAs(other.worker) &&
+          key == other.key
+
+    /**
+     * This object is used as a [Map] key, so it needs this method to obey the contract of returning
+     * the same value for equivalent instances. Hardcoding this value to zero is not very efficient,
+     * but since the total number of worker cases for any given workflow is unlikely to be very
+     * large, degrading to a linear search (or whatever the map implementation happens to use for
+     * non-equivalent keys with identical hashcodes) should be fine.
+     */
+    override fun hashCode(): Int = 0
   }
 }

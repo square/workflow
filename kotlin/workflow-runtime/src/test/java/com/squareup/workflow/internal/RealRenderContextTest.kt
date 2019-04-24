@@ -17,19 +17,18 @@
 
 package com.squareup.workflow.internal
 
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.noop
-import com.squareup.workflow.RenderContext
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateless
 import kotlinx.coroutines.CoroutineScope
-import kotlin.reflect.full.starProjectedType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -114,7 +113,7 @@ class RealRenderContextTest {
     assertEquals("foo", output)
   }
 
-  @Test fun `composeChild works`() {
+  @Test fun `renderChild works`() {
     val context = RealRenderContext(TestRenderer())
     val workflow = TestWorkflow()
 
@@ -147,9 +146,6 @@ class RealRenderContextTest {
 
     assertFailsWith<IllegalStateException> { context.onEvent<Unit> { fail() } }
     assertFailsWith<IllegalStateException> { context.onTeardown { fail() } }
-    assertFailsWith<IllegalStateException> {
-      context.onReceive<Unit>({ fail() }, Unit::class.starProjectedType) { fail() }
-    }
     val child = Workflow.stateless<Nothing, Unit> { fail() }
     assertFailsWith<IllegalStateException> { context.renderChild(child) }
     assertFailsWith<IllegalStateException> { context.buildBehavior() }
