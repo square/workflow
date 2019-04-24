@@ -43,6 +43,7 @@ class TakeTurnsWorkflowTest {
           .isEqualTo("higgledy")
       Assertions.assertThat(o)
           .isEqualTo("piggledy")
+      println("done")
     }
   }
 
@@ -69,6 +70,6 @@ class TakeTurnsWorkflowTest {
   }
 }
 
-private fun WorkflowTester<*, *, GamePlayScreen>.takeSquare(event: TakeSquare) {
+private suspend fun WorkflowTester<*, *, GamePlayScreen>.takeSquare(event: TakeSquare) {
   awaitNextRendering().onEvent(event)
 }

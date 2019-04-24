@@ -25,7 +25,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -113,7 +114,7 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
    * @param skipIntermediate If true, and the workflow has emitted multiple renderings, all but the
    * most recent one will be dropped.
    */
-  fun awaitNextRendering(
+  suspend fun awaitNextRendering(
     timeoutMs: Long? = null,
     skipIntermediate: Boolean = true
   ): RenderingT = renderings.receiveBlocking(timeoutMs, skipIntermediate)
@@ -126,7 +127,7 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
    * @param skipIntermediate If true, and the workflow has emitted multiple snapshots, all but the
    * most recent one will be dropped.
    */
-  fun awaitNextSnapshot(
+  suspend fun awaitNextSnapshot(
     timeoutMs: Long? = null,
     skipIntermediate: Boolean = true
   ): Snapshot = snapshots.receiveBlocking(timeoutMs, skipIntermediate)
@@ -137,7 +138,7 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
    * @param timeoutMs The maximum amount of time to wait for an output to be emitted. If null,
    * [DEFAULT_TIMEOUT_MS] will be used instead.
    */
-  fun awaitNextOutput(timeoutMs: Long? = null): OutputT =
+  suspend fun awaitNextOutput(timeoutMs: Long? = null): OutputT =
     outputs.receiveBlocking(timeoutMs, drain = false)
 
   /**
@@ -146,15 +147,13 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
    * @param timeoutMs The maximum amount of time to wait for an output to be emitted. If null,
    * [DEFAULT_TIMEOUT_MS] will be used instead.
    */
-  fun awaitFailure(timeoutMs: Long? = null): Throwable {
+  suspend fun awaitFailure(timeoutMs: Long? = null): Throwable {
     var error: Throwable? = null
-    runBlocking {
-      withTimeout(timeoutMs ?: DEFAULT_TIMEOUT_MS) {
-        try {
-          while (true) renderings.receive()
-        } catch (e: Throwable) {
-          error = e
-        }
+    withTimeout(timeoutMs ?: DEFAULT_TIMEOUT_MS) {
+      try {
+        while (true) renderings.receive()
+      } catch (e: Throwable) {
+        error = e
       }
     }
     return error!!
@@ -164,19 +163,17 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
    * @param drain If true, this function will consume all the values currently in the channel, and
    * return the last one.
    */
-  private fun <T> ReceiveChannel<T>.receiveBlocking(
+  private suspend fun <T> ReceiveChannel<T>.receiveBlocking(
     timeoutMs: Long?,
     drain: Boolean
-  ): T = runBlocking {
-    withTimeout(timeoutMs ?: DEFAULT_TIMEOUT_MS) {
-      var item = receive()
-      if (drain) {
-        while (!isEmpty) {
-          item = receive()
-        }
+  ): T = withTimeout(timeoutMs ?: DEFAULT_TIMEOUT_MS) {
+    var item = receive()
+    if (drain) {
+      while (!isEmpty) {
+        item = receive()
       }
-      return@withTimeout item
     }
+    return@withTimeout item
   }
 
   companion object {
@@ -196,7 +193,7 @@ fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
       input: InputT,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
+      block: suspend WorkflowTester<InputT, OutputT, RenderingT>.() -> T
     ): T = test(block, context) { factory, inputs ->
       inputs.offer(input)
       factory.run(this, inputs, snapshot)
@@ -212,7 +209,7 @@ fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
 fun <T, OutputT : Any, RenderingT : Any> Workflow<Unit, OutputT, RenderingT>.testFromStart(
   snapshot: Snapshot? = null,
   context: CoroutineContext = EmptyCoroutineContext,
-  block: WorkflowTester<Unit, OutputT, RenderingT>.() -> T
+  block: suspend WorkflowTester<Unit, OutputT, RenderingT>.() -> T
 ): T = testFromStart(Unit, snapshot, context, block)
 
 /**
@@ -229,7 +226,7 @@ fun <T, InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
       input: InputT,
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
+      block: suspend WorkflowTester<InputT, OutputT, RenderingT>.() -> T
     ): T = test(block, context) { factory, inputs ->
       inputs.offer(input)
       factory.runTestFromState(this, inputs, initialState)
@@ -249,45 +246,29 @@ fun <StateT : Any, OutputT : Any, RenderingT : Any>
     StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.testFromState(
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<Unit, OutputT, RenderingT>.() -> Unit
+      block: suspend WorkflowTester<Unit, OutputT, RenderingT>.() -> Unit
     ) = testFromState(Unit, initialState, context, block)
 // @formatter:on
 
 @UseExperimental(InternalCoroutinesApi::class)
 private fun <T, I : Any, O : Any, R : Any> test(
-  testBlock: (WorkflowTester<I, O, R>) -> T,
+  testBlock: suspend (WorkflowTester<I, O, R>) -> T,
   baseContext: CoroutineContext,
   starter: (WorkflowHost.Factory, inputs: Channel<I>) -> WorkflowHost<I, O, R>
-): T {
-  val context = Dispatchers.Unconfined + baseContext + Job(parent = baseContext[Job])
+): T = runBlocking(Dispatchers.Unconfined + baseContext + SupervisorJob(baseContext[Job])) {
   val inputs = Channel<I>(capacity = 1)
   @Suppress("ReplaceSingleLineLet")
-  val host = WorkflowHost.Factory(context)
+  val host = WorkflowHost.Factory(coroutineContext)
       .let { starter(it, inputs) }
-      .let { WorkflowTester(inputs, it, context) }
+      .let { WorkflowTester(inputs, it, coroutineContext) }
 
-  var error: Throwable? = null
   try {
-    return testBlock(host)
+    return@runBlocking testBlock(host)
   } catch (e: Throwable) {
-    error = e
+    e.printStackTrace()
     throw e
   } finally {
-    if (error != null) {
-      // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-      @Suppress("DEPRECATION")
-      val cancelled = context.cancel(error)
-      if (!cancelled) {
-        val cancellationCause = context[Job]!!.getCancellationException()
-            .cause
-        if (cancellationCause != error && cancellationCause != null) {
-          error.addSuppressed(cancellationCause)
-        }
-      }
-    } else {
-      // Cancel the Job to ensure everything gets cleaned up.
-      context.cancel()
-    }
+    // Cancel any leftover coroutines to ensure everything gets cleaned up.
+    coroutineContext.cancelChildren()
   }
 }
-

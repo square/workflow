@@ -28,9 +28,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class WorkerCompositionIntegrationTest {
 
@@ -194,8 +194,11 @@ class WorkerCompositionIntegrationTest {
       @Suppress("DEPRECATION")
       channel.cancel(ExpectedException())
 
-      assertFailsWith<ExpectedException> {
+      try {
         awaitNextOutput()
+        fail("Expected exception.")
+      } catch (e: ExpectedException) {
+        // Expected.
       }
     }
   }
