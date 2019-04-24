@@ -39,10 +39,10 @@ import kotlin.coroutines.CoroutineContext
  * information about them:
  *  - [awaitNextRendering], [awaitNextOutput], [awaitNextSnapshot]
  *    - Block until something becomes available, and then return it.
- *  - [withNextRendering], [withNextOutput], [withNextSnapshot]
- *    - Block until something becomes available, and then pass it to a lambda.
  *  - [hasRendering], [hasOutput], [hasSnapshot]
  *    - Return `true` if the previous methods won't block.
+ *  - [sendInput]
+ *    - Send a new [InputT] to the root workflow.
  */
 class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly internal constructor(
   private val inputs: SendChannel<InputT>,
@@ -88,7 +88,7 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
   private val ReceiveChannel<*>.isEmptyOrClosed get() = isEmpty || isClosedForReceive
 
   /**
-   * Sends [input] to the workflow-under-test.
+   * Sends [input] to the workflow.
    */
   fun sendInput(input: InputT) {
     runBlocking {
@@ -112,21 +112,6 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
   ): RenderingT = renderings.receiveBlocking(timeoutMs, skipIntermediate)
 
   /**
-   * Blocks until the workflow emits a rendering, then passes it to [block].
-   *
-   * @param timeoutMs The maximum amount of time to wait for a rendering to be emitted. If null,
-   * [WorkflowTester.DEFAULT_TIMEOUT_MS] will be used instead.
-   * @param skipIntermediate If true, and the workflow has emitted multiple renderings, all but the
-   * most recent one will be dropped.
-   * @return The value returned from [block].
-   */
-  fun <T> withNextRendering(
-    timeoutMs: Long? = null,
-    skipIntermediate: Boolean = true,
-    block: (RenderingT) -> T
-  ): T = awaitNextRendering(timeoutMs, skipIntermediate).let(block)
-
-  /**
    * Blocks until the workflow emits a snapshot, then returns it.
    *
    * @param timeoutMs The maximum amount of time to wait for a snapshot to be emitted. If null,
@@ -140,21 +125,6 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
   ): Snapshot = snapshots.receiveBlocking(timeoutMs, skipIntermediate)
 
   /**
-   * Blocks until the workflow emits a snapshot, then passes it to [block].
-   *
-   * @param timeoutMs The maximum amount of time to wait for a snapshot to be emitted. If null,
-   * [DEFAULT_TIMEOUT_MS] will be used instead.
-   * @param skipIntermediate If true, and the workflow has emitted multiple snapshots, all but the
-   * most recent one will be dropped.
-   * @return The value returned from [block].
-   */
-  fun <T> withNextSnapshot(
-    timeoutMs: Long? = null,
-    skipIntermediate: Boolean = true,
-    block: (Snapshot) -> T
-  ) = awaitNextSnapshot(timeoutMs, skipIntermediate).let(block)
-
-  /**
    * Blocks until the workflow emits an output, then returns it.
    *
    * @param timeoutMs The maximum amount of time to wait for an output to be emitted. If null,
@@ -162,18 +132,6 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
    */
   fun awaitNextOutput(timeoutMs: Long? = null): OutputT =
     outputs.receiveBlocking(timeoutMs, drain = false)
-
-  /**
-   * Blocks until the workflow emits an output, then passes it to [block].
-   *
-   * @param timeoutMs The maximum amount of time to wait for an output to be emitted. If null,
-   * [DEFAULT_TIMEOUT_MS] will be used instead.
-   * @return The value returned from [block].
-   */
-  fun <T> withNextOutput(
-    timeoutMs: Long? = null,
-    block: (OutputT) -> T
-  ): T = awaitNextOutput(timeoutMs).let(block)
 
   /**
    * Blocks until the workflow fails by throwing an exception, then returns that exception.
@@ -194,19 +152,6 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT : Any> @TestOnly in
     }
     return error!!
   }
-
-  /**
-   * Blocks until the workflow fails by throwing an exception, then passes that exception to
-   * [block].
-   *
-   * @param timeoutMs The maximum amount of time to wait for an output to be emitted. If null,
-   * [DEFAULT_TIMEOUT_MS] will be used instead.
-   * @return The value returned from [block].
-   */
-  fun <T> withFailure(
-    timeoutMs: Long? = null,
-    block: (Throwable) -> T
-  ): T = awaitFailure(timeoutMs).let(block)
 
   /**
    * @param drain If true, this function will consume all the values currently in the channel, and

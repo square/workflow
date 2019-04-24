@@ -49,10 +49,11 @@ class WorkflowTesterTest {
     }
 
     workflow.testFromStart {
-      it.withFailure { error ->
-        val causeChain = generateSequence(error) { it.cause }
-        assertEquals(1, causeChain.count { it is ExpectedException })
-      }
+      it.awaitFailure()
+          .let { error ->
+            val causeChain = generateSequence(error) { it.cause }
+            assertEquals(1, causeChain.count { it is ExpectedException })
+          }
     }
   }
 
@@ -63,10 +64,11 @@ class WorkflowTesterTest {
     workflow.testFromStart(context = job) { tester ->
       @Suppress("DEPRECATION")
       job.cancel(ExpectedException())
-      tester.withFailure { error ->
-        val causeChain = generateSequence(error) { it.cause }
-        assertEquals(1, causeChain.count { it is ExpectedException })
-      }
+      tester.awaitFailure()
+          .let { error ->
+            val causeChain = generateSequence(error) { it.cause }
+            assertEquals(1, causeChain.count { it is ExpectedException })
+          }
     }
   }
 
@@ -75,9 +77,7 @@ class WorkflowTesterTest {
     val workflow = Workflow.stateless<Unit, Unit> { }
 
     workflow.testFromStart(context = job) {
-      it.withFailure { error ->
-        assertTrue(error is CancellationException)
-      }
+      assertTrue(it.awaitFailure() is CancellationException)
     }
   }
 
@@ -104,10 +104,11 @@ class WorkflowTesterTest {
     }
 
     workflow.testFromStart { tester ->
-      tester.withFailure { error ->
-        val causeChain = generateSequence(error) { it.cause }
-        assertEquals(1, causeChain.count { it is ExpectedException })
-      }
+      tester.awaitFailure()
+          .let { error ->
+            val causeChain = generateSequence(error) { it.cause }
+            assertEquals(1, causeChain.count { it is ExpectedException })
+          }
     }
   }
 
@@ -134,10 +135,11 @@ class WorkflowTesterTest {
     }
 
     workflow.testFromStart { tester ->
-      tester.withFailure { error ->
-        val causeChain = generateSequence(error) { it.cause }
-        assertEquals(1, causeChain.count { it is ExpectedException })
-      }
+      tester.awaitFailure()
+          .let { error ->
+            val causeChain = generateSequence(error) { it.cause }
+            assertEquals(1, causeChain.count { it is ExpectedException })
+          }
     }
   }
 
@@ -169,10 +171,11 @@ class WorkflowTesterTest {
     }
 
     workflow.testFromStart(snapshot) { tester ->
-      tester.withFailure { error ->
-        val causeChain = generateSequence(error) { it.cause }
-        assertEquals(1, causeChain.count { it is ExpectedException })
-      }
+      tester.awaitFailure()
+          .let { error ->
+            val causeChain = generateSequence(error) { it.cause }
+            assertEquals(1, causeChain.count { it is ExpectedException })
+          }
     }
   }
 
@@ -184,10 +187,11 @@ class WorkflowTesterTest {
     }
 
     workflow.testFromStart { tester ->
-      tester.withFailure { error ->
-        val causeChain = generateSequence(error) { it.cause }
-        assertEquals(1, causeChain.count { it is ExpectedException })
-      }
+      tester.awaitFailure()
+          .let { error ->
+            val causeChain = generateSequence(error) { it.cause }
+            assertEquals(1, causeChain.count { it is ExpectedException })
+          }
     }
   }
 

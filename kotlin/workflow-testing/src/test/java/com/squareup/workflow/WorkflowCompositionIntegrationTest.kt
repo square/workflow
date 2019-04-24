@@ -33,10 +33,11 @@ class WorkflowCompositionIntegrationTest {
 
     // Setup initial state and change the state the workflow in the tree.
     root.testFromStart("initial input") { host ->
-      host.withNextRendering {
-        assertEquals("root:initial input", it.data)
-        assertEquals("leaf:initial input[0]", it["leaf"].data)
-      }
+      host.awaitNextRendering()
+          .let {
+            assertEquals("root:initial input", it.data)
+            assertEquals("leaf:initial input[0]", it["leaf"].data)
+          }
     }
   }
 
@@ -49,11 +50,12 @@ class WorkflowCompositionIntegrationTest {
 
     // Setup initial state and change the state the workflow in the tree.
     root.testFromStart("initial input") { host ->
-      host.withNextRendering {
-        assertEquals("root:initial input", it.data)
-        assertEquals("leaf1:initial input[0]", it["leaf1"].data)
-        assertEquals("leaf2:initial input[1]", it["leaf2"].data)
-      }
+      host.awaitNextRendering()
+          .let {
+            assertEquals("root:initial input", it.data)
+            assertEquals("leaf1:initial input[0]", it["leaf1"].data)
+            assertEquals("leaf2:initial input[1]", it["leaf2"].data)
+          }
     }
   }
 
@@ -72,14 +74,15 @@ class WorkflowCompositionIntegrationTest {
     )
 
     root.testFromStart("initial input") { host ->
-      host.withNextRendering {
-        assertEquals("root:initial input", it.data)
-        assertEquals("middle1:initial input[0]", it["middle1"].data)
-        assertEquals("middle2:initial input[1]", it["middle2"].data)
-        assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
-        assertEquals("leaf2:initial input[0][1]", it["middle1", "leaf2"].data)
-        assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
-      }
+      host.awaitNextRendering()
+          .let {
+            assertEquals("root:initial input", it.data)
+            assertEquals("middle1:initial input[0]", it["middle1"].data)
+            assertEquals("middle2:initial input[1]", it["middle2"].data)
+            assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
+            assertEquals("leaf2:initial input[0][1]", it["middle1", "leaf2"].data)
+            assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
+          }
     }
   }
 
@@ -135,15 +138,15 @@ class WorkflowCompositionIntegrationTest {
     }
 
     root.testFromStart { tester ->
-      tester.withNextRendering { teardownChildren ->
-        assertTrue(teardowns.isEmpty())
+      tester.awaitNextRendering()
+          .let { teardownChildren ->
+            assertTrue(teardowns.isEmpty())
 
-        teardownChildren()
-      }
+            teardownChildren()
+          }
 
-      tester.withNextRendering {
-        assertEquals(listOf("child1", "child2"), teardowns)
-      }
+      tester.awaitNextRendering()
+      assertEquals(listOf("child1", "child2"), teardowns)
     }
   }
 
@@ -181,15 +184,15 @@ class WorkflowCompositionIntegrationTest {
     }
 
     root.testFromStart { tester ->
-      tester.withNextRendering { teardownChildren ->
-        assertTrue(teardowns.isEmpty())
+      tester.awaitNextRendering()
+          .let { teardownChildren ->
+            assertTrue(teardowns.isEmpty())
 
-        teardownChildren()
-      }
+            teardownChildren()
+          }
 
-      tester.withNextRendering {
-        assertEquals(listOf("grandchild", "child"), teardowns)
-      }
+      tester.awaitNextRendering()
+      assertEquals(listOf("grandchild", "child"), teardowns)
     }
   }
 
@@ -242,24 +245,27 @@ class WorkflowCompositionIntegrationTest {
     }
 
     root.testFromStart { tester ->
-      tester.withNextRendering { runChildren ->
-        assertEquals(0, starts)
-        assertEquals(0, cancels)
+      tester.awaitNextRendering()
+          .let { runChildren ->
+            assertEquals(0, starts)
+            assertEquals(0, cancels)
 
-        runChildren(true)
-      }
+            runChildren(true)
+          }
 
-      tester.withNextRendering { runChildren ->
-        assertEquals(1, starts)
-        assertEquals(0, cancels)
+      tester.awaitNextRendering()
+          .let { runChildren ->
+            assertEquals(1, starts)
+            assertEquals(0, cancels)
 
-        runChildren(false)
-      }
+            runChildren(false)
+          }
 
-      tester.withNextRendering {
-        assertEquals(1, starts)
-        assertEquals(1, cancels)
-      }
+      tester.awaitNextRendering()
+          .let {
+            assertEquals(1, starts)
+            assertEquals(1, cancels)
+          }
     }
   }
 

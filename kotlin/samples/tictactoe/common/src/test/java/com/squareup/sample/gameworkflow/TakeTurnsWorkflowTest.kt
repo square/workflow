@@ -70,5 +70,5 @@ class TakeTurnsWorkflowTest {
 }
 
 private fun WorkflowTester<*, *, GamePlayScreen>.takeSquare(event: TakeSquare) {
-  withNextRendering { it.onEvent(event) }
+  awaitNextRendering().onEvent(event)
 }
