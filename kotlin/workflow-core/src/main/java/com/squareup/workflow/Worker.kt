@@ -182,7 +182,7 @@ interface Worker<out T> {
       key: String = "",
         // This could be crossinline, but there's a coroutines bug that will cause the coroutine
         // to immediately resume on suspension inside block when it is crossinline.
-        // TODO link to KT ticket.
+        // See https://youtrack.jetbrains.com/issue/KT-31197.
       noinline block: suspend () -> T
     ): Worker<T> = create(key) {
       emitOutput(block())
@@ -199,7 +199,7 @@ interface Worker<out T> {
       key: String = "",
         // This could be crossinline, but there's a coroutines bug that will cause the coroutine
         // to immediately resume on suspension inside block when it is crossinline.
-        // TODO link to KT ticket.
+        // See https://youtrack.jetbrains.com/issue/KT-31197.
       noinline block: suspend () -> T?
     ): Worker<T> = create(key) {
       block()?.let { emitOutput(it) }
