@@ -26,20 +26,20 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") { host ->
-      host.awaitNextRendering()
+    root.testFromStart("initial input") {
+      awaitNextRendering()
           .let {
             assertEquals("root:initial input", it.data)
             it.setData("new data")
           }
 
-      assertEquals("root:new data", host.awaitNextRendering().data)
+      assertEquals("root:new data", awaitNextRendering().data)
 
-      snapshot = host.awaitNextSnapshot()
+      snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) { host ->
-      assertEquals("root:new data", host.awaitNextRendering().data)
+    root.testFromStart("unused input", snapshot!!) {
+      assertEquals("root:new data", awaitNextRendering().data)
     }
   }
 
@@ -48,26 +48,26 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") { host ->
-      host.awaitNextRendering()
+    root.testFromStart("initial input") {
+      awaitNextRendering()
           .let {
             assertEquals("root:initial input", it.data)
             it["leaf"].setData("new leaf data")
           }
-      host.awaitNextRendering()
+      awaitNextRendering()
           .setData("new root data")
 
-      host.awaitNextRendering()
+      awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
             assertEquals("leaf:new leaf data", it["leaf"].data)
           }
 
-      snapshot = host.awaitNextSnapshot()
+      snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) { host ->
-      host.awaitNextRendering()
+    root.testFromStart("unused input", snapshot!!) {
+      awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
             assertEquals("leaf:new leaf data", it["leaf"].data)
@@ -91,8 +91,8 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state of two workflows in the tree.
-    root.testFromStart("initial input") { host ->
-      host.awaitNextRendering()
+    root.testFromStart("initial input") {
+      awaitNextRendering()
           .let {
             assertEquals("root:initial input", it.data)
             assertEquals("middle1:initial input[0]", it["middle1"].data)
@@ -103,10 +103,10 @@ class SnapshottingIntegrationTest {
 
             it["middle1", "leaf2"].setData("new leaf data")
           }
-      host.awaitNextRendering()
+      awaitNextRendering()
           .setData("new root data")
 
-      host.awaitNextRendering()
+      awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
             assertEquals("middle1:initial input[0]", it["middle1"].data)
@@ -116,11 +116,11 @@ class SnapshottingIntegrationTest {
             assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
           }
 
-      snapshot = host.awaitNextSnapshot()
+      snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) { host ->
-      host.awaitNextRendering()
+    root.testFromStart("unused input", snapshot!!) {
+      awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
             assertEquals("middle1:initial input[0]", it["middle1"].data)

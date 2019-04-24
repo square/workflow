@@ -42,7 +42,7 @@ fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
       input: InputT,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: (WorkflowTester<InputT, OutputT, RenderingT>) -> T
+      block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
     ): T = test(block, context) { factory, inputs ->
       inputs.offer(input)
       factory.run(this, inputs, snapshot)
@@ -58,7 +58,7 @@ fun <T, InputT : Any, OutputT : Any, RenderingT : Any>
 fun <T, OutputT : Any, RenderingT : Any> Workflow<Unit, OutputT, RenderingT>.testFromStart(
   snapshot: Snapshot? = null,
   context: CoroutineContext = EmptyCoroutineContext,
-  block: (WorkflowTester<Unit, OutputT, RenderingT>) -> T
+  block: WorkflowTester<Unit, OutputT, RenderingT>.() -> T
 ): T = testFromStart(Unit, snapshot, context, block)
 
 /**
@@ -75,7 +75,7 @@ fun <T, InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any>
       input: InputT,
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: (WorkflowTester<InputT, OutputT, RenderingT>) -> T
+      block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
     ): T = test(block, context) { factory, inputs ->
       inputs.offer(input)
       factory.runTestFromState(this, inputs, initialState)
@@ -95,7 +95,7 @@ fun <StateT : Any, OutputT : Any, RenderingT : Any>
     StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.testFromState(
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: (WorkflowTester<Unit, OutputT, RenderingT>) -> Unit
+      block: WorkflowTester<Unit, OutputT, RenderingT>.() -> Unit
     ) = testFromState(Unit, initialState, context, block)
 // @formatter:on
 

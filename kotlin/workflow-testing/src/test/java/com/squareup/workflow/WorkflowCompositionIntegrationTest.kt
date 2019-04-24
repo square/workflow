@@ -32,8 +32,8 @@ class WorkflowCompositionIntegrationTest {
     val root = TreeWorkflow("root", TreeWorkflow("leaf"))
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") { host ->
-      host.awaitNextRendering()
+    root.testFromStart("initial input") {
+      awaitNextRendering()
           .let {
             assertEquals("root:initial input", it.data)
             assertEquals("leaf:initial input[0]", it["leaf"].data)
@@ -49,8 +49,8 @@ class WorkflowCompositionIntegrationTest {
     )
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") { host ->
-      host.awaitNextRendering()
+    root.testFromStart("initial input") {
+      awaitNextRendering()
           .let {
             assertEquals("root:initial input", it.data)
             assertEquals("leaf1:initial input[0]", it["leaf1"].data)
@@ -73,8 +73,8 @@ class WorkflowCompositionIntegrationTest {
         )
     )
 
-    root.testFromStart("initial input") { host ->
-      host.awaitNextRendering()
+    root.testFromStart("initial input") {
+      awaitNextRendering()
           .let {
             assertEquals("root:initial input", it.data)
             assertEquals("middle1:initial input[0]", it["middle1"].data)
@@ -95,8 +95,8 @@ class WorkflowCompositionIntegrationTest {
 
     // Setup initial state and change the state the workflow in the tree.
     assertFails {
-      root.testFromStart("initial input") { tester ->
-        tester.awaitNextRendering()
+      root.testFromStart("initial input") {
+        awaitNextRendering()
       }
     }.let { error ->
       val causeChain = generateSequence(error) { it.cause }
@@ -137,15 +137,15 @@ class WorkflowCompositionIntegrationTest {
       override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
     }
 
-    root.testFromStart { tester ->
-      tester.awaitNextRendering()
+    root.testFromStart {
+      awaitNextRendering()
           .let { teardownChildren ->
             assertTrue(teardowns.isEmpty())
 
             teardownChildren()
           }
 
-      tester.awaitNextRendering()
+      awaitNextRendering()
       assertEquals(listOf("child1", "child2"), teardowns)
     }
   }
@@ -183,15 +183,15 @@ class WorkflowCompositionIntegrationTest {
       override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
     }
 
-    root.testFromStart { tester ->
-      tester.awaitNextRendering()
+    root.testFromStart {
+      awaitNextRendering()
           .let { teardownChildren ->
             assertTrue(teardowns.isEmpty())
 
             teardownChildren()
           }
 
-      tester.awaitNextRendering()
+      awaitNextRendering()
       assertEquals(listOf("grandchild", "child"), teardowns)
     }
   }
@@ -244,8 +244,8 @@ class WorkflowCompositionIntegrationTest {
       override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
     }
 
-    root.testFromStart { tester ->
-      tester.awaitNextRendering()
+    root.testFromStart {
+      awaitNextRendering()
           .let { runChildren ->
             assertEquals(0, starts)
             assertEquals(0, cancels)
@@ -253,7 +253,7 @@ class WorkflowCompositionIntegrationTest {
             runChildren(true)
           }
 
-      tester.awaitNextRendering()
+      awaitNextRendering()
           .let { runChildren ->
             assertEquals(1, starts)
             assertEquals(0, cancels)
@@ -261,7 +261,7 @@ class WorkflowCompositionIntegrationTest {
             runChildren(false)
           }
 
-      tester.awaitNextRendering()
+      awaitNextRendering()
           .let {
             assertEquals(1, starts)
             assertEquals(1, cancels)
@@ -294,21 +294,21 @@ class WorkflowCompositionIntegrationTest {
       override fun snapshotState(state: Int) = Snapshot.EMPTY
     }
 
-    workflow.testFromStart { tester ->
+    workflow.testFromStart {
       triggerChildOutput.offer(Unit)
-      assertEquals(0, tester.awaitNextOutput())
+      assertEquals(0, awaitNextOutput())
 
-      tester.awaitNextRendering()
+      awaitNextRendering()
           .invoke(Unit)
       triggerChildOutput.offer(Unit)
 
-      assertEquals(1, tester.awaitNextOutput())
+      assertEquals(1, awaitNextOutput())
 
-      tester.awaitNextRendering()
+      awaitNextRendering()
           .invoke(Unit)
       triggerChildOutput.offer(Unit)
 
-      assertEquals(2, tester.awaitNextOutput())
+      assertEquals(2, awaitNextOutput())
     }
   }
 }

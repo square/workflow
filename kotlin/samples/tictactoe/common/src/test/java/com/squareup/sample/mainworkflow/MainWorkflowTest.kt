@@ -22,8 +22,8 @@ import org.junit.Test
  */
 class MainWorkflowTest {
   @Test fun `starts in auth over empty game`() {
-    MainWorkflow(authWorkflow(), runGameWorkflow()).testFromStart { tester ->
-      tester.awaitNextRendering()
+    MainWorkflow(authWorkflow(), runGameWorkflow()).testFromStart {
+      awaitNextRendering()
           .let { screen ->
             assertThat(screen.panels).hasSize(1)
             assertThat(screen.panels[0]).isEqualTo(DEFAULT_AUTH)
@@ -40,8 +40,8 @@ class MainWorkflowTest {
       authScreen()
     }
 
-    MainWorkflow(authWorkflow, runGameWorkflow()).testFromStart { tester ->
-      tester.awaitNextRendering()
+    MainWorkflow(authWorkflow, runGameWorkflow()).testFromStart {
+      awaitNextRendering()
           .let { screen ->
             assertThat(screen.panels).isEmpty()
             assertThat(screen.body).isEqualTo(DEFAULT_RUN_GAME)

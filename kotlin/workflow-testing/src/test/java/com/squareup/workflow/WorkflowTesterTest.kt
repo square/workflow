@@ -49,7 +49,7 @@ class WorkflowTesterTest {
     }
 
     workflow.testFromStart {
-      it.awaitFailure()
+      awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }
             assertEquals(1, causeChain.count { it is ExpectedException })
@@ -61,10 +61,10 @@ class WorkflowTesterTest {
     val job = Job()
     val workflow = Workflow.stateless<Unit, Unit> { }
 
-    workflow.testFromStart(context = job) { tester ->
+    workflow.testFromStart(context = job) {
       @Suppress("DEPRECATION")
       job.cancel(ExpectedException())
-      tester.awaitFailure()
+      awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }
             assertEquals(1, causeChain.count { it is ExpectedException })
@@ -77,7 +77,7 @@ class WorkflowTesterTest {
     val workflow = Workflow.stateless<Unit, Unit> { }
 
     workflow.testFromStart(context = job) {
-      assertTrue(it.awaitFailure() is CancellationException)
+      assertTrue(awaitFailure() is CancellationException)
     }
   }
 
@@ -103,8 +103,8 @@ class WorkflowTesterTest {
       override fun snapshotState(state: Unit): Snapshot = fail()
     }
 
-    workflow.testFromStart { tester ->
-      tester.awaitFailure()
+    workflow.testFromStart {
+      awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }
             assertEquals(1, causeChain.count { it is ExpectedException })
@@ -134,8 +134,8 @@ class WorkflowTesterTest {
       override fun snapshotState(state: Unit): Snapshot = throw ExpectedException()
     }
 
-    workflow.testFromStart { tester ->
-      tester.awaitFailure()
+    workflow.testFromStart {
+      awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }
             assertEquals(1, causeChain.count { it is ExpectedException })
@@ -167,11 +167,11 @@ class WorkflowTesterTest {
 
     // Get a valid snapshot (can't use Snapshot.EMPTY).
     val snapshot = workflow.testFromStart {
-      it.awaitNextSnapshot()
+      awaitNextSnapshot()
     }
 
-    workflow.testFromStart(snapshot) { tester ->
-      tester.awaitFailure()
+    workflow.testFromStart(snapshot) {
+      awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }
             assertEquals(1, causeChain.count { it is ExpectedException })
@@ -186,8 +186,8 @@ class WorkflowTesterTest {
       it.onWorkerOutput(deferred.asWorker()) { fail("Shouldn't get here.") }
     }
 
-    workflow.testFromStart { tester ->
-      tester.awaitFailure()
+    workflow.testFromStart {
+      awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }
             assertEquals(1, causeChain.count { it is ExpectedException })
@@ -207,9 +207,9 @@ class WorkflowTesterTest {
     val workflow = Workflow.stateless<String, Nothing, String> { input, _ -> input }
 
     workflow.testFromStart("one") {
-      assertEquals("one", it.awaitNextRendering())
-      it.sendInput("two")
-      assertEquals("two", it.awaitNextRendering())
+      assertEquals("one", awaitNextRendering())
+      sendInput("two")
+      assertEquals("two", awaitNextRendering())
     }
   }
 
@@ -221,10 +221,10 @@ class WorkflowTesterTest {
     workflow.testFromStart(input) {
       assertEquals(1, renders)
 
-      it.sendInput(input)
+      sendInput(input)
       assertEquals(2, renders)
 
-      it.sendInput(input)
+      sendInput(input)
       assertEquals(3, renders)
     }
   }

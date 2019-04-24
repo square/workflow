@@ -43,9 +43,9 @@ class WorkerCompositionIntegrationTest {
       if (input) context.onWorkerOutput(worker) { noop() }
     }
 
-    workflow.testFromStart(false) { tester ->
+    workflow.testFromStart(false) {
       assertFalse(started)
-      tester.sendInput(true)
+      sendInput(true)
       assertTrue(started)
     }
   }
@@ -61,9 +61,9 @@ class WorkerCompositionIntegrationTest {
       if (input) context.onWorkerOutput(worker) { noop() }
     }
 
-    workflow.testFromStart(true) { tester ->
+    workflow.testFromStart(true) {
       assertFalse(cancelled)
-      tester.sendInput(false)
+      sendInput(false)
       assertTrue(cancelled)
     }
   }
@@ -84,15 +84,15 @@ class WorkerCompositionIntegrationTest {
       context.onWorkerOutput(worker) { noop() }
     }
 
-    workflow.testFromStart { tester ->
+    workflow.testFromStart {
       assertEquals(1, starts)
       assertEquals(0, stops)
 
-      tester.sendInput(Unit)
+      sendInput(Unit)
       assertEquals(1, starts)
       assertEquals(0, stops)
 
-      tester.sendInput(Unit)
+      sendInput(Unit)
       assertEquals(1, starts)
       assertEquals(0, stops)
     }
@@ -114,19 +114,19 @@ class WorkerCompositionIntegrationTest {
       if (input) context.onWorkerOutput(worker) { noop() }
     }
 
-    workflow.testFromStart(false) { tester ->
+    workflow.testFromStart(false) {
       assertEquals(0, starts)
       assertEquals(0, stops)
 
-      tester.sendInput(true)
+      sendInput(true)
       assertEquals(1, starts)
       assertEquals(0, stops)
 
-      tester.sendInput(false)
+      sendInput(false)
       assertEquals(1, starts)
       assertEquals(1, stops)
 
-      tester.sendInput(true)
+      sendInput(true)
       assertEquals(2, starts)
       assertEquals(1, stops)
     }
@@ -138,12 +138,12 @@ class WorkerCompositionIntegrationTest {
       context.onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
     }
 
-    workflow.testFromStart { tester ->
-      assertFalse(tester.hasOutput)
+    workflow.testFromStart {
+      assertFalse(this.hasOutput)
 
       channel.offer("foo")
 
-      assertEquals(Output("foo"), tester.awaitNextOutput())
+      assertEquals(Output("foo"), awaitNextOutput())
     }
   }
 
@@ -153,12 +153,12 @@ class WorkerCompositionIntegrationTest {
       context.onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
     }
 
-    workflow.testFromStart { tester ->
-      assertFalse(tester.hasOutput)
+    workflow.testFromStart {
+      assertFalse(this.hasOutput)
 
       channel.close()
 
-      assertEquals(Finished, tester.awaitNextOutput())
+      assertEquals(Finished, awaitNextOutput())
     }
   }
 
@@ -168,16 +168,16 @@ class WorkerCompositionIntegrationTest {
       context.onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
     }
 
-    workflow.testFromStart { tester ->
-      assertFalse(tester.hasOutput)
+    workflow.testFromStart {
+      assertFalse(this.hasOutput)
 
       channel.offer("foo")
 
-      assertEquals(Output("foo"), tester.awaitNextOutput())
+      assertEquals(Output("foo"), awaitNextOutput())
 
       channel.close()
 
-      assertEquals(Finished, tester.awaitNextOutput())
+      assertEquals(Finished, awaitNextOutput())
     }
   }
 
@@ -187,15 +187,15 @@ class WorkerCompositionIntegrationTest {
       context.onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
     }
 
-    workflow.testFromStart { tester ->
-      assertFalse(tester.hasOutput)
+    workflow.testFromStart {
+      assertFalse(this.hasOutput)
 
       // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
       @Suppress("DEPRECATION")
       channel.cancel(ExpectedException())
 
       assertFailsWith<ExpectedException> {
-        tester.awaitNextOutput()
+        awaitNextOutput()
       }
     }
   }
@@ -206,9 +206,9 @@ class WorkerCompositionIntegrationTest {
       context.onWorkerOutput(channel.asWorker()) { emitOutput(it) }
     }
 
-    workflow.testFromStart { tester ->
+    workflow.testFromStart {
       channel.close()
-      val error = tester.awaitFailure()
+      val error = awaitFailure()
       assertTrue(error is NoSuchElementException)
     }
   }
@@ -235,21 +235,21 @@ class WorkerCompositionIntegrationTest {
       override fun snapshotState(state: Int) = Snapshot.EMPTY
     }
 
-    workflow.testFromStart { tester ->
+    workflow.testFromStart {
       triggerOutput.offer(Unit)
-      assertEquals(0, tester.awaitNextOutput())
+      assertEquals(0, awaitNextOutput())
 
-      tester.awaitNextRendering()
+      awaitNextRendering()
           .invoke(Unit)
       triggerOutput.offer(Unit)
 
-      assertEquals(1, tester.awaitNextOutput())
+      assertEquals(1, awaitNextOutput())
 
-      tester.awaitNextRendering()
+      awaitNextRendering()
           .invoke(Unit)
       triggerOutput.offer(Unit)
 
-      assertEquals(2, tester.awaitNextOutput())
+      assertEquals(2, awaitNextOutput())
     }
   }
 }

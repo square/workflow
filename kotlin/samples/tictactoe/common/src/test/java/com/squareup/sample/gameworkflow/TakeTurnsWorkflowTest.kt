@@ -36,8 +36,8 @@ class TakeTurnsWorkflowTest {
   }
 
   @Test fun startsGameWithGivenNames() {
-    RealTakeTurnsWorkflow().testFromStart(PlayerInfo("higgledy", "piggledy")) { workflow ->
-      val (x, o) = workflow.awaitNextRendering().playerInfo
+    RealTakeTurnsWorkflow().testFromStart(PlayerInfo("higgledy", "piggledy")) {
+      val (x, o) = awaitNextRendering().playerInfo
 
       Assertions.assertThat(x)
           .isEqualTo("higgledy")
@@ -47,12 +47,12 @@ class TakeTurnsWorkflowTest {
   }
 
   @Test fun xWins() {
-    RealTakeTurnsWorkflow().testFromStart(PlayerInfo("higgledy", "piggledy")) { workflow ->
-      workflow.takeSquare(TakeSquare(0, 0))
-      workflow.takeSquare(TakeSquare(1, 0))
-      workflow.takeSquare(TakeSquare(0, 1))
-      workflow.takeSquare(TakeSquare(1, 1))
-      workflow.takeSquare(TakeSquare(0, 2))
+    RealTakeTurnsWorkflow().testFromStart(PlayerInfo("higgledy", "piggledy")) {
+      takeSquare(TakeSquare(0, 0))
+      takeSquare(TakeSquare(1, 0))
+      takeSquare(TakeSquare(0, 1))
+      takeSquare(TakeSquare(1, 1))
+      takeSquare(TakeSquare(0, 2))
 
       val expectedLastTurn = Turn(
           board = listOf(
@@ -62,7 +62,7 @@ class TakeTurnsWorkflowTest {
           )
       )
 
-      val result = workflow.awaitNextOutput()
+      val result = awaitNextOutput()
       Assertions.assertThat(result)
           .isEqualTo(CompletedGame(Victory, expectedLastTurn))
     }
