@@ -24,20 +24,20 @@ import kotlinx.coroutines.reactive.openSubscription
 import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.rx2.openSubscription
 
-inline fun <reified T : Any> Observable<T>.asWorker(key: String = ""): Worker<T> =
+inline fun <reified T : Any> Observable<out T>.asWorker(key: String = ""): Worker<T> =
   Worker.fromChannel(key) {
     @Suppress("EXPERIMENTAL_API_USAGE")
     openSubscription()
   }
 
-inline fun <reified T : Any> Flowable<T>.asWorker(key: String = ""): Worker<T> =
+inline fun <reified T : Any> Flowable<out T>.asWorker(key: String = ""): Worker<T> =
   Worker.fromChannel(key) {
     @Suppress("EXPERIMENTAL_API_USAGE")
     openSubscription()
   }
 
-inline fun <reified T : Any> Maybe<T>.asWorker(key: String = ""): Worker<T> =
+inline fun <reified T : Any> Maybe<out T>.asWorker(key: String = ""): Worker<T> =
   Worker.fromNullable(key) { await() }
 
-inline fun <reified T : Any> Single<T>.asWorker(key: String = ""): Worker<T> =
+inline fun <reified T : Any> Single<out T>.asWorker(key: String = ""): Worker<T> =
   Worker.from(key) { await() }

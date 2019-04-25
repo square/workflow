@@ -17,6 +17,10 @@ package com.squareup.workflow.rx2
 
 import com.squareup.workflow.testing.test
 import io.reactivex.BackpressureStrategy.MISSING
+import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.subjects.MaybeSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.SingleSubject
@@ -32,7 +36,8 @@ class RxWorkersTest {
 
   @Test fun `observable emits`() {
     val subject = PublishSubject.create<String>()
-    val worker = subject.asWorker()
+    // Should support out-projected parameters.
+    val worker = (subject as Observable<out String>).asWorker()
 
     worker.test {
       subject.onNext("foo")
@@ -112,7 +117,7 @@ class RxWorkersTest {
 
   @Test fun `flowable emits`() {
     val subject = PublishSubject.create<String>()
-    val worker = subject.toFlowable(MISSING)
+    val worker = (subject.toFlowable(MISSING) as Flowable<out String>)
         .asWorker()
 
     worker.test {
@@ -196,7 +201,7 @@ class RxWorkersTest {
 
   @Test fun `maybe emits`() {
     val subject = MaybeSubject.create<String>()
-    val worker = subject.asWorker()
+    val worker = (subject as Maybe<out String>).asWorker()
 
     worker.test {
       subject.onSuccess("foo")
@@ -259,7 +264,7 @@ class RxWorkersTest {
 
   @Test fun `single emits`() {
     val subject = SingleSubject.create<String>()
-    val worker = subject.asWorker()
+    val worker = (subject as Single<out String>).asWorker()
 
     worker.test {
       subject.onSuccess("foo")
