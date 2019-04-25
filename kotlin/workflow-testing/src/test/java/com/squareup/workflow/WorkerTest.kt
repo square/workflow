@@ -220,24 +220,25 @@ class WorkerTest {
     }
   }
 
-  @Test fun `ReceiveChannel asWorker doesn't close channel when cancelled`() {
+  @Test fun `ReceiveChannel asWorker does close channel when cancelled`() {
     val channel = Channel<Unit>(capacity = 1)
     val worker = channel.asWorker()
 
     worker.test {
       cancelWorker()
-      channel.send(Unit)
-      assertEquals(Unit, channel.receive())
+      assertTrue(channel.isClosedForReceive)
     }
   }
 
-  @Test fun `ReceiveChannel asWorker does close channel when cancelled when closeOnCancel true`() {
+  @Test
+  fun `ReceiveChannel asWorker doesn't close channel when cancelled when closeOnCancel false`() {
     val channel = Channel<Unit>(capacity = 1)
-    val worker = channel.asWorker(closeOnCancel = true)
+    val worker = channel.asWorker(closeOnCancel = false)
 
     worker.test {
       cancelWorker()
-      assertTrue(channel.isClosedForReceive)
+      channel.send(Unit)
+      assertEquals(Unit, channel.receive())
     }
   }
 }
