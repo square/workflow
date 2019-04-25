@@ -9,9 +9,15 @@
 /* Begin PBXBuildFile section */
 		221F6AAA223F6B5000981516 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 221F6AA0223F6B4F00981516 /* Assets.xcassets */; };
 		221F6AAB223F6B5000981516 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 221F6AA1223F6B4F00981516 /* LaunchScreen.storyboard */; };
-		221F6AAE223F6B5000981516 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221F6AA8223F6B5000981516 /* ViewController.swift */; };
 		221F6AAF223F6B5000981516 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221F6AA9223F6B5000981516 /* AppDelegate.swift */; };
 		3CA502C6C27333EF2544FF75 /* libPods-SampleApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C43DF0525491915384DD5B9B /* libPods-SampleApp.a */; };
+		E8798A0122693C4100BBC1EC /* DemoWorkflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8798A0022693C4100BBC1EC /* DemoWorkflow.swift */; };
+		E8798A0322693C5200BBC1EC /* ReversingWorkflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8798A0222693C5200BBC1EC /* ReversingWorkflow.swift */; };
+		E8798A0522693C9700BBC1EC /* DemoScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8798A0422693C9700BBC1EC /* DemoScreen.swift */; };
+		E8798A07226A2E4000BBC1EC /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8798A06226A2E4000BBC1EC /* WelcomeScreen.swift */; };
+		E8798A09226A353200BBC1EC /* WelcomeWorkflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8798A08226A353200BBC1EC /* WelcomeWorkflow.swift */; };
+		E8798A0B226A841400BBC1EC /* RootWorkflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8798A0A226A841400BBC1EC /* RootWorkflow.swift */; };
+		E89EF750226E34D10087A552 /* CrossFadeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89EF74F226E34D10087A552 /* CrossFadeContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,11 +25,17 @@
 		221F6AA0223F6B4F00981516 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		221F6AA2223F6B4F00981516 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		221F6AA6223F6B4F00981516 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		221F6AA8223F6B5000981516 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		221F6AA9223F6B5000981516 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4907CAC860D2FC1CBC2A648D /* Pods-SampleApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleApp.release.xcconfig"; path = "Target Support Files/Pods-SampleApp/Pods-SampleApp.release.xcconfig"; sourceTree = "<group>"; };
 		C43DF0525491915384DD5B9B /* libPods-SampleApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SampleApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE31D68261E5FA0E4E10C238 /* Pods-SampleApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleApp.debug.xcconfig"; path = "Target Support Files/Pods-SampleApp/Pods-SampleApp.debug.xcconfig"; sourceTree = "<group>"; };
+		E8798A0022693C4100BBC1EC /* DemoWorkflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoWorkflow.swift; sourceTree = "<group>"; };
+		E8798A0222693C5200BBC1EC /* ReversingWorkflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversingWorkflow.swift; sourceTree = "<group>"; };
+		E8798A0422693C9700BBC1EC /* DemoScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoScreen.swift; sourceTree = "<group>"; };
+		E8798A06226A2E4000BBC1EC /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
+		E8798A08226A353200BBC1EC /* WelcomeWorkflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeWorkflow.swift; sourceTree = "<group>"; };
+		E8798A0A226A841400BBC1EC /* RootWorkflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootWorkflow.swift; sourceTree = "<group>"; };
+		E89EF74F226E34D10087A552 /* CrossFadeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossFadeContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +90,14 @@
 		221F6AA7223F6B5000981516 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				221F6AA8223F6B5000981516 /* ViewController.swift */,
 				221F6AA9223F6B5000981516 /* AppDelegate.swift */,
+				E89EF74F226E34D10087A552 /* CrossFadeContainer.swift */,
+				E8798A0422693C9700BBC1EC /* DemoScreen.swift */,
+				E8798A0022693C4100BBC1EC /* DemoWorkflow.swift */,
+				E8798A0A226A841400BBC1EC /* RootWorkflow.swift */,
+				E8798A0222693C5200BBC1EC /* ReversingWorkflow.swift */,
+				E8798A06226A2E4000BBC1EC /* WelcomeScreen.swift */,
+				E8798A08226A353200BBC1EC /* WelcomeWorkflow.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -98,7 +116,6 @@
 				DE31D68261E5FA0E4E10C238 /* Pods-SampleApp.debug.xcconfig */,
 				4907CAC860D2FC1CBC2A648D /* Pods-SampleApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -198,8 +215,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8798A0522693C9700BBC1EC /* DemoScreen.swift in Sources */,
+				E8798A0322693C5200BBC1EC /* ReversingWorkflow.swift in Sources */,
+				E89EF750226E34D10087A552 /* CrossFadeContainer.swift in Sources */,
+				E8798A07226A2E4000BBC1EC /* WelcomeScreen.swift in Sources */,
 				221F6AAF223F6B5000981516 /* AppDelegate.swift in Sources */,
-				221F6AAE223F6B5000981516 /* ViewController.swift in Sources */,
+				E8798A0B226A841400BBC1EC /* RootWorkflow.swift in Sources */,
+				E8798A0122693C4100BBC1EC /* DemoWorkflow.swift in Sources */,
+				E8798A09226A353200BBC1EC /* WelcomeWorkflow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
