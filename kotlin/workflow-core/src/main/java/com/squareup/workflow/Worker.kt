@@ -222,13 +222,9 @@ interface Worker<out T> {
     ): Worker<T> = create(key) {
       coroutineScope {
         val channel = block()
-        // Using consumeEach ensures that the channel is closed if this coroutine is cancelled.
-        // This is important if block doesn't use the passed CoroutineScope to scope the returned
-        // channel.
-        @Suppress("EXPERIMENTAL_API_USAGE")
-        channel.consumeEach {
-          emitOutput(it)
-        }
+        // Close after cancel in case block doesn't use the passed CoroutineScope to scope the
+        // returned channel.
+        emitAll(channel, closeOnCancel = true)
       }
     }
   }
@@ -268,21 +264,39 @@ inline fun <reified T> BroadcastChannel<T>.asWorker(key: String = ""): Worker<T>
  * The channel will _not_ be cancelled when the [Worker] is cancelled – this is intended for
  * use with hot channels that are managed externally.
  *
- * False by default.
+ * True by default.
  */
 inline fun <reified T> ReceiveChannel<T>.asWorker(
   key: String = "",
-  closeOnCancel: Boolean = false
-): Worker<T> = if (closeOnCancel) {
-  fromChannel(key) { this@asWorker }
-} else {
-  create(key) {
-    coroutineScope {
-      // Intentionally NOT using consume* functions because we do not want to cancel the channel
-      // if the worker is cancelled.
-      for (value in this@asWorker) {
-        emitOutput(value)
-      }
+  closeOnCancel: Boolean = true
+): Worker<T> = create(key) {
+  emitAll(this@asWorker, closeOnCancel)
+}
+
+/**
+ * Emits whatever [channel] receives on this [Emitter].
+ *
+ * @param closeOnCancel
+ * **If true:**
+ * The channel _will_ be cancelled when the [Worker] is cancelled – this is intended for use with
+ * cold channels that are were started by and are to be managed by this worker or its parent
+ * [Workflow].
+ *
+ * **If false:**
+ * The channel will _not_ be cancelled when the [Worker] is cancelled – this is intended for
+ * use with hot channels that are managed externally.
+ */
+suspend inline fun <T> Emitter<T>.emitAll(
+  channel: ReceiveChannel<T>,
+  closeOnCancel: Boolean
+) {
+  if (closeOnCancel) {
+    // Using consumeEach ensures that the channel is closed if this coroutine is cancelled.
+    @Suppress("EXPERIMENTAL_API_USAGE")
+    channel.consumeEach { emitOutput(it) }
+  } else {
+    for (value in channel) {
+      emitOutput(value)
     }
   }
 }
