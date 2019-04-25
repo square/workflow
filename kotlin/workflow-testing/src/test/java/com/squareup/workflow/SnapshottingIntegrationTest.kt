@@ -26,23 +26,20 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") { host ->
-      host.withNextRendering {
-        assertEquals("root:initial input", it.data)
-        it.setData("new data")
-      }
+    root.testFromStart("initial input") {
+      awaitNextRendering()
+          .let {
+            assertEquals("root:initial input", it.data)
+            it.setData("new data")
+          }
 
-      host.withNextRendering {
-        assertEquals("root:new data", it.data)
-      }
+      assertEquals("root:new data", awaitNextRendering().data)
 
-      snapshot = host.awaitNextSnapshot()
+      snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) { host ->
-      host.withNextRendering {
-        assertEquals("root:new data", it.data)
-      }
+    root.testFromStart("unused input", snapshot!!) {
+      assertEquals("root:new data", awaitNextRendering().data)
     }
   }
 
@@ -51,28 +48,30 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") { host ->
-      host.withNextRendering {
-        assertEquals("root:initial input", it.data)
-        it["leaf"].setData("new leaf data")
-      }
-      host.withNextRendering {
-        it.setData("new root data")
-      }
+    root.testFromStart("initial input") {
+      awaitNextRendering()
+          .let {
+            assertEquals("root:initial input", it.data)
+            it["leaf"].setData("new leaf data")
+          }
+      awaitNextRendering()
+          .setData("new root data")
 
-      host.withNextRendering {
-        assertEquals("root:new root data", it.data)
-        assertEquals("leaf:new leaf data", it["leaf"].data)
-      }
+      awaitNextRendering()
+          .let {
+            assertEquals("root:new root data", it.data)
+            assertEquals("leaf:new leaf data", it["leaf"].data)
+          }
 
-      snapshot = host.awaitNextSnapshot()
+      snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) { host ->
-      host.withNextRendering {
-        assertEquals("root:new root data", it.data)
-        assertEquals("leaf:new leaf data", it["leaf"].data)
-      }
+    root.testFromStart("unused input", snapshot!!) {
+      awaitNextRendering()
+          .let {
+            assertEquals("root:new root data", it.data)
+            assertEquals("leaf:new leaf data", it["leaf"].data)
+          }
     }
   }
 
@@ -92,42 +91,44 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state of two workflows in the tree.
-    root.testFromStart("initial input") { host ->
-      host.withNextRendering {
-        assertEquals("root:initial input", it.data)
-        assertEquals("middle1:initial input[0]", it["middle1"].data)
-        assertEquals("middle2:initial input[1]", it["middle2"].data)
-        assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
-        assertEquals("leaf2:initial input[0][1]", it["middle1", "leaf2"].data)
-        assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
+    root.testFromStart("initial input") {
+      awaitNextRendering()
+          .let {
+            assertEquals("root:initial input", it.data)
+            assertEquals("middle1:initial input[0]", it["middle1"].data)
+            assertEquals("middle2:initial input[1]", it["middle2"].data)
+            assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
+            assertEquals("leaf2:initial input[0][1]", it["middle1", "leaf2"].data)
+            assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
 
-        it["middle1", "leaf2"].setData("new leaf data")
-      }
-      host.withNextRendering {
-        it.setData("new root data")
-      }
+            it["middle1", "leaf2"].setData("new leaf data")
+          }
+      awaitNextRendering()
+          .setData("new root data")
 
-      host.withNextRendering {
-        assertEquals("root:new root data", it.data)
-        assertEquals("middle1:initial input[0]", it["middle1"].data)
-        assertEquals("middle2:initial input[1]", it["middle2"].data)
-        assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
-        assertEquals("leaf2:new leaf data", it["middle1", "leaf2"].data)
-        assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
-      }
+      awaitNextRendering()
+          .let {
+            assertEquals("root:new root data", it.data)
+            assertEquals("middle1:initial input[0]", it["middle1"].data)
+            assertEquals("middle2:initial input[1]", it["middle2"].data)
+            assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
+            assertEquals("leaf2:new leaf data", it["middle1", "leaf2"].data)
+            assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
+          }
 
-      snapshot = host.awaitNextSnapshot()
+      snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) { host ->
-      host.withNextRendering {
-        assertEquals("root:new root data", it.data)
-        assertEquals("middle1:initial input[0]", it["middle1"].data)
-        assertEquals("middle2:initial input[1]", it["middle2"].data)
-        assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
-        assertEquals("leaf2:new leaf data", it["middle1", "leaf2"].data)
-        assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
-      }
+    root.testFromStart("unused input", snapshot!!) {
+      awaitNextRendering()
+          .let {
+            assertEquals("root:new root data", it.data)
+            assertEquals("middle1:initial input[0]", it["middle1"].data)
+            assertEquals("middle2:initial input[1]", it["middle2"].data)
+            assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
+            assertEquals("leaf2:new leaf data", it["middle1", "leaf2"].data)
+            assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
+          }
     }
   }
 }
