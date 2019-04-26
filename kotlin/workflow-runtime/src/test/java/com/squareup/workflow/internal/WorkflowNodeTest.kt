@@ -34,7 +34,6 @@ import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateless
 import com.squareup.workflow.writeUtf8WithLength
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.TimeoutCancellationException
@@ -64,8 +63,7 @@ class WorkflowNodeTest {
 
     override fun initialState(
       input: String,
-      snapshot: Snapshot?,
-      scope: CoroutineScope
+      snapshot: Snapshot?
     ): String {
       assertNull(snapshot)
       return "starting:$input"
@@ -134,8 +132,7 @@ class WorkflowNodeTest {
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
         return input
@@ -169,8 +166,7 @@ class WorkflowNodeTest {
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
         return input
@@ -209,8 +205,7 @@ class WorkflowNodeTest {
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
         return input
@@ -267,8 +262,7 @@ class WorkflowNodeTest {
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
         return input
@@ -313,8 +307,7 @@ class WorkflowNodeTest {
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
         return input
@@ -365,8 +358,7 @@ class WorkflowNodeTest {
     val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String = snapshot?.bytes?.parse {
         it.readUtf8WithLength()
             .removePrefix("state:")
@@ -409,8 +401,7 @@ class WorkflowNodeTest {
     val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String = if (snapshot != null) "restored" else input
 
       override fun render(
@@ -452,8 +443,7 @@ class WorkflowNodeTest {
     val childWorkflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String = snapshot?.bytes?.parse {
         it.readUtf8WithLength()
             .removePrefix("child state:")
@@ -475,8 +465,7 @@ class WorkflowNodeTest {
     val parentWorkflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String = snapshot?.bytes?.parse {
         it.readUtf8WithLength()
             .removePrefix("parent state:")
@@ -530,8 +519,7 @@ class WorkflowNodeTest {
     val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ) {
         if (snapshot != null) {
           restoreCalls++
@@ -580,8 +568,7 @@ class WorkflowNodeTest {
     val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
       override fun initialState(
         input: String,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): String = snapshot?.bytes?.parse {
         // Tags the restored state with the input so we can check it.
         val deserialized = it.readUtf8WithLength()

@@ -24,7 +24,6 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.testing.testFromStart
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
@@ -224,8 +223,7 @@ class WorkerCompositionIntegrationTest {
     val workflow = object : StatefulWorkflow<Unit, Int, Int, (Unit) -> Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ) = 0
 
       override fun render(

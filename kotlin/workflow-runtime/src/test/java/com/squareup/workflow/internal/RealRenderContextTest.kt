@@ -28,7 +28,6 @@ import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateless
-import kotlinx.coroutines.CoroutineScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -62,8 +61,7 @@ class RealRenderContextTest {
   private class TestWorkflow : StatefulWorkflow<String, String, String, Rendering>() {
     override fun initialState(
       input: String,
-      snapshot: Snapshot?,
-      scope: CoroutineScope
+      snapshot: Snapshot?
     ): String = fail()
 
     override fun render(

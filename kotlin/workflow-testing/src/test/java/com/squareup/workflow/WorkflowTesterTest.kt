@@ -20,7 +20,6 @@ package com.squareup.workflow
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -85,8 +84,7 @@ class WorkflowTesterTest {
     val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ) {
         assertNull(snapshot)
         throw ExpectedException()
@@ -116,8 +114,7 @@ class WorkflowTesterTest {
     val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ) {
         assertNull(snapshot)
         // Noop
@@ -147,8 +144,7 @@ class WorkflowTesterTest {
     val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ) {
         if (snapshot != null) {
           throw ExpectedException()

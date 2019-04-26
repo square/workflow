@@ -18,8 +18,6 @@ package com.squareup.workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -118,8 +116,7 @@ class WorkflowCompositionIntegrationTest {
     val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): Boolean = true
 
       override fun render(
@@ -165,8 +162,7 @@ class WorkflowCompositionIntegrationTest {
     val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ): Boolean = true
 
       override fun render(
@@ -196,79 +192,6 @@ class WorkflowCompositionIntegrationTest {
     }
   }
 
-  @Test fun `childrens' initialState scope is run during child session`() {
-    var starts = 0
-    var cancels = 0
-    val child = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
-      ) {
-        starts++
-        scope.coroutineContext[Job]!!.invokeOnCompletion { cause ->
-          if (cause != null) cancels++
-        }
-      }
-
-      override fun render(
-        input: Unit,
-        state: Unit,
-        context: RenderContext<Unit, Nothing>
-      ) {
-      }
-
-      override fun snapshotState(state: Unit) = Snapshot.EMPTY
-    }
-
-    // A workflow that will render child until its rendering is invoked, at which point
-    // it will render neither of them, which should trigger the scope to be cancelled.
-    val root = object : StatefulWorkflow<Unit, Boolean, Nothing, (Boolean) -> Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
-      ): Boolean = false
-
-      override fun render(
-        input: Unit,
-        state: Boolean,
-        context: RenderContext<Boolean, Nothing>
-      ): (Boolean) -> Unit {
-        if (state) {
-          context.renderChild(child)
-        }
-        return context.onEvent<Boolean> { enterState(it) }::invoke
-      }
-
-      override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
-    }
-
-    root.testFromStart {
-      awaitNextRendering()
-          .let { runChildren ->
-            assertEquals(0, starts)
-            assertEquals(0, cancels)
-
-            runChildren(true)
-          }
-
-      awaitNextRendering()
-          .let { runChildren ->
-            assertEquals(1, starts)
-            assertEquals(0, cancels)
-
-            runChildren(false)
-          }
-
-      awaitNextRendering()
-          .let {
-            assertEquals(1, starts)
-            assertEquals(1, cancels)
-          }
-    }
-  }
-
   // See https://github.com/square/workflow/issues/261.
   @Test fun `renderChild closes over latest state`() {
     val triggerChildOutput = Channel<Unit>()
@@ -278,8 +201,7 @@ class WorkflowCompositionIntegrationTest {
     val workflow = object : StatefulWorkflow<Unit, Int, Int, (Unit) -> Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ) = 0
 
       override fun render(

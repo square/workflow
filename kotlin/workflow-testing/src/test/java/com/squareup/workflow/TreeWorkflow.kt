@@ -16,7 +16,6 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.TreeWorkflow.Rendering
-import kotlinx.coroutines.CoroutineScope
 
 /**
  * A [Workflow] that has a simple string state and can be configured with children at construction.
@@ -46,8 +45,7 @@ internal class TreeWorkflow(
 
   override fun initialState(
     input: String,
-    snapshot: Snapshot?,
-    scope: CoroutineScope
+    snapshot: Snapshot?
   ): String = snapshot?.bytes?.parse {
     it.readUtf8WithLength()
   } ?: input
