@@ -1,6 +1,24 @@
 Change Log
 ==========
 
+## Version 0.15.0
+
+_2019-4-26_
+
+### Kotlin
+
+ * Introduce Workers as the new and only way to subscribe to external stream and future types. (#289, #321, #322, #323, #324)
+ * Rename WorkflowContext to RenderContext. (#309)
+ * Fix for stale workflow output handlers being invoked in later render passes. (#314)
+ * `WorkflowTester` improvements:
+   * Give WorkflowTester a sendInput method to update the root workflow-under-test's input. (#315)
+   * Remove WorkflowTester.with* methods. (#318)
+   * Make WorkflowTester the receiver of the lambdas to Workflow.test* methods. (#318)
+
+### Swift
+
+ * Rename `compose` to `render` and update docs. (#301)
+
 ## Version 0.14.1
 
 _2019-4-18_
