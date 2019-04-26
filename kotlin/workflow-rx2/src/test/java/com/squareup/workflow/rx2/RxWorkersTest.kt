@@ -37,7 +37,7 @@ class RxWorkersTest {
   @Test fun `observable emits`() {
     val subject = PublishSubject.create<String>()
     // Should support out-projected parameters.
-    val worker = (subject as Observable<out String>).asWorker()
+    val worker = (subject as Observable<out String?>).asWorker()
 
     worker.test {
       subject.onNext("foo")
@@ -117,7 +117,7 @@ class RxWorkersTest {
 
   @Test fun `flowable emits`() {
     val subject = PublishSubject.create<String>()
-    val worker = (subject.toFlowable(MISSING) as Flowable<out String>)
+    val worker = (subject.toFlowable(MISSING) as Flowable<out String?>)
         .asWorker()
 
     worker.test {
@@ -201,7 +201,7 @@ class RxWorkersTest {
 
   @Test fun `maybe emits`() {
     val subject = MaybeSubject.create<String>()
-    val worker = (subject as Maybe<out String>).asWorker()
+    val worker = (subject as Maybe<out String?>).asWorker()
 
     worker.test {
       subject.onSuccess("foo")
@@ -264,7 +264,7 @@ class RxWorkersTest {
 
   @Test fun `single emits`() {
     val subject = SingleSubject.create<String>()
-    val worker = (subject as Single<out String>).asWorker()
+    val worker = (subject as Single<out String?>).asWorker()
 
     worker.test {
       subject.onSuccess("foo")
