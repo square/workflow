@@ -44,7 +44,6 @@ internal class RealRenderContext<StateT : Any, OutputT : Any>(
   private val nextUpdateFromEvent = CompletableDeferred<WorkflowAction<StateT, OutputT>>()
   private val workerCases = mutableListOf<WorkerCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
-  private val teardownHooks = mutableListOf<() -> Unit>()
 
   /** Used to prevent modifications to this object after [buildBehavior] is called. */
   private var frozen = false
@@ -92,11 +91,6 @@ internal class RealRenderContext<StateT : Any, OutputT : Any>(
     workerCases += WorkerCase(worker, key, handler)
   }
 
-  override fun onTeardown(handler: () -> Unit) {
-    checkNotFrozen()
-    teardownHooks += handler
-  }
-
   /**
    * Constructs an immutable [Behavior] from the context.
    */
@@ -106,8 +100,7 @@ internal class RealRenderContext<StateT : Any, OutputT : Any>(
     return Behavior(
         childCases = childCases.toList(),
         workerCases = workerCases.toList(),
-        nextActionFromEvent = nextUpdateFromEvent,
-        teardownHooks = teardownHooks.toList()
+        nextActionFromEvent = nextUpdateFromEvent
     )
   }
 

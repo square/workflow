@@ -65,15 +65,6 @@ internal class WorkflowNode<InputT : Any, StateT : Any, OutputT : Any, Rendering
    */
   override val coroutineContext = baseContext + Job(baseContext[Job]) + CoroutineName(id.toString())
 
-  init {
-    // This will get invoked whenever we are cancelled (via our cancel() method), or whenever
-    // any of our ancestor workflows are cancelled, anywhere up the tree, including whenever an
-    // exception is thrown that cancels a workflow.
-    coroutineContext[Job]!!.invokeOnCompletion {
-      behavior?.teardownHooks?.forEach { it.invoke() }
-    }
-  }
-
   private val subtreeManager = SubtreeManager<StateT, OutputT>(coroutineContext)
   private val workerTracker =
     LifetimeTracker<WorkerCase<*, StateT, OutputT>, Any, WorkerSession>(

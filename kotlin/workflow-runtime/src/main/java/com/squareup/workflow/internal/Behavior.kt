@@ -31,8 +31,7 @@ import kotlinx.coroutines.Deferred
 internal data class Behavior<StateT : Any, out OutputT : Any>(
   val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,
   val workerCases: List<WorkerCase<*, StateT, OutputT>>,
-  val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>,
-  val teardownHooks: List<() -> Unit>
+  val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>
 ) {
 
   // @formatter:off

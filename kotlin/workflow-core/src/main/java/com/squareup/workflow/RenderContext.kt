@@ -108,19 +108,6 @@ interface RenderContext<StateT : Any, in OutputT : Any> {
     key: String = "",
     handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
   )
-
-  /**
-   * Adds an action to be invoked if the workflow is discarded by its parent before the next
-   * render pass. Multiple hooks can be registered in the same render pass, they will be invoked
-   * in the same order they're set. Like any other work performed through the context (e.g. calls
-   * to [renderChild] or [onWorkerOutput]), hooks are cleared at the start of each render pass, so
-   * you must set any hooks you need in each render pass.
-   *
-   * Teardown handlers should be non-blocking and execute quickly, since they are invoked
-   * synchronously during the render pass.
-   */
-  @Deprecated("Use the CoroutineScope parameter to initialState.")
-  fun onTeardown(handler: () -> Unit)
 }
 
 /**
