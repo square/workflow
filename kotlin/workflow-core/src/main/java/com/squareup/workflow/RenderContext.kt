@@ -20,6 +20,7 @@ package com.squareup.workflow
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
+import com.squareup.workflow.WorkflowAction.Companion.noop
 
 /**
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
@@ -148,7 +149,7 @@ fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
       child: Workflow<InputT, Nothing, ChildRenderingT>,
       input: InputT,
       key: String = ""
-    ): ChildRenderingT = renderChild(child, input, key) { WorkflowAction.noop() }
+    ): ChildRenderingT = renderChild(child, input, key) { noop() }
 // @formatter:on
 
 /**
@@ -162,16 +163,15 @@ fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
 // @formatter:off
       child: Workflow<Unit, Nothing, ChildRenderingT>,
       key: String = ""
-    ): ChildRenderingT = renderChild(child, Unit, key) { WorkflowAction.noop() }
+    ): ChildRenderingT = renderChild(child, Unit, key) { noop() }
 // @formatter:on
 
 /**
  * Ensures [worker] is running. When the [Worker] emits an output, [handler] is called
- * to determine the [WorkflowAction] to take. If the [Worker] finishes without emitting anything,
- * throws a [NoSuchElementException].
+ * to determine the [WorkflowAction] to take. When the worker finishes, nothing happens (although
+ * another render pass may be triggered).
  *
  * @param key An optional string key that is used to distinguish between identical [Worker]s.
- * @throws NoSuchElementException If the worker finished without emitting a value.
  */
 fun <StateT : Any, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
   worker: Worker<T>,
@@ -180,9 +180,7 @@ fun <StateT : Any, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutp
 ) = onWorkerOutputOrFinished(worker, key) { outputOrFinished ->
   when (outputOrFinished) {
     is Output -> handler(outputOrFinished.value)
-    Finished -> {
-      throw NoSuchElementException("Expected Worker (key=$key) to emit an output: $worker")
-    }
+    Finished -> noop()
   }
 }
 
