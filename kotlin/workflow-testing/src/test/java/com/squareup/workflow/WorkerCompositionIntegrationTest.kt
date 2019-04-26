@@ -25,12 +25,14 @@ import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class WorkerCompositionIntegrationTest {
 
@@ -200,16 +202,19 @@ class WorkerCompositionIntegrationTest {
     }
   }
 
-  @Test fun `onWorkerOutput throws when worker finished`() {
+  @Test fun `onWorkerOutput does nothing when worker finished`() {
     val channel = Channel<Unit>()
     val workflow = Workflow.stateless<Unit, Unit> { context ->
-      context.onWorkerOutput(channel.asWorker()) { emitOutput(it) }
+      context.onWorkerOutput(channel.asWorker()) { fail("Expected handler to not be invoked.") }
     }
 
     workflow.testFromStart {
       channel.close()
-      val error = awaitFailure()
-      assertTrue(error is NoSuchElementException)
+
+      assertFailsWith<TimeoutCancellationException> {
+        // There should never be any outputs, so this should timeout.
+        awaitNextOutput(timeoutMs = 1000)
+      }
     }
   }
 
