@@ -20,24 +20,71 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.reactive.openSubscription
 import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.rx2.openSubscription
 
-inline fun <reified T : Any> Observable<out T>.asWorker(key: String = ""): Worker<T> =
+/**
+ * Creates a [Worker] from this [Observable].
+ *
+ * The [Observable] will be subscribed to when the [Worker] is started, and disposed when it is
+ * cancelled.
+ *
+ * RxJava doesn't allow nulls, but it can't express that in its types. The receiver type parameter
+ * is nullable so that the resulting [Worker] is non-nullable instead of having
+ * platform nullability.
+ */
+inline fun <reified T : Any> Observable<out T?>.asWorker(key: String = ""): Worker<T> =
   Worker.fromChannel(key) {
-    @Suppress("EXPERIMENTAL_API_USAGE")
-    openSubscription()
+    // This cast works because RxJava types don't actually allow nulls, it's just that they can't
+    // express that in their types because Java.
+    @Suppress("EXPERIMENTAL_API_USAGE", "UNCHECKED_CAST")
+    openSubscription() as ReceiveChannel<T>
   }
 
-inline fun <reified T : Any> Flowable<out T>.asWorker(key: String = ""): Worker<T> =
+/**
+ * Creates a [Worker] from this [Flowable].
+ *
+ * The [Flowable] will be subscribed to when the [Worker] is started, and cancelled when it is
+ * cancelled.
+ *
+ * RxJava doesn't allow nulls, but it can't express that in its types. The receiver type parameter
+ * is nullable so that the resulting [Worker] is non-nullable instead of having
+ * platform nullability.
+ */
+inline fun <reified T : Any> Flowable<out T?>.asWorker(key: String = ""): Worker<T> =
   Worker.fromChannel(key) {
-    @Suppress("EXPERIMENTAL_API_USAGE")
-    openSubscription()
+    // This cast works because RxJava types don't actually allow nulls, it's just that they can't
+    // express that in their types because Java.
+    @Suppress("EXPERIMENTAL_API_USAGE", "UNCHECKED_CAST")
+    openSubscription() as ReceiveChannel<T>
   }
 
-inline fun <reified T : Any> Maybe<out T>.asWorker(key: String = ""): Worker<T> =
+/**
+ * Creates a [Worker] from this [Maybe].
+ *
+ * The [Maybe] will be subscribed to when the [Worker] is started, and disposed when it is
+ * cancelled.
+ *
+ * RxJava doesn't allow nulls, but it can't express that in its types. The receiver type parameter
+ * is nullable so that the resulting [Worker] is non-nullable instead of having
+ * platform nullability.
+ */
+inline fun <reified T : Any> Maybe<out T?>.asWorker(key: String = ""): Worker<T> =
   Worker.fromNullable(key) { await() }
 
-inline fun <reified T : Any> Single<out T>.asWorker(key: String = ""): Worker<T> =
-  Worker.from(key) { await() }
+/**
+ * Creates a [Worker] from this [Single].
+ *
+ * The [Single] will be subscribed to when the [Worker] is started, and disposed when it is
+ * cancelled.
+ *
+ * RxJava doesn't allow nulls, but it can't express that in its types. The receiver type parameter
+ * is nullable so that the resulting [Worker] is non-nullable instead of having
+ * platform nullability.
+ */
+inline fun <reified T : Any> Single<out T?>.asWorker(key: String = ""): Worker<T> =
+// This !! works because RxJava types don't actually allow nulls, it's just that they can't
+  // express that in their types because Java.
+  Worker.from(key) { await()!! }
