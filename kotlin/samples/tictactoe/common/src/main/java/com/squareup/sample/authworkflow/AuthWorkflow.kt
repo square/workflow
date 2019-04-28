@@ -34,7 +34,6 @@ import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.BackStackScreen
-import kotlinx.coroutines.CoroutineScope
 
 /**
  * We define this otherwise redundant typealias to keep composite workflows
@@ -57,8 +56,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
 
   override fun initialState(
     input: Unit,
-    snapshot: Snapshot?,
-    scope: CoroutineScope
+    snapshot: Snapshot?
   ): AuthState = LoginPrompt()
 
   override fun render(

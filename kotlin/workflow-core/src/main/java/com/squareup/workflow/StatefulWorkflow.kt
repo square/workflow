@@ -80,8 +80,7 @@ abstract class StatefulWorkflow<
    */
   abstract fun initialState(
     input: InputT,
-    snapshot: Snapshot?,
-    scope: CoroutineScope
+    snapshot: Snapshot?
   ): StateT
 
   /**

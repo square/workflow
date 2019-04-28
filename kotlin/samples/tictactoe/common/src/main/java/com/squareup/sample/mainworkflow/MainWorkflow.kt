@@ -30,7 +30,6 @@ import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.AlertContainerScreen
-import kotlinx.coroutines.CoroutineScope
 
 /**
  * Application specific root [Workflow], and demonstration of workflow composition.
@@ -50,8 +49,7 @@ class MainWorkflow(
 
   override fun initialState(
     input: Unit,
-    snapshot: Snapshot?,
-    scope: CoroutineScope
+    snapshot: Snapshot?
   ): MainState = snapshot?.let { MainState.fromSnapshot(snapshot.bytes) }
       ?: Authenticating
 

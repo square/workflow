@@ -18,8 +18,6 @@ package com.squareup.workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -104,171 +102,6 @@ class WorkflowCompositionIntegrationTest {
     }
   }
 
-  @Suppress("DEPRECATION")
-  @Test fun `all childrens teardown hooks invoked when parent discards it`() {
-    val teardowns = mutableListOf<String>()
-    val child1 = Workflow.stateless<Nothing, Unit> { context ->
-      context.onTeardown { teardowns += "child1" }
-    }
-    val child2 = Workflow.stateless<Nothing, Unit> { context ->
-      context.onTeardown { teardowns += "child2" }
-    }
-    // A workflow that will render child1 and child2 until its rendering is invoked, at which point
-    // it will render neither of them, which should trigger the teardown callbacks.
-    val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
-      ): Boolean = true
-
-      override fun render(
-        input: Unit,
-        state: Boolean,
-        context: RenderContext<Boolean, Nothing>
-      ): () -> Unit {
-        if (state) {
-          context.renderChild(child1, key = "child1")
-          context.renderChild(child2, key = "child2")
-        }
-        return context.onEvent<Unit> { enterState(false) }::invoke
-      }
-
-      override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
-    }
-
-    root.testFromStart {
-      awaitNextRendering()
-          .let { teardownChildren ->
-            assertTrue(teardowns.isEmpty())
-
-            teardownChildren()
-          }
-
-      awaitNextRendering()
-      assertEquals(listOf("child1", "child2"), teardowns)
-    }
-  }
-
-  @Suppress("DEPRECATION")
-  @Test fun `nested childrens teardown hooks invoked when parent discards it`() {
-    val teardowns = mutableListOf<String>()
-    val grandchild = Workflow.stateless<Nothing, Unit> { context ->
-      context.onTeardown { teardowns += "grandchild" }
-    }
-    val child = Workflow.stateless<Nothing, Unit> { context ->
-      context.renderChild(grandchild)
-      context.onTeardown { teardowns += "child" }
-    }
-    // A workflow that will render child1 and child2 until its rendering is invoked, at which point
-    // it will render neither of them, which should trigger the teardown callbacks.
-    val root = object : StatefulWorkflow<Unit, Boolean, Nothing, () -> Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
-      ): Boolean = true
-
-      override fun render(
-        input: Unit,
-        state: Boolean,
-        context: RenderContext<Boolean, Nothing>
-      ): () -> Unit {
-        if (state) {
-          context.renderChild(child)
-        }
-        return context.onEvent<Unit> { enterState(false) }::invoke
-      }
-
-      override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
-    }
-
-    root.testFromStart {
-      awaitNextRendering()
-          .let { teardownChildren ->
-            assertTrue(teardowns.isEmpty())
-
-            teardownChildren()
-          }
-
-      awaitNextRendering()
-      assertEquals(listOf("grandchild", "child"), teardowns)
-    }
-  }
-
-  @Test fun `childrens' initialState scope is run during child session`() {
-    var starts = 0
-    var cancels = 0
-    val child = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
-      ) {
-        starts++
-        scope.coroutineContext[Job]!!.invokeOnCompletion { cause ->
-          if (cause != null) cancels++
-        }
-      }
-
-      override fun render(
-        input: Unit,
-        state: Unit,
-        context: RenderContext<Unit, Nothing>
-      ) {
-      }
-
-      override fun snapshotState(state: Unit) = Snapshot.EMPTY
-    }
-
-    // A workflow that will render child until its rendering is invoked, at which point
-    // it will render neither of them, which should trigger the scope to be cancelled.
-    val root = object : StatefulWorkflow<Unit, Boolean, Nothing, (Boolean) -> Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
-      ): Boolean = false
-
-      override fun render(
-        input: Unit,
-        state: Boolean,
-        context: RenderContext<Boolean, Nothing>
-      ): (Boolean) -> Unit {
-        if (state) {
-          context.renderChild(child)
-        }
-        return context.onEvent<Boolean> { enterState(it) }::invoke
-      }
-
-      override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
-    }
-
-    root.testFromStart {
-      awaitNextRendering()
-          .let { runChildren ->
-            assertEquals(0, starts)
-            assertEquals(0, cancels)
-
-            runChildren(true)
-          }
-
-      awaitNextRendering()
-          .let { runChildren ->
-            assertEquals(1, starts)
-            assertEquals(0, cancels)
-
-            runChildren(false)
-          }
-
-      awaitNextRendering()
-          .let {
-            assertEquals(1, starts)
-            assertEquals(1, cancels)
-          }
-    }
-  }
-
   // See https://github.com/square/workflow/issues/261.
   @Test fun `renderChild closes over latest state`() {
     val triggerChildOutput = Channel<Unit>()
@@ -278,8 +111,7 @@ class WorkflowCompositionIntegrationTest {
     val workflow = object : StatefulWorkflow<Unit, Int, Int, (Unit) -> Unit>() {
       override fun initialState(
         input: Unit,
-        snapshot: Snapshot?,
-        scope: CoroutineScope
+        snapshot: Snapshot?
       ) = 0
 
       override fun render(
