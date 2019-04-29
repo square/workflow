@@ -16,9 +16,7 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.Worker.Emitter
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 
 /**
  * [Worker] that performs some action when the worker is started and/or cancelled.
@@ -26,31 +24,40 @@ import kotlinx.coroutines.withContext
 abstract class LifecycleWorker : Worker<Nothing> {
 
   /**
-   * Called when this worker is started.
+   * Called when this worker is started. It is executed concurrently with the parent workflow –
+   * the first render pass that starts this worker *will not* wait for this method to return, and
+   * one or more additional render passes may occur before this method is called.
+   * This behavior may change to be more strict in the future.
    *
-   * It will be invoked on the dispatcher running the workflow, inside a [NonCancellable] block.
+   * This method will be called exactly once for each matching call to [onCancelled].
+   *
+   * Invoked on the dispatcher running the workflow.
    */
-  open suspend fun onStarted() {}
+  open fun onStarted() {}
 
   /**
-   * Called when this worker has been torn down.
+   * Called when this worker has been torn down. It is executed concurrently with the parent
+   * workflow – the render pass that cancels this worker *will not* wait for this method to return,
+   * and one or more additional render passes may occur before this method is called.
+   * This behavior may change to be more strict in the future.
    *
-   * It will be invoked on the dispatcher running the workflow, inside a [NonCancellable] block.
+   * This method will be called exactly once for each matching call to [onStarted].
+   *
+   * Invoked on the dispatcher running the workflow.
    */
-  open suspend fun onCancelled() {}
+  open fun onCancelled() {}
 
   final override suspend fun performWork(emitter: Emitter<Nothing>) {
-    withContext(NonCancellable) {
-      onStarted()
-    }
+    onStarted()
 
     try {
       // Hang forever, or until this coroutine is cancelled.
+      // Don't use CancellableContinuation.invokeOnCancellation because it doesn't have any
+      // guarantees about which thread it's run on. Using try/finally means the cancellation action
+      // doesn't block the cancellation, but ensures it's run on the correct dispatcher.
       suspendCancellableCoroutine<Nothing> { }
     } finally {
-      withContext(NonCancellable) {
-        onCancelled()
-      }
+      onCancelled()
     }
   }
 
