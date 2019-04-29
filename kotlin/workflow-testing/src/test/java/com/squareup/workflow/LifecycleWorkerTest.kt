@@ -35,7 +35,7 @@ class LifecycleWorkerTest {
   @Test fun `onStart called immediately`() {
     var onStartCalled = false
     val worker = object : LifecycleWorker() {
-      override suspend fun onStarted() {
+      override fun onStarted() {
         onStartCalled = true
       }
     }
@@ -55,7 +55,7 @@ class LifecycleWorkerTest {
   @Test fun `onCancelled called on cancel`() {
     var onCancelledCalled = false
     val worker = object : LifecycleWorker() {
-      override suspend fun onCancelled() {
+      override fun onCancelled() {
         onCancelledCalled = true
       }
     }
