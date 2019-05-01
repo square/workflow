@@ -117,7 +117,7 @@ If a workflow needs to respond to some external event source (e.g. push notifica
 
 ### Workflows can perform asynchronous tasks (Workers)
 
-`Workers` are very similar in concept to child workflows. Unlike child workflows, however, workers do not have a `Rendering` type; they only exist to perform a single asynchronous task before sending an output event back up the tree to their parent.
+`Workers` are very similar in concept to child workflows. Unlike child workflows, however, workers do not have a `Rendering` type; they only exist to perform a single asynchronous task before sending one or more output events back up the tree to their parent.
 
 A workflow can ask the infrastructure to await the result of a worker by handing that worker to the context within a call to the `render` method.
 
