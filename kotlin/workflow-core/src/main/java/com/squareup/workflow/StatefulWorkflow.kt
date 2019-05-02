@@ -61,7 +61,7 @@ abstract class StatefulWorkflow<
     in InputT : Any,
     StateT : Any,
     out OutputT : Any,
-    out RenderingT : Any
+    out RenderingT
     > : Workflow<InputT, OutputT, RenderingT> {
 
   /**
