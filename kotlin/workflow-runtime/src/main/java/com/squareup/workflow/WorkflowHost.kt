@@ -153,7 +153,7 @@ interface WorkflowHost<in InputT, out OutputT : Any, out RenderingT> {
  * favorite Rx library to map a stream of [InputT]s into [Update]s.
  */
 @UseExperimental(InternalCoroutinesApi::class)
-suspend fun <InputT, StateT : Any, OutputT : Any, RenderingT> runWorkflowTree(
+suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
   workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
   inputs: ReceiveChannel<InputT>,
   initialSnapshot: Snapshot?,

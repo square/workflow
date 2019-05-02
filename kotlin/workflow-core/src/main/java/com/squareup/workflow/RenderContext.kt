@@ -38,7 +38,7 @@ import com.squareup.workflow.WorkflowAction.Companion.noop
  *
  * See [renderChild].
  */
-interface RenderContext<StateT : Any, in OutputT : Any> {
+interface RenderContext<StateT, in OutputT : Any> {
 
   /**
    * Given a function that takes an [event][EventT] and can mutate the state or emit an output,

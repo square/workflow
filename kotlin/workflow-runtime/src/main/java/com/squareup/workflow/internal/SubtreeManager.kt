@@ -30,7 +30,7 @@ import kotlin.coroutines.CoroutineContext
  * Responsible for tracking child workflows, starting them and tearing them down when necessary. Also
  * manages restoring children from snapshots.
  */
-internal class SubtreeManager<StateT : Any, OutputT : Any>(
+internal class SubtreeManager<StateT, OutputT : Any>(
   private val contextForChildren: CoroutineContext
 ) : RealRenderContext.Renderer<StateT, OutputT> {
 

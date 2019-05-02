@@ -39,7 +39,7 @@ import kotlin.coroutines.CoroutineContext
  * @param initialState Allows unit tests to start the node from a given state, instead of calling
  * [StatefulWorkflow.initialState].
  */
-internal class WorkflowNode<InputT, StateT : Any, OutputT : Any, RenderingT>(
+internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
   val id: WorkflowId<InputT, OutputT, RenderingT>,
   workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
   initialInput: InputT,

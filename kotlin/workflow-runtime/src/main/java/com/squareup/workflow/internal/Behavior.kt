@@ -28,7 +28,7 @@ import kotlinx.coroutines.Deferred
  *
  * @see RealRenderContext
  */
-internal data class Behavior<StateT : Any, out OutputT : Any>(
+internal data class Behavior<StateT, out OutputT : Any>(
   val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,
   val workerCases: List<WorkerCase<*, StateT, OutputT>>,
   val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>
@@ -38,7 +38,7 @@ internal data class Behavior<StateT : Any, out OutputT : Any>(
   data class WorkflowOutputCase<
       ChildInputT : Any,
       ChildOutputT : Any,
-      ParentStateT : Any,
+      ParentStateT,
       out ParentOutputT : Any
       >(
         val workflow: Workflow<*, ChildOutputT, *>,
@@ -52,7 +52,7 @@ internal data class Behavior<StateT : Any, out OutputT : Any>(
       }
       // @formatter:on
 
-  data class WorkerCase<T, StateT : Any, out OutputT : Any>(
+  data class WorkerCase<T, StateT, out OutputT : Any>(
     val worker: Worker<T>,
     val key: String,
     val handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>

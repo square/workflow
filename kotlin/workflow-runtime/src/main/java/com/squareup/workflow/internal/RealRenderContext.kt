@@ -28,11 +28,11 @@ import kotlinx.coroutines.CompletableDeferred
 /**
  * An implementation of [RenderContext] that builds a [Behavior] via [buildBehavior].
  */
-internal class RealRenderContext<StateT : Any, OutputT : Any>(
+internal class RealRenderContext<StateT, OutputT : Any>(
   private val renderer: Renderer<StateT, OutputT>
 ) : RenderContext<StateT, OutputT> {
 
-  interface Renderer<StateT : Any, in OutputT : Any> {
+  interface Renderer<StateT, in OutputT : Any> {
     fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> render(
       case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
       child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,

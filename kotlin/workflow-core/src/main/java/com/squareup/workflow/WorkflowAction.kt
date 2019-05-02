@@ -19,7 +19,7 @@ package com.squareup.workflow
  * A function that can change the current state of a [Workflow] by returning a new one, and
  * also optionally emit an output.
  */
-interface WorkflowAction<StateT : Any, out OutputT : Any> : (StateT) -> Pair<StateT, OutputT?> {
+interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, OutputT?> {
 
   override operator fun invoke(state: StateT): Pair<StateT, OutputT?>
 
