@@ -74,7 +74,7 @@ package com.squareup.workflow
  * @see StatefulWorkflow
  * @see StatelessWorkflow
  */
-interface Workflow<in InputT : Any, out OutputT : Any, out RenderingT> {
+interface Workflow<in InputT, out OutputT : Any, out RenderingT> {
 
   /**
    * Provides a [StatefulWorkflow] view of this workflow. Necessary because [StatefulWorkflow] is

@@ -58,7 +58,7 @@ import kotlinx.coroutines.CoroutineScope
  * @see StatelessWorkflow
  */
 abstract class StatefulWorkflow<
-    in InputT : Any,
+    in InputT,
     StateT : Any,
     out OutputT : Any,
     out RenderingT

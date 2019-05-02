@@ -51,7 +51,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  *  - [sendInput]
  *    - Send a new [InputT] to the root workflow.
  */
-class WorkflowTester<InputT : Any, OutputT : Any, RenderingT> @TestOnly internal constructor(
+class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal constructor(
   private val inputs: SendChannel<InputT>,
   private val host: WorkflowHost<InputT, OutputT, RenderingT>,
   context: CoroutineContext
@@ -191,7 +191,7 @@ class WorkflowTester<InputT : Any, OutputT : Any, RenderingT> @TestOnly internal
  */
 // @formatter:off
 @TestOnly
-fun <T, InputT : Any, OutputT : Any, RenderingT>
+fun <T, InputT, OutputT : Any, RenderingT>
     Workflow<InputT, OutputT, RenderingT>.testFromStart(
       input: InputT,
       snapshot: Snapshot? = null,
@@ -224,7 +224,7 @@ fun <T, OutputT : Any, RenderingT> Workflow<Unit, OutputT, RenderingT>.testFromS
  */
 // @formatter:off
 @TestOnly
-fun <T, InputT : Any, StateT : Any, OutputT : Any, RenderingT>
+fun <T, InputT, StateT : Any, OutputT : Any, RenderingT>
     StatefulWorkflow<InputT, StateT, OutputT, RenderingT>.testFromState(
       input: InputT,
       initialState: StateT,
@@ -254,7 +254,7 @@ fun <StateT : Any, OutputT : Any, RenderingT>
 // @formatter:on
 
 @UseExperimental(InternalCoroutinesApi::class)
-private fun <T, I : Any, O : Any, R> test(
+private fun <T, I, O : Any, R> test(
   testBlock: (WorkflowTester<I, O, R>) -> T,
   baseContext: CoroutineContext,
   starter: (WorkflowHost.Factory, inputs: Channel<I>) -> WorkflowHost<I, O, R>

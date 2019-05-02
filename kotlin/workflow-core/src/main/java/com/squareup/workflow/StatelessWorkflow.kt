@@ -34,7 +34,7 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
  *
  * @see StatefulWorkflow
  */
-abstract class StatelessWorkflow<InputT : Any, OutputT : Any, RenderingT> :
+abstract class StatelessWorkflow<InputT, OutputT : Any, RenderingT> :
     Workflow<InputT, OutputT, RenderingT> {
 
   private val statefulWorkflow = object : StatefulWorkflow<InputT, Unit, OutputT, RenderingT>() {
