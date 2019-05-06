@@ -17,8 +17,8 @@ package com.squareup.workflow
 
 /**
  * A composable, optionally-stateful object that can [handle events][RenderContext.onEvent],
- * [delegate to children][RenderContext.renderChild], [subscribe][onReceive] to arbitrary streams from
- * the outside world.
+ * [delegate to children][RenderContext.renderChild], [subscribe][RenderContext.onWorkerOutput] to
+ * arbitrary asynchronous events from the outside world.
  *
  * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
  * [rendering][RenderingT]. To that end, a workflow may keep track of internal
