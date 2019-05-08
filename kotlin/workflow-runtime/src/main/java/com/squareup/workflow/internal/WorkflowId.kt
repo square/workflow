@@ -30,7 +30,7 @@ internal typealias AnyId = WorkflowId<*, *, *>
  * Value type that can be used to distinguish between different workflows of different types or
  * the same type (in that case using a [name]).
  */
-internal data class WorkflowId<in InputT : Any, out OutputT : Any, out RenderingT : Any>
+internal data class WorkflowId<in InputT, out OutputT : Any, out RenderingT>
 @PublishedApi
 internal constructor(
   internal val type: KClass<out Workflow<InputT, OutputT, RenderingT>>,
@@ -38,8 +38,8 @@ internal constructor(
 )
 
 @Suppress("unused")
-internal fun <W : Workflow<P, O, R>, P : Any, O : Any, R : Any>
-    W.id(key: String = ""): WorkflowId<P, O, R> =
+internal fun <W : Workflow<I, O, R>, I, O : Any, R>
+    W.id(key: String = ""): WorkflowId<I, O, R> =
   WorkflowId(this::class, key)
 
 internal fun WorkflowId<*, *, *>.toByteString(): ByteString = Buffer()

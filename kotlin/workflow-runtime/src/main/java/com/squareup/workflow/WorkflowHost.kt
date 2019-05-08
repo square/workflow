@@ -44,12 +44,12 @@ private val DEFAULT_WORKFLOW_COROUTINE_NAME = CoroutineName("WorkflowHost")
  *
  * Create these by injecting a [Factory] and calling [run][Factory.run].
  */
-interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any> {
+interface WorkflowHost<in InputT, out OutputT : Any, out RenderingT> {
 
   /**
    * Output from a [WorkflowHost]. Emitted from [WorkflowHost.updates] after every render pass.
    */
-  data class Update<out OutputT : Any, out RenderingT : Any>(
+  data class Update<out OutputT : Any, out RenderingT>(
     val rendering: RenderingT,
     val snapshot: Snapshot,
     val output: OutputT? = null
@@ -82,7 +82,7 @@ interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any>
      * @param context The [CoroutineContext] used to run the workflow tree. Added to the [Factory]'s
      * context.
      */
-    fun <InputT : Any, OutputT : Any, RenderingT : Any> run(
+    fun <InputT, OutputT : Any, RenderingT> run(
       workflow: Workflow<InputT, OutputT, RenderingT>,
       inputs: ReceiveChannel<InputT>,
       snapshot: Snapshot? = null,
@@ -103,7 +103,7 @@ interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any>
           }
       }
 
-    fun <OutputT : Any, RenderingT : Any> run(
+    fun <OutputT : Any, RenderingT> run(
       workflow: Workflow<Unit, OutputT, RenderingT>,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext
@@ -118,7 +118,7 @@ interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any>
      * the testing extension method defined there on your workflow itself.
      */
     @TestOnly
-    fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any> runTestFromState(
+    fun <InputT, StateT : Any, OutputT : Any, RenderingT> runTestFromState(
       workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
       inputs: ReceiveChannel<InputT>,
       initialState: StateT
@@ -153,7 +153,7 @@ interface WorkflowHost<in InputT : Any, out OutputT : Any, out RenderingT : Any>
  * favorite Rx library to map a stream of [InputT]s into [Update]s.
  */
 @UseExperimental(InternalCoroutinesApi::class)
-suspend fun <InputT : Any, StateT : Any, OutputT : Any, RenderingT : Any> runWorkflowTree(
+suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
   workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
   inputs: ReceiveChannel<InputT>,
   initialSnapshot: Snapshot?,

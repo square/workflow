@@ -57,10 +57,10 @@ package com.squareup.workflow
  * @see StatelessWorkflow
  */
 abstract class StatefulWorkflow<
-    in InputT : Any,
-    StateT : Any,
+    in InputT,
+    StateT,
     out OutputT : Any,
-    out RenderingT : Any
+    out RenderingT
     > : Workflow<InputT, OutputT, RenderingT> {
 
   /**
