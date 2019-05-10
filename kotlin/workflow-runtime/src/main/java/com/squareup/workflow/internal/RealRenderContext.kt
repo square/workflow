@@ -54,6 +54,7 @@ internal class RealRenderContext<StateT, OutputT : Any>(
     return EventHandler { event ->
       // Run the handler synchronously, so we only have to emit the resulting action and don't need the
       // update channel to be generic on each event type.
+      println("event: $event")
       val update = handler(event)
 
       // If this returns false, we lost the race with another event being sent.

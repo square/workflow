@@ -118,7 +118,12 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
     selector: SelectBuilder<T?>,
     handler: (OutputT) -> T?
   ) {
+    val nextActionFromEvent = behavior!!.nextActionFromEvent
     fun acceptUpdate(action: WorkflowAction<StateT, OutputT>): T? {
+      // If this update was caused by a child/worker update, cancel the event deferred anyway
+      // so stale renderings will be blocked from sending events.
+      nextActionFromEvent.cancel()
+
       val (newState, output) = action(state)
       state = newState
       return output?.let(handler)
@@ -143,7 +148,7 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
 
     // Listen for any events.
     with(selector) {
-      behavior!!.nextActionFromEvent.onAwait { update ->
+      nextActionFromEvent.onAwait { update ->
         acceptUpdate(update)
       }
     }

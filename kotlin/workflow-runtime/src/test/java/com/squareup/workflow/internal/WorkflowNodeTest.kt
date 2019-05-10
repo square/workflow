@@ -24,13 +24,16 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
+import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.invoke
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.renderChild
+import com.squareup.workflow.stateless
 import com.squareup.workflow.writeUtf8WithLength
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Unconfined
@@ -605,5 +608,41 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
     assertEquals("input:new input|state:initial input", restoredNode.render(workflow, "foo"))
+  }
+
+  @Test fun `event rejected after worker output accepted`() {
+    class Rendering(val onEvent: (Unit) -> Unit)
+
+    var eventHandlings = 0
+    val workerSubject = Channel<Unit>(capacity = 1)
+    val worker = workerSubject.asWorker()
+    val workflow = Workflow.stateless<Unit, Rendering> { context ->
+      context.onWorkerOutputOrFinished(worker) { noop() }
+      Rendering(context.onEvent {
+        eventHandlings++
+//        fail("Expected event not to be handled.")
+        noop()
+      })
+    }
+    val node = WorkflowNode(workflow.id(), workflow.asStatefulWorkflow(), Unit, null, Unconfined)
+    val rendering = node.render(workflow.asStatefulWorkflow(), Unit)
+
+    runBlocking {
+      // Tell the worker to output.
+      workerSubject.send(Unit)
+
+      // Consume the output from the worker.
+      select<Unit?> { node.tick(this) {} }
+    }
+
+    // TODO trying to figure out how to actually get the error to happen correctly here.
+
+    // Try sending an event.
+    assertEquals(
+        "Expected to successfully deliver event. Are you using an old rendering?",
+        assertFailsWith<IllegalStateException> {
+          rendering.onEvent(Unit)
+        }.message
+    )
   }
 }
