@@ -28,6 +28,7 @@ import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.backstack.PushPopEffect
 import com.squareup.workflow.ui.setContentWorkflow
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 class MainActivity : AppCompatActivity() {
   private lateinit var component: MainComponent
   private lateinit var workflowViewModel: WorkflowActivityRunner<*, *>

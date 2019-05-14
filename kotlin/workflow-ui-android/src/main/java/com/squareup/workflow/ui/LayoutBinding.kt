@@ -54,6 +54,7 @@ import io.reactivex.Observable
  * also have a second [ViewRegistry] argument, to allow recursive calls
  * to render nested screens.
  */
+@ExperimentalWorkflowUi
 class LayoutBinding<T : Any> private constructor(
   override val type: String,
   @LayoutRes private val layoutId: Int,

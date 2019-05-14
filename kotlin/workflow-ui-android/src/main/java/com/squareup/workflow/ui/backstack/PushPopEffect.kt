@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backstack.ViewStateStack.Direction
 import com.squareup.workflow.ui.backstack.ViewStateStack.Direction.PUSH
@@ -17,6 +18,7 @@ import io.reactivex.Observable
 /**
  * Performs a pretty lame push or pop animation, just to prove that we can.
  */
+@ExperimentalWorkflowUi
 object PushPopEffect : BackStackEffect {
   /**
    * Does not rely on [from] to have a [View.backStackKey].

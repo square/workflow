@@ -30,6 +30,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import com.squareup.sample.tictactoe.R
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 internal class SecondFactorCoordinator(private val screens: Observable<out SecondFactorScreen>) :
     Coordinator() {
   private val subs = CompositeDisposable()

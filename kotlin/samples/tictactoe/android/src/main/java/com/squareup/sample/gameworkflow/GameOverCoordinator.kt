@@ -36,6 +36,7 @@ import com.squareup.workflow.ui.setBackHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 internal class GameOverCoordinator(
   private val screens: Observable<out GameOverScreen>
 ) : Coordinator() {

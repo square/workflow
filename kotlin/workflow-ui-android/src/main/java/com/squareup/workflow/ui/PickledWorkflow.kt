@@ -25,6 +25,7 @@ import okio.ByteString
  * [WorkflowActivityRunner], for use in an `Activity`'s persistence `Bundle`.
  * See [WorkflowActivityRunner.asParcelable] for details.
  */
+@ExperimentalWorkflowUi
 class PickledWorkflow(internal val snapshot: Snapshot) : Parcelable {
   override fun describeContents(): Int = 0
 

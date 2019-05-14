@@ -24,6 +24,7 @@ import com.squareup.workflow.ui.ViewBinding
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 internal class AuthorizingCoordinator(private val screens: Observable<out AuthorizingScreen>) :
     Coordinator() {
   private val subs = CompositeDisposable()

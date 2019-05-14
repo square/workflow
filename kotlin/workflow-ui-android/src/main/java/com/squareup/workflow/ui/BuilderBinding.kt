@@ -64,6 +64,7 @@ import io.reactivex.disposables.Disposable
  * also have a second [ViewRegistry] argument, to allow recursive calls
  * to render nested screens.
  */
+@ExperimentalWorkflowUi
 class BuilderBinding<T : Any> private constructor(
   override val type: String,
   val builder: (
