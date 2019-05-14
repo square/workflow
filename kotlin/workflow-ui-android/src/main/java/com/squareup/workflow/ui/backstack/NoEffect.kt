@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BackStackScreen.Key
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backstack.ViewStateStack.Direction
 import io.reactivex.Observable
@@ -14,6 +15,7 @@ import kotlin.reflect.KClass
  * This is the default effect returned by [ViewRegistry.effects]
  * if no other is found.
  */
+@ExperimentalWorkflowUi
 class NoEffect(
   private val from: Key<*>?,
   private val to: Key<*>?,

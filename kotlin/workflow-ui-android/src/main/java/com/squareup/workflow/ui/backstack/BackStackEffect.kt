@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BackStackScreen.Key
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backstack.ViewStateStack.Direction
@@ -24,6 +25,7 @@ import kotlin.reflect.jvm.jvmName
  * When a container is ready to perform a transition, it can call [ViewRegistry.getEffect]
  * to retrieve the appropriate effect to run.
  */
+@ExperimentalWorkflowUi
 interface BackStackEffect {
   /**
    * Returns true of this effect can be applied to the given keys and direction.
@@ -63,6 +65,7 @@ interface BackStackEffect {
  * uses it to instantiate a [View] to display any matching items
  * received via [backstackScreens].
  */
+@ExperimentalWorkflowUi
 fun <T : Any> BackStackScreen<T>.viewForWrappedScreen(
   backstackScreens: Observable<out BackStackScreen<*>>,
   viewRegistry: ViewRegistry,
@@ -78,6 +81,7 @@ fun <T : Any> BackStackScreen<T>.viewForWrappedScreen(
  * uses it to instantiate a [Scene] to display any matching items
  * received via [backstackScreens].
  */
+@ExperimentalWorkflowUi
 fun <T : Any> BackStackScreen<T>.sceneForWrappedScreen(
   backstackScreens: Observable<out BackStackScreen<*>>,
   viewRegistry: ViewRegistry,

@@ -18,6 +18,7 @@ package com.squareup.sample.gameworkflow
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backstack.NoEffect
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 val TicTacToeViewBindings = ViewRegistry(
     NewGameCoordinator,
     GamePlayCoordinator,

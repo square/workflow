@@ -30,6 +30,7 @@ import kotlin.reflect.jvm.jvmName
 /**
  * Class returned by [ModalContainer.forContainerScreen], qv for details.
  */
+@ExperimentalWorkflowUi
 @PublishedApi
 internal class ModalViewContainer
 @JvmOverloads constructor(
@@ -39,8 +40,10 @@ internal class ModalViewContainer
   private val modalDecorator: (View) -> View = { it }
 ) : ModalContainer<Any>(context, attributeSet) {
 
+  @ExperimentalWorkflowUi
   override fun Any.matches(nextModal: Any) = this::class.java == nextModal::class.java
 
+  @ExperimentalWorkflowUi
   override fun showDialog(
     modalScreen: Any,
     screens: Observable<out Any>,

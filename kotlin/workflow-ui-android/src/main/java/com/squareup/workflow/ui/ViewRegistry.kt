@@ -50,6 +50,7 @@ import com.squareup.workflow.ui.backstack.ViewStateStack
  * honor a convention of implementing [ViewBinding], in aid of this kind of assembly. See the
  * class doc on [LayoutBinding] for details.
  */
+@ExperimentalWorkflowUi
 class ViewRegistry private constructor(
   private val bindings: Map<String, ViewBinding<*>>,
   private val effects: List<BackStackEffect>

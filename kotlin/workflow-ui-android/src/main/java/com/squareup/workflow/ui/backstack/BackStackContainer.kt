@@ -24,6 +24,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BuilderBinding
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.HandlesBack
 import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
@@ -38,6 +39,7 @@ import io.reactivex.Observable
  * This view is back button friendly -- it implements [HandlesBack], delegating
  * to displayed views that implement that interface themselves.
  */
+@ExperimentalWorkflowUi
 class BackStackContainer(
   context: Context,
   attributeSet: AttributeSet?

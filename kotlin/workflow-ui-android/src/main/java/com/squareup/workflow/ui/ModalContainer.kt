@@ -44,6 +44,7 @@ import kotlin.reflect.jvm.jvmName
  * and [forContainerScreen] should cover many specific needs, and where those are too
  * limiting subclasses are simple to create.
  */
+@ExperimentalWorkflowUi
 abstract class ModalContainer<M : Any>
 @JvmOverloads constructor(
   context: Context,

@@ -28,6 +28,7 @@ import io.reactivex.Observable
  *
  * Sets of bindings are gathered in [ViewRegistry] instances.
  */
+@ExperimentalWorkflowUi
 interface ViewBinding<T : Any> {
   // Tried making this Class<T>, but got into trouble w/type invariance.
   // https://github.com/square/workflow/issues/18
@@ -49,12 +50,14 @@ interface ViewBinding<T : Any> {
   ): Scene
 }
 
+@ExperimentalWorkflowUi
 fun <T : Any> ViewBinding<T>.buildView(
   screens: Observable<out T>,
   viewRegistry: ViewRegistry,
   container: ViewGroup
 ): View = buildView(screens, viewRegistry, container.context, container)
 
+@ExperimentalWorkflowUi
 fun <T : Any> ViewBinding<T>.buildScene(
   screens: Observable<out T>,
   viewRegistry: ViewRegistry,

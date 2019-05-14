@@ -29,6 +29,7 @@ import io.reactivex.disposables.Disposable
  * [ViewModel], but that would allow accidental calls to [onCleared], which
  * would be nasty.
  */
+@ExperimentalWorkflowUi
 internal class WorkflowViewModel<OutputT : Any, RenderingT : Any>(
   val viewRegistry: ViewRegistry,
   workflowUpdates: Flowable<Update<OutputT, RenderingT>>

@@ -31,6 +31,7 @@ import io.reactivex.Observable
 /**
  * Class returned by [ModalContainer.forAlertContainerScreen], qv for details.
  */
+@ExperimentalWorkflowUi
 internal class AlertContainer
 @JvmOverloads constructor(
   context: Context,
@@ -38,6 +39,7 @@ internal class AlertContainer
   @StyleRes private val dialogThemeResId: Int = 0
 ) : ModalContainer<AlertScreen>(context, attributeSet) {
 
+  @ExperimentalWorkflowUi
   override fun showDialog(
     modalScreen: AlertScreen,
     screens: Observable<out AlertScreen>,

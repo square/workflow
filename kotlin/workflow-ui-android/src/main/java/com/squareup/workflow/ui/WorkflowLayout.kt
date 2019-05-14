@@ -31,6 +31,7 @@ import kotlin.reflect.jvm.jvmName
  * Installed via [android.support.v4.app.FragmentActivity.setContentWorkflow].
  * See [setWorkflowRunner] for details.
  */
+@ExperimentalWorkflowUi
 internal class WorkflowLayout(
   context: Context,
   attributeSet: AttributeSet? = null

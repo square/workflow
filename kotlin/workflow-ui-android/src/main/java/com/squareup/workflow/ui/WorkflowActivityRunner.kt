@@ -30,6 +30,7 @@ import io.reactivex.Observable
  * You'll never instantiate one of these yourself. Instead, use
  * [FragmentActivity.setContentWorkflow]. See that method for more details.
  */
+@ExperimentalWorkflowUi
 class WorkflowActivityRunner<OutputT : Any, RenderingT : Any>
 internal constructor(private val model: WorkflowViewModel<OutputT, RenderingT>) {
 
@@ -103,6 +104,7 @@ internal constructor(private val model: WorkflowViewModel<OutputT, RenderingT>) 
  *       }
  *     }
  */
+@ExperimentalWorkflowUi
 @CheckResult
 fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
@@ -136,6 +138,7 @@ fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentW
 /**
  * Convenience overload of [setContentWorkflow] for workflows that take no input.
  */
+@ExperimentalWorkflowUi
 @CheckResult
 fun <OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
