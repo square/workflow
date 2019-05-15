@@ -24,6 +24,7 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.testing.testFromStart
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
@@ -191,12 +192,18 @@ class WorkerCompositionIntegrationTest {
     workflow.testFromStart {
       assertFalse(this.hasOutput)
 
-      // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-      @Suppress("DEPRECATION")
-      channel.cancel(ExpectedException())
+      channel.cancel(CancellationException(null, ExpectedException()))
 
-      assertFailsWith<ExpectedException> {
+      assertFailsWith<CancellationException> {
         awaitNextOutput()
+      }.also { error ->
+        // Search up the cause chain for the expected exception, since multiple CancellationExceptions
+        // may be chained together first.
+        val causeChain = generateSequence<Throwable>(error) { it.cause }
+        assertEquals(
+            1, causeChain.count { it is ExpectedException },
+            "Expected cancellation exception cause chain to include original cause."
+        )
       }
     }
   }

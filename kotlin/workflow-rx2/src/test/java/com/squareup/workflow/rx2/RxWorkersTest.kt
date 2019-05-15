@@ -105,9 +105,7 @@ class RxWorkersTest {
     worker.test {
       assertEquals(0, disposals)
       cancelWorker()
-      // There's a bug in the coroutine library: the observable is actually disposed twice.
-      // This is fixed in 1.2.0.
-      assertEquals(2, disposals)
+      assertEquals(1, disposals)
     }
   }
 

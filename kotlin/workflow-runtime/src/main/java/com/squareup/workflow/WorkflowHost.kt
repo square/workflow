@@ -27,7 +27,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable.isActive
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
@@ -204,17 +203,11 @@ suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
         rootNode.tick(this) { it }
       }
     }
-  } catch (e: Throwable) {
-    // For some reason the exception gets masked if we don't explicitly pass it to cancel the
-    // producer coroutine ourselves here.
-    // TODO https://github.com/square/workflow/issues/188 Stop using parameterized cancel.
-    @Suppress("DEPRECATION")
-    coroutineContext.cancel(e)
-    throw e
   } finally {
     // There's a potential race condition if the producer coroutine is cancelled before it has a
     // chance to enter the try block, since we can't use CoroutineStart.ATOMIC. However, until we
     // actually see this cause problems, I'm not too worried about it.
+    // See https://github.com/Kotlin/kotlinx.coroutines/issues/845
     rootNode.cancel()
   }
 }

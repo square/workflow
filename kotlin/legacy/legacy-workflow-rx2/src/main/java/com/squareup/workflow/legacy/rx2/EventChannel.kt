@@ -122,7 +122,7 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
             // win get unsubscribed.
             .also { selectionJob.cancel() }
       } catch (cancellation: CancellationException) {
-        val cause = cancellation.cause
+        val cause = cancellation.unwrapRealCause()
         if (cause == null) {
           // The select was cancelled normally, which means the workflow was abandoned and we're
           // about to get unsubscribed from. Don't propagate the error, just never emit/return.
@@ -134,4 +134,12 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
       }
     }
   }
+
+  /**
+   * Searches up the cause chain to find the first exception that is not a [CancellationException]
+   * and returns it. If every cause is a cancellation, returns null.
+   */
+  private fun CancellationException.unwrapRealCause(): Throwable? =
+    generateSequence<Throwable>(this) { it.cause }
+        .firstOrNull { it !is CancellationException }
 }
