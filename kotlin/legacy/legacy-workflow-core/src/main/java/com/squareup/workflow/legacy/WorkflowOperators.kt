@@ -43,6 +43,7 @@ private val operatorContext = Unconfined
  * [Transforms][https://stackoverflow.com/questions/15457015/explain-contramap]
  * the receiver to accept events of type [E2] instead of [E1].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S : Any, E2 : Any, E1 : Any, O : Any> Workflow<S, E1, O>.adaptEvents(transform: (E2) -> E1):
     Workflow<S, E2, O> = object : Workflow<S, E2, O>, Deferred<O> by this {
   override fun openSubscriptionToState(): ReceiveChannel<S> =
@@ -54,6 +55,7 @@ fun <S : Any, E2 : Any, E1 : Any, O : Any> Workflow<S, E1, O>.adaptEvents(transf
 /**
  * Transforms the receiver to emit states of type [S2] instead of [S1].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.mapState(
   transform: suspend (S1) -> S2
 ): Workflow<S2, E, O> = object : Workflow<S2, E, O>,
@@ -74,6 +76,7 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.mapState(
  * method, each [S1] update is transformed into a stream of [S2] updates -- useful when an [S1]
  * state might wrap an underlying workflow whose own screens need to be shown.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
   transform: suspend CoroutineScope.(S1) -> ReceiveChannel<S2>
 ): Workflow<S2, E, O> = object : Workflow<S2, E, O>,
@@ -116,6 +119,7 @@ fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
 /**
  * Transforms the receiver to emit a result of type [O2] instead of [O1].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S : Any, E : Any, O1 : Any, O2 : Any> Workflow<S, E, O1>.mapResult(
   transform: suspend (O1) -> O2
 ): Workflow<S, E, O2> {

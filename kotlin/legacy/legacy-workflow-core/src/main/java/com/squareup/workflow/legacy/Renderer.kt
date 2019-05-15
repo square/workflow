@@ -18,6 +18,7 @@ package com.squareup.workflow.legacy
 /**
  * Given a workflow state [S], converts it to a type suitable for use as a view model.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 interface Renderer<S : Any, E : Any, R : Any> {
 
   /**

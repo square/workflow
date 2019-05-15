@@ -19,6 +19,7 @@ package com.squareup.workflow.legacy
  * Reports either the [new state][Running] or the [result][Finished] of
  * a [Workflow] being run via [WorkflowPool.awaitWorkflowUpdate].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 sealed class WorkflowUpdate<out S : Any, out E : Any, out O : Any>
 
 /**
@@ -29,6 +30,7 @@ sealed class WorkflowUpdate<out S : Any, out E : Any, out O : Any>
  *  - keep the [Workflow] running, by calling [WorkflowPool.awaitWorkflowUpdate] again, or
  *  - abandon the [Workflow] by calling [WorkflowPool.abandonWorker]
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 data class Running<S : Any, E : Any, O : Any>(
   val handle: WorkflowPool.Handle<S, E, O>
 ) : WorkflowUpdate<S, E, O>()
@@ -37,4 +39,5 @@ data class Running<S : Any, E : Any, O : Any>(
  * Reports that a [Workflow] started by a previous call to [WorkflowPool.awaitWorkflowUpdate]
  * has completed its work, and provides its [result].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 data class Finished<O : Any>(val result: O) : WorkflowUpdate<Nothing, Nothing, O>()

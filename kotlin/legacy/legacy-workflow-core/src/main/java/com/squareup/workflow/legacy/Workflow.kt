@@ -25,6 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
  *
  * A `Workflow` can be cancelled by calling [cancel].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 interface Workflow<out S : Any, in E : Any, out O : Any> : Deferred<O>, WorkflowInput<E> {
   /**
    * Returns a channel that will, on every update, report the complete, current state of this

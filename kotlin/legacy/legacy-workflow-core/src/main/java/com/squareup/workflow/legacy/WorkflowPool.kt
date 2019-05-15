@@ -38,6 +38,7 @@ import kotlin.reflect.KClass
  *
  * To run a [Worker], call [awaitWorkerResult]. (A worker is effectively its own [Launcher].)
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 class WorkflowPool {
   /**
    * Represents the type parameters of a [Launcher] in reified form.
@@ -89,6 +90,7 @@ class WorkflowPool {
    * [completed][Workflow.invokeOnCompletion], including via calls to
    * [WorkflowPool.abandonWorkflow].
    */
+  @Deprecated("Use com.squareup.workflow.Workflow")
   interface Launcher<S : Any, in E : Any, out O : Any> {
     fun launch(
       initialState: S,
@@ -391,6 +393,7 @@ internal fun <I : Any, O : Any> WorkflowPool.workerResult(
 /**
  * Returns the [Type] that represents this [Launcher]'s type parameters.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 @Suppress("unused")
 inline val <reified S : Any, reified E : Any, reified O : Any>
     Launcher<S, E, O>.workflowType: Type<S, E, O>

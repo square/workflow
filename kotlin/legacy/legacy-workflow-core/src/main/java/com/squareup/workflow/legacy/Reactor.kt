@@ -193,6 +193,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @param E Event type. If your Reactor doesn't have any events, use `Nothing`
  * @param O Output (result) type
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 interface Reactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O> {
   /**
    * Called by the `Workflow` to obtain the next state transition.
@@ -230,6 +231,7 @@ interface Reactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O
  * `onReact` actually requires a particular dispatcher, it should use
  * [withContext][kotlinx.coroutines.withContext].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
   initialState: S,
   workflows: WorkflowPool,

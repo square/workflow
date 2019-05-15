@@ -28,6 +28,7 @@ import com.squareup.workflow.legacy.switchMapState as coreSwitchMapState
  * [Workflow.cancel] is called.
  */
 @Suppress("unused")
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun Workflow<*, *, *>.toCompletable(): Completable = state.ignoreElements()
 
 /**
@@ -36,6 +37,7 @@ fun Workflow<*, *, *>.toCompletable(): Completable = state.ignoreElements()
  * transformed into a stream of [S2] updates -- useful when an [S1] state might wrap an underlying
  * workflow whose own screens need to be shown.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S1 : Any, S2 : Any, E : Any, O : Any> Workflow<S1, E, O>.switchMapState(
   transform: (S1) -> Observable<out S2>
 ): Workflow<S2, E, O> = coreSwitchMapState {

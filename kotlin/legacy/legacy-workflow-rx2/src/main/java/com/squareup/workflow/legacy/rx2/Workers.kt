@@ -24,10 +24,12 @@ import kotlinx.coroutines.rx2.await
  * Creates a [Worker] that will pass its input value to [block], then subscribe to the returned
  * [Single] and report the value it emits as the worker result.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <I : Any, O : Any> singleWorker(block: (I) -> Single<O>): Worker<I, O> =
   worker { block(it).await() }
 
 /**
  * Creates a [Worker] that will report the [Single]'s eventual value as its result.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <T : Any> Single<T>.asWorker(): Worker<Unit, T> = worker { await() }
