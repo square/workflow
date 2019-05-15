@@ -37,6 +37,7 @@ import kotlinx.coroutines.selects.SelectBuilder
  * The receiver for lambdas passed to [EventChannel.select][EventChannel.select].
  * For usage see the documentation for [EventChannel][EventChannel].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 class EventSelectBuilder<E : Any, R : Any> internal constructor(
   @PublishedApi internal val builder: SelectBuilder<Single<R>>,
   /**

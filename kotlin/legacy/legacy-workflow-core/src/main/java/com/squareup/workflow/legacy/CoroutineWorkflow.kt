@@ -43,6 +43,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * receiving fast enough, they will miss intermediate states.
  * The event channel has [unlimited capacity][UNLIMITED].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S : Any, E : Any, O : Any> CoroutineScope.workflow(
   context: CoroutineContext = EmptyCoroutineContext,
   block: suspend CoroutineScope.(

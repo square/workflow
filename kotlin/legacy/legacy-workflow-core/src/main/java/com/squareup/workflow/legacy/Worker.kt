@@ -80,6 +80,7 @@ import kotlinx.coroutines.Deferred
  * needs a specific dispatcher (e.g. to do IO), it should use
  * [withContext][kotlinx.coroutines.withContext].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 interface Worker<in I : Any, out O : Any> {
   /**
    * Perform some asynchronous work.
@@ -90,6 +91,7 @@ interface Worker<in I : Any, out O : Any> {
 /**
  * Creates a [Worker] that passes [block] its input value and uses its return value as the result.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <I : Any, O : Any> worker(block: suspend (I) -> O): Worker<I, O> = object : Worker<I, O> {
   override suspend fun call(input: I): O = block(input)
 }
@@ -97,6 +99,7 @@ fun <I : Any, O : Any> worker(block: suspend (I) -> O): Worker<I, O> = object : 
 /**
  * Creates a [Worker] that will report the [Deferred]'s eventual value as its result.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <T : Any> Deferred<T>.asWorker(): Worker<Unit, T> = worker { await() }
 
 /**

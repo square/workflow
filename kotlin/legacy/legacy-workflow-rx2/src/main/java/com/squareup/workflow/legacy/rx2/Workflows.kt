@@ -30,6 +30,7 @@ import kotlinx.coroutines.rx2.rxObservable
 /**
  * On every update, reports the complete, current state of this workflow.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 val <S : Any> Workflow<S, *, *>.state: Observable<out S>
   get() = GlobalScope
       .rxObservable(Unconfined) {
@@ -60,6 +61,7 @@ val <S : Any> Workflow<S, *, *>.state: Observable<out S>
  *
  * If the workflow is abandoned, the result will complete without a value.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 val <O : Any> Workflow<*, *, O>.result: Maybe<out O>
   get() = GlobalScope
       .rxMaybe(Unconfined) { await() }

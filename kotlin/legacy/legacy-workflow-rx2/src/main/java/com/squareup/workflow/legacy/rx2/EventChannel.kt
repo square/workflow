@@ -58,10 +58,12 @@ import kotlin.coroutines.suspendCoroutine
  *
  * @param E The supertype of all valid events. Probably a sealed class.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 interface EventChannel<E : Any> {
   fun <R : Any> select(block: EventSelectBuilder<E, R>.() -> Unit): Single<out R>
 }
 
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
   /**
    * Returns a [Single] that will complete successfully when [Workflow.sendEvent] is passed an

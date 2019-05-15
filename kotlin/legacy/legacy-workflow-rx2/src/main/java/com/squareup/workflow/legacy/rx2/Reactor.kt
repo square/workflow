@@ -215,6 +215,7 @@ import com.squareup.workflow.legacy.Reactor as CoroutineReactor
  * [Delegating][com.squareup.workflow.Delegating] subtypes. [WorkflowPool.input] can be used by
  * renderers to route events to any running workflow.
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 interface Reactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O> {
   fun onReact(
     state: S,
@@ -231,6 +232,7 @@ interface Reactor<S : Any, E : Any, out O : Any> : WorkflowPool.Launcher<S, E, O
 /**
  * Use this to implement [WorkflowPool.Launcher.launch].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
   initialState: S,
   workflows: WorkflowPool,
@@ -243,6 +245,7 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
 /**
  * Adapter to convert a [Reactor] to a [Reactor].
  */
+@Deprecated("Use com.squareup.workflow.Workflow")
 fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.toCoroutineReactor() =
   object : CoroutineReactor<S, E, O> {
     override suspend fun onReact(
