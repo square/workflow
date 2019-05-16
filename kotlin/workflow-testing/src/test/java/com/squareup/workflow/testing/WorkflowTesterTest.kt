@@ -15,9 +15,15 @@
  */
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 
-package com.squareup.workflow
+package com.squareup.workflow.testing
 
-import com.squareup.workflow.testing.testFromStart
+import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.Workflow
+import com.squareup.workflow.asWorker
+import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.stateless
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
