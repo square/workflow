@@ -225,7 +225,7 @@ fun <T, OutputT : Any, RenderingT> Workflow<Unit, OutputT, RenderingT>.testFromS
  */
 // @formatter:off
 @TestOnly
-fun <T, InputT, StateT : Any, OutputT : Any, RenderingT>
+fun <T, InputT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<InputT, StateT, OutputT, RenderingT>.testFromState(
       input: InputT,
       initialState: StateT,
@@ -246,7 +246,7 @@ fun <T, InputT, StateT : Any, OutputT : Any, RenderingT>
  */
 // @formatter:off
 @TestOnly
-fun <StateT : Any, OutputT : Any, RenderingT>
+fun <StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.testFromState(
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,

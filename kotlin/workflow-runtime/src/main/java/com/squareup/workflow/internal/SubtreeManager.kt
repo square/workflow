@@ -52,7 +52,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     )
 
   // @formatter:off
-  override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
+  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT>
       render(
         case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
         child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
@@ -126,7 +126,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun <IC : Any, OC : Any> WorkflowOutputCase<IC, OC, StateT, OutputT>.createNode():
+  private fun <IC, OC : Any> WorkflowOutputCase<IC, OC, StateT, OutputT>.createNode():
       WorkflowNode<IC, *, OC, *> =
     WorkflowNode(
         id,

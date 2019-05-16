@@ -36,7 +36,7 @@ internal data class Behavior<StateT, out OutputT : Any>(
 
   // @formatter:off
   data class WorkflowOutputCase<
-      ChildInputT : Any,
+      ChildInputT,
       ChildOutputT : Any,
       ParentStateT,
       out ParentOutputT : Any

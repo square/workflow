@@ -90,7 +90,7 @@ abstract class StatelessWorkflow<InputT, OutputT : Any, RenderingT> :
  * [input][InputT] received from its parent, and it may render child workflows that do have
  * their own internal state.
  */
-fun <InputT : Any, OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
+fun <InputT, OutputT : Any, RenderingT> Workflow.Companion.stateless(
   render: (
     input: InputT,
     context: RenderContext<Nothing, OutputT>
@@ -109,7 +109,7 @@ fun <InputT : Any, OutputT : Any, RenderingT : Any> Workflow.Companion.stateless
  * Note that while the returned workflow doesn't have any _internal_ state of its own, it may
  * render child workflows that do have their own internal state.
  */
-fun <OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
+fun <OutputT : Any, RenderingT> Workflow.Companion.stateless(
   render: (context: RenderContext<Nothing, OutputT>) -> RenderingT
 ): Workflow<Unit, OutputT, RenderingT> =
   Workflow.stateless { _: Unit, context: RenderContext<Nothing, OutputT> ->
@@ -120,7 +120,7 @@ fun <OutputT : Any, RenderingT : Any> Workflow.Companion.stateless(
  * Returns a workflow that does nothing but echo the given [rendering].
  * Handy for testing.
  */
-fun <OutputT : Any, RenderingT : Any> Workflow.Companion.rendering(
+fun <OutputT : Any, RenderingT> Workflow.Companion.rendering(
   rendering: RenderingT
 ): Workflow<Unit, OutputT, RenderingT> =
   stateless { _: Unit, _: RenderContext<Nothing, OutputT> -> rendering }
@@ -132,7 +132,7 @@ fun <OutputT : Any, RenderingT : Any> Workflow.Companion.rendering(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-fun <InputT : Any, OutputT : Any, FromRenderingT : Any, ToRenderingT : Any>
+fun <InputT, OutputT : Any, FromRenderingT, ToRenderingT>
     Workflow<InputT, OutputT, FromRenderingT>.mapRendering(
       transform: (FromRenderingT) -> ToRenderingT
     ): Workflow<InputT, OutputT, ToRenderingT> = Workflow.stateless { input, context ->

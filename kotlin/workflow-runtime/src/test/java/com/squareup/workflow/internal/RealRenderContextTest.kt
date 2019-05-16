@@ -46,11 +46,11 @@ class RealRenderContextTest {
       val case: WorkflowOutputCase<*, *, *, *>,
       val child: Workflow<*, *, *>,
       val id: WorkflowId<*, *, *>,
-      val input: Any
+      val input: Any?
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <IC : Any, OC : Any, RC : Any> render(
+    override fun <IC, OC : Any, RC> render(
       case: WorkflowOutputCase<IC, OC, String, String>,
       child: Workflow<IC, OC, RC>,
       id: WorkflowId<IC, OC, RC>,
@@ -77,8 +77,8 @@ class RealRenderContextTest {
     override fun snapshotState(state: String): Snapshot = fail()
   }
 
-  private class PoisonRenderer<S : Any, O : Any> : Renderer<S, O> {
-    override fun <IC : Any, OC : Any, RC : Any> render(
+  private class PoisonRenderer<S, O : Any> : Renderer<S, O> {
+    override fun <IC, OC : Any, RC> render(
       case: WorkflowOutputCase<IC, OC, S, O>,
       child: Workflow<IC, OC, RC>,
       id: WorkflowId<IC, OC, RC>,

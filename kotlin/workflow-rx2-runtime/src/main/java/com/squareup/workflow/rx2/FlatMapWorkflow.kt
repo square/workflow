@@ -52,7 +52,7 @@ import kotlinx.coroutines.rx2.rxFlowable
  * how to use backpressure. By operating on [Flowable], this operator leaves it up to the caller to
  * specify strategies for handling backpressure, instead of assuming any particular behavior.
  */
-fun <InputT : Any, OutputT : Any, RenderingT : Any> Flowable<InputT>.flatMapWorkflow(
+fun <InputT, OutputT : Any, RenderingT> Flowable<InputT>.flatMapWorkflow(
   workflow: Workflow<InputT, OutputT, RenderingT>,
   initialSnapshot: Snapshot? = null,
   dispatcher: CoroutineDispatcher = Dispatchers.Unconfined
