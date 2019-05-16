@@ -31,7 +31,7 @@ import io.reactivex.Observable
  * [FragmentActivity.setContentWorkflow]. See that method for more details.
  */
 @ExperimentalWorkflowUi
-class WorkflowActivityRunner<OutputT : Any, RenderingT : Any>
+class WorkflowActivityRunner<out OutputT : Any, out RenderingT : Any>
 internal constructor(private val model: WorkflowViewModel<OutputT, RenderingT>) {
 
   internal val renderings: Observable<out RenderingT> = model.updates.map { it.rendering }
@@ -106,7 +106,7 @@ internal constructor(private val model: WorkflowViewModel<OutputT, RenderingT>) 
  */
 @ExperimentalWorkflowUi
 @CheckResult
-fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
+fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, RenderingT>,
   inputs: Flowable<InputT>,

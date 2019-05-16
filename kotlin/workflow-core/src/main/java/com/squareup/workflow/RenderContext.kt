@@ -90,7 +90,7 @@ interface RenderContext<StateT, in OutputT : Any> {
    * @param key An optional string key that is used to distinguish between workflows of the same
    * type.
    */
-  fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> renderChild(
+  fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
     child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
     input: ChildInputT,
     key: String = "",
@@ -113,7 +113,7 @@ interface RenderContext<StateT, in OutputT : Any> {
 /**
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take input.
  */
-fun <StateT : Any, OutputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
+fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
@@ -128,7 +128,7 @@ fun <StateT : Any, OutputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
  * output.
  */
-fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
+fun <InputT, StateT, OutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
@@ -143,7 +143,7 @@ fun <InputT : Any, StateT : Any, OutputT : Any, ChildRenderingT : Any>
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
  * output.
  */
-fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
+fun <StateT, OutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
@@ -160,7 +160,7 @@ fun <StateT : Any, OutputT : Any, ChildRenderingT : Any>
  *
  * @param key An optional string key that is used to distinguish between identical [Worker]s.
  */
-fun <StateT : Any, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
+fun <StateT, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
   worker: Worker<T>,
   key: String = "",
   handler: (T) -> WorkflowAction<StateT, OutputT>
@@ -177,7 +177,7 @@ fun <StateT : Any, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutp
  *
  * @param key An optional string key that is used to distinguish between identical [Worker]s.
  */
-fun <StateT : Any, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
+fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
   worker: Worker<Nothing>,
   key: String = ""
 ) = onWorkerOutputOrFinished(worker, key) { throw AssertionError("Worker<Nothing> emitted $it") }

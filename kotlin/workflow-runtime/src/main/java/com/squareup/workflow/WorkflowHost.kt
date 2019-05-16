@@ -117,7 +117,7 @@ interface WorkflowHost<in InputT, out OutputT : Any, out RenderingT> {
      * the testing extension method defined there on your workflow itself.
      */
     @TestOnly
-    fun <InputT, StateT : Any, OutputT : Any, RenderingT> runTestFromState(
+    fun <InputT, StateT, OutputT : Any, RenderingT> runTestFromState(
       workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
       inputs: ReceiveChannel<InputT>,
       initialState: StateT

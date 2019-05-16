@@ -33,7 +33,7 @@ internal class RealRenderContext<StateT, OutputT : Any>(
 ) : RenderContext<StateT, OutputT> {
 
   interface Renderer<StateT, in OutputT : Any> {
-    fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any> render(
+    fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> render(
       case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
       child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
       id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
@@ -66,7 +66,7 @@ internal class RealRenderContext<StateT, OutputT : Any>(
   }
 
   // @formatter:off
-  override fun <ChildInputT : Any, ChildOutputT : Any, ChildRenderingT : Any>
+  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT>
       renderChild(
         child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
         input: ChildInputT,

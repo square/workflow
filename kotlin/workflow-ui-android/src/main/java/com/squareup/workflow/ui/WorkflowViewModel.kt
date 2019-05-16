@@ -30,12 +30,12 @@ import io.reactivex.disposables.Disposable
  * would be nasty.
  */
 @ExperimentalWorkflowUi
-internal class WorkflowViewModel<OutputT : Any, RenderingT : Any>(
+internal class WorkflowViewModel<OutputT : Any, RenderingT>(
   val viewRegistry: ViewRegistry,
   workflowUpdates: Flowable<Update<OutputT, RenderingT>>
 ) : ViewModel() {
 
-  internal class Factory<InputT : Any, OutputT : Any, RenderingT : Any>(
+  internal class Factory<InputT, OutputT : Any, RenderingT>(
     private val viewRegistry: ViewRegistry,
     private val workflow: Workflow<InputT, OutputT, RenderingT>,
     private val inputs: Flowable<InputT>,

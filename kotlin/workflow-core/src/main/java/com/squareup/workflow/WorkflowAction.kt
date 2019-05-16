@@ -32,7 +32,7 @@ interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, O
      * @param name Function that returns a string describing the update for debugging.
      * @param update Function that defines the workflow update.
      */
-    inline operator fun <StateT : Any, OutputT : Any> invoke(
+    inline operator fun <StateT, OutputT : Any> invoke(
       crossinline name: () -> String,
       crossinline update: (StateT) -> Pair<StateT, OutputT?>
     ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
@@ -43,14 +43,14 @@ interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, O
     /**
      * Returns a [WorkflowAction] that does nothing.
      */
-    fun <StateT : Any, OutputT : Any> noop(): WorkflowAction<StateT, OutputT> =
+    fun <StateT, OutputT : Any> noop(): WorkflowAction<StateT, OutputT> =
       WorkflowAction({ "noop" }) { Pair(it, null) }
 
     /**
      * Convenience function that returns a [WorkflowAction] that will just set the state to [newState]
      * (without considering the current state) and optionally emit an output.
      */
-    fun <StateT : Any, OutputT : Any> enterState(
+    fun <StateT, OutputT : Any> enterState(
       newState: StateT,
       emittingOutput: OutputT? = null
     ): WorkflowAction<StateT, OutputT> =
@@ -62,7 +62,7 @@ interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, O
      * Convenience function that returns a [WorkflowAction] that will just set the state to [newState]
      * (without considering the current state) and optionally emit an output.
      */
-    fun <StateT : Any, OutputT : Any> enterState(
+    fun <StateT, OutputT : Any> enterState(
       name: String,
       newState: StateT,
       emittingOutput: OutputT? = null
@@ -74,7 +74,7 @@ interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, O
     /**
      * Convenience function to implement [WorkflowAction] without returning the output.
      */
-    fun <StateT : Any, OutputT : Any> modifyState(
+    fun <StateT, OutputT : Any> modifyState(
       name: () -> String,
       emittingOutput: OutputT? = null,
       modify: (StateT) -> StateT
@@ -86,13 +86,13 @@ interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, O
     /**
      * Convenience function to implement [WorkflowAction] without changing the state.
      */
-    fun <StateT : Any, OutputT : Any> emitOutput(output: OutputT): WorkflowAction<StateT, OutputT> =
+    fun <StateT, OutputT : Any> emitOutput(output: OutputT): WorkflowAction<StateT, OutputT> =
       WorkflowAction({ "emitOutput($output)" }) { Pair(it, output) }
 
     /**
      * Convenience function to implement [WorkflowAction] without changing the state.
      */
-    fun <StateT : Any, OutputT : Any> emitOutput(
+    fun <StateT, OutputT : Any> emitOutput(
       name: String,
       output: OutputT
     ): WorkflowAction<StateT, OutputT> =
