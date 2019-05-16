@@ -35,7 +35,7 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
     }
 
     public convenience init<W: Workflow>(workflow: W, viewRegistry: ViewRegistry) where W.Rendering == ScreenType, W.Output == Output {
-        let host = WorkflowHost(workflow: workflow)
+        let host = WorkflowHost(workflow: workflow, scheduler: UIScheduler())
         self.init(
             workflowHost: host,
             rendering: host.rendering,

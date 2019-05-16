@@ -34,12 +34,14 @@ public final class WorkflowHost<WorkflowType: Workflow> {
     /// Initializes a new host with the given workflow at the root.
     ///
     /// - Parameter workflow: The root workflow in the hierarchy
+    /// - Parameter scheduler: The scheduler to perform updates on. Defaults to the UIScheduler, which acts as
+    ///                       an immediate scheduler if called from the main thread.
     /// - Parameter debugger: An optional debugger. If provided, the host will notify the debugger of updates
     ///                       to the workflow hierarchy as state transitions occur.
-    public init(workflow: WorkflowType, debugger: WorkflowDebugger? = nil) {
+    public init(workflow: WorkflowType, scheduler: Scheduler = UIScheduler(), debugger: WorkflowDebugger? = nil) {
         self.debugger = debugger
 
-        self.rootNode = WorkflowNode(workflow: workflow)
+        self.rootNode = WorkflowNode(workflow: workflow, scheduler: scheduler)
 
         self.mutableRendering = MutableProperty(self.rootNode.render())
         self.rendering = Property(mutableRendering)

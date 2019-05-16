@@ -13,10 +13,10 @@ final class WorkflowNode<WorkflowType: Workflow> {
     var onOutput: ((Output) -> Void)? = nil
 
     /// Manages the children of this workflow, including diffs during/after render passes.
-    private let subtreeManager = SubtreeManager()
+    private let subtreeManager: SubtreeManager
     
-    init(workflow: WorkflowType) {
-        
+    init(workflow: WorkflowType, scheduler: Scheduler) {
+        self.subtreeManager = SubtreeManager(scheduler: scheduler)
         /// Get the initial state
         self.workflow = workflow
         self.state = workflow.makeInitialState()

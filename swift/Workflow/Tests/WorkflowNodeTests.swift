@@ -7,8 +7,10 @@ import Result
 
 final class WorkflowNodeTests: XCTestCase {
 
+    let scheduler = UIScheduler()
+
     func test_rendersSimpleWorkflow() {
-        let node = WorkflowNode(workflow: SimpleWorkflow(string: "Foo"))
+        let node = WorkflowNode(workflow: SimpleWorkflow(string: "Foo"), scheduler: scheduler)
         XCTAssertEqual(node.render(), "ooF")
     }
 
@@ -17,7 +19,7 @@ final class WorkflowNodeTests: XCTestCase {
         let node = WorkflowNode(
             workflow: CompositeWorkflow(
                 a: SimpleWorkflow(string: "Hello"),
-                b: SimpleWorkflow(string: "World")))
+                b: SimpleWorkflow(string: "World")), scheduler: scheduler)
 
         XCTAssertEqual(node.render().aRendering, "olleH")
         XCTAssertEqual(node.render().bRendering, "dlroW")
@@ -31,7 +33,7 @@ final class WorkflowNodeTests: XCTestCase {
             a: EventEmittingWorkflow(string: "Hello"),
             b: SimpleWorkflow(string: "World"))
 
-        let node = WorkflowNode(workflow: workflow)
+        let node = WorkflowNode(workflow: workflow, scheduler: scheduler)
 
         let rendering = node.render()
 
@@ -61,7 +63,7 @@ final class WorkflowNodeTests: XCTestCase {
             a: StateTransitioningWorkflow(),
             b: SimpleWorkflow(string: "World"))
 
-        let node = WorkflowNode(workflow: workflow)
+        let node = WorkflowNode(workflow: workflow, scheduler: scheduler)
 
         let expectation = XCTestExpectation(description: "State Change")
         var stateChangeCount = 0
@@ -90,7 +92,7 @@ final class WorkflowNodeTests: XCTestCase {
             a: EventEmittingWorkflow(string: "Hello"),
             b: SimpleWorkflow(string: "World"))
 
-        let node = WorkflowNode(workflow: workflow)
+        let node = WorkflowNode(workflow: workflow, scheduler: scheduler)
 
         let rendering = node.render()
 
@@ -147,7 +149,7 @@ final class WorkflowNodeTests: XCTestCase {
         let workflow = CompositeWorkflow(
             a: EventEmittingWorkflow(string: "Hello"),
             b: SimpleWorkflow(string: "World"))
-        let node = WorkflowNode(workflow: workflow)
+        let node = WorkflowNode(workflow: workflow, scheduler: scheduler)
         _ = node.render() // the debug snapshow always reflects the tree after the latest render pass
 
         let snapshot = node.makeDebugSnapshot()
@@ -216,7 +218,7 @@ final class WorkflowNodeTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test Worker")
         var outputs: [Int] = []
 
-        let node = WorkflowNode(workflow: WF())
+        let node = WorkflowNode(workflow: WF(), scheduler: scheduler)
         node.onOutput = { output in
             if let outputInt = output.outputEvent {
                 outputs.append(outputInt)
@@ -232,6 +234,61 @@ final class WorkflowNodeTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
 
         XCTAssertEqual(outputs, [1, 2])
+    }
+
+    func test_handlesImmediateWorkerOutput() {
+        struct WF: Workflow {
+
+            struct State {}
+
+            typealias Output = Int
+
+            typealias Rendering = Void
+
+            func makeInitialState() -> WF.State {
+                return State()
+            }
+
+            func workflowDidChange(from previousWorkflow: WF, state: inout WF.State) {
+
+            }
+
+            func render(state: WF.State, context: RenderContext<WF>) -> Void {
+                context.awaitResult(for: TestWorker()) { output in
+                    return AnyWorkflowAction(sendingOutput: output)
+                }
+            }
+        }
+
+        struct TestWorker: Worker {
+            func isEquivalent(to otherWorker: TestWorker) -> Bool {
+                return true
+            }
+
+            func run() -> SignalProducer<Int, NoError> {
+                return SignalProducer(value: 1)
+            }
+        }
+
+        let expectation = XCTestExpectation(description: "Test Worker")
+        var outputs: [Int] = []
+
+        let node = WorkflowNode(workflow: WF(), scheduler: scheduler)
+        node.onOutput = { output in
+            if let outputInt = output.outputEvent {
+                outputs.append(outputInt)
+
+                if outputs.count == 1 {
+                    expectation.fulfill()
+                }
+            }
+        }
+
+        node.render()
+
+        wait(for: [expectation], timeout: 1.0)
+
+        XCTAssertEqual(outputs, [1])
     }
 
 }

@@ -1,10 +1,13 @@
 import XCTest
+import ReactiveSwift
 @testable import Workflow
 
+
 final class SubtreeManagerTests: XCTestCase {
+    let scheduler = UIScheduler()
 
     func test_maintainsChildrenBetweenRenderPasses() {
-        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager(scheduler: scheduler)
         XCTAssertTrue(manager.childWorkflows.isEmpty)
 
         _ = manager.render { context -> TestViewModel in
@@ -30,7 +33,7 @@ final class SubtreeManagerTests: XCTestCase {
     }
 
     func test_removesUnusedChildrenAfterRenderPasses() {
-        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager(scheduler: scheduler)
         _ = manager.render { context -> TestViewModel in
             return context.render(
                 workflow: TestWorkflow(),
@@ -49,7 +52,7 @@ final class SubtreeManagerTests: XCTestCase {
 
     func test_emitsChildEvents() {
 
-        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager(scheduler: scheduler)
 
         var events: [AnyWorkflowAction<ParentWorkflow>] = []
 
@@ -80,7 +83,7 @@ final class SubtreeManagerTests: XCTestCase {
 
     func test_emitsChangeEvents() {
 
-        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager(scheduler: scheduler)
 
         var changeCount = 0
 
@@ -104,7 +107,7 @@ final class SubtreeManagerTests: XCTestCase {
     }
     
     func test_invalidatesContextAfterRender() {
-        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager(scheduler: scheduler)
         
         var escapingContext: RenderContext<ParentWorkflow>! = nil
         

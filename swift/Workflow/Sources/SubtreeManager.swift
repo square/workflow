@@ -9,6 +9,9 @@ extension WorkflowNode {
 
         internal var onUpdate: ((Output) -> Void)? = nil
 
+        /// The scheduler that all updates will run on.
+        private let scheduler: Scheduler
+
         /// Signals from the outside world (e.g. UI)
         private let (childEvent, childEventObserver) = Signal<Signal<Output, NoError>, NoError>.pipe()
 
@@ -19,11 +22,13 @@ extension WorkflowNode {
 
         private let (lifetime, token) = Lifetime.make()
 
-        init() {
+        init(scheduler: Scheduler) {
+            self.scheduler = scheduler
+
             childEvent
                 .flatMap(.latest, { $0 })
                 .take(during: lifetime)
-                .observe(on: QueueScheduler.workflowExecution)
+                .observe(on: scheduler)
                 .observeValues { [weak self] event in
                     self?.handle(output: event)
                 }
@@ -34,6 +39,7 @@ extension WorkflowNode {
 
             /// Create a workflow context containing the existing children
             let context = Context(
+                scheduler: scheduler,
                 originalChildWorkflows: childWorkflows,
                 originalChildWorkers: childWorkers)
 
@@ -109,6 +115,8 @@ extension WorkflowNode.SubtreeManager {
 
     /// The workflow context implementation used by the subtree manager.
     fileprivate final class Context: RenderContextType {
+
+        private let scheduler: Scheduler
         
         private let originalChildWorkflows: [ChildKey:AnyChildWorkflow]
         private (set) internal var usedChildWorkflows: [ChildKey:AnyChildWorkflow]
@@ -118,7 +126,8 @@ extension WorkflowNode.SubtreeManager {
 
         private (set) internal var eventSources: [Signal<AnyWorkflowAction<WorkflowType>, NoError>] = []
 
-        internal init(originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalChildWorkers: [AnyChildWorker]) {
+        internal init(scheduler: Scheduler, originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalChildWorkers: [AnyChildWorker]) {
+            self.scheduler = scheduler
             self.originalChildWorkflows = originalChildWorkflows
             self.usedChildWorkflows = [:]
 
@@ -158,6 +167,7 @@ extension WorkflowNode.SubtreeManager {
                 /// This spins up a new workflow node, etc to host the newly created child.
                 child = ChildWorkflow<Child>(
                     workflow: workflow,
+                    scheduler: scheduler,
                     outputMap: { AnyWorkflowAction(outputMap($0)) })
             }
 
@@ -283,9 +293,9 @@ extension WorkflowNode.SubtreeManager {
         
         private let (lifetime, token) = Lifetime.make()
         
-        init(workflow: W, outputMap: @escaping (W.Output) -> AnyWorkflowAction<WorkflowType>) {
+        init(workflow: W, scheduler: Scheduler, outputMap: @escaping (W.Output) -> AnyWorkflowAction<WorkflowType>) {
             self.outputMap = outputMap
-            self.node = WorkflowNode<W>(workflow: workflow)
+            self.node = WorkflowNode<W>(workflow: workflow, scheduler: scheduler)
 
             super.init()
 

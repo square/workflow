@@ -5,11 +5,12 @@ import Result
 
 public class AnyWorkflowTests: XCTestCase {
 
+    let scheduler = UIScheduler()
 
     func testRendersWrappedWorkflow() {
 
         let workflow = AnyWorkflow(SimpleWorkflow(string: "asdf"))
-        let node = WorkflowNode(workflow: PassthroughWorkflow(child: workflow))
+        let node = WorkflowNode(workflow: PassthroughWorkflow(child: workflow), scheduler: scheduler)
 
         XCTAssertEqual(node.render(), "fdsa")
     }
@@ -20,7 +21,7 @@ public class AnyWorkflowTests: XCTestCase {
             .mapRendering { string -> String in
                 return string + "dsa"
             }
-        let node = WorkflowNode(workflow: PassthroughWorkflow(child: workflow))
+        let node = WorkflowNode(workflow: PassthroughWorkflow(child: workflow), scheduler: scheduler)
 
         XCTAssertEqual(node.render(), "fdsadsa")
     }
