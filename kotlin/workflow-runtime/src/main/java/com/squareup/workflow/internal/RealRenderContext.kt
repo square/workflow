@@ -27,8 +27,10 @@ import kotlinx.coroutines.CompletableDeferred
 
 /**
  * An implementation of [RenderContext] that builds a [Behavior] via [buildBehavior].
+ *
+ * Not for general application use.
  */
-internal class RealRenderContext<StateT, OutputT : Any>(
+class RealRenderContext<StateT, OutputT : Any>(
   private val renderer: Renderer<StateT, OutputT>
 ) : RenderContext<StateT, OutputT> {
 

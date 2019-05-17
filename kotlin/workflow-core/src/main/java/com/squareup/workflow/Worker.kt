@@ -123,8 +123,17 @@ interface Worker<out T> {
    * [Worker] emitting an output, and finishing (returning from [performWork]).
    */
   sealed class OutputOrFinished<out T> {
+    /**
+     * Indicates that a [Worker] emitted an output value.
+     */
     data class Output<out T>(val value: T) : OutputOrFinished<T>()
-    object Finished : OutputOrFinished<Nothing>()
+
+    /**
+     * Indicates that a [Worker] finished, and will not emit any more output values.
+     */
+    object Finished : OutputOrFinished<Nothing>() {
+      override fun toString(): String = "Finished"
+    }
   }
 
   /**
