@@ -45,8 +45,9 @@ import com.squareup.workflow.internal.WorkflowId
  *
  * Child [Worker]s should be instances of [MockWorker].
  */
-fun <O : Any, R> StatelessWorkflow<Unit, O, R>.testRender(): TestRenderResult<Unit, O, R> =
-  testRender(Unit)
+fun <O : Any, R> StatelessWorkflow<Unit, O, R>.testRender(
+  block: TestRenderResult<Unit, O, R>.() -> Unit
+) = testRender(Unit, block)
 
 /**
  * Calls [StatelessWorkflow.render] and returns a [TestRenderResult] that can be used to get at
@@ -61,10 +62,13 @@ fun <O : Any, R> StatelessWorkflow<Unit, O, R>.testRender(): TestRenderResult<Un
  *
  * Child [Worker]s should be instances of [MockWorker].
  */
-fun <I, O : Any, R> StatelessWorkflow<I, O, R>.testRender(input: I): TestRenderResult<Unit, O, R> =
+fun <I, O : Any, R> StatelessWorkflow<I, O, R>.testRender(
+  input: I,
+  block: TestRenderResult<Unit, O, R>.() -> Unit
+) =
   @Suppress("UNCHECKED_CAST")
   (asStatefulWorkflow() as StatefulWorkflow<I, Unit, O, R>)
-      .testRender(input, Unit)
+      .testRender(input, Unit, block)
 
 /**
  * Calls [StatefulWorkflow.render] and returns a [TestRenderResult] that can be used to get at
@@ -80,8 +84,9 @@ fun <I, O : Any, R> StatelessWorkflow<I, O, R>.testRender(input: I): TestRenderR
  * Child [Worker]s should be instances of [MockWorker].
  */
 fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRender(
-  state: S
-): TestRenderResult<S, O, R> = testRender(Unit, state)
+  state: S,
+  block: TestRenderResult<S, O, R>.() -> Unit
+) = testRender(Unit, state, block)
 
 /**
  * Calls [StatefulWorkflow.render] and returns a [TestRenderResult] that can be used to get at
@@ -98,31 +103,13 @@ fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRender(
  */
 fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRender(
   input: I,
-  state: S
-): TestRenderResult<S, O, R> {
-  val testRenderContext = RealRenderContext(object : Renderer<S, O> {
-    override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> render(
-      case: WorkflowOutputCase<ChildInputT, ChildOutputT, S, O>,
-      child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-      id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
-      input: ChildInputT
-    ): ChildRenderingT {
-      require(child is MockChildWorkflow) {
-        "Expected child workflow to be a MockChildWorkflow: $id"
-      }
-
-      @Suppress("UNCHECKED_CAST")
-      val childStatefulWorkflow =
-        child.asStatefulWorkflow() as StatefulWorkflow<ChildInputT, Any?, ChildOutputT, ChildRenderingT>
-      val childInitialState = childStatefulWorkflow.initialState(input, null)
-      // Allow the workflow-under-test to *render* children, but those children must not try to
-      // use the RenderContext themselves.
-      return childStatefulWorkflow.render(input, childInitialState, NoopRenderContext)
-    }
-  })
-
+  state: S,
+  block: TestRenderResult<S, O, R>.() -> Unit
+) {
+  val testRenderContext = TestOnlyRenderContext<S, O>()
   val rendering = render(input, state, testRenderContext)
-  return TestRenderResult(rendering, state, testRenderContext.buildBehavior())
+  val result = TestRenderResult(rendering, state, testRenderContext.buildBehavior())
+  result.block()
 }
 
 /**
@@ -134,64 +121,57 @@ fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRender(
  */
 class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
   val rendering: RenderingT,
-  private val state: StateT,
+  internal val state: StateT,
   private val behavior: Behavior<StateT, OutputT>
 ) {
 
   /**
-   * Throws an [AssertionError] if the render pass did not render [workflow] with [key].
+   * Throws an [AssertionError] if the render pass did not render [this@assertWorkflowRendered]
+   * with [withKey].
    */
-  fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> assertWorkflowRendered(
-    workflow: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-    key: String = ""
+  fun <CInput, COutputT : Any, CRenderingT> Workflow<CInput, COutputT, CRenderingT>.assertRendered(
+    withKey: String = ""
   ) {
-    findWorkflowCase(workflow, key)
+    findWorkflowCase(this, withKey)
   }
 
   /**
-   * Asserts that [workflow] was rendered with the given [key] and then executes the output handler
-   * with the given [output] (as an [Output]). Returns the new state and output returned by the
-   * output handler.
+   * Asserts that  this workflow was rendered with the given [key] and then executes the output
+   * handler with the given [output] (as an [Output]). Returns the new state and output returned by
+   * the output handler.
    */
-  fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> executeWorkflowActionFromOutput(
-    workflow: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-    output: ChildOutputT,
+  fun <CInputT, COutputT : Any, CRenderingT> Workflow<CInputT, COutputT, CRenderingT>.handleOutput(
+    output: COutputT,
     key: String = ""
   ): Pair<StateT, OutputT?> {
-    val case = findWorkflowCase(workflow, key)
+    val case = findWorkflowCase(this, key)
     val action = case.acceptChildOutput(output)
     return action(state)
   }
 
   /**
-   * Throws an [AssertionError] if the render pass did not run [worker] with [key].
+   * Throws an [AssertionError] if the render pass did not run this worker with [withKey].
    */
-  fun <T : Any> assertWorkerRan(
-    worker: Worker<T>,
-    key: String = ""
-  ) {
-    findWorkerCase(worker, key)
+  fun <T : Any> Worker<T>.assertRan(withKey: String = "") {
+    findWorkerCase(this, withKey)
   }
 
   /**
-   * Asserts that [worker] was ran with the given [key] and then executes the output handler
+   * Asserts that this worker was ran with the given [key] and then executes the output handler
    * with the given [output] (as an [Output]). Returns the new state and output returned by the
    * output handler.
    */
-  fun <T : Any> executeWorkerActionFromOutput(
-    worker: Worker<T>,
+  fun <T : Any> Worker<T>.handleOutput(
     output: T,
     key: String = ""
-  ): Pair<StateT, OutputT?> = executeWorkerAction(worker, Output(output), key)
+  ): Pair<StateT, OutputT?> = executeWorkerAction(this, Output(output), key)
 
   /**
-   * Asserts that [worker] was ran with the given [key] and then executes the output handler
+   * Asserts that this worker was ran with the given [key] and then executes the output handler
    * with [Finished]. Returns the new state and output returned by the output handler.
    */
-  fun <T : Any> executeWorkerActionFromFinish(
-    worker: Worker<T>,
-    key: String = ""
-  ): Pair<StateT, OutputT?> = executeWorkerAction(worker, Finished, key)
+  fun <T : Any> Worker<T>.handleFinish(key: String = ""): Pair<StateT, OutputT?> =
+    executeWorkerAction(this, Finished, key)
 
   /**
    * Throws an [AssertionError] if any [Workflow]s were rendered.
@@ -236,7 +216,7 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
         ?: throw AssertionError("Expected workflow to be rendered: $workflow (key=\"$key\")")
   }
 
-  private fun <T : Any> findWorkerCase(
+  internal fun <T> findWorkerCase(
     worker: Worker<T>,
     key: String
   ): WorkerCase<T, StateT, OutputT> {
@@ -245,6 +225,56 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
         as WorkerCase<T, StateT, OutputT>?
         ?: throw AssertionError("Expected worker to be rendered: $worker (key=\"$key\")")
   }
+}
+
+/**
+ * Wraps a [RealRenderContext] and asserts that workflows and workers are of the correct mock type.
+ */
+private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<S, O> {
+
+  private val realContext = RealRenderContext(this)
+
+  override fun <EventT : Any> onEvent(
+    handler: (EventT) -> WorkflowAction<S, O>
+  ): EventHandler<EventT> = realContext.onEvent(handler)
+
+  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
+    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
+    input: ChildInputT,
+    key: String,
+    handler: (ChildOutputT) -> WorkflowAction<S, O>
+  ): ChildRenderingT {
+    require(child is MockChildWorkflow) {
+      "Expected child workflow to be a MockChildWorkflow: $child (key=\"$key\")"
+    }
+    return realContext.renderChild(child, input, key, handler)
+  }
+
+  override fun <T> onWorkerOutputOrFinished(
+    worker: Worker<T>,
+    key: String,
+    handler: (OutputOrFinished<T>) -> WorkflowAction<S, O>
+  ) {
+    require(worker is MockWorker) { "Expected worker to be a MockWorker: $worker (key=\"$key\")" }
+    return realContext.onWorkerOutputOrFinished(worker, key, handler)
+  }
+
+  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> render(
+    case: WorkflowOutputCase<ChildInputT, ChildOutputT, S, O>,
+    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
+    id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
+    input: ChildInputT
+  ): ChildRenderingT {
+    @Suppress("UNCHECKED_CAST")
+    val childStatefulWorkflow =
+      child.asStatefulWorkflow() as StatefulWorkflow<ChildInputT, Any?, ChildOutputT, ChildRenderingT>
+    val childInitialState = childStatefulWorkflow.initialState(input, null)
+    // Allow the workflow-under-test to *render* children, but those children must not try to
+    // use the RenderContext themselves.
+    return childStatefulWorkflow.render(input, childInitialState, NoopRenderContext)
+  }
+
+  fun buildBehavior(): Behavior<S, O> = realContext.buildBehavior()
 }
 
 private object NoopRenderContext : RenderContext<Any?, Any> {

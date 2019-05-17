@@ -23,7 +23,7 @@ import com.squareup.workflow.stateless
  * A mock implementation of [Workflow] for use in tests with `testRender` and [TestRenderResult].
  *
  * Note this workflow can not actually emit any output itself. Use
- * [TestRenderResult.executeWorkflowActionFromOutput] to evaluate output handlers.
+ * [TestRenderResult.handleOutput] to evaluate output handlers.
  *
  * @param renderer Function that is invoked in each render pass to calculate the rendering.
  *

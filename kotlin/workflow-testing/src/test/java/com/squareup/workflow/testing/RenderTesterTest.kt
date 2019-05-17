@@ -34,9 +34,9 @@ class RenderTesterTest {
       return@stateless "input: $input"
     } as StatelessWorkflow
 
-    val result = workflow.testRender("start")
-
-    assertEquals("input: start", result.rendering)
+    workflow.testRender("start") {
+      assertEquals("input: start", rendering)
+    }
   }
 
   @Test fun `stateful workflow gets state`() {
@@ -58,18 +58,18 @@ class RenderTesterTest {
         fail("Expected snapshotState not to be called.")
     }
 
-    val result = workflow.testRender(input = "foo", state = "bar")
-
-    assertEquals("input=foo, state=bar", result.rendering)
+    workflow.testRender(input = "foo", state = "bar") {
+      assertEquals("input=foo, state=bar", rendering)
+    }
   }
 
   @Test fun `assert no composition`() {
     val workflow = Workflow.stateless<Nothing, Unit> { Unit } as StatelessWorkflow
 
-    val result = workflow.testRender()
-
-    result.assertNoWorkflowsRendered()
-    result.assertNoWorkersRan()
+    workflow.testRender {
+      assertNoWorkflowsRendered()
+      assertNoWorkersRan()
+    }
   }
 
   @Test fun `renders child with input`() {
@@ -78,10 +78,10 @@ class RenderTesterTest {
       "child: " + context.renderChild(child, "foo")
     } as StatelessWorkflow
 
-    val result = workflow.testRender()
-
-    assertEquals("foo", child.lastSeenInput)
-    assertEquals("child: input: foo", result.rendering)
+    workflow.testRender {
+      assertEquals("foo", child.lastSeenInput)
+      assertEquals("child: input: foo", rendering)
+    }
   }
 
   @Test fun `renders worker output`() {
@@ -108,20 +108,20 @@ class RenderTesterTest {
       override fun snapshotState(state: String): Snapshot = fail()
     }
 
-    val result = workflow.testRender("")
+    workflow.testRender("") {
+      assertNoWorkflowsRendered()
+      worker.assertRan()
 
-    result.assertNoWorkflowsRendered()
-    result.assertWorkerRan(worker)
+      // Output
+      val (outputState, output) = worker.handleOutput("work!")
+      assertEquals("state: Output(value=work!)", outputState)
+      assertEquals("output: Output(value=work!)", output)
 
-    // Output
-    val (outputState, output) = result.executeWorkerActionFromOutput(worker, "work!")
-    assertEquals("state: Output(value=work!)", outputState)
-    assertEquals("output: Output(value=work!)", output)
-
-    // Finish
-    val (finishState, finish) = result.executeWorkerActionFromFinish(worker)
-    assertEquals("state: Finished", finishState)
-    assertEquals("output: Finished", finish)
+      // Finish
+      val (finishState, finish) = worker.handleFinish()
+      assertEquals("state: Finished", finishState)
+      assertEquals("output: Finished", finish)
+    }
   }
 
   @Test fun `child workflow output`() {
@@ -148,12 +148,12 @@ class RenderTesterTest {
       override fun snapshotState(state: String): Snapshot = fail()
     }
 
-    val result = workflow.testRender("")
-
-    result.assertNoWorkersRan()
-    result.assertWorkflowRendered(child)
-    val (state, output) = result.executeWorkflowActionFromOutput(child, "output!")
-    assertEquals("state: output!", state)
-    assertEquals("output: output!", output)
+    workflow.testRender("") {
+      assertNoWorkersRan()
+      child.assertRendered()
+      val (state, output) = child.handleOutput("output!")
+      assertEquals("state: output!", state)
+      assertEquals("output: output!", output)
+    }
   }
 }

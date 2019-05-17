@@ -22,8 +22,8 @@ import com.squareup.workflow.Worker.Emitter
  * A mock implementation of [Worker] for use in tests with `testRender` and [TestRenderResult].
  *
  * Note this [Worker] can not actually emit any output itself. Use
- * [TestRenderResult.executeWorkerActionFromOutput] or
- * [TestRenderResult.executeWorkerActionFromFinish] to evaluate output handlers.
+ * [TestRenderResult.handleOutput] or
+ * [TestRenderResult.handleFinish] to evaluate output handlers.
  *
  * @see com.squareup.workflow.StatefulWorkflow.testRender
  * @see com.squareup.workflow.StatelessWorkflow.testRender
