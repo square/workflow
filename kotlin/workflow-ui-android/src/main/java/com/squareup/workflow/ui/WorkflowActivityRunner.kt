@@ -136,6 +136,21 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
 }
 
 /**
+ * Convenience overload of [setContentWorkflow] for workflows that take one input value
+ * rather than a stream.
+ */
+@ExperimentalWorkflowUi
+@CheckResult
+fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
+  viewRegistry: ViewRegistry,
+  workflow: Workflow<InputT, OutputT, RenderingT>,
+  input: InputT,
+  restored: PickledWorkflow?
+): WorkflowActivityRunner<OutputT> {
+  return setContentWorkflow(viewRegistry, workflow, Flowable.fromArray(input), restored)
+}
+
+/**
  * Convenience overload of [setContentWorkflow] for workflows that take no input.
  */
 @ExperimentalWorkflowUi
@@ -145,5 +160,5 @@ fun <OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   workflow: Workflow<Unit, OutputT, RenderingT>,
   restored: PickledWorkflow?
 ): WorkflowActivityRunner<OutputT> {
-  return setContentWorkflow(viewRegistry, workflow, Flowable.fromArray(Unit), restored)
+  return setContentWorkflow(viewRegistry, workflow, Unit, restored)
 }
