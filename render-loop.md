@@ -49,7 +49,7 @@ Events can be lost, due to the render pass happening (async) after the processin
           | Render (sync)
           |
 /-------------------\
-|                   |  sync /---------------\ sync /------\
+|                   | async /---------------\ sync /------\
 |                   |<------| Subscriptions |<-----| Sink |
 |                   |       \---------------/      \------/
 |     Workflow      |
@@ -64,9 +64,9 @@ Events can be lost, due to the render pass happening (async) after the processin
 /-------------------\
 |                   |
 |                   |
-|       Child       |    /-----\
-|     Workflow      |<---| ... |
-|                   |    \-----/
+|       Child       | async  /-----\
+|     Workflow      |<-------| ... |
+|                   |        \-----/
 |                   |
 |                   |
 \-------------------/
@@ -129,7 +129,7 @@ A worker emits some action (ideally in the future) from the SignalProducer that 
 1) A subscription emits a single event some time in the future.
     - This is trivial, and handled.
 2) A subscription emits immediatley when it's subscribed.
-    - Due to how Signal conceptually are, this shouldn't happen. However, it *could* with sink's.
+    - Due to how Signal conceptually are, this shouldn't happen. However, it *could* with sink's (and it's been the case in the past where it does happen immediately, and it's dropped).
     - Back to "a sink should not be valid until `render` is completed.
 3) A subscription emits two values synchronously.
     - This is not supported, see UI events above (again, worth revisiting)
@@ -145,3 +145,75 @@ Child workflows are likely the most "easy" ones to handle (for output events). B
 This should be made clear in the subtree manager to guarantee it's the behavior. It definitely must not move schedulers, or we would have a partial tree update (and be missing calls to render).
 
 # Queueing Events
+
+As noted above, currently only a single event (action) is processed for each render loop. This can result in dropped events if (for instance) `send` is called twice on a sink synchronously. The first event is processed, and the second is dropped. This behavior can present with subscriptions and workers. Child workflows do not have this behavior, as only a single output can be emitted with each Action `apply`.
+
+Adding queueing of events conceptually seems like a way to solve this, but it introduces (likely) "surprising" behavior when applying the actions.
+
+## Example 1 (subscription):
+1) `render` is called, and a signal is subscribed to, due to being in a "waiting" state (just a case in the state enum).
+    -  The `apply` of the subscribed signal action assumes that the current state is `waiting`, due to it only being subscribed when that is the current state.
+2) The signal emits two events, which are mapped into two actions.
+    - The second action is queued.
+3) The first action is applied. The `apply` updates the state to "not waiting". `render` occures, and the signal is *not* subscribed to.
+4) The queued event from the previous render pass is applied. The state is no longer `waiting`, so the assumption of the state when applying the action is invalid.
+    - The state is updated a second time, and potentially a behavior bug has happened.
+
+The "solution" when writing this is to validate the expected state anytime an action is being applied. However, this increases the likelihood of bugs, as it may not be expected that a workflow would have to handle actions from a previous render loop.
+
+## Example 2 (UI event):
+
+TODO
+
+# Proposal
+
+*Discount multiple events during a single render pass. Queueing adds too much complexity when writing business logic.*
+
+To ensure that events are not lost from the UI, as well as subscriptions and workers, the subtree manager will be updated to have a mix of synchronous and asynchronous behaviors depending on the event source.
+
+- UI Events (from a `sink`). The sink type will no longer be backed by a subscription/signal, but instead will be a separate underlying type.
+    - A `sink` will only become "valid" after the call to `render` has completed. This prevents an action being emitted during a `render` call, avoid reentrancy.
+    - UI Events from a sink will be applied synchronously. They will immediately induce an update, and `render` will be called prior to returning from the `sink.send` call.
+- Child output events will (continue) be applied synchronously.
+- Subscriptions to signals we be done on a separate scheduler from the UI scheduler. This ensures that a `Signal` that emits immediately on `subscribe` will not be dropped.
+- Workers that must be `run` will be subscribed on the same scheduler as subscriptions. This ensures that immediate events will not be dropped.
+
+The handling of updates from events will be separated from how the events are injected into the  system. This provides the path for a `sink` event to be immediate, but workers and subscriptions to be asynchronous.
+
+## Visualized proposal
+
+```
+      /--------\
+      | Screen |
+      \--------/
+          ^
+          |
+          | Render (sync)
+          |
+/-------------------\
+|                   |      /--------\    sync    /------\
+|                   |      |        |<-----------| Sink |
+|                   |      |        |            \------/
+|                   |      |        |
+|                   | sync |        | async /---------------\
+|     Workflow      |<-----| Update |<------| Subscriptions |
+|                   |      |        |       \---------------/
+|                   |      |        |
+|                   |      |        |   async   /--------\
+|                   |      |        |<----------| Worker |
+|                   |      \--------/           \--------/
+\-------------------/           ^
+                                |
+                                |
+                                | Output (sync)
+                                |
+                       /-------------------\
+                       |                   |
+                       |                   |
+                       |       Child       | (as above) /-----\
+                       |     Workflow      |<-----------| ... |
+                       |                   |            \-----/
+                       |                   |
+                       |                   |
+                       \-------------------/
+```
