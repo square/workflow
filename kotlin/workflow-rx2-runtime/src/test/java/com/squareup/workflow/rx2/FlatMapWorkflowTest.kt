@@ -24,7 +24,7 @@ import kotlin.test.Test
 
 class FlatMapWorkflowTest {
 
-  private val workflow = Workflow.stateless<String, Nothing, String> { input, _ ->
+  private val workflow = Workflow.stateless<String, Nothing, String> { input ->
     "rendered: $input"
   }
   private val inputs = PublishSubject.create<String>()

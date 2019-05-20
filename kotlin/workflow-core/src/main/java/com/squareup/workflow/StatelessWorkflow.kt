@@ -91,29 +91,13 @@ abstract class StatelessWorkflow<InputT, OutputT : Any, RenderingT> :
  * their own internal state.
  */
 fun <InputT, OutputT : Any, RenderingT> Workflow.Companion.stateless(
-  render: (
-    input: InputT,
-    context: RenderContext<Nothing, OutputT>
-  ) -> RenderingT
+  render: RenderContext<Nothing, OutputT>.(input: InputT) -> RenderingT
 ): Workflow<InputT, OutputT, RenderingT> =
   object : StatelessWorkflow<InputT, OutputT, RenderingT>() {
     override fun render(
       input: InputT,
       context: RenderContext<Nothing, OutputT>
-    ): RenderingT = render.invoke(input, context)
-  }
-
-/**
- * Returns a stateless [Workflow] that ignores input via the given [render] function.
- *
- * Note that while the returned workflow doesn't have any _internal_ state of its own, it may
- * render child workflows that do have their own internal state.
- */
-fun <OutputT : Any, RenderingT> Workflow.Companion.stateless(
-  render: (context: RenderContext<Nothing, OutputT>) -> RenderingT
-): Workflow<Unit, OutputT, RenderingT> =
-  Workflow.stateless { _: Unit, context: RenderContext<Nothing, OutputT> ->
-    render(context)
+    ): RenderingT = render(context, input)
   }
 
 /**
@@ -122,8 +106,7 @@ fun <OutputT : Any, RenderingT> Workflow.Companion.stateless(
  */
 fun <OutputT : Any, RenderingT> Workflow.Companion.rendering(
   rendering: RenderingT
-): Workflow<Unit, OutputT, RenderingT> =
-  stateless { _: Unit, _: RenderContext<Nothing, OutputT> -> rendering }
+): Workflow<Unit, OutputT, RenderingT> = stateless { rendering }
 
 /**
  * Uses the given [function][transform] to transform a [Workflow] that
@@ -135,8 +118,8 @@ fun <OutputT : Any, RenderingT> Workflow.Companion.rendering(
 fun <InputT, OutputT : Any, FromRenderingT, ToRenderingT>
     Workflow<InputT, OutputT, FromRenderingT>.mapRendering(
       transform: (FromRenderingT) -> ToRenderingT
-    ): Workflow<InputT, OutputT, ToRenderingT> = Workflow.stateless { input, context ->
+    ): Workflow<InputT, OutputT, ToRenderingT> = Workflow.stateless { input ->
   // @formatter:on
-  context.renderChild(this@mapRendering, input) { emitOutput(it) }
+  renderChild(this@mapRendering, input) { emitOutput(it) }
       .let(transform)
 }

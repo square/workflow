@@ -145,7 +145,7 @@ class RealRenderContextTest {
     context.buildBehavior()
 
     assertFailsWith<IllegalStateException> { context.onEvent<Unit> { fail() } }
-    val child = Workflow.stateless<Nothing, Unit> { fail() }
+    val child = Workflow.stateless<Unit, Nothing, Unit> { fail() }
     assertFailsWith<IllegalStateException> { context.renderChild(child) }
     val worker = Worker.from { Unit }
     assertFailsWith<IllegalStateException> { context.onWorkerOutput(worker) { fail() } }

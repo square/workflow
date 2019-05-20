@@ -41,8 +41,8 @@ class WorkerCompositionIntegrationTest {
   @Test fun `worker started`() {
     var started = false
     val worker = Worker.create<Unit> { started = true }
-    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input, context ->
-      if (input) context.onWorkerOutput(worker) { noop() }
+    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
+      if (input) onWorkerOutput(worker) { noop() }
     }
 
     workflow.testFromStart(false) {
@@ -59,8 +59,8 @@ class WorkerCompositionIntegrationTest {
         cancelled = true
       }
     }
-    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input, context ->
-      if (input) context.onWorkerOutput(worker) { noop() }
+    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
+      if (input) onWorkerOutput(worker) { noop() }
     }
 
     workflow.testFromStart(true) {
@@ -82,8 +82,8 @@ class WorkerCompositionIntegrationTest {
         stops++
       }
     }
-    val workflow = Workflow.stateless<Unit, Nothing, Unit> { _, context ->
-      context.onWorkerOutput(worker) { noop() }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> { _ ->
+      onWorkerOutput(worker) { noop() }
     }
 
     workflow.testFromStart {
@@ -112,8 +112,8 @@ class WorkerCompositionIntegrationTest {
         stops++
       }
     }
-    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input, context ->
-      if (input) context.onWorkerOutput(worker) { noop() }
+    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
+      if (input) onWorkerOutput(worker) { noop() }
     }
 
     workflow.testFromStart(false) {
@@ -136,8 +136,8 @@ class WorkerCompositionIntegrationTest {
 
   @Test fun `onWorkerOutputOrFinished gets output`() {
     val channel = Channel<String>(capacity = 1)
-    val workflow = Workflow.stateless<OutputOrFinished<String>, Unit> { context ->
-      context.onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
+    val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
+      onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
     }
 
     workflow.testFromStart {
@@ -151,8 +151,8 @@ class WorkerCompositionIntegrationTest {
 
   @Test fun `onWorkerOutputOrFinished gets finished`() {
     val channel = Channel<String>()
-    val workflow = Workflow.stateless<OutputOrFinished<String>, Unit> { context ->
-      context.onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
+    val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
+      onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
     }
 
     workflow.testFromStart {
@@ -166,8 +166,8 @@ class WorkerCompositionIntegrationTest {
 
   @Test fun `onWorkerOutputOrFinished gets finished after value`() {
     val channel = Channel<String>()
-    val workflow = Workflow.stateless<OutputOrFinished<String>, Unit> { context ->
-      context.onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
+    val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
+      onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
     }
 
     workflow.testFromStart {
@@ -185,8 +185,8 @@ class WorkerCompositionIntegrationTest {
 
   @Test fun `onWorkerOutputOrFinished gets error`() {
     val channel = Channel<String>()
-    val workflow = Workflow.stateless<OutputOrFinished<String>, Unit> { context ->
-      context.onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
+    val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
+      onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
     }
 
     workflow.testFromStart {
@@ -210,8 +210,8 @@ class WorkerCompositionIntegrationTest {
 
   @Test fun `onWorkerOutput does nothing when worker finished`() {
     val channel = Channel<Unit>()
-    val workflow = Workflow.stateless<Unit, Unit> { context ->
-      context.onWorkerOutput(channel.asWorker()) { fail("Expected handler to not be invoked.") }
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {
+      onWorkerOutput(channel.asWorker()) { fail("Expected handler to not be invoked.") }
     }
 
     workflow.testFromStart {
