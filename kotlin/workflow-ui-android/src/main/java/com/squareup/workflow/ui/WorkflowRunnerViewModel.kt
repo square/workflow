@@ -23,23 +23,22 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.rx2.flatMapWorkflow
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlin.reflect.jvm.jvmName
 
 /**
- * The guts of [WorkflowActivityRunner]. We could have made that class itself a
- * [ViewModel], but that would allow accidental calls to [onCleared], which
- * would be nasty.
+ * The guts of [WorkflowActivityRunner] and [WorkflowFragment].
  */
 @ExperimentalWorkflowUi
-internal class WorkflowViewModel<OutputT : Any>(
-  val viewRegistry: ViewRegistry,
+internal class WorkflowRunnerViewModel<OutputT : Any>(
+  override val viewRegistry: ViewRegistry,
   workflowUpdates: Flowable<Update<OutputT, Any>>
-) : ViewModel() {
+) : ViewModel(), WorkflowRunner<OutputT> {
 
   internal class Factory<InputT, OutputT : Any>(
-    private val viewRegistry: ViewRegistry,
     private val workflow: Workflow<InputT, OutputT, Any>,
+    private val viewRegistry: ViewRegistry,
     private val inputs: Flowable<InputT>,
     savedInstanceState: Bundle?
   ) : ViewModelProvider.Factory {
@@ -50,20 +49,25 @@ internal class WorkflowViewModel<OutputT : Any>(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
       val workflowUpdates = inputs.flatMapWorkflow(workflow, snapshot)
       @Suppress("UNCHECKED_CAST")
-      return WorkflowViewModel(viewRegistry, workflowUpdates) as T
+      return WorkflowRunnerViewModel(viewRegistry, workflowUpdates) as T
     }
   }
 
   private lateinit var sub: Disposable
 
-  var lastSnapshot: Snapshot = Snapshot.EMPTY
-
   @Suppress("EXPERIMENTAL_API_USAGE")
-  val updates =
+  private val updates =
     workflowUpdates.toObservable()
         .doOnNext { lastSnapshot = it.snapshot }
         .replay(1)
         .autoConnect(1) { sub = it }
+
+  var lastSnapshot: Snapshot = Snapshot.EMPTY
+
+  override val renderings: Observable<out Any> = updates.map { it.rendering }
+
+  override val output: Observable<out OutputT> = updates.filter { it.output != null }
+      .map { it.output!! }
 
   override fun onCleared() {
     // Has the side effect of closing the updates channel, which in turn

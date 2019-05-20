@@ -23,7 +23,6 @@
   <item type="id" name="workflow_alert_container"/>
   <!-- ID used by BackStackContainer to opt in to view persistence. -->
   <item type="id" name="workflow_back_stack_container"/>
-  <!-- ID used for the layout installed by FragmentActivity.setContentView to
-  opt in to view persistence. -->
-  <item type="id" name="workflow_activity_layout"/>
+  <!-- Default id used by WorkflowLayout to opt in to view persistence. -->
+  <item type="id" name="workflow_layout"/>
 </resources>

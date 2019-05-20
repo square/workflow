@@ -22,7 +22,6 @@ import android.support.annotation.CheckResult
 import android.support.v4.app.FragmentActivity
 import com.squareup.workflow.Workflow
 import io.reactivex.Flowable
-import io.reactivex.Observable
 
 /**
  * Packages a [Workflow] and a [ViewRegistry] to drive an [Activity][FragmentActivity].
@@ -32,18 +31,9 @@ import io.reactivex.Observable
  */
 @ExperimentalWorkflowUi
 class WorkflowActivityRunner<out OutputT : Any>
-internal constructor(private val model: WorkflowViewModel<OutputT>) {
-
-  internal val renderings: Observable<out Any> = model.updates.map { it.rendering }
-
-  val viewRegistry: ViewRegistry = model.viewRegistry
-
-  /**
-   * A stream of the [output][OutputT] values emitted by the [Workflow]
-   * managed by this model.
-   */
-  val output: Observable<out OutputT> = model.updates.filter { it.output != null }
-      .map { it.output!! }
+internal constructor(
+  private val model: WorkflowRunnerViewModel<OutputT>
+) : WorkflowRunner<OutputT> by model {
 
   /**
    * To be called from [FragmentActivity.onSaveInstanceState].
@@ -63,7 +53,7 @@ internal constructor(private val model: WorkflowViewModel<OutputT>) {
    *    }
    */
   fun onBackPressed(activity: Activity): Boolean {
-    return HandlesBack.Helper.onBackPressed(activity.findViewById(R.id.workflow_activity_layout))
+    return HandlesBack.Helper.onBackPressed(activity.findViewById(R.id.workflow_layout))
   }
 }
 
@@ -107,7 +97,7 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
   inputs: Flowable<InputT>,
   savedInstanceState: Bundle?
 ): WorkflowActivityRunner<OutputT> {
-  val factory = WorkflowViewModel.Factory(viewRegistry, workflow, inputs, savedInstanceState)
+  val factory = WorkflowRunnerViewModel.Factory(workflow, viewRegistry, inputs, savedInstanceState)
 
   // We use an Android lifecycle ViewModel to shield ourselves from configuration changes.
   // ViewModelProviders.of() uses the factory to instantiate a new instance only
@@ -115,13 +105,13 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
   // until this activity is finished.
 
   @Suppress("UNCHECKED_CAST")
-  val viewModel = ViewModelProviders.of(this, factory)[WorkflowViewModel::class.java]
-      as WorkflowViewModel<OutputT>
+  val viewModel = ViewModelProviders.of(this, factory)[WorkflowRunnerViewModel::class.java]
+      as WorkflowRunnerViewModel<OutputT>
   val runner = WorkflowActivityRunner(viewModel)
 
   val layout = WorkflowLayout(this@setContentWorkflow)
       .apply {
-        id = R.id.workflow_activity_layout
+        id = R.id.workflow_layout
         setWorkflowRunner(runner)
       }
 
