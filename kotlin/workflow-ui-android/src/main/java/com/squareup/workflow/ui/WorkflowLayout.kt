@@ -48,7 +48,7 @@ internal class WorkflowLayout(
    * up to date, and may also make recursive calls to [ViewRegistry.getBinding] to make
    * children of their own to handle nested renderings.
    */
-  fun setWorkflowRunner(workflowRunner: WorkflowActivityRunner<*, *>) {
+  fun setWorkflowRunner(workflowRunner: WorkflowActivityRunner<*>) {
     takeWhileAttached(
         workflowRunner.renderings.distinctUntilChanged { rendering -> rendering::class }) {
       show(it, workflowRunner.renderings.ofType(it::class.java), workflowRunner.viewRegistry)
