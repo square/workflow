@@ -38,6 +38,40 @@ Events can be lost, due to the render pass happening (async) after the processin
 
 # Details of actual subscription/wiring process:
 
+## Visualization
+
+```
+      /--------\
+      | Screen |
+      \--------/
+          ^
+          |
+          | Render (sync)
+          |
+/-------------------\
+|                   |  sync /---------------\ sync /------\
+|                   |<------| Subscriptions |<-----| Sink |
+|                   |       \---------------/      \------/
+|     Workflow      |
+|                   |   async   /--------\
+|                   |<----------| Worker |
+|                   |           \--------/
+\-------------------/
+         ^
+         |
+         | Output (sync)
+         |
+/-------------------\
+|                   |
+|                   |
+|       Child       |    /-----\
+|     Workflow      |<---| ... |
+|                   |    \-----/
+|                   |
+|                   |
+\-------------------/
+```
+
 Render:
 
 call `render` on the workflow with "RenderContext":
