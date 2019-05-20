@@ -31,10 +31,10 @@ import io.reactivex.Observable
  * [FragmentActivity.setContentWorkflow]. See that method for more details.
  */
 @ExperimentalWorkflowUi
-class WorkflowActivityRunner<out OutputT : Any, out RenderingT : Any>
-internal constructor(private val model: WorkflowViewModel<OutputT, RenderingT>) {
+class WorkflowActivityRunner<out OutputT : Any>
+internal constructor(private val model: WorkflowViewModel<OutputT>) {
 
-  internal val renderings: Observable<out RenderingT> = model.updates.map { it.rendering }
+  internal val renderings: Observable<out Any> = model.updates.map { it.rendering }
 
   val viewRegistry: ViewRegistry = model.viewRegistry
 
@@ -106,12 +106,12 @@ internal constructor(private val model: WorkflowViewModel<OutputT, RenderingT>) 
  */
 @ExperimentalWorkflowUi
 @CheckResult
-fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
+fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
-  workflow: Workflow<InputT, OutputT, RenderingT>,
+  workflow: Workflow<InputT, OutputT, Any>,
   inputs: Flowable<InputT>,
   restored: PickledWorkflow?
-): WorkflowActivityRunner<OutputT, RenderingT> {
+): WorkflowActivityRunner<OutputT> {
   val factory = WorkflowViewModel.Factory(viewRegistry, workflow, inputs, restored)
 
   // We use an Android lifecycle ViewModel to shield ourselves from configuration changes.
@@ -121,7 +121,7 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
 
   @Suppress("UNCHECKED_CAST")
   val viewModel = ViewModelProviders.of(this, factory)[WorkflowViewModel::class.java]
-      as WorkflowViewModel<OutputT, RenderingT>
+      as WorkflowViewModel<OutputT>
   val runner = WorkflowActivityRunner(viewModel)
 
   val layout = WorkflowLayout(this@setContentWorkflow)
@@ -144,6 +144,6 @@ fun <OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<Unit, OutputT, RenderingT>,
   restored: PickledWorkflow?
-): WorkflowActivityRunner<OutputT, RenderingT> {
+): WorkflowActivityRunner<OutputT> {
   return setContentWorkflow(viewRegistry, workflow, Flowable.fromArray(Unit), restored)
 }
