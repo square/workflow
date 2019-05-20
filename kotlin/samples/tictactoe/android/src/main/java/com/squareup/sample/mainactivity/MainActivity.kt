@@ -31,7 +31,7 @@ import com.squareup.workflow.ui.setContentWorkflow
 @Suppress("EXPERIMENTAL_API_USAGE")
 class MainActivity : AppCompatActivity() {
   private lateinit var component: MainComponent
-  private lateinit var workflowViewModel: WorkflowActivityRunner<*, *>
+  private lateinit var workflowRunner: WorkflowActivityRunner<*, *>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -40,16 +40,16 @@ class MainActivity : AppCompatActivity() {
     component = lastCustomNonConfigurationInstance as? MainComponent
         ?: MainComponent()
 
-    workflowViewModel = setContentWorkflow(viewRegistry, component.mainWorkflow, restored)
+    workflowRunner = setContentWorkflow(viewRegistry, component.mainWorkflow, restored)
   }
 
   override fun onBackPressed() {
-    if (!workflowViewModel.onBackPressed(this)) super.onBackPressed()
+    if (!workflowRunner.onBackPressed(this)) super.onBackPressed()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putParcelable(WORKFLOW_BUNDLE_KEY, workflowViewModel.asParcelable())
+    outState.putParcelable(WORKFLOW_BUNDLE_KEY, workflowRunner.asParcelable())
   }
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component
