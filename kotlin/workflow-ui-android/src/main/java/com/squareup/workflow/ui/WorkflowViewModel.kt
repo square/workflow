@@ -17,12 +17,14 @@ package com.squareup.workflow.ui
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import android.os.Bundle
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.rx2.flatMapWorkflow
 import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
+import kotlin.reflect.jvm.jvmName
 
 /**
  * The guts of [WorkflowActivityRunner]. We could have made that class itself a
@@ -39,11 +41,14 @@ internal class WorkflowViewModel<OutputT : Any>(
     private val viewRegistry: ViewRegistry,
     private val workflow: Workflow<InputT, OutputT, Any>,
     private val inputs: Flowable<InputT>,
-    private val restored: PickledWorkflow?
+    savedInstanceState: Bundle?
   ) : ViewModelProvider.Factory {
+    private val snapshot = savedInstanceState
+        ?.getParcelable<PickledWorkflow>(BUNDLE_KEY)
+        ?.snapshot
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      val workflowUpdates = inputs.flatMapWorkflow(workflow, restored?.snapshot)
+      val workflowUpdates = inputs.flatMapWorkflow(workflow, snapshot)
       @Suppress("UNCHECKED_CAST")
       return WorkflowViewModel(viewRegistry, workflowUpdates) as T
     }
@@ -64,5 +69,13 @@ internal class WorkflowViewModel<OutputT : Any>(
     // Has the side effect of closing the updates channel, which in turn
     // will fire any tear downs registered by the root workflow.
     sub.dispose()
+  }
+
+  fun onSaveInstanceState(outState: Bundle) {
+    outState.putParcelable(BUNDLE_KEY, PickledWorkflow(lastSnapshot))
+  }
+
+  private companion object {
+    val BUNDLE_KEY = WorkflowActivityRunner::class.jvmName + "-workflow"
   }
 }

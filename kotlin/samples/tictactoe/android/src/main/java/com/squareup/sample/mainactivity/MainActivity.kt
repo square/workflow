@@ -21,7 +21,6 @@ import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
 import com.squareup.workflow.ui.ModalContainer
-import com.squareup.workflow.ui.PickledWorkflow
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowActivityRunner
 import com.squareup.workflow.ui.backstack.BackStackContainer
@@ -36,11 +35,10 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val restored = savedInstanceState?.getParcelable<PickledWorkflow>(WORKFLOW_BUNDLE_KEY)
     component = lastCustomNonConfigurationInstance as? MainComponent
         ?: MainComponent()
 
-    workflowRunner = setContentWorkflow(viewRegistry, component.mainWorkflow, restored)
+    workflowRunner = setContentWorkflow(viewRegistry, component.mainWorkflow, savedInstanceState)
   }
 
   override fun onBackPressed() {
@@ -49,14 +47,12 @@ class MainActivity : AppCompatActivity() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putParcelable(WORKFLOW_BUNDLE_KEY, workflowRunner.asParcelable())
+    workflowRunner.onSaveInstanceState(outState)
   }
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component
 
   private companion object {
-    const val WORKFLOW_BUNDLE_KEY = "workflow"
-
     val viewRegistry = ViewRegistry(
         BackStackContainer,
         ModalContainer.forAlertContainerScreen(),

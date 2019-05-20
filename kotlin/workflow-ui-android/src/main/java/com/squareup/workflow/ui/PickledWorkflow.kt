@@ -20,13 +20,8 @@ import android.os.Parcelable
 import com.squareup.workflow.Snapshot
 import okio.ByteString
 
-/**
- * A [Parcelable] snapshot of the most recent state of a [Workflow] managed by
- * [WorkflowActivityRunner], for use in an `Activity`'s persistence `Bundle`.
- * See [WorkflowActivityRunner.asParcelable] for details.
- */
 @ExperimentalWorkflowUi
-class PickledWorkflow(internal val snapshot: Snapshot) : Parcelable {
+internal class PickledWorkflow(internal val snapshot: Snapshot) : Parcelable {
   override fun describeContents(): Int = 0
 
   override fun writeToParcel(
