@@ -17,7 +17,7 @@ package com.squareup.workflow.ui
 
 import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
-import android.os.Parcelable
+import android.os.Bundle
 import android.support.annotation.CheckResult
 import android.support.v4.app.FragmentActivity
 import com.squareup.workflow.Workflow
@@ -46,12 +46,11 @@ internal constructor(private val model: WorkflowViewModel<OutputT>) {
       .map { it.output!! }
 
   /**
-   * Returns a [Parcelable] instance of [PickledWorkflow] to be written
-   * to the bundle passed to [FragmentActivity.onSaveInstanceState].
-   * Read it back out in [FragmentActivity.onCreate], to serve as the
-   * final argument to [FragmentActivity.setContentWorkflow].
+   * To be called from [FragmentActivity.onSaveInstanceState].
    */
-  fun asParcelable(): Parcelable = PickledWorkflow(model.lastSnapshot)
+  fun onSaveInstanceState(outState: Bundle) {
+    model.onSaveInstanceState(outState)
+  }
 
   /**
    * To be called from [FragmentActivity.onBackPressed], to give the managed
@@ -78,9 +77,7 @@ internal constructor(private val model: WorkflowViewModel<OutputT>) {
  *  - Call [WorkflowActivityRunner.onBackPressed] from [FragmentActivity.onBackPressed] to allow
  *    workflows to handle back button events. (See [HandlesBack] for more details.)
  *
- *  - Write [WorkflowActivityRunner.asParcelable] to the bundle passed to
- *    [FragmentActivity.onSaveInstanceState]. You'll read that [parcelable][PickledWorkflow]
- *    back in [FragmentActivity.onCreate], for use by the next call to this method.
+ *  - Call [WorkflowActivityRunner.onSaveInstanceState] from [FragmentActivity.onSaveInstanceState].
  *
  *  e.g.:
  *
@@ -89,9 +86,7 @@ internal constructor(private val model: WorkflowViewModel<OutputT>) {
  *
  *       override fun onCreate(savedInstanceState: Bundle?) {
  *         super.onCreate(savedInstanceState)
- *
- *         val restored = savedInstanceState?.getParcelable<PickledWorkflow>("WORKFLOW")
- *         runner = setContentWorkflow(MyViewRegistry, MyRootWorkflow(), restored)
+ *         runner = setContentWorkflow(MyViewRegistry, MyRootWorkflow(), savedInstanceState)
  *       }
  *
  *       override fun onBackPressed() {
@@ -100,7 +95,7 @@ internal constructor(private val model: WorkflowViewModel<OutputT>) {
  *
  *       override fun onSaveInstanceState(outState: Bundle) {
  *         super.onSaveInstanceState(outState)
- *         outState.putParcelable("WORKFLOW", runner.asParcelable)
+ *         runner.onSaveInstanceState(outState)
  *       }
  *     }
  */
@@ -110,9 +105,9 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, Any>,
   inputs: Flowable<InputT>,
-  restored: PickledWorkflow?
+  savedInstanceState: Bundle?
 ): WorkflowActivityRunner<OutputT> {
-  val factory = WorkflowViewModel.Factory(viewRegistry, workflow, inputs, restored)
+  val factory = WorkflowViewModel.Factory(viewRegistry, workflow, inputs, savedInstanceState)
 
   // We use an Android lifecycle ViewModel to shield ourselves from configuration changes.
   // ViewModelProviders.of() uses the factory to instantiate a new instance only
@@ -145,9 +140,9 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, RenderingT>,
   input: InputT,
-  restored: PickledWorkflow?
+  savedInstanceState: Bundle?
 ): WorkflowActivityRunner<OutputT> {
-  return setContentWorkflow(viewRegistry, workflow, Flowable.fromArray(input), restored)
+  return setContentWorkflow(viewRegistry, workflow, Flowable.fromArray(input), savedInstanceState)
 }
 
 /**
@@ -158,7 +153,7 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
 fun <OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<Unit, OutputT, RenderingT>,
-  restored: PickledWorkflow?
+  savedInstanceState: Bundle?
 ): WorkflowActivityRunner<OutputT> {
-  return setContentWorkflow(viewRegistry, workflow, Unit, restored)
+  return setContentWorkflow(viewRegistry, workflow, Unit, savedInstanceState)
 }
