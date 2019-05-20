@@ -64,6 +64,10 @@ final class WorkflowNode<WorkflowType: Workflow> {
         }
     }
 
+    func enableEvents() {
+        subtreeManager.enableEvents()
+    }
+
     /// Updates the workflow.
     func update(workflow: WorkflowType) {
         workflow.workflowDidChange(from: self.workflow, state: &state)

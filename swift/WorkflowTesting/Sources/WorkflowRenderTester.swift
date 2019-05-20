@@ -151,6 +151,15 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
         return workflow.render(state: testContext.state, context: context)
     }
 
+    func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action : WorkflowAction, T == Action.WorkflowType {
+        let (signal, observer) = Signal<AnyWorkflowAction<WorkflowType>, NoError>.pipe()
+        let sink = Sink<Action> { action in
+            observer.send(value: AnyWorkflowAction(action))
+        }
+        subscribe(signal: signal)
+        return sink
+    }
+
     func subscribe<Action>(signal: Signal<Action, NoError>) where Action : WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
         signal
             .take(during: lifetime)

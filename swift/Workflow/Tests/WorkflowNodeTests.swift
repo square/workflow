@@ -34,6 +34,7 @@ final class WorkflowNodeTests: XCTestCase {
         let node = WorkflowNode(workflow: workflow)
 
         let rendering = node.render()
+        node.enableEvents()
 
         var outputs: [WorkflowType.Output] = []
 
@@ -73,9 +74,17 @@ final class WorkflowNodeTests: XCTestCase {
             }
         }
 
-        node.render().aRendering.toggle()
-        node.render().aRendering.toggle()
-        node.render().aRendering.toggle()
+        var aRendering = node.render().aRendering
+        node.enableEvents()
+        aRendering.toggle()
+
+        aRendering = node.render().aRendering
+        node.enableEvents()
+        aRendering.toggle()
+
+        aRendering = node.render().aRendering
+        node.enableEvents()
+        aRendering.toggle()
 
         wait(for: [expectation], timeout: 1.0)
 
@@ -93,6 +102,7 @@ final class WorkflowNodeTests: XCTestCase {
         let node = WorkflowNode(workflow: workflow)
 
         let rendering = node.render()
+        node.enableEvents()
 
         var emittedDebugInfo: [WorkflowUpdateDebugInfo] = []
 
@@ -228,6 +238,7 @@ final class WorkflowNodeTests: XCTestCase {
         }
 
         node.render()
+        node.enableEvents()
 
         wait(for: [expectation], timeout: 1.0)
 
