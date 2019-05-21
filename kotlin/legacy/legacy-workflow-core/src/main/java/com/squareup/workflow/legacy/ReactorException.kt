@@ -21,6 +21,7 @@ package com.squareup.workflow.legacy
  * The message includes the name of the [Reactor] class and the result of calling [toString] on the
  * state of the `Reactor` at the time the exception was thrown.
  */
+@Suppress("DEPRECATION")
 @Deprecated("Use com.squareup.workflow.Workflow")
 class ReactorException(
   cause: Throwable,

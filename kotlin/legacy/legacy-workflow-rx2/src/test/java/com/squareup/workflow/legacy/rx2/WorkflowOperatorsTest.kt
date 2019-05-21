@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.squareup.workflow.legacy.rx2
 
 import com.squareup.workflow.legacy.Workflow

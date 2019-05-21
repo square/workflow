@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 @file:JvmName("EventChannels")
+@file:Suppress("DEPRECATION")
 
 package com.squareup.workflow.legacy.test.rx2
 
