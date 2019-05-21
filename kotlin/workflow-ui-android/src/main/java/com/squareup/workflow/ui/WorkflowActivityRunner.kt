@@ -21,7 +21,9 @@ import android.os.Bundle
 import android.support.annotation.CheckResult
 import android.support.v4.app.FragmentActivity
 import com.squareup.workflow.Workflow
+import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Flowable
+import io.reactivex.Observable
 
 /**
  * Packages a [Workflow] and a [ViewRegistry] to drive an [Activity][FragmentActivity].
@@ -124,6 +126,21 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
 }
 
 /**
+ * Convenience overload of [setContentWorkflow] for workflows unconcerned with back-pressure
+ * of their inputs.
+ */
+@ExperimentalWorkflowUi
+@CheckResult
+fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
+  viewRegistry: ViewRegistry,
+  workflow: Workflow<InputT, OutputT, RenderingT>,
+  inputs: Observable<InputT>,
+  savedInstanceState: Bundle?
+): WorkflowActivityRunner<OutputT> {
+  return setContentWorkflow(viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState)
+}
+
+/**
  * Convenience overload of [setContentWorkflow] for workflows that take one input value
  * rather than a stream.
  */
@@ -135,7 +152,7 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
   input: InputT,
   savedInstanceState: Bundle?
 ): WorkflowActivityRunner<OutputT> {
-  return setContentWorkflow(viewRegistry, workflow, Flowable.fromArray(input), savedInstanceState)
+  return setContentWorkflow(viewRegistry, workflow, Observable.just(input), savedInstanceState)
 }
 
 /**

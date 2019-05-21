@@ -23,8 +23,43 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.workflow.Workflow
+import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Flowable
+import io.reactivex.Observable
 
+/**
+ * A [Fragment] that can run a workflow. Subclasses implement [onCreateWorkflow]
+ * to configure themselves with a [Workflow], [ViewRegistry] and [inputs][Flowable].
+ *
+ * For a workflow with no inputs, or a static configuration, that's as simple as:
+ *
+ *    class HelloWorkflowFragment : WorkflowFragment<Unit, Unit>() {
+ *      override fun onCreateWorkflow(): Config<Unit, Unit> {
+ *        return Config(
+ *            workflow = HelloWorkflow,
+ *            viewRegistry = ViewRegistry(HelloFragmentCoordinator),
+ *            input = Unit
+ *        )
+ *      }
+ *    }
+ *
+ * A fragment to run a workflow whose configuration may need to be updated could
+ * provide a method like this:
+ *
+ *   class HelloWorkflowFragment : WorkflowFragment<HelloInput, Unit>() {
+ *     private val inputs = BehaviorSubject.createDefault(HelloInput.Fnord)
+ *
+ *     fun input(input: HelloInput) = inputs.onNext(input)
+ *
+ *     override fun onCreateWorkflow(): Config<HelloInput, Unit> {
+ *       return Config(
+ *           workflow = HelloWorkflow,
+ *           viewRegistry = ViewRegistry(HelloFragmentCoordinator),
+ *           inputs = inputs
+ *       )
+ *     }
+ *   }
+ */
 @ExperimentalWorkflowUi
 abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
 
@@ -36,8 +71,14 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
     constructor(
       workflow: Workflow<InputT, OutputT, Any>,
       viewRegistry: ViewRegistry,
+      inputs: Observable<InputT>
+    ) : this(workflow, viewRegistry, inputs.toFlowable(LATEST))
+
+    constructor(
+      workflow: Workflow<InputT, OutputT, Any>,
+      viewRegistry: ViewRegistry,
       input: InputT
-    ) : this(workflow, viewRegistry, Flowable.fromArray(input))
+    ) : this(workflow, viewRegistry, Observable.just(input))
   }
 
   private lateinit var _runner: WorkflowRunnerViewModel<OutputT>
@@ -68,6 +109,11 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
     val (workflow, viewRegistry, inputs) = onCreateWorkflow()
     val factory =
       WorkflowRunnerViewModel.Factory(workflow, viewRegistry, inputs, savedInstanceState)
+
+    // We use an Android lifecycle ViewModel to shield ourselves from configuration changes.
+    // ViewModelProviders.of() uses the factory to instantiate a new instance only
+    // on the first call for this fragment, and it stores that instance for repeated use
+    // until this fragment is finished.
 
     @Suppress("UNCHECKED_CAST")
     _runner = ViewModelProviders.of(this, factory)[WorkflowRunnerViewModel::class.java]
