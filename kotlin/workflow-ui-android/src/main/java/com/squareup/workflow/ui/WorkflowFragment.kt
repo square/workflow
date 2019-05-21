@@ -89,8 +89,8 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
   }
 
   /**
-   * To be called from [FragmentActivity.onBackPressed], to give the managed
-   * [Workflow] access to back button events.
+   * If your workflow needs to manage the back button, override [FragmentActivity.onBackPressed]
+   * and call this method, and have your views or coordinators use [HandlesBack].
    *
    * e.g.:
    *

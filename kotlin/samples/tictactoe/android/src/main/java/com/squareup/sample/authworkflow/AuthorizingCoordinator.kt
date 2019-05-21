@@ -30,7 +30,6 @@ internal class AuthorizingCoordinator(private val screens: Observable<out Author
   private val subs = CompositeDisposable()
 
   override fun attach(view: View) {
-    super.attach(view)
     val messageView = view.findViewById<TextView>(R.id.authorizing_message)
     subs.add(screens.map { s -> s.message }
         .subscribe { messageView.text = it })
@@ -38,7 +37,6 @@ internal class AuthorizingCoordinator(private val screens: Observable<out Author
 
   override fun detach(view: View) {
     subs.clear()
-    super.detach(view)
   }
 
   companion object : ViewBinding<AuthorizingScreen> by LayoutBinding.of(

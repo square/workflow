@@ -36,15 +36,18 @@ internal constructor(
 ) : WorkflowRunner<OutputT> by model {
 
   /**
-   * To be called from [FragmentActivity.onSaveInstanceState].
+   * To save and restore the progress of your workflow via the activity's persistence [Bundle],
+   * call this from [FragmentActivity.onSaveInstanceState].
+   *
+   * @see [com.squareup.workflow.StatefulWorkflow.snapshotState]
    */
   fun onSaveInstanceState(outState: Bundle) {
     model.onSaveInstanceState(outState)
   }
 
   /**
-   * To be called from [FragmentActivity.onBackPressed], to give the managed
-   * [Workflow] access to back button events.
+   * If your workflow needs to manage the back button, override [FragmentActivity.onBackPressed]
+   * and call this method, and have your views or coordinators use [HandlesBack].
    *
    * e.g.:
    *

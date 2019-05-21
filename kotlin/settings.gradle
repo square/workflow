@@ -18,6 +18,7 @@ rootProject.name = "workflow"
 include ':legacy:legacy-workflow-core'
 include ':legacy:legacy-workflow-rx2'
 include ':legacy:legacy-workflow-test'
+include ':samples:hello-workflow'
 include ':samples:tictactoe:android'
 include ':samples:tictactoe:common'
 include ':workflow-core'
