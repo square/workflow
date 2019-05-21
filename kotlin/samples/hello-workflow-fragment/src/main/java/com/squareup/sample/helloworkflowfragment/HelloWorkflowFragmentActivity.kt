@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = "workflow"
+package com.squareup.sample.helloworkflowfragment
 
-include ':legacy:legacy-workflow-core'
-include ':legacy:legacy-workflow-rx2'
-include ':legacy:legacy-workflow-test'
-include ':samples:hello-workflow'
-include ':samples:hello-workflow-fragment'
-include ':samples:tictactoe:android'
-include ':samples:tictactoe:common'
-include ':workflow-core'
-include ':workflow-runtime'
-include ':workflow-rx2'
-include ':workflow-rx2-runtime'
-include ':workflow-testing'
-include ':workflow-ui-core'
-include ':workflow-ui-android'
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+
+@Suppress("EXPERIMENTAL_API_USAGE")
+class HelloWorkflowFragmentActivity : AppCompatActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.hello_workflow_fragment)
+  }
+}

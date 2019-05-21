@@ -81,8 +81,10 @@ class RealRunGameWorkflow(
   override fun initialState(
     input: Unit,
     snapshot: Snapshot?
-  ): RunGameState = snapshot?.let { RunGameState.fromSnapshot(snapshot.bytes) }
-      ?: NewGame()
+  ): RunGameState {
+    return snapshot?.let { RunGameState.fromSnapshot(snapshot.bytes) }
+        ?: NewGame()
+  }
 
   override fun render(
     input: Unit,

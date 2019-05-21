@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Square Inc.
+ * Copyright 2019 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.authworkflow
+package com.squareup.sample.helloworkflowfragment
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
-import com.squareup.sample.tictactoe.R
+import com.squareup.sample.helloworkflowfragment.HelloWorkflow.Rendering
 import com.squareup.workflow.ui.LayoutBinding
 import com.squareup.workflow.ui.ViewBinding
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
 @Suppress("EXPERIMENTAL_API_USAGE")
-internal class AuthorizingCoordinator(private val screens: Observable<out AuthorizingScreen>) :
-    Coordinator() {
+class HelloFragmentCoordinator(
+  private val renderings: Observable<out Rendering>
+) : Coordinator() {
   private val subs = CompositeDisposable()
 
+  @SuppressLint("SetTextI18n")
   override fun attach(view: View) {
-    val messageView = view.findViewById<TextView>(R.id.authorizing_message)
-    subs.add(screens.map { s -> s.message }
-        .subscribe { messageView.text = it })
+    val messageView = view.findViewById<TextView>(R.id.hello_message)
+
+    subs.add(renderings.subscribe { rendering ->
+      messageView.text = rendering.message + " Fragment!"
+      messageView.setOnClickListener { rendering.onClick(Unit) }
+    })
   }
 
   override fun detach(view: View) {
     subs.clear()
   }
 
-  companion object : ViewBinding<AuthorizingScreen> by LayoutBinding.of(
-      R.layout.authorizing_layout, ::AuthorizingCoordinator
+  companion object : ViewBinding<Rendering> by LayoutBinding.of(
+      R.layout.hello_goodbye_layout, ::HelloFragmentCoordinator
   )
 }
