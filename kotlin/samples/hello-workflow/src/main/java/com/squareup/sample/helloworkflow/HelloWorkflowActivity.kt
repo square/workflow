@@ -24,11 +24,15 @@ import com.squareup.workflow.ui.setContentWorkflow
 @Suppress("EXPERIMENTAL_API_USAGE")
 class HelloWorkflowActivity : AppCompatActivity() {
   private val viewRegistry = ViewRegistry(HelloCoordinator)
-  private lateinit var runner : WorkflowActivityRunner<Unit>
+  private lateinit var runner: WorkflowActivityRunner<Unit>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
     runner = setContentWorkflow(viewRegistry, HelloWorkflow, savedInstanceState)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    runner.onSaveInstanceState(outState)
   }
 }

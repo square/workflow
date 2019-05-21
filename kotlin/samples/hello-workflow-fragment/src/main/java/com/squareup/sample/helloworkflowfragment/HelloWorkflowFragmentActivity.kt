@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.ui
+package com.squareup.sample.helloworkflowfragment
 
-import io.reactivex.Observable
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 
-@ExperimentalWorkflowUi
-interface WorkflowRunner<out OutputT> {
-  /**
-   * A stream of the [output][OutputT] values emitted by the running
-   * [Workflow][com.squareup.workflow.Workflow].
-   */
-  val output: Observable<out OutputT>
-
-  val renderings: Observable<out Any>
-
-  val viewRegistry: ViewRegistry
+@Suppress("EXPERIMENTAL_API_USAGE")
+class HelloWorkflowFragmentActivity : AppCompatActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.hello_workflow_fragment)
+  }
 }

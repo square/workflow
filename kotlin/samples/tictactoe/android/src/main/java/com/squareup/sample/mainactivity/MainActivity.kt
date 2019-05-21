@@ -23,7 +23,6 @@ import com.squareup.sample.panel.PanelContainer
 import com.squareup.workflow.ui.ModalContainer
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowActivityRunner
-import com.squareup.workflow.ui.WorkflowFragment
 import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.backstack.PushPopEffect
 import com.squareup.workflow.ui.setContentWorkflow

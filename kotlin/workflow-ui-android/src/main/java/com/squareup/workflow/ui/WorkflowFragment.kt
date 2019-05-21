@@ -43,12 +43,6 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
   private lateinit var _runner: WorkflowRunnerViewModel<OutputT>
 
   /**
-   * Defines the id used by managed [views][View.getId]. If multiple [WorkflowFragment]s
-   * will be in use at once, each must define a unique value for this property.
-   */
-  protected open val viewId: Int = R.id.workflow_layout
-
-  /**
    * Provides subclasses with access to the products of the running [Workflow].
    * Safe to call after [onActivityCreated].
    */
@@ -65,7 +59,7 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return WorkflowLayout(inflater.context).apply { id = viewId }
+    return WorkflowLayout(inflater.context)
   }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -79,8 +73,7 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
     _runner = ViewModelProviders.of(this, factory)[WorkflowRunnerViewModel::class.java]
         as WorkflowRunnerViewModel<OutputT>
 
-    requireActivity().findViewById<WorkflowLayout>(viewId)
-        .setWorkflowRunner(runner)
+    (view as WorkflowLayout).setWorkflowRunner(runner)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -101,6 +94,6 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
    *    }
    */
   fun onBackPressed(): Boolean {
-    return isVisible && HandlesBack.Helper.onBackPressed(requireActivity().findViewById(viewId))
+    return isVisible && HandlesBack.Helper.onBackPressed(view!!)
   }
 }

@@ -1,7 +1,6 @@
 package com.squareup.sample.helloworkflow
 
 import android.view.View
-import android.widget.SimpleAdapter.ViewBinder
 import android.widget.TextView
 import com.squareup.coordinators.Coordinator
 import com.squareup.sample.helloworkflow.HelloWorkflow.Rendering
@@ -26,10 +25,10 @@ class HelloCoordinator(
   }
 
   override fun detach(view: View) {
-    super.detach(view)
+    subs.clear()
   }
 
   companion object : ViewBinding<Rendering> by LayoutBinding.of(
-      R.layout.hello_layout, ::HelloCoordinator
+      R.layout.hello_goodbye_layout, ::HelloCoordinator
   )
 }

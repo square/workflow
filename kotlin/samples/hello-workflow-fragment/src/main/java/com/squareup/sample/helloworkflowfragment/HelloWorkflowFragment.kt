@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.ui
+package com.squareup.sample.helloworkflowfragment
 
-import io.reactivex.Observable
+import com.squareup.workflow.ui.ViewRegistry
+import com.squareup.workflow.ui.WorkflowFragment
 
-@ExperimentalWorkflowUi
-interface WorkflowRunner<out OutputT> {
-  /**
-   * A stream of the [output][OutputT] values emitted by the running
-   * [Workflow][com.squareup.workflow.Workflow].
-   */
-  val output: Observable<out OutputT>
-
-  val renderings: Observable<out Any>
-
-  val viewRegistry: ViewRegistry
+@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_OVERRIDE")
+class HelloWorkflowFragment : WorkflowFragment<Unit, Unit>() {
+  override fun onCreateWorkflow(): Config<Unit, Unit> {
+    return Config(
+        workflow = HelloWorkflow,
+        viewRegistry = ViewRegistry(HelloFragmentCoordinator),
+        input = Unit
+    )
+  }
 }

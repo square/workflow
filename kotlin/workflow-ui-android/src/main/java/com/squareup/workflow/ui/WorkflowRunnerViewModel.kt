@@ -25,6 +25,7 @@ import com.squareup.workflow.rx2.flatMapWorkflow
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
 import kotlin.reflect.jvm.jvmName
 
 /**
@@ -47,7 +48,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
         ?.snapshot
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      val workflowUpdates = inputs.flatMapWorkflow(workflow, snapshot)
+      val workflowUpdates = inputs.flatMapWorkflow(workflow, snapshot, Dispatchers.Main.immediate)
       @Suppress("UNCHECKED_CAST")
       return WorkflowRunnerViewModel(viewRegistry, workflowUpdates) as T
     }
