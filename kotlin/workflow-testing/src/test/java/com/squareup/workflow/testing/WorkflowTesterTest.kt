@@ -39,7 +39,7 @@ class WorkflowTesterTest {
   private class ExpectedException : RuntimeException()
 
   @Test fun `propagates exception when block throws`() {
-    val workflow = Workflow.stateless<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit, Unit> { }
 
     assertFailsWith<ExpectedException> {
       workflow.testFromStart {
@@ -49,7 +49,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from render`() {
-    val workflow = Workflow.stateless<Unit, Unit> {
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {
       throw ExpectedException()
     }
 
@@ -64,7 +64,7 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when Job is cancelled in test block`() {
     val job = Job()
-    val workflow = Workflow.stateless<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit, Unit> { }
 
     workflow.testFromStart(context = job) {
       job.cancel(CancellationException(null, ExpectedException()))
@@ -78,7 +78,7 @@ class WorkflowTesterTest {
 
   @Test fun `propagates exception when Job is cancelled before starting`() {
     val job = Job().apply { cancel() }
-    val workflow = Workflow.stateless<Unit, Unit> { }
+    val workflow = Workflow.stateless<Unit, Unit, Unit> { }
 
     workflow.testFromStart(context = job) {
       assertTrue(awaitFailure() is CancellationException)
@@ -183,8 +183,8 @@ class WorkflowTesterTest {
   @Test fun `propagates exception when worker throws`() {
     val deferred = CompletableDeferred<Unit>()
     deferred.completeExceptionally(ExpectedException())
-    val workflow = Workflow.stateless<Unit, Unit> {
-      it.onWorkerOutput(deferred.asWorker()) { fail("Shouldn't get here.") }
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {
+      onWorkerOutput(deferred.asWorker()) { fail("Shouldn't get here.") }
     }
 
     workflow.testFromStart {
@@ -197,7 +197,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `does nothing when no outputs observed`() {
-    val workflow = Workflow.stateless<Unit, Unit> {}
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {}
 
     workflow.testFromStart {
       // The workflow should never start.
@@ -205,7 +205,7 @@ class WorkflowTesterTest {
   }
 
   @Test fun `workflow gets inputs from sendInput`() {
-    val workflow = Workflow.stateless<String, Nothing, String> { input, _ -> input }
+    val workflow = Workflow.stateless<String, Nothing, String> { input -> input }
 
     workflow.testFromStart("one") {
       assertEquals("one", awaitNextRendering())
@@ -217,7 +217,7 @@ class WorkflowTesterTest {
   @Test fun `sendInput duplicate values all trigger render passes`() {
     var renders = 0
     val input = "input"
-    val workflow = Workflow.stateless<String, Nothing, Unit> { _, _ -> renders++ }
+    val workflow = Workflow.stateless<String, Nothing, Unit> { renders++ }
 
     workflow.testFromStart(input) {
       assertEquals(1, renders)

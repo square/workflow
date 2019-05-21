@@ -30,7 +30,7 @@ import kotlin.test.fail
 class RenderTesterTest {
 
   @Test fun `stateless input and rendering`() {
-    val workflow = Workflow.stateless<String, String, String> { input, context ->
+    val workflow = Workflow.stateless<String, String, String> { input ->
       return@stateless "input: $input"
     } as StatelessWorkflow
 
@@ -64,7 +64,7 @@ class RenderTesterTest {
   }
 
   @Test fun `assert no composition`() {
-    val workflow = Workflow.stateless<Nothing, Unit> { Unit } as StatelessWorkflow
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> { Unit } as StatelessWorkflow
 
     workflow.testRender {
       assertNoWorkflowsRendered()
@@ -74,8 +74,8 @@ class RenderTesterTest {
 
   @Test fun `renders child with input`() {
     val child = MockChildWorkflow<String, String> { "input: $it" }
-    val workflow = Workflow.stateless<Nothing, String> { context ->
-      "child: " + context.renderChild(child, "foo")
+    val workflow = Workflow.stateless<Unit, Nothing, String> {
+      "child: " + renderChild(child, "foo")
     } as StatelessWorkflow
 
     workflow.testRender {

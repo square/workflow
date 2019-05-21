@@ -51,7 +51,7 @@ class MockChildWorkflow<I, R>(private val renderer: (I) -> R) : Workflow<I, Noth
           .takeUnless { it === NullSentinal } as I
 
   private val workflow = Workflow
-      .stateless<I, Nothing, R> { input, _ ->
+      .stateless<I, Nothing, R> { input ->
         _lastSeenInput = input ?: NullSentinal
         return@stateless renderer(input)
       }

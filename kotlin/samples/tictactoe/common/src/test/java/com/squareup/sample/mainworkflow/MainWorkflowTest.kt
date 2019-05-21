@@ -35,8 +35,8 @@ class MainWorkflowTest {
   }
 
   @Test fun `starts game on auth`() {
-    val authWorkflow: AuthWorkflow = Workflow.stateless { context ->
-      context.onWorkerOutput(Worker.from { Unit }) { emitOutput("auth") }
+    val authWorkflow: AuthWorkflow = Workflow.stateless {
+      onWorkerOutput(Worker.from { Unit }) { emitOutput("auth") }
       authScreen()
     }
 

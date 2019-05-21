@@ -105,8 +105,8 @@ class WorkflowCompositionIntegrationTest {
   // See https://github.com/square/workflow/issues/261.
   @Test fun `renderChild closes over latest state`() {
     val triggerChildOutput = Channel<Unit>()
-    val child = Workflow.stateless<Unit, Unit> { context ->
-      context.onWorkerOutput(triggerChildOutput.asWorker()) { emitOutput(Unit) }
+    val child = Workflow.stateless<Unit, Unit, Unit> {
+      onWorkerOutput(triggerChildOutput.asWorker()) { emitOutput(Unit) }
     }
     val workflow = object : StatefulWorkflow<Unit, Int, Int, (Unit) -> Unit>() {
       override fun initialState(
