@@ -27,12 +27,6 @@ android.packagingOptions {
   exclude 'META-INF/atomicfu.kotlin_module'
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-  kotlinOptions {
-    freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
-  }
-}
-
 dependencies {
   api project(':workflow-core')
   api project(':workflow-ui-core')

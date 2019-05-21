@@ -18,7 +18,6 @@ package com.squareup.sample.helloworkflowfragment
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 class HelloWorkflowFragmentActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

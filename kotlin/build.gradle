@@ -156,4 +156,14 @@ subprojects {
   afterEvaluate {
     project.tasks.findByName('check')?.dependsOn 'detekt'
   }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+      kotlinOptions.allWarningsAsErrors = true
+
+      // Don't panic, all this does is allow us to use the @Experimental meta-annotation.
+      // to define our own experiments.
+      freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+    }
+  }
 }
