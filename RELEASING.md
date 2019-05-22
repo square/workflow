@@ -8,11 +8,12 @@
 
 ---
 
+1. Merge an update of [the change log](CHANGELOG.md) with the changes since the last release.
+
 1. Make sure you're on the `master` branch.
 
 2. In `kotlin/gradle.properties`, remove the `-SNAPSHOT` prefix from the `VERSION_NAME` property.
    E.g. `VERSION_NAME=0.1.0`
-   Update `CHANGELOG.md` with the changes since the last release.
 
 3. Create a commit and tag the commit with the version number:
    ```

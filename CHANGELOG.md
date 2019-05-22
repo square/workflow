@@ -1,6 +1,28 @@
 Change Log
 ==========
 
+## Version 0.16.0
+
+_2019_5_22_
+
+## Kotlin
+
+ * Breaking change: remove the `CoroutineScope` parameter to `initialState`, remove `onTeardown`. (#289)
+ * Breaking change: made `LifecycleWorker` methods non-suspending. (#328)
+ * Removed must nullability restrictions from parameter types. (#334, #352)
+ * Marked `workflow-ui-core` and `workflow-ui-android` APIs as experimental. (#345)
+ * Breaking change: removed deprecated `Screen` classes. (#347)
+ * Add experimental support for input from Flow streams. (#280)
+ * Introduce alternative testing infrastructure to test single render passes. (#349)
+ * Add `Emitter.emitAll` extension to consume RxJava streams from within custom workers. (#354)
+ * Breaking change: simpler / richer `WorkflowActivityRunner` API. `PickledWorkflow` no longer public. (#355, #358)
+ * Breaking change: make the `RenderContext` parameter to `Workflow.stateless` the receiver instead. (#357)
+ * Introduces `WorkflowFragment`. (#344, #358)
+
+## Swift
+
+ * Add Action and Render testing helpers. (#330)
+
 ## Version 0.15.0
 
 _2019-4-26_
