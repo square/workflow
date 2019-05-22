@@ -4,7 +4,7 @@
 
 ---
 
-***Before you begin:*** *Please make sure you are set up with [`pod trunk`](https://guides.cocoapods.org/making/getting-setup-with-trunk.html) and your CocoaPods account is a contributor to both the Workflow and WorkflowUI pods. If you need to be added as a contributor, please [open a ticket requesting access](https://github.com/square/workflow/issues/new), and assign it to @timdonnelly.*
+***Before you begin:*** *Please make sure you are set up with [`pod trunk`](https://guides.cocoapods.org/making/getting-setup-with-trunk.html) and your CocoaPods account is a contributor to both the Workflow and WorkflowUI pods. If you need to be added as a contributor, please [open a ticket requesting access](https://github.com/square/workflow/issues/new), and assign it to @apgar or @timdonnelly.*
 
 ---
 
