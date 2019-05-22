@@ -21,9 +21,11 @@
    git tag v0.1.0
    ```
 
-4. Upload the artifacts:
+4. Upload the kotlin artifacts:
    ```
+   cd kotlin
    ./gradlew clean uploadArchives
+   cd -
    ```
 
 5. Publish to CocoaPods:
