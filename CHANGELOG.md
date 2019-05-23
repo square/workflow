@@ -7,21 +7,21 @@ _2019_5_22_
 
 ## Kotlin
 
- * Breaking change: remove the `CoroutineScope` parameter to `initialState`, remove `onTeardown`. (#289)
- * Breaking change: made `LifecycleWorker` methods non-suspending. (#328)
- * Removed must nullability restrictions from parameter types. (#334, #352)
- * Marked `workflow-ui-core` and `workflow-ui-android` APIs as experimental. (#345)
- * Breaking change: removed deprecated `Screen` classes. (#347)
- * Add experimental support for input from Flow streams. (#280)
- * Introduce alternative testing infrastructure to test single render passes. (#349)
- * Add `Emitter.emitAll` extension to consume RxJava streams from within custom workers. (#354)
- * Breaking change: simpler / richer `WorkflowActivityRunner` API. `PickledWorkflow` no longer public. (#355, #358)
- * Breaking change: make the `RenderContext` parameter to `Workflow.stateless` the receiver instead. (#357)
- * Introduces `WorkflowFragment`. (#344, #358)
+ * Breaking change: remove the `CoroutineScope` parameter to `initialState`, remove `onTeardown`. ([#289](https://github.com/square/workflow/pull/289))
+ * Breaking change: made `LifecycleWorker` methods non-suspending. ([#328](https://github.com/square/workflow/pull/328))
+ * Removed must nullability restrictions from parameter types. ([#334](https://github.com/square/workflow/pull/334), [#352](https://github.com/square/workflow/pull/352))
+ * Marked `workflow-ui-core` and `workflow-ui-android` APIs as experimental. ([#345](https://github.com/square/workflow/pull/345))
+ * Breaking change: removed deprecated `Screen` classes. ([#347](https://github.com/square/workflow/pull/347))
+ * Add experimental support for input from Flow streams. ([#280](https://github.com/square/workflow/pull/280))
+ * Introduce alternative testing infrastructure to test single render passes. ([#349](https://github.com/square/workflow/pull/349))
+ * Add `Emitter.emitAll` extension to consume RxJava streams from within custom workers. ([#354](https://github.com/square/workflow/pull/354))
+ * Breaking change: simpler / richer `WorkflowActivityRunner` API. `PickledWorkflow` no longer public. ([#355](https://github.com/square/workflow/pull/355), [#358](https://github.com/square/workflow/pull/358))
+ * Breaking change: make the `RenderContext` parameter to `Workflow.stateless` the receiver instead. ([#357](https://github.com/square/workflow/pull/357))
+ * Introduces `WorkflowFragment`. ([#344](https://github.com/square/workflow/pull/344), [#358](https://github.com/square/workflow/pull/358))
 
 ## Swift
 
- * Add Action and Render testing helpers. (#330)
+ * Add Action and Render testing helpers. ([#330](https://github.com/square/workflow/pull/330))
 
 ## Version 0.15.0
 
@@ -29,17 +29,17 @@ _2019-4-26_
 
 ### Kotlin
 
- * Introduce Workers as the new and only way to subscribe to external stream and future types. (#289, #321, #322, #323, #324)
- * Rename WorkflowContext to RenderContext. (#309)
- * Fix for stale workflow output handlers being invoked in later render passes. (#314)
+ * Introduce Workers as the new and only way to subscribe to external stream and future types. ([#289](https://github.com/square/workflow/pull/289), [#321](https://github.com/square/workflow/pull/321), [#322](https://github.com/square/workflow/pull/322), [#323](https://github.com/square/workflow/pull/323), [#324](https://github.com/square/workflow/pull/324))
+ * Rename WorkflowContext to RenderContext. ([#309](https://github.com/square/workflow/pull/309))
+ * Fix for stale workflow output handlers being invoked in later render passes. ([#314](https://github.com/square/workflow/pull/314))
  * `WorkflowTester` improvements:
-   * Give WorkflowTester a sendInput method to update the root workflow-under-test's input. (#315)
-   * Remove WorkflowTester.with* methods. (#318)
-   * Make WorkflowTester the receiver of the lambdas to Workflow.test* methods. (#318)
+   * Give WorkflowTester a sendInput method to update the root workflow-under-test's input. ([#315](https://github.com/square/workflow/pull/315))
+   * Remove WorkflowTester.with* methods. ([#318](https://github.com/square/workflow/pull/318))
+   * Make WorkflowTester the receiver of the lambdas to Workflow.test* methods. ([#318](https://github.com/square/workflow/pull/318))
 
 ### Swift
 
- * Rename `compose` to `render` and update docs. (#301)
+ * Rename `compose` to `render` and update docs. ([#301](https://github.com/square/workflow/pull/301))
 
 ## Version 0.14.1
 
