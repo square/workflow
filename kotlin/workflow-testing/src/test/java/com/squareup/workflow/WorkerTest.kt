@@ -92,6 +92,48 @@ class WorkerTest {
     }
   }
 
+  @Test fun `createSideEffect returns equivalent workers`() {
+    val worker1 = Worker.createSideEffect("key") {}
+    val worker2 = Worker.createSideEffect("key") {}
+
+    assertNotSame(worker1, worker2)
+    assertTrue(worker1.doesSameWorkAs(worker2))
+  }
+
+  @Test fun `createSideEffect returns non-equivalent workers based on key`() {
+    val worker1 = Worker.createSideEffect("key1") {}
+    val worker2 = Worker.createSideEffect("key2") {}
+
+    assertFalse(worker1.doesSameWorkAs(worker2))
+  }
+
+  @Test fun `createSideEffect runs`() {
+    var ran = false
+    val worker = Worker.createSideEffect("") {
+      ran = true
+    }
+
+    worker.test {
+      assertTrue(ran)
+    }
+  }
+
+  @Test fun `createSideEffect finishes`() {
+    val worker = Worker.createSideEffect("") {}
+
+    worker.test {
+      assertFinished()
+    }
+  }
+
+  @Test fun `createSideEffect propagates exceptions`() {
+    val worker = Worker.createSideEffect("") { throw ExpectedException() }
+
+    worker.test {
+      assertTrue(getException() is ExpectedException)
+    }
+  }
+
   @Test fun `from emits and finishes`() {
     val worker = Worker.from { "foo" }
 

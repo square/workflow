@@ -166,7 +166,7 @@ interface Worker<out T> {
      * returns.
      *
      * The returned [Worker] will equate to any other workers created with any of the [Worker]
-     * builder functions that have the same output type.
+     * builder functions that have the same output type and key.
      *
      * E.g.:
      * ```
@@ -178,11 +178,32 @@ interface Worker<out T> {
      *   emitOutput(3)
      * }
      * ```
+     *
+     * Note: If your worker just needs to perform side effects and doesn't need to emit anything,
+     * use [createSideEffect] instead (since `Nothing` can't be used as a reified type parameter).
      */
     inline fun <reified T> create(
       key: String = "",
       noinline block: suspend Emitter<T>.() -> Unit
     ): Worker<T> = TypedWorker(T::class, key, block)
+
+    /**
+     * Creates a [Worker] that just performs some side effects and doesn't emit anything.
+     *
+     * The returned [Worker] will equate to any other workers created with this function that have
+     * the same key.
+     *
+     * E.g.:
+     * ```
+     * fun logOnEntered(message: String) = Worker.createSideEffect("logOnEntered") {
+     *   println("Entered state: $message")
+     * }
+     * ```
+     */
+    fun createSideEffect(
+      key: String,
+      block: suspend () -> Unit
+    ): Worker<Nothing> = TypedWorker(Nothing::class, key) { block() }
 
     /**
      * Creates a [Worker] from a function that returns a single value.
