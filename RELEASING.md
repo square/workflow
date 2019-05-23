@@ -12,6 +12,13 @@
 
 1. Make sure you're on the `master` branch.
 
+1. Confirm that the kotlin build is green before committing any changes
+   ```
+   cd kotlin
+   ./gradlew build connectedCheck
+   cd -
+   ```
+
 2. In `kotlin/gradle.properties`, remove the `-SNAPSHOT` prefix from the `VERSION_NAME` property.
    E.g. `VERSION_NAME=0.1.0`
 
@@ -37,7 +44,7 @@
 6. Bump the version
   - **Kotlin:** Update the `VERSION_NAME` property in `kotlin/gradle.properties` to the new snapshot 
     version, e.g. `VERSION_NAME=0.2.0-SNAPSHOT`.
-  - **Swift:** Update `s.version` in `Workflow.podspec` to the new version, e.g. `0.2.0`.
+  - **Swift:** Update `s.version` in `*.podspec` to the new version, e.g. `0.2.0`.
 
 7. Commit the new snapshot version:
    ```
