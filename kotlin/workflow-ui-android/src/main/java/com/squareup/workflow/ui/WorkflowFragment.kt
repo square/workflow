@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow.ui
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
@@ -63,25 +62,38 @@ import io.reactivex.Observable
 @ExperimentalWorkflowUi
 abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
 
-  data class Config<InputT, OutputT : Any>(
+  data class Config<InputT, OutputT : Any> internal constructor(
     val workflow: Workflow<InputT, OutputT, Any>,
     val viewRegistry: ViewRegistry,
     val inputs: Flowable<InputT>
   ) {
-    constructor(
-      workflow: Workflow<InputT, OutputT, Any>,
-      viewRegistry: ViewRegistry,
-      inputs: Observable<InputT>
-    ) : this(workflow, viewRegistry, inputs.toFlowable(LATEST))
+    companion object {
+      fun <InputT, OutputT : Any> with(
+        workflow: Workflow<InputT, OutputT, Any>,
+        viewRegistry: ViewRegistry,
+        inputs: Flowable<InputT>
+      ): Config<InputT, OutputT> = Config(workflow, viewRegistry, inputs)
 
-    constructor(
-      workflow: Workflow<InputT, OutputT, Any>,
-      viewRegistry: ViewRegistry,
-      input: InputT
-    ) : this(workflow, viewRegistry, Observable.just(input))
+      fun <InputT, OutputT : Any> with(
+        workflow: Workflow<InputT, OutputT, Any>,
+        viewRegistry: ViewRegistry,
+        inputs: Observable<InputT>
+      ): Config<InputT, OutputT> = with(workflow, viewRegistry, inputs.toFlowable(LATEST))
+
+      fun <InputT, OutputT : Any> with(
+        workflow: Workflow<InputT, OutputT, Any>,
+        viewRegistry: ViewRegistry,
+        input: InputT
+      ): Config<InputT, OutputT> = with(workflow, viewRegistry, Flowable.just(input))
+
+      fun <OutputT : Any> with(
+        workflow: Workflow<Unit, OutputT, Any>,
+        viewRegistry: ViewRegistry
+      ): Config<Unit, OutputT> = with(workflow, viewRegistry, Unit)
+    }
   }
 
-  private lateinit var _runner: WorkflowRunnerViewModel<OutputT>
+  private lateinit var _runner: WorkflowRunner<OutputT>
 
   /**
    * Provides subclasses with access to the products of the running [Workflow].
@@ -107,29 +119,19 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
     super.onActivityCreated(savedInstanceState)
 
     val (workflow, viewRegistry, inputs) = onCreateWorkflow()
-    val factory =
-      WorkflowRunnerViewModel.Factory(workflow, viewRegistry, inputs, savedInstanceState)
+    _runner = WorkflowRunner.of(this, viewRegistry, workflow, inputs, savedInstanceState)
 
-    // We use an Android lifecycle ViewModel to shield ourselves from configuration changes.
-    // ViewModelProviders.of() uses the factory to instantiate a new instance only
-    // on the first call for this fragment, and it stores that instance for repeated use
-    // until this fragment is finished.
-
-    @Suppress("UNCHECKED_CAST")
-    _runner = ViewModelProviders.of(this, factory)[WorkflowRunnerViewModel::class.java]
-        as WorkflowRunnerViewModel<OutputT>
-
-    (view as WorkflowLayout).setWorkflowRunner(runner)
+    (view as WorkflowLayout).setRunner(runner)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    _runner.onSaveInstanceState(outState)
+    runner.onSaveInstanceState(outState)
   }
 
   /**
    * If your workflow needs to manage the back button, override [FragmentActivity.onBackPressed]
-   * and call this method, and have your views or coordinators use [HandlesBack].
+   * and call this method, and have its views or coordinators use [HandlesBack].
    *
    * e.g.:
    *

@@ -22,15 +22,16 @@ import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
 import com.squareup.workflow.ui.ModalContainer
 import com.squareup.workflow.ui.ViewRegistry
-import com.squareup.workflow.ui.WorkflowActivityRunner
+import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.backstack.PushPopEffect
 import com.squareup.workflow.ui.setContentWorkflow
+import com.squareup.workflow.ui.workflowOnBackPressed
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class MainActivity : AppCompatActivity() {
   private lateinit var component: MainComponent
-  private lateinit var workflowRunner: WorkflowActivityRunner<*>
+  private lateinit var workflowRunner: WorkflowRunner<*>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    if (!workflowRunner.onBackPressed(this)) super.onBackPressed()
+    if (!workflowOnBackPressed()) super.onBackPressed()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

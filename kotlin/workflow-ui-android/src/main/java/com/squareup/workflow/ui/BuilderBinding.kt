@@ -131,8 +131,10 @@ fun <S : Any> View.takeWhileAttached(
       }
 
       override fun detach(view: View) {
-        sub!!.dispose()
-        sub = null
+        sub?.let {
+          it.dispose()
+          sub = null
+        }
       }
     }
   }
