@@ -28,6 +28,7 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlin.reflect.KClass
@@ -260,6 +261,17 @@ interface Worker<out T> {
         emitAll(channel, closeOnCancel = true)
       }
     }
+
+    /**
+     * Creates a [Worker] that will emit [Unit] and then finish after [delayMs] milliseconds.
+     * Negative delays are clamped to zero.
+     *
+     * Workers returned by this function will be compared by [key].
+     */
+    fun timer(
+      delayMs: Long,
+      key: String = ""
+    ): Worker<Unit> = TimerWorker(delayMs, key)
   }
 }
 
@@ -380,4 +392,17 @@ internal class TypedWorker<T>(
         otherWorker.key == key
 
   override fun toString(): String = "TypedWorker(key=\"$key\", type=$type)"
+}
+
+private class TimerWorker(
+  private val delayMs: Long,
+  private val key: String
+) : Worker<Unit> {
+  override suspend fun performWork(emitter: Emitter<Unit>) {
+    delay(delayMs)
+    emitter.emitOutput(Unit)
+  }
+
+  override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
+    otherWorker is TimerWorker && otherWorker.key == key
 }

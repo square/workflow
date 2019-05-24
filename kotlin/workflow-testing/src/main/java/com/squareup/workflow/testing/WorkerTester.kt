@@ -24,9 +24,12 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 interface WorkerTester<T> {
 
@@ -36,11 +39,21 @@ interface WorkerTester<T> {
   suspend fun nextOutput(): T
 
   /**
+   * Throws an [AssertionError] if an output has been emitted since the last call to [nextOutput].
+   */
+  fun assertNoOutput()
+
+  /**
    * Suspends until the worker emits an output or finishes.
    *
    * Throws an [AssertionError] if an output was emitted.
    */
   suspend fun assertFinished()
+
+  /**
+   * Throws an [AssertionError] immediately if the worker is finished.
+   */
+  fun assertNotFinished()
 
   /**
    * Suspends until the worker throws an exception, then returns it.
@@ -55,14 +68,19 @@ interface WorkerTester<T> {
 
 /**
  * Test a [Worker] by defining assertions on its output within [block].
+ *
+ * If you need to control time (e.g. your worker uses `delay()`), create a
+ * [TestCoroutineDispatcher][kotlinx.coroutines.test.TestCoroutineDispatcher] and pass it as
+ * [context].
  */
 fun <T> Worker<T>.test(
   timeoutMs: Long = DEFAULT_TIMEOUT_MS,
+  context: CoroutineContext = EmptyCoroutineContext,
   block: suspend WorkerTester<T>.() -> Unit
 ) {
-  runBlocking {
+  runBlocking(context) {
     val internalJob = CompletableDeferred<Job>()
-    val channel = produce(SupervisorJob()) {
+    val channel: ReceiveChannel<T> = produce(SupervisorJob()) {
       internalJob.complete(coroutineContext[Job]!!)
 
       val emitter = object : Emitter<T> {
@@ -76,12 +94,24 @@ fun <T> Worker<T>.test(
     val tester = object : WorkerTester<T> {
       override suspend fun nextOutput(): T = channel.receive()
 
+      override fun assertNoOutput() {
+        if (!channel.isEmpty) {
+          throw AssertionError("Expected no output to have been emitted.")
+        }
+      }
+
       override suspend fun assertFinished() {
         try {
           val output = channel.receive()
           throw AssertionError("Expected Worker to finish, but emitted output: $output")
         } catch (e: ClosedReceiveChannelException) {
           // Expected.
+        }
+      }
+
+      override fun assertNotFinished() {
+        if (channel.isClosedForReceive) {
+          throw AssertionError("Expected Worker to not be finished.")
         }
       }
 

@@ -27,6 +27,7 @@ dependencies {
   compileOnly deps.annotations.intellij
 
   api project(':workflow-core')
+  api deps.kotlin.coroutines.test
   api deps.kotlin.stdLib.jdk6
 
   implementation project(':workflow-runtime')
