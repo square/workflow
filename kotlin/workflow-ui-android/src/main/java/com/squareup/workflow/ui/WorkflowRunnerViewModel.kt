@@ -28,9 +28,6 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlin.reflect.jvm.jvmName
 
-/**
- * The guts of [WorkflowActivityRunner] and [WorkflowFragment].
- */
 @ExperimentalWorkflowUi
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   override val viewRegistry: ViewRegistry,
@@ -63,7 +60,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
         .replay(1)
         .autoConnect(1) { sub = it }
 
-  var lastSnapshot: Snapshot = Snapshot.EMPTY
+  private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
   override val renderings: Observable<out Any> = updates.map { it.rendering }
 
@@ -76,11 +73,11 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
     sub.dispose()
   }
 
-  fun onSaveInstanceState(outState: Bundle) {
+  override fun onSaveInstanceState(outState: Bundle) {
     outState.putParcelable(BUNDLE_KEY, PickledWorkflow(lastSnapshot))
   }
 
   private companion object {
-    val BUNDLE_KEY = WorkflowActivityRunner::class.jvmName + "-workflow"
+    val BUNDLE_KEY = WorkflowRunner::class.jvmName + "-workflow"
   }
 }
