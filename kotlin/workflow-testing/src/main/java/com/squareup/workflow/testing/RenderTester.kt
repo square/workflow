@@ -216,7 +216,7 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
         ?: throw AssertionError("Expected workflow to be rendered: $workflow (key=\"$key\")")
   }
 
-  internal fun <T> findWorkerCase(
+  private fun <T> findWorkerCase(
     worker: Worker<T>,
     key: String
   ): WorkerCase<T, StateT, OutputT> {
@@ -243,21 +243,13 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
     input: ChildInputT,
     key: String,
     handler: (ChildOutputT) -> WorkflowAction<S, O>
-  ): ChildRenderingT {
-    require(child is MockChildWorkflow) {
-      "Expected child workflow to be a MockChildWorkflow: $child (key=\"$key\")"
-    }
-    return realContext.renderChild(child, input, key, handler)
-  }
+  ): ChildRenderingT = realContext.renderChild(child, input, key, handler)
 
   override fun <T> onWorkerOutputOrFinished(
     worker: Worker<T>,
     key: String,
     handler: (OutputOrFinished<T>) -> WorkflowAction<S, O>
-  ) {
-    require(worker is MockWorker) { "Expected worker to be a MockWorker: $worker (key=\"$key\")" }
-    return realContext.onWorkerOutputOrFinished(worker, key, handler)
-  }
+  ) = realContext.onWorkerOutputOrFinished(worker, key, handler)
 
   override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> render(
     case: WorkflowOutputCase<ChildInputT, ChildOutputT, S, O>,
