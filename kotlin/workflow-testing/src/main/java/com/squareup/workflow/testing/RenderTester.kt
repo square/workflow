@@ -82,6 +82,8 @@ fun <I, O : Any, R> StatelessWorkflow<I, O, R>.testRender(
  * [RenderContext]. This function only allows you to test a single workflow's render method.
  *
  * Child [Worker]s should be instances of [MockWorker].
+ *
+ * Use [testRenderInitialState] to automatically calculate the initial state from the input.
  */
 fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRender(
   state: S,
@@ -100,6 +102,8 @@ fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRender(
  * [RenderContext]. This function only allows you to test a single workflow's render method.
  *
  * Child [Worker]s should be instances of [MockWorker].
+ *
+ * Use [testRenderInitialState] to automatically calculate the initial state from the input.
  */
 fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRender(
   input: I,
@@ -110,6 +114,30 @@ fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRender(
   val rendering = render(input, state, testRenderContext)
   val result = TestRenderResult(rendering, state, testRenderContext.buildBehavior())
   result.block()
+}
+
+/**
+ * Calls [StatefulWorkflow.initialState] to get the initial state for the [input], then calls
+ * [testRender] with that state and passes through the [TestRenderResult] to [block] along with
+ * the initial state.
+ */
+fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRenderInitialState(
+  input: I,
+  block: TestRenderResult<S, O, R>.(initialState: S) -> Unit
+) {
+  val state = initialState(input, snapshot = null)
+  testRender(input, state) { block(state) }
+}
+
+/**
+ * Calls [StatefulWorkflow.initialState] to get the initial state, then calls
+ * [testRender] with that state and passes through the [TestRenderResult] to [block] along with
+ * the initial state.
+ */
+fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRenderInitialState(
+  block: TestRenderResult<S, O, R>.(initialState: S) -> Unit
+) {
+  testRenderInitialState(Unit, block)
 }
 
 /**
@@ -193,6 +221,25 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
         throw AssertionError("Expected no workflows to be rendered, but ${it.size} were.")
       }
     }
+  }
+
+  /**
+   * Call this after invoking one of the [event handlers][RenderContext.onEvent] on your rendering
+   * to get the result of handling that event.
+   *
+   * E.g.
+   * ```
+   * rendering.let {
+   *   assertTrue(it is FooRendering)
+   *   it.onFooEvent(Unit)
+   *   val (state, output) = getEventResult()
+   * }
+   * ```
+   */
+  fun getEventResult(): Pair<StateT, OutputT?> {
+    @Suppress("EXPERIMENTAL_API_USAGE")
+    val action = behavior.nextActionFromEvent.getCompleted()
+    return action(state)
   }
 
   private fun <T : Any> executeWorkerAction(

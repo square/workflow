@@ -15,6 +15,7 @@
  */
 package com.squareup.workflow.testing
 
+import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -60,6 +61,27 @@ class RenderTesterTest {
 
     workflow.testRender(input = "foo", state = "bar") {
       assertEquals("input=foo, state=bar", rendering)
+    }
+  }
+
+  @Test fun `testRenderInitialState uses correct state`() {
+    val workflow = object : StatefulWorkflow<String, String, String, String>() {
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String = input
+
+      override fun render(
+        input: String,
+        state: String,
+        context: RenderContext<String, String>
+      ): String = "input: $input, state: $state"
+
+      override fun snapshotState(state: String): Snapshot = fail()
+    }
+
+    workflow.testRenderInitialState("initial") {
+      assertEquals("input: initial, state: initial", rendering)
     }
   }
 
@@ -154,6 +176,36 @@ class RenderTesterTest {
       val (state, output) = child.handleOutput("output!")
       assertEquals("state: output!", state)
       assertEquals("output: output!", output)
+    }
+  }
+
+  @Test fun `getEventResult works`() {
+    val workflow = object : StatefulWorkflow<Unit, String, String, EventHandler<String>>() {
+      override fun initialState(
+        input: Unit,
+        snapshot: Snapshot?
+      ): String = fail()
+
+      override fun render(
+        input: Unit,
+        state: String,
+        context: RenderContext<String, String>
+      ): EventHandler<String> = context.onEvent { event ->
+        enterState(
+            newState = "from $state on $event",
+            emittingOutput = "event: $event"
+        )
+      }
+
+      override fun snapshotState(state: String): Snapshot = fail()
+    }
+
+    workflow.testRender(state = "initial") {
+      rendering.invoke("foo")
+
+      val (state, output) = getEventResult()
+      assertEquals("from initial on foo", state)
+      assertEquals("event: foo", output)
     }
   }
 }
