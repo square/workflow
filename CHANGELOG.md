@@ -1,11 +1,24 @@
 Change Log
 ==========
 
+## Version 0.16.1
+
+_2019-5-24_
+
+### Kotlin
+
+ * Make RenderTester not require specific Mock* workflows/workers. (#369)
+ * Breaking change: Public WorkflowLayout, tidier WorkflowRunner, bye WorkflowActivityRunner. (#367)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.16.0
 
-_2019_5_22_
+_2019-5-22_
 
-## Kotlin
+### Kotlin
 
  * Breaking change: remove the `CoroutineScope` parameter to `initialState`, remove `onTeardown`. (#289)
  * Breaking change: made `LifecycleWorker` methods non-suspending. (#328)
@@ -19,7 +32,7 @@ _2019_5_22_
  * Breaking change: make the `RenderContext` parameter to `Workflow.stateless` the receiver instead. (#357)
  * Introduces `WorkflowFragment`. (#344, #358)
 
-## Swift
+### Swift
 
  * Add Action and Render testing helpers. (#330)
 

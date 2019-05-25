@@ -27,12 +27,12 @@ import io.reactivex.Observable
 import kotlin.reflect.jvm.jvmName
 
 /**
- * The root layout for a UI driven by [WorkflowActivityRunner].
- * Installed via [android.support.v4.app.FragmentActivity.setContentWorkflow].
- * See [setWorkflowRunner] for details.
+ * A view that can be driven by a [WorkflowRunner]. In most cases you'll use
+ * [Activity.setContentWorkflow][android.support.v4.app.FragmentActivity.setContentWorkflow]
+ * or subclass [WorkflowFragment] rather than manage this class directly.
  */
 @ExperimentalWorkflowUi
-internal class WorkflowLayout(
+class WorkflowLayout(
   context: Context,
   attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet), HandlesBack {
@@ -40,7 +40,7 @@ internal class WorkflowLayout(
   private val showing: View? get() = if (childCount > 0) getChildAt(0) else null
 
   /**
-   * Subscribes to [WorkflowActivityRunner.renderings]. Uses [WorkflowActivityRunner.viewRegistry]
+   * Subscribes to [WorkflowRunner.renderings]. Uses [WorkflowRunner.viewRegistry]
    * to [build a new view][ViewRegistry.getBinding] each time a new type of rendering is received,
    * making that view the only child of this one.
    *
@@ -48,7 +48,7 @@ internal class WorkflowLayout(
    * up to date, and may also make recursive calls to [ViewRegistry.getBinding] to make
    * children of their own to handle nested renderings.
    */
-  fun setWorkflowRunner(workflowRunner: WorkflowRunner<*>) {
+  fun setRunner(workflowRunner: WorkflowRunner<*>) {
     takeWhileAttached(
         workflowRunner.renderings.distinctUntilChanged { rendering -> rendering::class }) {
       show(it, workflowRunner.renderings.ofType(it::class.java), workflowRunner.viewRegistry)

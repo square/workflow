@@ -21,10 +21,6 @@ import com.squareup.workflow.ui.WorkflowFragment
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_OVERRIDE")
 class HelloWorkflowFragment : WorkflowFragment<Unit, Unit>() {
   override fun onCreateWorkflow(): Config<Unit, Unit> {
-    return Config(
-        workflow = HelloWorkflow,
-        viewRegistry = ViewRegistry(HelloFragmentCoordinator),
-        input = Unit
-    )
+    return Config.with(HelloWorkflow, ViewRegistry(HelloFragmentCoordinator))
   }
 }
