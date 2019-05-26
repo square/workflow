@@ -81,6 +81,7 @@ buildscript {
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:${versions.mavenPublishPlugin}",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:${versions.ktlintPlugin}",
+      'lanterna': "com.googlecode.lanterna:lanterna:3.0.1",
       'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${versions.detektPlugin}",
       'okio': "com.squareup.okio:okio:2.2.2",
       'rxjava2':[
