@@ -16,59 +16,29 @@
 package com.squareup.workflow.ui
 
 import android.content.Context
-import android.support.transition.Scene
 import android.view.View
 import android.view.ViewGroup
-import io.reactivex.Observable
+import kotlin.reflect.KClass
 
 /**
- * Factory for [View] or [Scene] instances that can render a stream of screens
- * of the specified [type][T]. Use [LayoutBinding.of] to work with XML layout
- * resources, or [BuilderBinding] to create views from code.
+ * Factory for [View] instances that can show renderings of type[RenderingT].
+ * Use [Binding.binding] to work with XML layout resources, or
+ * [BuilderBinding] to create views from code.
  *
  * Sets of bindings are gathered in [ViewRegistry] instances.
  */
 @ExperimentalWorkflowUi
-interface ViewBinding<T : Any> {
-  // Tried making this Class<T>, but got into trouble w/type invariance.
-  // https://github.com/square/workflow/issues/18
-  val type: String
+interface ViewBinding<RenderingT : Any> {
+  val type: KClass<RenderingT>
 
+  /**
+   * Returns a View ready to display [initialRendering] (and any succeeding values)
+   * via [View.showRendering].
+   */
   fun buildView(
-    screens: Observable<out T>,
-    viewRegistry: ViewRegistry,
+    registry: ViewRegistry,
+    initialRendering: RenderingT,
     contextForNewView: Context,
     container: ViewGroup? = null
   ): View
-
-  fun buildScene(
-    screens: Observable<out T>,
-    viewRegistry: ViewRegistry,
-    contextForNewView: Context,
-    container: ViewGroup,
-    enterAction: ((Scene) -> Unit)? = null
-  ): Scene
-}
-
-@ExperimentalWorkflowUi
-fun <T : Any> ViewBinding<T>.buildView(
-  screens: Observable<out T>,
-  viewRegistry: ViewRegistry,
-  container: ViewGroup
-): View = buildView(screens, viewRegistry, container.context, container)
-
-@ExperimentalWorkflowUi
-fun <T : Any> ViewBinding<T>.buildScene(
-  screens: Observable<out T>,
-  viewRegistry: ViewRegistry,
-  container: ViewGroup,
-  enterAction: ((Scene) -> Unit)? = null
-): Scene = buildScene(screens, viewRegistry, container.context, container, enterAction)
-
-fun Scene.viewOrNull(): View? {
-  return if (sceneRoot.childCount > 0) {
-    sceneRoot.getChildAt(0)
-  } else {
-    null
-  }
 }

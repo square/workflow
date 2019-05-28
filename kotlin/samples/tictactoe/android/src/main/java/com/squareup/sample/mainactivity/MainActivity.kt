@@ -20,15 +20,15 @@ import android.support.v7.app.AppCompatActivity
 import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ModalContainer
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.backstack.BackStackContainer
-import com.squareup.workflow.ui.backstack.PushPopEffect
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
 
-@Suppress("EXPERIMENTAL_API_USAGE")
+@UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
   private lateinit var component: MainComponent
   private lateinit var workflowRunner: WorkflowRunner<*>
@@ -58,6 +58,6 @@ class MainActivity : AppCompatActivity() {
         BackStackContainer,
         ModalContainer.forAlertContainerScreen(),
         PanelContainer
-    ) + AuthViewBindings + TicTacToeViewBindings + PushPopEffect
+    ) + AuthViewBindings + TicTacToeViewBindings
   }
 }

@@ -18,48 +18,26 @@ package com.squareup.sample.gameworkflow
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.ViewGroup
-import com.squareup.coordinators.Coordinator
 import com.squareup.sample.gameworkflow.GamePlayScreen.Event.Quit
 import com.squareup.sample.gameworkflow.GamePlayScreen.Event.TakeSquare
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.LayoutBinding
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
+import com.squareup.workflow.ui.LayoutRunner
+import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.setBackHandler
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 
-@Suppress("EXPERIMENTAL_API_USAGE")
-internal class GamePlayCoordinator(
-  private val screens: Observable<out GamePlayScreen>
-) : Coordinator() {
-  private val subs = CompositeDisposable()
+@UseExperimental(ExperimentalWorkflowUi::class)
+internal class GamePlayLayoutRunner(private val view: View) : LayoutRunner<GamePlayScreen> {
+  private val boardView: ViewGroup = view.findViewById(R.id.game_play_board)
+  private val toolbar: Toolbar = view.findViewById(R.id.game_play_toolbar)
 
-  private lateinit var boardView: ViewGroup
-  private lateinit var toolbar: Toolbar
+  override fun showRendering(rendering: GamePlayScreen) {
+    renderBanner(rendering.gameState, rendering.playerInfo)
+    rendering.gameState.board.render(boardView)
 
-  override fun attach(view: View) {
-    super.attach(view)
-
-    boardView = view.findViewById(R.id.game_play_board)
-    toolbar = view.findViewById(R.id.game_play_toolbar)
-
-    subs.add(screens.subscribe { update(view, it) })
-  }
-
-  override fun detach(view: View) {
-    subs.clear()
-    super.detach(view)
-  }
-
-  private fun update(
-    view: View,
-    screen: GamePlayScreen
-  ) {
-    renderBanner(screen.gameState, screen.playerInfo)
-    screen.gameState.board.render(boardView)
-
-    setCellClickListeners(boardView, screen.gameState) { screen.onEvent(it) }
-    view.setBackHandler { screen.onEvent(Quit) }
+    setCellClickListeners(boardView, rendering.gameState) { rendering.onEvent(it) }
+    view.setBackHandler { rendering.onEvent(Quit) }
   }
 
   private fun setCellClickListeners(
@@ -96,7 +74,7 @@ internal class GamePlayCoordinator(
     }
   }
 
-  companion object : ViewBinding<GamePlayScreen> by LayoutBinding.of(
-      R.layout.game_play_layout, ::GamePlayCoordinator
+  companion object : ViewBinding<GamePlayScreen> by bind(
+      R.layout.game_play_layout, ::GamePlayLayoutRunner
   )
 }

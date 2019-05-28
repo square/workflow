@@ -36,7 +36,7 @@ import io.reactivex.Observable
  *      override fun onCreateWorkflow(): Config<Unit, Unit> {
  *        return Config(
  *            workflow = HelloWorkflow,
- *            viewRegistry = ViewRegistry(HelloFragmentCoordinator),
+ *            viewRegistry = ViewRegistry(HelloFragmentLayoutRunner),
  *            input = Unit
  *        )
  *      }
@@ -53,7 +53,7 @@ import io.reactivex.Observable
  *     override fun onCreateWorkflow(): Config<HelloInput, Unit> {
  *       return Config(
  *           workflow = HelloWorkflow,
- *           viewRegistry = ViewRegistry(HelloFragmentCoordinator),
+ *           viewRegistry = ViewRegistry(HelloFragmentLayoutRunner),
  *           inputs = inputs
  *       )
  *     }
@@ -131,7 +131,7 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
 
   /**
    * If your workflow needs to manage the back button, override [FragmentActivity.onBackPressed]
-   * and call this method, and have its views or coordinators use [HandlesBack].
+   * and call this method, and have its views or [LayoutRunner]s use [HandlesBack].
    *
    * e.g.:
    *

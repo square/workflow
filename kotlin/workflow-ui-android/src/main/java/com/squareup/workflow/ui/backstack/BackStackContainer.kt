@@ -17,7 +17,13 @@ package com.squareup.workflow.ui.backstack
 
 import android.content.Context
 import android.os.Parcelable
+import android.support.transition.Fade
+import android.support.transition.Scene
+import android.support.transition.Slide
+import android.support.transition.TransitionManager
+import android.support.transition.TransitionSet
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -29,9 +35,12 @@ import com.squareup.workflow.ui.HandlesBack
 import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
+import com.squareup.workflow.ui.backstack.ViewStateStack.Direction.POP
+import com.squareup.workflow.ui.backstack.ViewStateStack.Direction.PUSH
 import com.squareup.workflow.ui.backstack.ViewStateStack.SavedState
-import com.squareup.workflow.ui.takeWhileAttached
-import io.reactivex.Observable
+import com.squareup.workflow.ui.bindShowRendering
+import com.squareup.workflow.ui.canShowRendering
+import com.squareup.workflow.ui.showRendering
 
 /**
  * A container view that can display a stream of [BackStackScreen] instances.
@@ -51,45 +60,47 @@ class BackStackContainer(
 
   private val showing: View? get() = if (childCount > 0) getChildAt(0) else null
 
-  fun takeScreens(
-    screens: Observable<out BackStackScreen<*>>,
-    viewRegistry: ViewRegistry
-  ) {
-    takeWhileAttached(screens.distinctUntilChanged { a, b -> a.key == b.key }) {
-      show(it, screens, viewRegistry)
-    }
-  }
+  private lateinit var registry: ViewRegistry
 
-  private fun show(
-    newScreen: BackStackScreen<*>,
-    screens: Observable<out BackStackScreen<*>>,
-    viewRegistry: ViewRegistry
-  ) {
-    showing?.let { if (it.backStackKey == newScreen.key) return }
-
-    val updateTools = viewStateStack.prepareToUpdate(newScreen.key)
-
+  private fun update(newRendering: BackStackScreen<*>) {
+    // Existing view is of the right type, just update it.
     showing
+        ?.takeIf { it.canShowRendering(newRendering.wrapped) }
         ?.let {
-          updateTools.saveOldView(it)
-          viewRegistry.getEffect(it.backStackKey, newScreen.key, updateTools.direction)
-              .execute(
-                  from = it,
-                  to = newScreen,
-                  screens = screens,
-                  viewRegistry = viewRegistry,
-                  container = this,
-                  setUpNewView = updateTools::setUpNewView,
-                  direction = updateTools.direction
-              )
+          it.showRendering(newRendering.wrapped)
+          return
         }
-        ?: NoEffect.execute(
-            newScreen,
-            screens,
-            viewRegistry,
-            this,
-            updateTools::setUpNewView
-        )
+
+    val updateTools = viewStateStack.prepareToUpdate(newRendering.key)
+    val newView = registry.buildView(newRendering.wrapped, this)
+        .apply { updateTools.setUpNewView(this) }
+
+    // Showing something already, transition with push or pop effect.
+    showing
+        ?.let { oldView ->
+          updateTools.saveOldView(oldView)
+
+          val newScene = Scene(this, newView)
+
+          val (outEdge, inEdge) = when (updateTools.direction) {
+            PUSH -> Gravity.START to Gravity.END
+            POP -> Gravity.END to Gravity.START
+          }
+
+          val outSet = TransitionSet()
+              .addTransition(Slide(outEdge).addTarget(oldView))
+              .addTransition(Fade(Fade.OUT))
+
+          val fullSet = TransitionSet()
+              .addTransition(outSet)
+              .addTransition(Slide(inEdge).excludeTarget(oldView, true))
+
+          TransitionManager.go(newScene, fullSet)
+          return
+        }
+
+    // This is the first view, just show it.
+    addView(newView)
   }
 
   override fun onBackPressed(): Boolean {
@@ -114,13 +125,14 @@ class BackStackContainer(
 
   companion object : ViewBinding<BackStackScreen<*>>
   by BuilderBinding(
-      type = BackStackScreen::class.java,
-      builder = { screens, viewRegistry, context, _ ->
+      type = BackStackScreen::class,
+      viewConstructor = { viewRegistry, initialRendering, context, _ ->
         BackStackContainer(context)
             .apply {
               id = R.id.workflow_back_stack_container
               layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-              takeScreens(screens, viewRegistry)
+              registry = viewRegistry
+              bindShowRendering(initialRendering, ::update)
             }
       }
   )

@@ -15,14 +15,12 @@
  */
 package com.squareup.sample.gameworkflow
 
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
-import com.squareup.workflow.ui.backstack.NoEffect
 
-@Suppress("EXPERIMENTAL_API_USAGE")
+@UseExperimental(ExperimentalWorkflowUi::class)
 val TicTacToeViewBindings = ViewRegistry(
-    NewGameCoordinator,
-    GamePlayCoordinator,
-    GameOverCoordinator
-) + NoEffect(
-    from = GamePlayScreen::class, to = GameOverScreen::class
+    NewGameLayoutRunner,
+    GamePlayLayoutRunner,
+    GameOverLayoutRunner
 )
