@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Worker.OutputOrFinished
@@ -50,19 +49,29 @@ class RealRenderContext<StateT, OutputT : Any>(
   /** Used to prevent modifications to this object after [buildBehavior] is called. */
   private var frozen = false
 
-  override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
-      EventHandler<EventT> {
-    checkNotFrozen()
-    return EventHandler { event ->
-      // Run the handler synchronously, so we only have to emit the resulting action and don't need the
-      // update channel to be generic on each event type.
-      val update = handler(event)
+//  override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
+//      EventHandler<EventT> {
+//    checkNotFrozen()
+//    return EventHandler { event ->
+//      // Run the handler synchronously, so we only have to emit the resulting action and don't need the
+//      // update channel to be generic on each event type.
+//      val update = handler(event)
+//
+//      // If this returns false, we lost the race with another event being sent.
+//      check(nextUpdateFromEvent.complete(update)) {
+//        "Expected to successfully deliver event. Are you using an old rendering?\n" +
+//            "\tevent=$event\n" +
+//            "\tupdate=$update"
+//      }
+//    }
+//  }
 
-      // If this returns false, we lost the race with another event being sent.
-      check(nextUpdateFromEvent.complete(update)) {
-        "Expected to successfully deliver event. Are you using an old rendering?\n" +
-            "\tevent=$event\n" +
-            "\tupdate=$update"
+  override fun <W : WorkflowAction<StateT, OutputT>> makeSink(): (W) -> Unit {
+    checkNotFrozen()
+    return { action: W ->
+      check(nextUpdateFromEvent.complete(action)) {
+        "Expected to successfully deliver action. Are you using an old rendering?\n" +
+            "\taction=$action"
       }
     }
   }

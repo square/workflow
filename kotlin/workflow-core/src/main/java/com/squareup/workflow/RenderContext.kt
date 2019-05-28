@@ -65,9 +65,17 @@ interface RenderContext<StateT, in OutputT : Any> {
    * @param handler A function that returns the [WorkflowAction] to perform when the event handler
    * is invoked.
    */
+  @Deprecated("Use makeSink instead.")
   fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<StateT, OutputT>
-  ): EventHandler<EventT>
+  ): EventHandler<EventT> = makeSink<WorkflowAction<StateT, OutputT>>().let { sink ->
+    EventHandler { sink(handler(it)) }
+  }
+
+  /**
+   * TODO kdoc
+   */
+  fun <W : WorkflowAction<StateT, OutputT>> makeSink(): (W) -> Unit
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
