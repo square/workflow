@@ -53,6 +53,10 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
+    public func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
+        fatalError()
+    }
+
     public func subscribe<Action>(signal: Signal<Action, NoError>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
         fatalError()
     }
@@ -86,6 +90,10 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
             return implementation.render(workflow: workflow, key: key, outputMap: outputMap)
         }
 
+        override func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where WorkflowType == Action.WorkflowType, Action : WorkflowAction {
+            return implementation.makeSink(of: actionType)
+        }
+
         override func subscribe<Action>(signal: Signal<Action, NoError>) where WorkflowType == Action.WorkflowType, Action : WorkflowAction {
             assertStillValid()
             return implementation.subscribe(signal: signal)
@@ -111,6 +119,8 @@ internal protocol RenderContextType: class {
 
     func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child: Workflow, Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
+    func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType
+
     func subscribe<Action>(signal: Signal<Action, NoError>) where Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
     func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
@@ -119,15 +129,6 @@ internal protocol RenderContextType: class {
 
 
 extension RenderContext {
-
-    public func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
-        let (signal, observer) = Signal<AnyWorkflowAction<WorkflowType>, NoError>.pipe()
-        let sink = Sink<Action> { action in
-            observer.send(value: AnyWorkflowAction(action))
-        }
-        subscribe(signal: signal)
-        return sink
-    }
 
     public func makeSink<Event>(of eventType: Event.Type, onEvent: @escaping (Event, inout WorkflowType.State) -> WorkflowType.Output?) -> Sink<Event> {
         return makeSink(of: AnyWorkflowAction.self)

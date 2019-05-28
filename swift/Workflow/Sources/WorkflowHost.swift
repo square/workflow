@@ -43,6 +43,7 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
         self.mutableRendering = MutableProperty(self.rootNode.render())
         self.rendering = Property(mutableRendering)
+        self.rootNode.enableEvents()
 
         debugger?.didEnterInitialState(snapshot: self.rootNode.makeDebugSnapshot())
 
@@ -62,6 +63,8 @@ public final class WorkflowHost<WorkflowType: Workflow> {
         debugger?.didUpdate(
             snapshot: rootNode.makeDebugSnapshot(),
             updateInfo: output.debugInfo)
+
+        rootNode.enableEvents()
     }
 
     /// A signal containing output events emitted by the root workflow in the hierarchy.

@@ -18,8 +18,10 @@ struct DemoWorkflow: Workflow {
 extension DemoWorkflow {
 
     struct State {
+        fileprivate var signal: TimerSignal
         var colorState: ColorState
         var loadingState: LoadingState
+        var subscriptionState: SubscriptionState
 
         enum ColorState {
             case red
@@ -31,12 +33,19 @@ extension DemoWorkflow {
             case idle(title: String)
             case loading
         }
+
+        enum SubscriptionState {
+            case not
+            case subscribing
+        }
     }
 
     func makeInitialState() -> DemoWorkflow.State {
         return State(
+            signal: TimerSignal(),
             colorState: .red,
-            loadingState: .idle(title: "Not Loaded"))
+            loadingState: .idle(title: "Not Loaded"),
+            subscriptionState: .not)
     }
 
     func workflowDidChange(from previousWorkflow: DemoWorkflow, state: inout State) {
@@ -54,6 +63,7 @@ extension DemoWorkflow {
         typealias WorkflowType = DemoWorkflow
 
         case titleButtonTapped
+        case subscribeTapped
         case refreshButtonTapped
         case refreshComplete(String)
         case refreshError(Error)
@@ -70,6 +80,15 @@ extension DemoWorkflow {
                 case .blue:
                     state.colorState = .red
                 }
+
+            case .subscribeTapped:
+                switch state.subscriptionState {
+                case .not:
+                    state.subscriptionState = .subscribing
+                case .subscribing:
+                    state.subscriptionState = .not
+                }
+
             case .refreshButtonTapped:
                 state.loadingState = .loading
             case .refreshComplete(let message):
@@ -145,6 +164,19 @@ extension DemoWorkflow {
             }
         }
 
+        let subscribeTitle: String
+
+        switch state.subscriptionState {
+        case .not:
+            subscribeTitle = "Subscribe"
+        case .subscribing:
+            // Subscribe to the timer signal, simulating the title being tapped.
+            context.subscribe(signal: state.signal.signal.map({ _ -> Action in
+                return .titleButtonTapped
+            }))
+            subscribeTitle = "Stop"
+        }
+
         // Create a sink of our Action type so we can send actions back to the workflow.
         let sink = context.makeSink(of: Action.self)
 
@@ -154,10 +186,33 @@ extension DemoWorkflow {
             onTitleTap: {
                 sink.send(.titleButtonTapped)
             },
+            subscribeTitle: subscribeTitle,
+            onSubscribeTapped: {
+                sink.send(.subscribeTapped)
+            },
             refreshText: refreshText,
             isRefreshEnabled: refreshEnabled,
             onRefreshTap: {
                 sink.send(.refreshButtonTapped)
             })
+    }
+}
+
+
+fileprivate class TimerSignal {
+    let signal: Signal<Void, NoError>
+    let observer: Signal<Void, NoError>.Observer
+    let timer: Timer
+
+    init() {
+        let (signal, observer) = Signal<Void, NoError>.pipe()
+
+        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak observer] _ in
+            observer?.send(value: ())
+        }
+
+        self.signal = signal
+        self.observer = observer
+        self.timer = timer
     }
 }
