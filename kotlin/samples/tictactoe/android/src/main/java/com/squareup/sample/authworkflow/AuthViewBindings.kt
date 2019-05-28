@@ -15,11 +15,12 @@
  */
 package com.squareup.sample.authworkflow
 
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 
-@Suppress("EXPERIMENTAL_API_USAGE")
+@UseExperimental(ExperimentalWorkflowUi::class)
 val AuthViewBindings = ViewRegistry(
-    AuthorizingCoordinator,
-    LoginCoordinator,
-    SecondFactorCoordinator
+    AuthorizingLayoutRunner,
+    LoginLayoutRunner,
+    SecondFactorLayoutRunner
 )

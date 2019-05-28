@@ -242,12 +242,12 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
 
 /**
  * If your workflow needs to manage the back button, override [FragmentActivity.onBackPressed]
- * and call this method, and have its views or coordinators use [HandlesBack].
+ * and call this method, and have its views or [LayoutRunner]s use [HandlesBack].
  *
  * e.g.:
  *
  *    override fun onBackPressed() {
- *      if (!runner.onBackPressed(this)) super.onBackPressed()
+ *      if (!workflowOnBackPressed()) super.onBackPressed()
  *    }
  *
  * **Only for use by activities driven via [FragmentActivity.setContentWorkflow].**

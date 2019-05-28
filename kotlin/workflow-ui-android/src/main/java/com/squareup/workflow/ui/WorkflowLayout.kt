@@ -23,8 +23,10 @@ import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.View
 import android.widget.FrameLayout
+import com.squareup.coordinators.Coordinator
+import com.squareup.coordinators.Coordinators
 import io.reactivex.Observable
-import kotlin.reflect.jvm.jvmName
+import io.reactivex.disposables.Disposable
 
 /**
  * A view that can be driven by a [WorkflowRunner]. In most cases you'll use
@@ -41,18 +43,14 @@ class WorkflowLayout(
 
   /**
    * Subscribes to [WorkflowRunner.renderings]. Uses [WorkflowRunner.viewRegistry]
-   * to [build a new view][ViewRegistry.getBinding] each time a new type of rendering is received,
+   * to [build a new view][ViewRegistry.buildView] each time a new type of rendering is received,
    * making that view the only child of this one.
    *
-   * Views created this way are expected to monitor the rendering stream themselves to stay
-   * up to date, and may also make recursive calls to [ViewRegistry.getBinding] to make
+   * Views created this way may make recursive calls to [ViewRegistry.buildView] to make
    * children of their own to handle nested renderings.
    */
   fun setRunner(workflowRunner: WorkflowRunner<*>) {
-    takeWhileAttached(
-        workflowRunner.renderings.distinctUntilChanged { rendering -> rendering::class }) {
-      show(it, workflowRunner.renderings.ofType(it::class.java), workflowRunner.viewRegistry)
-    }
+    takeWhileAttached(workflowRunner.renderings) { show(it, workflowRunner.viewRegistry) }
   }
 
   override fun onBackPressed(): Boolean {
@@ -63,12 +61,16 @@ class WorkflowLayout(
 
   private fun show(
     newRendering: Any,
-    renderings: Observable<out Any>,
-    viewRegistry: ViewRegistry
+    registry: ViewRegistry
   ) {
+    showing?.takeIf { it.canShowRendering(newRendering) }
+        ?.let { it ->
+          it.showRendering(newRendering)
+          return
+        }
+
     removeAllViews()
-    val binding = viewRegistry.getBinding<Any>(newRendering::class.jvmName)
-    val newView = binding.buildView(renderings, viewRegistry, this)
+    val newView = registry.buildView(newRendering, this)
     restoredChildState?.let { restoredState ->
       restoredChildState = null
       newView.restoreHierarchyState(restoredState)
@@ -122,6 +124,31 @@ class WorkflowLayout(
         SavedState(source)
 
       override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
+    }
+  }
+
+  /**
+   * Subscribes [update] to [source] only while this [View] is attached to a window.
+   */
+  private fun <S : Any> View.takeWhileAttached(
+    source: Observable<S>,
+    update: (S) -> Unit
+  ) {
+    Coordinators.bind(this) {
+      object : Coordinator() {
+        var sub: Disposable? = null
+
+        override fun attach(view: View) {
+          sub = source.subscribe { screen -> update(screen) }
+        }
+
+        override fun detach(view: View) {
+          sub?.let {
+            it.dispose()
+            sub = null
+          }
+        }
+      }
     }
   }
 }

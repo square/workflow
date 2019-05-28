@@ -17,29 +17,21 @@ package com.squareup.sample.authworkflow
 
 import android.view.View
 import android.widget.TextView
-import com.squareup.coordinators.Coordinator
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.LayoutBinding
+import com.squareup.workflow.ui.ExperimentalWorkflowUi
+import com.squareup.workflow.ui.LayoutRunner
+import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 
-@Suppress("EXPERIMENTAL_API_USAGE")
-internal class AuthorizingCoordinator(private val screens: Observable<out AuthorizingScreen>) :
-    Coordinator() {
-  private val subs = CompositeDisposable()
+@UseExperimental(ExperimentalWorkflowUi::class)
+internal class AuthorizingLayoutRunner(view: View) : LayoutRunner<AuthorizingScreen> {
+  private val messageView: TextView = view.findViewById(R.id.authorizing_message)
 
-  override fun attach(view: View) {
-    val messageView = view.findViewById<TextView>(R.id.authorizing_message)
-    subs.add(screens.map { s -> s.message }
-        .subscribe { messageView.text = it })
+  override fun showRendering(rendering: AuthorizingScreen) {
+    messageView.text = rendering.message
   }
 
-  override fun detach(view: View) {
-    subs.clear()
-  }
-
-  companion object : ViewBinding<AuthorizingScreen> by LayoutBinding.of(
-      R.layout.authorizing_layout, ::AuthorizingCoordinator
+  companion object : ViewBinding<AuthorizingScreen> by bind(
+      R.layout.authorizing_layout, ::AuthorizingLayoutRunner
   )
 }
