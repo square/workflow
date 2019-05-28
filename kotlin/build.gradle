@@ -67,7 +67,8 @@ buildscript {
           'coroutines': [
               'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlinCoroutines}",
               'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinCoroutines}",
-              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.kotlinCoroutines}"
+              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.kotlinCoroutines}",
+              'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.kotlinCoroutines}"
           ],
           'reflect': "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
           'test': [

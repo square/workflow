@@ -22,6 +22,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -284,6 +285,39 @@ class WorkerTest {
       cancelWorker()
       channel.send(Unit)
       assertEquals(Unit, channel.receive())
+    }
+  }
+
+  @Test fun `timer returns equivalent workers keyed`() {
+    val worker1 = Worker.timer(1, "key")
+    val worker2 = Worker.timer(1, "key")
+
+    assertNotSame(worker1, worker2)
+    assertTrue(worker1.doesSameWorkAs(worker2))
+  }
+
+  @Test fun `timer returns non-equivalent workers based on key`() {
+    val worker1 = Worker.timer(1, "key1")
+    val worker2 = Worker.timer(1, "key2")
+
+    assertFalse(worker1.doesSameWorkAs(worker2))
+  }
+
+  @Test fun `timer emits and finishes after delay`() {
+    val worker = Worker.timer(1000)
+    val testDispatcher = TestCoroutineDispatcher()
+
+    worker.test(context = testDispatcher) {
+      assertNoOutput()
+      assertNotFinished()
+
+      testDispatcher.advanceTimeBy(999)
+      assertNoOutput()
+      assertNotFinished()
+
+      testDispatcher.advanceTimeBy(1)
+      assertEquals(Unit, nextOutput())
+      assertFinished()
     }
   }
 }
