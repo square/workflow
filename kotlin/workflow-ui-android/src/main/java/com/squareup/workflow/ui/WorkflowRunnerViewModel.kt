@@ -25,6 +25,7 @@ import com.squareup.workflow.rx2.flatMapWorkflow
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlin.reflect.jvm.jvmName
 
@@ -38,14 +39,15 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
     private val workflow: Workflow<InputT, OutputT, Any>,
     private val viewRegistry: ViewRegistry,
     private val inputs: Flowable<InputT>,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
   ) : ViewModelProvider.Factory {
     private val snapshot = savedInstanceState
         ?.getParcelable<PickledWorkflow>(BUNDLE_KEY)
         ?.snapshot
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      val workflowUpdates = inputs.flatMapWorkflow(workflow, snapshot, Dispatchers.Main.immediate)
+      val workflowUpdates = inputs.flatMapWorkflow(workflow, snapshot, dispatcher)
       @Suppress("UNCHECKED_CAST")
       return WorkflowRunnerViewModel(viewRegistry, workflowUpdates) as T
     }
