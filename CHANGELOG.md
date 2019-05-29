@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+## Version 0.17.0
+
+_2019-5-29_
+
+### Kotlin
+
+ * Add a Worker.createSideEffect helper for Nothing-type workers. (#366)
+ * Add a Worker.timer function to create simple delay workers. (#368)
+ * testRender can now test arbitrary event handlers and automatically calculate initial state. (#372)
+ * Allow specifying the CoroutineDispatcher used by WorkflowRunnerViewModel. (#375)
+
+### Swift
+
+ * `Actions` update the `Rendering` synchronously. (#362, #348)
+
 ## Version 0.16.1
 
 _2019-5-24_
