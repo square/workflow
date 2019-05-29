@@ -42,7 +42,7 @@ private val DEFAULT_WORKFLOW_COROUTINE_NAME = CoroutineName("WorkflowHost")
  *
  * Create these by injecting a [Factory] and calling [run][Factory.run].
  */
-interface WorkflowHost<in InputT, out OutputT : Any, out RenderingT> {
+interface WorkflowHost<out OutputT : Any, out RenderingT> {
 
   /**
    * Output from a [WorkflowHost]. Emitted from [WorkflowHost.updates] after every render pass.
@@ -85,8 +85,8 @@ interface WorkflowHost<in InputT, out OutputT : Any, out RenderingT> {
       inputs: ReceiveChannel<InputT>,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext
-    ): WorkflowHost<InputT, OutputT, RenderingT> =
-      object : WorkflowHost<InputT, OutputT, RenderingT> {
+    ): WorkflowHost<OutputT, RenderingT> =
+      object : WorkflowHost<OutputT, RenderingT> {
         // Put the coroutine name first so the passed-in contexts can override it.
         private val scope = CoroutineScope(DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext + context)
 
@@ -105,7 +105,7 @@ interface WorkflowHost<in InputT, out OutputT : Any, out RenderingT> {
       workflow: Workflow<Unit, OutputT, RenderingT>,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext
-    ): WorkflowHost<Unit, OutputT, RenderingT> = run(workflow, channelOf(Unit), snapshot, context)
+    ): WorkflowHost<OutputT, RenderingT> = run(workflow, channelOf(Unit), snapshot, context)
 
     /**
      * Creates a [WorkflowHost] that runs [workflow] starting from [initialState].
@@ -120,8 +120,8 @@ interface WorkflowHost<in InputT, out OutputT : Any, out RenderingT> {
       workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
       inputs: ReceiveChannel<InputT>,
       initialState: StateT
-    ): WorkflowHost<InputT, OutputT, RenderingT> =
-      object : WorkflowHost<InputT, OutputT, RenderingT> {
+    ): WorkflowHost<OutputT, RenderingT> =
+      object : WorkflowHost<OutputT, RenderingT> {
         override val updates: ReceiveChannel<Update<OutputT, RenderingT>> =
           GlobalScope.produce(
               capacity = 0,

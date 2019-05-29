@@ -93,7 +93,7 @@ class TerminalWorkflowRunner(
 private suspend fun runTerminalWorkflow(
   screen: TerminalScreen,
   inputs: SendChannel<TerminalInput>,
-  host: WorkflowHost<TerminalInput, ExitCode, TerminalRendering>,
+  host: WorkflowHost<ExitCode, TerminalRendering>,
   keyStrokes: Worker<KeyStroke>,
   resizes: ReceiveChannel<TerminalSize>
 ): ExitCode {
