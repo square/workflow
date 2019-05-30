@@ -25,11 +25,10 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable.isActive
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.selects.select
 import org.jetbrains.annotations.TestOnly
 import kotlin.coroutines.CoroutineContext
@@ -173,8 +172,7 @@ suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
 
   try {
     while (true) {
-      // Manually implement `ensureActive()` until we're on coroutines 1.2.x.
-      if (!isActive) throw coroutineContext[Job]!!.getCancellationException()
+      coroutineContext.ensureActive()
 
       val rendering = rootNode.render(workflow, input)
       val snapshot = rootNode.snapshot(workflow)
