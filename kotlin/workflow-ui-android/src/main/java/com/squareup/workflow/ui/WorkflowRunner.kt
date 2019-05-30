@@ -24,6 +24,8 @@ import com.squareup.workflow.Workflow
 import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Uses a [Workflow] and a [ViewRegistry] to drive a [WorkflowLayout].
@@ -62,10 +64,12 @@ interface WorkflowRunner<out OutputT> {
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
       inputs: Flowable<InputT>,
-      savedInstanceState: Bundle?
+      savedInstanceState: Bundle?,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
       val factory =
-        WorkflowRunnerViewModel.Factory(workflow, viewRegistry, inputs, savedInstanceState)
+        WorkflowRunnerViewModel.Factory(workflow, viewRegistry, inputs, savedInstanceState,
+            dispatcher)
       @Suppress("UNCHECKED_CAST")
       return ViewModelProviders.of(activity, factory)[WorkflowRunnerViewModel::class.java]
           as WorkflowRunner<OutputT>
@@ -79,9 +83,11 @@ interface WorkflowRunner<out OutputT> {
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
       inputs: Observable<InputT>,
-      savedInstanceState: Bundle?
+      savedInstanceState: Bundle?,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
-      return of(activity, viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState)
+      return of(activity, viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState,
+          dispatcher)
     }
 
     /**
@@ -92,9 +98,11 @@ interface WorkflowRunner<out OutputT> {
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
       input: InputT,
-      savedInstanceState: Bundle?
+      savedInstanceState: Bundle?,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
-      return of(activity, viewRegistry, workflow, Observable.just(input), savedInstanceState)
+      return of(activity, viewRegistry, workflow, Observable.just(input), savedInstanceState,
+          dispatcher)
     }
 
     /**
@@ -104,9 +112,10 @@ interface WorkflowRunner<out OutputT> {
       activity: FragmentActivity,
       viewRegistry: ViewRegistry,
       workflow: Workflow<Unit, OutputT, Any>,
-      savedInstanceState: Bundle?
+      savedInstanceState: Bundle?,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
-      return of(activity, viewRegistry, workflow, Unit, savedInstanceState)
+      return of(activity, viewRegistry, workflow, Unit, savedInstanceState, dispatcher)
     }
 
     /**
@@ -121,10 +130,12 @@ interface WorkflowRunner<out OutputT> {
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
       inputs: Flowable<InputT>,
-      savedInstanceState: Bundle?
+      savedInstanceState: Bundle?,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
       val factory =
-        WorkflowRunnerViewModel.Factory(workflow, viewRegistry, inputs, savedInstanceState)
+        WorkflowRunnerViewModel.Factory(workflow, viewRegistry, inputs, savedInstanceState,
+            dispatcher)
       @Suppress("UNCHECKED_CAST")
       return ViewModelProviders.of(fragment, factory)[WorkflowRunnerViewModel::class.java]
           as WorkflowRunner<OutputT>
@@ -138,9 +149,11 @@ interface WorkflowRunner<out OutputT> {
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
       inputs: Observable<InputT>,
-      savedInstanceState: Bundle?
+      savedInstanceState: Bundle?,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
-      return of(fragment, viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState)
+      return of(fragment, viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState,
+          dispatcher)
     }
 
     /**
@@ -151,9 +164,11 @@ interface WorkflowRunner<out OutputT> {
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
       input: InputT,
-      savedInstanceState: Bundle?
+      savedInstanceState: Bundle?,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
-      return of(fragment, viewRegistry, workflow, Flowable.just(input), savedInstanceState)
+      return of(fragment, viewRegistry, workflow, Flowable.just(input), savedInstanceState,
+          dispatcher)
     }
 
     /**
@@ -163,9 +178,10 @@ interface WorkflowRunner<out OutputT> {
       fragment: Fragment,
       viewRegistry: ViewRegistry,
       workflow: Workflow<Unit, OutputT, Any>,
-      savedInstanceState: Bundle?
+      savedInstanceState: Bundle?,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
-      return of(fragment, viewRegistry, workflow, Unit, savedInstanceState)
+      return of(fragment, viewRegistry, workflow, Unit, savedInstanceState, dispatcher)
     }
   }
 }
@@ -208,9 +224,11 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, Any>,
   inputs: Flowable<InputT>,
-  savedInstanceState: Bundle?
+  savedInstanceState: Bundle?,
+  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ): WorkflowRunner<OutputT> {
-  val runner = WorkflowRunner.of(this, viewRegistry, workflow, inputs, savedInstanceState)
+  val runner = WorkflowRunner.of(this, viewRegistry, workflow, inputs, savedInstanceState,
+      dispatcher)
   val layout = WorkflowLayout(this@setContentWorkflow)
       .apply {
         id = R.id.workflow_layout
@@ -251,9 +269,11 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, RenderingT>,
   inputs: Observable<InputT>,
-  savedInstanceState: Bundle?
+  savedInstanceState: Bundle?,
+  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ): WorkflowRunner<OutputT> {
-  return setContentWorkflow(viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState)
+  return setContentWorkflow(viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState,
+      dispatcher)
 }
 
 /**
@@ -265,9 +285,11 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, RenderingT>,
   input: InputT,
-  savedInstanceState: Bundle?
+  savedInstanceState: Bundle?,
+  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ): WorkflowRunner<OutputT> {
-  return setContentWorkflow(viewRegistry, workflow, Flowable.just(input), savedInstanceState)
+  return setContentWorkflow(viewRegistry, workflow, Flowable.just(input), savedInstanceState,
+      dispatcher)
 }
 
 /**
@@ -278,7 +300,9 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
 fun <OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<Unit, OutputT, RenderingT>,
-  savedInstanceState: Bundle?
+  savedInstanceState: Bundle?,
+  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ): WorkflowRunner<OutputT> {
-  return setContentWorkflow(viewRegistry, workflow, Unit, savedInstanceState)
+  return setContentWorkflow(viewRegistry, workflow, Unit, savedInstanceState,
+      dispatcher)
 }
