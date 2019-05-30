@@ -17,6 +17,8 @@ package com.squareup.sample.helloterminal.terminalworkflow
 
 import com.googlecode.lanterna.input.InputProvider
 import com.googlecode.lanterna.input.KeyType.ArrowDown
+import com.googlecode.lanterna.input.KeyType.ArrowLeft
+import com.googlecode.lanterna.input.KeyType.ArrowRight
 import com.googlecode.lanterna.input.KeyType.ArrowUp
 import com.googlecode.lanterna.input.KeyType.Backspace
 import com.googlecode.lanterna.input.KeyType.Character
@@ -46,6 +48,8 @@ data class KeyStroke(
     Character,
     ArrowUp,
     ArrowDown,
+    ArrowLeft,
+    ArrowRight,
     Enter,
     Unknown
   }
@@ -55,7 +59,7 @@ data class KeyStroke(
 @UseExperimental(ExperimentalCoroutinesApi::class)
 internal fun InputProvider.listenForKeyStrokesOn(
   scope: CoroutineScope
-): BroadcastChannel<KeyStroke> = scope.broadcast() {
+): BroadcastChannel<KeyStroke> = scope.broadcast {
   while (isActive) {
     val keyStroke = readInput()
     if (keyStroke.keyType === EOF) {
@@ -74,6 +78,8 @@ private fun LanternaKeystroke.toKeyStroke(): KeyStroke = KeyStroke(
       Backspace -> KeyType.Backspace
       ArrowUp -> KeyType.ArrowUp
       ArrowDown -> KeyType.ArrowDown
+      ArrowLeft -> KeyType.ArrowLeft
+      ArrowRight -> KeyType.ArrowRight
       Enter -> KeyType.Enter
       else -> Unknown
     }

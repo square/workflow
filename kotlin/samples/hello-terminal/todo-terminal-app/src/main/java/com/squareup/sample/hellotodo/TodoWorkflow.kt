@@ -22,6 +22,7 @@ import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Ente
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalInput
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalWorkflow
+import com.squareup.sample.hellotodo.EditTextWorkflow.EditTextInput
 import com.squareup.sample.hellotodo.TodoWorkflow.TodoList
 import com.squareup.sample.hellotodo.TodoWorkflow.TodoList.Companion.TITLE_FIELD_INDEX
 import com.squareup.workflow.RenderContext
@@ -44,6 +45,13 @@ class TodoWorkflow : TerminalWorkflow,
     fun moveFocusDown() = copy(focusedField = (focusedField + 1).coerceAtMost(items.size - 1))
     fun toggleChecked(index: Int) = copy(items = items.mapIndexed { i, item ->
       item.copy(checked = item.checked xor (index == i))
+    })
+
+    fun setItemLabel(
+      index: Int,
+      newLabel: String
+    ) = copy(items = items.mapIndexed { i, item ->
+      if (index == i) item.copy(label = newLabel) else item
     })
 
     companion object {
@@ -91,22 +99,52 @@ class TodoWorkflow : TerminalWorkflow,
     }
 
     return TerminalRendering(buildString {
-      appendln(renderSelection(state.title, state.focusedField == TITLE_FIELD_INDEX))
+      appendln(state.renderTitle(input, context))
       appendln(renderSelection(state.titleSeparator, false))
-      appendln(state.renderItems())
+      appendln(state.renderItems(input, context))
     })
   }
 
   override fun snapshotState(state: TodoList): Snapshot = Snapshot.EMPTY
 }
 
-private val TodoList.titleSeparator get() = "–".repeat(title.length)
+private fun TodoList.renderTitle(
+  input: TerminalInput,
+  context: RenderContext<TodoList, *>
+): String {
+  val isSelected = focusedField == TITLE_FIELD_INDEX
+  val titleString = if (isSelected) {
+    context.renderChild(
+        EditTextWorkflow(),
+        input = EditTextInput(title, input),
+        key = TITLE_FIELD_INDEX.toString()
+    ) { newText -> enterState(copy(title = newText)) }
+  } else {
+    title
+  }
+  return renderSelection(titleString, isSelected)
+}
 
-private fun TodoList.renderItems(): String =
+private val TodoList.titleSeparator get() = "–".repeat(title.length + 1)
+
+private fun TodoList.renderItems(
+  input: TerminalInput,
+  context: RenderContext<TodoList, *>
+): String =
   items
       .mapIndexed { index, item ->
         val check = if (item.checked) '✔' else ' '
-        renderSelection("[$check] ${item.label}", index == focusedField)
+        val isSelected = index == focusedField
+        val label = if (isSelected) {
+          context.renderChild(
+              EditTextWorkflow(),
+              input = EditTextInput(item.label, input),
+              key = index.toString()
+          ) { newText -> enterState(setItemLabel(index, newText)) }
+        } else {
+          item.label
+        }
+        renderSelection("[$check] $label", isSelected)
       }
       .joinToString(separator = "\n")
 
