@@ -16,9 +16,12 @@
 package com.squareup.sample.helloterminal.terminalworkflow
 
 import com.googlecode.lanterna.input.InputProvider
+import com.googlecode.lanterna.input.KeyType.ArrowDown
+import com.googlecode.lanterna.input.KeyType.ArrowUp
 import com.googlecode.lanterna.input.KeyType.Backspace
 import com.googlecode.lanterna.input.KeyType.Character
 import com.googlecode.lanterna.input.KeyType.EOF
+import com.googlecode.lanterna.input.KeyType.Enter
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Unknown
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +44,9 @@ data class KeyStroke(
   enum class KeyType {
     Backspace,
     Character,
+    ArrowUp,
+    ArrowDown,
+    Enter,
     Unknown
   }
 }
@@ -66,6 +72,9 @@ private fun LanternaKeystroke.toKeyStroke(): KeyStroke = KeyStroke(
     keyType = when (keyType) {
       Character -> KeyType.Character
       Backspace -> KeyType.Backspace
+      ArrowUp -> KeyType.ArrowUp
+      ArrowDown -> KeyType.ArrowDown
+      Enter -> KeyType.Enter
       else -> Unknown
     }
 )

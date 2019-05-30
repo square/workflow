@@ -16,21 +16,40 @@
 package com.squareup.sample.hellotodo
 
 import com.squareup.sample.helloterminal.terminalworkflow.ExitCode
+import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowDown
+import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowUp
+import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Enter
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalInput
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalWorkflow
 import com.squareup.sample.hellotodo.TodoWorkflow.TodoList
+import com.squareup.sample.hellotodo.TodoWorkflow.TodoList.Companion.TITLE_FIELD_INDEX
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.onWorkerOutput
 
 class TodoWorkflow : TerminalWorkflow,
     StatefulWorkflow<TerminalInput, TodoList, ExitCode, TerminalRendering>() {
 
   data class TodoList(
     val title: String = "[untitled]",
-    val items: List<TodoItem> = emptyList()
-  )
+    val items: List<TodoItem> = emptyList(),
+    val focusedField: Int = TITLE_FIELD_INDEX
+  ) {
+
+    fun moveFocusUp() = copy(focusedField = (focusedField - 1).coerceAtLeast(TITLE_FIELD_INDEX))
+    fun moveFocusDown() = copy(focusedField = (focusedField + 1).coerceAtMost(items.size - 1))
+    fun toggleChecked(index: Int) = copy(items = items.mapIndexed { i, item ->
+      item.copy(checked = item.checked xor (index == i))
+    })
+
+    companion object {
+      const val TITLE_FIELD_INDEX = -1
+    }
+  }
 
   data class TodoItem(
     val label: String,
@@ -55,9 +74,25 @@ class TodoWorkflow : TerminalWorkflow,
     state: TodoList,
     context: RenderContext<TodoList, ExitCode>
   ): TerminalRendering {
+
+    context.onWorkerOutput(input.keyStrokes) { key ->
+      when (key.keyType) {
+        ArrowUp -> enterState(state.moveFocusUp())
+        ArrowDown -> enterState(state.moveFocusDown())
+        Enter -> {
+          if (state.focusedField > TITLE_FIELD_INDEX) {
+            enterState(state.toggleChecked(state.focusedField))
+          } else {
+            noop()
+          }
+        }
+        else -> noop()
+      }
+    }
+
     return TerminalRendering(buildString {
-      appendln(state.title)
-      appendln(state.titleSeparator)
+      appendln(renderSelection(state.title, state.focusedField == TITLE_FIELD_INDEX))
+      appendln(renderSelection(state.titleSeparator, false))
       appendln(state.renderItems())
     })
   }
@@ -67,7 +102,18 @@ class TodoWorkflow : TerminalWorkflow,
 
 private val TodoList.titleSeparator get() = "–".repeat(title.length)
 
-private fun TodoList.renderItems(): String = items.joinToString(separator = "\n") {
-  val check = if (it.checked) '✔' else ' '
-  "[$check] ${it.label}"
+private fun TodoList.renderItems(): String =
+  items
+      .mapIndexed { index, item ->
+        val check = if (item.checked) '✔' else ' '
+        renderSelection("[$check] ${item.label}", index == focusedField)
+      }
+      .joinToString(separator = "\n")
+
+private fun renderSelection(
+  text: String,
+  selected: Boolean
+): String {
+  val prefix = if (selected) "> " else "  "
+  return prefix + text
 }

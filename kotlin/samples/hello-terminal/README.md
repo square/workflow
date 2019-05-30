@@ -32,6 +32,8 @@ Sample app that uses the sample `terminal-workflow` library to build a really si
 can only track one todo list.
 
 It has a root workflow that stores the title and list of items and their checked flags in its state.
-It is responsible for rendering the list.
+It is responsible for rendering the list. It also keeps track of which item or the title is
+currently selected/focused, and listens to keyboard events to update that pointer. When an item
+is selected, pressing the Enter key will toggle its checked state.
 
 Run with `./gradlew :samples:hello-terminal:todo-terminal-app:run`
