@@ -24,3 +24,14 @@ Makes use of the terminal workflow infrastructure in `:samples:hello-workflow:te
 Run with `./gradlew :samples:hello-terminal:hello-terminal-app:run`
 
 ![Screen recording of the sample app](.assets/hello-terminal-demo.gif)
+
+
+## todo-terminal-app
+
+Sample app that uses the sample `terminal-workflow` library to build a really simple TODO app that
+can only track one todo list.
+
+It has a root workflow that stores the title and list of items and their checked flags in its state.
+It is responsible for rendering the list.
+
+Run with `./gradlew :samples:hello-terminal:todo-terminal-app:run`
