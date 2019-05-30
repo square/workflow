@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowHost.Factory
@@ -23,10 +21,13 @@ import com.squareup.workflow.internal.WorkflowNode
 import com.squareup.workflow.internal.id
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.selects.select
@@ -73,16 +74,20 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
      * re-render the workflow.
      *
      * @param workflow The workflow to start.
-     * @param inputs Passed to [StatefulWorkflow.initialState] to determine the root workflow's
-     * initial state, and to pass input updates to the root workflow.
+     * @param inputs Function that returns a channel that delivers input values for the root
+     * workflow. The first value emitted is passed to [StatefulWorkflow.initialState] to determine
+     * the root workflow's initial state, and subsequent emissions are passed as input updates to
+     * the root workflow.
+     * The channel returned by this function will be cancelled by the host when it's finished.
      * If [InputT] is `Unit`, you can just omit this argument.
      * @param snapshot If not null, used to restore the workflow.
      * @param context The [CoroutineContext] used to run the workflow tree. Added to the [Factory]'s
      * context.
      */
+    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <InputT, OutputT : Any, RenderingT> run(
       workflow: Workflow<InputT, OutputT, RenderingT>,
-      inputs: ReceiveChannel<InputT>,
+      inputs: () -> ReceiveChannel<InputT>,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext
     ): WorkflowHost<OutputT, RenderingT> =
@@ -116,9 +121,10 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
      * the testing extension method defined there on your workflow itself.
      */
     @TestOnly
+    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <InputT, StateT, OutputT : Any, RenderingT> runTestFromState(
       workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-      inputs: ReceiveChannel<InputT>,
+      inputs: () -> ReceiveChannel<InputT>,
       initialState: StateT
     ): WorkflowHost<OutputT, RenderingT> =
       object : WorkflowHost<OutputT, RenderingT> {
@@ -137,8 +143,12 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
           }
       }
 
-    private fun <T> channelOf(value: T) = Channel<T>(capacity = 1)
-        .apply { offer(value) }
+    private fun <T> channelOf(value: T): () -> ReceiveChannel<T> {
+      return {
+        Channel<T>(capacity = 1)
+            .apply { offer(value) }
+      }
+    }
   }
 }
 
@@ -150,62 +160,69 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
  * use [WorkflowHost.Factory] to create a [WorkflowHost], or one of the stream operators for your
  * favorite Rx library to map a stream of [InputT]s into [Update]s.
  */
-@UseExperimental(InternalCoroutinesApi::class)
+@UseExperimental(InternalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
 suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
   workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-  inputs: ReceiveChannel<InputT>,
+  inputs: () -> ReceiveChannel<InputT>,
   initialSnapshot: Snapshot?,
   initialState: StateT? = null,
   onUpdate: suspend (Update<OutputT, RenderingT>) -> Unit
 ): Nothing {
-  var output: OutputT? = null
-  var input: InputT = inputs.receive()
-  var inputsClosed = false
-  val rootNode = WorkflowNode(
-      id = workflow.id(),
-      workflow = workflow,
-      initialInput = input,
-      snapshot = initialSnapshot,
-      baseContext = coroutineContext,
-      initialState = initialState
-  )
+  val inputsChannel = inputs()
+  inputsChannel.consume {
+    var output: OutputT? = null
+    var input: InputT = inputsChannel.receive()
+    var inputsClosed = false
+    val rootNode = WorkflowNode(
+        id = workflow.id(),
+        workflow = workflow,
+        initialInput = input,
+        snapshot = initialSnapshot,
+        baseContext = coroutineContext,
+        initialState = initialState
+    )
 
-  try {
-    while (true) {
-      coroutineContext.ensureActive()
+    try {
+      while (true) {
+        coroutineContext.ensureActive()
 
-      val rendering = rootNode.render(workflow, input)
-      val snapshot = rootNode.snapshot(workflow)
+        val rendering = rootNode.render(workflow, input)
+        val snapshot = rootNode.snapshot(workflow)
 
-      onUpdate(Update(rendering, snapshot, output))
+        onUpdate(Update(rendering, snapshot, output))
 
-      // Tick _might_ return an output, but if it returns null, it means the state or a child
-      // probably changed, so we should re-render/snapshot and emit again.
-      output = select {
-        // Stop trying to read from the inputs channel after it's closed.
-        if (!inputsClosed) {
-          @Suppress("EXPERIMENTAL_API_USAGE")
-          inputs.onReceiveOrNull { newInput ->
-            if (newInput == null) {
-              inputsClosed = true
-            } else {
-              input = newInput
+        // Tick _might_ return an output, but if it returns null, it means the state or a child
+        // probably changed, so we should re-render/snapshot and emit again.
+        output = select {
+          // Stop trying to read from the inputs channel after it's closed.
+          if (!inputsClosed) {
+            @Suppress("EXPERIMENTAL_API_USAGE")
+            inputsChannel.onReceiveOrNull { newInput ->
+              if (newInput == null) {
+                inputsClosed = true
+              } else {
+                input = newInput
+              }
+              // No output. Returning from the select will go to the top of the loop to do another
+              // render pass.
+              return@onReceiveOrNull null
             }
-            // No output. Returning from the select will go to the top of the loop to do another
-            // render pass.
-            return@onReceiveOrNull null
           }
-        }
 
-        // Tick the workflow tree.
-        rootNode.tick(this) { it }
+          // Tick the workflow tree.
+          rootNode.tick(this) { it }
+        }
       }
+      // Compiler gets confused, and thinks both that this throw is unreachable, and without the
+      // throw that the infinite while loop will exit normally and thus need a return statement.
+      @Suppress("UNREACHABLE_CODE")
+      throw AssertionError()
+    } finally {
+      // There's a potential race condition if the producer coroutine is cancelled before it has a
+      // chance to enter the try block, since we can't use CoroutineStart.ATOMIC. However, until we
+      // actually see this cause problems, I'm not too worried about it.
+      // See https://github.com/Kotlin/kotlinx.coroutines/issues/845
+      rootNode.cancel()
     }
-  } finally {
-    // There's a potential race condition if the producer coroutine is cancelled before it has a
-    // chance to enter the try block, since we can't use CoroutineStart.ATOMIC. However, until we
-    // actually see this cause problems, I'm not too worried about it.
-    // See https://github.com/Kotlin/kotlinx.coroutines/issues/845
-    rootNode.cancel()
   }
 }
