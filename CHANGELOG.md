@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+## Version 0.17.1
+
+_2019-5-30_
+
+### Kotlin
+
+ * Allow specifying a different CoroutineDispatcher in the WorkflowRunner. (#379)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.17.0
 
 _2019-5-29_
