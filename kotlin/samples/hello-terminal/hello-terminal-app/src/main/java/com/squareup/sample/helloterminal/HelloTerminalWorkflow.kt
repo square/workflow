@@ -18,9 +18,9 @@ package com.squareup.sample.helloterminal
 import com.squareup.sample.helloterminal.HelloTerminalWorkflow.State
 import com.squareup.sample.helloterminal.terminalworkflow.ExitCode
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Backspace
+import com.squareup.sample.helloterminal.terminalworkflow.TerminalInput
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering.Color.GREEN
-import com.squareup.sample.helloterminal.terminalworkflow.TerminalSize
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalWorkflow
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
@@ -28,10 +28,11 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.renderChild
 
 class HelloTerminalWorkflow : TerminalWorkflow,
-    StatefulWorkflow<TerminalSize, State, ExitCode, TerminalRendering>() {
+    StatefulWorkflow<TerminalInput, State, ExitCode, TerminalRendering>() {
 
   data class State(
     val text: String = ""
@@ -43,19 +44,20 @@ class HelloTerminalWorkflow : TerminalWorkflow,
   private val cursorWorkflow = BlinkingCursorWorkflow('_', 500)
 
   override fun initialState(
-    input: TerminalSize,
+    input: TerminalInput,
     snapshot: Snapshot?
   ) = State()
 
   override fun render(
-    input: TerminalSize,
+    input: TerminalInput,
     state: State,
     context: RenderContext<State, ExitCode>
   ): TerminalRendering {
+    val (rows, columns) = input.size
     val header = """
           Hello world!
 
-          Terminal dimensions: ${input.rows} rows ⨉ ${input.columns} columns
+          Terminal dimensions: $rows rows ⨉ $columns columns
 
 
       """.trimIndent()
@@ -63,17 +65,18 @@ class HelloTerminalWorkflow : TerminalWorkflow,
     val prompt = "> "
     val cursor = context.renderChild(cursorWorkflow)
 
+    context.onWorkerOutput(input.keyStrokes) { key ->
+      when {
+        key.keyType == Backspace -> enterState(state.backspace())
+        key.character == 'Q' -> emitOutput(0)
+        key.character != null -> enterState(state.append(key.character!!))
+        else -> noop()
+      }
+    }
+
     return TerminalRendering(
         text = header + prompt + state.text + cursor,
-        textColor = GREEN,
-        onKeyStroke = context.onEvent { key ->
-          when {
-            key.keyType == Backspace -> enterState(state.backspace())
-            key.character == 'Q' -> emitOutput(0)
-            key.character != null -> enterState(state.append(key.character!!))
-            else -> noop()
-          }
-        }
+        textColor = GREEN
     )
   }
 

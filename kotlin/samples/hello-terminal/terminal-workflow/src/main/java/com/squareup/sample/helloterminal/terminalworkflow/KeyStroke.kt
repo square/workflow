@@ -23,8 +23,8 @@ import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Unknown
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.isActive
 import com.googlecode.lanterna.input.KeyStroke as LanternaKeystroke
 
@@ -45,7 +45,23 @@ data class KeyStroke(
   }
 }
 
-internal fun LanternaKeystroke.toKeyStroke(): KeyStroke = KeyStroke(
+@Suppress("BlockingMethodInNonBlockingContext")
+@UseExperimental(ExperimentalCoroutinesApi::class)
+internal fun InputProvider.listenForKeyStrokesOn(
+  scope: CoroutineScope
+): BroadcastChannel<KeyStroke> = scope.broadcast() {
+  while (isActive) {
+    val keyStroke = readInput()
+    if (keyStroke.keyType === EOF) {
+      // EOF indicates the terminal input was closed, and we won't receive any more input, so
+      // close the channel instead of sending the raw event down.
+      return@broadcast
+    }
+    send(keyStroke.toKeyStroke())
+  }
+}
+
+private fun LanternaKeystroke.toKeyStroke(): KeyStroke = KeyStroke(
     character = character,
     keyType = when (keyType) {
       Character -> KeyType.Character
@@ -53,19 +69,3 @@ internal fun LanternaKeystroke.toKeyStroke(): KeyStroke = KeyStroke(
       else -> Unknown
     }
 )
-
-@Suppress("BlockingMethodInNonBlockingContext")
-@UseExperimental(ExperimentalCoroutinesApi::class)
-internal fun InputProvider.listenForKeyStrokesOn(
-  scope: CoroutineScope
-): ReceiveChannel<LanternaKeystroke> = scope.produce {
-  while (isActive) {
-    val keyStroke = readInput()
-    if (keyStroke.keyType === EOF) {
-      // EOF indicates the terminal input was closed, and we won't receive any more input, so
-      // close the channel instead of sending the raw event down.
-      return@produce
-    }
-    send(keyStroke)
-  }
-}

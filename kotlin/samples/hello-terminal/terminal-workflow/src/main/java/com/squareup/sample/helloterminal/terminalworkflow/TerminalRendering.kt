@@ -27,7 +27,6 @@ import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering.Colo
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering.Color.RED
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering.Color.WHITE
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering.Color.YELLOW
-import com.squareup.workflow.EventHandler
 
 /**
  * Represents the complete text to display on a terminal (is not additive), properties of that text,
@@ -38,13 +37,11 @@ import com.squareup.workflow.EventHandler
  * @param text The text to display to the terminal.
  * @param textColor Color of the text to display. All text will be the same color.
  * @param backgroundColor Color of the background of the terminal.
- * @param onKeyStroke Event handler that receives the next [KeyStroke].
  */
 data class TerminalRendering(
   val text: String,
   val textColor: Color = DEFAULT,
-  val backgroundColor: Color = DEFAULT,
-  val onKeyStroke: EventHandler<KeyStroke>
+  val backgroundColor: Color = DEFAULT
 ) {
   enum class Color {
     BLACK,

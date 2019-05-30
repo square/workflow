@@ -16,13 +16,14 @@
 package com.squareup.sample.helloterminal.terminalworkflow
 
 import com.googlecode.lanterna.TerminalPosition.TOP_LEFT_CORNER
-import com.googlecode.lanterna.input.KeyStroke
 import com.googlecode.lanterna.screen.Screen.RefreshType.COMPLETE
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory
+import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.WorkflowHost.Update
+import com.squareup.workflow.asWorker
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -62,9 +63,10 @@ class TerminalWorkflowRunner(
   // when invoking from coroutines. This entire function is blocking however, so we don't care.
   @Suppress("BlockingMethodInNonBlockingContext")
   fun run(workflow: TerminalWorkflow): ExitCode = runBlocking {
-    val configs = Channel<TerminalSize>(CONFLATED)
+    val configs = Channel<TerminalInput>(CONFLATED)
     val host = hostFactory.run(workflow, configs, context = coroutineContext)
-    val keyStrokes = screen.listenForKeyStrokesOn(this + ioDispatcher)
+    val keyStrokesChannel = screen.listenForKeyStrokesOn(this + ioDispatcher)
+    val keyStrokesWorker = keyStrokesChannel.asWorker()
     val resizes = screen.terminal.listenForResizesOn(this)
 
     // Hide the cursor.
@@ -73,7 +75,7 @@ class TerminalWorkflowRunner(
     try {
       screen.startScreen()
       try {
-        runTerminalWorkflow(screen, configs, host, keyStrokes, resizes)
+        runTerminalWorkflow(screen, configs, host, keyStrokesWorker, resizes)
       } finally {
         screen.stopScreen()
       }
@@ -81,7 +83,7 @@ class TerminalWorkflowRunner(
       // Cancel all the coroutines we started so the coroutineScope block will actually exit if no
       // exception was thrown.
       host.updates.cancel()
-      keyStrokes.cancel()
+      keyStrokesChannel.cancel()
       resizes.cancel()
     }
   }
@@ -90,39 +92,28 @@ class TerminalWorkflowRunner(
 @Suppress("BlockingMethodInNonBlockingContext")
 private suspend fun runTerminalWorkflow(
   screen: TerminalScreen,
-  inputs: SendChannel<TerminalSize>,
-  host: WorkflowHost<TerminalSize, ExitCode, TerminalRendering>,
-  keyStrokes: ReceiveChannel<KeyStroke>,
+  inputs: SendChannel<TerminalInput>,
+  host: WorkflowHost<TerminalInput, ExitCode, TerminalRendering>,
+  keyStrokes: Worker<KeyStroke>,
   resizes: ReceiveChannel<TerminalSize>
 ): ExitCode {
-  var size = screen.terminalSize.toSize()
-  var lastRendering: TerminalRendering? = null
+  var input = TerminalInput(screen.terminalSize.toSize(), keyStrokes)
 
   // Need to send an initial input for the workflow to start running.
-  inputs.offer(size)
+  inputs.offer(input)
 
   while (true) {
     val update = selectUnbiased<Update<ExitCode, TerminalRendering>> {
-      keyStrokes.onReceive { key ->
-        lastRendering?.onKeyStroke?.invoke(key.toKeyStroke())
-
-        // Workflow renderings are able to accept one event / input change only, so sending that
-        // last event will invalidate lastRendering, and we don't want to re-iterate until we have
-        // a new rendering with a fresh event handler. It also triggered a render pass, so we can
-        // just retrieve that immediately.
-        return@onReceive host.updates.receive()
-      }
-
       resizes.onReceive {
         screen.doResizeIfNecessary()
             ?.let {
               // If the terminal was resized since the last iteration, we need to notify the
               // workflow.
-              size = it.toSize()
+              input = input.copy(size = it.toSize())
             }
 
         // Publish config changes to the workflow.
-        inputs.send(size)
+        inputs.send(input)
 
         // Sending that new input invalidated the lastRendering, so we don't want to
         // re-iterate until we have a new rendering with a fresh event handler. It also
@@ -150,6 +141,5 @@ private suspend fun runTerminalWorkflow(
         }
 
     screen.refresh(COMPLETE)
-    lastRendering = update.rendering
   }
 }
