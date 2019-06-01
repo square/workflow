@@ -31,7 +31,7 @@ import kotlin.reflect.jvm.jvmName
 sealed class RunGameState {
   internal data class Playing(
     val playerInfo: PlayerInfo,
-    val turn: Turn = Turn()
+    val resume: Turn? = null
   ) : RunGameState()
 
   internal data class NewGame(

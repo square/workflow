@@ -20,6 +20,7 @@ import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
 import com.squareup.sample.gameworkflow.GamePlayScreen.Event.Quit
 import com.squareup.sample.gameworkflow.GamePlayScreen.Event.TakeSquare
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
@@ -27,9 +28,21 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noop
-import com.squareup.workflow.RenderContext
 
-typealias TakeTurnsWorkflow = Workflow<PlayerInfo, CompletedGame, GamePlayScreen>
+typealias TakeTurnsWorkflow = Workflow<TakeTurnsInput, CompletedGame, GamePlayScreen>
+
+class TakeTurnsInput private constructor(
+  val playerInfo: PlayerInfo,
+  val initialTurn: Turn = Turn()
+) {
+  companion object {
+    fun newGame(playerInfo: PlayerInfo): TakeTurnsInput = TakeTurnsInput(playerInfo)
+    fun resumeGame(
+      playerInfo: PlayerInfo,
+      turn: Turn
+    ): TakeTurnsInput = TakeTurnsInput(playerInfo, turn)
+  }
+}
 
 /**
  * Models the turns of a Tic Tac Toe game, alternating between [Player.X]
@@ -39,20 +52,20 @@ typealias TakeTurnsWorkflow = Workflow<PlayerInfo, CompletedGame, GamePlayScreen
  * http://go/sf-taketurns
  */
 class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
-    StatefulWorkflow<PlayerInfo, Turn, CompletedGame, GamePlayScreen>() {
+    StatefulWorkflow<TakeTurnsInput, Turn, CompletedGame, GamePlayScreen>() {
 
   override fun initialState(
-    input: PlayerInfo,
+    input: TakeTurnsInput,
     snapshot: Snapshot?
-  ): Turn = Turn()
+  ): Turn = input.initialTurn
 
   override fun render(
-    input: PlayerInfo,
+    input: TakeTurnsInput,
     state: Turn,
     context: RenderContext<Turn, CompletedGame>
   ): GamePlayScreen {
     return GamePlayScreen(
-        playerInfo = input,
+        playerInfo = input.playerInfo,
         gameState = state,
         onEvent = context.onEvent { event ->
           when (event) {
