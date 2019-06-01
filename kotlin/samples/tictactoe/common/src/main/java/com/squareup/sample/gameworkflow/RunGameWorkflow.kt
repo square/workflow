@@ -112,7 +112,12 @@ class RealRunGameWorkflow(
         // context.renderChild starts takeTurnsWorkflow, or keeps it running if it was
         // already going. TakeTurnsWorkflow.render is immediately called,
         // and the GamePlayScreen it renders is immediately returned.
-        val takeTurnsScreen = context.renderChild(takeTurnsWorkflow, state.playerInfo) { output ->
+        val takeTurnsScreen = context.renderChild(
+            takeTurnsWorkflow,
+            input = state.resume
+                ?.let { TakeTurnsInput.resumeGame(state.playerInfo, it) }
+                ?: TakeTurnsInput.newGame(state.playerInfo)
+        ) { output ->
           when (output.ending) {
             Quitted -> enterState(MaybeQuitting(output, state.playerInfo))
             else -> enterState(GameOver(state.playerInfo, output))
