@@ -16,9 +16,14 @@
 package com.squareup.sample.helloterminal.terminalworkflow
 
 import com.googlecode.lanterna.input.InputProvider
+import com.googlecode.lanterna.input.KeyType.ArrowDown
+import com.googlecode.lanterna.input.KeyType.ArrowLeft
+import com.googlecode.lanterna.input.KeyType.ArrowRight
+import com.googlecode.lanterna.input.KeyType.ArrowUp
 import com.googlecode.lanterna.input.KeyType.Backspace
 import com.googlecode.lanterna.input.KeyType.Character
 import com.googlecode.lanterna.input.KeyType.EOF
+import com.googlecode.lanterna.input.KeyType.Enter
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Unknown
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +46,11 @@ data class KeyStroke(
   enum class KeyType {
     Backspace,
     Character,
+    ArrowUp,
+    ArrowDown,
+    ArrowLeft,
+    ArrowRight,
+    Enter,
     Unknown
   }
 }
@@ -49,7 +59,7 @@ data class KeyStroke(
 @UseExperimental(ExperimentalCoroutinesApi::class)
 internal fun InputProvider.listenForKeyStrokesOn(
   scope: CoroutineScope
-): BroadcastChannel<KeyStroke> = scope.broadcast() {
+): BroadcastChannel<KeyStroke> = scope.broadcast {
   while (isActive) {
     val keyStroke = readInput()
     if (keyStroke.keyType === EOF) {
@@ -66,6 +76,11 @@ private fun LanternaKeystroke.toKeyStroke(): KeyStroke = KeyStroke(
     keyType = when (keyType) {
       Character -> KeyType.Character
       Backspace -> KeyType.Backspace
+      ArrowUp -> KeyType.ArrowUp
+      ArrowDown -> KeyType.ArrowDown
+      ArrowLeft -> KeyType.ArrowLeft
+      ArrowRight -> KeyType.ArrowRight
+      Enter -> KeyType.Enter
       else -> Unknown
     }
 )
