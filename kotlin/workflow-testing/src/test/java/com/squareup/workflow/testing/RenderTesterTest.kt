@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow.testing
 
-import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -180,7 +179,7 @@ class RenderTesterTest {
   }
 
   @Test fun `getEventResult works`() {
-    val workflow = object : StatefulWorkflow<Unit, String, String, EventHandler<String>>() {
+    val workflow = object : StatefulWorkflow<Unit, String, String, (String) -> Unit>() {
       override fun initialState(
         input: Unit,
         snapshot: Snapshot?
@@ -190,7 +189,7 @@ class RenderTesterTest {
         input: Unit,
         state: String,
         context: RenderContext<String, String>
-      ): EventHandler<String> = context.onEvent { event ->
+      ): (String) -> Unit = context.onEvent { event ->
         enterState(
             newState = "from $state on $event",
             emittingOutput = "event: $event"

@@ -42,7 +42,6 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.invoke
 import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.AlertContainerScreen
@@ -222,8 +221,8 @@ class RealRunGameWorkflow(
     message: String = "Do you really want to concede the game?",
     positive: String = "I Quit",
     negative: String = "No",
-    confirmQuit: EventHandler<Unit> = EventHandler { },
-    continuePlaying: EventHandler<Unit> = EventHandler { }
+    confirmQuit: (Unit) -> Unit = EventHandler { },
+    continuePlaying: (Unit) -> Unit = EventHandler { }
   ): AlertScreen {
     return AlertScreen(
         buttons = mapOf(
@@ -234,11 +233,11 @@ class RealRunGameWorkflow(
         onEvent = { alertEvent ->
           when (alertEvent) {
             is ButtonClicked -> when (alertEvent.button) {
-              POSITIVE -> confirmQuit()
-              NEGATIVE -> continuePlaying()
+              POSITIVE -> confirmQuit(Unit)
+              NEGATIVE -> continuePlaying(Unit)
               NEUTRAL -> throw IllegalArgumentException()
             }
-            Canceled -> continuePlaying()
+            Canceled -> continuePlaying(Unit)
           }
         }
     )
