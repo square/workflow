@@ -22,9 +22,9 @@ package com.squareup.sample.gameworkflow
 typealias Board = List<List<Player?>>
 
 fun Board.isFull(): Boolean {
-  return asSequence().flatten().firstOrNull { it != null }
-      ?.let { false }
-      ?: true
+  asSequence().flatten()
+      .forEach { if (it == null) return false }
+  return true
 }
 
 fun Board.hasVictory(): Boolean {
