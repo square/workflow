@@ -31,6 +31,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlin.experimental.ExperimentalTypeInference
 import kotlin.reflect.KClass
 
 /**
@@ -183,9 +184,10 @@ interface Worker<out T> {
      * Note: If your worker just needs to perform side effects and doesn't need to emit anything,
      * use [createSideEffect] instead (since `Nothing` can't be used as a reified type parameter).
      */
+    @UseExperimental(ExperimentalTypeInference::class)
     inline fun <reified T> create(
       key: String = "",
-      noinline block: suspend Emitter<T>.() -> Unit
+      @BuilderInference noinline block: suspend Emitter<T>.() -> Unit
     ): Worker<T> = TypedWorker(T::class, key, block)
 
     /**
