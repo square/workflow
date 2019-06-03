@@ -17,7 +17,6 @@
 
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -27,7 +26,6 @@ import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.invoke
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.renderChild
@@ -301,7 +299,7 @@ class WorkflowNodeTest {
 
   @Test fun `worker is cancelled`() {
     val channel = Channel<String>(capacity = 0)
-    lateinit var doClose: EventHandler<Unit>
+    lateinit var doClose: (Unit) -> Unit
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
@@ -334,7 +332,7 @@ class WorkflowNodeTest {
     runBlocking {
       node.render(workflow, "listen")
       assertFalse(channel.isClosedForSend)
-      doClose()
+      doClose(Unit)
 
       // This tick will process the event handler, it won't close the channel yet.
       withTimeout(1) {

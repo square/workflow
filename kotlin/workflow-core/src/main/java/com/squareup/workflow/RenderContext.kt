@@ -62,12 +62,28 @@ interface RenderContext<StateT, in OutputT : Any> {
    *      }
    *    )
    *
+   * ## Equivalence & Testing
+   *
+   * It is common in unit tests to get a rendering from a workflow, then (since renderings should be
+   * value types) create the expected rendering instance and compare them. However, when comparing
+   * renderings there is no meaningful way to compare event handlers (other than a null check if
+   * they're nullable), and so two renderings that are identical but have different event handler
+   * functions should still be considered equal. In order to support this pattern, the functions
+   * returned by this method are all considered equal: `foo == bar` whenever `foo` and `bar` are
+   * values returned by this method. More precisely, this function returns instances of
+   * [EventHandler], and all [EventHandler] instances are considered equal.
+   *
+   * However, since event handling functions are always valid only for the rendering for which they
+   * were created, this means that you can't dedup event handlers in production (e.g. with something
+   * like RxJava's `distinctUntilChanged`). Event handlers must _always_ be updated, and if you
+   * need to de-dup other view data, you must do it at a more granular level.
+   *
    * @param handler A function that returns the [WorkflowAction] to perform when the event handler
    * is invoked.
    */
   fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<StateT, OutputT>
-  ): EventHandler<EventT>
+  ): (EventT) -> Unit
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
