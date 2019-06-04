@@ -16,38 +16,30 @@
 package com.squareup.workflow.ui
 
 import android.content.Context
-import android.support.transition.Scene
 import android.view.View
 import android.view.ViewGroup
-import com.squareup.coordinators.Coordinator
-import com.squareup.coordinators.Coordinators
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import kotlin.reflect.KClass
 
 /**
- * A [ViewBinding] for [View]s that need to be generated from code.
- * (Use [LayoutBinding] to work with XML layout resources.)
- *
- * It is best for such views to hold off on updating from model objects
- * until they are attached to a window, e.g. to ensure containers have a chance
- * to fire [View.restoreHierarchyState] first. [View.takeWhileAttached] can help
- * with that.
+ * A [ViewBinding] that allows [ViewRegistry.buildView] to dispense [View]s that need
+ * to be generated from code. (Use [LayoutRunner] to work with XML layout resources.)
  *
  * Typical usage is to have a custom builder or view's `companion object` implement
- * [ViewBinding] by delegating to one of these:
+ * [ViewBinding] by delegating to a [BuilderBinding], like this:
  *
  *    class MyView(
  *      context: Context,
  *      attributeSet: AttributeSet?
  *    ) : FrameLayout(context, attributeSet) {
- *      // ...
+ *      private fun update(rendering:  MyRendering) { ... }
+ *
  *      companion object : ViewBuilder<MyScreen>
  *      by BuilderBinding(
- *          type = MyScreen::class.java,
- *          builder = { screens, builders, context, _ ->
+ *          type = MyScreen::class,
+ *          builder = { _, initialRendering, context, _ ->
  *            MyView(context).apply {
  *              layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
- *              takeWhileAttached(screens, ::showMyScreen)
+ *              bindShowRendering(initialRendering, ::update)
  *            }
  *      )
  *    }
@@ -56,86 +48,26 @@ import io.reactivex.disposables.Disposable
  * custom classes themselves.
  *
  *    val TicTacToeViewBuilders = ViewRegistry(
- *        MyView, GamePlayCoordinator, GameOverCoordinator
+ *        MyView, GamePlayLayoutRunner, GameOverLayoutRunner
  *    )
  *
- * Also note that two flavors of [builder] function are supported. Every
- * [builder] must accept an `[Observable]<out [T]>`. Optionally, they can
- * also have a second [ViewRegistry] argument, to allow recursive calls
- * to render nested screens.
+ * Note in particular the [ViewRegistry] argument to the [viewConstructor] lambda. This allows
+ * nested renderings to be displayed via nested calls to [ViewRegistry.buildView].
  */
 @ExperimentalWorkflowUi
-class BuilderBinding<T : Any> private constructor(
-  override val type: String,
-  val builder: (
-    screens: Observable<out T>,
+class BuilderBinding<RenderingT : Any>(
+  override val type: KClass<RenderingT>,
+  private val viewConstructor: (
     viewRegistry: ViewRegistry,
+    initialRendering: RenderingT,
     contextForNewView: Context,
     container: ViewGroup?
   ) -> View
-) : ViewBinding<T> {
-  constructor(
-    type: Class<T>,
-    builder: (
-      screens: Observable<out T>,
-      viewRegistry: ViewRegistry,
-      contextForNewView: Context,
-      container: ViewGroup?
-    ) -> View
-  ) : this(type.name, builder)
-
-  constructor(
-    type: Class<T>,
-    builder: (
-      screens: Observable<out T>,
-      contextForNewView: Context,
-      container: ViewGroup?
-    ) -> View
-  ) : this(type.name, builder = { screens, _, contextForNewView, container ->
-    builder(screens, contextForNewView, container)
-  })
-
+) : ViewBinding<RenderingT> {
   override fun buildView(
-    screens: Observable<out T>,
-    viewRegistry: ViewRegistry,
+    registry: ViewRegistry,
+    initialRendering: RenderingT,
     contextForNewView: Context,
     container: ViewGroup?
-  ): View = builder(screens, viewRegistry, contextForNewView, container)
-
-  override fun buildScene(
-    screens: Observable<out T>,
-    viewRegistry: ViewRegistry,
-    contextForNewView: Context,
-    container: ViewGroup,
-    enterAction: ((Scene) -> Unit)?
-  ): Scene {
-    return Scene(
-        container, buildView(screens, viewRegistry, contextForNewView, container)
-    ).apply { if (enterAction != null) setEnterAction { enterAction(this) } }
-  }
-}
-
-/**
- * Subscribes [update] to [source] only while this [View] is attached to a window.
- */
-fun <S : Any> View.takeWhileAttached(
-  source: Observable<S>,
-  update: (S) -> Unit
-) {
-  Coordinators.bind(this) {
-    object : Coordinator() {
-      var sub: Disposable? = null
-
-      override fun attach(view: View) {
-        sub = source.subscribe { screen -> update(screen) }
-      }
-
-      override fun detach(view: View) {
-        sub?.let {
-          it.dispose()
-          sub = null
-        }
-      }
-    }
-  }
+  ): View = viewConstructor.invoke(registry, initialRendering, contextForNewView, container)
 }

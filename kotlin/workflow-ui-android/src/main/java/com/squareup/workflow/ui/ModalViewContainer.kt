@@ -24,8 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import io.reactivex.Observable
-import kotlin.reflect.jvm.jvmName
+import kotlin.reflect.KClass
 
 /**
  * Class returned by [ModalContainer.forContainerScreen], qv for details.
@@ -40,40 +39,41 @@ internal class ModalViewContainer
   private val modalDecorator: (View) -> View = { it }
 ) : ModalContainer<Any>(context, attributeSet) {
 
-  @ExperimentalWorkflowUi
-  override fun Any.matches(nextModal: Any) = this::class.java == nextModal::class.java
-
-  @ExperimentalWorkflowUi
-  override fun showDialog(
-    modalScreen: Any,
-    screens: Observable<out Any>,
+  override fun buildDialog(
+    initialModalRendering: Any,
     viewRegistry: ViewRegistry
-  ): Dialog {
-    val binding = viewRegistry.getBinding<Any>(modalScreen::class.jvmName)
-    val view = binding.buildView(screens, viewRegistry, this)
+  ): DialogRef<Any> {
+    val view = viewRegistry.buildView(initialModalRendering, this)
 
-    return Dialog(context, dialogThemeResId).apply {
-      setCancelable(false)
-      setContentView(modalDecorator(view))
-      window!!.setLayout(WRAP_CONTENT, WRAP_CONTENT)
+    return Dialog(context, dialogThemeResId)
+        .apply {
+          setCancelable(false)
+          setContentView(modalDecorator(view))
+          window!!.setLayout(WRAP_CONTENT, WRAP_CONTENT)
 
-      if (dialogThemeResId == 0) {
-        // If we don't set or clear the background drawable, the window cannot go full bleed.
-        window!!.setBackgroundDrawable(null)
-      }
-      show()
-    }
+          if (dialogThemeResId == 0) {
+            // If we don't set or clear the background drawable, the window cannot go full bleed.
+            window!!.setBackgroundDrawable(null)
+          }
+        }
+        .run {
+          DialogRef(initialModalRendering, this, view)
+        }
+  }
+
+  override fun updateDialog(dialogRef: DialogRef<Any>) {
+    with(dialogRef) { (extra as View).showRendering(modalRendering) }
   }
 
   class Binding<H : HasModals<*, *>>(
     @IdRes id: Int,
-    type: Class<H>,
+    type: KClass<H>,
     @StyleRes dialogThemeResId: Int = 0,
     modalDecorator: (View) -> View = { it }
   ) : ViewBinding<H>
   by BuilderBinding(
       type = type,
-      builder = { screens, viewRegistry, context, _ ->
+      viewConstructor = { viewRegistry, initialRendering, context, _ ->
         ModalViewContainer(
             context,
             modalDecorator = modalDecorator,
@@ -82,7 +82,8 @@ internal class ModalViewContainer
             .apply {
               this.id = id
               layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-              takeScreens(screens, viewRegistry)
+              registry = viewRegistry
+              bindShowRendering(initialRendering, ::update)
             }
       }
   )

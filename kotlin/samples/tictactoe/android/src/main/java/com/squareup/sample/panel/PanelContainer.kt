@@ -38,7 +38,7 @@ import kotlin.math.min
  * based on the screen size. The result looks suspiciously like the modal
  * flow container in Square PoS.
  */
-@ExperimentalWorkflowUi
+@UseExperimental(ExperimentalWorkflowUi::class)
 object PanelContainer : ViewBinding<PanelContainerScreen<*, *>>
 by ModalContainer.forContainerScreen(
     R.id.tic_tac_workflow_panel_container,
