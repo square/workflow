@@ -54,7 +54,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal constructor(
   private val inputs: SendChannel<InputT>,
-  private val host: WorkflowHost<InputT, OutputT, RenderingT>,
+  private val host: WorkflowHost<OutputT, RenderingT>,
   context: CoroutineContext
 ) {
 
@@ -200,7 +200,7 @@ fun <T, InputT, OutputT : Any, RenderingT>
       block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
     ): T = test(block, context) { factory, inputs ->
       inputs.offer(input)
-      factory.run(this, inputs, snapshot)
+      factory.run(this, { inputs }, snapshot)
     }
 // @formatter:on
 
@@ -233,7 +233,7 @@ fun <T, InputT, StateT, OutputT : Any, RenderingT>
       block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
     ): T = test(block, context) { factory, inputs ->
       inputs.offer(input)
-      factory.runTestFromState(this, inputs, initialState)
+      factory.runTestFromState(this, { inputs }, initialState)
     }
 // @formatter:on
 
@@ -258,7 +258,7 @@ fun <StateT, OutputT : Any, RenderingT>
 private fun <T, I, O : Any, R> test(
   testBlock: (WorkflowTester<I, O, R>) -> T,
   baseContext: CoroutineContext,
-  starter: (WorkflowHost.Factory, inputs: Channel<I>) -> WorkflowHost<I, O, R>
+  starter: (hostFactory: WorkflowHost.Factory, inputs: Channel<I>) -> WorkflowHost<O, R>
 ): T {
   val context = Dispatchers.Unconfined + baseContext + Job(parent = baseContext[Job])
   val inputs = Channel<I>(capacity = 1)

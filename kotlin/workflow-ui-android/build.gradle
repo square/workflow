@@ -37,7 +37,7 @@ dependencies {
   api deps.rxjava2.rxjava2
   api deps.transition
 
-  implementation project(':workflow-rx2-runtime')
+  implementation project(':workflow-runtime')
   implementation deps.appcompatv7
   implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.coroutines.core

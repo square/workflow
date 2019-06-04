@@ -64,7 +64,7 @@ class TerminalWorkflowRunner(
   @Suppress("BlockingMethodInNonBlockingContext")
   fun run(workflow: TerminalWorkflow): ExitCode = runBlocking {
     val configs = Channel<TerminalInput>(CONFLATED)
-    val host = hostFactory.run(workflow, configs, context = coroutineContext)
+    val host = hostFactory.run(workflow, { configs }, context = coroutineContext)
     val keyStrokesChannel = screen.listenForKeyStrokesOn(this + ioDispatcher)
     val keyStrokesWorker = keyStrokesChannel.asWorker()
     val resizes = screen.terminal.listenForResizesOn(this)
@@ -93,7 +93,7 @@ class TerminalWorkflowRunner(
 private suspend fun runTerminalWorkflow(
   screen: TerminalScreen,
   inputs: SendChannel<TerminalInput>,
-  host: WorkflowHost<TerminalInput, ExitCode, TerminalRendering>,
+  host: WorkflowHost<ExitCode, TerminalRendering>,
   keyStrokes: Worker<KeyStroke>,
   resizes: ReceiveChannel<TerminalSize>
 ): ExitCode {
