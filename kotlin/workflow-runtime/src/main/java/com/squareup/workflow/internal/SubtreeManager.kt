@@ -31,7 +31,8 @@ import kotlin.coroutines.CoroutineContext
  * manages restoring children from snapshots.
  */
 internal class SubtreeManager<StateT, OutputT : Any>(
-  private val contextForChildren: CoroutineContext
+  private val contextForChildren: CoroutineContext,
+  private val eventHandlerDecorator: EventHandlerDecorator<*>
 ) : RealRenderContext.Renderer<StateT, OutputT> {
 
   /**
@@ -133,6 +134,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         workflow.asStatefulWorkflow() as StatefulWorkflow<IC, *, OC, *>,
         input,
         snapshotCache[id],
-        contextForChildren
+        contextForChildren,
+        eventHandlerDecorator = eventHandlerDecorator
     )
 }

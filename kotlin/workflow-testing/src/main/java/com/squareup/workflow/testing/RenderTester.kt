@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow.testing
 
-import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.StatelessWorkflow
@@ -279,11 +278,11 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
  */
 private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<S, O> {
 
-  private val realContext = RealRenderContext(this)
+  private val realContext = RealRenderContext(this) { indistinctFunction(it) }
 
   override fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<S, O>
-  ): EventHandler<EventT> = realContext.onEvent(handler)
+  ): (EventT) -> Unit = realContext.onEvent(handler)
 
   override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
     child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
@@ -317,7 +316,9 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
 }
 
 private object NoopRenderContext : RenderContext<Any?, Any> {
-  override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<Any?, Any>): EventHandler<EventT> {
+  override fun <EventT : Any> onEvent(
+    handler: (EventT) -> WorkflowAction<Any?, Any>
+  ): (EventT) -> Unit {
     throw UnsupportedOperationException()
   }
 

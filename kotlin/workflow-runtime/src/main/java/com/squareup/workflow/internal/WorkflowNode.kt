@@ -45,7 +45,8 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
   initialInput: InputT,
   snapshot: Snapshot?,
   baseContext: CoroutineContext,
-  initialState: StateT? = null
+  initialState: StateT? = null,
+  private val eventHandlerDecorator: EventHandlerDecorator<*>
 ) : CoroutineScope {
 
   /**
@@ -65,7 +66,8 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
    */
   override val coroutineContext = baseContext + Job(baseContext[Job]) + CoroutineName(id.toString())
 
-  private val subtreeManager = SubtreeManager<StateT, OutputT>(coroutineContext)
+  private val subtreeManager =
+    SubtreeManager<StateT, OutputT>(coroutineContext, eventHandlerDecorator)
   private val workerTracker =
     LifetimeTracker<WorkerCase<*, StateT, OutputT>, Any, WorkerSession>(
         getKey = { case -> case },
@@ -173,7 +175,7 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
   ): RenderingT {
     updateInputAndState(workflow, input)
 
-    val context = RealRenderContext(subtreeManager)
+    val context = RealRenderContext(subtreeManager, eventHandlerDecorator)
     val rendering = workflow.render(input, state, context)
 
     behavior = context.buildBehavior()

@@ -17,6 +17,7 @@ package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowHost.Factory
 import com.squareup.workflow.WorkflowHost.Update
+import com.squareup.workflow.internal.EventHandlerDecorator
 import com.squareup.workflow.internal.WorkflowNode
 import com.squareup.workflow.internal.id
 import kotlinx.coroutines.CoroutineName
@@ -125,7 +126,8 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
     fun <InputT, StateT, OutputT : Any, RenderingT> runTestFromState(
       workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
       inputs: () -> ReceiveChannel<InputT>,
-      initialState: StateT
+      initialState: StateT,
+      eventHandlerDecorator: EventHandlerDecorator<*> = { EventHandler(it) }
     ): WorkflowHost<OutputT, RenderingT> =
       object : WorkflowHost<OutputT, RenderingT> {
         override val updates: ReceiveChannel<Update<OutputT, RenderingT>> =
@@ -138,6 +140,7 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
                 inputs = inputs,
                 initialSnapshot = null,
                 initialState = initialState,
+                eventHandlerDecorator = eventHandlerDecorator,
                 onUpdate = ::send
             )
           }
@@ -166,6 +169,7 @@ suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
   inputs: () -> ReceiveChannel<InputT>,
   initialSnapshot: Snapshot?,
   initialState: StateT? = null,
+  eventHandlerDecorator: EventHandlerDecorator<*> = { it },
   onUpdate: suspend (Update<OutputT, RenderingT>) -> Unit
 ): Nothing {
   val inputsChannel = inputs()
@@ -179,7 +183,8 @@ suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
         initialInput = input,
         snapshot = initialSnapshot,
         baseContext = coroutineContext,
-        initialState = initialState
+        initialState = initialState,
+        eventHandlerDecorator = eventHandlerDecorator
     )
 
     try {

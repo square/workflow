@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow.internal
 
-import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Worker.OutputOrFinished
@@ -25,13 +24,16 @@ import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import kotlinx.coroutines.CompletableDeferred
 
+typealias EventHandlerDecorator<T> = ((T) -> Unit) -> (T) -> Unit
+
 /**
  * An implementation of [RenderContext] that builds a [Behavior] via [buildBehavior].
  *
  * Not for general application use.
  */
 class RealRenderContext<StateT, OutputT : Any>(
-  private val renderer: Renderer<StateT, OutputT>
+  private val renderer: Renderer<StateT, OutputT>,
+  private val eventHandlerDecorator: EventHandlerDecorator<*>
 ) : RenderContext<StateT, OutputT> {
 
   interface Renderer<StateT, in OutputT : Any> {
@@ -50,13 +52,14 @@ class RealRenderContext<StateT, OutputT : Any>(
   /** Used to prevent modifications to this object after [buildBehavior] is called. */
   private var frozen = false
 
+  @Suppress("UNCHECKED_CAST")
   override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
-      EventHandler<EventT> {
+      (EventT) -> Unit {
     checkNotFrozen()
-    return EventHandler { event ->
+    return eventHandlerDecorator { event ->
       // Run the handler synchronously, so we only have to emit the resulting action and don't need the
       // update channel to be generic on each event type.
-      val update = handler(event)
+      val update = handler(event as EventT)
 
       // If this returns false, we lost the race with another event being sent.
       check(nextUpdateFromEvent.complete(update)) {
@@ -64,7 +67,7 @@ class RealRenderContext<StateT, OutputT : Any>(
             "\tevent=$event\n" +
             "\tupdate=$update"
       }
-    }
+    } as (EventT) -> Unit
   }
 
   // @formatter:off
