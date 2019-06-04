@@ -65,7 +65,7 @@ class WorkerTest {
   }
 
   @Test fun `create emits and finishes`() {
-    val worker = Worker.create<String> {
+    val worker = Worker.create {
       emitOutput("hello")
       emitOutput("world")
     }

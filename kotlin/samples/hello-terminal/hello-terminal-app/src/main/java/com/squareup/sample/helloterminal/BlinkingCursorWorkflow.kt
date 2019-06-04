@@ -34,7 +34,7 @@ class BlinkingCursorWorkflow(
 
   private val cursorString = cursor.toString()
 
-  private val intervalWorker = Worker.create<Boolean> {
+  private val intervalWorker = Worker.create {
     var on = true
     while (true) {
       emitOutput(on)
