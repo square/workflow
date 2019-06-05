@@ -43,7 +43,7 @@ fun <RenderingT : Any> View.bindShowRendering(
 }
 
 @ExperimentalWorkflowUi
-fun <RenderingT : Any> View.canShowRendering(rendering: RenderingT): Boolean {
+fun View.canShowRendering(rendering: Any): Boolean {
   return showRenderingTag?.type?.isInstance(rendering) == true
 }
 
