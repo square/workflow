@@ -28,4 +28,7 @@ dependencies {
   api deps.okio
 
   implementation deps.kotlin.reflect
+
+  testImplementation deps.kotlin.test.jdk
+  testImplementation deps.test.assertj
 }

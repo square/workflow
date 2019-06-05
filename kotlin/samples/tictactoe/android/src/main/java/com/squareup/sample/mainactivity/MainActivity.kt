@@ -21,15 +21,17 @@ import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
-import com.squareup.workflow.ui.ModalContainer
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
-import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
+import io.reactivex.disposables.Disposables
+import timber.log.Timber
 
 @UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
+  private var loggingSub = Disposables.disposed()
+
   private lateinit var component: MainComponent
   private lateinit var workflowRunner: WorkflowRunner<*>
 
@@ -40,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         ?: MainComponent()
 
     workflowRunner = setContentWorkflow(viewRegistry, component.mainWorkflow, savedInstanceState)
+        .apply {
+          loggingSub = renderings.subscribe { Timber.d("rendering: %s", it) }
+        }
   }
 
   override fun onBackPressed() {
@@ -53,11 +58,12 @@ class MainActivity : AppCompatActivity() {
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component
 
+  override fun onDestroy() {
+    loggingSub.dispose()
+    super.onDestroy()
+  }
+
   private companion object {
-    val viewRegistry = ViewRegistry(
-        BackStackContainer,
-        ModalContainer.forAlertContainerScreen(),
-        PanelContainer
-    ) + AuthViewBindings + TicTacToeViewBindings
+    val viewRegistry = ViewRegistry(PanelContainer) + AuthViewBindings + TicTacToeViewBindings
   }
 }

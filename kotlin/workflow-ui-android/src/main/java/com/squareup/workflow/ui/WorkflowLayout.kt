@@ -61,9 +61,7 @@ class WorkflowLayout(
    * and [viewRegistry][WorkflowRunner.viewRegistry] of [workflowRunner].
    */
   fun start(workflowRunner: WorkflowRunner<*>) {
-    val renderings = workflowRunner.renderings
-    val registry = workflowRunner.viewRegistry
-    start(renderings, registry)
+    start(workflowRunner.renderings, workflowRunner.viewRegistry)
   }
 
   override fun onBackPressed(): Boolean {

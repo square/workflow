@@ -15,30 +15,32 @@
  */
 package com.squareup.workflow.ui
 
-import kotlin.reflect.KClass
+typealias GoBackHandler = () -> Unit
 
 /**
- * Wraps screens that may be shown in series, drill down or wizard style.
- * Typically these are the leaves of composite UI structures. That is, it's
- * probably a mistake if you find yourself creating, say, a
- * `BackStackScreen<AlertContainerScreen<*>>`.
+ * @param stack: screens that have are / have been displayed, ending in the current screen
  *
- * @throws IllegalArgumentException if [T] is [BackStackScreen]
+ * @param onGoBack: function to call for a "go back" gesture. Null indicates such gestures
+ * should be disabled.
  */
-data class BackStackScreen<out T : Any>(
-  val wrapped: T,
-  private val keyExtension: String = ""
+data class BackStackScreen<StackedT : Any>(
+  val stack: List<StackedT>,
+  val onGoBack: GoBackHandler? = null
 ) {
+  constructor(
+    only: StackedT,
+    onGoBack: GoBackHandler? = null
+  ) : this(listOf(only), onGoBack)
+
+  constructor(
+    vararg stack: StackedT,
+    onGoBack: GoBackHandler? = null
+  ) : this(stack.toList(), onGoBack)
+
   init {
-    require(wrapped !is BackStackScreen<*>) {
-      "Surely you didn't mean to put a stack right in a stack."
-    }
+    require(stack.isNotEmpty()) { "Empty stacks are not allowed." }
   }
 
-  val key = Key(wrapped::class, keyExtension)
-
-  data class Key<T : Any>(
-    val type: KClass<T>,
-    val extension: String = ""
-  )
+  val top: StackedT = stack.last()
+  val backStack: List<StackedT> = stack.subList(0, stack.size - 1)
 }
