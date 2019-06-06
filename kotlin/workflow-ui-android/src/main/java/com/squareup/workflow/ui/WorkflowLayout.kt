@@ -42,15 +42,28 @@ class WorkflowLayout(
   private val showing: View? get() = if (childCount > 0) getChildAt(0) else null
 
   /**
-   * Subscribes to [WorkflowRunner.renderings]. Uses [WorkflowRunner.viewRegistry]
-   * to [build a new view][ViewRegistry.buildView] each time a new type of rendering is received,
+   * Subscribes to [renderings], and uses [registry] to
+   * [build a new view][ViewRegistry.buildView] each time a new type of rendering is received,
    * making that view the only child of this one.
    *
    * Views created this way may make recursive calls to [ViewRegistry.buildView] to make
    * children of their own to handle nested renderings.
    */
-  fun setRunner(workflowRunner: WorkflowRunner<*>) {
-    takeWhileAttached(workflowRunner.renderings) { show(it, workflowRunner.viewRegistry) }
+  fun start(
+    renderings: Observable<out Any>,
+    registry: ViewRegistry
+  ) {
+    takeWhileAttached(renderings) { show(it, registry) }
+  }
+
+  /**
+   * Convenience override to start this layout from [renderings][WorkflowRunner.renderings]
+   * and [viewRegistry][WorkflowRunner.viewRegistry] of [workflowRunner].
+   */
+  fun start(workflowRunner: WorkflowRunner<*>) {
+    val renderings = workflowRunner.renderings
+    val registry = workflowRunner.viewRegistry
+    start(renderings, registry)
   }
 
   override fun onBackPressed(): Boolean {
