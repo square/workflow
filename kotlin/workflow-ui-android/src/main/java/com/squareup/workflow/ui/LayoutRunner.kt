@@ -20,6 +20,7 @@ import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import kotlin.reflect.KClass
 
 /**
@@ -56,7 +57,7 @@ import kotlin.reflect.KClass
  * are accepted by [bind]. Every [LayoutRunner] constructor must accept an [View].
  * Optionally, they can also have a second [ViewRegistry] argument, to allow
  * nested renderings to be displayed via nested calls to [ViewRegistry.buildView].
-*/
+ */
 @ExperimentalWorkflowUi
 interface LayoutRunner<RenderingT : Any> {
   fun showRendering(rendering: RenderingT)
@@ -86,14 +87,34 @@ interface LayoutRunner<RenderingT : Any> {
   }
 
   companion object {
+    /**
+     * Creates a [ViewBinding] that inflates [layoutId] to show renderings of type [RenderingT],
+     * using a [LayoutRunner] created by [constructor].
+     */
     inline fun <reified RenderingT : Any> bind(
       @LayoutRes layoutId: Int,
       noinline constructor: (View, ViewRegistry) -> LayoutRunner<RenderingT>
     ): ViewBinding<RenderingT> = Binding(RenderingT::class, layoutId, constructor)
 
+    /**
+     * Creates a [ViewBinding] that inflates [layoutId] to show renderings of type [RenderingT],
+     * using a [LayoutRunner] created by [constructor].
+     */
     inline fun <reified RenderingT : Any> bind(
       @LayoutRes layoutId: Int,
       noinline constructor: (View) -> LayoutRunner<RenderingT>
     ): ViewBinding<RenderingT> = bind(layoutId) { view, _ -> constructor.invoke(view) }
+
+    /**
+     * Creates a [ViewBinding] that inflates [layoutId] to "show" renderings of type [RenderingT],
+     * with a no-op [LayoutRunner]. Handy for showing static views.
+     */
+    inline fun <reified RenderingT : Any> bindNoRunner(
+      @LayoutRes layoutId: Int
+    ): ViewBinding<RenderingT> = bind(layoutId) { _ ->
+      object : LayoutRunner<RenderingT> {
+        override fun showRendering(rendering: RenderingT) = Unit
+      }
+    }
   }
 }
