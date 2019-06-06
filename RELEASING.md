@@ -14,9 +14,7 @@
 
 1. Confirm that the kotlin build is green before committing any changes
    ```
-   cd kotlin
-   ./gradlew build connectedCheck
-   cd -
+   (cd kotlin && ./gradlew build connectedCheck)
    ```
 
 2. In `kotlin/gradle.properties`, remove the `-SNAPSHOT` prefix from the `VERSION_NAME` property.
@@ -30,9 +28,7 @@
 
 4. Upload the kotlin artifacts:
    ```
-   cd kotlin
-   ./gradlew clean uploadArchives
-   cd -
+   (cd kotlin && ./gradlew clean uploadArchives)
    ```
 
 5. Publish to CocoaPods:
