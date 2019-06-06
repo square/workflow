@@ -287,7 +287,7 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
   val layout = WorkflowLayout(this@setContentWorkflow)
       .apply {
         id = R.id.workflow_layout
-        setRunner(runner)
+        start(runner)
       }
 
   this.setContentView(layout)

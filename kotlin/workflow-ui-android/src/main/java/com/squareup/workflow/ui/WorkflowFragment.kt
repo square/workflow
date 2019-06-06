@@ -121,7 +121,7 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
     val (workflow, viewRegistry, inputs) = onCreateWorkflow()
     _runner = WorkflowRunner.of(this, viewRegistry, workflow, inputs, savedInstanceState)
 
-    (view as WorkflowLayout).setRunner(runner)
+    (view as WorkflowLayout).start(runner)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
