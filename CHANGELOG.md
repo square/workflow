@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+## Version 0.17.2
+
+_2019-6-6_
+
+### Kotlin
+
+ * Breaking change: `LayoutRunner` replaces `Coordinator`, no more `Scene` support in `ViewBinding`. (#383)
+ * Allows WorkflowLayout to work from any stream of renderings. (#395)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.17.1
 
 _2019-5-30_
