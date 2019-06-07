@@ -21,23 +21,23 @@ import android.os.Bundle
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.rx2.asFlowable
-import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.launch
 import kotlin.reflect.jvm.jvmName
 
 @ExperimentalWorkflowUi
 @UseExperimental(ExperimentalCoroutinesApi::class)
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   override val viewRegistry: ViewRegistry,
-  workflowHost: WorkflowHost<OutputT, Any>
+  private val workflowHost: WorkflowHost<OutputT, Any>
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
   /**
@@ -66,27 +66,23 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
     }
   }
 
-  private val subs = CompositeDisposable()
-
-  init {
-    subs.add(workflowHost.renderingsAndSnapshots
-        .asObservable()
-        .subscribe { lastSnapshot = it.snapshot })
+  // TODO should inject a scope or use Main.immediate or something.
+  private val snapshotUpdaterJob = GlobalScope.launch(Unconfined) {
+    workflowHost.renderingsAndSnapshots
+        .collect { lastSnapshot = it.snapshot }
   }
 
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
-  override val renderings: Observable<out Any> =
+  override val renderings: Flow<Any> =
     workflowHost.renderingsAndSnapshots
         .map { it.rendering }
-        .asObservable()
 
-  override val output: Flowable<out OutputT> = workflowHost.outputs.asFlowable()
+  override val output: Flow<OutputT> = workflowHost.outputs
 
   override fun onCleared() {
-    // Has the side effect of closing the updates channel, which in turn
-    // will fire any tear downs registered by the root workflow.
-    subs.clear()
+    workflowHost.cancel()
+    snapshotUpdaterJob.cancel()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

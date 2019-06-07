@@ -28,8 +28,10 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.openSubscription
 
 /**
@@ -40,6 +42,7 @@ import kotlinx.coroutines.reactive.openSubscription
  * or subclass [WorkflowFragment] rather than instantiate a [WorkflowRunner] directly.
  */
 @ExperimentalWorkflowUi
+@UseExperimental(ExperimentalCoroutinesApi::class)
 interface WorkflowRunner<out OutputT> {
   /**
    * To be called from [FragmentActivity.onSaveInstanceState] or [Fragment.onSaveInstanceState].
@@ -50,9 +53,9 @@ interface WorkflowRunner<out OutputT> {
    * A stream of the [output][OutputT] values emitted by the running
    * [Workflow][com.squareup.workflow.Workflow].
    */
-  val output: Flowable<out OutputT>
+  val output: Flow<OutputT>
 
-  val renderings: Observable<out Any>
+  val renderings: Flow<Any>
 
   val viewRegistry: ViewRegistry
 

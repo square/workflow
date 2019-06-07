@@ -25,8 +25,13 @@ import android.view.View
 import android.widget.FrameLayout
 import com.squareup.coordinators.Coordinator
 import com.squareup.coordinators.Coordinators
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * A view that can be driven by a [WorkflowRunner]. In most cases you'll use
@@ -34,6 +39,7 @@ import io.reactivex.disposables.Disposable
  * or subclass [WorkflowFragment] rather than manage this class directly.
  */
 @ExperimentalWorkflowUi
+@UseExperimental(ExperimentalCoroutinesApi::class)
 class WorkflowLayout(
   context: Context,
   attributeSet: AttributeSet? = null
@@ -50,7 +56,7 @@ class WorkflowLayout(
    * children of their own to handle nested renderings.
    */
   fun start(
-    renderings: Observable<out Any>,
+    renderings: Flow<Any>,
     registry: ViewRegistry
   ) {
     takeWhileAttached(renderings) { show(it, registry) }
@@ -144,21 +150,27 @@ class WorkflowLayout(
    * Subscribes [update] to [source] only while this [View] is attached to a window.
    */
   private fun <S : Any> View.takeWhileAttached(
-    source: Observable<S>,
+    source: Flow<S>,
     update: (S) -> Unit
   ) {
+    // TODO Inject this or something.
+    val scope = CoroutineScope(Dispatchers.Main.immediate)
     Coordinators.bind(this) {
       object : Coordinator() {
-        var sub: Disposable? = null
+        var job: Job? = null
 
         override fun attach(view: View) {
-          sub = source.subscribe { screen -> update(screen) }
+          job = scope.launch {
+            source.collect { screen ->
+              update(screen)
+            }
+          }
         }
 
         override fun detach(view: View) {
-          sub?.let {
-            it.dispose()
-            sub = null
+          job?.let {
+            it.cancel()
+            job = null
           }
         }
       }
