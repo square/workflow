@@ -23,8 +23,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consume
@@ -160,7 +158,7 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
  * use [WorkflowHost.Factory] to create a [WorkflowHost], or one of the stream operators for your
  * favorite Rx library to map a stream of [InputT]s into [Update]s.
  */
-@UseExperimental(InternalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+@UseExperimental(ExperimentalCoroutinesApi::class)
 suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
   workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
   inputs: () -> ReceiveChannel<InputT>,
