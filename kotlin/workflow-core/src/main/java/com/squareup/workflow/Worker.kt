@@ -23,7 +23,6 @@ import com.squareup.workflow.Worker.Emitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -328,7 +327,7 @@ inline fun <reified T> ReceiveChannel<T>.asWorker(
  * This **SHOULD NOT** be used in production code.
  */
 @VeryExperimentalWorkflow
-@FlowPreview
+@ExperimentalCoroutinesApi
 inline fun <reified T> Flow<T>.asWorker(
   key: String = ""
 ): Worker<T> = create(key) { emitAll(this@asWorker) }
@@ -369,7 +368,7 @@ suspend inline fun <T> Emitter<T>.emitAll(
  * This **SHOULD NOT** be used in production code.
  */
 @VeryExperimentalWorkflow
-@FlowPreview
+@ExperimentalCoroutinesApi
 suspend inline fun <T> Emitter<T>.emitAll(flow: Flow<T>) {
   flow.collect { emitOutput(it) }
 }

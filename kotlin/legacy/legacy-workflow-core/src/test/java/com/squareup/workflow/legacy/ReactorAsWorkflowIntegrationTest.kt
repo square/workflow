@@ -103,6 +103,7 @@ class ReactorAsWorkflowIntegrationTest {
     subscribeToState(workflow)
     workflow.cancel()
 
+    assertEquals(SecondState("hello"), stateSub.poll())
     assertFailsWith<CancellationException> { stateSub.poll() }
     assertTrue(stateSub.isClosedForReceive)
   }
@@ -166,6 +167,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertFalse(resultSub.isCompleted)
 
     secondStateDeferred.complete(SecondState("foo"))
+    assertEquals(SecondState("foo"), stateSub.poll())
     assertTrue(stateSub.isClosedForReceive)
     assertEquals("all done", resultSub.getCompleted())
   }
@@ -255,7 +257,8 @@ class ReactorAsWorkflowIntegrationTest {
     assertTrue(cancelled)
   }
 
-  @Test fun `exception is propagated when state subscriber throws from second onNext asynchronously`() {
+  @Test
+  fun `exception is propagated when state subscriber throws from second onNext asynchronously`() {
     val trigger = CompletableDeferred<Unit>()
     reactor = object : MockReactor() {
       override suspend fun onReact(
@@ -372,6 +375,7 @@ class ReactorAsWorkflowIntegrationTest {
     assertFalse(resultSub.isCompleted)
 
     workflow.sendEvent("foo")
+    assertEquals(SecondState("foo"), stateSub.poll())
     assertTrue(stateSub.isClosedForReceive)
     assertEquals("i heard you like events", resultSub.getCompleted())
   }
@@ -404,6 +408,7 @@ class ReactorAsWorkflowIntegrationTest {
       }
     }
     start("foo")
+    assertEquals(FirstState("foo"), stateSub.poll())
     trigger.complete(Unit)
 
     runBlocking {
