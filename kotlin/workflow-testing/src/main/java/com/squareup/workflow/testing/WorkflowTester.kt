@@ -31,7 +31,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -63,17 +63,24 @@ class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal const
   private val outputs = Channel<OutputT>(capacity = UNLIMITED)
 
   init {
-    val job = CoroutineScope(context)
-        .launch {
-          host.updates.consumeEach { (rendering, snapshot, output) ->
-            renderings.send(rendering)
-            snapshots.send(snapshot)
-            output?.let { outputs.send(it) }
-          }
-        }
-    job.invokeOnCompletion { cause ->
+    val scope = CoroutineScope(context)
+    val rasJob = scope.launch {
+      host.renderingsAndSnapshots.collect { (rendering, snapshot) ->
+        renderings.send(rendering)
+        snapshots.send(snapshot)
+      }
+    }
+    rasJob.invokeOnCompletion { cause ->
       renderings.close(cause)
       snapshots.close(cause)
+    }
+
+    val outputsJob = scope.launch {
+      host.outputs.collect { output ->
+        outputs.send(output)
+      }
+    }
+    outputsJob.invokeOnCompletion { cause ->
       outputs.close(cause)
     }
   }
@@ -286,6 +293,8 @@ private fun <T, I, O : Any, R> test(
     } else {
       // Cancel the Job to ensure everything gets cleaned up.
       context.cancel()
+      // Note we never explicitly cancel the WorkflowHost. We don't need to because we're cancelling
+      // the parent Job, which is the same thing.
     }
   }
 }

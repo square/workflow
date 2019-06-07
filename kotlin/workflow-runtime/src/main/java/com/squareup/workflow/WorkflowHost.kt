@@ -16,18 +16,23 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowHost.Factory
-import com.squareup.workflow.WorkflowHost.Update
+import com.squareup.workflow.WorkflowHost.RenderingAndSnapshot
 import com.squareup.workflow.internal.WorkflowNode
 import com.squareup.workflow.internal.id
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.consume
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import org.jetbrains.annotations.TestOnly
 import kotlin.coroutines.CoroutineContext
@@ -37,27 +42,41 @@ import kotlin.coroutines.coroutineContext
 private val DEFAULT_WORKFLOW_COROUTINE_NAME = CoroutineName("WorkflowHost")
 
 /**
- * Provides a stream of [updates][Update] from a tree of [Workflow]s.
+ * Provides streams of renderings, snapshots, and outputs from a tree of [Workflow]s.
  *
  * Create these by injecting a [Factory] and calling [run][Factory.run].
+ *
+ * [cancel] **must** be called to shut down the workflow when you no longer care about it. If it
+ * is not, the workflow will continue running forever.
  */
+@UseExperimental(ExperimentalCoroutinesApi::class)
 interface WorkflowHost<out OutputT : Any, out RenderingT> {
 
   /**
-   * Output from a [WorkflowHost]. Emitted from [WorkflowHost.updates] after every render pass.
+   * Emitted from [renderingsAndSnapshots] after every render pass.
    */
-  data class Update<out OutputT : Any, out RenderingT>(
+  data class RenderingAndSnapshot<out RenderingT>(
     val rendering: RenderingT,
-    val snapshot: Snapshot,
-    val output: OutputT? = null
+    val snapshot: Snapshot
   )
 
   /**
-   * Stream of [updates][Update] from the root workflow.
+   * Emits [renderings][RenderingT] and [snapshots][Snapshot] from the root [Workflow].
    *
-   * This is *not* a broadcast channel, so it should only be read by a single consumer.
+   * The last-emitted [RenderingT] will be emitted immediately upon collection.
    */
-  val updates: ReceiveChannel<Update<OutputT, RenderingT>>
+  val renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>
+
+  /**
+   * Emits [outputs][OutputT] from the root [Workflow].
+   */
+  val outputs: Flow<OutputT>
+
+  /**
+   * Tears down the entire workflow runtime session, cancelling all workers and closing
+   * [renderingsAndSnapshots] and [outputs].
+   */
+  fun cancel()
 
   /**
    * Inject one of these to start root [Workflow]s.
@@ -90,12 +109,13 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
       context: CoroutineContext = EmptyCoroutineContext
     ): WorkflowHost<OutputT, RenderingT> =
       // Put the coroutine name first so the passed-in contexts can override it.
-      RealWorkflowHost(DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext + context) {
+      RealWorkflowHost(DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext + context) { ras, outputs ->
         runWorkflowTree(
             workflow = workflow.asStatefulWorkflow(),
             inputs = inputs,
             initialSnapshot = snapshot,
-            onUpdate = ::send
+            onRendering = ras::send,
+            onOutput = outputs::send
         )
       }
 
@@ -120,13 +140,14 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
       inputs: () -> ReceiveChannel<InputT>,
       initialState: StateT
     ): WorkflowHost<OutputT, RenderingT> =
-      RealWorkflowHost(DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext) {
+      RealWorkflowHost(DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext) { ras, outputs ->
         runWorkflowTree(
             workflow = workflow.asStatefulWorkflow(),
             inputs = inputs,
             initialSnapshot = null,
             initialState = initialState,
-            onUpdate = ::send
+            onRendering = ras::send,
+            onOutput = outputs::send
         )
       }
 
@@ -142,25 +163,41 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
 @UseExperimental(ExperimentalCoroutinesApi::class)
 private class RealWorkflowHost<O : Any, R>(
   context: CoroutineContext,
-  run: suspend ProducerScope<Update<O, R>>.() -> Unit
+  run: suspend (
+    ras: SendChannel<RenderingAndSnapshot<R>>,
+    outputs: SendChannel<O>
+  ) -> Unit
 ) : WorkflowHost<O, R> {
 
-  override val updates: ReceiveChannel<Update<O, R>> =
-    GlobalScope.produce(
-        capacity = 0,
-        context = context
-    ) {
-      run()
-    }
+  private val _renderings =
+    BroadcastChannel<RenderingAndSnapshot<R>>(capacity = CONFLATED)
+
+  // Ideally would have capacity of 0, but that's not allowed.
+  private val _outputs = BroadcastChannel<O>(capacity = 1)
+
+  private val job = GlobalScope.launch(context) {
+    run(_renderings, _outputs)
+  }
+
+  @UseExperimental(FlowPreview::class)
+  override val renderingsAndSnapshots: Flow<RenderingAndSnapshot<R>>
+    get() = _renderings.asFlow()
+
+  @UseExperimental(FlowPreview::class)
+  override val outputs: Flow<O>
+    get() = _outputs.asFlow()
+
+  override fun cancel() {
+    job.cancel()
+  }
 }
 
 /**
  * Loops forever, or until the coroutine is cancelled, processing the workflow tree and emitting
- * updates by calling [onUpdate].
+ * updates by calling [onRendering] and [onOutput].
  *
  * This function is the lowest-level entry point into the runtime. Don't call this directly, instead
- * use [WorkflowHost.Factory] to create a [WorkflowHost], or one of the stream operators for your
- * favorite Rx library to map a stream of [InputT]s into [Update]s.
+ * use [WorkflowHost.Factory] to create a [WorkflowHost].
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
 suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
@@ -168,7 +205,8 @@ suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
   inputs: () -> ReceiveChannel<InputT>,
   initialSnapshot: Snapshot?,
   initialState: StateT? = null,
-  onUpdate: suspend (Update<OutputT, RenderingT>) -> Unit
+  onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
+  onOutput: suspend (OutputT) -> Unit
 ): Nothing {
   val inputsChannel = inputs()
   inputsChannel.consume {
@@ -191,7 +229,8 @@ suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
         val rendering = rootNode.render(workflow, input)
         val snapshot = rootNode.snapshot(workflow)
 
-        onUpdate(Update(rendering, snapshot, output))
+        onRendering(RenderingAndSnapshot(rendering, snapshot))
+        if (output != null) onOutput(output)
 
         // Tick _might_ return an output, but if it returns null, it means the state or a child
         // probably changed, so we should re-render/snapshot and emit again.
