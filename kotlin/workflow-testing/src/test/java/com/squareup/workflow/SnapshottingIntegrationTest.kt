@@ -18,6 +18,7 @@ package com.squareup.workflow
 import com.squareup.workflow.testing.testFromStart
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class SnapshottingIntegrationTest {
 
@@ -129,6 +130,52 @@ class SnapshottingIntegrationTest {
             assertEquals("leaf2:new leaf data", it["middle1", "leaf2"].data)
             assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
           }
+    }
+  }
+
+  // See https://github.com/square/workflow/issues/404
+  @Test fun `descendant snapshots are independent over state transitions`() {
+    val workflow = object : StatefulWorkflow<String, String, Nothing, Unit>() {
+      override fun initialState(
+        input: String,
+        snapshot: Snapshot?
+      ): String = input
+
+      override fun onInputChanged(
+        old: String,
+        new: String,
+        state: String
+      ): String = new
+
+      override fun render(
+        input: String,
+        state: String,
+        context: RenderContext<String, Nothing>
+      ) {
+      }
+
+      override fun snapshotState(state: String): Snapshot = Snapshot.write {
+        it.writeUtf8WithLength(state)
+      }
+    }
+    // This test specifically needs to test snapshots from a non-flat workflow tree.
+    val root = Workflow.stateless<String, Nothing, Unit> {
+      renderChild(workflow, it)
+    }
+
+    root.testFromStart("input1") {
+      val snapshot1 = awaitNextSnapshot()
+
+      // Change the input (and thus the state) to make a different snapshot.
+      sendInput("input2")
+      val snapshot2 = awaitNextSnapshot()
+
+      // Send a new input to trigger a new render pass, but with the same snapshot.
+      sendInput("input2")
+      val snapshot3 = awaitNextSnapshot()
+
+      assertNotEquals(snapshot1.bytes, snapshot2.bytes)
+      assertEquals(snapshot2.bytes, snapshot3.bytes)
     }
   }
 }
