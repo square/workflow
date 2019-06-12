@@ -21,9 +21,9 @@ import android.os.Parcelable.Creator
 import android.util.SparseArray
 
 /**
- * Used by [ViewStateStack] to record the [viewState] data for the view identified
+ * Used by [ViewStateCache] to record the [viewState] data for the view identified
  * by [key], which is expected to match the `toString()` of a
- * [com.squareup.workflow.ui.BackStackScreen.key].
+ * [com.squareup.workflow.ui.Named.Key].
  */
 internal data class ViewStateFrame(
   val key: String,

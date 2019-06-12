@@ -18,11 +18,12 @@ package com.squareup.workflow.ui
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.workflow.ui.backstack.BackStackContainer
 import kotlin.reflect.KClass
 
 /**
- * A collection of [ViewBinding]s that can be used to display the stream of screen
- * models rendered by a workflow.
+ * A collection of [ViewBinding]s that can be used to display the stream of renderings
+ * from a workflow tree.
  *
  * Two concrete [ViewBinding] implementations are provided:
  *
@@ -48,11 +49,24 @@ import kotlin.reflect.KClass
  * In the above example, note that the `companion object`s of the various [LayoutRunner] classes
  * honor a convention of implementing [ViewBinding], in aid of this kind of assembly. See the
  * class doc on [LayoutRunner] for details.
+ *
+ * Default bindings for the following types are provided, but can be overridden:
+ *
+ *  - [Named]`<*>` (Delegates to the registered binding for [Named.wrapped].)
+ *  - [BackStackScreen]`<*>`
+ *  - [AlertContainerScreen]`<*>` (Use [ModalContainer.forAlertContainerScreen] to set
+ *    a different dialog theme.)
  */
 @ExperimentalWorkflowUi
 class ViewRegistry private constructor(
   private val bindings: Map<KClass<*>, ViewBinding<*>>
 ) {
+  /** [bindings] plus any built-ins. Segregated to keep dup checking simple. */
+  private val allBindings = bindings +
+      (NamedBinding.type to NamedBinding) +
+      (BackStackContainer.type to BackStackContainer) +
+      (defaultAlertBinding.type to defaultAlertBinding)
+
   constructor(vararg bindings: ViewBinding<*>) : this(
       bindings.map { it.type to it }.toMap().apply {
         check(keys.size == bindings.size) {
@@ -71,7 +85,7 @@ class ViewRegistry private constructor(
   )
 
   /**
-   * Creates a [View] to display [initialRendering], and which can handle calls
+   * Creates a [View] to display [initialRendering], which can be updated via calls
    * to [View.showRendering].
    */
   fun <RenderingT : Any> buildView(
@@ -80,10 +94,16 @@ class ViewRegistry private constructor(
     container: ViewGroup? = null
   ): View {
     @Suppress("UNCHECKED_CAST")
-    return (bindings[initialRendering::class] as? ViewBinding<RenderingT>)
+    return (allBindings[initialRendering::class] as? ViewBinding<RenderingT>)
         ?.buildView(this, initialRendering, contextForNewView, container)
+        ?.apply {
+          checkNotNull(showRenderingTag?.showing) {
+            "View.bindShowRendering must be called for $this."
+          }
+        }
         ?: throw IllegalArgumentException(
-            "No view binding found for $initialRendering (${initialRendering::class.simpleName})"
+            "A binding for ${initialRendering::class.qualifiedName} must be registered " +
+                "to display $initialRendering."
         )
   }
 
@@ -108,4 +128,23 @@ class ViewRegistry private constructor(
   operator fun plus(registry: ViewRegistry): ViewRegistry {
     return ViewRegistry(this, registry)
   }
+
+  private companion object {
+    val defaultAlertBinding = ModalContainer.forAlertContainerScreen()
+  }
 }
+
+@UseExperimental(ExperimentalWorkflowUi::class)
+private object NamedBinding : ViewBinding<Named<*>>
+by BuilderBinding(
+    type = Named::class,
+    viewConstructor = { viewRegistry, initialRendering, contextForNewView, container ->
+      val view = viewRegistry.buildView(initialRendering.wrapped, contextForNewView, container)
+      view.apply {
+        val wrappedUpdater = showRenderingTag!!.showRendering
+        bindShowRendering(initialRendering) {
+          wrappedUpdater.invoke(it.wrapped)
+        }
+      }
+    }
+)

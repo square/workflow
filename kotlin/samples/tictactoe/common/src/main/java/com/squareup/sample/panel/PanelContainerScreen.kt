@@ -34,17 +34,18 @@ import com.squareup.workflow.ui.HasModals
 data class PanelContainerScreen<B : Any, T : Any>(
   override val baseScreen: B,
   override val modals: List<BackStackScreen<T>> = emptyList()
-) : HasModals<B, BackStackScreen<T>> {
-  constructor(
-    baseScreen: B,
-    panelBody: T
-  ) : this(baseScreen, listOf(BackStackScreen(panelBody)))
-}
+) : HasModals<B, BackStackScreen<T>>
 
+/**
+ * Shows the receiving [BackStackScreen] in the only panel over [baseScreen].
+ */
 fun <B : Any, T : Any> BackStackScreen<T>.asPanelOver(baseScreen: B): PanelContainerScreen<B, T> {
   return PanelContainerScreen(baseScreen, listOf(this))
 }
 
+/**
+ * Shows the receiver as the only panel over [baseScreen], with no back stack.
+ */
 fun <B : Any, T : Any> T.asPanelOver(baseScreen: B): PanelContainerScreen<B, T> {
-  return PanelContainerScreen(baseScreen, this)
+  return BackStackScreen(this).asPanelOver(baseScreen)
 }

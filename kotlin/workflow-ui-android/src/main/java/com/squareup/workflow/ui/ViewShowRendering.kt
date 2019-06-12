@@ -16,51 +16,70 @@
 package com.squareup.workflow.ui
 
 import android.view.View
-import kotlin.reflect.KClass
 
 /**
  * Function attached to a view created by [ViewRegistry], to allow it
  * to respond to [View.showRendering].
  */
-typealias ViewShowRendering<RenderingT> = (RenderingT) -> Unit
+typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT) -> Unit
 
 @ExperimentalWorkflowUi
-internal data class ShowRenderingTag<RenderingT : Any>(
-  val showRendering: ViewShowRendering<RenderingT>,
-  val type: KClass<RenderingT>
+data class ShowRenderingTag<out RenderingT : Any>(
+  val showing: RenderingT,
+  val showRendering: ViewShowRendering<RenderingT>
 )
 
+/**
+ * Establishes [showRendering] as the implementation of [View.showRendering]
+ * for the receiver, possibly replacing the existing one. Calls [showRendering]
+ * to display [initialRendering].
+ *
+ * Intended for use by implementations of [ViewBinding.buildView].
+ */
 @ExperimentalWorkflowUi
 fun <RenderingT : Any> View.bindShowRendering(
   initialRendering: RenderingT,
   showRendering: ViewShowRendering<RenderingT>
 ) {
-  setTag(
-      R.id.view_show_rendering_function,
-      ShowRenderingTag(showRendering, initialRendering::class)
-  )
+  setTag(R.id.view_show_rendering_function, ShowRenderingTag(initialRendering, showRendering))
   showRendering.invoke(initialRendering)
 }
 
+/**
+ * True if this view is able to show [rendering].
+ *
+ * Returns `false` if [bindShowRendering] has not been called, so it is always safe to
+ * call this method. Otherwise returns the [compatibility][compatible] of the new
+ * [rendering] and the current one.
+ */
 @ExperimentalWorkflowUi
 fun View.canShowRendering(rendering: Any): Boolean {
-  return showRenderingTag?.type?.isInstance(rendering) == true
+  return showRenderingTag?.showing?.matches(rendering) == true
 }
 
+/**
+ * Shows [rendering] in a view that has been initialized by [bindShowRendering].
+ */
 @ExperimentalWorkflowUi
 fun <RenderingT : Any> View.showRendering(rendering: RenderingT) {
   showRenderingTag
-      ?.apply {
-        check(type.isInstance(rendering)) {
-          "Expected instance of ${type.qualifiedName} got $rendering"
+      ?.let { tag ->
+        check(tag.showing.matches(rendering)) {
+          "Expected $this to be able to update of ${tag.showing} from $rendering"
         }
 
         @Suppress("UNCHECKED_CAST")
-        (showRendering as ViewShowRendering<RenderingT>).invoke(rendering)
+        (tag.showRendering as ViewShowRendering<RenderingT>).invoke(rendering)
       }
-      ?: throw IllegalStateException("Updater for rendering $rendering not found on $this.")
+      ?: error("Expected $this to have a showRendering function for $rendering.")
 }
 
+/**
+ * Returns the [ShowRenderingTag] established by the last call to [View.bindShowRendering],
+ * or null if none has been set.
+ */
 @ExperimentalWorkflowUi
-private val View.showRenderingTag: ShowRenderingTag<*>?
+val View.showRenderingTag: ShowRenderingTag<*>?
   get() = getTag(R.id.view_show_rendering_function) as? ShowRenderingTag<*>
+
+private fun Any.matches(other: Any) = compatible(this, other)
