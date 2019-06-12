@@ -31,9 +31,8 @@ import com.squareup.workflow.ui.showRenderingTag
  * showing a view for one at a time -- think back stacks or tab sets.
  *
  * This class implements [Parcelable] so that it can be preserved from
- * a container view's own [View.saveHierarchyState] method -- call [save] first.
- * A simple container can return [SavedState] from that method rather than
- * creating its own persistence class.
+ * a container view's own [View.saveHierarchyState] method. A simple container can
+ * return [SavedState] from that method rather than creating its own persistence class.
  */
 @ExperimentalWorkflowUi
 class ViewStateCache private constructor(
@@ -108,13 +107,12 @@ class ViewStateCache private constructor(
   }
 
   /**
-   * To be called from [View.saveHierarchyState] before serializing this instance,
-   * to ensure that the state of the currently visible view is saved.
+   * Replaces the state of the receiver with that of [from]. Typical usage is to call this from
+   * a container view's [View.onRestoreInstanceState].
    */
-  fun save(currentView: View) {
-    val saved = SparseArray<Parcelable>().apply { currentView.saveHierarchyState(this) }
-    val newFrame = ViewStateFrame(currentView.namedKey, saved)
-    viewStates += newFrame.key to newFrame
+  fun restore(from: ViewStateCache) {
+    viewStates.clear()
+    viewStates += from.viewStates
   }
 
   /**
