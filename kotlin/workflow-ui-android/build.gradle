@@ -15,7 +15,6 @@
  */
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.vanniktech.maven.publish'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
@@ -44,3 +43,5 @@ dependencies {
   implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
