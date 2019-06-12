@@ -33,7 +33,7 @@ data class Named<W : Any>(
   /**
    * Used as a comparison key by [isCompatibleWith]. Handy for use as a map key.
    */
-  val key: String = ((wrapped as? Named<*>)?.key ?: wrapped::class.jvmName) + "-Named($name)"
+  val key: String = keyFor(wrapped, name)
 
   override fun isCompatibleWith(another: Named<W>): Boolean {
     return this.key == another.key && compatible(this.wrapped, another.wrapped)
@@ -41,5 +41,17 @@ data class Named<W : Any>(
 
   override fun toString(): String {
     return "${super.toString()}: $key"
+  }
+
+  companion object {
+    /**
+     * Calculates the [compatibility key][Named.key] for a given [value] and [name].
+     */
+    fun keyFor(
+      value: Any,
+      name: String = ""
+    ): String {
+      return ((value as? Named<*>)?.key ?: value::class.jvmName) + "-Named($name)"
+    }
   }
 }
