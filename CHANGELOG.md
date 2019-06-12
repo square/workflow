@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+## Version 0.17.3
+
+_2019-6-12_
+
+### Kotlin
+
+ * Breaking change: `BackStackScreen` includes the entire backstack. (#403)
+ * Fixes BackStackContainer config change. (#406)
+ * Fix snapshots of a non-flat tree being taken too late. (#408)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.17.2
 
 _2019-6-6_
