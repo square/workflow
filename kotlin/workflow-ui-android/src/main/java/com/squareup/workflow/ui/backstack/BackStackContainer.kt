@@ -32,11 +32,10 @@ import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BuilderBinding
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.HandlesBack
-import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.Named
+import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
-import com.squareup.workflow.ui.backstack.ViewStateCache.SavedState
 import com.squareup.workflow.ui.bindShowRendering
 import com.squareup.workflow.ui.canShowRendering
 import com.squareup.workflow.ui.showRendering
@@ -54,8 +53,7 @@ open class BackStackContainer(
 ) : FrameLayout(context, attributeSet), HandlesBack {
   constructor(context: Context) : this(context, null)
 
-  private var restored: ViewStateCache? = null
-  private val viewStateCache by lazy { restored ?: ViewStateCache() }
+  private val viewStateCache = ViewStateCache()
 
   private val showing: View? get() = if (childCount > 0) getChildAt(0) else null
 
@@ -134,14 +132,13 @@ open class BackStackContainer(
   }
 
   override fun onSaveInstanceState(): Parcelable {
-    showing?.let { viewStateCache.save(it) }
-    return SavedState(super.onSaveInstanceState(), viewStateCache)
+    return ViewStateCache.SavedState(super.onSaveInstanceState(), viewStateCache)
   }
 
   override fun onRestoreInstanceState(state: Parcelable) {
-    (state as? SavedState)
+    (state as? ViewStateCache.SavedState)
         ?.let {
-          restored = it.viewStateCache
+          viewStateCache.restore(it.viewStateCache)
           super.onRestoreInstanceState(state.superState)
         }
         ?: super.onRestoreInstanceState(state)
