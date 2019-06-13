@@ -89,21 +89,26 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
           }
         }
 
-        BackStackScreen(AuthorizingScreen("Logging in…"))
+        BackStackScreen(
+            LoginScreen(),
+            AuthorizingScreen("Logging in…")
+        )
       }
 
       is SecondFactorPrompt -> {
-        BackStackScreen(SecondFactorScreen(
-            state.errorMessage,
-            context.onEvent { event ->
-              when (event) {
-                is SubmitSecondFactor ->
-                  enterState(AuthorizingSecondFactor(state.tempToken, event))
+        BackStackScreen(
+            LoginScreen(),
+            SecondFactorScreen(
+                state.errorMessage,
+                context.onEvent { event ->
+                  when (event) {
+                    is SubmitSecondFactor ->
+                      enterState(AuthorizingSecondFactor(state.tempToken, event))
 
-                CancelSecondFactor -> enterState(LoginPrompt())
-              }
-            }
-        ))
+                    CancelSecondFactor -> enterState(LoginPrompt())
+                  }
+                }
+            ))
       }
 
       is AuthorizingSecondFactor -> {
@@ -116,10 +121,10 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
           }
         }
 
-        // We give this one a uniquing key so that it pushes rather than pops
-        // the first Authorizing screen.
         BackStackScreen(
-            AuthorizingScreen("Submitting one time token…"), "2fa"
+            LoginScreen(),
+            SecondFactorScreen(),
+            AuthorizingScreen("Submitting one time token…")
         )
       }
     }

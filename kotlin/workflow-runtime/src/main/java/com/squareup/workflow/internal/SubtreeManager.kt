@@ -96,9 +96,10 @@ internal class SubtreeManager<StateT, OutputT : Any>(
    * Returns a [Snapshot] that contains snapshots of all children, associated with their IDs.
    */
   fun createChildrenSnapshot(): Snapshot {
+    val childSnapshots = hostLifetimeTracker.lifetimes
+        .map { (case, host) -> host.id to host.snapshot(case.workflow.asStatefulWorkflow()) }
+
     return Snapshot.write { sink ->
-      val childSnapshots = hostLifetimeTracker.lifetimes
-          .map { (case, host) -> host.id to host.snapshot(case.workflow.asStatefulWorkflow()) }
       sink.writeInt(childSnapshots.size)
       for ((id, snapshot) in childSnapshots) {
         sink.writeByteStringWithLength(id.toByteString())

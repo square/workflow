@@ -32,12 +32,10 @@ import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BuilderBinding
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.HandlesBack
+import com.squareup.workflow.ui.Named
 import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
-import com.squareup.workflow.ui.backstack.ViewStateStack.Direction.POP
-import com.squareup.workflow.ui.backstack.ViewStateStack.Direction.PUSH
-import com.squareup.workflow.ui.backstack.ViewStateStack.SavedState
 import com.squareup.workflow.ui.bindShowRendering
 import com.squareup.workflow.ui.canShowRendering
 import com.squareup.workflow.ui.showRendering
@@ -49,42 +47,66 @@ import com.squareup.workflow.ui.showRendering
  * to displayed views that implement that interface themselves.
  */
 @ExperimentalWorkflowUi
-class BackStackContainer(
+open class BackStackContainer(
   context: Context,
   attributeSet: AttributeSet?
 ) : FrameLayout(context, attributeSet), HandlesBack {
   constructor(context: Context) : this(context, null)
 
-  private var restored: ViewStateStack? = null
-  private val viewStateStack by lazy { restored ?: ViewStateStack() }
+  private val viewStateCache = ViewStateCache()
 
   private val showing: View? get() = if (childCount > 0) getChildAt(0) else null
 
   private lateinit var registry: ViewRegistry
 
   private fun update(newRendering: BackStackScreen<*>) {
-    // Existing view is of the right type, just update it.
-    showing
-        ?.takeIf { it.canShowRendering(newRendering.wrapped) }
+    // ViewStateCache requires that everything be Named, for ease of comparison and
+    // serialization (that Named.key string is very handy). It's fine if client code is
+    // already using Named for its own purposes, recursion works.
+    val named: BackStackScreen<Named<*>> =
+      BackStackScreen(newRendering.stack.map { Named(it, "backstack") }, newRendering.onGoBack)
+
+    val oldViewMaybe = showing
+
+    // If existing view is compatible, just update it.
+    oldViewMaybe
+        ?.takeIf { it.canShowRendering(named.top) }
         ?.let {
-          it.showRendering(newRendering.wrapped)
+          viewStateCache.prune(named.stack)
+          it.showRendering(named.top)
           return
         }
 
-    val updateTools = viewStateStack.prepareToUpdate(newRendering.key)
-    val newView = registry.buildView(newRendering.wrapped, this)
-        .apply { updateTools.setUpNewView(this) }
+    val newView = registry.buildView(named.top, this)
+    val popped = viewStateCache.update(named.backStack, oldViewMaybe, newView)
 
+    performTransition(oldViewMaybe, newView, popped)
+  }
+
+  /**
+   * Called from [View.showRendering] to swap between views.
+   * Subclasses can override to customize visual effects. There is no need to call super.
+   * Note that views are showing renderings of type [Named]`<BackStackScreen<*>>`.
+   *
+   * @param oldViewMaybe the outgoing view, or null if this is the initial rendering.
+   * @param newView the view that should replace [oldViewMaybe] (if it exists), and become
+   * this view's only child
+   * @param popped true if we should give the appearance of popping "back" to a previous rendering,
+   * false if a new rendering is being "pushed". Should be ignored if [oldViewMaybe] is null.
+   */
+  protected open fun performTransition(
+    oldViewMaybe: View?,
+    newView: View,
+    popped: Boolean
+  ) {
     // Showing something already, transition with push or pop effect.
-    showing
+    oldViewMaybe
         ?.let { oldView ->
-          updateTools.saveOldView(oldView)
-
           val newScene = Scene(this, newView)
 
-          val (outEdge, inEdge) = when (updateTools.direction) {
-            PUSH -> Gravity.START to Gravity.END
-            POP -> Gravity.END to Gravity.START
+          val (outEdge, inEdge) = when (popped) {
+            false -> Gravity.START to Gravity.END
+            true -> Gravity.END to Gravity.START
           }
 
           val outSet = TransitionSet()
@@ -110,14 +132,13 @@ class BackStackContainer(
   }
 
   override fun onSaveInstanceState(): Parcelable {
-    showing?.let { viewStateStack.save(it) }
-    return SavedState(super.onSaveInstanceState(), viewStateStack)
+    return ViewStateCache.SavedState(super.onSaveInstanceState(), viewStateCache)
   }
 
   override fun onRestoreInstanceState(state: Parcelable) {
-    (state as? SavedState)
+    (state as? ViewStateCache.SavedState)
         ?.let {
-          restored = it.viewStateStack
+          viewStateCache.restore(it.viewStateCache)
           super.onRestoreInstanceState(state.superState)
         }
         ?: super.onRestoreInstanceState(state)

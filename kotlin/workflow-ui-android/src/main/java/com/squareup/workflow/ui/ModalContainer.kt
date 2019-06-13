@@ -24,14 +24,11 @@ import android.os.Parcelable.Creator
 import android.support.annotation.IdRes
 import android.support.annotation.StyleRes
 import android.util.AttributeSet
-import android.util.SparseArray
 import android.view.View
 import android.widget.FrameLayout
 import com.squareup.workflow.ui.HandlesBack.Helper
 import com.squareup.workflow.ui.ModalContainer.Companion.forAlertContainerScreen
 import com.squareup.workflow.ui.ModalContainer.Companion.forContainerScreen
-import io.reactivex.Observable
-import kotlin.reflect.jvm.jvmName
 
 /**
  * Base class for containers that show [HasModals.modals] in [Dialog]s.
@@ -56,8 +53,7 @@ abstract class ModalContainer<ModalRenderingT : Any>
   protected lateinit var registry: ViewRegistry
 
   final override fun onBackPressed(): Boolean {
-    // This should only be hit if there are no dialogs showing, so we only
-    // need to consider the body.
+    // This should only be hit if there are no modals showing, so we only need to consider the body.
     return base?.let { Helper.onBackPressed(it) } == true
   }
 
@@ -72,7 +68,7 @@ abstract class ModalContainer<ModalRenderingT : Any>
 
     val newDialogs = mutableListOf<DialogRef<ModalRenderingT>>()
     for ((i, modal) in newScreen.modals.withIndex()) {
-      newDialogs += if (i < dialogs.size && dialogs[i].modalRendering::class == modal::class) {
+      newDialogs += if (i < dialogs.size && compatible(dialogs[i].modalRendering, modal)) {
         dialogs[i].copy(modalRendering = modal)
             .also { updateDialog(it) }
       } else {
@@ -97,7 +93,6 @@ abstract class ModalContainer<ModalRenderingT : Any>
   override fun onSaveInstanceState(): Parcelable {
     return SavedState(
         super.onSaveInstanceState()!!,
-        SparseArray<Parcelable>().also { array -> base?.saveHierarchyState(array) },
         dialogs.map { it.save() }
     )
   }
@@ -113,8 +108,8 @@ abstract class ModalContainer<ModalRenderingT : Any>
         ?: super.onRestoreInstanceState(state)
   }
 
-  internal data class TypeAndBundle(
-    val screenType: String,
+  internal data class KeyAndBundle(
+    val compatibilityKey: String,
     val bundle: Bundle
   ) : Parcelable {
     override fun describeContents(): Int = 0
@@ -123,18 +118,18 @@ abstract class ModalContainer<ModalRenderingT : Any>
       parcel: Parcel,
       flags: Int
     ) {
-      parcel.writeString(screenType)
+      parcel.writeString(compatibilityKey)
       parcel.writeBundle(bundle)
     }
 
-    companion object CREATOR : Creator<TypeAndBundle> {
-      override fun createFromParcel(parcel: Parcel): TypeAndBundle {
-        val type = parcel.readString()!!
-        val bundle = parcel.readBundle(TypeAndBundle::class.java.classLoader)!!
-        return TypeAndBundle(type, bundle)
+    companion object CREATOR : Creator<KeyAndBundle> {
+      override fun createFromParcel(parcel: Parcel): KeyAndBundle {
+        val key = parcel.readString()!!
+        val bundle = parcel.readBundle(KeyAndBundle::class.java.classLoader)!!
+        return KeyAndBundle(key, bundle)
       }
 
-      override fun newArray(size: Int): Array<TypeAndBundle?> = arrayOfNulls(size)
+      override fun newArray(size: Int): Array<KeyAndBundle?> = arrayOfNulls(size)
     }
   }
 
@@ -147,14 +142,14 @@ abstract class ModalContainer<ModalRenderingT : Any>
     val dialog: Dialog,
     val extra: Any? = null
   ) {
-    internal fun save(): TypeAndBundle {
+    internal fun save(): KeyAndBundle {
       val saved = dialog.window!!.saveHierarchyState()
-      return TypeAndBundle(modalRendering::class.jvmName, saved)
+      return KeyAndBundle(Named.keyFor(modalRendering), saved)
     }
 
-    internal fun restore(typeAndBundle: TypeAndBundle) {
-      if (modalRendering::class.jvmName == typeAndBundle.screenType) {
-        dialog.window!!.restoreHierarchyState(typeAndBundle.bundle)
+    internal fun restore(keyAndBundle: KeyAndBundle) {
+      if (Named.keyFor(modalRendering) == keyAndBundle.compatibilityKey) {
+        dialog.window!!.restoreHierarchyState(keyAndBundle.bundle)
       }
     }
 
@@ -174,48 +169,28 @@ abstract class ModalContainer<ModalRenderingT : Any>
     }
   }
 
-  private fun <BaseRenderingT : Any> Observable<out HasModals<*, *>>.mapToBaseMatching(
-    screen: HasModals<BaseRenderingT, *>
-  ): Observable<out BaseRenderingT> = map { it.baseScreen }.ofType(screen.baseScreen::class.java)
-
-  private fun <ModalRenderingT : Any> Observable<out HasModals<*, *>>.mapToModalMatching(
-    screen: HasModals<*, ModalRenderingT>,
-    index: Int
-  ): Observable<out ModalRenderingT> = filter { index < it.modals.size }
-      .map { it.modals[index] }
-      .ofType(screen.modals[index]::class.java)
-
   private class SavedState : BaseSavedState {
     constructor(
       superState: Parcelable?,
-      bodyState: SparseArray<Parcelable>,
-      dialogBundles: List<TypeAndBundle>
+      dialogBundles: List<KeyAndBundle>
     ) : super(superState) {
-      this.baseViewState = bodyState
       this.dialogBundles = dialogBundles
     }
 
     constructor(source: Parcel) : super(source) {
       @Suppress("UNCHECKED_CAST")
-      this.baseViewState = source.readSparseArray(
-          SavedState::class.java.classLoader
-      )
-          as SparseArray<Parcelable>
-      this.dialogBundles = mutableListOf<TypeAndBundle>().apply {
-        source.readTypedList(this, TypeAndBundle)
+      this.dialogBundles = mutableListOf<KeyAndBundle>().apply {
+        source.readTypedList(this, KeyAndBundle)
       }
     }
 
-    val baseViewState: SparseArray<Parcelable>
-    val dialogBundles: List<TypeAndBundle>
+    val dialogBundles: List<KeyAndBundle>
 
     override fun writeToParcel(
       out: Parcel,
       flags: Int
     ) {
       super.writeToParcel(out, flags)
-      @Suppress("UNCHECKED_CAST")
-      out.writeSparseArray(baseViewState as SparseArray<Any>)
       out.writeTypedList(dialogBundles)
     }
 
