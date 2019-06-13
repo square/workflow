@@ -10,7 +10,7 @@
 
 1. Merge an update of [the change log](CHANGELOG.md) with the changes since the last release.
 
-1. Make sure you're on the `master` branch.
+1. Make sure you're on the `master` branch (or fix branch, e.g. `v0.1-fixes`).
 
 1. Confirm that the kotlin build is green before committing any changes
    ```
@@ -49,7 +49,9 @@
 
 8. Push your commits and tag:
    ```
-   git push origin master && git push origin v0.1.0
+   git push origin master
+   # or git push origin fix-branch
+   git push origin v0.1.0
    ```
 
 9. Create the release on GitHub:
@@ -61,6 +63,14 @@
      6. If this is a pre-release version, check the pre-release box.
      7. Hit "Publish release".
 
+10. If this was a fix release, merge changes to the master branch:
+   ```
+   git checkout master
+   git reset --hard origin/master
+   git merge --no-ff v0.1-fixes
+   # Resolve conflicts. Accept master's versions of gradle.properties and podspecs.
+   git push origin master
+   ```
 
 ---
 
