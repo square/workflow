@@ -138,3 +138,65 @@ abstract class StatefulWorkflow<
   final override fun asStatefulWorkflow(): StatefulWorkflow<InputT, StateT, OutputT, RenderingT> =
     this
 }
+
+/**
+ * TOdo kdoc
+ *
+ * @param initialState See [StatefulWorkflow.initialState].
+ * @param onInputChanged See [StatefulWorkflow.onInputChanged].
+ * @param render See [StatefulWorkflow.render].
+ * @param snapshotState See [StatefulWorkflow.snapshotState].
+ */
+inline fun <I, S, O : Any, R> Workflow.Companion.stateful(
+  crossinline initialState: (input: I, snapshot: Snapshot?) -> S,
+  crossinline onInputChanged: (old: I, new: I, state: S) -> S = { _, _, state -> state },
+  crossinline render: RenderContext<S, O>.(input: I, state: S) -> R,
+  crossinline snapshotState: (state: S) -> Snapshot
+): Workflow<I, O, R> = object : StatefulWorkflow<I, S, O, R>() {
+
+  override fun initialState(
+    input: I,
+    snapshot: Snapshot?
+  ): S = initialState.invoke(input, snapshot)
+
+  override fun onInputChanged(
+    old: I,
+    new: I,
+    state: S
+  ): S = onInputChanged.invoke(old, new, state)
+
+  override fun render(
+    input: I,
+    state: S,
+    context: RenderContext<S, O>
+  ): R = render.invoke(context, input, state)
+
+  override fun snapshotState(state: S): Snapshot = snapshotState.invoke(state)
+}
+
+/**
+ * TODO kdoc
+ *
+ * @param initialState See [StatefulWorkflow.initialState].
+ * @param render See [StatefulWorkflow.render].
+ * @param snapshotState See [StatefulWorkflow.snapshotState].
+ */
+inline fun <S, O : Any, R> Workflow.Companion.stateful(
+  crossinline initialState: (snapshot: Snapshot?) -> S,
+  crossinline render: RenderContext<S, O>.(state: S) -> R,
+  crossinline snapshotState: (state: S) -> Snapshot
+): Workflow<Unit, O, R> = object : StatefulWorkflow<Unit, S, O, R>() {
+
+  override fun initialState(
+    input: Unit,
+    snapshot: Snapshot?
+  ): S = initialState.invoke(snapshot)
+
+  override fun render(
+    input: Unit,
+    state: S,
+    context: RenderContext<S, O>
+  ): R = render.invoke(context, state)
+
+  override fun snapshotState(state: S): Snapshot = snapshotState.invoke(state)
+}

@@ -21,6 +21,7 @@ dependencies {
   implementation project(':workflow-core')
   implementation project(':workflow-rx2')
 
+  implementation deps.kotlin.reflect
   implementation deps.kotlin.stdLib.jdk7
 
   testImplementation project(':workflow-testing')
