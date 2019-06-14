@@ -15,18 +15,13 @@
  */
 package com.squareup.sample
 
-import com.squareup.sample.NavigationOutput.GoBack
-import com.squareup.sample.NavigationOutput.GoForward
-import com.squareup.sample.NavigationOutput.Output
 import com.squareup.sample.NavigationState.GO_FORWARD
 import com.squareup.sample.NavigationState.RUNNING
-import com.squareup.sample.NavigationState.TEAR_ME_DOWN
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.parse
 import com.squareup.workflow.readEnumByOrdinal
@@ -37,15 +32,24 @@ import kotlin.reflect.jvm.jvmName
  * A [Workflow] that can be rendered by a [ScreenContext].
  * Navigates by emitting [NavigationOutput]s.
  */
-typealias SimpleScreenWorkflow<I, O, R> = Workflow<I, NavigationOutput<O>, R>
+typealias SimpleScreenWorkflow<I, O, R> = Workflow<ScreenInput<I>, NavigationOutput<O>, R>
 
 /**
  * Signals emitted by a [SimpleScreenWorkflow] to control navigation.
  */
-sealed class NavigationOutput<out O : Any> {
-  object GoBack : NavigationOutput<Nothing>()
-  object GoForward : NavigationOutput<Nothing>()
-  data class Output<O : Any>(val output: O) : NavigationOutput<O>()
+sealed class NavigationOutput<out O : Any> : WorkflowAction<NavigationState, O> {
+
+  data class Output<O : Any>(val output: O) : NavigationOutput<O>() {
+    override fun invoke(state: NavigationState): Pair<NavigationState, O?> {
+      return Pair(state, output)
+    }
+  }
+
+  data class GoForward<O : Any>(val emittingOutput: O? = null) : NavigationOutput<O>() {
+    override fun invoke(state: NavigationState): Pair<NavigationState, O?> {
+      return Pair(GO_FORWARD, emittingOutput)
+    }
+  }
 }
 
 /**
@@ -60,10 +64,9 @@ fun <S, O : Any, R, CI, CO : Any> ScreenContext<S, O, R>.renderChild(
   handler: (CO) -> WorkflowAction<S, O>
 ): R = renderChild(workflow.asScreenWorkflow(), input, workflow::class.jvmName + key, handler)
 
-private enum class NavigationState {
+enum class NavigationState {
   RUNNING,
-  GO_FORWARD,
-  TEAR_ME_DOWN
+  GO_FORWARD
 }
 
 private fun <I, O : Any, R> SimpleScreenWorkflow<I, O, R>.asScreenWorkflow()
@@ -80,18 +83,7 @@ private fun <I, O : Any, R> SimpleScreenWorkflow<I, O, R>.asScreenWorkflow()
       state: NavigationState,
       context: RenderContext<NavigationState, O>
     ): ScreenRendering<R> {
-      if (state == TEAR_ME_DOWN) {
-        // Cheating a bit here by directly invoking an event handler - you should never do this!
-        input.goBackHandler.goBack()
-      }
-
-      val rendering = context.renderChild(this@asScreenWorkflow, input.input) { output ->
-        when (output) {
-          GoBack -> enterState(TEAR_ME_DOWN)
-          GoForward -> enterState(GO_FORWARD)
-          is Output -> emitOutput(output.output)
-        }
-      }
+      val rendering = context.renderChild(this@asScreenWorkflow, input) { it }
 
       val goBackHandler =
         if (state == GO_FORWARD) {

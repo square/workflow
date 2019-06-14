@@ -56,8 +56,8 @@ data class ScreenRendering<R>(
 data class GoBackHandler(
   val targetDescription: String,
   val goBack: (Unit) -> Unit
-) {
-  fun goBack() = goBack(Unit)
+) : () -> Unit {
+  override operator fun invoke() = goBack(Unit)
 
   override fun toString(): String = "GoBackHandler(to $targetDescription)"
 }

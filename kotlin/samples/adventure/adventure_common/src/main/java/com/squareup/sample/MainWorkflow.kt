@@ -18,7 +18,6 @@
 package com.squareup.sample
 
 import com.squareup.sample.MainWorkflow.Finished
-import com.squareup.sample.NavigationOutput.GoBack
 import com.squareup.sample.NavigationOutput.GoForward
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
@@ -73,9 +72,9 @@ class RealScreenTwo : ScreenTwo by Workflow.stateful(
 class RealScreenThree(
   private val worker: Worker<String>
 ) : ScreenThree by Workflow.stateless({ screenInput ->
-  onWorkerOutput(worker) { emitOutput(GoForward) }
+  onWorkerOutput(worker) { emitOutput(GoForward()) }
   // Do something with this.
-  val buttonClicked: (Unit) -> Unit = onEvent { emitOutput(GoBack) }
+  val buttonClicked: () -> Unit = screenInput.goBackHandler
 
   return@stateless "input: $screenInput"
 })
