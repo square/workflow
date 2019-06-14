@@ -29,33 +29,38 @@ import com.squareup.workflow.WorkflowAction.Companion.noop
 import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
+import com.squareup.workflow.ui.BackStackScreen
 
-typealias ScreenOne = ScreenWorkflow<String, Nothing, String>
+typealias ScreenOne = ScreenWorkflow<String, Nothing, String, String>
 
-typealias ScreenTwo = ScreenWorkflow<String, Nothing, String>
+typealias ScreenTwo = ScreenWorkflow<String, Nothing, String, String>
 
-typealias ScreenThree = SimpleScreenWorkflow<String, Nothing, String>
+typealias ScreenThree = SimpleScreenWorkflow<String, Nothing, String, String>
 
 class MainWorkflow(
   private val wf1: ScreenOne,
   private val wf2: ScreenTwo,
   private val wf3: ScreenThree
-) : StatelessWorkflow<String, Finished, String>() {
+) : StatelessWorkflow<String, Finished, BackStackScreen<String>>() {
 
   object Finished
 
   override fun render(
     input: String,
     context: RenderContext<Nothing, Finished>
-  ): String = context.renderScreensRoot(goBackAction = emitOutput(Finished)) {
+  ) = context.renderScreens(goBackAction = emitOutput(Finished)) {
     val wf1R = renderChild(wf1, input) { noop() }
     val wf2R = renderChild(wf2, wf1R) { noop() }
-    return@renderScreensRoot renderChild(wf3, wf2R) { noop() }
-  }
+    return@renderScreens renderChild(wf3, wf2R) { noop() }
+  }.display
 }
 
 class RealScreenOne : ScreenOne by Workflow.stateless({ screenInput ->
-  ScreenRendering("input: ${screenInput.input}", screenInput.goBackHandler)
+  ScreenRendering(
+      screenRendering = "input: ${screenInput.input}",
+      display = "input: ${screenInput.input}",
+      goBackHandler = screenInput.goBackHandler
+  )
 })
 
 class RealScreenTwo : ScreenTwo by Workflow.stateful(
@@ -63,7 +68,8 @@ class RealScreenTwo : ScreenTwo by Workflow.stateful(
     snapshotState = { Snapshot.EMPTY },
     render = { input, state ->
       ScreenRendering(
-          screenRendering = "input: $input, state: $state",
+          screenRendering = state,
+          display = "input: $input, state: $state",
           goBackHandler = input.goBackHandler
       )
     }
@@ -76,5 +82,5 @@ class RealScreenThree(
   // Do something with this.
   val buttonClicked: () -> Unit = screenInput.goBackHandler
 
-  return@stateless "input: $screenInput"
+  return@stateless Pair("input: $screenInput", "input: $screenInput")
 })

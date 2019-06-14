@@ -32,7 +32,7 @@ import kotlin.reflect.jvm.jvmName
  * A [Workflow] that can be rendered by a [ScreenContext].
  * Navigates by emitting [NavigationOutput]s.
  */
-typealias SimpleScreenWorkflow<I, O, R> = Workflow<ScreenInput<I>, NavigationOutput<O>, R>
+typealias SimpleScreenWorkflow<I, O, R, D> = Workflow<ScreenInput<I>, NavigationOutput<O>, Pair<R, D>>
 
 /**
  * Signals emitted by a [SimpleScreenWorkflow] to control navigation.
@@ -57,8 +57,8 @@ sealed class NavigationOutput<out O : Any> : WorkflowAction<NavigationState, O> 
  *
  * @see RenderContext.renderChild
  */
-fun <S, O : Any, R, CI, CO : Any> ScreenContext<S, O, R>.renderChild(
-  workflow: SimpleScreenWorkflow<CI, CO, R>,
+fun <S, O : Any, R, D : Any, CI, CO : Any> ScreenContext<S, O, D>.renderChild(
+  workflow: SimpleScreenWorkflow<CI, CO, R, D>,
   input: CI,
   key: String = "",
   handler: (CO) -> WorkflowAction<S, O>
@@ -69,9 +69,9 @@ enum class NavigationState {
   GO_FORWARD
 }
 
-private fun <I, O : Any, R> SimpleScreenWorkflow<I, O, R>.asScreenWorkflow()
-    : ScreenWorkflow<I, O, R> =
-  object : StatefulWorkflow<ScreenInput<I>, NavigationState, O, ScreenRendering<R>>() {
+private fun <I, O : Any, R, D : Any> SimpleScreenWorkflow<I, O, R, D>.asScreenWorkflow()
+    : ScreenWorkflow<I, O, R, D> =
+  object : StatefulWorkflow<ScreenInput<I>, NavigationState, O, ScreenRendering<R, D>>() {
 
     override fun initialState(
       input: ScreenInput<I>,
@@ -82,8 +82,8 @@ private fun <I, O : Any, R> SimpleScreenWorkflow<I, O, R>.asScreenWorkflow()
       input: ScreenInput<I>,
       state: NavigationState,
       context: RenderContext<NavigationState, O>
-    ): ScreenRendering<R> {
-      val rendering = context.renderChild(this@asScreenWorkflow, input) { it }
+    ): ScreenRendering<R, D> {
+      val (rendering, display) = context.renderChild(this@asScreenWorkflow, input) { it }
 
       val goBackHandler =
         if (state == GO_FORWARD) {
@@ -92,7 +92,7 @@ private fun <I, O : Any, R> SimpleScreenWorkflow<I, O, R>.asScreenWorkflow()
               goBack = context.onEvent { enterState(RUNNING) })
         } else null
 
-      return ScreenRendering(rendering, goBackHandler)
+      return ScreenRendering(rendering, display, goBackHandler)
     }
 
     override fun snapshotState(state: NavigationState): Snapshot = Snapshot.write {

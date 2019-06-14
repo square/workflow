@@ -17,6 +17,7 @@ package com.squareup.sample
 
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.ui.BackStackScreen
 import kotlin.experimental.ExperimentalTypeInference
 
 /**
@@ -24,26 +25,7 @@ import kotlin.experimental.ExperimentalTypeInference
  * [SimpleScreenWorkflow]s.
  *
  * Returns as soon as a child [ScreenWorkflow] returns a [rendering][ScreenRendering] with a
- * null [GoBackHandler], or a child [SimpleScreenWorkflow] emits [NavigationOutput.GoBack].
- *
- * @param goBackAction The [WorkflowAction] to perform when the first child workflow wants to go
- * back.
- *
- * @return The rendering of the last child rendered, or the return value of [block] if all children
- * were rendered.
- */
-@UseExperimental(ExperimentalTypeInference::class)
-fun <S, O : Any, R> RenderContext<S, O>.renderScreensRoot(
-  goBackAction: WorkflowAction<S, O>,
-  @BuilderInference block: ScreenContext<S, O, R>.() -> R
-): R = renderScreens(goBackAction, block).screenRendering
-
-/**
- * Helper to define a navigation backstack declaratively by rendering [ScreenWorkflow]s and
- * [SimpleScreenWorkflow]s.
- *
- * Returns as soon as a child [ScreenWorkflow] returns a [rendering][ScreenRendering] with a
- * null [GoBackHandler], or a child [SimpleScreenWorkflow] emits [NavigationOutput.GoBack].
+ * null [GoBackHandler].
  *
  * @param goBackAction The [WorkflowAction] to perform when the first child workflow wants to go
  * back.
@@ -53,12 +35,31 @@ fun <S, O : Any, R> RenderContext<S, O>.renderScreensRoot(
  * be non-null if all child workflows were finished and will cause the last workflow to be re-shown.
  */
 @UseExperimental(ExperimentalTypeInference::class)
-fun <S, O : Any, R> RenderContext<S, O>.renderScreens(
+fun <S, O : Any, R : Any, D : Any> RenderContext<S, O>.renderScreens(
   goBackAction: WorkflowAction<S, O>,
-  @BuilderInference block: ScreenContext<S, O, R>.() -> R
-): ScreenRendering<R> {
+  @BuilderInference block: ScreenContext<S, O, D>.() -> R
+): ScreenRendering<R?, BackStackScreen<D>> {
   val goBackHandler = GoBackHandler(goBackAction.toString(), onEvent { goBackAction })
-  return ScreenContext<S, O, R>(this, goBackHandler)
+  return renderScreens(goBackHandler, block)
+}
+
+/**
+ * Helper to define a navigation backstack declaratively by rendering [ScreenWorkflow]s and
+ * [SimpleScreenWorkflow]s.
+ *
+ * Returns as soon as a child [ScreenWorkflow] returns a [rendering][ScreenRendering] with a
+ * null [GoBackHandler].
+ *
+ * @return A [ScreenRendering] that contains the rendering of the last child rendered, or the return
+ * value of [block] if all children were rendered, and an optional [GoBackHandler] that will only
+ * be non-null if all child workflows were finished and will cause the last workflow to be re-shown.
+ */
+@UseExperimental(ExperimentalTypeInference::class)
+fun <S, O : Any, R : Any, D : Any> RenderContext<S, O>.renderScreens(
+  goBackHandler: GoBackHandler,
+  @BuilderInference block: ScreenContext<S, O, D>.() -> R
+): ScreenRendering<R?, BackStackScreen<D>> {
+  return ScreenContext<S, O, D>(this, goBackHandler)
       .execute(block)
 }
 
@@ -66,7 +67,7 @@ fun <S, O : Any, R> RenderContext<S, O>.renderScreens(
  * Renders [ScreenWorkflow]s and [SimpleScreenWorkflow]s and plumbs [GoBackHandler]s between
  * workflows.
  */
-class ScreenContext<S, O : Any, R> internal constructor(
+class ScreenContext<S, O : Any, D : Any> internal constructor(
   private val renderContext: RenderContext<S, O>,
   goBackHandler: GoBackHandler
 ) {
@@ -74,31 +75,55 @@ class ScreenContext<S, O : Any, R> internal constructor(
   /**
    * Thrown by [renderChild] to stop rendering any more children.
    */
-  private class FinishRenderingException(val finalRendering: Any?) : Throwable() {
+  private class FinishRenderingException(val backstack: List<Any?>) : Throwable() {
     // Don't care, so don't waste time/memory gathering stack frames.
     override fun fillInStackTrace(): Throwable = this
   }
 
   private var lastGoBackHandler: GoBackHandler = goBackHandler
+  private val backstack = mutableListOf<D>()
 
   /**
    * Render a child [ScreenWorkflow] and return its rendering.
    *
    * @see RenderContext.renderChild
    */
-  fun <CI, CO : Any> renderChild(
-    workflow: ScreenWorkflow<CI, CO, R>,
+  fun <CI, CO : Any, R> renderChild(
+    workflow: ScreenWorkflow<CI, CO, R, D>,
     input: CI,
     key: String = "",
     handler: (CO) -> WorkflowAction<S, O>
   ): R {
     val r = renderContext.renderChild(workflow, ScreenInput(input, lastGoBackHandler), key, handler)
+    backstack += r.display
+
     if (r.goBackHandler == null) {
       // No goBackHandler means this workflow is the one that should be rendered, so we throw to
       // break out of the block passed to renderScreens early.
-      throw FinishRenderingException(r.screenRendering)
+      throw FinishRenderingException(backstack)
     } else {
       lastGoBackHandler = r.goBackHandler
+      return r.screenRendering
+    }
+  }
+
+  fun <CI, CO : Any, R> renderBackstack(
+    workflow: ScreenWorkflow<CI, CO, R, BackStackScreen<D>>,
+    input: CI,
+    key: String = "",
+    handler: (CO) -> WorkflowAction<S, O>
+  ): R {
+    val r = renderContext.renderChild(workflow, ScreenInput(input, lastGoBackHandler), key, handler)
+    backstack.addAll(r.display.stack)
+
+    if (r.goBackHandler == null) {
+      // No goBackHandler means this workflow is the one that should be rendered, so we throw to
+      // break out of the block passed to renderScreens early.
+      throw FinishRenderingException(backstack)
+    } else {
+      // Back navigation should be delegated to the sub-flow, so use the backstack's back handler
+      // instead of the ScreenRendering's.
+      lastGoBackHandler = GoBackHandler("todo") { r.display.onGoBack }
       return r.screenRendering
     }
   }
@@ -106,15 +131,31 @@ class ScreenContext<S, O : Any, R> internal constructor(
   /**
    * Executes [block] up until the first child workflow needs to render itself.
    */
-  internal fun execute(
-    block: ScreenContext<S, O, R>.() -> R
-  ): ScreenRendering<R> {
+  internal fun <R : Any> execute(
+    block: ScreenContext<S, O, D>.() -> R
+  ): ScreenRendering<R?, BackStackScreen<D>> {
     try {
-      val r = block(this)
-      return ScreenRendering(r, lastGoBackHandler)
+      val finalRendering = block(this)
+      return ScreenRendering(
+          screenRendering = finalRendering,
+          display = BackStackScreen(
+              stack = backstack.toList(),
+              onGoBack = lastGoBackHandler
+          ),
+          goBackHandler = lastGoBackHandler
+      )
     } catch (e: FinishRenderingException) {
       @Suppress("UNCHECKED_CAST")
-      return ScreenRendering(e.finalRendering as R, goBackHandler = null)
+      return ScreenRendering(
+          screenRendering = null,
+          display = BackStackScreen(
+              stack = (e.backstack as List<D>).toList(),
+              onGoBack = lastGoBackHandler
+          ),
+          // This particular "subflow" isn't finished rendering, so there's no top-level back
+          // handler.
+          goBackHandler = null
+      )
     }
   }
 }

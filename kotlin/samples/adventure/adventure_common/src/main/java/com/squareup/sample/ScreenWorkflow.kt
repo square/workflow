@@ -22,8 +22,11 @@ import com.squareup.workflow.Workflow
  * Navigates by placing the [GoBackHandler] from its [input][ScreenInput] in its rendering to go
  * back, and by returning a non-null [GoBackHandler] in its [rendering][ScreenRendering] to go
  * forward.
+ *
+ * @param R Rendering type.
+ * @param D Display type.
  */
-typealias ScreenWorkflow<I, O, R> = Workflow<ScreenInput<I>, O, ScreenRendering<R>>
+typealias ScreenWorkflow<I, O, R, D> = Workflow<ScreenInput<I>, O, ScreenRendering<R, D>>
 
 /**
  * The input to a [ScreenWorkflow], and the event handler to invoke to navigate back past this
@@ -44,8 +47,9 @@ data class ScreenInput<I>(
  * @param goBackHandler If non-null, indicates that the rendered [ScreenWorkflow] has completed
  * its screen and the next screen should be shown.
  */
-data class ScreenRendering<R>(
+data class ScreenRendering<R, D : Any>(
   val screenRendering: R,
+  val display: D,
   val goBackHandler: GoBackHandler?
 )
 
