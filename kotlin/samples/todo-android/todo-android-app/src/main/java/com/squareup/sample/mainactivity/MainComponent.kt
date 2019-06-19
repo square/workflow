@@ -16,12 +16,19 @@
 package com.squareup.sample.mainactivity
 
 import com.squareup.sample.todo.TodoEditorWorkflow
+import com.squareup.sample.todo.TodoRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import timber.log.Timber
 
 /**
  * Pretend generated code of a pretend DI framework.
  */
 internal class MainComponent {
+
+  val rootContext = SupervisorJob() + Dispatchers.Main.immediate
+
+  val todoRepository = TodoRepository(rootContext)
 
   val todoEditorWorkflow = TodoEditorWorkflow()
 
