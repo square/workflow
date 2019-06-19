@@ -18,23 +18,24 @@ package com.squareup.sample.mainactivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import com.squareup.sample.todo.R
+import com.squareup.sample.todo.TodoList
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 
 @UseExperimental(ExperimentalWorkflowUi::class)
-internal class TodoEditorLayoutRunner(view: View) : LayoutRunner<Unit> {
+internal class TodoEditorLayoutRunner(view: View) : LayoutRunner<TodoList> {
 
   private val toolbar = view.findViewById<Toolbar>(R.id.todo_editor_toolbar)
   private val itemContainer = ItemListView.fromLinearLayout(view, R.id.item_container)
 
-  override fun showRendering(rendering: Unit) {
-    toolbar.title = "Groceries"
-    itemContainer.setRows(listOf(Pair(false, "Potatoes")))
+  override fun showRendering(rendering: TodoList) {
+    toolbar.title = rendering.title
+    itemContainer.setRows(rendering.rows.map { Pair(it.done, it.text) })
   }
 
-  companion object : ViewBinding<Unit> by bind(
+  companion object : ViewBinding<TodoList> by bind(
       R.layout.todo_editor_layout, ::TodoEditorLayoutRunner
   )
 }

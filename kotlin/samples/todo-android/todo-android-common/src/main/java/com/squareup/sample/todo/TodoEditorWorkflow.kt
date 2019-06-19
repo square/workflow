@@ -16,12 +16,33 @@
 package com.squareup.sample.todo
 
 import com.squareup.workflow.RenderContext
-import com.squareup.workflow.StatelessWorkflow
+import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
 
-class TodoEditorWorkflow : StatelessWorkflow<Unit, Nothing, Unit>() {
+data class TodoList(
+  val title: String,
+  val rows: List<TodoRow> = emptyList()
+)
+
+data class TodoRow(
+  val text: String,
+  val done: Boolean = false
+)
+
+class TodoEditorWorkflow : StatefulWorkflow<Unit, TodoList, Nothing, TodoList>() {
+
+  override fun initialState(
+    input: Unit,
+    snapshot: Snapshot?
+  ): TodoList = TodoList(title = "Groceries", rows = listOf(TodoRow("Potatoes")))
+
   override fun render(
     input: Unit,
-    context: RenderContext<Nothing, Nothing>
-  ) {
+    state: TodoList,
+    context: RenderContext<TodoList, Nothing>
+  ): TodoList {
+    return state.copy(rows = state.rows + TodoRow(text = ""))
   }
+
+  override fun snapshotState(state: TodoList): Snapshot = Snapshot.EMPTY
 }
