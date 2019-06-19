@@ -20,7 +20,7 @@ android rootProject.ext.defaultAndroidConfig
 
 android {
   defaultConfig {
-    applicationId "com.squareup.sample.tictacworkflow"
+    applicationId "com.squareup.sample.todo"
     minSdkVersion versions.minSdk
     multiDexEnabled true
     targetSdkVersion versions.targetSdk

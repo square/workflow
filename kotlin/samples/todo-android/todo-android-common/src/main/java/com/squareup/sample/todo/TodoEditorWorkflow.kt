@@ -15,13 +15,50 @@
  */
 package com.squareup.sample.todo
 
+import com.squareup.sample.todo.TodoEditorState.Loaded
+import com.squareup.sample.todo.TodoEditorState.Loading
 import com.squareup.workflow.RenderContext
-import com.squareup.workflow.StatelessWorkflow
+import com.squareup.workflow.Snapshot
+import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.VeryExperimentalWorkflow
+import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.asWorker
+import com.squareup.workflow.onWorkerOutput
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class TodoEditorWorkflow : StatelessWorkflow<Unit, Nothing, Unit>() {
+@UseExperimental(VeryExperimentalWorkflow::class, ExperimentalCoroutinesApi::class)
+class TodoEditorWorkflow(
+  repository: TodoRepository,
+  id: String = "1"
+) : StatefulWorkflow<Unit, TodoEditorState, Nothing, TodoEditRendering>() {
+
+  private val todoWorker = repository.getTodo(id)
+      .asWorker()
+
+  override fun initialState(
+    input: Unit,
+    snapshot: Snapshot?
+  ): TodoEditorState = Loading
+
   override fun render(
     input: Unit,
-    context: RenderContext<Nothing, Nothing>
-  ) {
+    state: TodoEditorState,
+    context: RenderContext<TodoEditorState, Nothing>
+  ): TodoEditRendering {
+
+    return when (state) {
+      Loading -> {
+        context.onWorkerOutput(todoWorker) {
+          println("Loaded: $it")
+          enterState(Loaded(it, saved = true))
+        }
+        TodoEditRendering(list = null)
+      }
+      is Loaded -> {
+        TodoEditRendering(list = state.list)
+      }
+    }
   }
+
+  override fun snapshotState(state: TodoEditorState): Snapshot = Snapshot.EMPTY
 }

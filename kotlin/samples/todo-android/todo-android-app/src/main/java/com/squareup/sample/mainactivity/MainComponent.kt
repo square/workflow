@@ -30,7 +30,7 @@ internal class MainComponent {
 
   val todoRepository = TodoRepository(rootContext)
 
-  val todoEditorWorkflow = TodoEditorWorkflow()
+  val todoEditorWorkflow = TodoEditorWorkflow(todoRepository)
 
   companion object {
     init {

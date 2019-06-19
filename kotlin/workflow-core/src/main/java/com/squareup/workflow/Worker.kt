@@ -330,7 +330,9 @@ inline fun <reified T> ReceiveChannel<T>.asWorker(
 @ExperimentalCoroutinesApi
 inline fun <reified T> Flow<T>.asWorker(
   key: String = ""
-): Worker<T> = create(key) { emitAll(this@asWorker) }
+): Worker<T> = create(key) {
+  emitAll(this@asWorker)
+}
 
 /**
  * Emits whatever [channel] receives on this [Emitter].

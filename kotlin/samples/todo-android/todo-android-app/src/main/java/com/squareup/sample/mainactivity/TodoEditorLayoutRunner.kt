@@ -22,25 +22,25 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
 import com.squareup.sample.todo.R
+import com.squareup.sample.todo.TodoEditRendering
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.setBackHandler
 
 @UseExperimental(ExperimentalWorkflowUi::class)
-internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<Unit> {
+internal class TodoEditorLayoutRunner(view: View) : LayoutRunner<TodoEditRendering> {
 
   private val inflater = LayoutInflater.from(view.context)
   private val toolbar = view.findViewById<Toolbar>(R.id.todo_editor_toolbar)
   private val itemContainer = view.findViewById<ViewGroup>(R.id.item_container)
 
-  override fun showRendering(rendering: Unit) {
-    view.setBackHandler { TODO() }
+  override fun showRendering(rendering: TodoEditRendering) {
+    toolbar.title = rendering.list?.title ?: "Loading…"
 
-    toolbar.title = "Groceries"
-    addItemRow(false, "Nope")
-    addItemRow(true, "Nuhuh")
+    rendering.list?.rows?.forEach {
+      addItemRow(it.done, it.text)
+    }
   }
 
   private fun addItemRow(
@@ -55,7 +55,7 @@ internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<Uni
     itemContainer.addView(row)
   }
 
-  companion object : ViewBinding<Unit> by bind(
+  companion object : ViewBinding<TodoEditRendering> by bind(
       R.layout.todo_editor_layout, ::TodoEditorLayoutRunner
   )
 }

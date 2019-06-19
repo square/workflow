@@ -19,8 +19,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.delayEach
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -32,39 +34,29 @@ import kotlin.coroutines.CoroutineContext
 class TodoRepository(context: CoroutineContext) {
 
   private val scope = CoroutineScope(context)
-  private val todoes = ConflatedBroadcastChannel<List<TodoList>>()
+  private val todoes = ConflatedBroadcastChannel<List<TodoList>>(emptyList())
   private val lock = Mutex()
-
-  init {
-    todoes.offer(
-        listOf(
-            TodoList(
-                id = "1",
-                title = "Groceries",
-                rows = listOf(
-                    TodoRow("Potatoes"),
-                    TodoRow("Potahtoes")
-                )
-            )
-        )
-    )
-  }
 
   fun getAllTodos(): Flow<List<TodoList>> = todoes.asFlow()
       .distinctUntilChanged()
+      .delayEach(1000)
 
-  fun getTodo(id: String): Flow<TodoList?> =
+  fun getTodo(id: String): Flow<TodoList> =
     getAllTodos()
         .map { todoes ->
-          todoes.singleOrNull { it.id == id }
+          println("got list: $todoes")
+          todoes.singleOrNull { it.id == id } ?: TodoList(id, "empty", emptyList())
         }
         .distinctUntilChanged()
 
   fun putTodo(todo: TodoList) {
-    scope.launch { putTodoSync(todo) }
+    scope.launch {
+      putTodoSync(todo)
+    }
   }
 
   private suspend fun putTodoSync(todo: TodoList) {
+    delay(1000)
     lock.withLock {
       val newTodoes = todoes.value.map {
         if (it.id == todo.id) todo else it
