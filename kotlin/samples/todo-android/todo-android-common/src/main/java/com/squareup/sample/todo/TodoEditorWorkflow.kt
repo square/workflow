@@ -30,7 +30,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class TodoEditorWorkflow(
   repository: TodoRepository,
   id: String = "1"
-) : StatefulWorkflow<Unit, TodoEditorState, Nothing, TodoEditRendering>() {
+) : StatefulWorkflow<Unit, TodoEditorState, Nothing, TodoEditorState>() {
 
   private val todoWorker = repository.getTodo(id)
       .asWorker()
@@ -44,7 +44,7 @@ class TodoEditorWorkflow(
     input: Unit,
     state: TodoEditorState,
     context: RenderContext<TodoEditorState, Nothing>
-  ): TodoEditRendering {
+  ): TodoEditorState {
 
     return when (state) {
       Loading -> {
@@ -52,11 +52,9 @@ class TodoEditorWorkflow(
           println("Loaded: $it")
           enterState(Loaded(it, saved = true))
         }
-        TodoEditRendering(list = null)
+        state
       }
-      is Loaded -> {
-        TodoEditRendering(list = state.list)
-      }
+      is Loaded -> state
     }
   }
 

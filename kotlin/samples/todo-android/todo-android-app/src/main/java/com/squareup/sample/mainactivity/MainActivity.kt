@@ -17,7 +17,10 @@ package com.squareup.sample.mainactivity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.squareup.sample.todo.R
+import com.squareup.sample.todo.TodoEditorState.Loading
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
+import com.squareup.workflow.ui.LayoutRunner.Companion.bindNoRunner
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
@@ -62,6 +65,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private companion object {
-    val viewRegistry = ViewRegistry(TodoEditorLayoutRunner)
+    val viewRegistry = ViewRegistry(TodoEditorLayoutRunner) +
+        bindNoRunner<Loading>(R.layout.todo_loading_layout)
   }
 }
