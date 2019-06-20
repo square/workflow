@@ -15,9 +15,13 @@
  */
 package com.squareup.sample.todo
 
+import com.squareup.sample.todo.TodoEvent.DeleteClicked
+import com.squareup.sample.todo.TodoEvent.DoneClicked
+import com.squareup.sample.todo.TodoEvent.TextChanged
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.WorkflowAction.Companion.enterState
 
 data class TodoList(
   val title: String,
@@ -29,7 +33,22 @@ data class TodoRow(
   val done: Boolean = false
 )
 
-class TodoEditorWorkflow : StatefulWorkflow<Unit, TodoList, Nothing, TodoList>() {
+data class TodoRendering(
+  val list: TodoList,
+  val onEvent: (TodoEvent) -> Unit
+)
+
+sealed class TodoEvent {
+  data class DoneClicked(val index: Int) : TodoEvent()
+  data class TextChanged(
+    val index: Int,
+    val text: String
+  ) : TodoEvent()
+
+  data class DeleteClicked(val index: Int) : TodoEvent()
+}
+
+class TodoEditorWorkflow : StatefulWorkflow<Unit, TodoList, Nothing, TodoRendering>() {
 
   override fun initialState(
     input: Unit,
@@ -40,9 +59,37 @@ class TodoEditorWorkflow : StatefulWorkflow<Unit, TodoList, Nothing, TodoList>()
     input: Unit,
     state: TodoList,
     context: RenderContext<TodoList, Nothing>
-  ): TodoList {
-    return state.copy(rows = state.rows + TodoRow(text = ""))
+  ): TodoRendering {
+    return TodoRendering(
+        list = state.copy(rows = state.rows + TodoRow("")),
+        onEvent = context.onEvent {
+          println("got event: $it")
+          when (it) {
+            is DoneClicked -> enterState(state.updateRow(it.index) {
+              copy(done = !done)
+            })
+            is TextChanged -> enterState(state.updateRow(it.index) {
+              copy(text = it.text)
+            })
+            is DeleteClicked -> enterState(state.removeRow(it.index))
+          }
+        }
+    )
   }
 
   override fun snapshotState(state: TodoList): Snapshot = Snapshot.EMPTY
 }
+
+private fun TodoList.updateRow(
+  index: Int,
+  block: TodoRow.() -> TodoRow
+) = copy(rows = if (index == rows.size) {
+  rows + TodoRow("").block()
+} else {
+  rows.withIndex()
+      .map { (i, value) ->
+        if (i == index) value.block() else value
+      }
+})
+
+private fun TodoList.removeRow(index: Int) = copy(rows = rows.filterIndexed { i, _ -> i != index })
