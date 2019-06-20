@@ -22,6 +22,7 @@ import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoEvent
 import com.squareup.sample.todo.TodoEvent.DeleteClicked
 import com.squareup.sample.todo.TodoEvent.DoneClicked
+import com.squareup.sample.todo.TodoEvent.GoBackClicked
 import com.squareup.sample.todo.TodoEvent.TextChanged
 import com.squareup.sample.todo.TodoEvent.TitleChanged
 import com.squareup.sample.todo.TodoRendering
@@ -29,9 +30,10 @@ import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.setBackHandler
 
 @UseExperimental(ExperimentalWorkflowUi::class)
-internal class TodoEditorLayoutRunner(view: View) : LayoutRunner<TodoRendering> {
+internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<TodoRendering> {
 
   private val toolbar = view.findViewById<Toolbar>(R.id.todo_editor_toolbar)
   private val titleText = view.findViewById<EditText>(R.id.todo_title)
@@ -62,6 +64,9 @@ internal class TodoEditorLayoutRunner(view: View) : LayoutRunner<TodoRendering> 
       eventFired = true
       rendering.onEvent(event)
     }
+
+    toolbar.setNavigationOnClickListener { onEvent(GoBackClicked) }
+    view.setBackHandler { onEvent(GoBackClicked) }
 
     titleText.setTextChangedListener { onEvent(TitleChanged(it)) }
 

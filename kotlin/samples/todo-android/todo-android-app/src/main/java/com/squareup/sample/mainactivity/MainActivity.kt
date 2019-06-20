@@ -17,7 +17,7 @@ package com.squareup.sample.mainactivity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.squareup.sample.todo.TodoEditorWorkflow
+import com.squareup.sample.todo.TodoListsAppWorkflow
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
@@ -27,14 +27,14 @@ import com.squareup.workflow.ui.workflowOnBackPressed
 @UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
 
-  private lateinit var rootWorkflow: TodoEditorWorkflow
+  private lateinit var rootWorkflow: TodoListsAppWorkflow
   private lateinit var workflowRunner: WorkflowRunner<*>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    rootWorkflow = lastCustomNonConfigurationInstance as? TodoEditorWorkflow
-        ?: TodoEditorWorkflow()
+    rootWorkflow = lastCustomNonConfigurationInstance as? TodoListsAppWorkflow
+        ?: TodoListsAppWorkflow()
 
     workflowRunner = setContentWorkflow(viewRegistry, rootWorkflow, savedInstanceState)
   }
@@ -51,6 +51,6 @@ class MainActivity : AppCompatActivity() {
   override fun onRetainCustomNonConfigurationInstance(): Any = rootWorkflow
 
   private companion object {
-    val viewRegistry = ViewRegistry(TodoEditorLayoutRunner)
+    val viewRegistry = ViewRegistry(TodoEditorLayoutRunner) + TodoListsLayoutRunner
   }
 }

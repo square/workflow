@@ -15,14 +15,16 @@
  */
 package com.squareup.sample.todo
 
+import com.squareup.sample.todo.TodoEditorOutput.Done
+import com.squareup.sample.todo.TodoEditorOutput.ListUpdated
 import com.squareup.sample.todo.TodoEvent.DeleteClicked
 import com.squareup.sample.todo.TodoEvent.DoneClicked
+import com.squareup.sample.todo.TodoEvent.GoBackClicked
 import com.squareup.sample.todo.TodoEvent.TextChanged
 import com.squareup.sample.todo.TodoEvent.TitleChanged
 import com.squareup.workflow.RenderContext
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.StatelessWorkflow
+import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 
 data class TodoList(
   val title: String,
@@ -39,6 +41,11 @@ data class TodoRendering(
   val onEvent: (TodoEvent) -> Unit
 )
 
+sealed class TodoEditorOutput {
+  data class ListUpdated(val newList: TodoList) : TodoEditorOutput()
+  object Done : TodoEditorOutput()
+}
+
 sealed class TodoEvent {
   data class TitleChanged(val title: String) : TodoEvent()
   data class DoneClicked(val index: Int) : TodoEvent()
@@ -48,39 +55,33 @@ sealed class TodoEvent {
   ) : TodoEvent()
 
   data class DeleteClicked(val index: Int) : TodoEvent()
+  object GoBackClicked : TodoEvent()
 }
 
-class TodoEditorWorkflow : StatefulWorkflow<Unit, TodoList, Nothing, TodoRendering>() {
-
-  override fun initialState(
-    input: Unit,
-    snapshot: Snapshot?
-  ): TodoList = TodoList(title = "Groceries", rows = listOf(TodoRow("Potatoes")))
+class TodoEditorWorkflow : StatelessWorkflow<TodoList, TodoEditorOutput, TodoRendering>() {
 
   override fun render(
-    input: Unit,
-    state: TodoList,
-    context: RenderContext<TodoList, Nothing>
+    input: TodoList,
+    context: RenderContext<Nothing, TodoEditorOutput>
   ): TodoRendering {
     return TodoRendering(
-        list = state.copy(rows = state.rows + TodoRow("")),
+        list = input.copy(rows = input.rows + TodoRow("")),
         onEvent = context.onEvent {
           println("got event: $it")
           when (it) {
-            is TitleChanged -> enterState(state.copy(title = it.title))
-            is DoneClicked -> enterState(state.updateRow(it.index) {
+            is GoBackClicked -> emitOutput(Done)
+            is TitleChanged -> emitOutput(ListUpdated(input.copy(title = it.title)))
+            is DoneClicked -> emitOutput(ListUpdated(input.updateRow(it.index) {
               copy(done = !done)
-            })
-            is TextChanged -> enterState(state.updateRow(it.index) {
+            }))
+            is TextChanged -> emitOutput(ListUpdated(input.updateRow(it.index) {
               copy(text = it.text)
-            })
-            is DeleteClicked -> enterState(state.removeRow(it.index))
+            }))
+            is DeleteClicked -> emitOutput(ListUpdated(input.removeRow(it.index)))
           }
         }
     )
   }
-
-  override fun snapshotState(state: TodoList): Snapshot = Snapshot.EMPTY
 }
 
 private fun TodoList.updateRow(
