@@ -18,6 +18,7 @@ package com.squareup.sample.todo
 import com.squareup.sample.todo.TodoEvent.DeleteClicked
 import com.squareup.sample.todo.TodoEvent.DoneClicked
 import com.squareup.sample.todo.TodoEvent.TextChanged
+import com.squareup.sample.todo.TodoEvent.TitleChanged
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -39,6 +40,7 @@ data class TodoRendering(
 )
 
 sealed class TodoEvent {
+  data class TitleChanged(val title: String) : TodoEvent()
   data class DoneClicked(val index: Int) : TodoEvent()
   data class TextChanged(
     val index: Int,
@@ -65,6 +67,7 @@ class TodoEditorWorkflow : StatefulWorkflow<Unit, TodoList, Nothing, TodoRenderi
         onEvent = context.onEvent {
           println("got event: $it")
           when (it) {
+            is TitleChanged -> enterState(state.copy(title = it.title))
             is DoneClicked -> enterState(state.updateRow(it.index) {
               copy(done = !done)
             })

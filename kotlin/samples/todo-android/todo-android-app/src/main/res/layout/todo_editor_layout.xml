@@ -27,6 +27,18 @@
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:focusable="false"
+      >
+    <EditText
+        android:id="@+id/todo_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAutofill="no"
+        android:imeOptions="actionNext"
+        android:inputType="textCapWords|textAutoCorrect"
+        android:visibility="gone"
+        />
+  </android.support.v7.widget.Toolbar>
+      android:focusable="false"
       />
 
   <ScrollView
