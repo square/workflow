@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.authworkflow
 
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.Button
 import android.widget.EditText

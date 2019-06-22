@@ -42,7 +42,6 @@ dependencies {
 
   implementation deps.appcompat
   implementation deps.constraint_layout
-  implementation deps.design
   implementation deps.lifecycle
   implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect

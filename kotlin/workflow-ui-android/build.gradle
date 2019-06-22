@@ -37,7 +37,7 @@ dependencies {
   api deps.transition
 
   implementation project(':workflow-runtime')
-  implementation deps.appcompatv7
+  implementation deps.appcompat
   implementation deps.coordinators
   implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.coroutines.core

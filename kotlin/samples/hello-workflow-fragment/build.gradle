@@ -38,6 +38,6 @@ dependencies {
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
 
-  implementation deps.appcompatv7
+  implementation deps.appcompat
   implementation deps.rxjava2.rxjava2
 }

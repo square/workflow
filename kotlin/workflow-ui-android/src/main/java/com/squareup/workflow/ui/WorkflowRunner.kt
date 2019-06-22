@@ -17,11 +17,11 @@
 
 package com.squareup.workflow.ui
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.annotation.CheckResult
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.squareup.workflow.Workflow
 import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Flowable

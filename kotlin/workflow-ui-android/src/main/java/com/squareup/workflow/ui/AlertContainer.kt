@@ -18,7 +18,7 @@ package com.squareup.workflow.ui
 import android.content.Context
 import android.content.DialogInterface
 import android.support.annotation.StyleRes
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
