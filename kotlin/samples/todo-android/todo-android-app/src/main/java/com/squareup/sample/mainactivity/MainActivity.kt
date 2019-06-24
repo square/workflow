@@ -16,7 +16,7 @@
 package com.squareup.sample.mainactivity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.squareup.sample.todo.TodoListsAppWorkflow
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry

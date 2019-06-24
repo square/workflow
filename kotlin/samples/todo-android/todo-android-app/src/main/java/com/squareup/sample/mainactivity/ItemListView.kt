@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.mainactivity
 
-import android.support.annotation.IdRes
+import androidx.annotation.IdRes
 import android.text.style.StrikethroughSpan
 import android.view.LayoutInflater
 import android.view.View

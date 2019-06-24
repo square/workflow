@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.mainactivity
 
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.EditText
 import com.squareup.sample.todo.R

@@ -40,9 +40,8 @@ dependencies {
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
 
-  implementation deps.appcompatv7
+  implementation deps.appcompat
   implementation deps.constraint_layout
-  implementation deps.design
   implementation deps.lifecycle
   implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect

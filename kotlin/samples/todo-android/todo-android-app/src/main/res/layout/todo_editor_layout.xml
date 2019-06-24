@@ -23,7 +23,7 @@
     android:background="@android:color/white"
     >
 
-  <android.support.v7.widget.Toolbar
+  <androidx.appcompat.widget.Toolbar
       android:id="@+id/todo_editor_toolbar"
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
@@ -39,9 +39,7 @@
         android:inputType="textCapWords|textAutoCorrect"
         android:visibility="gone"
         />
-  </android.support.v7.widget.Toolbar>
-      android:focusable="false"
-      />
+  </androidx.appcompat.widget.Toolbar>
 
   <ScrollView
       android:layout_width="match_parent"

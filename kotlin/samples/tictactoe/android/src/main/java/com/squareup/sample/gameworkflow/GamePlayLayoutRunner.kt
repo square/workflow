@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.gameworkflow
 
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.sample.gameworkflow.GamePlayScreen.Event.Quit
