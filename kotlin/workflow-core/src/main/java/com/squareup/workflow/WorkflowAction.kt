@@ -41,9 +41,12 @@ interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, O
     }
 
     /**
-     * Returns a [WorkflowAction] that does nothing.
+     * Returns a [WorkflowAction] that does nothing: no output will be emitted, and `render` will be
+     * called again with the same `state` as last time.
+     *
+     * Use this to, for example, ignore the output of a child workflow or worker.
      */
-    fun <StateT, OutputT : Any> noop(): WorkflowAction<StateT, OutputT> =
+    fun <StateT, OutputT : Any> noAction(): WorkflowAction<StateT, OutputT> =
       WorkflowAction({ "noop" }) { Pair(it, null) }
 
     /**

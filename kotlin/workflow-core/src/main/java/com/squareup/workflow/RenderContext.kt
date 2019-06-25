@@ -20,7 +20,7 @@ package com.squareup.workflow
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
-import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 
 /**
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
@@ -152,7 +152,7 @@ fun <InputT, StateT, OutputT : Any, ChildRenderingT>
       child: Workflow<InputT, Nothing, ChildRenderingT>,
       input: InputT,
       key: String = ""
-    ): ChildRenderingT = renderChild(child, input, key) { noop() }
+    ): ChildRenderingT = renderChild(child, input, key) { noAction() }
 // @formatter:on
 
 /**
@@ -166,7 +166,7 @@ fun <StateT, OutputT : Any, ChildRenderingT>
 // @formatter:off
       child: Workflow<Unit, Nothing, ChildRenderingT>,
       key: String = ""
-    ): ChildRenderingT = renderChild(child, Unit, key) { noop() }
+    ): ChildRenderingT = renderChild(child, Unit, key) { noAction() }
 // @formatter:on
 
 /**
@@ -183,7 +183,7 @@ fun <StateT, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
 ) = onWorkerOutputOrFinished(worker, key) { outputOrFinished ->
   when (outputOrFinished) {
     is Output -> handler(outputOrFinished.value)
-    Finished -> noop()
+    Finished -> noAction()
   }
 }
 

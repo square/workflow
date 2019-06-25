@@ -27,7 +27,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.renderChild
 
@@ -70,7 +70,7 @@ class HelloTerminalWorkflow : TerminalWorkflow,
         key.keyType == Backspace -> enterState(state.backspace())
         key.character == 'Q' -> emitOutput(0)
         key.character != null -> enterState(state.append(key.character!!))
-        else -> noop()
+        else -> noAction()
       }
     }
 

@@ -11,7 +11,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.onWorkerOutput
 
 class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, String>() {
@@ -58,7 +58,7 @@ class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, 
         )
         Backspace -> {
           if (input.text.isEmpty()) {
-            noop()
+            noAction()
           } else {
             enterState(
                 moveCursor(input, state, -1),
@@ -70,7 +70,7 @@ class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, 
         }
         ArrowLeft -> enterState(moveCursor(input, state, -1))
         ArrowRight -> enterState(moveCursor(input, state, 1))
-        else -> noop()
+        else -> noAction()
       }
     }
 
