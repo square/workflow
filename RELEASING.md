@@ -28,12 +28,11 @@
 
 4. Upload the kotlin artifacts:
    ```
-   (cd kotlin && ./gradlew clean build && ./gradlew -Dorg.gradle.parallel=false uploadArchives)
+   (cd kotlin && ./gradlew clean build && ./gradlew uploadArchives --no-parallel --no-daemon)
    ```
 
-   Disabling `org.gradle.parallel` is required because when multiple threads upload artifacts at once,
-   Nexus will create multiple staging repositories and randomly place files in each of them, which means
-   none of the repositories will validate. This seems to be a bug in the maven publish plugin we're using.
+   Disabling parallelism and daemon sharing is required by the vanniktech maven publish plugin. Without those,
+   the artifacts will be split across multiple (invalid) staging repositories.
 
 5. Publish to CocoaPods:
     ```
