@@ -1,5 +1,9 @@
 # workflow
 
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+[![CocoaPods compatible](https://img.shields.io/cocoapods/v/Workflow.svg)](https://cocoapods.org/pods/Workflow)
+[![Maven Central](https://img.shields.io/maven-central/v/com.squareup.workflow/workflow-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.squareup.workflow%22)
+
 An architecture that allows composable state machines to drive UI navigation and content, where the state machines are cleanly separated from UI code.
 
 _**This project is currently experimental and the API subject to breaking changes without notice.**
