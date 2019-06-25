@@ -18,6 +18,7 @@ package com.squareup.workflow.rx2
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Worker.Emitter
 import com.squareup.workflow.emitAll
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -108,3 +109,15 @@ inline fun <reified T : Any> Single<out T?>.asWorker(key: String = ""): Worker<T
 // This !! works because RxJava types don't actually allow nulls, it's just that they can't
   // express that in their types because Java.
   Worker.from(key) { await()!! }
+
+/**
+ * Creates a [Worker] from this [Completable].
+ *
+ * The [Completable] will be subscribed to when the [Worker] is started, and disposed when it is
+ * cancelled.
+ *
+ * The key is required for this operator because there is no type information available to
+ * distinguish workers.
+ */
+fun Completable.asWorker(key: String) =
+  Worker.createSideEffect(key) { await() }
