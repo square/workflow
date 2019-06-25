@@ -23,7 +23,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
@@ -88,7 +88,7 @@ class RealRenderContextTest {
 
   @Test fun `make sink completes update`() {
     val context = RealRenderContext<String, String>(PoisonRenderer())
-    val expectedUpdate = noop<String, String>()
+    val expectedUpdate = noAction<String, String>()
     val handler = context.onEvent<String> { expectedUpdate }
     val behavior = context.buildBehavior()
     assertFalse(behavior.nextActionFromEvent.isCompleted)

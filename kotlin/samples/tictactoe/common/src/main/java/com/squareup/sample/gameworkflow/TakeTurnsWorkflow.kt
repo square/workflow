@@ -27,7 +27,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 
 typealias TakeTurnsWorkflow = Workflow<TakeTurnsInput, CompletedGame, GamePlayScreen>
 
@@ -84,7 +84,7 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
     val newBoard = lastTurn.board.takeSquare(event.row, event.col, lastTurn.playing)
 
     return when {
-      newBoard == lastTurn.board -> noop()
+      newBoard == lastTurn.board -> noAction()
       newBoard.hasVictory() -> emitOutput(CompletedGame(Victory, lastTurn.copy(board = newBoard)))
       newBoard.isFull() -> emitOutput(CompletedGame(Draw, lastTurn.copy(board = newBoard)))
       else -> enterState(Turn(playing = lastTurn.playing.other, board = newBoard))

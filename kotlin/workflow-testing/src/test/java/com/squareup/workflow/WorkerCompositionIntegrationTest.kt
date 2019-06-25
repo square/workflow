@@ -22,7 +22,7 @@ import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
@@ -42,7 +42,7 @@ class WorkerCompositionIntegrationTest {
     var started = false
     val worker = Worker.create<Unit> { started = true }
     val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) onWorkerOutput(worker) { noop() }
+      if (input) onWorkerOutput(worker) { noAction() }
     }
 
     workflow.testFromStart(false) {
@@ -60,7 +60,7 @@ class WorkerCompositionIntegrationTest {
       }
     }
     val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) onWorkerOutput(worker) { noop() }
+      if (input) onWorkerOutput(worker) { noAction() }
     }
 
     workflow.testFromStart(true) {
@@ -83,7 +83,7 @@ class WorkerCompositionIntegrationTest {
       }
     }
     val workflow = Workflow.stateless<Unit, Nothing, Unit> { _ ->
-      onWorkerOutput(worker) { noop() }
+      onWorkerOutput(worker) { noAction() }
     }
 
     workflow.testFromStart {
@@ -113,7 +113,7 @@ class WorkerCompositionIntegrationTest {
       }
     }
     val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) onWorkerOutput(worker) { noop() }
+      if (input) onWorkerOutput(worker) { noAction() }
     }
 
     workflow.testFromStart(false) {

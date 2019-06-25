@@ -29,7 +29,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noop
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.onWorkerOutput
 
 class TodoWorkflow : TerminalWorkflow,
@@ -91,10 +91,10 @@ class TodoWorkflow : TerminalWorkflow,
           if (state.focusedField > TITLE_FIELD_INDEX) {
             enterState(state.toggleChecked(state.focusedField))
           } else {
-            noop()
+            noAction()
           }
         }
-        else -> noop()
+        else -> noAction()
       }
     }
 
