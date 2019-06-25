@@ -28,7 +28,7 @@
 
 4. Upload the kotlin artifacts:
    ```
-   (cd kotlin && ./gradlew clean && ./gradlew -Dorg.gradle.parallel=false uploadArchives)
+   (cd kotlin && ./gradlew clean build && ./gradlew -Dorg.gradle.parallel=false uploadArchives)
    ```
 
    Disabling `org.gradle.parallel` is required because when multiple threads upload artifacts at once,
