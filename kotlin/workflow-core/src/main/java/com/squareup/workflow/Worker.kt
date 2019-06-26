@@ -194,7 +194,8 @@ interface Worker<out T> {
      * Creates a [Worker] that just performs some side effects and doesn't emit anything.
      *
      * The returned [Worker] will equate to any other workers created with this function that have
-     * the same key.
+     * the same key. The key is required for this builder because there is no type information
+     * available to distinguish workers.
      *
      * E.g.:
      * ```

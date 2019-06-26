@@ -21,6 +21,7 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.subjects.CompletableSubject
 import io.reactivex.subjects.MaybeSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.SingleSubject
@@ -299,6 +300,58 @@ class RxWorkersTest {
     val subject = SingleSubject.create<String>()
     val worker = subject.doOnDispose { cancels++ }
         .asWorker()
+
+    assertEquals(0, cancels)
+
+    worker.test {
+      assertEquals(0, cancels)
+      cancelWorker()
+      assertEquals(1, cancels)
+    }
+  }
+
+  // endregion
+
+  // region Completable
+
+  @Test fun `completable emits`() {
+    val subject = CompletableSubject.create()
+    val worker = subject.asWorker("")
+
+    worker.test {
+      subject.onComplete()
+      assertFinished()
+    }
+  }
+
+  @Test fun `completable throws`() {
+    val subject = CompletableSubject.create()
+    val worker = subject.asWorker("")
+
+    worker.test {
+      subject.onError(ExpectedException())
+      assertTrue(getException() is ExpectedException)
+    }
+  }
+
+  @Test fun `completable is subscribed lazily`() {
+    var subscriptions = 0
+    val subject = CompletableSubject.create()
+    val worker = subject.doOnSubscribe { subscriptions++ }
+        .asWorker("")
+
+    assertEquals(0, subscriptions)
+
+    worker.test {
+      assertEquals(1, subscriptions)
+    }
+  }
+
+  @Test fun `completable is disposed when worker cancelled`() {
+    var cancels = 0
+    val subject = CompletableSubject.create()
+    val worker = subject.doOnDispose { cancels++ }
+        .asWorker("")
 
     assertEquals(0, cancels)
 
