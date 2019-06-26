@@ -17,6 +17,7 @@
 
 package com.squareup.workflow.legacy
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -74,10 +75,12 @@ fun <S : Any, E : Any, O : Any> CoroutineScope.workflow(
       // if the event channel was closed.
       try {
         events.offer(event)
+      } catch (e: CancellationException) {
+        // This means that the workflow was cancelled. Senders shouldn't care if the workflow
+        // accepted the event or not.
       } catch (e: ClosedSendChannelException) {
-        // This may mean the workflow was canceled or finished, or that the workflow closed the
-        // events channel itself. Either way, senders shouldn't care if the workflow accepted the
-        // event or not.
+        // This may mean the workflow finished or that the workflow closed the events channel
+        // itself. Senders shouldn't care if the workflow accepted the event or not.
       }
     }
 
