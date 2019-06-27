@@ -17,11 +17,11 @@
 
 package com.squareup.workflow.ui
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.annotation.CheckResult
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProviders
 import com.squareup.workflow.Workflow
 import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Flowable
@@ -47,11 +47,13 @@ interface WorkflowRunner<out OutputT> {
   fun onSaveInstanceState(outState: Bundle)
 
   /**
-   * A stream of the [output][OutputT] values emitted by the running
-   * [Workflow][com.squareup.workflow.Workflow].
+   * A stream of the [output][OutputT] values emitted by the running [Workflow].
    */
   val output: Flowable<out OutputT>
 
+  /**
+   * A stream of the rendering values emitted by the running [Workflow].
+   */
   val renderings: Observable<out Any>
 
   val viewRegistry: ViewRegistry

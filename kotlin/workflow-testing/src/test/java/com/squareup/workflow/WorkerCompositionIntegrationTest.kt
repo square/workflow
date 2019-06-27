@@ -194,16 +194,8 @@ class WorkerCompositionIntegrationTest {
 
       channel.cancel(CancellationException(null, ExpectedException()))
 
-      assertFailsWith<CancellationException> {
+      assertFailsWith<ExpectedException> {
         awaitNextOutput()
-      }.also { error ->
-        // Search up the cause chain for the expected exception, since multiple CancellationExceptions
-        // may be chained together first.
-        val causeChain = generateSequence<Throwable>(error) { it.cause }
-        assertEquals(
-            1, causeChain.count { it is ExpectedException },
-            "Expected cancellation exception cause chain to include original cause."
-        )
       }
     }
   }
