@@ -17,8 +17,8 @@ package com.squareup.workflow.ui
 
 /**
  * Normally returns true if [me] and [you] are instances of the same class.
- * If that common class implements [Compatible],
- * `me.`[isCompatibleWith][Compatible.isCompatibleWith]`(you)` must also be true.
+ * If that common class implements [Compatible], both instances must also
+ * have the same [Compatible.compatibilityKey].
  *
  * A convenient way to take control over the matching behavior of objects that
  * don't implement [Compatible] is to wrap them with [Named].
@@ -29,9 +29,8 @@ fun compatible(
 ): Boolean {
   return when {
     me::class != you::class -> false
-    me !is Compatible<*> -> true
-    // If you see a casting error here, it's a lie. https://youtrack.jetbrains.com/issue/KT-31823
-    else -> me.isCompatibleWith(you as Compatible<*>)
+    me !is Compatible -> true
+    else -> me.compatibilityKey == (you as Compatible).compatibilityKey
   }
 }
 
@@ -40,8 +39,8 @@ fun compatible(
  * to be the top / current value of the stack.
  *
  * Returns a transformation of the receiver by popping back to the first element
- * that is [compatible] with [next]. If no matching frame is found, pushes [next]
- * on [top].
+ * that is [compatible] with [next]. If no matching frame is found, adds [next]
+ * to the end.
  */
 fun <T : Any> List<T>.goTo(next: T): List<T> {
   val splicePoint = indexOfLast { compatible(it, next) }
@@ -55,6 +54,9 @@ fun <T : Any> List<T>.goTo(next: T): List<T> {
  * Renderings that don't implement this interface directly can be distinguished
  * by wrapping them with [Named].
  */
-interface Compatible<out T : Compatible<T>> {
-  fun isCompatibleWith(another: @UnsafeVariance T): Boolean
+interface Compatible {
+  /**
+   * Instances of the same type are [compatible] iff they have the same [compatibilityKey].
+   */
+  val compatibilityKey: String
 }

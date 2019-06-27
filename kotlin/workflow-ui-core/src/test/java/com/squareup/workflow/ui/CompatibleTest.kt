@@ -37,25 +37,17 @@ class CompatibleTest {
   }
 
   @Test fun `isCompatibleWith is honored`() {
-    data class K(
-      val name: String
-    ) : Compatible<K> {
-      override fun isCompatibleWith(another: K) = name == another.name
-    }
+    data class K(override val compatibilityKey: String) : Compatible
 
     assertThat(compatible(K("hey"), K("hey"))).isTrue()
     assertThat(compatible(K("hey"), K("ho"))).isFalse()
   }
 
   @Test fun `Different Compatible types do not match`() {
-    abstract class A : Compatible<A> {
-      abstract val name: String
+    abstract class A : Compatible
 
-      override fun isCompatibleWith(another: A) = name == another.name
-    }
-
-    class Able(override val name: String) : A()
-    class Alpha(override val name: String) : A()
+    class Able(override val compatibilityKey: String) : A()
+    class Alpha(override val compatibilityKey: String) : A()
 
     assertThat(compatible(Able("Hey"), Alpha("Hey"))).isFalse()
   }

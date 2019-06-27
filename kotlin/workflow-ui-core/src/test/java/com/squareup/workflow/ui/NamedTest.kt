@@ -59,19 +59,38 @@ class NamedTest {
     ).isFalse()
   }
 
-  @Test fun keyRecursion() {
-    assertThat(Named(Named(Hey, "one"), "ho").key)
-        .isEqualTo(Named(Named(Hey, "one"), "ho").key)
+  @Test fun `key recursion`() {
+    assertThat(Named(Named(Hey, "one"), "ho").compatibilityKey)
+        .isEqualTo(Named(Named(Hey, "one"), "ho").compatibilityKey)
 
-    assertThat(Named(Named(Hey, "one"), "ho").key)
-        .isNotEqualTo(Named(Named(Hey, "two"), "ho").key)
+    assertThat(Named(Named(Hey, "one"), "ho").compatibilityKey)
+        .isNotEqualTo(Named(Named(Hey, "two"), "ho").compatibilityKey)
 
-    assertThat(Named(Named(Hey, "a"), "ho").key)
-        .isNotEqualTo(Named(Named(Whut, "a"), "ho").key)
+    assertThat(Named(Named(Hey, "a"), "ho").compatibilityKey)
+        .isNotEqualTo(Named(Named(Whut, "a"), "ho").compatibilityKey)
   }
 
-  @Test fun recursiveKeysAreLegible() {
-    assertThat(Named(Named(Hey, "one"), "ho").key)
+  @Test fun `recursive keys are legible`() {
+    assertThat(Named(Named(Hey, "one"), "ho").compatibilityKey)
         .isEqualTo("com.squareup.workflow.ui.NamedTest\$Hey-Named(one)-Named(ho)")
+  }
+
+  private class Foo(override val compatibilityKey: String) : Compatible
+
+  @Test fun `the test Compatible class actually works`() {
+    assertThat(compatible(Foo("bar"), Foo("bar"))).isTrue()
+    assertThat(compatible(Foo("bar"), Foo("baz"))).isFalse()
+  }
+
+  @Test fun `wrapping custom Compatible compatibility works`() {
+    assertThat(compatible(Named(Foo("bar"), "name"), Named(Foo("bar"), "name"))).isTrue()
+    assertThat(compatible(Named(Foo("bar"), "name"), Named(Foo("baz"), "name"))).isFalse()
+  }
+
+  @Test fun `wrapping custom Compatible keys work`() {
+    assertThat(Named(Foo("bar"), "name").compatibilityKey)
+        .isEqualTo(Named(Foo("bar"), "name").compatibilityKey)
+    assertThat(Named(Foo("bar"), "name").compatibilityKey)
+        .isNotEqualTo(Named(Foo("baz"), "name").compatibilityKey)
   }
 }
