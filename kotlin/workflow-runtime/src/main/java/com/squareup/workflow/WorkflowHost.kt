@@ -22,7 +22,6 @@ import com.squareup.workflow.internal.id
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consume
@@ -88,21 +87,17 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
       inputs: () -> ReceiveChannel<InputT>,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext
-    ): WorkflowHost<OutputT, RenderingT> =
-      object : WorkflowHost<OutputT, RenderingT> {
+    ): WorkflowHost<OutputT, RenderingT> = RealWorkflowHost(
         // Put the coroutine name first so the passed-in contexts can override it.
-        private val scope = CoroutineScope(DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext + context)
-
-        override val updates: ReceiveChannel<Update<OutputT, RenderingT>> =
-          scope.produce(capacity = 0) {
-            runWorkflowTree(
-                workflow = workflow.asStatefulWorkflow(),
-                inputs = inputs,
-                initialSnapshot = snapshot,
-                onUpdate = ::send
-            )
-          }
-      }
+        context = DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext + context
+    ) { onUpdate ->
+      runWorkflowTree(
+          workflow = workflow.asStatefulWorkflow(),
+          inputs = inputs,
+          initialSnapshot = snapshot,
+          onUpdate = onUpdate
+      )
+    }
 
     fun <OutputT : Any, RenderingT> run(
       workflow: Workflow<Unit, OutputT, RenderingT>,
@@ -124,22 +119,17 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
       workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
       inputs: () -> ReceiveChannel<InputT>,
       initialState: StateT
-    ): WorkflowHost<OutputT, RenderingT> =
-      object : WorkflowHost<OutputT, RenderingT> {
-        override val updates: ReceiveChannel<Update<OutputT, RenderingT>> =
-          GlobalScope.produce(
-              capacity = 0,
-              context = DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext
-          ) {
-            runWorkflowTree(
-                workflow = workflow.asStatefulWorkflow(),
-                inputs = inputs,
-                initialSnapshot = null,
-                initialState = initialState,
-                onUpdate = ::send
-            )
-          }
-      }
+    ): WorkflowHost<OutputT, RenderingT> = RealWorkflowHost(
+        context = DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext
+    ) { onUpdate ->
+      runWorkflowTree(
+          workflow = workflow.asStatefulWorkflow(),
+          inputs = inputs,
+          initialSnapshot = null,
+          initialState = initialState,
+          onUpdate = onUpdate
+      )
+    }
 
     private fun <T> channelOf(value: T): () -> ReceiveChannel<T> {
       return {
@@ -148,6 +138,25 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
       }
     }
   }
+}
+
+/**
+ * Implements the [WorkflowHost] interface using the [CoroutineScope.produce] builder.
+ */
+private class RealWorkflowHost<O : Any, R>(
+  context: CoroutineContext,
+  run: suspend (
+    onUpdate: suspend (Update<O, R>) -> Unit
+  ) -> Unit
+) : WorkflowHost<O, R> {
+
+  private val scope = CoroutineScope(context)
+
+  @UseExperimental(ExperimentalCoroutinesApi::class)
+  override val updates: ReceiveChannel<Update<O, R>> =
+    scope.produce(capacity = 0) {
+      run(channel::send)
+    }
 }
 
 /**
