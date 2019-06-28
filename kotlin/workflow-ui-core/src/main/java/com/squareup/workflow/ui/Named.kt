@@ -25,33 +25,26 @@ import kotlin.reflect.jvm.jvmName
 data class Named<W : Any>(
   val wrapped: W,
   val name: String
-) : Compatible<Named<W>> {
+) : Compatible {
   init {
     require(name.isNotBlank()) { "name must not be blank." }
   }
 
-  /**
-   * Used as a comparison key by [isCompatibleWith]. Handy for use as a map key.
-   */
-  val key: String = keyFor(wrapped, name)
-
-  override fun isCompatibleWith(another: Named<W>): Boolean {
-    return this.key == another.key && compatible(this.wrapped, another.wrapped)
-  }
+  override val compatibilityKey: String = keyFor(wrapped, name)
 
   override fun toString(): String {
-    return "${super.toString()}: $key"
+    return "${super.toString()}: $compatibilityKey"
   }
 
   companion object {
     /**
-     * Calculates the [compatibility key][Named.key] for a given [value] and [name].
+     * Calculates the [Named.compatibilityKey] for a given [value] and [name].
      */
     fun keyFor(
       value: Any,
       name: String = ""
     ): String {
-      return ((value as? Named<*>)?.key ?: value::class.jvmName) + "-Named($name)"
+      return ((value as? Compatible)?.compatibilityKey ?: value::class.jvmName) + "-Named($name)"
     }
   }
 }

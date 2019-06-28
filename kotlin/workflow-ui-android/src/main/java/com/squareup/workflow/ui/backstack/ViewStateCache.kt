@@ -43,11 +43,10 @@ class ViewStateCache private constructor(
   /**
    * To be called when the set of hidden views changes but the visible view remains
    * the same. Any cached view state held for renderings that are not
-   * [compatible with][com.squareup.workflow.ui.Compatible.isCompatibleWith]
-   * those in [retaining] will be dropped.
+   * [compatible][com.squareup.workflow.ui.compatible] those in [retaining] will be dropped.
    */
   fun prune(retaining: Collection<Named<*>>) {
-    pruneKeys(retaining.map { it.key })
+    pruneKeys(retaining.map { it.compatibilityKey })
   }
 
   private fun pruneKeys(retaining: Collection<String>) {
@@ -78,7 +77,7 @@ class ViewStateCache private constructor(
   ): Boolean {
     val newKey = newView.namedKey
     val hiddenKeys = retainedRenderings.asSequence()
-        .map { it.key }
+        .map { it.compatibilityKey }
         .toSet()
         .apply {
           require(retainedRenderings.size == size) {
@@ -178,6 +177,6 @@ class ViewStateCache private constructor(
 
 @ExperimentalWorkflowUi
 private val View.namedKey: String
-  get() = checkNotNull((showRenderingTag?.showing as? Named<*>)?.key) {
+  get() = checkNotNull((showRenderingTag?.showing as? Named<*>)?.compatibilityKey) {
     "Expected $this to be showing a Named rendering, found ${showRenderingTag?.showing}"
   }
