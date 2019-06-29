@@ -16,7 +16,8 @@
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.Worker
-import com.squareup.workflow.Worker.Emitter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A mock implementation of [Worker] for use in tests with `testRender` and [TestRenderResult].
@@ -30,7 +31,8 @@ import com.squareup.workflow.Worker.Emitter
  */
 class MockWorker<T>(val name: String) : Worker<T> {
 
-  override suspend fun performWork(emitter: Emitter<T>) {
+  @UseExperimental(ExperimentalCoroutinesApi::class)
+  override fun run(): Flow<T> {
     throw AssertionError("MockWorker can't do work. Use TestRenderResult.executeWorkerAction*.")
   }
 

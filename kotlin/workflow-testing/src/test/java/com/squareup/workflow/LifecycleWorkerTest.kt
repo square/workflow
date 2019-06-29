@@ -17,20 +17,16 @@
 
 package com.squareup.workflow
 
-import com.squareup.workflow.Worker.Emitter
 import com.squareup.workflow.testing.test
-import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class LifecycleWorkerTest {
-
-  private object NoopEmitter : Emitter<Nothing> {
-    override suspend fun emitOutput(output: Nothing) {}
-  }
 
   @Test fun `onStart called immediately`() {
     var onStartCalled = false
@@ -42,9 +38,8 @@ class LifecycleWorkerTest {
 
     assertFalse(onStartCalled)
     runBlocking {
-      val job = launch(start = UNDISPATCHED) {
-        worker.performWork(NoopEmitter)
-      }
+      val job = worker.run()
+          .launchIn(CoroutineScope(Unconfined))
       assertTrue(onStartCalled)
 
       // Don't hang the runBlocking block forever.

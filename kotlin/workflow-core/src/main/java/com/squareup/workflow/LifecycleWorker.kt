@@ -15,7 +15,9 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.Worker.Emitter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
@@ -47,7 +49,8 @@ abstract class LifecycleWorker : Worker<Nothing> {
    */
   open fun onCancelled() {}
 
-  final override suspend fun performWork(emitter: Emitter<Nothing>) {
+  @UseExperimental(ExperimentalCoroutinesApi::class)
+  final override fun run(): Flow<Nothing> = flow {
     onStarted()
 
     try {
