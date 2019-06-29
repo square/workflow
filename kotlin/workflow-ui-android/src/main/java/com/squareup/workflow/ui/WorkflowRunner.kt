@@ -28,9 +28,11 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.reactive.openSubscription
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.reactive.flow.asFlow
 
 /**
  * Uses a [Workflow] and a [ViewRegistry] to drive a [WorkflowLayout].
@@ -72,11 +74,12 @@ interface WorkflowRunner<out OutputT> {
      * workflow. The channel returned by this function will be cancelled by the host when it's
      * finished.
      */
-    private fun <InputT, OutputT : Any> of(
+    @UseExperimental(ExperimentalCoroutinesApi::class)
+    fun <InputT, OutputT : Any> of(
       activity: FragmentActivity,
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
-      inputs: () -> ReceiveChannel<InputT>,
+      inputs: Flow<InputT>,
       savedInstanceState: Bundle?,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
@@ -95,8 +98,8 @@ interface WorkflowRunner<out OutputT> {
      * It's probably more convenient to use [FragmentActivity.setContentWorkflow]
      * rather than calling this method directly.
      */
-    @UseExperimental(ObsoleteCoroutinesApi::class)
-    fun <InputT, OutputT : Any> of(
+    @UseExperimental(ObsoleteCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+    fun <InputT : Any, OutputT : Any> of(
       activity: FragmentActivity,
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
@@ -104,14 +107,14 @@ interface WorkflowRunner<out OutputT> {
       savedInstanceState: Bundle?,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> = of<InputT, OutputT>(
-        activity, viewRegistry, workflow, { inputs.openSubscription() }, savedInstanceState,
+        activity, viewRegistry, workflow, inputs.asFlow(), savedInstanceState,
         dispatcher
     )
 
     /**
      * Convenience overload for workflows unconcerned with back-pressure of their inputs.
      */
-    fun <InputT, OutputT : Any> of(
+    fun <InputT : Any, OutputT : Any> of(
       activity: FragmentActivity,
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
@@ -125,6 +128,7 @@ interface WorkflowRunner<out OutputT> {
     /**
      * Convenience overload for workflows that take one input value rather than a stream.
      */
+    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <InputT, OutputT : Any> of(
       activity: FragmentActivity,
       viewRegistry: ViewRegistry,
@@ -133,7 +137,7 @@ interface WorkflowRunner<out OutputT> {
       savedInstanceState: Bundle?,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> = of(
-        activity, viewRegistry, workflow, Observable.just(input), savedInstanceState, dispatcher
+        activity, viewRegistry, workflow, flowOf(input), savedInstanceState, dispatcher
     )
 
     /**
@@ -162,11 +166,12 @@ interface WorkflowRunner<out OutputT> {
      * workflow. The channel returned by this function will be cancelled by the host when it's
      * finished.
      */
-    private fun <InputT, OutputT : Any> of(
+    @UseExperimental(ExperimentalCoroutinesApi::class)
+    fun <InputT, OutputT : Any> of(
       fragment: Fragment,
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
-      inputs: () -> ReceiveChannel<InputT>,
+      inputs: Flow<InputT>,
       savedInstanceState: Bundle?,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> {
@@ -186,8 +191,8 @@ interface WorkflowRunner<out OutputT> {
      * It's probably more convenient to subclass [WorkflowFragment] rather than calling
      * this method directly.
      */
-    @UseExperimental(ObsoleteCoroutinesApi::class)
-    fun <InputT, OutputT : Any> of(
+    @UseExperimental(ObsoleteCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+    fun <InputT : Any, OutputT : Any> of(
       fragment: Fragment,
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
@@ -195,14 +200,14 @@ interface WorkflowRunner<out OutputT> {
       savedInstanceState: Bundle?,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> = of<InputT, OutputT>(
-        fragment, viewRegistry, workflow, { inputs.openSubscription() }, savedInstanceState,
+        fragment, viewRegistry, workflow, inputs.asFlow(), savedInstanceState,
         dispatcher
     )
 
     /**
      * Convenience overload for workflows unconcerned with back-pressure of their inputs.
      */
-    fun <InputT, OutputT : Any> of(
+    fun <InputT : Any, OutputT : Any> of(
       fragment: Fragment,
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
@@ -217,6 +222,7 @@ interface WorkflowRunner<out OutputT> {
     /**
      * Convenience overload for workflows that take one input value rather than a stream.
      */
+    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <InputT, OutputT : Any> of(
       fragment: Fragment,
       viewRegistry: ViewRegistry,
@@ -225,7 +231,7 @@ interface WorkflowRunner<out OutputT> {
       savedInstanceState: Bundle?,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> =
-      of(fragment, viewRegistry, workflow, Flowable.just(input), savedInstanceState, dispatcher)
+      of(fragment, viewRegistry, workflow, flowOf(input), savedInstanceState, dispatcher)
 
     /**
      * Convenience overload for workflows that take no input.
@@ -276,10 +282,11 @@ interface WorkflowRunner<out OutputT> {
  */
 @ExperimentalWorkflowUi
 @CheckResult
+@UseExperimental(ExperimentalCoroutinesApi::class)
 fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, Any>,
-  inputs: Flowable<InputT>,
+  inputs: Flow<InputT>,
   savedInstanceState: Bundle?,
   dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ): WorkflowRunner<OutputT> {
@@ -318,11 +325,27 @@ fun FragmentActivity.workflowOnBackPressed(): Boolean {
 }
 
 /**
+ * Convenience overload for workflows that take a [Flowable] of inputs.
+ */
+@ExperimentalWorkflowUi
+@CheckResult
+@UseExperimental(ExperimentalCoroutinesApi::class)
+fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
+  viewRegistry: ViewRegistry,
+  workflow: Workflow<InputT, OutputT, RenderingT>,
+  inputs: Flowable<InputT>,
+  savedInstanceState: Bundle?,
+  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+): WorkflowRunner<OutputT> = setContentWorkflow(
+    viewRegistry, workflow, inputs.asFlow(), savedInstanceState, dispatcher
+)
+
+/**
  * Convenience overload for workflows unconcerned with back-pressure of their inputs.
  */
 @ExperimentalWorkflowUi
 @CheckResult
-fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
+fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, RenderingT>,
   inputs: Observable<InputT>,
@@ -337,6 +360,7 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
  */
 @ExperimentalWorkflowUi
 @CheckResult
+@UseExperimental(ExperimentalCoroutinesApi::class)
 fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, RenderingT>,
@@ -344,7 +368,7 @@ fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflo
   savedInstanceState: Bundle?,
   dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ): WorkflowRunner<OutputT> =
-  setContentWorkflow(viewRegistry, workflow, Flowable.just(input), savedInstanceState, dispatcher)
+  setContentWorkflow(viewRegistry, workflow, flowOf(input), savedInstanceState, dispatcher)
 
 /**
  * Convenience overload for workflows that take no input.

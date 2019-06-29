@@ -22,17 +22,18 @@ import com.squareup.workflow.internal.id
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.select
 import org.jetbrains.annotations.TestOnly
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.coroutineContext
 
 private val DEFAULT_WORKFLOW_COROUTINE_NAME = CoroutineName("WorkflowHost")
 
@@ -127,7 +128,7 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
     @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <InputT, OutputT : Any, RenderingT> run(
       workflow: Workflow<InputT, OutputT, RenderingT>,
-      inputs: () -> ReceiveChannel<InputT>,
+      inputs: Flow<InputT>,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext
     ): WorkflowHost<OutputT, RenderingT> = RealWorkflowHost(
@@ -143,11 +144,12 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
       )
     }
 
+    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <OutputT : Any, RenderingT> run(
       workflow: Workflow<Unit, OutputT, RenderingT>,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext
-    ): WorkflowHost<OutputT, RenderingT> = run(workflow, channelOf(Unit), snapshot, context)
+    ): WorkflowHost<OutputT, RenderingT> = run(workflow, flowOf(Unit), snapshot, context)
 
     /**
      * Creates a [WorkflowHost] that runs [workflow] starting from [initialState].
@@ -161,7 +163,7 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
     @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <InputT, StateT, OutputT : Any, RenderingT> runTestFromState(
       workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-      inputs: () -> ReceiveChannel<InputT>,
+      inputs: Flow<InputT>,
       initialState: StateT
     ): WorkflowHost<OutputT, RenderingT> = RealWorkflowHost(
         context = DEFAULT_WORKFLOW_COROUTINE_NAME + baseContext
@@ -175,12 +177,6 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
           onOutput = onOutput
       )
     }
-
-    private fun <T> channelOf(value: T): () -> ReceiveChannel<T> {
-      return {
-        Channel<T>(capacity = 1).apply { offer(value) }
-      }
-    }
   }
 }
 
@@ -191,16 +187,16 @@ interface WorkflowHost<out OutputT : Any, out RenderingT> {
  * This function is the lowest-level entry point into the runtime. Don't call this directly, instead
  * use [WorkflowHost.Factory] to create a [WorkflowHost].
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
 suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowTree(
   workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-  inputs: () -> ReceiveChannel<InputT>,
+  inputs: Flow<InputT>,
   initialSnapshot: Snapshot?,
   initialState: StateT? = null,
   onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
   onOutput: suspend (OutputT) -> Unit
-): Nothing {
-  val inputsChannel = inputs()
+): Nothing = coroutineScope {
+  val inputsChannel = inputs.produceIn(this)
   inputsChannel.consume {
     var output: OutputT? = null
     var input: InputT = inputsChannel.receive()

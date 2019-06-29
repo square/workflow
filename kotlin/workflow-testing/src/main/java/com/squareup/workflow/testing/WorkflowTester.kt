@@ -32,6 +32,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -211,7 +214,7 @@ fun <T, InputT, OutputT : Any, RenderingT>
       block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
     ): T = test(block, context) { factory, inputs ->
       inputs.offer(input)
-      factory.run(this, { inputs }, snapshot)
+      factory.run(this, inputs.asFlow(), snapshot)
     }
 // @formatter:on
 
@@ -244,7 +247,7 @@ fun <T, InputT, StateT, OutputT : Any, RenderingT>
       block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
     ): T = test(block, context) { factory, inputs ->
       inputs.offer(input)
-      factory.runTestFromState(this, { inputs }, initialState)
+      factory.runTestFromState(this, inputs.asFlow(), initialState)
     }
 // @formatter:on
 
@@ -272,6 +275,8 @@ private fun <T, I, O : Any, R> test(
   starter: (hostFactory: WorkflowHost.Factory, inputs: Channel<I>) -> WorkflowHost<O, R>
 ): T {
   val context = Dispatchers.Unconfined + baseContext + Job(parent = baseContext[Job])
+  // We can't use a BroadcastChannel here because starter may need to queue up the initial input,
+  // which would get dropped by an unsubscribed BroadcastChannel.
   val inputs = Channel<I>(capacity = 1)
   @Suppress("ReplaceSingleLineLet")
   val host = WorkflowHost.Factory(context)
@@ -300,4 +305,13 @@ private fun <T, I, O : Any, R> test(
       context.cancel()
     }
   }
+}
+
+/**
+ * Turns a _non-broadcast_ channel into a Flow. Normally this isn't safe because if there are
+ * multiple collectors they will all get different values. However since this is only used
+ * internally, we know that these flows will only be collected once by [WorkflowHost].
+ */
+private fun <E> ReceiveChannel<E>.asFlow(): Flow<E> = flow {
+  consumeEach { emit(it) }
 }
