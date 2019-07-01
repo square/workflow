@@ -15,8 +15,10 @@
  */
 package com.squareup.workflow.ui
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
@@ -26,6 +28,10 @@ import android.support.annotation.StyleRes
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.squareup.workflow.ui.HandlesBack.Helper
 import com.squareup.workflow.ui.ModalContainer.Companion.forAlertContainerScreen
 import com.squareup.workflow.ui.ModalContainer.Companion.forContainerScreen
@@ -72,11 +78,18 @@ abstract class ModalContainer<ModalRenderingT : Any>
         dialogs[i].copy(modalRendering = modal)
             .also { updateDialog(it) }
       } else {
-        buildDialog(modal, registry).apply { dialog.show() }
+        buildDialog(modal, registry).apply {
+          dialog.show()
+          // Android makes a lot of logcat noise if it has to close the window for us. :/
+          // https://github.com/square/workflow/issues/51
+          dialog.activity?.lifecycle?.addObserver(OnDestroy {
+            dialog.dismiss()
+          })
+        }
       }
     }
 
-    (dialogs - newDialogs).forEach { it.dialog.hide() }
+    (dialogs - newDialogs).forEach { it.dialog.dismiss() }
     dialogs = newDialogs
   }
 
@@ -241,4 +254,27 @@ abstract class ModalContainer<ModalRenderingT : Any>
         id, H::class, dialogThemeResId, modalDecorator
     )
   }
+}
+
+private class OnDestroy(private val block: () -> Unit) : LifecycleObserver {
+  @OnLifecycleEvent(ON_DESTROY)
+  fun onDestroy() = block()
+}
+
+private val Dialog.activity: AppCompatActivity?
+  get() = decorView?.context?.activity()
+
+private val Dialog.decorView: View?
+  get() = window?.decorView
+
+/**
+ * The [AppCompatActivity] for this context, or null if there isn't one.
+ *
+ * We keep all this very forgiving because we're just using it to keep some logging
+ * noise out of logcat. If someone manages to run this under the wrong type of
+ * activity, just return null and let the caller no-op.
+ */
+tailrec fun Context.activity(): AppCompatActivity? = when {
+  this is Activity -> this as? AppCompatActivity
+  else -> (this as? ContextWrapper)?.baseContext?.activity()
 }
