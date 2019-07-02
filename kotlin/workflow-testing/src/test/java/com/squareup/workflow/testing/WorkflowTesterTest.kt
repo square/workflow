@@ -27,6 +27,7 @@ import com.squareup.workflow.stateless
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -76,12 +77,21 @@ class WorkflowTesterTest {
     }
   }
 
-  @Test fun `propagates exception when Job is cancelled before starting`() {
+  @Test fun `propagates close when Job is cancelled before starting`() {
     val job = Job().apply { cancel() }
     val workflow = Workflow.stateless<Unit, Unit, Unit> { }
 
     workflow.testFromStart(context = job) {
-      assertTrue(awaitFailure() is CancellationException)
+      assertTrue(awaitFailure() is ClosedReceiveChannelException)
+    }
+  }
+
+  @Test fun `propagates cancellation when Job failes before starting`() {
+    val job = Job().apply { cancel(CancellationException(null, ExpectedException())) }
+    val workflow = Workflow.stateless<Unit, Unit, Unit> { }
+
+    workflow.testFromStart(context = job) {
+      assertTrue(awaitFailure() is ExpectedException)
     }
   }
 

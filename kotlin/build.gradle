@@ -41,6 +41,7 @@ buildscript {
       'mockito': '2.7.5',
       'mockitoKotlin': '1.5.0',
       'rxjava2Extensions': '0.20.4',
+      'truth': '1.0-rc1',
   ]
 
   ext.deps = [
@@ -95,6 +96,7 @@ buildscript {
       ],
       'test': [
           'assertj': "org.assertj:assertj-core:${versions.assertj}",
+          'truth': "com.google.truth:truth:${versions.truth}",
           'junit': "junit:junit:${versions.junit}",
           'mockito': "org.mockito:mockito-core:${versions.mockito}",
           'hamcrestCore': "org.hamcrest:hamcrest-core:${versions.hamcrest}"

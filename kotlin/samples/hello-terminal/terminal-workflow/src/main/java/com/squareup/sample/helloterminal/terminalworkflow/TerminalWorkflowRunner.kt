@@ -22,16 +22,22 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowHost
-import com.squareup.workflow.WorkflowHost.Update
 import com.squareup.workflow.asWorker
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.selectUnbiased
@@ -82,7 +88,6 @@ class TerminalWorkflowRunner(
     } finally {
       // Cancel all the coroutines we started so the coroutineScope block will actually exit if no
       // exception was thrown.
-      host.updates.cancel()
       keyStrokesChannel.cancel()
       resizes.cancel()
     }
@@ -90,56 +95,69 @@ class TerminalWorkflowRunner(
 }
 
 @Suppress("BlockingMethodInNonBlockingContext")
+@UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
 private suspend fun runTerminalWorkflow(
   screen: TerminalScreen,
   inputs: SendChannel<TerminalInput>,
   host: WorkflowHost<ExitCode, TerminalRendering>,
   keyStrokes: Worker<KeyStroke>,
   resizes: ReceiveChannel<TerminalSize>
-): ExitCode {
+): ExitCode = coroutineScope {
   var input = TerminalInput(screen.terminalSize.toSize(), keyStrokes)
 
   // Need to send an initial input for the workflow to start running.
   inputs.offer(input)
 
-  while (true) {
-    val update = selectUnbiased<Update<ExitCode, TerminalRendering>> {
-      resizes.onReceive {
-        screen.doResizeIfNecessary()
-            ?.let {
-              // If the terminal was resized since the last iteration, we need to notify the
-              // workflow.
-              input = input.copy(size = it.toSize())
-            }
+  // Launch the render loop in a new coroutine, so this coroutine can just sit around and wait
+  // for the workflow to emit an output.
+  val renderJob = launch {
+    val renderings = host.renderingsAndSnapshots.map { it.rendering }
+        .produceIn(this)
 
-        // Publish config changes to the workflow.
-        inputs.send(input)
-
-        // Sending that new input invalidated the lastRendering, so we don't want to
-        // re-iterate until we have a new rendering with a fresh event handler. It also
-        // triggered a render pass, so we can just retrieve that immediately.
-        return@onReceive host.updates.receive()
-      }
-
-      host.updates.onReceive { it }
-    }
-
-    // Stop the runner and return the exit code as soon as the workflow emits one.
-    update.output?.let { exitCode ->
-      return exitCode
-    }
-
-    screen.clear()
-    screen.newTextGraphics()
-        .apply {
-          foregroundColor = update.rendering.textColor.toTextColor()
-          backgroundColor = update.rendering.backgroundColor.toTextColor()
-          update.rendering.text.lineSequence()
-              .forEachIndexed { index, line ->
-                putString(TOP_LEFT_CORNER.withRelativeRow(index), line)
+    while (true) {
+      val rendering = selectUnbiased<TerminalRendering> {
+        resizes.onReceive {
+          screen.doResizeIfNecessary()
+              ?.let {
+                // If the terminal was resized since the last iteration, we need to notify the
+                // workflow.
+                input = input.copy(size = it.toSize())
               }
+
+          // Publish config changes to the workflow.
+          inputs.send(input)
+
+          // Sending that new input invalidated the lastRendering, so we don't want to
+          // re-iterate until we have a new rendering with a fresh event handler. It also
+          // triggered a render pass, so we can just retrieve that immediately.
+          return@onReceive renderings.receive()
         }
 
-    screen.refresh(COMPLETE)
+        renderings.onReceive { it }
+      }
+
+      screen.clear()
+      screen.newTextGraphics()
+          .apply {
+            foregroundColor = rendering.textColor.toTextColor()
+            backgroundColor = rendering.backgroundColor.toTextColor()
+            rendering.text.lineSequence()
+                .forEachIndexed { index, line ->
+                  putString(TOP_LEFT_CORNER.withRelativeRow(index), line)
+                }
+          }
+
+      screen.refresh(COMPLETE)
+    }
   }
+
+  // Start collecting from outputs before starting the workflow host, in case it emits immediately.
+  val exitCodeDeferred = async { host.outputs.first() }
+  val workflowJob = host.start()
+
+  // Stop the runner and return the exit code as soon as the workflow emits one.
+  val exitCode = exitCodeDeferred.await()
+  workflowJob.cancel()
+  renderJob.cancel()
+  return@coroutineScope exitCode
 }

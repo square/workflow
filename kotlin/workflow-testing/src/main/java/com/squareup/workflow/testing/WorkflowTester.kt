@@ -26,13 +26,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.jetbrains.annotations.TestOnly
@@ -55,27 +57,36 @@ import kotlin.coroutines.EmptyCoroutineContext
 class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal constructor(
   private val inputs: SendChannel<InputT>,
   private val host: WorkflowHost<OutputT, RenderingT>,
-  context: CoroutineContext
+  private val context: CoroutineContext
 ) {
 
   private val renderings = Channel<RenderingT>(capacity = UNLIMITED)
   private val snapshots = Channel<Snapshot>(capacity = UNLIMITED)
   private val outputs = Channel<OutputT>(capacity = UNLIMITED)
 
-  init {
-    val job = CoroutineScope(context)
-        .launch {
-          host.updates.consumeEach { (rendering, snapshot, output) ->
-            renderings.send(rendering)
-            snapshots.send(snapshot)
-            output?.let { outputs.send(it) }
-          }
+  internal fun start() {
+    // Subscribe before starting to ensure we get all the emissions.
+    // We use NonCancellable so that if context is already cancelled, the operator chains below
+    // are still allowed to handle the exceptions from WorkflowHost streams explicitly, since they
+    // need to close the test channels.
+    val scope = CoroutineScope(context + NonCancellable)
+    host.renderingsAndSnapshots
+        .onEach { (rendering, snapshot) ->
+          renderings.send(rendering)
+          snapshots.send(snapshot)
         }
-    job.invokeOnCompletion { cause ->
-      renderings.close(cause)
-      snapshots.close(cause)
-      outputs.close(cause)
-    }
+        .onCompletion { e ->
+          renderings.close(e)
+          snapshots.close(e)
+        }
+        .launchIn(scope)
+
+    host.outputs
+        .onEach { outputs.send(it) }
+        .onCompletion { e -> outputs.close(e) }
+        .launchIn(scope)
+
+    host.start()
   }
 
   /**
@@ -266,6 +277,7 @@ private fun <T, I, O : Any, R> test(
   val host = WorkflowHost.Factory(context)
       .let { starter(it, inputs) }
       .let { WorkflowTester(inputs, it, context) }
+      .apply { start() }
 
   var error: Throwable? = null
   try {
