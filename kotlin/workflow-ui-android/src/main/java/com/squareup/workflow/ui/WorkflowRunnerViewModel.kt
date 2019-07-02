@@ -28,7 +28,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
@@ -57,10 +56,11 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
    * workflow. The channel returned by this function will be cancelled by the host when it's
    * finished.
    */
-  internal class Factory<InputT, OutputT : Any> constructor(
+  @UseExperimental(ExperimentalCoroutinesApi::class)
+  internal class Factory<InputT, OutputT : Any>(
     private val workflow: Workflow<InputT, OutputT, Any>,
     private val viewRegistry: ViewRegistry,
-    private val inputs: () -> ReceiveChannel<InputT>,
+    private val inputs: Flow<InputT>,
     savedInstanceState: Bundle?,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
   ) : ViewModelProvider.Factory {

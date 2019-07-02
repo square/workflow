@@ -29,11 +29,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
@@ -64,13 +65,17 @@ class TerminalWorkflowRunner(
   /**
    * Runs [workflow] until it emits an [ExitCode] and then returns it.
    */
-  @UseExperimental(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+  @UseExperimental(
+      FlowPreview::class,
+      ExperimentalCoroutinesApi::class,
+      ObsoleteCoroutinesApi::class
+  )
   // Some methods on screen are synchronized, which Kotlin detects as blocking and warns us about
   // when invoking from coroutines. This entire function is blocking however, so we don't care.
   @Suppress("BlockingMethodInNonBlockingContext")
   fun run(workflow: TerminalWorkflow): ExitCode = runBlocking {
-    val configs = Channel<TerminalInput>(CONFLATED)
-    val host = hostFactory.run(workflow, { configs }, context = coroutineContext)
+    val configs = BroadcastChannel<TerminalInput>(CONFLATED)
+    val host = hostFactory.run(workflow, configs.asFlow(), context = coroutineContext)
     val keyStrokesChannel = screen.listenForKeyStrokesOn(this + ioDispatcher)
     val keyStrokesWorker = keyStrokesChannel.asWorker()
     val resizes = screen.terminal.listenForResizesOn(this)

@@ -24,6 +24,10 @@ import com.squareup.workflow.Workflow
 import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.reactive.flow.asFlow
 
 /**
  * A [Fragment] that can run a workflow. Subclasses implement [onCreateWorkflow]
@@ -61,19 +65,26 @@ import io.reactivex.Observable
 @ExperimentalWorkflowUi
 abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
 
+  @UseExperimental(ExperimentalCoroutinesApi::class)
   data class Config<InputT, OutputT : Any> internal constructor(
     val workflow: Workflow<InputT, OutputT, Any>,
     val viewRegistry: ViewRegistry,
-    val inputs: Flowable<InputT>
+    val inputs: Flow<InputT>
   ) {
     companion object {
       fun <InputT, OutputT : Any> with(
         workflow: Workflow<InputT, OutputT, Any>,
         viewRegistry: ViewRegistry,
-        inputs: Flowable<InputT>
+        inputs: Flow<InputT>
       ): Config<InputT, OutputT> = Config(workflow, viewRegistry, inputs)
 
-      fun <InputT, OutputT : Any> with(
+      fun <InputT : Any, OutputT : Any> with(
+        workflow: Workflow<InputT, OutputT, Any>,
+        viewRegistry: ViewRegistry,
+        inputs: Flowable<InputT>
+      ): Config<InputT, OutputT> = with(workflow, viewRegistry, inputs.asFlow())
+
+      fun <InputT : Any, OutputT : Any> with(
         workflow: Workflow<InputT, OutputT, Any>,
         viewRegistry: ViewRegistry,
         inputs: Observable<InputT>
@@ -83,7 +94,7 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
         workflow: Workflow<InputT, OutputT, Any>,
         viewRegistry: ViewRegistry,
         input: InputT
-      ): Config<InputT, OutputT> = with(workflow, viewRegistry, Flowable.just(input))
+      ): Config<InputT, OutputT> = with(workflow, viewRegistry, flowOf(input))
 
       fun <OutputT : Any> with(
         workflow: Workflow<Unit, OutputT, Any>,
