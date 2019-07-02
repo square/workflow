@@ -16,29 +16,29 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.Worker
-import com.squareup.workflow.Worker.Emitter
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.SelectBuilder
 
 /**
  * Launches a new coroutine that is a child of this node's scope, and calls
- * [com.squareup.workflow.Worker.performWork] from that coroutine. Returns a [ReceiveChannel] that
- * will be used to send anything emitted by [com.squareup.workflow.Worker.Emitter]. The channel
- * will be closed when `performWork` returns.
+ * [com.squareup.workflow.Worker.run] from that coroutine. Returns a [ReceiveChannel] that
+ * will emit everything from the worker. The channel will be closed when the flow completes.
  */
-@Suppress("EXPERIMENTAL_API_USAGE")
+@UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal fun <T> CoroutineScope.launchWorker(worker: Worker<T>): ReceiveChannel<Output<T>> =
-  produce {
-    val emitter = object : Emitter<T> {
-      override suspend fun emitOutput(output: T) = send(Output(output))
-    }
-    worker.performWork(emitter)
-  }
+  worker.run()
+      // TODO(https://github.com/square/workflow/issues/434) Remove this map to allow operator
+      // fusion to occur.
+      .map { Output(it) }
+      .produceIn(this)
 
 /**
  * Wraps [ReceiveChannel.onReceiveOrNull] to detect if the channel is actually closed vs just

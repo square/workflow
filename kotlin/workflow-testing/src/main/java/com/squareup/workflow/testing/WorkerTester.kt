@@ -18,7 +18,6 @@
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.Worker
-import com.squareup.workflow.Worker.Emitter
 import com.squareup.workflow.testing.WorkflowTester.Companion.DEFAULT_TIMEOUT_MS
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
@@ -26,6 +25,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
@@ -82,13 +82,7 @@ fun <T> Worker<T>.test(
     val internalJob = CompletableDeferred<Job>()
     val channel: ReceiveChannel<T> = produce(SupervisorJob()) {
       internalJob.complete(coroutineContext[Job]!!)
-
-      val emitter = object : Emitter<T> {
-        override suspend fun emitOutput(output: T) {
-          send(output)
-        }
-      }
-      performWork(emitter)
+      run().collect { send(it) }
     }
 
     val tester = object : WorkerTester<T> {

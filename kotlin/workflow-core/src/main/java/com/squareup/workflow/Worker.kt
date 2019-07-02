@@ -17,19 +17,19 @@ package com.squareup.workflow
 
 import com.squareup.workflow.Worker.Companion.create
 import com.squareup.workflow.Worker.Companion.from
-import com.squareup.workflow.Worker.Companion.fromChannel
 import com.squareup.workflow.Worker.Companion.fromNullable
-import com.squareup.workflow.Worker.Emitter
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.delayFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlin.experimental.ExperimentalTypeInference
 import kotlin.reflect.KClass
 
@@ -103,25 +103,14 @@ import kotlin.reflect.KClass
  * @see create
  * @see from
  * @see fromNullable
- * @see fromChannel
  * @see Deferred.asWorker
  * @see BroadcastChannel.asWorker
  */
 interface Worker<out T> {
 
   /**
-   * Passed into [performWork] to allow the [Worker] to emit outputs.
-   */
-  interface Emitter<in T> {
-    /**
-     * Delivers an output value to the [Workflow] that is running this [Worker].
-     */
-    suspend fun emitOutput(output: T)
-  }
-
-  /**
    * Used by [RenderContext.onWorkerOutputOrFinished] to distinguish between the two events of a
-   * [Worker] emitting an output, and finishing (returning from [performWork]).
+   * [Worker] emitting an output and finishing.
    */
   sealed class OutputOrFinished<out T> {
     /**
@@ -138,21 +127,21 @@ interface Worker<out T> {
   }
 
   /**
-   * Override this method to do the actual work. This is a suspend function and is invoked in the
-   * context of the workflow runtime. When this [Worker], it's parent [Workflow], or any ancestor
-   * [Workflow]s are torn down, the coroutine in which this function is invoked will be cancelled.
-   * If you need to do cleanup when the [Worker] is cancelled, wrap your work in a `try { }` block
-   * and do your cleanup in a `finally { }` block. For more information on how coroutine
-   * cancellation works, see [the coroutine guide](https://kotlinlang.org/docs/reference/coroutines/cancellation-and-timeouts.html).
+   * Returns a [Flow] to execute the work represented by this worker.
+   *
+   * The [Flow] is invoked in the context of the workflow runtime. When this [Worker], its parent
+   * [Workflow], or any ancestor [Workflow]s are torn down, the coroutine in which this [Flow] is
+   * being collected will be cancelled.
    */
-  suspend fun performWork(emitter: Emitter<T>)
+  @UseExperimental(ExperimentalCoroutinesApi::class)
+  fun run(): Flow<T>
 
   /**
    * Override this method to define equivalence between [Worker]s. At the end of every render pass,
    * the set of [Worker]s that were requested by the workflow are compared to the set from the last
    * render pass using this method. Equivalent workers are allowed to keep running. New workers
-   * are started ([performWork] is called). Old workers are cancelled (by cancelling the scope in
-   * which [performWork] is running).
+   * are started ([run] is called and the returned [Flow] is collected). Old workers are cancelled
+   * by cancelling their collecting coroutines.
    *
    * Implementations of this method should not be based on object identity. For example, a [Worker]
    * that performs a network request might check that two workers are requests to the same endpoint
@@ -163,31 +152,16 @@ interface Worker<out T> {
   companion object {
 
     /**
-     * Creates a [Worker] that will emit all values passed to `emit`, and then close when the block
-     * returns.
-     *
-     * The returned [Worker] will equate to any other workers created with any of the [Worker]
-     * builder functions that have the same output type and key.
-     *
-     * E.g.:
-     * ```
-     * val worker = Worker.create {
-     *   emitOutput(1)
-     *   delay(1000)
-     *   emitOutput(2)
-     *   delay(1000)
-     *   emitOutput(3)
-     * }
-     * ```
+     * Shorthand for `flow { block() }.asWorker(key)`.
      *
      * Note: If your worker just needs to perform side effects and doesn't need to emit anything,
      * use [createSideEffect] instead (since `Nothing` can't be used as a reified type parameter).
      */
-    @UseExperimental(ExperimentalTypeInference::class)
+    @UseExperimental(ExperimentalTypeInference::class, ExperimentalCoroutinesApi::class)
     inline fun <reified T> create(
       key: String = "",
-      @BuilderInference noinline block: suspend Emitter<T>.() -> Unit
-    ): Worker<T> = TypedWorker(T::class, key, block)
+      @BuilderInference noinline block: suspend FlowCollector<T>.() -> Unit
+    ): Worker<T> = flow(block).asWorker(key)
 
     /**
      * Creates a [Worker] that just performs some side effects and doesn't emit anything.
@@ -203,26 +177,25 @@ interface Worker<out T> {
      * }
      * ```
      */
+    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun createSideEffect(
       key: String,
       block: suspend () -> Unit
-    ): Worker<Nothing> = TypedWorker(Nothing::class, key) { block() }
+    ): Worker<Nothing> = TypedWorker(Nothing::class, key, flow { block() })
 
     /**
      * Creates a [Worker] from a function that returns a single value.
      *
+     * Shorthand for `flow { emit(block()) }.asWorker(key)`.
+     *
      * The returned [Worker] will equate to any other workers created with any of the [Worker]
      * builder functions that have the same output type.
      */
+    @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
     inline fun <reified T> from(
       key: String = "",
-        // This could be crossinline, but there's a coroutines bug that will cause the coroutine
-        // to immediately resume on suspension inside block when it is crossinline.
-        // See https://youtrack.jetbrains.com/issue/KT-31197.
       noinline block: suspend () -> T
-    ): Worker<T> = create(key) {
-      emitOutput(block())
-    }
+    ): Worker<T> = block.asFlow().asWorker(key)
 
     /**
      * Creates a [Worker] from a function that returns a single value.
@@ -231,6 +204,7 @@ interface Worker<out T> {
      * The returned [Worker] will equate to any other workers created with any of the [Worker]
      * builder functions that have the same output type.
      */
+    @UseExperimental(ExperimentalCoroutinesApi::class)
     inline fun <reified T : Any> fromNullable(
       key: String = "",
         // This could be crossinline, but there's a coroutines bug that will cause the coroutine
@@ -238,30 +212,7 @@ interface Worker<out T> {
         // See https://youtrack.jetbrains.com/issue/KT-31197.
       noinline block: suspend () -> T?
     ): Worker<T> = create(key) {
-      block()?.let { emitOutput(it) }
-    }
-
-    /**
-     * Creates a [Worker] from a function that returns a [ReceiveChannel].
-     * The worker will emit everything from the returned channel, and finish when the channel is
-     * closed.
-     *
-     * If the [Worker] is torn down before finishing, both the scope and the channel will be
-     * cancelled.
-     *
-     * The returned [Worker] will equate to any other workers created with any of the [Worker]
-     * builder functions that have the same output type.
-     */
-    inline fun <reified T> fromChannel(
-      key: String = "",
-      crossinline block: CoroutineScope.() -> ReceiveChannel<T>
-    ): Worker<T> = create(key) {
-      coroutineScope {
-        val channel = block()
-        // Close after cancel in case block doesn't use the passed CoroutineScope to scope the
-        // returned channel.
-        emitAll(channel, closeOnCancel = true)
-      }
+      block()?.let { emit(it) }
     }
 
     /**
@@ -278,6 +229,18 @@ interface Worker<out T> {
 }
 
 /**
+ * Returns a [Worker] that will, when performed, emit whatever this [Flow] receives.
+ *
+ * **Warning:** The Flow API is very immature and so any breaking changes there (including in
+ * transiently-included versions) will be compounded when layering Workflow APIs on top of it.
+ * This **SHOULD NOT** be used in production code.
+ */
+@UseExperimental(ExperimentalCoroutinesApi::class)
+inline fun <reified T> Flow<T>.asWorker(
+  key: String = ""
+): Worker<T> = TypedWorker(T::class, key, this)
+
+/**
  * Returns a [Worker] that will await this [Deferred] and then emit it.
  *
  * Note that [Deferred] is a "hot" future type – calling a function that _returns_ a [Deferred]
@@ -290,13 +253,12 @@ interface Worker<out T> {
 inline fun <reified T> Deferred<T>.asWorker(key: String = ""): Worker<T> = from(key) { await() }
 
 /**
- * Returns a [Worker] that will, when performed,
- * [open a subscription][BroadcastChannel.openSubscription] to the channel and emit whatever it
- * receives. The subscription channel will be cancelled if the [Worker] is cancelled.
+ * Shorthand for `.asFlow().asWorker(key)`.
  */
 @ExperimentalCoroutinesApi
+@UseExperimental(FlowPreview::class)
 inline fun <reified T> BroadcastChannel<T>.asWorker(key: String = ""): Worker<T> =
-  fromChannel(key) { openSubscription() }
+  asFlow().asWorker(key)
 
 /**
  * Returns a [Worker] that will, when performed, emit whatever this channel receives.
@@ -313,65 +275,19 @@ inline fun <reified T> BroadcastChannel<T>.asWorker(key: String = ""): Worker<T>
  *
  * True by default.
  */
+@UseExperimental(ExperimentalCoroutinesApi::class)
 inline fun <reified T> ReceiveChannel<T>.asWorker(
   key: String = "",
   closeOnCancel: Boolean = true
 ): Worker<T> = create(key) {
-  emitAll(this@asWorker, closeOnCancel)
-}
-
-/**
- * Returns a [Worker] that will, when performed, emit whatever this [Flow] receives.
- *
- * **Warning:** The Flow API is very immature and so any breaking changes there (including in
- * transiently-included versions) will be compounded when layering Workflow APIs on top of it.
- * This **SHOULD NOT** be used in production code.
- */
-@VeryExperimentalWorkflow
-@ExperimentalCoroutinesApi
-inline fun <reified T> Flow<T>.asWorker(
-  key: String = ""
-): Worker<T> = create(key) { emitAll(this@asWorker) }
-
-/**
- * Emits whatever [channel] receives on this [Emitter].
- *
- * @param closeOnCancel
- * **If true:**
- * The channel _will_ be cancelled when the [Worker] is cancelled – this is intended for use with
- * cold channels that are were started by and are to be managed by this worker or its parent
- * [Workflow].
- *
- * **If false:**
- * The channel will _not_ be cancelled when the [Worker] is cancelled – this is intended for
- * use with hot channels that are managed externally.
- */
-suspend inline fun <T> Emitter<T>.emitAll(
-  channel: ReceiveChannel<T>,
-  closeOnCancel: Boolean
-) {
   if (closeOnCancel) {
     // Using consumeEach ensures that the channel is closed if this coroutine is cancelled.
-    @Suppress("EXPERIMENTAL_API_USAGE")
-    channel.consumeEach { emitOutput(it) }
+    consumeEach { emit(it) }
   } else {
-    for (value in channel) {
-      emitOutput(value)
+    for (value in this@asWorker) {
+      emit(value)
     }
   }
-}
-
-/**
- * Emits everything from [flow] on this [Emitter].
- *
- * **Warning:** The Flow API is very immature and so any breaking changes there (including in
- * transiently-included versions) will be compounded when layering Workflow APIs on top of it.
- * This **SHOULD NOT** be used in production code.
- */
-@VeryExperimentalWorkflow
-@ExperimentalCoroutinesApi
-suspend inline fun <T> Emitter<T>.emitAll(flow: Flow<T>) {
-  flow.collect { emitOutput(it) }
 }
 
 /**
@@ -379,14 +295,15 @@ suspend inline fun <T> Emitter<T>.emitAll(flow: Flow<T>) {
  * [key]s and equivalent [type]s. This is used by all the [Worker] builder functions.
  */
 @PublishedApi
+@UseExperimental(ExperimentalCoroutinesApi::class)
 internal class TypedWorker<T>(
   /** Can't be `KClass<T>` because `T` doesn't have upper bound `Any`. */
   private val type: KClass<*>,
   private val key: String,
-  private val work: suspend Emitter<T>.() -> Unit
+  private val work: Flow<T>
 ) : Worker<T> {
 
-  override suspend fun performWork(emitter: Emitter<T>) = work(emitter)
+  override fun run(): Flow<T> = work
 
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
     otherWorker is TypedWorker &&
@@ -400,10 +317,9 @@ private class TimerWorker(
   private val delayMs: Long,
   private val key: String
 ) : Worker<Unit> {
-  override suspend fun performWork(emitter: Emitter<Unit>) {
-    delay(delayMs)
-    emitter.emitOutput(Unit)
-  }
+
+  @UseExperimental(ExperimentalCoroutinesApi::class)
+  override fun run() = flowOf(Unit).delayFlow(delayMs)
 
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
     otherWorker is TimerWorker && otherWorker.key == key

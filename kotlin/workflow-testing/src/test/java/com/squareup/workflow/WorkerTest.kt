@@ -18,15 +18,11 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.testing.test
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
@@ -66,8 +62,8 @@ class WorkerTest {
 
   @Test fun `create emits and finishes`() {
     val worker = Worker.create {
-      emitOutput("hello")
-      emitOutput("world")
+      emit("hello")
+      emit("world")
     }
 
     worker.test {
@@ -167,79 +163,6 @@ class WorkerTest {
 
     worker.test {
       assertFinished()
-    }
-  }
-
-  @Test fun `fromChannel emits from channel then finishes`() {
-    val worker = Worker.fromChannel {
-      produce {
-        send("hello")
-        send("world")
-      }
-    }
-
-    worker.test {
-      assertEquals("hello", nextOutput())
-      assertEquals("world", nextOutput())
-      assertFinished()
-    }
-  }
-
-  @Test fun `fromChannel finishes without emitting`() {
-    val worker = Worker.fromChannel {
-      Channel<Unit>().apply { close() }
-    }
-
-    worker.test {
-      assertFinished()
-    }
-  }
-
-  @Test fun `fromChannel cancels scope when worker cancelled`() {
-    var cancelled = false
-    val worker = Worker.fromChannel {
-      coroutineContext[Job]!!.invokeOnCompletion {
-        assertNotNull(it)
-        cancelled = true
-      }
-      Channel<Unit>()
-    }
-
-    worker.test {
-      cancelWorker()
-      assertTrue(cancelled)
-    }
-  }
-
-  @Test fun `fromChannel cancels channel when worker cancelled`() {
-    var cancelled = false
-    val worker = Worker.fromChannel {
-      Channel<Unit>().apply {
-        invokeOnClose {
-          cancelled = true
-        }
-      }
-    }
-
-    worker.test {
-      cancelWorker()
-      assertTrue(cancelled)
-    }
-  }
-
-  @Test fun `fromChannel propagates exceptions`() {
-    val worker = Worker.fromChannel {
-      Channel<Unit>().apply {
-        cancel(CancellationException(null, ExpectedException()))
-      }
-    }
-
-    worker.test {
-      val causeChain = generateSequence(getException()) { it.cause }
-      assertEquals(
-          1, causeChain.count { it is ExpectedException },
-          "Expected cancellation exception cause chain to include original cause."
-      )
     }
   }
 
