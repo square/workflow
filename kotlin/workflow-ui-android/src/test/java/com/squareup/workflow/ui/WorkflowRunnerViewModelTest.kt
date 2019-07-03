@@ -1,16 +1,16 @@
 package com.squareup.workflow.ui
 
 import com.google.common.truth.Truth.assertThat
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.RenderingAndSnapshot
+import com.squareup.workflow.Snapshot
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import org.junit.Test
@@ -18,63 +18,17 @@ import org.junit.Test
 @UseExperimental(ExperimentalWorkflowUi::class, ExperimentalCoroutinesApi::class)
 class WorkflowRunnerViewModelTest {
 
+  private val scope = CoroutineScope(Unconfined)
   @Suppress("RemoveRedundantSpreadOperator")
   private val viewRegistry = ViewRegistry(*emptyArray<ViewBinding<*>>())
-
-  @Test fun hostStartedLazilyOnRenderingsSubscription() {
-    var started = false
-    val host = object : WorkflowHost<Nothing, Unit> {
-      override val renderingsAndSnapshots: Flow<RenderingAndSnapshot<Unit>> = emptyFlow()
-      override val outputs: Flow<Nothing> = emptyFlow()
-
-      override fun start(): Job {
-        started = true
-        return Job()
-      }
-    }
-    val runner = WorkflowRunnerViewModel(viewRegistry, host, Unconfined)
-
-    assertThat(started).isFalse()
-
-    runner.renderings.test()
-    assertThat(started).isTrue()
-  }
-
-  @Test fun hostStartedLazilyOnOutputsSubscription() {
-    var started = false
-    val host = object : WorkflowHost<Unit, Unit> {
-      override val renderingsAndSnapshots: Flow<RenderingAndSnapshot<Unit>> = emptyFlow()
-      override val outputs: Flow<Nothing> = emptyFlow()
-
-      override fun start(): Job {
-        started = true
-        return Job()
-      }
-    }
-    val runner = WorkflowRunnerViewModel(viewRegistry, host, Unconfined)
-
-    assertThat(started).isFalse()
-
-    runner.output.test()
-    assertThat(started).isTrue()
-  }
 
   @Test fun snapshotUpdatedOnHostEmission() {
     val snapshot1 = Snapshot.of("one")
     val snapshot2 = Snapshot.of("two")
     val snapshotsChannel = Channel<RenderingAndSnapshot<Unit>>(UNLIMITED)
+    val snapshotsFlow = flow { snapshotsChannel.consumeEach { emit(it) } }
 
-    val host = object : WorkflowHost<Unit, Unit> {
-      override val renderingsAndSnapshots: Flow<RenderingAndSnapshot<Unit>> = flow {
-        snapshotsChannel.consumeEach {
-          emit(it)
-        }
-      }
-      override val outputs: Flow<Nothing> = emptyFlow()
-
-      override fun start() = Job()
-    }
-    val runner = WorkflowRunnerViewModel(viewRegistry, host, Unconfined)
+    val runner = WorkflowRunnerViewModel(viewRegistry, snapshotsFlow, emptyFlow(), scope)
 
     assertThat(runner.getLastSnapshotForTest()).isEqualTo(Snapshot.EMPTY)
 
@@ -87,15 +41,10 @@ class WorkflowRunnerViewModelTest {
 
   @Test fun hostCancelledOnCleared() {
     var cancelled = false
-    val host = object : WorkflowHost<Unit, Unit> {
-      override val renderingsAndSnapshots: Flow<RenderingAndSnapshot<Unit>> = emptyFlow()
-      override val outputs: Flow<Nothing> = emptyFlow()
-
-      private val job = Job().apply { invokeOnCompletion { cancelled = true } }
-
-      override fun start(): Job = job
+    scope.coroutineContext[Job]!!.invokeOnCompletion { e ->
+      if (e is CancellationException) cancelled = true
     }
-    val runner = WorkflowRunnerViewModel(viewRegistry, host, Unconfined)
+    val runner = WorkflowRunnerViewModel(viewRegistry, emptyFlow(), emptyFlow(), scope)
 
     assertThat(cancelled).isFalse()
     runner.output.test()

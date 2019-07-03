@@ -16,7 +16,7 @@
 package com.squareup.workflow
 
 /**
- * Emitted from [WorkflowHost.renderingsAndSnapshots] after every render pass.
+ * Tuple of rendering and snapshot used by [launchWorkflowIn].
  */
 data class RenderingAndSnapshot<out RenderingT>(
   val rendering: RenderingT,
