@@ -39,6 +39,12 @@ extension Workflow {
 ///                 worker: TestWorker(),
 ///                 output: TestWorker.Output.success),
 ///             ...,
+///         ]
+///         expectedWorkflows: [
+///             ExpectedWorkflow(
+///                 type: ChildWorkflow.self,
+///                 rendering: "rendering",
+///                 output: ChildWorkflow.Output.success
 ///         ]),
 ///         assertions: { rendering in
 ///             XCTAssertEqual("expected text on rendering", rendering.text)
@@ -70,6 +76,18 @@ extension Workflow {
 ///         }
 /// ```
 ///
+/// Validate an output was received from the workflow. The `action()` on the rendering will cause an action that will return an output.
+/// ```
+/// workflow
+///     .renderTester()
+///     .render(
+///         with: RenderExpectations(
+///         expectedState: ExpectedOutput(output: .success)
+///         assertions: { rendering in
+///             rendering.action()
+///         }
+/// ```
+///
 /// Validate a worker is running, and simulate the effect of its output:
 /// ```
 /// workflow
@@ -84,6 +102,23 @@ extension Workflow {
 ///             ...,
 ///         ]),
 ///         assertions: {}
+/// ```
+///
+/// Validate a child workflow is run, and simulate the effect of its output:
+/// ```
+/// workflow
+///     .renderTester(initialState: TestWorkflow.State(loadingState: .loading))
+///     .render(
+///         with: RenderExpectations(
+///         expectedState: ExpectedState(state: TestWorkflow.State(loadingState: .idle)),
+///         expectedWorkflows: [
+///             ExpectedWorkflow(
+///                 type: ChildWorkflow.self,
+///                 rendering: "rendering",
+///                 output: ChildWorkflow.Output.success
+///         ]),
+///         assertions: {}
+/// ```
 public final class RenderTester<WorkflowType: Workflow> {
     private var workflow: WorkflowType
     private var state: WorkflowType.State
@@ -114,6 +149,26 @@ public final class RenderTester<WorkflowType: Workflow> {
         return self
     }
 
+    /// Convenience method for testing without creating an explicit RenderExpectation.
+    @discardableResult
+    public func render(
+        expectedState: ExpectedState<WorkflowType>? = nil,
+        expectedOutput: ExpectedOutput<WorkflowType>? = nil,
+        expectedWorkers: [ExpectedWorker] = [],
+        expectedWorkflows: [ExpectedWorkflow] = [],
+        assertions: (WorkflowType.Rendering) -> Void,
+        file: StaticString = #file, line: UInt = #line
+    ) -> RenderTester<WorkflowType> {
+
+        let expectations = RenderExpectations(
+            expectedState: expectedState,
+            expectedOutput: expectedOutput,
+            expectedWorkers: expectedWorkers,
+            expectedWorkflows: expectedWorkflows)
+
+        return self.render(with: expectations, assertions: assertions)
+    }
+
     /// Assert the internal state.
     @discardableResult
     public func assert(state assertions: (WorkflowType.State) -> Void) -> RenderTester<WorkflowType> {
@@ -142,13 +197,15 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
     }
 
     func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child : Workflow, Action : WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
-        let testContext = RenderTestContext<Child>(
-            state: workflow.makeInitialState(),
-            expectations: RenderExpectations<Child>(),
-            file: file,
-            line: line)
-        let context = RenderContext.make(implementation: testContext)
-        return workflow.render(state: testContext.state, context: context)
+        guard let workflowIndex = expectations.expectedWorkflows.firstIndex(where: { expectedWorkflow -> Bool in
+            return (type(of: workflow) == expectedWorkflow.workflowType && key == expectedWorkflow.key)
+        }) else {
+            XCTFail("Unexpected child workflow of type \(workflow.self)", file: file, line: line)
+            fatalError()
+        }
+
+        let expectedWorkflow = expectations.expectedWorkflows.remove(at: workflowIndex)
+        return expectedWorkflow.rendering as! Child.Rendering
     }
 
     func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action : WorkflowAction, T == Action.WorkflowType {
@@ -184,7 +241,22 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
     }
 
     private func apply<Action>(action: Action) where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
-        let _ = action.apply(toState: &self.state)
+        let output = action.apply(toState: &self.state)
+        switch (output, expectations.expectedOutput) {
+        case (.none, .none):
+            // No expected output, no output received.
+            break
+
+        case (.some, .none):
+            XCTFail("Received an output, but expected no output.", file: file, line: line)
+
+        case (.none, .some):
+            XCTFail("Expected an output, but received none.", file: file, line: line)
+
+        case (.some(let output), .some(let expectedOutput)):
+            XCTAssertTrue(expectedOutput.isEquivalent(output, expectedOutput.output), "expect output of \(expectedOutput.output) but received \(output)", file: file, line: line)
+        }
+        expectations.expectedOutput = nil
     }
 
     /// Validate the expectations were fulfilled, or fail if not.
@@ -193,11 +265,20 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
             XCTAssertTrue(expectedState.isEquivalent(expectedState.state, self.state), "State: \(self.state) was not equivalent to expected state: \(expectedState.state)", file: file, line: line)
         }
 
+        if let outputExpectation = expectations.expectedOutput {
+            XCTFail("Expected output of '\(outputExpectation.output)' but received none.", file: file, line: line)
+        }
+
         if expectations.expectedWorkers.count != 0 {
             for expectedWorker in expectations.expectedWorkers {
                 XCTFail("Expected worker \(expectedWorker.worker)", file: file, line: line)
             }
         }
 
+        if expectations.expectedWorkflows.count != 0 {
+            for expectedWorkflow in expectations.expectedWorkflows {
+                XCTFail("Expected child workflow of type: \(expectedWorkflow.workflowType) key: \(expectedWorkflow.key)", file: file, line: line)
+            }
+        }
     }
 }
