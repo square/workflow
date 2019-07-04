@@ -135,29 +135,16 @@ class SnapshottingIntegrationTest {
 
   // See https://github.com/square/workflow/issues/404
   @Test fun `descendant snapshots are independent over state transitions`() {
-    val workflow = object : StatefulWorkflow<String, String, Nothing, Unit>() {
-      override fun initialState(
-        input: String,
-        snapshot: Snapshot?
-      ): String = input
-
-      override fun onInputChanged(
-        old: String,
-        new: String,
-        state: String
-      ): String = new
-
-      override fun render(
-        input: String,
-        state: String,
-        context: RenderContext<String, Nothing>
-      ) {
-      }
-
-      override fun snapshotState(state: String): Snapshot = Snapshot.write {
-        it.writeUtf8WithLength(state)
-      }
-    }
+    val workflow = Workflow.stateful<String, String, Nothing, Unit>(
+        initialState = { input, _ -> input },
+        onInputChanged = { _, new, _ -> new },
+        render = { _, _ -> Unit },
+        snapshot = { state ->
+          Snapshot.write {
+            it.writeUtf8WithLength(state)
+          }
+        }
+    )
     // This test specifically needs to test snapshots from a non-flat workflow tree.
     val root = Workflow.stateless<String, Nothing, Unit> {
       renderChild(workflow, it)

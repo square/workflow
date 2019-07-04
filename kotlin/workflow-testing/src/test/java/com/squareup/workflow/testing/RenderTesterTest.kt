@@ -15,13 +15,11 @@
  */
 package com.squareup.workflow.testing
 
-import com.squareup.workflow.RenderContext
-import com.squareup.workflow.Snapshot
-import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.renderChild
+import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -40,23 +38,11 @@ class RenderTesterTest {
   }
 
   @Test fun `stateful workflow gets state`() {
-    val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(
-        input: String,
-        snapshot: Snapshot?
-      ): String = fail("Expected initialState not to be called.")
-
-      override fun render(
-        input: String,
-        state: String,
-        context: RenderContext<String, Nothing>
-      ): String {
-        return "input=$input, state=$state"
-      }
-
-      override fun snapshotState(state: String): Snapshot =
-        fail("Expected snapshotState not to be called.")
-    }
+    val workflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { _, _ -> fail("Expected initialState not to be called.") },
+        render = { input, state -> "input=$input, state=$state" },
+        snapshot = { fail("Expected snapshotState not to be called.") }
+    )
 
     workflow.testRender(input = "foo", state = "bar") {
       assertEquals("input=foo, state=bar", rendering)
@@ -64,20 +50,11 @@ class RenderTesterTest {
   }
 
   @Test fun `testRenderInitialState uses correct state`() {
-    val workflow = object : StatefulWorkflow<String, String, String, String>() {
-      override fun initialState(
-        input: String,
-        snapshot: Snapshot?
-      ): String = input
-
-      override fun render(
-        input: String,
-        state: String,
-        context: RenderContext<String, String>
-      ): String = "input: $input, state: $state"
-
-      override fun snapshotState(state: String): Snapshot = fail()
-    }
+    val workflow = Workflow.stateful<String, String, String, String>(
+        initialState = { input, _ -> input },
+        render = { input, state -> "input: $input, state: $state" },
+        snapshot = { fail() }
+    )
 
     workflow.testRenderInitialState("initial") {
       assertEquals("input: initial, state: initial", rendering)
@@ -107,27 +84,18 @@ class RenderTesterTest {
 
   @Test fun `renders worker output`() {
     val worker = MockWorker<String>("worker")
-    val workflow = object : StatefulWorkflow<Unit, String, String, Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ): String = fail()
-
-      override fun render(
-        input: Unit,
-        state: String,
-        context: RenderContext<String, String>
-      ) {
-        context.onWorkerOutputOrFinished(worker) {
-          enterState(
-              "state: $it",
-              emittingOutput = "output: $it"
-          )
-        }
-      }
-
-      override fun snapshotState(state: String): Snapshot = fail()
-    }
+    val workflow = Workflow.stateful<Unit, String, String, Unit>(
+        initialState = { _, _ -> fail() },
+        render = { _, _ ->
+          onWorkerOutputOrFinished(worker) {
+            enterState(
+                "state: $it",
+                emittingOutput = "output: $it"
+            )
+          }
+        },
+        snapshot = { fail() }
+    )
 
     workflow.testRender("") {
       assertNoWorkflowsRendered()
@@ -147,27 +115,18 @@ class RenderTesterTest {
 
   @Test fun `child workflow output`() {
     val child: Workflow<Unit, String, Unit> = MockChildWorkflow(Unit)
-    val workflow = object : StatefulWorkflow<Unit, String, String, Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ): String = fail()
-
-      override fun render(
-        input: Unit,
-        state: String,
-        context: RenderContext<String, String>
-      ) {
-        context.renderChild(child) {
-          enterState(
-              "state: $it",
-              emittingOutput = "output: $it"
-          )
-        }
-      }
-
-      override fun snapshotState(state: String): Snapshot = fail()
-    }
+    val workflow = Workflow.stateful<Unit, String, String, Unit>(
+        initialState = { _, _ -> fail() },
+        render = { _, _ ->
+          renderChild(child) {
+            enterState(
+                "state: $it",
+                emittingOutput = "output: $it"
+            )
+          }
+        },
+        snapshot = { fail() }
+    )
 
     workflow.testRender("") {
       assertNoWorkersRan()
@@ -179,25 +138,18 @@ class RenderTesterTest {
   }
 
   @Test fun `getEventResult works`() {
-    val workflow = object : StatefulWorkflow<Unit, String, String, (String) -> Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ): String = fail()
-
-      override fun render(
-        input: Unit,
-        state: String,
-        context: RenderContext<String, String>
-      ): (String) -> Unit = context.onEvent { event ->
-        enterState(
-            newState = "from $state on $event",
-            emittingOutput = "event: $event"
-        )
-      }
-
-      override fun snapshotState(state: String): Snapshot = fail()
-    }
+    val workflow = Workflow.stateful<Unit, String, String, (String) -> Unit>(
+        initialState = { _, _ -> fail() },
+        render = { _, state ->
+          onEvent { event ->
+            enterState(
+                newState = "from $state on $event",
+                emittingOutput = "event: $event"
+            )
+          }
+        },
+        snapshot = { fail() }
+    )
 
     workflow.testRender(state = "initial") {
       rendering.invoke("foo")

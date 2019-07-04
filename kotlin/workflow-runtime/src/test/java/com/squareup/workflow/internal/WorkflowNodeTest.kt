@@ -23,12 +23,14 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
+import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.renderChild
+import com.squareup.workflow.stateful
 import com.squareup.workflow.writeUtf8WithLength
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Unconfined
@@ -351,25 +353,20 @@ class WorkflowNodeTest {
   }
 
   @Test fun `snapshots non-empty without children`() {
-    val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(
-        input: String,
-        snapshot: Snapshot?
-      ): String = snapshot?.bytes?.parse {
-        it.readUtf8WithLength()
-            .removePrefix("state:")
-      } ?: input
-
-      override fun render(
-        input: String,
-        state: String,
-        context: RenderContext<String, Nothing>
-      ): String = state
-
-      override fun snapshotState(state: String): Snapshot = Snapshot.write {
-        it.writeUtf8WithLength("state:$state")
-      }
-    }
+    val workflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { input, snapshot ->
+          snapshot?.bytes?.parse {
+            it.readUtf8WithLength()
+                .removePrefix("state:")
+          } ?: input
+        },
+        render = { _, state -> state },
+        snapshot = { state ->
+          Snapshot.write {
+            it.writeUtf8WithLength("state:$state")
+          }
+        }
+    )
     val originalNode = WorkflowNode(
         workflow.id(),
         workflow,
@@ -394,22 +391,11 @@ class WorkflowNodeTest {
   }
 
   @Test fun `snapshots empty without children`() {
-    val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(
-        input: String,
-        snapshot: Snapshot?
-      ): String = if (snapshot != null) "restored" else input
-
-      override fun render(
-        input: String,
-        state: String,
-        context: RenderContext<String, Nothing>
-      ): String {
-        return state
-      }
-
-      override fun snapshotState(state: String): Snapshot = Snapshot.EMPTY
-    }
+    val workflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { input, snapshot -> if (snapshot != null) "restored" else input },
+        render = { _, state -> state },
+        snapshot = { Snapshot.EMPTY }
+    )
     val originalNode = WorkflowNode(
         workflow.id(),
         workflow,
@@ -436,51 +422,36 @@ class WorkflowNodeTest {
   @Test fun `snapshots non-empty with children`() {
     var restoredChildState: String? = null
     var restoredParentState: String? = null
-    val childWorkflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(
-        input: String,
-        snapshot: Snapshot?
-      ): String = snapshot?.bytes?.parse {
-        it.readUtf8WithLength()
-            .removePrefix("child state:")
-            .also { state -> restoredChildState = state }
-      } ?: input
-
-      override fun render(
-        input: String,
-        state: String,
-        context: RenderContext<String, Nothing>
-      ): String {
-        return state
-      }
-
-      override fun snapshotState(state: String): Snapshot = Snapshot.write {
-        it.writeUtf8WithLength("child state:$state")
-      }
-    }
-    val parentWorkflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(
-        input: String,
-        snapshot: Snapshot?
-      ): String = snapshot?.bytes?.parse {
-        it.readUtf8WithLength()
-            .removePrefix("parent state:")
-            .also { state -> restoredParentState = state }
-      } ?: input
-
-      override fun render(
-        input: String,
-        state: String,
-        context: RenderContext<String, Nothing>
-      ): String {
-        val childRendering = context.renderChild(childWorkflow, "child input")
-        return "$state|$childRendering"
-      }
-
-      override fun snapshotState(state: String): Snapshot = Snapshot.write {
-        it.writeUtf8WithLength("parent state:$state")
-      }
-    }
+    val childWorkflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { input, snapshot ->
+          snapshot?.bytes?.parse {
+            it.readUtf8WithLength()
+                .removePrefix("child state:")
+                .also { state -> restoredChildState = state }
+          } ?: input
+        },
+        render = { _, state -> state },
+        snapshot = { state ->
+          Snapshot.write {
+            it.writeUtf8WithLength("child state:$state")
+          }
+        }
+    )
+    val parentWorkflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { input, snapshot ->
+          snapshot?.bytes?.parse {
+            it.readUtf8WithLength()
+                .removePrefix("parent state:")
+                .also { state -> restoredParentState = state }
+          } ?: input
+        },
+        render = { _, state -> "$state|" + renderChild(childWorkflow, "child input") },
+        snapshot = { state ->
+          Snapshot.write {
+            it.writeUtf8WithLength("parent state:$state")
+          }
+        }
+    )
 
     val originalNode = WorkflowNode(
         parentWorkflow.id(),
@@ -512,29 +483,16 @@ class WorkflowNodeTest {
     var restoreCalls = 0
     // Track the number of times the snapshot is actually serialized, not snapshotState is called.
     var snapshotWrites = 0
-    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ) {
-        if (snapshot != null) {
-          restoreCalls++
+    val workflow = Workflow.stateful<Unit, Nothing, Unit>(
+        initialState = { snapshot -> if (snapshot != null) restoreCalls++ },
+        render = { Unit },
+        snapshot = {
+          snapshotCalls++
+          Snapshot.write {
+            snapshotWrites++
+          }
         }
-      }
-
-      override fun render(
-        input: Unit,
-        state: Unit,
-        context: RenderContext<Unit, Nothing>
-      ) = Unit
-
-      override fun snapshotState(state: Unit): Snapshot {
-        snapshotCalls++
-        return Snapshot.write {
-          snapshotWrites++
-        }
-      }
-    }
+    )
     val node = WorkflowNode(workflow.id(), workflow, Unit, null, Unconfined)
 
     assertEquals(0, snapshotCalls)
@@ -561,28 +519,17 @@ class WorkflowNodeTest {
   }
 
   @Test fun `restore gets input`() {
-    val workflow = object : StatefulWorkflow<String, String, Nothing, String>() {
-      override fun initialState(
-        input: String,
-        snapshot: Snapshot?
-      ): String = snapshot?.bytes?.parse {
-        // Tags the restored state with the input so we can check it.
-        val deserialized = it.readUtf8WithLength()
-        return@parse "input:$input|state:$deserialized"
-      } ?: input
-
-      override fun render(
-        input: String,
-        state: String,
-        context: RenderContext<String, Nothing>
-      ): String {
-        return state
-      }
-
-      override fun snapshotState(state: String): Snapshot = Snapshot.write {
-        it.writeUtf8WithLength(state)
-      }
-    }
+    val workflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { input, snapshot ->
+          snapshot?.bytes?.parse {
+            // Tags the restored state with the input so we can check it.
+            val deserialized = it.readUtf8WithLength()
+            return@parse "input:$input|state:$deserialized"
+          } ?: input
+        },
+        render = { _, state -> state },
+        snapshot = { state -> Snapshot.write { it.writeUtf8WithLength(state) } }
+    )
     val originalNode = WorkflowNode(
         workflow.id(),
         workflow,
