@@ -15,7 +15,7 @@ This project is under active development. The workflow code is being piloted in 
 
 More documentation and samples will be coming soon!
 
-## Getting the library
+## Using Workflows in your project
 
 ### Swift
 
