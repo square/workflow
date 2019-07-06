@@ -20,14 +20,18 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
+import com.squareup.workflow.asWorker
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.yield
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -99,6 +103,40 @@ class WorkersTest {
           1, causeChain.count { it is ExpectedException },
           "Expected cancellation exception cause chain to include original cause."
       )
+    }
+  }
+
+  @Test fun `propagates backpressure`() {
+    val channel = Channel<String>()
+    val worker = channel.asWorker()
+    // Used to assert ordering.
+    val counter = AtomicInteger(0)
+
+    runBlocking {
+      val workerOutputs = launchWorker(worker)
+
+      launch(start = UNDISPATCHED) {
+        assertEquals(0, counter.getAndIncrement())
+        channel.send("a")
+        assertEquals(2, counter.getAndIncrement())
+        channel.send("b")
+        assertEquals(4, counter.getAndIncrement())
+        channel.close()
+        assertEquals(5, counter.getAndIncrement())
+      }
+      yield()
+      assertEquals(1, counter.getAndIncrement())
+
+      assertEquals(Output("a"), workerOutputs.poll())
+      yield()
+      assertEquals(3, counter.getAndIncrement())
+
+      assertEquals(Output("b"), workerOutputs.poll())
+      yield()
+      assertEquals(6, counter.getAndIncrement())
+
+      // Cancel the worker so we can exit this loop.
+      workerOutputs.cancel()
     }
   }
 

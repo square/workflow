@@ -22,7 +22,9 @@ import com.squareup.workflow.Worker.OutputOrFinished.Output
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.SelectBuilder
@@ -38,6 +40,7 @@ internal fun <T> CoroutineScope.launchWorker(worker: Worker<T>): ReceiveChannel<
       // TODO(https://github.com/square/workflow/issues/434) Remove this map to allow operator
       // fusion to occur.
       .map { Output(it) }
+      .buffer(RENDEZVOUS)
       .produceIn(this)
 
 /**
