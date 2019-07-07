@@ -2,7 +2,7 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.RealWorkflowHost
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.WorkflowHost.RenderingAndSnapshot
+import com.squareup.workflow.RenderingAndSnapshot
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi

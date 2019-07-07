@@ -3,7 +3,7 @@ package com.squareup.workflow.ui
 import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.WorkflowHost
-import com.squareup.workflow.WorkflowHost.RenderingAndSnapshot
+import com.squareup.workflow.RenderingAndSnapshot
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job

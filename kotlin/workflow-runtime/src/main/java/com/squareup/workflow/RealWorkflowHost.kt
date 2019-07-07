@@ -1,7 +1,6 @@
 package com.squareup.workflow
 
-import com.squareup.workflow.WorkflowHost.RenderingAndSnapshot
-import kotlinx.coroutines.CancellationException
+import com.squareup.workflow.internal.unwrapCancellationCause
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.ATOMIC
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -70,9 +69,4 @@ internal class RealWorkflowHost<O : Any, R>(
         }
         .also { job = it }
   }
-}
-
-private tailrec fun Throwable.unwrapCancellationCause(): Throwable? {
-  if (this !is CancellationException) return this
-  return cause?.unwrapCancellationCause()
 }
