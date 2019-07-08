@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.gameworkflow
 
-import org.assertj.core.api.Java6Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class PlayerInfoTest {

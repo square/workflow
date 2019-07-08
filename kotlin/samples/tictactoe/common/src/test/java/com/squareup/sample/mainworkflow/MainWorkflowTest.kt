@@ -1,5 +1,6 @@
 package com.squareup.sample.mainworkflow
 
+import com.google.common.truth.Truth.assertThat
 import com.squareup.sample.authworkflow.AuthWorkflow
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RunGameScreen
@@ -13,7 +14,6 @@ import com.squareup.workflow.rendering
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
 import com.squareup.workflow.ui.BackStackScreen
-import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 
 /**

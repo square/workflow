@@ -2,6 +2,7 @@
 
 package com.squareup.workflow.legacy.rx2
 
+import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.legacy.Workflow
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -10,7 +11,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
-import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 
 class WorkflowOperatorsTest {

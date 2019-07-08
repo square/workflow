@@ -15,6 +15,7 @@
  */
 package com.squareup.sample.gameworkflow
 
+import com.google.common.truth.Truth.assertThat
 import com.squareup.sample.gameworkflow.Ending.Draw
 import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
@@ -24,7 +25,6 @@ import com.squareup.sample.gameworkflow.Player.O
 import com.squareup.sample.gameworkflow.Player.X
 import com.squareup.workflow.testing.WorkflowTester
 import com.squareup.workflow.testing.testFromStart
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class TakeTurnsWorkflowTest {
@@ -111,7 +111,7 @@ class TakeTurnsWorkflowTest {
       output = awaitNextOutput()
     }
 
-    assertThat(output!!.ending).isSameAs(Quitted)
+    assertThat(output!!.ending).isSameInstanceAs(Quitted)
 
     RealTakeTurnsWorkflow().testFromStart(
         TakeTurnsInput.resumeGame(

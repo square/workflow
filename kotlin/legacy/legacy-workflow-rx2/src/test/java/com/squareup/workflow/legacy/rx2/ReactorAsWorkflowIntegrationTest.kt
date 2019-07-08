@@ -17,6 +17,7 @@
 
 package com.squareup.workflow.legacy.rx2
 
+import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.legacy.EnterState
 import com.squareup.workflow.legacy.FinishWith
 import com.squareup.workflow.legacy.Reaction
@@ -33,11 +34,10 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.CompletableSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.SingleSubject
-import org.assertj.core.api.Java6Assertions.assertThat
-import org.assertj.core.api.Java6Assertions.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
+import kotlin.test.fail
 
 class ReactorAsWorkflowIntegrationTest {
 
@@ -174,12 +174,20 @@ class ReactorAsWorkflowIntegrationTest {
 
     start("foo")
 
-    assertThat(stateSub.errors().single())
-        .isExactlyInstanceOf(ReactorException::class.java)
-        .hasMessageContaining("threw RuntimeException: ((angery))")
-    assertThat(resultSub.errors().single())
-        .isExactlyInstanceOf(ReactorException::class.java)
-        .hasMessageContaining("threw RuntimeException: ((angery))")
+    stateSub.errors()
+        .single()
+        .let {
+          assertThat(it).isInstanceOf(ReactorException::class.java)
+          assertThat(it).hasMessageThat()
+              .contains("threw RuntimeException: ((angery))")
+        }
+    resultSub.errors()
+        .single()
+        .let {
+          assertThat(it).isInstanceOf(ReactorException::class.java)
+          assertThat(it).hasMessageThat()
+              .contains("threw RuntimeException: ((angery))")
+        }
   }
 
   @Test fun `when react Single throws`() {
@@ -195,12 +203,20 @@ class ReactorAsWorkflowIntegrationTest {
 
     start("foo")
 
-    assertThat(stateSub.errors().single())
-        .isExactlyInstanceOf(ReactorException::class.java)
-        .hasMessageContaining("threw RuntimeException: ((angery))")
-    assertThat(resultSub.errors().single())
-        .isExactlyInstanceOf(ReactorException::class.java)
-        .hasMessageContaining("threw RuntimeException: ((angery))")
+    stateSub.errors()
+        .single()
+        .let {
+          assertThat(it).isInstanceOf(ReactorException::class.java)
+          assertThat(it).hasMessageThat()
+              .contains("threw RuntimeException: ((angery))")
+        }
+    resultSub.errors()
+        .single()
+        .let {
+          assertThat(it).isInstanceOf(ReactorException::class.java)
+          assertThat(it).hasMessageThat()
+              .contains("threw RuntimeException: ((angery))")
+        }
   }
 
   @Test fun `single is unsubscribed on abandonment`() {
@@ -229,7 +245,8 @@ class ReactorAsWorkflowIntegrationTest {
     assertThat(unsubscribeCount).isEqualTo(1)
   }
 
-  @Test fun `exception is propagated when state subscriber throws from second onNext_asynchronously`() {
+  @Test
+  fun `exception is propagated when state subscriber throws from second onNext_asynchronously`() {
     val trigger = SingleSubject.create<Unit>()
     reactor = object : MockReactor() {
       override fun onReact(
@@ -256,9 +273,11 @@ class ReactorAsWorkflowIntegrationTest {
       }
       fail("Expected exception.")
     } catch (e: OnErrorNotImplementedException) {
-      assertThat(e.cause)
+      assertThat(e).hasCauseThat()
           .isInstanceOf(RuntimeException::class.java)
-          .hasMessage("fail")
+      assertThat(e).hasCauseThat()
+          .hasMessageThat()
+          .isEqualTo("fail")
     }
   }
 

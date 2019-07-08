@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow.ui
 
-import org.assertj.core.api.Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 // If you try to replace isTrue() with isTrue compilation fails.

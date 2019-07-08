@@ -17,21 +17,21 @@
 
 package com.squareup.workflow.legacy.rx2
 
+import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.legacy.EnterState
 import com.squareup.workflow.legacy.FinishWith
 import com.squareup.workflow.legacy.Finished
 import com.squareup.workflow.legacy.Reaction
 import com.squareup.workflow.legacy.Running
 import com.squareup.workflow.legacy.Workflow
-import com.squareup.workflow.legacy.WorkflowUpdate
 import com.squareup.workflow.legacy.WorkflowPool
 import com.squareup.workflow.legacy.WorkflowPool.Handle
+import com.squareup.workflow.legacy.WorkflowUpdate
 import com.squareup.workflow.legacy.register
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
-import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -115,7 +115,7 @@ class Rx2WorkflowPoolIntegrationTest {
   }
 
   @Test fun `no eager launch`() {
-    assertThat(launchCount).isZero()
+    assertThat(launchCount).isEqualTo(0)
   }
 
   @Test fun `waits for state after current`() {
@@ -257,7 +257,7 @@ class Rx2WorkflowPoolIntegrationTest {
   }
 
   @Test fun `abandons only once`() {
-    assertThat(abandonCount).isZero()
+    assertThat(abandonCount).isEqualTo(0)
     pool.testOnWorkflowUpdate(handle(NEW))
     pool.abandonWorkflow(handle())
     pool.abandonWorkflow(handle())

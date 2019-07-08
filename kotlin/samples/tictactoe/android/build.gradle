@@ -50,6 +50,6 @@ dependencies {
   implementation deps.rxjava2.rxjava2
   implementation deps.timber
 
-  testImplementation deps.test.assertj
   testImplementation deps.test.junit
+  testImplementation deps.test.truth
 }
