@@ -132,7 +132,10 @@ class CoroutineWorkflowTest : CoroutineScope {
       throw ExpectedException
     }
     testContext.triggerActions()
-    assertFailsWith<ExpectedException> { workflow.getCompleted() }
+    assertFailsWith<ExpectedException> {
+      @Suppress("IMPLICIT_NOTHING_AS_TYPE_PARAMETER")
+      workflow.getCompleted()
+    }
   }
 
   @Test fun `cancelled result is reported`() {
@@ -141,7 +144,10 @@ class CoroutineWorkflowTest : CoroutineScope {
     }
     workflow.cancel()
     testContext.triggerActions()
-    assertFailsWith<CancellationException> { workflow.getCompleted() }
+    assertFailsWith<CancellationException> {
+      @Suppress("IMPLICIT_NOTHING_AS_TYPE_PARAMETER")
+      workflow.getCompleted()
+    }
   }
 
   @Test fun `coroutine uses context from scope`() {
