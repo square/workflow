@@ -30,5 +30,5 @@ dependencies {
   implementation deps.kotlin.reflect
 
   testImplementation deps.kotlin.test.jdk
-  testImplementation deps.test.assertj
+  testImplementation deps.test.truth
 }

@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow.ui
 
-import org.assertj.core.api.Java6Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 // If you try to replace isTrue() with isTrue compilation fails.
@@ -84,6 +84,6 @@ class CompatibleTest {
     ).goTo(Named(Able, "one"))
 
     assertThat(stack).hasSize(1)
-    assertThat(stack[0]).isSameAs(originalAble)
+    assertThat(stack[0]).isSameInstanceAs(originalAble)
   }
 }

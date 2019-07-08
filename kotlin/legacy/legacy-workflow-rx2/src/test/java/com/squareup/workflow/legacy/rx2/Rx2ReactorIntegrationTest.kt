@@ -17,6 +17,7 @@
 
 package com.squareup.workflow.legacy.rx2
 
+import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.legacy.EnterState
 import com.squareup.workflow.legacy.FinishWith
 import com.squareup.workflow.legacy.Finished
@@ -40,7 +41,6 @@ import com.squareup.workflow.legacy.rx2.Rx2ReactorIntegrationTest.OuterState.Run
 import com.squareup.workflow.legacy.rx2.Rx2ReactorIntegrationTest.OuterState.RunningImmediateJob
 import com.squareup.workflow.legacy.rx2.Rx2ReactorIntegrationTest.StringEchoer
 import io.reactivex.Single
-import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 
@@ -62,7 +62,7 @@ class Rx2ReactorIntegrationTest {
     sendEchoEvent("job", "fnord")
     sendEchoEvent("job", STOP_ECHO_JOB)
     assertThat(results).isEqualTo(listOf("fnord"))
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertThat(pool.peekWorkflowsCount).isEqualTo(0)
   }
 
   @Test fun `run and see result after no state updates`() {
@@ -70,7 +70,7 @@ class Rx2ReactorIntegrationTest {
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", STOP_ECHO_JOB)
     assertThat(results).isEqualTo(listOf(NEW_ECHO_JOB))
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertThat(pool.peekWorkflowsCount).isEqualTo(0)
   }
 
   @Test fun `pause does abandon and restart from saved state`() {
@@ -79,7 +79,7 @@ class Rx2ReactorIntegrationTest {
     sendEchoEvent("job", "able")
 
     workflow.sendEvent(Pause)
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertThat(pool.peekWorkflowsCount).isEqualTo(0)
 
     workflow.sendEvent(Resume)
 
@@ -95,7 +95,7 @@ class Rx2ReactorIntegrationTest {
 
     sendEchoEvent("job", STOP_ECHO_JOB)
     assertThat(results).isEqualTo(listOf(NEW_ECHO_JOB))
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertThat(pool.peekWorkflowsCount).isEqualTo(0)
   }
 
   @Test fun `cancel abandons`() {
@@ -105,14 +105,14 @@ class Rx2ReactorIntegrationTest {
     sendEchoEvent("job", "baker")
 
     workflow.sendEvent(Cancel)
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertThat(pool.peekWorkflowsCount).isEqualTo(0)
 
     workflow.sendEvent(RunEchoJob("job"))
     sendEchoEvent("job", STOP_ECHO_JOB)
 
     // We used the same job id, but the state changes from the previous session were dropped.
     assertThat(results).isEqualTo(listOf(NEW_ECHO_JOB))
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertThat(pool.peekWorkflowsCount).isEqualTo(0)
   }
 
   @Test fun `background demonstrates concurrent workflows of the same type`() {
@@ -152,7 +152,7 @@ class Rx2ReactorIntegrationTest {
 
     assertThat(results).isEqualTo(listOf("Finished ${ImmediateOnSuccess::class}", NEW_ECHO_JOB))
 
-    assertThat(pool.peekWorkflowsCount).isZero()
+    assertThat(pool.peekWorkflowsCount).isEqualTo(0)
   }
 
   companion object {

@@ -18,6 +18,7 @@
 
 package com.squareup.workflow.legacy.rx2
 
+import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.legacy.Finished
 import com.squareup.workflow.legacy.Running
 import com.squareup.workflow.legacy.Workflow
@@ -42,7 +43,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.suspendCancellableCoroutine
-import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 import kotlin.coroutines.suspendCoroutine
 import kotlin.test.assertFailsWith
@@ -95,9 +95,13 @@ class CoroutineEventChannelTest {
 
     events.offer(Click)
 
-    assertThat(resultSub.errors().single())
-        .isExactlyInstanceOf(RuntimeException::class.java)
-        .hasMessage("fail")
+    resultSub.errors()
+        .single()
+        .let {
+          assertThat(it).isInstanceOf(RuntimeException::class.java)
+          assertThat(it).hasMessageThat()
+              .isEqualTo("fail")
+        }
   }
 
   @Test fun `select event throws when event not accepted`() {
@@ -586,9 +590,11 @@ class CoroutineEventChannelTest {
         events.offer(Click)
       }
     }.let {
-      assertThat(it.cause)
-          .isExactlyInstanceOf(RuntimeException::class.java)
-          .hasMessage("fail: clicked")
+      assertThat(it).hasCauseThat()
+          .isInstanceOf(RuntimeException::class.java)
+      assertThat(it).hasCauseThat()
+          .hasMessageThat()
+          .isEqualTo("fail: clicked")
     }
   }
 

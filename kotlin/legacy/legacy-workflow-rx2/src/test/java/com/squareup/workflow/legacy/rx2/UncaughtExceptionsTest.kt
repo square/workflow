@@ -15,8 +15,8 @@
  */
 package com.squareup.workflow.legacy.rx2
 
+import com.google.common.truth.Truth.assertThat
 import junit.framework.TestCase.fail
-import org.assertj.core.api.Java6Assertions.assertThat
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 
@@ -109,7 +109,7 @@ class UncaughtExceptionsTest {
       assertThat(allMessages).hasSize(threadCount)
 
       // Ensure that each exception was only reported once…
-      assertThat(allMessages.distinct()).hasSameSizeAs(allMessages)
+      assertThat(allMessages.distinct()).hasSize(allMessages.size)
     }
   }
 }
