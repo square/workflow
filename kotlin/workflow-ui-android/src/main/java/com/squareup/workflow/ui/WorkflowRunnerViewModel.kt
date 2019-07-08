@@ -18,17 +18,19 @@ package com.squareup.workflow.ui
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.launchWorkflowIn
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
@@ -38,7 +40,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlowable
 import kotlinx.coroutines.rx2.asObservable
 import org.jetbrains.annotations.TestOnly
-import java.util.concurrent.CancellationException
 import kotlin.reflect.jvm.jvmName
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
@@ -47,7 +48,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   override val viewRegistry: ViewRegistry,
   private val renderingsFlow: Flow<RenderingAndSnapshot<Any>>,
   outputsFlow: Flow<OutputT>,
-  private val scope: CoroutineScope
+  private val workflowJob: Job
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
   /**
@@ -76,14 +77,20 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
         snapshot
     ) { renderings, outputs ->
       @Suppress("UNCHECKED_CAST")
-      WorkflowRunnerViewModel(viewRegistry, renderings, outputs, this) as T
+      WorkflowRunnerViewModel(viewRegistry, renderings, outputs, coroutineContext[Job]!!) as T
     }
   }
 
-  private val snapshotJob = scope.launch {
-    renderingsFlow
-        .map { it.snapshot }
-        .collect { lastSnapshot = it }
+  init {
+    viewModelScope.coroutineContext[Job]!!.invokeOnCompletion {
+      workflowJob.cancel(CancellationException("WorkflowRunnerViewModel cancelled.", it))
+    }
+
+    viewModelScope.launch {
+      renderingsFlow
+          .map { it.snapshot }
+          .collect { lastSnapshot = it }
+    }
   }
 
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
@@ -97,18 +104,9 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   override val output: Flowable<out OutputT> = outputsFlow
       .asFlowable()
 
-  override fun onCleared() {
-    val cancellationException = CancellationException("WorkflowRunnerViewModel cleared.")
-    snapshotJob.cancel(cancellationException)
-    scope.cancel(cancellationException)
-  }
-
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putParcelable(BUNDLE_KEY, PickledWorkflow(lastSnapshot))
   }
-
-  @TestOnly
-  internal fun clearForTest() = onCleared()
 
   @TestOnly
   internal fun getLastSnapshotForTest() = lastSnapshot

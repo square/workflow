@@ -1,13 +1,13 @@
 package com.squareup.workflow.ui
 
+import androidx.lifecycle.viewModelScope
 import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.consumeEach
@@ -18,7 +18,7 @@ import org.junit.Test
 @UseExperimental(ExperimentalWorkflowUi::class, ExperimentalCoroutinesApi::class)
 class WorkflowRunnerViewModelTest {
 
-  private val scope = CoroutineScope(Unconfined)
+  private val workflowJob = Job()
   @Suppress("RemoveRedundantSpreadOperator")
   private val viewRegistry = ViewRegistry(*emptyArray<ViewBinding<*>>())
 
@@ -28,7 +28,7 @@ class WorkflowRunnerViewModelTest {
     val snapshotsChannel = Channel<RenderingAndSnapshot<Unit>>(UNLIMITED)
     val snapshotsFlow = flow { snapshotsChannel.consumeEach { emit(it) } }
 
-    val runner = WorkflowRunnerViewModel(viewRegistry, snapshotsFlow, emptyFlow(), scope)
+    val runner = WorkflowRunnerViewModel(viewRegistry, snapshotsFlow, emptyFlow(), workflowJob)
 
     assertThat(runner.getLastSnapshotForTest()).isEqualTo(Snapshot.EMPTY)
 
@@ -41,16 +41,16 @@ class WorkflowRunnerViewModelTest {
 
   @Test fun hostCancelledOnCleared() {
     var cancelled = false
-    scope.coroutineContext[Job]!!.invokeOnCompletion { e ->
+    workflowJob.invokeOnCompletion { e ->
       if (e is CancellationException) cancelled = true
     }
-    val runner = WorkflowRunnerViewModel(viewRegistry, emptyFlow(), emptyFlow(), scope)
+    val runner = WorkflowRunnerViewModel(viewRegistry, emptyFlow(), emptyFlow(), workflowJob)
 
     assertThat(cancelled).isFalse()
     runner.output.test()
     assertThat(cancelled).isFalse()
 
-    runner.clearForTest()
+    runner.viewModelScope.cancel()
     assertThat(cancelled).isTrue()
   }
 }
