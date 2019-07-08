@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow.ui
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.ContextWrapper
@@ -28,9 +27,10 @@ import android.support.annotation.StyleRes
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.squareup.workflow.ui.HandlesBack.Helper
 import com.squareup.workflow.ui.ModalContainer.Companion.forAlertContainerScreen
@@ -82,9 +82,8 @@ abstract class ModalContainer<ModalRenderingT : Any>
           dialog.show()
           // Android makes a lot of logcat noise if it has to close the window for us. :/
           // https://github.com/square/workflow/issues/51
-          dialog.activity?.lifecycle?.addObserver(OnDestroy {
-            dialog.dismiss()
-          })
+          dialog.lifecycleOrNull()
+              ?.addObserver(OnDestroy { dialog.dismiss() })
         }
       }
     }
@@ -261,20 +260,19 @@ private class OnDestroy(private val block: () -> Unit) : LifecycleObserver {
   fun onDestroy() = block()
 }
 
-private val Dialog.activity: AppCompatActivity?
-  get() = decorView?.context?.activity()
+private fun Dialog.lifecycleOrNull(): Lifecycle? = decorView?.context?.lifecycleOrNull()
 
 private val Dialog.decorView: View?
   get() = window?.decorView
 
 /**
- * The [AppCompatActivity] for this context, or null if there isn't one.
+ * The [Lifecycle] for this context, or null if one can't be found.
  *
  * We keep all this very forgiving because we're just using it to keep some logging
- * noise out of logcat. If someone manages to run this under the wrong type of
- * activity, just return null and let the caller no-op.
+ * noise out of logcat. If someone manages to run this under a strange context whose
+ * [Lifecycle] we can't find, just return null and let the caller no-op.
  */
-tailrec fun Context.activity(): AppCompatActivity? = when {
-  this is Activity -> this as? AppCompatActivity
-  else -> (this as? ContextWrapper)?.baseContext?.activity()
+tailrec fun Context.lifecycleOrNull(): Lifecycle? = when {
+  this is LifecycleOwner -> this.lifecycle
+  else -> (this as? ContextWrapper)?.baseContext?.lifecycleOrNull()
 }
