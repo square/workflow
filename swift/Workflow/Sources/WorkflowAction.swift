@@ -62,7 +62,7 @@ extension AnyWorkflowAction {
 
     /// Creates a type-erased workflow action that does nothing (it leaves state unchanged and does not emit an output
     /// event).
-    public static var identity: AnyWorkflowAction<WorkflowType> {
+    public static var noAction: AnyWorkflowAction<WorkflowType> {
         return AnyWorkflowAction { state in
             return nil
         }

@@ -14,7 +14,7 @@ final class SubtreeManagerTests: XCTestCase {
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.identity })
+                outputMap: { _ in AnyWorkflowAction.noAction })
         }
 
         XCTAssertEqual(manager.childWorkflows.count, 1)
@@ -24,7 +24,7 @@ final class SubtreeManagerTests: XCTestCase {
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.identity })
+                outputMap: { _ in AnyWorkflowAction.noAction })
         }
 
         XCTAssertEqual(manager.childWorkflows.count, 1)
@@ -38,7 +38,7 @@ final class SubtreeManagerTests: XCTestCase {
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.identity })
+                outputMap: { _ in AnyWorkflowAction.noAction })
         }
 
         XCTAssertEqual(manager.childWorkflows.count, 1)
@@ -69,7 +69,7 @@ final class SubtreeManagerTests: XCTestCase {
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.identity })
+                outputMap: { _ in AnyWorkflowAction.noAction })
         }
         manager.enableEvents()
 
@@ -96,7 +96,7 @@ final class SubtreeManagerTests: XCTestCase {
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.identity })
+                outputMap: { _ in AnyWorkflowAction.noAction })
         }
         manager.enableEvents()
 
@@ -119,7 +119,7 @@ final class SubtreeManagerTests: XCTestCase {
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.identity })
+                outputMap: { _ in AnyWorkflowAction.noAction })
         }
         manager.enableEvents()
 
@@ -155,7 +155,7 @@ final class SubtreeManagerTests: XCTestCase {
                             startExpectation: startExpectation,
                             endExpectation: endExpectation),
                         outputMap: { output -> AnyWorkflowAction<WorkerWorkflow> in
-                            return AnyWorkflowAction.identity
+                            return AnyWorkflowAction.noAction
                         })
                     return true
                 }
@@ -228,7 +228,7 @@ final class SubtreeManagerTests: XCTestCase {
             func render(state: SubscribingWorkflow.State, context: RenderContext<SubscribingWorkflow>) -> Bool {
                 if let signal = signal {
                     context.subscribe(signal: signal.map({ _ -> AnyWorkflowAction<SubscribingWorkflow> in
-                        return AnyWorkflowAction.identity
+                        return AnyWorkflowAction.noAction
                     }))
                     return true
                 } else {
