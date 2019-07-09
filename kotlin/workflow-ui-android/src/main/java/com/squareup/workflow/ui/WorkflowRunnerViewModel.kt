@@ -18,16 +18,17 @@ package com.squareup.workflow.ui
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowHost
+import com.squareup.workflow.launchWorkflowIn
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
@@ -38,15 +39,15 @@ import kotlinx.coroutines.rx2.asFlowable
 import kotlinx.coroutines.rx2.asObservable
 import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CancellationException
-import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.jvm.jvmName
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
 @ExperimentalWorkflowUi
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   override val viewRegistry: ViewRegistry,
-  private val workflowHost: WorkflowHost<OutputT, Any>,
-  private val context: CoroutineContext
+  private val renderingsFlow: Flow<RenderingAndSnapshot<Any>>,
+  outputsFlow: Flow<OutputT>,
+  private val scope: CoroutineScope
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
   /**
@@ -68,39 +69,38 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
         ?.getParcelable<PickledWorkflow>(BUNDLE_KEY)
         ?.snapshot
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      val hostFactory = WorkflowHost.Factory(dispatcher)
-      val workflowHost = hostFactory.run(workflow, inputs, snapshot)
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = launchWorkflowIn(
+        CoroutineScope(dispatcher),
+        workflow,
+        inputs,
+        snapshot
+    ) { renderings, outputs ->
       @Suppress("UNCHECKED_CAST")
-      return WorkflowRunnerViewModel(viewRegistry, workflowHost, dispatcher) as T
+      WorkflowRunnerViewModel(viewRegistry, renderings, outputs, this) as T
     }
   }
 
-  private val snapshotJob = GlobalScope.launch(context) {
-    workflowHost.renderingsAndSnapshots
+  private val snapshotJob = scope.launch {
+    renderingsFlow
         .map { it.snapshot }
         .collect { lastSnapshot = it }
   }
 
-  private var workflowJob: Job? = null
-
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  override val renderings: Observable<out Any> = workflowHost.renderingsAndSnapshots
-      .onCollect { startWorkflowHost() }
+  override val renderings: Observable<out Any> = renderingsFlow
       .map { it.rendering }
       .asObservable()
 
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  override val output: Flowable<out OutputT> = workflowHost.outputs
-      .onCollect { startWorkflowHost() }
+  override val output: Flowable<out OutputT> = outputsFlow
       .asFlowable()
 
   override fun onCleared() {
     val cancellationException = CancellationException("WorkflowRunnerViewModel cleared.")
     snapshotJob.cancel(cancellationException)
-    workflowJob?.cancel(cancellationException)
+    scope.cancel(cancellationException)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -112,18 +112,6 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
 
   @TestOnly
   internal fun getLastSnapshotForTest() = lastSnapshot
-
-  /**
-   * Starts the [workflowHost] and saves its job to [workflowJob].
-   *
-   * This call is idempotent and will always return the same Job, so we can just call it
-   * every time. And so by making this call inside of `onCollect()`, we basically get the
-   * nice effects of Rx's `autoConnect(1)` start up a shared stream the the first time
-   * someone "subscribes" / collects.
-   */
-  private fun startWorkflowHost() {
-    workflowJob = workflowHost.start()
-  }
 
   private companion object {
     val BUNDLE_KEY = WorkflowRunner::class.jvmName + "-workflow"

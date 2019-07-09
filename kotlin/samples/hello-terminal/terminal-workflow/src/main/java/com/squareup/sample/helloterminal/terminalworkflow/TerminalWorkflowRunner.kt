@@ -21,18 +21,18 @@ import com.googlecode.lanterna.screen.TerminalScreen
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowHost
 import com.squareup.workflow.asWorker
+import com.squareup.workflow.launchWorkflowIn
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
@@ -42,7 +42,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.selectUnbiased
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Hosts [Workflow]s that:
@@ -50,13 +49,10 @@ import kotlin.coroutines.EmptyCoroutineContext
  *  - renders the text to display on the terminal
  *  - finishes by emitting an exit code that should be passed to [kotlin.system.exitProcess].
  *
- * @param hostFactory Used to create the actual [WorkflowHost] that hosts workflows. Any dispatcher
- * configured on the host will be ignored, to ensure that key events stay in sync with renderings.
  * @param ioDispatcher Defaults to [Dispatchers.IO] and is used to listen for key events using
  * blocking APIs.
  */
 class TerminalWorkflowRunner(
-  private val hostFactory: WorkflowHost.Factory = WorkflowHost.Factory(EmptyCoroutineContext),
   private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
@@ -74,8 +70,6 @@ class TerminalWorkflowRunner(
   // when invoking from coroutines. This entire function is blocking however, so we don't care.
   @Suppress("BlockingMethodInNonBlockingContext")
   fun run(workflow: TerminalWorkflow): ExitCode = runBlocking {
-    val configs = BroadcastChannel<TerminalInput>(CONFLATED)
-    val host = hostFactory.run(workflow, configs.asFlow(), context = coroutineContext)
     val keyStrokesChannel = screen.listenForKeyStrokesOn(this + ioDispatcher)
     val keyStrokesWorker = keyStrokesChannel.asWorker()
     val resizes = screen.terminal.listenForResizesOn(this)
@@ -86,7 +80,7 @@ class TerminalWorkflowRunner(
     try {
       screen.startScreen()
       try {
-        runTerminalWorkflow(screen, configs, host, keyStrokesWorker, resizes)
+        return@runBlocking runTerminalWorkflow(workflow, screen, keyStrokesWorker, resizes)
       } finally {
         screen.stopScreen()
       }
@@ -102,67 +96,67 @@ class TerminalWorkflowRunner(
 @Suppress("BlockingMethodInNonBlockingContext")
 @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
 private suspend fun runTerminalWorkflow(
+  workflow: TerminalWorkflow,
   screen: TerminalScreen,
-  inputs: SendChannel<TerminalInput>,
-  host: WorkflowHost<ExitCode, TerminalRendering>,
   keyStrokes: Worker<KeyStroke>,
   resizes: ReceiveChannel<TerminalSize>
 ): ExitCode = coroutineScope {
   var input = TerminalInput(screen.terminalSize.toSize(), keyStrokes)
+  val inputs = ConflatedBroadcastChannel(input)
 
-  // Need to send an initial input for the workflow to start running.
-  inputs.offer(input)
+  // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically
+  // if there's an error.
+  val result =
+    launchWorkflowIn(this, workflow, inputs.asFlow()) { renderingsAndSnapshots, outputs ->
+      val renderings = renderingsAndSnapshots.map { it.rendering }
+          .produceIn(this)
 
-  // Launch the render loop in a new coroutine, so this coroutine can just sit around and wait
-  // for the workflow to emit an output.
-  val renderJob = launch {
-    val renderings = host.renderingsAndSnapshots.map { it.rendering }
-        .produceIn(this)
+      launch {
+        while (true) {
+          val rendering = selectUnbiased<TerminalRendering> {
+            resizes.onReceive {
+              screen.doResizeIfNecessary()
+                  ?.let {
+                    // If the terminal was resized since the last iteration, we need to notify the
+                    // workflow.
+                    input = input.copy(size = it.toSize())
+                  }
 
-    while (true) {
-      val rendering = selectUnbiased<TerminalRendering> {
-        resizes.onReceive {
-          screen.doResizeIfNecessary()
-              ?.let {
-                // If the terminal was resized since the last iteration, we need to notify the
-                // workflow.
-                input = input.copy(size = it.toSize())
-              }
+              // Publish config changes to the workflow.
+              inputs.send(input)
 
-          // Publish config changes to the workflow.
-          inputs.send(input)
+              // Sending that new input invalidated the lastRendering, so we don't want to
+              // re-iterate until we have a new rendering with a fresh event handler. It also
+              // triggered a render pass, so we can just retrieve that immediately.
+              return@onReceive renderings.receive()
+            }
 
-          // Sending that new input invalidated the lastRendering, so we don't want to
-          // re-iterate until we have a new rendering with a fresh event handler. It also
-          // triggered a render pass, so we can just retrieve that immediately.
-          return@onReceive renderings.receive()
-        }
-
-        renderings.onReceive { it }
-      }
-
-      screen.clear()
-      screen.newTextGraphics()
-          .apply {
-            foregroundColor = rendering.textColor.toTextColor()
-            backgroundColor = rendering.backgroundColor.toTextColor()
-            rendering.text.lineSequence()
-                .forEachIndexed { index, line ->
-                  putString(TOP_LEFT_CORNER.withRelativeRow(index), line)
-                }
+            renderings.onReceive { it }
           }
 
-      screen.refresh(COMPLETE)
+          screen.clear()
+          screen.newTextGraphics()
+              .apply {
+                foregroundColor = rendering.textColor.toTextColor()
+                backgroundColor = rendering.backgroundColor.toTextColor()
+                rendering.text.lineSequence()
+                    .forEachIndexed { index, line ->
+                      putString(TOP_LEFT_CORNER.withRelativeRow(index), line)
+                    }
+              }
+
+          screen.refresh(COMPLETE)
+        }
+      }
+
+      return@launchWorkflowIn async { outputs.first() }
     }
-  }
 
-  // Start collecting from outputs before starting the workflow host, in case it emits immediately.
-  val exitCodeDeferred = async { host.outputs.first() }
-  val workflowJob = host.start()
-
-  // Stop the runner and return the exit code as soon as the workflow emits one.
-  val exitCode = exitCodeDeferred.await()
-  workflowJob.cancel()
-  renderJob.cancel()
+  val exitCode = result.await()
+  // If we don't cancel the workflow runtime explicitly, coroutineScope will hang waiting for it to
+  // finish.
+  coroutineContext.cancelChildren(
+      CancellationException("TerminalWorkflowRunner completed with exit code $exitCode")
+  )
   return@coroutineScope exitCode
 }

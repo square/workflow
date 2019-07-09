@@ -25,6 +25,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.SelectBuilder
@@ -37,9 +38,14 @@ import kotlinx.coroutines.selects.SelectBuilder
 @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal fun <T> CoroutineScope.launchWorker(worker: Worker<T>): ReceiveChannel<Output<T>> =
   worker.run()
-      // TODO(https://github.com/square/workflow/issues/434) Remove this map to allow operator
-      // fusion to occur.
       .map { Output(it) }
+      .catch { e ->
+        // Workers that failed (as opposed to just cancelled) should have their failure reason
+        // re-thrown from the workflow runtime. If we don't unwrap the cause here, they'll just
+        // cause the runtime to cancel.
+        val cancellationCause = e.unwrapCancellationCause()
+        throw cancellationCause ?: e
+      }
       .buffer(RENDEZVOUS)
       .produceIn(this)
 
