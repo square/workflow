@@ -22,20 +22,16 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.launchWorkflowIn
-import kotlinx.coroutines.CancellationException
+import com.squareup.workflow.launchSingleOutputWorkflowIn
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.launch
@@ -107,7 +103,9 @@ private suspend fun runTerminalWorkflow(
   // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically
   // if there's an error.
   val result =
-    launchWorkflowIn(this, workflow, inputs.asFlow()) { renderingsAndSnapshots, outputs ->
+    launchSingleOutputWorkflowIn(
+        this, workflow, inputs.asFlow()
+    ) { renderingsAndSnapshots, output ->
       val renderings = renderingsAndSnapshots.map { it.rendering }
           .produceIn(this)
 
@@ -149,14 +147,8 @@ private suspend fun runTerminalWorkflow(
         }
       }
 
-      return@launchWorkflowIn async { outputs.first() }
+      return@launchSingleOutputWorkflowIn output
     }
 
-  val exitCode = result.await()
-  // If we don't cancel the workflow runtime explicitly, coroutineScope will hang waiting for it to
-  // finish.
-  coroutineContext.cancelChildren(
-      CancellationException("TerminalWorkflowRunner completed with exit code $exitCode")
-  )
-  return@coroutineScope exitCode
+  return@coroutineScope result.await()
 }
