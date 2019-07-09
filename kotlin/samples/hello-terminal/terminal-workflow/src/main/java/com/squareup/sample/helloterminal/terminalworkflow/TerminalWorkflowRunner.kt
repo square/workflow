@@ -29,17 +29,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.produceIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.selects.selectUnbiased
 
 /**
  * Hosts [Workflow]s that:
@@ -70,7 +68,7 @@ class TerminalWorkflowRunner(
         // We have to share the flow otherwise keystrokes will get fanned out to each collector if
         // multiple workflows are observing them.
         .share()
-    val resizes = screen.terminal.resizes()
+    val resizes = screen.terminal.size
 
     // Hide the cursor.
     screen.cursorPosition = null
@@ -92,41 +90,22 @@ private suspend fun runTerminalWorkflow(
   keyStrokes: Flow<KeyStroke>,
   resizes: Flow<TerminalSize>
 ): ExitCode = coroutineScope {
-  var input = TerminalInput(screen.terminalSize.toSize(), keyStrokes.asWorker())
-  val inputs = ConflatedBroadcastChannel(input)
+  val keyStrokesWorker = keyStrokes.asWorker()
+  val inputs = resizes
+      .map { size ->
+        screen.doResizeIfNecessary()
+            // If the terminal was resized since the last iteration, we need to notify the workflow.
+            ?.toSize()
+            ?: size
+      }
+      .distinctUntilChanged()
+      .map { TerminalInput(it, keyStrokesWorker) }
 
   // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically
   // if there's an error.
-  val result =
-    launchWorkflowIn(this, workflow, inputs.asFlow()) { renderingsAndSnapshots, outputs ->
-      val renderings = renderingsAndSnapshots.map { it.rendering }
-          .produceIn(this)
-
-      val resizesChannel = resizes.produceIn(this)
-
-      launch {
-        while (true) {
-          val rendering = selectUnbiased<TerminalRendering> {
-            resizesChannel.onReceive {
-              screen.doResizeIfNecessary()
-                  ?.let {
-                    // If the terminal was resized since the last iteration, we need to notify the
-                    // workflow.
-                    input = input.copy(size = it.toSize())
-                  }
-
-              // Publish config changes to the workflow.
-              inputs.send(input)
-
-              // Sending that new input invalidated the lastRendering, so we don't want to
-              // re-iterate until we have a new rendering with a fresh event handler. It also
-              // triggered a render pass, so we can just retrieve that immediately.
-              return@onReceive renderings.receive()
-            }
-
-            renderings.onReceive { it }
-          }
-
+  val result = launchWorkflowIn(this, workflow, inputs) { renderingsAndSnapshots, outputs ->
+    renderingsAndSnapshots.map { it.rendering }
+        .onEach { rendering ->
           screen.clear()
           screen.newTextGraphics()
               .apply {
@@ -140,10 +119,10 @@ private suspend fun runTerminalWorkflow(
 
           screen.refresh(COMPLETE)
         }
-      }
+        .launchIn(this)
 
-      return@launchWorkflowIn async { outputs.first() }
-    }
+    return@launchWorkflowIn async { outputs.first() }
+  }
 
   val exitCode = result.await()
   // If we don't cancel the workflow runtime explicitly, coroutineScope will hang waiting for it to

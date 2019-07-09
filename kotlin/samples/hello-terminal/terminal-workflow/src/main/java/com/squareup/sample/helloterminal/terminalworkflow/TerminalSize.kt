@@ -22,6 +22,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import com.googlecode.lanterna.TerminalSize as LanternaTerminalSize
 
 /**
@@ -34,11 +36,25 @@ data class TerminalSize(
   val columns: Int
 )
 
+/**
+ * A [Flow] of the current terminal size. Will always emit the current size immediately on
+ * collection.
+ */
 @UseExperimental(ExperimentalCoroutinesApi::class)
-internal fun Terminal.resizes(): Flow<TerminalSize> = channelFlow<TerminalSize> {
-  val resizeListener = TerminalResizeListener { _, newSize -> offer(newSize.toSize()) }
-  addResizeListener(resizeListener)
-  awaitClose { removeResizeListener(resizeListener) }
-}.conflate()
+internal val Terminal.size: Flow<TerminalSize>
+  get() = channelFlow<TerminalSize> {
+    val resizeListener = TerminalResizeListener { _, newSize -> offer(newSize.toSize()) }
+    addResizeListener(resizeListener)
+    awaitClose { removeResizeListener(resizeListener) }
+  }
+      // Conflate first, so it fuses with the channelFlow operator.
+      .conflate()
+      .startWith(terminalSize.toSize())
 
 internal fun LanternaTerminalSize.toSize(): TerminalSize = TerminalSize(rows, columns)
+
+@UseExperimental(ExperimentalCoroutinesApi::class)
+private fun <T> Flow<T>.startWith(value: T): Flow<T> = flow {
+  emit(value)
+  emitAll(this@startWith)
+}
