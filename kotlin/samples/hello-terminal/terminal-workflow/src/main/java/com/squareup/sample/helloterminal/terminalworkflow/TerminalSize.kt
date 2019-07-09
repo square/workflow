@@ -17,13 +17,11 @@ package com.squareup.sample.helloterminal.terminalworkflow
 
 import com.googlecode.lanterna.terminal.Terminal
 import com.googlecode.lanterna.terminal.TerminalResizeListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.conflate
 import com.googlecode.lanterna.TerminalSize as LanternaTerminalSize
 
 /**
@@ -37,17 +35,10 @@ data class TerminalSize(
 )
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
-internal fun Terminal.listenForResizesOn(
-  scope: CoroutineScope
-): ReceiveChannel<TerminalSize> =
-// Run with unconfined dispatcher because this is just sending events to a channel, we don't care
-  // what thread it's on.
-  scope.produce(context = Unconfined, capacity = Channel.CONFLATED) {
-    val resizeListener = TerminalResizeListener { _, newSize -> offer(newSize.toSize()) }
-    invokeOnClose { removeResizeListener(resizeListener) }
-    addResizeListener(resizeListener)
-    // Suspend until cancelled.
-    suspendCancellableCoroutine<Nothing> { }
-  }
+internal fun Terminal.resizes(): Flow<TerminalSize> = channelFlow<TerminalSize> {
+  val resizeListener = TerminalResizeListener { _, newSize -> offer(newSize.toSize()) }
+  addResizeListener(resizeListener)
+  awaitClose { removeResizeListener(resizeListener) }
+}.conflate()
 
 internal fun LanternaTerminalSize.toSize(): TerminalSize = TerminalSize(rows, columns)

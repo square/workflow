@@ -27,10 +27,15 @@ import com.googlecode.lanterna.input.KeyType.Enter
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Unknown
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.broadcast
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import com.googlecode.lanterna.input.KeyStroke as LanternaKeystroke
 
 /**
@@ -55,19 +60,72 @@ data class KeyStroke(
   }
 }
 
+/**
+ * Returns a new [Flow] of keystrokes from this input provider. The flow will _not_ be multicasted,
+ * so you'll want to do that yourself or ensure that there is only ever one collector at a time.
+ * You will also probably want to specify an IO dispatcher to run it on, since it does blocking
+ * IO.
+ *
+ * This is a function instead of a property because calling it multiple times will return
+ * independent flows.
+ */
 @Suppress("BlockingMethodInNonBlockingContext")
 @UseExperimental(ExperimentalCoroutinesApi::class)
-internal fun InputProvider.listenForKeyStrokesOn(
-  scope: CoroutineScope
-): BroadcastChannel<KeyStroke> = scope.broadcast {
-  while (isActive) {
-    val keyStroke = readInput()
-    if (keyStroke.keyType === EOF) {
-      // EOF indicates the terminal input was closed, and we won't receive any more input, so
-      // close the channel instead of sending the raw event down.
-      return@broadcast
+internal fun InputProvider.keyStrokes(): Flow<KeyStroke> = flow {
+  coroutineScope {
+    while (isActive) {
+      // Since readInput doesn't take a timeout, we force it by interrupting the blocked thread
+      // when we get cancelled.
+      val keyStroke = interruptThreadOnCancel { readInput() }
+      if (keyStroke.keyType === EOF) {
+        // EOF indicates the terminal input was closed, and we won't receive any more input, so
+        // close the channel instead of sending the raw event down.
+        break
+      }
+      emit(keyStroke.toKeyStroke())
     }
-    send(keyStroke.toKeyStroke())
+  }
+}
+
+/**
+ * Sends and interrupt to the calling thread when the [CoroutineScope] is cancelled. Intended to
+ * make cancellation work correctly when [block] performs blocking IO – the blocked thread will not
+ * get the cancellation signal, so we interrupt it to cancel the IO, then catch the interrupt
+ * exception and throw the cancellation exception instead.
+ */
+@ExperimentalCoroutinesApi
+private fun <T> CoroutineScope.interruptThreadOnCancel(block: () -> T): T {
+  val thisThread = Thread.currentThread()
+
+  // We can't just add an invokeOnCompletion handler to the current Job, because that won't get
+  // invoked until the Job enters the "completed" state, which will be blocked by the block.
+  // There is also a variant of invokeOnCompletion that accepts a "onCancelling" parameter which
+  // we can pass as true to get the same behavior, but it's marked internal coroutines API.
+  val interruptJob = launch(start = UNDISPATCHED) {
+    suspendCancellableCoroutine<Nothing> {
+      it.invokeOnCancellation { cause ->
+        if (cause != null) thisThread.interrupt()
+      }
+    }
+  }
+
+  return try {
+    block()
+  } finally {
+    // If the block exited normally, stop waiting for cancellation – the next time we're called,
+    // it might be on a different thread.
+    interruptJob.cancel()
+
+    // Clear the interrupted flag.
+    Thread.interrupted()
+
+    // If we entered the finally because of a failure or regular cancellation, this will just
+    // re-throw the existing cancellation exception (no-op).
+    // If the thread was interrupted, the exception will be an InterruptedException (or similar –
+    // e.g. Lanterna swallows and throws as a RuntimeException), and we don't care about that, we
+    // want to throw the CancellationException that caused the thread to be interrupted in the first
+    // place.
+    ensureActive()
   }
 }
 

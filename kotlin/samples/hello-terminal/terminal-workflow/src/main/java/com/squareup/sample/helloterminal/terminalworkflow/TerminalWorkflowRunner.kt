@@ -19,7 +19,6 @@ import com.googlecode.lanterna.TerminalPosition.TOP_LEFT_CORNER
 import com.googlecode.lanterna.screen.Screen.RefreshType.COMPLETE
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory
-import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.launchWorkflowIn
@@ -28,18 +27,17 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.selectUnbiased
 
@@ -61,34 +59,27 @@ class TerminalWorkflowRunner(
   /**
    * Runs [workflow] until it emits an [ExitCode] and then returns it.
    */
-  @UseExperimental(
-      FlowPreview::class,
-      ExperimentalCoroutinesApi::class,
-      ObsoleteCoroutinesApi::class
-  )
+  @UseExperimental(ExperimentalCoroutinesApi::class)
   // Some methods on screen are synchronized, which Kotlin detects as blocking and warns us about
   // when invoking from coroutines. This entire function is blocking however, so we don't care.
   @Suppress("BlockingMethodInNonBlockingContext")
   fun run(workflow: TerminalWorkflow): ExitCode = runBlocking {
-    val keyStrokesChannel = screen.listenForKeyStrokesOn(this + ioDispatcher)
-    val keyStrokesWorker = keyStrokesChannel.asWorker()
-    val resizes = screen.terminal.listenForResizesOn(this)
+    val keyStrokes = screen.keyStrokes()
+        // Collect on the IO dispatcher because it will do blocking IO.
+        .flowOn(ioDispatcher)
+        // We have to share the flow otherwise keystrokes will get fanned out to each collector if
+        // multiple workflows are observing them.
+        .share()
+    val resizes = screen.terminal.resizes()
 
     // Hide the cursor.
     screen.cursorPosition = null
 
+    screen.startScreen()
     try {
-      screen.startScreen()
-      try {
-        return@runBlocking runTerminalWorkflow(workflow, screen, keyStrokesWorker, resizes)
-      } finally {
-        screen.stopScreen()
-      }
+      return@runBlocking runTerminalWorkflow(workflow, screen, keyStrokes, resizes)
     } finally {
-      // Cancel all the coroutines we started so the coroutineScope block will actually exit if no
-      // exception was thrown.
-      keyStrokesChannel.cancel()
-      resizes.cancel()
+      screen.stopScreen()
     }
   }
 }
@@ -98,10 +89,10 @@ class TerminalWorkflowRunner(
 private suspend fun runTerminalWorkflow(
   workflow: TerminalWorkflow,
   screen: TerminalScreen,
-  keyStrokes: Worker<KeyStroke>,
-  resizes: ReceiveChannel<TerminalSize>
+  keyStrokes: Flow<KeyStroke>,
+  resizes: Flow<TerminalSize>
 ): ExitCode = coroutineScope {
-  var input = TerminalInput(screen.terminalSize.toSize(), keyStrokes)
+  var input = TerminalInput(screen.terminalSize.toSize(), keyStrokes.asWorker())
   val inputs = ConflatedBroadcastChannel(input)
 
   // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically
@@ -111,10 +102,12 @@ private suspend fun runTerminalWorkflow(
       val renderings = renderingsAndSnapshots.map { it.rendering }
           .produceIn(this)
 
+      val resizesChannel = resizes.produceIn(this)
+
       launch {
         while (true) {
           val rendering = selectUnbiased<TerminalRendering> {
-            resizes.onReceive {
+            resizesChannel.onReceive {
               screen.doResizeIfNecessary()
                   ?.let {
                     // If the terminal was resized since the last iteration, we need to notify the
