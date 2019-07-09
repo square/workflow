@@ -34,16 +34,16 @@ dependencies {
   api deps.androidx.lifecycle
   api deps.androidx.transition
   api deps.kotlin.stdLib.jdk6
-  api deps.rxjava2.rxjava2
 
   implementation project(':workflow-runtime')
   implementation deps.androidx.appcompat
-  implementation deps.coordinators
+  implementation deps.androidx.lifecycle_livedata
   implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.coroutines.core
-  implementation deps.kotlin.coroutines.rx2
+  implementation deps.kotlin.coroutines.reactive
   implementation deps.kotlin.reflect
 
-  testImplementation deps.test.junit
+  testImplementation deps.androidx.core_testing
+  testImplementation deps.kotlin.coroutines.test
   testImplementation deps.test.truth
 }

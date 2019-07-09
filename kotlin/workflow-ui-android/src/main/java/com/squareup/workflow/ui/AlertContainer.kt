@@ -17,12 +17,12 @@ package com.squareup.workflow.ui
 
 import android.content.Context
 import android.content.DialogInterface
-import android.support.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.annotation.StyleRes
 import com.squareup.workflow.ui.AlertScreen.Button
 import com.squareup.workflow.ui.AlertScreen.Button.NEGATIVE
 import com.squareup.workflow.ui.AlertScreen.Button.NEUTRAL

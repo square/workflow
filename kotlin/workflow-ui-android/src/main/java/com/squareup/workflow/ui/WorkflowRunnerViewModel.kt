@@ -16,14 +16,14 @@
 package com.squareup.workflow.ui
 
 import android.os.Bundle
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.liveData
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.launchWorkflowIn
-import io.reactivex.Flowable
-import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,33 +31,28 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.asFlowable
-import kotlinx.coroutines.rx2.asObservable
 import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CancellationException
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.jvm.jvmName
 
+/**
+ * @param renderingsFlow this is a [Flow] rather than a [LiveData] so that we can easily
+ * source both snapshots and renderings from it. This leaves a window during
+ * which the first few of these may be missed, since we won't collect from the flow until
+ * after the workflow has started -- no big deal, we only care about closing that gap for outputs.
+ */
 @UseExperimental(ExperimentalCoroutinesApi::class)
 @ExperimentalWorkflowUi
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   override val viewRegistry: ViewRegistry,
   private val renderingsFlow: Flow<RenderingAndSnapshot<Any>>,
-  outputsFlow: Flow<OutputT>,
+  override val output: LiveData<out OutputT>,
   private val scope: CoroutineScope
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
-  /**
-   * @param inputs Function that returns a channel that delivers input values for the root
-   * workflow. The first value emitted is passed to `initialState` to determine the root
-   * workflow's initial state, and subsequent emissions are passed as input updates to the root
-   * workflow. The channel returned by this function will be cancelled by the host when it's
-   * finished.
-   */
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   internal class Factory<InputT, OutputT : Any>(
     private val workflow: Workflow<InputT, OutputT, Any>,
     private val viewRegistry: ViewRegistry,
@@ -76,7 +71,9 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
         snapshot
     ) { renderings, outputs ->
       @Suppress("UNCHECKED_CAST")
-      WorkflowRunnerViewModel(viewRegistry, renderings, outputs, this) as T
+      WorkflowRunnerViewModel(
+          viewRegistry, renderings, outputs.asLiveData(coroutineContext), this
+      ) as T
     }
   }
 
@@ -88,14 +85,9 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
 
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
-  override val renderings: Observable<out Any> = renderingsFlow
+  override val renderings: LiveData<out Any> = renderingsFlow
       .map { it.rendering }
-      .asObservable()
-
-  @UseExperimental(ExperimentalCoroutinesApi::class)
-  override val output: Flowable<out OutputT> = outputsFlow
-      .asFlowable()
+      .asLiveData(scope.coroutineContext)
 
   override fun onCleared() {
     val cancellationException = CancellationException("WorkflowRunnerViewModel cleared.")
@@ -118,11 +110,11 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   }
 }
 
-/**
- * Invokes `block` every time a new collector begins collecting this [Flow].
- */
 @UseExperimental(ExperimentalCoroutinesApi::class)
-private fun <T> Flow<T>.onCollect(block: () -> Unit): Flow<T> = flow {
-  block()
-  emitAll(this@onCollect)
-}
+private fun <T> Flow<T>.asLiveData(context: CoroutineContext): LiveData<T> =
+// The default timeout is several seconds, to avoid thrashing sources during config change.
+// We set it to zero to ensure that values are immediately blocked when no one is listening.
+  liveData(
+      context = context,
+      timeoutInMs = 0L
+  ) { collect { emit(it) } }

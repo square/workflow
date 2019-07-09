@@ -18,14 +18,12 @@
 package com.squareup.workflow.ui
 
 import android.os.Bundle
-import android.support.annotation.CheckResult
+import androidx.annotation.CheckResult
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProviders
 import com.squareup.workflow.Workflow
-import io.reactivex.BackpressureStrategy.LATEST
-import io.reactivex.Flowable
-import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,12 +31,13 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.reactive.flow.asFlow
+import org.reactivestreams.Publisher
 
 /**
  * Uses a [Workflow] and a [ViewRegistry] to drive a [WorkflowLayout].
  *
  * It is simplest to use
- * [Activity.setContentWorkflow][android.support.v4.app.FragmentActivity.setContentWorkflow]
+ * [Activity.setContentWorkflow][com.squareup.workflow.ui.setContentWorkflow]
  * or subclass [WorkflowFragment] rather than instantiate a [WorkflowRunner] directly.
  */
 @ExperimentalWorkflowUi
@@ -50,19 +49,22 @@ interface WorkflowRunner<out OutputT> {
 
   /**
    * A stream of the [output][OutputT] values emitted by the running [Workflow].
+   * Outputs emitted while there are no active observers are cached -- that is,
+   * all outputs will be delivered to some observer.
    */
-  val output: Flowable<out OutputT>
+  val output: LiveData<out OutputT>
 
   /**
-   * A stream of the rendering values emitted by the running [Workflow].
+   * A stream of the renderings emitted by the running [Workflow]. Renderings emitted
+   * while there are no active observers are dropped.
    */
-  val renderings: Observable<out Any>
+  val renderings: LiveData<out Any>
 
   val viewRegistry: ViewRegistry
 
   companion object {
     /**
-     * Returns a [ViewModel][android.arch.lifecycle.ViewModel] implementation of
+     * Returns a [ViewModel][androidx.lifecycle.ViewModel] implementation of
      * [WorkflowRunner], tied to the given [activity].
      *
      * It's probably more convenient to use [FragmentActivity.setContentWorkflow]
@@ -92,7 +94,7 @@ interface WorkflowRunner<out OutputT> {
     }
 
     /**
-     * Returns a [ViewModel][android.arch.lifecycle.ViewModel] implementation of
+     * Returns a [ViewModel][androidx.lifecycle.ViewModel] implementation of
      * [WorkflowRunner], tied to the given [activity].
      *
      * It's probably more convenient to use [FragmentActivity.setContentWorkflow]
@@ -103,26 +105,11 @@ interface WorkflowRunner<out OutputT> {
       activity: FragmentActivity,
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Flowable<InputT>,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> = of<InputT, OutputT>(
-        activity, viewRegistry, workflow, inputs.asFlow(), savedInstanceState,
-        dispatcher
-    )
-
-    /**
-     * Convenience overload for workflows unconcerned with back-pressure of their inputs.
-     */
-    fun <InputT : Any, OutputT : Any> of(
-      activity: FragmentActivity,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Observable<InputT>,
+      inputs: Publisher<InputT>,
       savedInstanceState: Bundle?,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> = of(
-        activity, viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState, dispatcher
+        activity, viewRegistry, workflow, inputs.asFlow(), savedInstanceState, dispatcher
     )
 
     /**
@@ -154,7 +141,7 @@ interface WorkflowRunner<out OutputT> {
     }
 
     /**
-     * Returns a [ViewModel][android.arch.lifecycle.ViewModel] implementation of
+     * Returns a [ViewModel][androidx.lifecycle.ViewModel] implementation of
      * [WorkflowRunner], tied to the given [fragment].
      *
      * It's probably more convenient to subclass [WorkflowFragment] rather than calling
@@ -185,7 +172,7 @@ interface WorkflowRunner<out OutputT> {
     }
 
     /**
-     * Returns a [ViewModel][android.arch.lifecycle.ViewModel] implementation of
+     * Returns a [ViewModel][androidx.lifecycle.ViewModel] implementation of
      * [WorkflowRunner], tied to the given [fragment].
      *
      * It's probably more convenient to subclass [WorkflowFragment] rather than calling
@@ -196,27 +183,11 @@ interface WorkflowRunner<out OutputT> {
       fragment: Fragment,
       viewRegistry: ViewRegistry,
       workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Flowable<InputT>,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> = of<InputT, OutputT>(
-        fragment, viewRegistry, workflow, inputs.asFlow(), savedInstanceState,
-        dispatcher
-    )
-
-    /**
-     * Convenience overload for workflows unconcerned with back-pressure of their inputs.
-     */
-    fun <InputT : Any, OutputT : Any> of(
-      fragment: Fragment,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Observable<InputT>,
+      inputs: Publisher<InputT>,
       savedInstanceState: Bundle?,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
     ): WorkflowRunner<OutputT> = of(
-        fragment, viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState,
-        dispatcher
+        fragment, viewRegistry, workflow, inputs.asFlow(), savedInstanceState, dispatcher
     )
 
     /**
@@ -296,7 +267,7 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
   val layout = WorkflowLayout(this@setContentWorkflow)
       .apply {
         id = R.id.workflow_layout
-        start(runner)
+        start(this@setContentWorkflow, runner)
       }
 
   this.setContentView(layout)
@@ -325,7 +296,8 @@ fun FragmentActivity.workflowOnBackPressed(): Boolean {
 }
 
 /**
- * Convenience overload for workflows that take a [Flowable] of inputs.
+ * Convenience overload to take [inputs] from a
+ * [Reactive Streams][https://www.reactive-streams.org/] compatible source.
  */
 @ExperimentalWorkflowUi
 @CheckResult
@@ -333,26 +305,11 @@ fun FragmentActivity.workflowOnBackPressed(): Boolean {
 fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
   viewRegistry: ViewRegistry,
   workflow: Workflow<InputT, OutputT, RenderingT>,
-  inputs: Flowable<InputT>,
+  inputs: Publisher<InputT>,
   savedInstanceState: Bundle?,
   dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ): WorkflowRunner<OutputT> = setContentWorkflow(
     viewRegistry, workflow, inputs.asFlow(), savedInstanceState, dispatcher
-)
-
-/**
- * Convenience overload for workflows unconcerned with back-pressure of their inputs.
- */
-@ExperimentalWorkflowUi
-@CheckResult
-fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
-  viewRegistry: ViewRegistry,
-  workflow: Workflow<InputT, OutputT, RenderingT>,
-  inputs: Observable<InputT>,
-  savedInstanceState: Bundle?,
-  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-): WorkflowRunner<OutputT> = setContentWorkflow(
-    viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState, dispatcher
 )
 
 /**

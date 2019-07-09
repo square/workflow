@@ -17,6 +17,7 @@ package com.squareup.sample.mainactivity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
@@ -25,13 +26,10 @@ import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
-import io.reactivex.disposables.Disposables
 import timber.log.Timber
 
 @UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
-  private var loggingSub = Disposables.disposed()
-
   private lateinit var component: MainComponent
   private lateinit var workflowRunner: WorkflowRunner<*>
 
@@ -43,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     workflowRunner = setContentWorkflow(viewRegistry, component.mainWorkflow, savedInstanceState)
         .apply {
-          loggingSub = renderings.subscribe { Timber.d("rendering: %s", it) }
+          renderings.observe(this@MainActivity, Observer { Timber.d("rendering: %s", it) })
         }
   }
 
@@ -57,11 +55,6 @@ class MainActivity : AppCompatActivity() {
   }
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component
-
-  override fun onDestroy() {
-    loggingSub.dispose()
-    super.onDestroy()
-  }
 
   private companion object {
     val viewRegistry = ViewRegistry(PanelContainer) + AuthViewBindings + TicTacToeViewBindings

@@ -23,10 +23,9 @@ import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.View
 import android.widget.FrameLayout
-import com.squareup.coordinators.Coordinator
-import com.squareup.coordinators.Coordinators
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 /**
  * A view that can be driven by a [WorkflowRunner]. In most cases you'll use
@@ -50,18 +49,22 @@ class WorkflowLayout(
    * children of their own to handle nested renderings.
    */
   fun start(
-    renderings: Observable<out Any>,
+    owner: LifecycleOwner,
+    renderings: LiveData<out Any>,
     registry: ViewRegistry
   ) {
-    takeWhileAttached(renderings) { show(it, registry) }
+    renderings.observe(owner, Observer { show(it, registry) })
   }
 
   /**
    * Convenience override to start this layout from [renderings][WorkflowRunner.renderings]
    * and [viewRegistry][WorkflowRunner.viewRegistry] of [workflowRunner].
    */
-  fun start(workflowRunner: WorkflowRunner<*>) {
-    start(workflowRunner.renderings, workflowRunner.viewRegistry)
+  fun start(
+    owner: LifecycleOwner,
+    workflowRunner: WorkflowRunner<*>
+  ) {
+    start(owner, workflowRunner.renderings, workflowRunner.viewRegistry)
   }
 
   override fun onBackPressed(): Boolean {
@@ -133,31 +136,6 @@ class WorkflowLayout(
         SavedState(source)
 
       override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
-    }
-  }
-
-  /**
-   * Subscribes [update] to [source] only while this [View] is attached to a window.
-   */
-  private fun <S : Any> View.takeWhileAttached(
-    source: Observable<S>,
-    update: (S) -> Unit
-  ) {
-    Coordinators.bind(this) {
-      object : Coordinator() {
-        var sub: Disposable? = null
-
-        override fun attach(view: View) {
-          sub = source.subscribe { screen -> update(screen) }
-        }
-
-        override fun detach(view: View) {
-          sub?.let {
-            it.dispose()
-            sub = null
-          }
-        }
-      }
     }
   }
 }
