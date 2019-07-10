@@ -191,9 +191,16 @@ fun <StateT, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
  * Ensures a [Worker] that never emits anything is running. Since [worker] can't emit anything,
  * it can't trigger any [WorkflowAction]s.
  *
+ * A simple way to create workers that don't output anything is using [Worker.createSideEffect].
+ *
  * @param key An optional string key that is used to distinguish between identical [Worker]s.
  */
 fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
   worker: Worker<Nothing>,
   key: String = ""
-) = onWorkerOutputOrFinished(worker, key) { throw AssertionError("Worker<Nothing> emitted $it") }
+) {
+  // Need to cast to Any so the compiler doesn't complain about unreachable code.
+  onWorkerOutput(worker as Worker<Any>, key) {
+    throw AssertionError("Worker<Nothing> emitted $it")
+  }
+}

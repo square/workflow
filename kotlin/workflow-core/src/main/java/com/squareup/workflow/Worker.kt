@@ -164,7 +164,8 @@ interface Worker<out T> {
     ): Worker<T> = flow(block).asWorker(key)
 
     /**
-     * Creates a [Worker] that just performs some side effects and doesn't emit anything.
+     * Creates a [Worker] that just performs some side effects and doesn't emit anything. Run the
+     * worker from your `render` method using [RenderContext.runningWorker].
      *
      * The returned [Worker] will equate to any other workers created with this function that have
      * the same key. The key is required for this builder because there is no type information

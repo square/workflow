@@ -211,7 +211,7 @@ class WorkerCompositionIntegrationTest {
 
       assertFailsWith<TimeoutCancellationException> {
         // There should never be any outputs, so this should timeout.
-        awaitNextOutput(timeoutMs = 1000)
+        awaitNextOutput(timeoutMs = 100)
       }
     }
   }
@@ -252,6 +252,32 @@ class WorkerCompositionIntegrationTest {
       triggerOutput.offer(Unit)
 
       assertEquals(2, awaitNextOutput())
+    }
+  }
+
+  @Test fun `runningWorker throws when output emitted`() {
+    @Suppress("UNCHECKED_CAST")
+    val worker = Worker.from { Unit } as Worker<Nothing>
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {
+      runningWorker(worker)
+    }
+
+    workflow.testFromStart {
+      assertTrue(awaitFailure() is AssertionError)
+    }
+  }
+
+  @Test fun `runningWorker doesn't throw when worker finishes`() {
+    // No-op worker, completes immediately.
+    val worker = Worker.createSideEffect("") {}
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {
+      runningWorker(worker)
+    }
+
+    workflow.testFromStart {
+      assertFailsWith<TimeoutCancellationException> {
+        awaitNextOutput(timeoutMs = 100)
+      }
     }
   }
 }
