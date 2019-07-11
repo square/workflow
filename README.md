@@ -7,7 +7,7 @@
 An architecture that allows composable state machines to drive UI navigation and content, where the state machines are cleanly separated from UI code.
 
 _**This project is currently experimental and the API subject to breaking changes without notice.**
-Follow Square's engineering blog, [The Corner](https://medium.com/square-corner-blog), to see when this project becomes stable._
+Follow Square's engineering blog, [The Corner](https://developer.squareup.com/blog/), to see when this project becomes stable._
 
 Workflow is a library for making composable state machines, and UIs driven by those state machines.
 
