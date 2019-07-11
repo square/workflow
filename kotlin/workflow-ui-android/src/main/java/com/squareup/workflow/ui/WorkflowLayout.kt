@@ -114,9 +114,7 @@ class WorkflowLayout(
     }
 
     constructor(source: Parcel) : super(source) {
-      @Suppress("UNCHECKED_CAST")
-      this.childState = source.readSparseArray(SavedState::class.java.classLoader)
-          as SparseArray<Parcelable>
+      this.childState = source.readSparseArray<Parcelable>(SavedState::class.java.classLoader)!!
     }
 
     val childState: SparseArray<Parcelable>
