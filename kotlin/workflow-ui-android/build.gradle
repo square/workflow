@@ -31,13 +31,13 @@ dependencies {
   api project(':workflow-core')
   api project(':workflow-ui-core')
 
+  api deps.androidx.lifecycle
+  api deps.androidx.transition
   api deps.kotlin.stdLib.jdk6
-  api deps.lifecycle
   api deps.rxjava2.rxjava2
-  api deps.transition
 
   implementation project(':workflow-runtime')
-  implementation deps.appcompat
+  implementation deps.androidx.appcompat
   implementation deps.coordinators
   implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.coroutines.core

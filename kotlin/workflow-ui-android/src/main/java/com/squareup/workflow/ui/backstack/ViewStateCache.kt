@@ -61,11 +61,11 @@ class ViewStateCache private constructor(
    *
    * @param oldViewMaybe the view that is being removed, if any, which is expected to be showing
    * a [Named] rendering. If that rendering is
-   * [compatible with][com.squareup.workflow.ui.Compatible.isCompatibleWith] a member of
+   * [compatible with][com.squareup.workflow.ui.compatible] a member of
    * [retainedRenderings], its state will be [saved][View.saveHierarchyState].
    *
    * @param newView the view that is about to be displayed, which must be showing a
-   * [Named] rendering. If [compatible][com.squareup.workflow.ui.Compatible.isCompatibleWith]
+   * [Named] rendering. If [compatible][com.squareup.workflow.ui.compatible]
    * view state is found in the cache, it is [restored][View.restoreHierarchyState].
    *
    * @return true if [newView] has been restored.
@@ -159,13 +159,13 @@ class ViewStateCache private constructor(
     parcel: Parcel,
     flags: Int
   ) {
-    parcel.writeMap(viewStates)
+    parcel.writeMap(viewStates as Map<*, *>)
   }
 
   companion object CREATOR : Creator<ViewStateCache> {
     override fun createFromParcel(parcel: Parcel): ViewStateCache {
       return mutableMapOf<String, ViewStateFrame>()
-          .apply { parcel.readMap(this, ViewStateCache::class.java.classLoader) }
+          .apply { parcel.readMap(this as Map<*, *>, ViewStateCache::class.java.classLoader) }
           .let { ViewStateCache(it) }
     }
 

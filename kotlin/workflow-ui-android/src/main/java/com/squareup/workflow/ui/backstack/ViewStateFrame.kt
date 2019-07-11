@@ -23,7 +23,7 @@ import android.util.SparseArray
 /**
  * Used by [ViewStateCache] to record the [viewState] data for the view identified
  * by [key], which is expected to match the `toString()` of a
- * [com.squareup.workflow.ui.Named.Key].
+ * [com.squareup.workflow.ui.Compatible.compatibilityKey].
  */
 internal data class ViewStateFrame(
   val key: String,
@@ -44,10 +44,7 @@ internal data class ViewStateFrame(
   companion object CREATOR : Creator<ViewStateFrame> {
     override fun createFromParcel(parcel: Parcel): ViewStateFrame {
       val key = parcel.readString()!!
-
-      @Suppress("UNCHECKED_CAST")
-      val viewState = parcel.readSparseArray(ViewStateFrame::class.java.classLoader)
-          as SparseArray<Parcelable>
+      val viewState = parcel.readSparseArray<Parcelable>(ViewStateFrame::class.java.classLoader)!!
 
       return ViewStateFrame(key, viewState)
     }

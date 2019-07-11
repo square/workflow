@@ -51,7 +51,7 @@ internal class MainComponent {
       val stock = Thread.getDefaultUncaughtExceptionHandler()
       Thread.setDefaultUncaughtExceptionHandler { thread, error ->
         Timber.e(error)
-        stock.uncaughtException(thread, error)
+        stock?.uncaughtException(thread, error)
       }
     }
   }
