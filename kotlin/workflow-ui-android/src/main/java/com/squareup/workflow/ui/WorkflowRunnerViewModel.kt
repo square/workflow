@@ -43,7 +43,7 @@ import kotlin.reflect.jvm.jvmName
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
 @ExperimentalWorkflowUi
-internal class WorkflowRunnerViewModel<OutputT : Any>(
+class WorkflowRunnerViewModel<OutputT : Any>(
   override val viewRegistry: ViewRegistry,
   private val renderingsFlow: Flow<RenderingAndSnapshot<Any>>,
   outputsFlow: Flow<OutputT>,
