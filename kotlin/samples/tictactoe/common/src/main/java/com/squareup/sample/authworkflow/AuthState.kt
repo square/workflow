@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.authworkflow
 
-import com.squareup.sample.authworkflow.LoginScreen.SubmitLogin
+import com.squareup.sample.authworkflow.LoginScreen.Event.SubmitLogin
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
 
 sealed class AuthState {

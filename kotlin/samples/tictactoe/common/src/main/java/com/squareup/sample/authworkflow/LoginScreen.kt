@@ -17,11 +17,15 @@ package com.squareup.sample.authworkflow
 
 data class LoginScreen(
   val errorMessage: String = "",
-  val onEvent: (SubmitLogin) -> Unit = {}
+  val onEvent: (Event) -> Unit = {}
 ) {
 
-  data class SubmitLogin(
-    val email: String,
-    val password: String
-  )
+  sealed class Event {
+    data class SubmitLogin(
+      val email: String,
+      val password: String
+    ) : Event()
+
+    object Cancel : Event()
+  }
 }
