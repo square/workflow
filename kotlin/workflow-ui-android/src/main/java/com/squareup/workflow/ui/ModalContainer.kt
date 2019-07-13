@@ -272,7 +272,7 @@ private val Dialog.decorView: View?
  * noise out of logcat. If someone manages to run this under a strange context whose
  * [Lifecycle] we can't find, just return null and let the caller no-op.
  */
-tailrec fun Context.lifecycleOrNull(): Lifecycle? = when {
+private tailrec fun Context.lifecycleOrNull(): Lifecycle? = when {
   this is LifecycleOwner -> this.lifecycle
   else -> (this as? ContextWrapper)?.baseContext?.lifecycleOrNull()
 }
