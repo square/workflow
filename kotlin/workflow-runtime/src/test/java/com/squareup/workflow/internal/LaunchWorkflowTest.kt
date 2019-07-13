@@ -56,6 +56,8 @@ import kotlin.test.fail
 @UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class LaunchWorkflowTest {
 
+  private class ExpectedException : RuntimeException()
+
   private val scope = CoroutineScope(Unconfined)
   private val workflow = Workflow.stateless<Unit, String, String> { fail() }
       .asStatefulWorkflow()
@@ -498,5 +500,3 @@ private object HangingLoop : WorkflowLoop {
     onOutput: suspend (OutputT) -> Unit
   ): Nothing = hang()
 }
-
-private class ExpectedException : RuntimeException()
