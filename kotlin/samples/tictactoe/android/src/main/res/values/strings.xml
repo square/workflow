@@ -15,6 +15,7 @@
   -->
 <resources>
   <string name="app_name">Tic Tac Workflow</string>
+  <string name="cancel">Cancel</string>
   <string name="end_game">End Game</string>
   <string name="end_game_title">End the Game?</string>
   <string name="exit">Exit</string>

@@ -25,7 +25,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.parse
 
-object HelloWorkflow : StatefulWorkflow<Unit, State, Unit, Rendering>() {
+object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
   enum class State {
     Hello,
     Goodbye;
@@ -50,7 +50,7 @@ object HelloWorkflow : StatefulWorkflow<Unit, State, Unit, Rendering>() {
   override fun render(
     input: Unit,
     state: State,
-    context: RenderContext<State, Unit>
+    context: RenderContext<State, Nothing>
   ): Rendering = Rendering(
       message = state.name,
       onClick = context.onEvent { enterState(state.theOtherState()) }

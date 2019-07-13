@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
   private var loggingSub = Disposables.disposed()
 
   private lateinit var component: MainComponent
-  private lateinit var workflowRunner: WorkflowRunner<*>
+  private lateinit var workflowRunner: WorkflowRunner<Unit>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -41,10 +41,14 @@ class MainActivity : AppCompatActivity() {
     component = lastCustomNonConfigurationInstance as? MainComponent
         ?: MainComponent()
 
-    workflowRunner = setContentWorkflow(viewRegistry, component.mainWorkflow, savedInstanceState)
-        .apply {
-          loggingSub = renderings.subscribe { Timber.d("rendering: %s", it) }
-        }
+    workflowRunner = setContentWorkflow(
+        savedInstanceState,
+        { WorkflowRunner.Config(component.mainWorkflow, viewRegistry) }
+    ) {
+      finish()
+    }
+
+    loggingSub = workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) }
   }
 
   override fun onBackPressed() {

@@ -36,7 +36,9 @@ class MainActivity : AppCompatActivity() {
     rootWorkflow = lastCustomNonConfigurationInstance as? TodoListsAppWorkflow
         ?: TodoListsAppWorkflow()
 
-    workflowRunner = setContentWorkflow(viewRegistry, rootWorkflow, savedInstanceState)
+    workflowRunner = setContentWorkflow(savedInstanceState) {
+      WorkflowRunner.Config(rootWorkflow, viewRegistry)
+    }
   }
 
   override fun onBackPressed() {

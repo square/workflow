@@ -30,8 +30,8 @@ import io.reactivex.disposables.Disposable
 
 /**
  * A view that can be driven by a [WorkflowRunner]. In most cases you'll use
- * [Activity.setContentWorkflow][android.support.v4.app.FragmentActivity.setContentWorkflow]
- * or subclass [WorkflowFragment] rather than manage this class directly.
+ * [Activity.setContentWorkflow][setContentWorkflow] or subclass [WorkflowFragment]
+ * rather than manage this class directly.
  */
 @ExperimentalWorkflowUi
 class WorkflowLayout(
@@ -54,14 +54,6 @@ class WorkflowLayout(
     registry: ViewRegistry
   ) {
     takeWhileAttached(renderings) { show(it, registry) }
-  }
-
-  /**
-   * Convenience override to start this layout from [renderings][WorkflowRunner.renderings]
-   * and [viewRegistry][WorkflowRunner.viewRegistry] of [workflowRunner].
-   */
-  fun start(workflowRunner: WorkflowRunner<*>) {
-    start(workflowRunner.renderings, workflowRunner.viewRegistry)
   }
 
   override fun onBackPressed(): Boolean {

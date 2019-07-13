@@ -28,7 +28,7 @@ class WorkflowRunnerViewModelTest {
     val snapshotsChannel = Channel<RenderingAndSnapshot<Unit>>(UNLIMITED)
     val snapshotsFlow = flow { snapshotsChannel.consumeEach { emit(it) } }
 
-    val runner = WorkflowRunnerViewModel(viewRegistry, snapshotsFlow, emptyFlow(), scope)
+    val runner = WorkflowRunnerViewModel(emptyFlow(), viewRegistry, snapshotsFlow, scope)
 
     assertThat(runner.getLastSnapshotForTest()).isEqualTo(Snapshot.EMPTY)
 
@@ -44,10 +44,10 @@ class WorkflowRunnerViewModelTest {
     scope.coroutineContext[Job]!!.invokeOnCompletion { e ->
       if (e is CancellationException) cancelled = true
     }
-    val runner = WorkflowRunnerViewModel(viewRegistry, emptyFlow(), emptyFlow(), scope)
+    val runner = WorkflowRunnerViewModel(emptyFlow(), viewRegistry, emptyFlow(), scope)
 
     assertThat(cancelled).isFalse()
-    runner.output.test()
+    runner.result.test()
     assertThat(cancelled).isFalse()
 
     runner.clearForTest()

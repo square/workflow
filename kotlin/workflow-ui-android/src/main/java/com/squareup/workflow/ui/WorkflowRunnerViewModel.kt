@@ -20,23 +20,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.Workflow
 import com.squareup.workflow.launchWorkflowIn
-import io.reactivex.Flowable
 import io.reactivex.Observable
-import kotlinx.coroutines.CoroutineDispatcher
+import io.reactivex.Single
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.asFlowable
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.rx2.rxSingle
 import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CancellationException
 import kotlin.reflect.jvm.jvmName
@@ -44,46 +40,44 @@ import kotlin.reflect.jvm.jvmName
 @UseExperimental(ExperimentalCoroutinesApi::class)
 @ExperimentalWorkflowUi
 internal class WorkflowRunnerViewModel<OutputT : Any>(
-  override val viewRegistry: ViewRegistry,
-  private val renderingsFlow: Flow<RenderingAndSnapshot<Any>>,
-  outputsFlow: Flow<OutputT>,
-  private val scope: CoroutineScope
+  private val scope: CoroutineScope,
+  renderingsFlow: Flow<RenderingAndSnapshot<Any>>,
+  output: Flow<OutputT>,
+  override val viewRegistry: ViewRegistry
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
-  /**
-   * @param inputs Function that returns a channel that delivers input values for the root
-   * workflow. The first value emitted is passed to `initialState` to determine the root
-   * workflow's initial state, and subsequent emissions are passed as input updates to the root
-   * workflow. The channel returned by this function will be cancelled by the host when it's
-   * finished.
-   */
   @UseExperimental(ExperimentalCoroutinesApi::class)
   internal class Factory<InputT, OutputT : Any>(
-    private val workflow: Workflow<InputT, OutputT, Any>,
-    private val viewRegistry: ViewRegistry,
-    private val inputs: Flow<InputT>,
     savedInstanceState: Bundle?,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+    private val configure: () -> WorkflowRunner.Config<InputT, OutputT>
   ) : ViewModelProvider.Factory {
     private val snapshot = savedInstanceState
         ?.getParcelable<PickledWorkflow>(BUNDLE_KEY)
         ?.snapshot
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = launchWorkflowIn(
-        CoroutineScope(dispatcher),
-        workflow,
-        inputs,
-        snapshot
-    ) { renderings, outputs ->
-      @Suppress("UNCHECKED_CAST")
-      WorkflowRunnerViewModel(viewRegistry, renderings, outputs, this) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+      return with(configure()) {
+        launchWorkflowIn(
+            CoroutineScope(dispatcher), workflow, inputs, snapshot
+        ) { renderings, output ->
+          @Suppress("UNCHECKED_CAST")
+          WorkflowRunnerViewModel(this, renderings, output, viewRegistry) as T
+        }
+      }
     }
   }
 
-  private val snapshotJob = scope.launch {
+  override val result: Single<out OutputT> = scope
+      .rxSingle { output.first() }
+      .doAfterTerminate {
+        scope.cancel(CancellationException("WorkflowRunnerViewModel delivered result"))
+      }
+
+  init {
     renderingsFlow
         .map { it.snapshot }
-        .collect { lastSnapshot = it }
+        .onEach { lastSnapshot = it }
+        .launchIn(scope)
   }
 
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
@@ -93,14 +87,8 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
       .map { it.rendering }
       .asObservable()
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
-  override val output: Flowable<out OutputT> = outputsFlow
-      .asFlowable()
-
   override fun onCleared() {
-    val cancellationException = CancellationException("WorkflowRunnerViewModel cleared.")
-    snapshotJob.cancel(cancellationException)
-    scope.cancel(cancellationException)
+    scope.cancel(CancellationException("WorkflowRunnerViewModel cleared."))
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -116,13 +104,4 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   private companion object {
     val BUNDLE_KEY = WorkflowRunner::class.jvmName + "-workflow"
   }
-}
-
-/**
- * Invokes `block` every time a new collector begins collecting this [Flow].
- */
-@UseExperimental(ExperimentalCoroutinesApi::class)
-private fun <T> Flow<T>.onCollect(block: () -> Unit): Flow<T> = flow {
-  block()
-  emitAll(this@onCollect)
 }

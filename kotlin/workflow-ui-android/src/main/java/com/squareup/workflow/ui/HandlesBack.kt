@@ -28,6 +28,10 @@ import com.squareup.workflow.ui.HandlesBack.Helper.setConditionalBackHandler
  *
  * To kick things off, override [android.app.Activity.onBackPressed] to call
  * [WorkflowActivityRunner.onBackPressed] or [WorkflowFragment.onBackPressed]
+ *
+ * **NB** This is all expected to be scrapped as soon as
+ * [OnBackPressedDispatcher](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher.html)
+ * stabilizes.
  */
 interface HandlesBack {
   /**
