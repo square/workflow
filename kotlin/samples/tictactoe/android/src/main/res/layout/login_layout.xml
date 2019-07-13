@@ -60,14 +60,34 @@
       android:inputType="textPassword"
       />
 
-  <Button
-      android:id="@+id/login_button"
-      android:layout_width="wrap_content"
+  <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:text="@string/login_button"
-      style="@style/Base.TextAppearance.AppCompat.Button"
-      />
+      android:orientation="horizontal"
+      android:paddingLeft="40dp"
+      android:paddingRight="40dp"
+      >
+
+    <Button
+        android:id="@+id/cancel_login_button"
+        style="@style/Base.TextAppearance.AppCompat.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/cancel"
+        />
+
+    <Button
+        android:id="@+id/login_button"
+        style="@style/Base.TextAppearance.AppCompat.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:text="@string/login_button"
+        />
+
+  </LinearLayout>
 
   <Space
       android:layout_width="match_parent"

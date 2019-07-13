@@ -29,7 +29,9 @@ class HelloWorkflowActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    runner = setContentWorkflow(viewRegistry, HelloWorkflow, savedInstanceState)
+    runner = setContentWorkflow(savedInstanceState) {
+      WorkflowRunner.Config(HelloWorkflow, viewRegistry)
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
