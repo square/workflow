@@ -21,6 +21,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.launchWorkflowImpl
 import com.squareup.workflow.stateless
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Unconfined
@@ -262,18 +263,18 @@ class LaunchWorkflowTest {
   @Test fun `flows complete immediately when base context is already cancelled on start`() {
     val scope = scope + Job().apply { cancel() }
 
-    launchWorkflowImpl(
+    val (renderings, outputs) = launchWorkflowImpl(
         scope,
         HangingLoop,
         workflow,
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { renderings, outputs ->
-      runBlocking {
-        assertTrue(renderings.toList().isEmpty())
-        assertTrue(outputs.toList().isEmpty())
-      }
+    ) { renderings, outputs -> Pair(renderings, outputs) }
+
+    runBlocking {
+      assertTrue(renderings.toList().isEmpty())
+      assertTrue(outputs.toList().isEmpty())
     }
   }
 
@@ -328,6 +329,24 @@ class LaunchWorkflowTest {
 
     job.cancel()
     assertTrue(parentJob.children.count() == 0)
+    assertTrue(renderings.isClosedForReceive)
+    assertTrue(outputs.isClosedForReceive)
+  }
+
+  @Test fun `runtime cancelled when workflow throws cancellation`() {
+    val loop = simpleLoop { _, _ ->
+      throw CancellationException("Workflow cancelled itself.")
+    }
+    val (job, renderings, outputs) = launchWorkflowImpl(
+        scope,
+        loop,
+        workflow,
+        emptyFlow(),
+        initialSnapshot = null,
+        initialState = null
+    ) { r, o -> Triple(coroutineContext[Job]!!, r.produceIn(this), o.produceIn(this)) }
+
+    assertTrue(job.isCancelled)
     assertTrue(renderings.isClosedForReceive)
     assertTrue(outputs.isClosedForReceive)
   }
