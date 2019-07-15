@@ -18,6 +18,7 @@ package com.squareup.workflow
 import com.squareup.workflow.internal.RealWorkflowLoop
 import com.squareup.workflow.internal.WorkflowLoop
 import com.squareup.workflow.internal.unwrapCancellationCause
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -157,22 +158,12 @@ internal fun <InputT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
 ): RunnerT {
   val renderingsAndSnapshots = ConflatedBroadcastChannel<RenderingAndSnapshot<RenderingT>>()
   val outputs = BroadcastChannel<OutputT>(capacity = 1)
-  val workflowJob = Job(parent = scope.coroutineContext[Job])
-  val workflowScope = scope + workflowJob
-
-  // Ensure we close the channels when we're done, so that they propagate errors.
-  workflowJob.invokeOnCompletion { cause ->
-    // We need to unwrap the cancellation exception so that we *complete* the channels instead
-    // of cancelling them if our coroutine was merely cancelled.
-    val realCause = cause?.unwrapCancellationCause()
-    renderingsAndSnapshots.close(realCause)
-    outputs.close(realCause)
-  }
+  val workflowScope = scope + Job(parent = scope.coroutineContext[Job])
 
   // Give the caller a chance to start collecting outputs.
   val result = beforeStart(workflowScope, renderingsAndSnapshots.asFlow(), outputs.asFlow())
 
-  workflowScope.launch {
+  val workflowJob = workflowScope.launch {
     // Run the workflow processing loop forever, or until it fails or is cancelled.
     workflowLoop.runWorkflowLoop(
         workflow,
@@ -182,6 +173,26 @@ internal fun <InputT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
         onRendering = renderingsAndSnapshots::send,
         onOutput = outputs::send
     )
+  }
+
+  // Ensure we close the channels when we're done, so that they propagate errors.
+  workflowJob.invokeOnCompletion { cause ->
+    // We need to unwrap the cancellation exception so that we *complete* the channels instead
+    // of cancelling them if our coroutine was merely cancelled.
+    val realCause = cause?.unwrapCancellationCause()
+    renderingsAndSnapshots.close(realCause)
+    outputs.close(realCause)
+
+    // If the cancellation came from inside the workflow loop, the outer runtime scope needs to be
+    // explicitly cancelled. See https://github.com/square/workflow/issues/464.
+    workflowScope.coroutineContext[Job]!!.let {
+      if (!it.isCancelled) {
+        it.cancel(
+            realCause as? CancellationException
+                ?: CancellationException("Workflow cancelled", realCause)
+        )
+      }
+    }
   }
 
   return result
