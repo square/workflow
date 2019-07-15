@@ -22,16 +22,20 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.launchSingleOutputWorkflowIn
+import com.squareup.workflow.launchWorkflowIn
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.launch
@@ -103,9 +107,7 @@ private suspend fun runTerminalWorkflow(
   // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically
   // if there's an error.
   val result =
-    launchSingleOutputWorkflowIn(
-        this, workflow, inputs.asFlow()
-    ) { renderingsAndSnapshots, output ->
+    launchWorkflowIn(this, workflow, inputs.asFlow()) { renderingsAndSnapshots, outputs ->
       val renderings = renderingsAndSnapshots.map { it.rendering }
           .produceIn(this)
 
@@ -147,8 +149,14 @@ private suspend fun runTerminalWorkflow(
         }
       }
 
-      return@launchSingleOutputWorkflowIn output
+      return@launchWorkflowIn async { outputs.first() }
     }
 
-  return@coroutineScope result.await()
+  val exitCode = result.await()
+  // If we don't cancel the workflow runtime explicitly, coroutineScope will hang waiting for it to
+  // finish.
+  coroutineContext.cancelChildren(
+      CancellationException("TerminalWorkflowRunner completed with exit code $exitCode")
+  )
+  return@coroutineScope exitCode
 }
