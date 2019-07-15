@@ -19,21 +19,16 @@ import com.squareup.workflow.internal.RealWorkflowLoop
 import com.squareup.workflow.internal.WorkflowLoop
 import com.squareup.workflow.internal.unwrapCancellationCause
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.jetbrains.annotations.TestOnly
-import java.util.concurrent.CancellationException
 
 /**
  * Don't use this typealias for the public API, better to just use the function directly so it's
@@ -119,35 +114,6 @@ fun <InputT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
     initialState = null,
     beforeStart = beforeStart
 )
-
-/**
- * Launches the [workflow] in a new coroutine in [scope]. The workflow tree is seeded with
- * [initialSnapshot] and the first value emitted by [inputs].  Subsequent values emitted from
- * [inputs] will be used to re-render the workflow.
- *
- * Like [launchWorkflowIn], but will automatically cancel the workflow as soon as the first
- * [output][OutputT] is emitted. [beforeStart] gets the same [Flow] of [RenderingAndSnapshot], but
- * instead of a flow of outputs it gets a [Deferred] of the first output.
- */
-@UseExperimental(ExperimentalCoroutinesApi::class)
-fun <InputT, OutputT : Any, RenderingT, ResultT> launchSingleOutputWorkflowIn(
-  scope: CoroutineScope,
-  workflow: Workflow<InputT, OutputT, RenderingT>,
-  inputs: Flow<InputT>,
-  initialSnapshot: Snapshot? = null,
-  beforeStart: CoroutineScope.(
-    renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
-    output: Deferred<OutputT>
-  ) -> ResultT
-): ResultT = launchWorkflowIn(scope, workflow, inputs, initialSnapshot) { renderings, outputs ->
-  val workflowScope = this
-  val output = async { outputs.first() }.apply {
-    invokeOnCompletion {
-      workflowScope.cancel(CancellationException("Workflow finished normally."))
-    }
-  }
-  beforeStart(renderings, output)
-}
 
 /**
  * Launches the [workflow] in a new coroutine in [scope]. The workflow tree is seeded with
