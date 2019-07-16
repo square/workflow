@@ -219,23 +219,13 @@ class WorkerCompositionIntegrationTest {
   // See https://github.com/square/workflow/issues/261.
   @Test fun `onWorkerOutput closes over latest state`() {
     val triggerOutput = Channel<Unit>()
-    val workflow = object : StatefulWorkflow<Unit, Int, Int, (Unit) -> Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ) = 0
-
-      override fun render(
-        input: Unit,
-        state: Int,
-        context: RenderContext<Int, Int>
-      ): (Unit) -> Unit {
-        context.onWorkerOutput(triggerOutput.asWorker()) { emitOutput(state) }
-        return context.onEvent { enterState(state + 1) }
-      }
-
-      override fun snapshotState(state: Int) = Snapshot.EMPTY
-    }
+    val workflow = Workflow.stateful<Int, Int, (Unit) -> Unit>(
+        initialState = 0,
+        render = { state ->
+          onWorkerOutput(triggerOutput.asWorker()) { emitOutput(state) }
+          return@stateful onEvent { enterState(state + 1) }
+        }
+    )
 
     workflow.testFromStart {
       triggerOutput.offer(Unit)

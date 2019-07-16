@@ -138,3 +138,83 @@ abstract class StatefulWorkflow<
   final override fun asStatefulWorkflow(): StatefulWorkflow<InputT, StateT, OutputT, RenderingT> =
     this
 }
+
+/**
+ * Returns a stateful [Workflow] implemented via the given functions.
+ */
+inline fun <InputT, StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
+  crossinline initialState: (InputT, Snapshot?) -> StateT,
+  crossinline render: RenderContext<StateT, OutputT>.(input: InputT, state: StateT) -> RenderingT,
+  crossinline snapshot: (StateT) -> Snapshot,
+  crossinline onInputChanged: (
+    old: InputT,
+    new: InputT,
+    state: StateT
+  ) -> StateT = { _, _, state -> state }
+): StatefulWorkflow<InputT, StateT, OutputT, RenderingT> =
+  object : StatefulWorkflow<InputT, StateT, OutputT, RenderingT>() {
+    override fun initialState(
+      input: InputT,
+      snapshot: Snapshot?
+    ): StateT = initialState(input, snapshot)
+
+    override fun onInputChanged(
+      old: InputT,
+      new: InputT,
+      state: StateT
+    ): StateT = onInputChanged(old, new, state)
+
+    override fun render(
+      input: InputT,
+      state: StateT,
+      context: RenderContext<StateT, OutputT>
+    ): RenderingT = render(context, input, state)
+
+    override fun snapshotState(state: StateT): Snapshot = snapshot(state)
+  }
+
+/**
+ * Returns a stateful [Workflow], with no input, implemented via the given functions.
+ */
+inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
+  crossinline initialState: (Snapshot?) -> StateT,
+  crossinline render: RenderContext<StateT, OutputT>.(state: StateT) -> RenderingT,
+  crossinline snapshot: (StateT) -> Snapshot
+): StatefulWorkflow<Unit, StateT, OutputT, RenderingT> = stateful(
+    { _, initialSnapshot -> initialState(initialSnapshot) },
+    { _, state -> render(state) },
+    snapshot
+)
+
+/**
+ * Returns a stateful [Workflow] implemented via the given functions.
+ *
+ * This overload does not support snapshotting, but there are other overloads that do.
+ */
+inline fun <InputT, StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
+  crossinline initialState: (InputT) -> StateT,
+  crossinline render: RenderContext<StateT, OutputT>.(input: InputT, state: StateT) -> RenderingT,
+  crossinline onInputChanged: (
+    old: InputT,
+    new: InputT,
+    state: StateT
+  ) -> StateT = { _, _, state -> state }
+) = stateful(
+    { input, _ -> initialState(input) },
+    render,
+    { Snapshot.EMPTY },
+    onInputChanged
+)
+
+/**
+ * Returns a stateful [Workflow], with no input, implemented via the given function.
+ *
+ * This overload does not support snapshotting, but there are other overloads that do.
+ */
+inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
+  initialState: StateT,
+  crossinline render: RenderContext<StateT, OutputT>.(state: StateT) -> RenderingT
+): StatefulWorkflow<Unit, StateT, OutputT, RenderingT> = stateful(
+    { initialState },
+    { _, state -> render(state) }
+)

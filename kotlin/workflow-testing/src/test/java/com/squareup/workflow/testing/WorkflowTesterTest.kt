@@ -17,12 +17,11 @@
 
 package com.squareup.workflow.testing
 
-import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
@@ -96,25 +95,14 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from initial state`() {
-    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ) {
-        assertNull(snapshot)
-        throw ExpectedException()
-      }
-
-      override fun render(
-        input: Unit,
-        state: Unit,
-        context: RenderContext<Unit, Nothing>
-      ) {
-        fail()
-      }
-
-      override fun snapshotState(state: Unit): Snapshot = fail()
-    }
+    val workflow = Workflow.stateful<Unit, Unit, Nothing, Unit>(
+        initialState = { _, snapshot ->
+          assertNull(snapshot)
+          throw ExpectedException()
+        },
+        render = { _, _ -> fail() },
+        snapshot = { fail() }
+    )
 
     workflow.testFromStart {
       awaitFailure()
@@ -126,25 +114,11 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from snapshot state`() {
-    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ) {
-        assertNull(snapshot)
-        // Noop
-      }
-
-      override fun render(
-        input: Unit,
-        state: Unit,
-        context: RenderContext<Unit, Nothing>
-      ) {
-        // Noop
-      }
-
-      override fun snapshotState(state: Unit): Snapshot = throw ExpectedException()
-    }
+    val workflow = Workflow.stateful<Unit, Nothing, Unit>(
+        initialState = { snapshot -> assertNull(snapshot) },
+        render = {},
+        snapshot = { throw ExpectedException() }
+    )
 
     workflow.testFromStart {
       awaitFailure()
@@ -156,25 +130,15 @@ class WorkflowTesterTest {
   }
 
   @Test fun `propagates exception when workflow throws from restore state`() {
-    val workflow = object : StatefulWorkflow<Unit, Unit, Nothing, Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ) {
-        if (snapshot != null) {
-          throw ExpectedException()
-        }
-      }
-
-      override fun render(
-        input: Unit,
-        state: Unit,
-        context: RenderContext<Unit, Nothing>
-      ) {
-      }
-
-      override fun snapshotState(state: Unit): Snapshot = Snapshot.EMPTY
-    }
+    val workflow = Workflow.stateful<Unit, Nothing, Unit>(
+        initialState = { snapshot ->
+          if (snapshot != null) {
+            throw ExpectedException()
+          }
+        },
+        render = {},
+        snapshot = { Snapshot.EMPTY }
+    )
 
     // Get a valid snapshot (can't use Snapshot.EMPTY).
     val snapshot = workflow.testFromStart {

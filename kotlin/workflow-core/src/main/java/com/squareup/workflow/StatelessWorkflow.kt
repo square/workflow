@@ -37,21 +37,11 @@ import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 abstract class StatelessWorkflow<InputT, OutputT : Any, RenderingT> :
     Workflow<InputT, OutputT, RenderingT> {
 
-  private val statefulWorkflow = object : StatefulWorkflow<InputT, Unit, OutputT, RenderingT>() {
-    override fun initialState(
-      input: InputT,
-      snapshot: Snapshot?
-    ) = Unit
-
-    @Suppress("UNCHECKED_CAST")
-    override fun render(
-      input: InputT,
-      state: Unit,
-      context: RenderContext<Unit, OutputT>
-    ): RenderingT = render(input, context as RenderContext<Nothing, OutputT>)
-
-    override fun snapshotState(state: Unit) = Snapshot.EMPTY
-  }
+  @Suppress("UNCHECKED_CAST")
+  private val statefulWorkflow = Workflow.stateful<InputT, Unit, OutputT, RenderingT>(
+      initialState = { Unit },
+      render = { input, _ -> render(input, this as RenderContext<Nothing, OutputT>) }
+  )
 
   /**
    * Called at least once any time one of the following things happens:
@@ -90,8 +80,8 @@ abstract class StatelessWorkflow<InputT, OutputT : Any, RenderingT> :
  * [input][InputT] received from its parent, and it may render child workflows that do have
  * their own internal state.
  */
-fun <InputT, OutputT : Any, RenderingT> Workflow.Companion.stateless(
-  render: RenderContext<Nothing, OutputT>.(input: InputT) -> RenderingT
+inline fun <InputT, OutputT : Any, RenderingT> Workflow.Companion.stateless(
+  crossinline render: RenderContext<Nothing, OutputT>.(input: InputT) -> RenderingT
 ): Workflow<InputT, OutputT, RenderingT> =
   object : StatelessWorkflow<InputT, OutputT, RenderingT>() {
     override fun render(

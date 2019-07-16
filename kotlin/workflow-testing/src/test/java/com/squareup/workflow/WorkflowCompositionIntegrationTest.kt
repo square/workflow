@@ -108,23 +108,13 @@ class WorkflowCompositionIntegrationTest {
     val child = Workflow.stateless<Unit, Unit, Unit> {
       onWorkerOutput(triggerChildOutput.asWorker()) { emitOutput(Unit) }
     }
-    val workflow = object : StatefulWorkflow<Unit, Int, Int, (Unit) -> Unit>() {
-      override fun initialState(
-        input: Unit,
-        snapshot: Snapshot?
-      ) = 0
-
-      override fun render(
-        input: Unit,
-        state: Int,
-        context: RenderContext<Int, Int>
-      ): (Unit) -> Unit {
-        context.renderChild(child) { emitOutput(state) }
-        return context.onEvent { enterState(state + 1) }
-      }
-
-      override fun snapshotState(state: Int) = Snapshot.EMPTY
-    }
+    val workflow = Workflow.stateful<Int, Int, (Unit) -> Unit>(
+        initialState = 0,
+        render = { state ->
+          renderChild(child) { emitOutput(state) }
+          return@stateful onEvent { enterState(state + 1) }
+        }
+    )
 
     workflow.testFromStart {
       triggerChildOutput.offer(Unit)
