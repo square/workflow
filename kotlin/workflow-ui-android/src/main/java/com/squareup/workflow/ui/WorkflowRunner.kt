@@ -21,37 +21,42 @@ import android.os.Bundle
 import androidx.annotation.CheckResult
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.toLiveData
 import com.squareup.workflow.Workflow
-import io.reactivex.BackpressureStrategy.LATEST
-import io.reactivex.Flowable
+import com.squareup.workflow.ui.WorkflowRunner.Config
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.reactive.flow.asFlow
 
 /**
  * Uses a [Workflow] and a [ViewRegistry] to drive a [WorkflowLayout].
  *
- * It is simplest to use
- * [Activity.setContentWorkflow][android.support.v4.app.FragmentActivity.setContentWorkflow]
+ * It is simplest to use [Activity.setContentWorkflow][setContentWorkflow]
  * or subclass [WorkflowFragment] rather than instantiate a [WorkflowRunner] directly.
  */
 @ExperimentalWorkflowUi
-interface WorkflowRunner<out OutputT> {
+interface WorkflowRunner<out OutputT : Any> {
   /**
    * To be called from [FragmentActivity.onSaveInstanceState] or [Fragment.onSaveInstanceState].
    */
   fun onSaveInstanceState(outState: Bundle)
 
   /**
-   * A stream of the [output][OutputT] values emitted by the running [Workflow].
+   * Provides the first (and only) [OutputT] value emitted by the workflow, or
+   * nothing if it is canceled before emitting.
+   *
+   * The output of the root workflow is treated as a result code, handy for use
+   * as a sign that the host Activity or Fragment should be finished. Thus, once
+   * a value is emitted the workflow is ended its output value is reported through
+   * this field.
    */
-  val output: Flowable<out OutputT>
+  val result: Maybe<out OutputT>
 
   /**
    * A stream of the rendering values emitted by the running [Workflow].
@@ -60,190 +65,75 @@ interface WorkflowRunner<out OutputT> {
 
   val viewRegistry: ViewRegistry
 
+  @UseExperimental(ExperimentalCoroutinesApi::class)
+  class Config<InputT, OutputT : Any> constructor(
+    val workflow: Workflow<InputT, OutputT, Any>,
+    val viewRegistry: ViewRegistry,
+    val inputs: Flow<InputT>,
+    val dispatcher: CoroutineDispatcher
+  ) {
+    constructor(
+      workflow: Workflow<InputT, OutputT, Any>,
+      viewRegistry: ViewRegistry,
+      input: InputT,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+    ) : this(workflow, viewRegistry, flowOf(input), dispatcher)
+  }
+
   companion object {
+    @Suppress("FunctionName")
+    fun <OutputT : Any> Config(
+      workflow: Workflow<Unit, OutputT, Any>,
+      viewRegistry: ViewRegistry,
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+    ): Config<Unit, OutputT> {
+      return Config(workflow, viewRegistry, Unit, dispatcher)
+    }
+
     /**
-     * Returns a [ViewModel][android.arch.lifecycle.ViewModel] implementation of
-     * [WorkflowRunner], tied to the given [activity].
+     * Returns an instance of [WorkflowRunner] tied to the
+     * [Lifecycle][androidx.lifecycle.Lifecycle] of the given [activity].
      *
      * It's probably more convenient to use [FragmentActivity.setContentWorkflow]
      * rather than calling this method directly.
      *
-     * @param inputs Function that returns a channel that delivers input values for the root
-     * workflow. The first value emitted is passed to `initialState` to determine the root
-     * workflow's initial state, and subsequent emissions are passed as input updates to the root
-     * workflow. The channel returned by this function will be cancelled by the host when it's
-     * finished.
+     * @param configure function defining the root workflow and its environment. Called only
+     * once per [lifecycle][FragmentActivity.getLifecycle], and always called from the UI thread.
      */
     @UseExperimental(ExperimentalCoroutinesApi::class)
-    fun <InputT, OutputT : Any> of(
+    fun <InputT, OutputT : Any> startWorkflow(
       activity: FragmentActivity,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Flow<InputT>,
       savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+      configure: () -> Config<InputT, OutputT>
     ): WorkflowRunner<OutputT> {
-      val factory = WorkflowRunnerViewModel.Factory(
-          workflow, viewRegistry, inputs, savedInstanceState, dispatcher
-      )
+      val factory = WorkflowRunnerViewModel.Factory(savedInstanceState, configure)
+
       @Suppress("UNCHECKED_CAST")
       return ViewModelProviders.of(activity, factory)[WorkflowRunnerViewModel::class.java]
           as WorkflowRunner<OutputT>
     }
 
     /**
-     * Returns a [ViewModel][android.arch.lifecycle.ViewModel] implementation of
-     * [WorkflowRunner], tied to the given [activity].
-     *
-     * It's probably more convenient to use [FragmentActivity.setContentWorkflow]
-     * rather than calling this method directly.
-     */
-    @UseExperimental(ObsoleteCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-    fun <InputT : Any, OutputT : Any> of(
-      activity: FragmentActivity,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Flowable<InputT>,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> = of<InputT, OutputT>(
-        activity, viewRegistry, workflow, inputs.asFlow(), savedInstanceState,
-        dispatcher
-    )
-
-    /**
-     * Convenience overload for workflows unconcerned with back-pressure of their inputs.
-     */
-    fun <InputT : Any, OutputT : Any> of(
-      activity: FragmentActivity,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Observable<InputT>,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> = of(
-        activity, viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState, dispatcher
-    )
-
-    /**
-     * Convenience overload for workflows that take one input value rather than a stream.
-     */
-    @UseExperimental(ExperimentalCoroutinesApi::class)
-    fun <InputT, OutputT : Any> of(
-      activity: FragmentActivity,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      input: InputT,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> = of(
-        activity, viewRegistry, workflow, flowOf(input), savedInstanceState, dispatcher
-    )
-
-    /**
-     * Convenience overload for workflows that take no input.
-     */
-    fun <OutputT : Any> of(
-      activity: FragmentActivity,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<Unit, OutputT, Any>,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> {
-      return of(activity, viewRegistry, workflow, Unit, savedInstanceState, dispatcher)
-    }
-
-    /**
-     * Returns a [ViewModel][android.arch.lifecycle.ViewModel] implementation of
-     * [WorkflowRunner], tied to the given [fragment].
+     * Returns an instance of [WorkflowRunner] tied to the
+     * [Lifecycle][androidx.lifecycle.Lifecycle] of the given [fragment].
      *
      * It's probably more convenient to subclass [WorkflowFragment] rather than calling
      * this method directly.
      *
-     * @param inputs Function that returns a channel that delivers input values for the root
-     * workflow. The first value emitted is passed to `initialState` to determine the root
-     * workflow's initial state, and subsequent emissions are passed as input updates to the root
-     * workflow. The channel returned by this function will be cancelled by the host when it's
-     * finished.
+     * @param configure function defining the root workflow and its environment. Called only
+     * once per [lifecycle][Fragment.getLifecycle], and always called from the UI thread.
      */
     @UseExperimental(ExperimentalCoroutinesApi::class)
-    fun <InputT, OutputT : Any> of(
+    fun <InputT, OutputT : Any> startWorkflow(
       fragment: Fragment,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Flow<InputT>,
       savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+      configure: () -> Config<InputT, OutputT>
     ): WorkflowRunner<OutputT> {
-      val factory =
-        WorkflowRunnerViewModel.Factory(
-            workflow, viewRegistry, inputs, savedInstanceState, dispatcher
-        )
+      val factory = WorkflowRunnerViewModel.Factory(savedInstanceState, configure)
+
       @Suppress("UNCHECKED_CAST")
       return ViewModelProviders.of(fragment, factory)[WorkflowRunnerViewModel::class.java]
           as WorkflowRunner<OutputT>
-    }
-
-    /**
-     * Returns a [ViewModel][android.arch.lifecycle.ViewModel] implementation of
-     * [WorkflowRunner], tied to the given [fragment].
-     *
-     * It's probably more convenient to subclass [WorkflowFragment] rather than calling
-     * this method directly.
-     */
-    @UseExperimental(ObsoleteCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-    fun <InputT : Any, OutputT : Any> of(
-      fragment: Fragment,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Flowable<InputT>,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> = of<InputT, OutputT>(
-        fragment, viewRegistry, workflow, inputs.asFlow(), savedInstanceState,
-        dispatcher
-    )
-
-    /**
-     * Convenience overload for workflows unconcerned with back-pressure of their inputs.
-     */
-    fun <InputT : Any, OutputT : Any> of(
-      fragment: Fragment,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      inputs: Observable<InputT>,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> = of(
-        fragment, viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState,
-        dispatcher
-    )
-
-    /**
-     * Convenience overload for workflows that take one input value rather than a stream.
-     */
-    @UseExperimental(ExperimentalCoroutinesApi::class)
-    fun <InputT, OutputT : Any> of(
-      fragment: Fragment,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<InputT, OutputT, Any>,
-      input: InputT,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> =
-      of(fragment, viewRegistry, workflow, flowOf(input), savedInstanceState, dispatcher)
-
-    /**
-     * Convenience overload for workflows that take no input.
-     */
-    fun <OutputT : Any> of(
-      fragment: Fragment,
-      viewRegistry: ViewRegistry,
-      workflow: Workflow<Unit, OutputT, Any>,
-      savedInstanceState: Bundle?,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ): WorkflowRunner<OutputT> {
-      return of(fragment, viewRegistry, workflow, Unit, savedInstanceState, dispatcher)
     }
   }
 }
@@ -253,56 +143,42 @@ interface WorkflowRunner<out OutputT> {
  * It creates a [WorkflowRunner] for this activity, if one doesn't already exist, and
  * sets a view driven by that model as the content view.
  *
- * Hold onto the [WorkflowRunner] returned and:
+ * @param configure function defining the root workflow and its environment. Called only
+ * once per [lifecycle][FragmentActivity.getLifecycle], and always called from the UI thread.
  *
- *  - Call [FragmentActivity.workflowOnBackPressed] from [FragmentActivity.onBackPressed] to allow
- *    workflows to handle back button events. (See [HandlesBack] for more details.)
- *
- *  - Call [WorkflowRunner.onSaveInstanceState] from [FragmentActivity.onSaveInstanceState].
- *
- *  e.g.:
- *
- *     class MainActivity : AppCompatActivity() {
- *       private lateinit var runner: WorkflowRunner<*, *>
- *
- *       override fun onCreate(savedInstanceState: Bundle?) {
- *         super.onCreate(savedInstanceState)
- *         runner = setContentWorkflow(MyViewRegistry, MyRootWorkflow(), savedInstanceState)
- *       }
- *
- *       override fun onBackPressed() {
- *         if (!runner.onBackPressed(this)) super.onBackPressed()
- *       }
- *
- *       override fun onSaveInstanceState(outState: Bundle) {
- *         super.onSaveInstanceState(outState)
- *         runner.onSaveInstanceState(outState)
- *       }
- *     }
+ * @param onResult function called with the first (and only) output emitted by the root workflow,
+ * handy for passing to [FragmentActivity.setResult]. The workflow is ended once it emits any
+ * values, so this is also a good place from which to call [FragmentActivity.finish]. Called
+ * only while the activity is active, and always called from the UI thread.
  */
 @ExperimentalWorkflowUi
-@CheckResult
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
-  viewRegistry: ViewRegistry,
-  workflow: Workflow<InputT, OutputT, Any>,
-  inputs: Flow<InputT>,
   savedInstanceState: Bundle?,
-  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+  configure: () -> Config<InputT, OutputT>,
+  onResult: ((OutputT) -> Unit)
 ): WorkflowRunner<OutputT> {
-  val runner = WorkflowRunner.of(
-      this, viewRegistry, workflow, inputs, savedInstanceState, dispatcher
-  )
-  val layout = WorkflowLayout(this@setContentWorkflow)
-      .apply {
-        id = R.id.workflow_layout
-        start(runner)
-      }
+  val runner = WorkflowRunner.startWorkflow(this, savedInstanceState, configure)
+  val layout = WorkflowLayout(this@setContentWorkflow).apply {
+    id = R.id.workflow_layout
+    start(runner.renderings, runner.viewRegistry)
+  }
+
+  runner.result.toFlowable()
+      .toLiveData()
+      .observe(this, Observer { result -> onResult(result) })
 
   this.setContentView(layout)
 
   return runner
 }
+
+@ExperimentalWorkflowUi
+@UseExperimental(ExperimentalCoroutinesApi::class)
+fun <InputT> FragmentActivity.setContentWorkflow(
+  savedInstanceState: Bundle?,
+  configure: () -> Config<InputT, Nothing>
+): WorkflowRunner<Nothing> = setContentWorkflow(savedInstanceState, configure) {}
 
 /**
  * If your workflow needs to manage the back button, override [FragmentActivity.onBackPressed]
@@ -323,62 +199,3 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
 fun FragmentActivity.workflowOnBackPressed(): Boolean {
   return HandlesBack.Helper.onBackPressed(this.findViewById(R.id.workflow_layout))
 }
-
-/**
- * Convenience overload for workflows that take a [Flowable] of inputs.
- */
-@ExperimentalWorkflowUi
-@CheckResult
-@UseExperimental(ExperimentalCoroutinesApi::class)
-fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
-  viewRegistry: ViewRegistry,
-  workflow: Workflow<InputT, OutputT, RenderingT>,
-  inputs: Flowable<InputT>,
-  savedInstanceState: Bundle?,
-  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-): WorkflowRunner<OutputT> = setContentWorkflow(
-    viewRegistry, workflow, inputs.asFlow(), savedInstanceState, dispatcher
-)
-
-/**
- * Convenience overload for workflows unconcerned with back-pressure of their inputs.
- */
-@ExperimentalWorkflowUi
-@CheckResult
-fun <InputT : Any, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
-  viewRegistry: ViewRegistry,
-  workflow: Workflow<InputT, OutputT, RenderingT>,
-  inputs: Observable<InputT>,
-  savedInstanceState: Bundle?,
-  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-): WorkflowRunner<OutputT> = setContentWorkflow(
-    viewRegistry, workflow, inputs.toFlowable(LATEST), savedInstanceState, dispatcher
-)
-
-/**
- * Convenience overload for workflows that take one input value rather than a stream.
- */
-@ExperimentalWorkflowUi
-@CheckResult
-@UseExperimental(ExperimentalCoroutinesApi::class)
-fun <InputT, OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
-  viewRegistry: ViewRegistry,
-  workflow: Workflow<InputT, OutputT, RenderingT>,
-  input: InputT,
-  savedInstanceState: Bundle?,
-  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-): WorkflowRunner<OutputT> =
-  setContentWorkflow(viewRegistry, workflow, flowOf(input), savedInstanceState, dispatcher)
-
-/**
- * Convenience overload for workflows that take no input.
- */
-@ExperimentalWorkflowUi
-@CheckResult
-fun <OutputT : Any, RenderingT : Any> FragmentActivity.setContentWorkflow(
-  viewRegistry: ViewRegistry,
-  workflow: Workflow<Unit, OutputT, RenderingT>,
-  savedInstanceState: Bundle?,
-  dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-): WorkflowRunner<OutputT> =
-  setContentWorkflow(viewRegistry, workflow, Unit, savedInstanceState, dispatcher)

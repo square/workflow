@@ -27,7 +27,11 @@ import com.squareup.workflow.ui.HandlesBack.Helper.setConditionalBackHandler
  * subviews should be invoked first, via [Helper.onBackPressed]
  *
  * To kick things off, override [android.app.Activity.onBackPressed] to call
- * [WorkflowActivityRunner.onBackPressed] or [WorkflowFragment.onBackPressed]
+ * [workflowOnBackPressed] or [WorkflowFragment.onBackPressed]
+ *
+ * **NB** This is all expected to be scrapped as soon as
+ * [OnBackPressedDispatcher](https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher.html)
+ * stabilizes.
  */
 interface HandlesBack {
   /**

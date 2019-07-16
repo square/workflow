@@ -16,6 +16,8 @@
 package com.squareup.sample.mainworkflow
 
 import com.squareup.sample.authworkflow.AuthWorkflow
+import com.squareup.sample.authworkflow.Result.Authorized
+import com.squareup.sample.authworkflow.Result.Canceled
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RealRunGameWorkflow
 import com.squareup.sample.gameworkflow.RunGameScreen
@@ -23,11 +25,12 @@ import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.mainworkflow.MainState.Authenticating
 import com.squareup.sample.mainworkflow.MainState.RunningGame
 import com.squareup.sample.panel.asPanelOver
+import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.RenderContext
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.AlertContainerScreen
 
@@ -41,6 +44,9 @@ import com.squareup.workflow.ui.AlertContainerScreen
  * We adopt [RunGameScreen] as our own rendering type because it's more demanding
  * than that of [AuthWorkflow]. We normalize the latter to be consistent
  * with the former.
+ *
+ * A [Unit] output event is emitted to signal that the workflow has ended, and the host
+ * activity should be finished.
  */
 class MainWorkflow(
   private val authWorkflow: AuthWorkflow,
@@ -59,7 +65,12 @@ class MainWorkflow(
     context: RenderContext<MainState, Unit>
   ): RunGameScreen = when (state) {
     is Authenticating -> {
-      val authScreen = context.renderChild(authWorkflow) { enterState(RunningGame) }
+      val authScreen = context.renderChild(authWorkflow) { result ->
+        when (result) {
+          is Authorized -> enterState(RunningGame)
+          is Canceled -> emitOutput(Unit)
+        }
+      }
       val emptyGameScreen = GamePlayScreen()
 
       AlertContainerScreen(authScreen.asPanelOver(emptyGameScreen))

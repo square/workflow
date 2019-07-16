@@ -15,8 +15,6 @@
  */
 package com.squareup.workflow.ui
 
-typealias GoBackHandler = () -> Unit
-
 /**
  * @param stack: screens that have are / have been displayed, ending in the current screen
  *
@@ -25,16 +23,16 @@ typealias GoBackHandler = () -> Unit
  */
 data class BackStackScreen<StackedT : Any>(
   val stack: List<StackedT>,
-  val onGoBack: GoBackHandler? = null
+  val onGoBack: ((Unit) -> Unit)? = null
 ) {
   constructor(
     only: StackedT,
-    onGoBack: GoBackHandler? = null
+    onGoBack: ((Unit) -> Unit)? = null
   ) : this(listOf(only), onGoBack)
 
   constructor(
     vararg stack: StackedT,
-    onGoBack: GoBackHandler? = null
+    onGoBack: ((Unit) -> Unit)? = null
   ) : this(stack.toList(), onGoBack)
 
   init {

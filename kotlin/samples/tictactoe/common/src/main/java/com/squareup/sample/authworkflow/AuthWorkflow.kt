@@ -22,7 +22,10 @@ import com.squareup.sample.authworkflow.AuthState.Authorizing
 import com.squareup.sample.authworkflow.AuthState.AuthorizingSecondFactor
 import com.squareup.sample.authworkflow.AuthState.LoginPrompt
 import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
-import com.squareup.sample.authworkflow.LoginScreen.SubmitLogin
+import com.squareup.sample.authworkflow.LoginScreen.Event.Cancel
+import com.squareup.sample.authworkflow.LoginScreen.Event.SubmitLogin
+import com.squareup.sample.authworkflow.Result.Authorized
+import com.squareup.sample.authworkflow.Result.Canceled
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.CancelSecondFactor
 import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
 import com.squareup.workflow.RenderContext
@@ -39,7 +42,12 @@ import com.squareup.workflow.ui.BackStackScreen
  * We define this otherwise redundant typealias to keep composite workflows
  * that build on [AuthWorkflow] decoupled from it, for ease of testing.
  */
-typealias AuthWorkflow = Workflow<Unit, String, BackStackScreen<*>>
+typealias AuthWorkflow = Workflow<Unit, Result, BackStackScreen<*>>
+
+sealed class Result {
+  data class Authorized(val token: String) : Result()
+  object Canceled : Result()
+}
 
 /**
  * Runs a set of login screens and pretends to produce an auth token,
@@ -52,7 +60,7 @@ typealias AuthWorkflow = Workflow<Unit, String, BackStackScreen<*>>
  * Token is "1234".
  */
 class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
-    StatefulWorkflow<Unit, AuthState, String, BackStackScreen<*>>() {
+    StatefulWorkflow<Unit, AuthState, Result, BackStackScreen<*>>() {
 
   override fun initialState(
     input: Unit,
@@ -62,19 +70,27 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
   override fun render(
     input: Unit,
     state: AuthState,
-    context: RenderContext<AuthState, String>
+    context: RenderContext<AuthState, Result>
   ): BackStackScreen<*> {
     return when (state) {
       is LoginPrompt -> {
-        BackStackScreen(LoginScreen(
-            state.errorMessage,
-            context.onEvent { event ->
-              when {
-                event.isValidLoginRequest -> enterState(Authorizing(event))
-                else -> enterState(LoginPrompt(event.userInputErrorMessage))
-              }
+        BackStackScreen(
+            LoginScreen(
+                state.errorMessage,
+                context.onEvent { event ->
+                  when {
+                    event is SubmitLogin && event.isValidLoginRequest ->
+                      enterState(Authorizing(event))
+                    event is SubmitLogin -> enterState(LoginPrompt(event.userInputErrorMessage))
+                    event === Cancel -> emitOutput(Canceled)
+                    else -> throw IllegalStateException("Unknown event $event")
+                  }
+                }
+            ),
+            onGoBack = context.onEvent {
+              emitOutput(Canceled)
             }
-        ))
+        )
       }
 
       is Authorizing -> {
@@ -85,7 +101,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
           when {
             response.isLoginFailure -> enterState(LoginPrompt(response.errorMessage))
             response.twoFactorRequired -> enterState(SecondFactorPrompt(response.token))
-            else -> emitOutput(response.token)
+            else -> emitOutput(Authorized(response.token))
           }
         }
 
@@ -117,7 +133,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
           when {
             response.isSecondFactorFailure ->
               enterState(SecondFactorPrompt(state.tempToken, response.errorMessage))
-            else -> emitOutput(response.token)
+            else -> emitOutput(Authorized(response.token))
           }
         }
 

@@ -47,6 +47,12 @@ internal class ModalViewContainer
 
     return Dialog(context, dialogThemeResId)
         .apply {
+          // TODO fix back button dispatch in modals. This doesn't terminate for some reason.
+          // https://github.com/square/workflow/issues/466
+//          setOnKeyListener { _, keyCode, _ ->
+//            keyCode == KeyEvent.KEYCODE_BACK && HandlesBack.Helper.onBackPressed(view)
+//          }
+
           setCancelable(false)
           setContentView(modalDecorator(view))
           window!!.setLayout(WRAP_CONTENT, WRAP_CONTENT)

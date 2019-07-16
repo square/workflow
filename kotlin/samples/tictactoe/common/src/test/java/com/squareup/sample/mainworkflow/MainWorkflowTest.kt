@@ -2,6 +2,7 @@ package com.squareup.sample.mainworkflow
 
 import com.google.common.truth.Truth.assertThat
 import com.squareup.sample.authworkflow.AuthWorkflow
+import com.squareup.sample.authworkflow.Result.Authorized
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
@@ -36,7 +37,7 @@ class MainWorkflowTest {
 
   @Test fun `starts game on auth`() {
     val authWorkflow: AuthWorkflow = Workflow.stateless {
-      onWorkerOutput(Worker.from { Unit }) { emitOutput("auth") }
+      onWorkerOutput(Worker.from { Unit }) { emitOutput(Authorized("auth")) }
       authScreen()
     }
 

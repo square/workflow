@@ -21,13 +21,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.squareup.workflow.Workflow
-import io.reactivex.BackpressureStrategy.LATEST
+import com.squareup.workflow.ui.WorkflowRunner.Config
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.reactive.flow.asFlow
 
 /**
  * A [Fragment] that can run a workflow. Subclasses implement [onCreateWorkflow]
@@ -64,45 +59,6 @@ import kotlinx.coroutines.reactive.flow.asFlow
  */
 @ExperimentalWorkflowUi
 abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
-
-  @UseExperimental(ExperimentalCoroutinesApi::class)
-  data class Config<InputT, OutputT : Any> internal constructor(
-    val workflow: Workflow<InputT, OutputT, Any>,
-    val viewRegistry: ViewRegistry,
-    val inputs: Flow<InputT>
-  ) {
-    companion object {
-      fun <InputT, OutputT : Any> with(
-        workflow: Workflow<InputT, OutputT, Any>,
-        viewRegistry: ViewRegistry,
-        inputs: Flow<InputT>
-      ): Config<InputT, OutputT> = Config(workflow, viewRegistry, inputs)
-
-      fun <InputT : Any, OutputT : Any> with(
-        workflow: Workflow<InputT, OutputT, Any>,
-        viewRegistry: ViewRegistry,
-        inputs: Flowable<InputT>
-      ): Config<InputT, OutputT> = with(workflow, viewRegistry, inputs.asFlow())
-
-      fun <InputT : Any, OutputT : Any> with(
-        workflow: Workflow<InputT, OutputT, Any>,
-        viewRegistry: ViewRegistry,
-        inputs: Observable<InputT>
-      ): Config<InputT, OutputT> = with(workflow, viewRegistry, inputs.toFlowable(LATEST))
-
-      fun <InputT, OutputT : Any> with(
-        workflow: Workflow<InputT, OutputT, Any>,
-        viewRegistry: ViewRegistry,
-        input: InputT
-      ): Config<InputT, OutputT> = with(workflow, viewRegistry, flowOf(input))
-
-      fun <OutputT : Any> with(
-        workflow: Workflow<Unit, OutputT, Any>,
-        viewRegistry: ViewRegistry
-      ): Config<Unit, OutputT> = with(workflow, viewRegistry, Unit)
-    }
-  }
-
   private lateinit var _runner: WorkflowRunner<OutputT>
 
   /**
@@ -128,10 +84,9 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
 
-    val (workflow, viewRegistry, inputs) = onCreateWorkflow()
-    _runner = WorkflowRunner.of(this, viewRegistry, workflow, inputs, savedInstanceState)
+    _runner = WorkflowRunner.startWorkflow(this, savedInstanceState, ::onCreateWorkflow)
 
-    (view as WorkflowLayout).start(runner)
+    (view as WorkflowLayout).start(runner.renderings, runner.viewRegistry)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -140,7 +95,7 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
   }
 
   /**
-   * If your workflow needs to manage the back button, override [FragmentActivity.onBackPressed]
+   * If your workflow needs to manage the back button, override [android.app.Activity.onBackPressed]
    * and call this method, and have its views or [LayoutRunner]s use [HandlesBack].
    *
    * e.g.:
