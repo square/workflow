@@ -18,7 +18,7 @@
 package com.squareup.workflow.ui
 
 import android.os.Bundle
-import android.support.annotation.CheckResult
+import androidx.annotation.CheckResult
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
