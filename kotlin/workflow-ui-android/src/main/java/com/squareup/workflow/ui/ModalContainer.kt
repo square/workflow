@@ -22,11 +22,11 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.Creator
-import android.support.annotation.IdRes
-import android.support.annotation.StyleRes
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.IdRes
+import androidx.annotation.StyleRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import androidx.lifecycle.LifecycleObserver

@@ -17,13 +17,13 @@ package com.squareup.workflow.ui
 
 import android.app.Dialog
 import android.content.Context
-import android.support.annotation.IdRes
-import android.support.annotation.StyleRes
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import androidx.annotation.IdRes
+import androidx.annotation.StyleRes
 import kotlin.reflect.KClass
 
 /**

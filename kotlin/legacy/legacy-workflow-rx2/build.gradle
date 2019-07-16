@@ -21,8 +21,8 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
+  compileOnly deps.androidx.annotations
   compileOnly deps.annotations.intellij
-  compileOnly deps.annotations.androidSupport
 
   api project(':legacy:legacy-workflow-core')
   // For Snapshot.
