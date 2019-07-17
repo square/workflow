@@ -205,7 +205,7 @@ class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal const
   }
 
   companion object {
-    const val DEFAULT_TIMEOUT_MS: Long = 5000
+    const val DEFAULT_TIMEOUT_MS: Long = 500
   }
 }
 
