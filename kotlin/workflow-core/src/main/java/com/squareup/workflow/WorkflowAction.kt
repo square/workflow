@@ -46,8 +46,9 @@ interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, O
      *
      * Use this to, for example, ignore the output of a child workflow or worker.
      */
+    @Suppress("UNCHECKED_CAST")
     fun <StateT, OutputT : Any> noAction(): WorkflowAction<StateT, OutputT> =
-      WorkflowAction({ "noop" }) { Pair(it, null) }
+      NO_ACTION as WorkflowAction<StateT, OutputT>
 
     /**
      * Convenience function that returns a [WorkflowAction] that will just set the state to [newState]
@@ -100,5 +101,7 @@ interface WorkflowAction<StateT, out OutputT : Any> : (StateT) -> Pair<StateT, O
       output: OutputT
     ): WorkflowAction<StateT, OutputT> =
       WorkflowAction({ "emitOutput($name, $output)" }) { Pair(it, output) }
+
+    private val NO_ACTION = WorkflowAction<Any, Any>({ "noAction" }) { Pair(it, null) }
   }
 }
