@@ -172,12 +172,14 @@ class WorkflowPool {
           removeCompletedWorkflowAfter(handle.id) {
             var state = receiveOrNull()
             // Skip all the states that match the handle's state.
-            while (state == handle.state) {
+            while (state == handle.state && workflow.isActive) {
               state = receiveOrNull()
             }
-            return state
-                ?.let { Running(handle.copy(state = it)) }
-                ?: Finished(workflow.await())
+            return if (state != null && workflow.isActive) {
+              Running(handle.copy(state = state))
+            } else {
+              Finished(workflow.await())
+            }
           }
         }
   }
