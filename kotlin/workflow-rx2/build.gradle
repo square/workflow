@@ -36,4 +36,5 @@ dependencies {
 
   testImplementation project(':workflow-testing')
   testImplementation deps.kotlin.test.jdk
+  testImplementation deps.test.truth
 }

@@ -15,16 +15,19 @@
  */
 package com.squareup.workflow.rx2
 
+import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.testing.test
 import io.reactivex.BackpressureStrategy.MISSING
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.CompletableSubject
 import io.reactivex.subjects.MaybeSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.SingleSubject
+import org.junit.Assert.fail
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -32,6 +35,14 @@ import kotlin.test.assertTrue
 class RxWorkersTest {
 
   private class ExpectedException : RuntimeException()
+
+  @Test fun failFromSubscriber() {
+    val foo: Observable<String> = BehaviorSubject.createDefault("fnord")
+    assertThat(Thread.getDefaultUncaughtExceptionHandler()).isNull()
+    assertThat(Thread.currentThread().uncaughtExceptionHandler).isNotNull()
+    Thread.setDefaultUncaughtExceptionHandler { _, e -> throw(e) }
+    foo.subscribe { fail(it) }
+  }
 
   // region Observable
 
