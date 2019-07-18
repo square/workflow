@@ -78,6 +78,7 @@ Most code shouldn't need to depend on these directly. They should generally only
 
 ## Resources
 
+ * [SF Android GDG @ Square 2019 - Hello Workflow](https://www.youtube.com/watch?v=8PlYtfsgDKs) (live coding)
  * [Android Dialogs 5-part Coding Series](https://twitter.com/chiuki/status/1100810374410956800)
    * [1](https://www.youtube.com/watch?v=JJ4-8AR5HhA), [2](https://www.youtube.com/watch?v=XB6frWBGvp0), [3](https://www.youtube.com/watch?v=NdFJMkT-t3c), [4](https://www.youtube.com/watch?v=aRxmyO6fwSs), [5](https://www.youtube.com/watch?v=aKaZa-1KN2M)
  * [Reactive Workflows a Year Later – Droidcon NYC 2018](https://www.youtube.com/watch?v=cw9ZF9-ilac)
