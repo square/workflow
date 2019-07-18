@@ -41,6 +41,7 @@ _2019-7-16_
    * Add -jvm suffixes to all modules that could be MPP one day.
    * Add the -core suffix to the artifact for workflow-ui-core.
  * Remove (incorrect) manual implementation of ensureActive. (#378)
+ * Fix WorkflowPool to work with ConflatedBroadcastChannel. (#475)
 
 ### Swift
 
