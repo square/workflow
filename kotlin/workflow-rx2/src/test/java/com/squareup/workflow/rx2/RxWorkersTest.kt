@@ -40,8 +40,13 @@ class RxWorkersTest {
     val foo: Observable<String> = BehaviorSubject.createDefault("fnord")
     assertThat(Thread.getDefaultUncaughtExceptionHandler()).isNull()
     assertThat(Thread.currentThread().uncaughtExceptionHandler).isNotNull()
-    Thread.setDefaultUncaughtExceptionHandler { _, e -> throw(e) }
-    foo.subscribe { fail(it) }
+
+    try {
+//      Thread.setDefaultUncaughtExceptionHandler { _, e -> throw(e) }
+      foo.subscribe { fail(it) }
+    } finally {
+      Thread.setDefaultUncaughtExceptionHandler(null)
+    }
   }
 
   // region Observable
