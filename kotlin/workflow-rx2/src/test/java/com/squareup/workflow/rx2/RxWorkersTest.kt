@@ -16,6 +16,10 @@
 package com.squareup.workflow.rx2
 
 import com.squareup.workflow.testing.test
+import io.kotlintest.matchers.beInstanceOf
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.AnnotationSpec
 import io.reactivex.BackpressureStrategy.MISSING
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -25,11 +29,8 @@ import io.reactivex.subjects.CompletableSubject
 import io.reactivex.subjects.MaybeSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.SingleSubject
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
-class RxWorkersTest {
+class RxWorkersTest : AnnotationSpec() {
 
   private class ExpectedException : RuntimeException()
 
@@ -42,10 +43,10 @@ class RxWorkersTest {
 
     worker.test {
       subject.onNext("foo")
-      assertEquals("foo", nextOutput())
+      nextOutput() shouldBe "foo"
 
       subject.onNext("bar")
-      assertEquals("bar", nextOutput())
+      nextOutput() shouldBe "bar"
     }
   }
 
@@ -65,7 +66,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onNext("foo")
-      assertEquals("foo", nextOutput())
+      nextOutput() shouldBe "foo"
 
       subject.onComplete()
       assertFinished()
@@ -78,7 +79,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onError(ExpectedException())
-      assertTrue(getException() is ExpectedException)
+      getException() should beInstanceOf<ExpectedException>()
     }
   }
 
@@ -88,10 +89,10 @@ class RxWorkersTest {
     val worker = subject.doOnSubscribe { subscriptions++ }
         .asWorker()
 
-    assertEquals(0, subscriptions)
+    subscriptions shouldBe 0
 
     worker.test {
-      assertEquals(1, subscriptions)
+      subscriptions shouldBe 1
     }
   }
 
@@ -101,12 +102,12 @@ class RxWorkersTest {
     val worker = subject.doOnDispose { disposals++ }
         .asWorker()
 
-    assertEquals(0, disposals)
+    disposals shouldBe 0
 
     worker.test {
-      assertEquals(0, disposals)
+      disposals shouldBe 0
       cancelWorker()
-      assertEquals(1, disposals)
+      disposals shouldBe 1
     }
   }
 
@@ -121,10 +122,10 @@ class RxWorkersTest {
 
     worker.test {
       subject.onNext("foo")
-      assertEquals("foo", nextOutput())
+      nextOutput() shouldBe "foo"
 
       subject.onNext("bar")
-      assertEquals("bar", nextOutput())
+      nextOutput() shouldBe "bar"
     }
   }
 
@@ -146,7 +147,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onNext("foo")
-      assertEquals("foo", nextOutput())
+      nextOutput() shouldBe "foo"
 
       subject.onComplete()
       assertFinished()
@@ -160,7 +161,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onError(ExpectedException())
-      assertTrue(getException() is ExpectedException)
+      getException() should beInstanceOf<ExpectedException>()
     }
   }
 
@@ -171,10 +172,10 @@ class RxWorkersTest {
         .doOnSubscribe { subscriptions++ }
         .asWorker()
 
-    assertEquals(0, subscriptions)
+    subscriptions shouldBe 0
 
     worker.test {
-      assertEquals(1, subscriptions)
+      subscriptions shouldBe 1
     }
   }
 
@@ -185,12 +186,12 @@ class RxWorkersTest {
         .doOnCancel { cancels++ }
         .asWorker()
 
-    assertEquals(0, cancels)
+    cancels shouldBe 0
 
     worker.test {
-      assertEquals(0, cancels)
+      cancels shouldBe 0
       cancelWorker()
-      assertEquals(1, cancels)
+      cancels shouldBe 1
     }
   }
 
@@ -204,7 +205,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onSuccess("foo")
-      assertEquals("foo", nextOutput())
+      nextOutput() shouldBe "foo"
       assertFinished()
     }
   }
@@ -225,7 +226,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onError(ExpectedException())
-      assertTrue(getException() is ExpectedException)
+      getException() should beInstanceOf<ExpectedException>()
     }
   }
 
@@ -235,10 +236,10 @@ class RxWorkersTest {
     val worker = subject.doOnSubscribe { subscriptions++ }
         .asWorker()
 
-    assertEquals(0, subscriptions)
+    subscriptions shouldBe 0
 
     worker.test {
-      assertEquals(1, subscriptions)
+      subscriptions shouldBe 1
     }
   }
 
@@ -248,12 +249,12 @@ class RxWorkersTest {
     val worker = subject.doOnDispose { cancels++ }
         .asWorker()
 
-    assertEquals(0, cancels)
+    cancels shouldBe 0
 
     worker.test {
-      assertEquals(0, cancels)
+      cancels shouldBe 0
       cancelWorker()
-      assertEquals(1, cancels)
+      cancels shouldBe 1
     }
   }
 
@@ -267,7 +268,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onSuccess("foo")
-      assertEquals("foo", nextOutput())
+      nextOutput() shouldBe "foo"
       assertFinished()
     }
   }
@@ -278,7 +279,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onError(ExpectedException())
-      assertTrue(getException() is ExpectedException)
+      getException() should beInstanceOf<ExpectedException>()
     }
   }
 
@@ -288,10 +289,10 @@ class RxWorkersTest {
     val worker = subject.doOnSubscribe { subscriptions++ }
         .asWorker()
 
-    assertEquals(0, subscriptions)
+    subscriptions shouldBe 0
 
     worker.test {
-      assertEquals(1, subscriptions)
+      subscriptions shouldBe 1
     }
   }
 
@@ -301,12 +302,12 @@ class RxWorkersTest {
     val worker = subject.doOnDispose { cancels++ }
         .asWorker()
 
-    assertEquals(0, cancels)
+    cancels shouldBe 0
 
     worker.test {
-      assertEquals(0, cancels)
+      cancels shouldBe 0
       cancelWorker()
-      assertEquals(1, cancels)
+      cancels shouldBe 1
     }
   }
 
@@ -330,7 +331,7 @@ class RxWorkersTest {
 
     worker.test {
       subject.onError(ExpectedException())
-      assertTrue(getException() is ExpectedException)
+      getException() should beInstanceOf<ExpectedException>()
     }
   }
 
@@ -340,10 +341,10 @@ class RxWorkersTest {
     val worker = subject.doOnSubscribe { subscriptions++ }
         .asWorker("")
 
-    assertEquals(0, subscriptions)
+    subscriptions shouldBe 0
 
     worker.test {
-      assertEquals(1, subscriptions)
+      subscriptions shouldBe 1
     }
   }
 
@@ -353,12 +354,12 @@ class RxWorkersTest {
     val worker = subject.doOnDispose { cancels++ }
         .asWorker("")
 
-    assertEquals(0, cancels)
+    cancels shouldBe 0
 
     worker.test {
-      assertEquals(0, cancels)
+      cancels shouldBe 0
       cancelWorker()
-      assertEquals(1, cancels)
+      cancels shouldBe 1
     }
   }
 

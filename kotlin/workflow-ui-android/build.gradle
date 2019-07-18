@@ -18,8 +18,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka-android'
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 apply from: rootProject.file('.buildscript/configure-dokka.gradle')
 
@@ -48,7 +48,6 @@ dependencies {
   implementation deps.kotlin.coroutines.rx2
   implementation deps.kotlin.reflect
 
-  testImplementation deps.test.junit
-  testImplementation deps.test.truth
   testImplementation deps.kotlin.coroutines.test
+  testImplementation deps.kotlin.test.kotlintest
 }
