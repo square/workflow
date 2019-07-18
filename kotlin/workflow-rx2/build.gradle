@@ -37,4 +37,19 @@ dependencies {
   testImplementation project(':workflow-testing')
   testImplementation deps.kotlin.test.jdk
   testImplementation deps.test.truth
+  compile 'com.nordstrom.tools:junit-foundation:11.0.0'
+}
+
+ext {
+  junitFoundation = configurations.compile.resolvedConfiguration.resolvedArtifacts.find { it.name == 'junit-foundation' }
+}
+
+test.doFirst {
+  jvmArgs "-javaagent:${junitFoundation.file}"
+}
+
+test {
+  //  debug true
+  // not required, but definitely useful
+  testLogging.showStandardStreams = true
 }
