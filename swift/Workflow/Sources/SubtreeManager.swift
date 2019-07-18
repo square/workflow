@@ -13,6 +13,9 @@ extension WorkflowNode {
         /// Sinks from the outside world (i.e. UI)
         private var eventPipes: [EventPipe] = []
 
+        /// Reusable sinks from the previous render pass
+        private var previousSinks: [ObjectIdentifier:AnyReusableSink] = [:]
+
         /// The current array of children
         private (set) internal var childWorkflows: [ChildKey:AnyChildWorkflow] = [:]
 
@@ -34,6 +37,7 @@ extension WorkflowNode {
 
             /// Create a workflow context containing the existing children
             let context = Context(
+                previousSinks: previousSinks,
                 originalChildWorkflows: childWorkflows,
                 originalChildWorkers: childWorkers)
 
@@ -52,8 +56,12 @@ extension WorkflowNode {
             /// Merge all of the signals together from the subscriptions.
             self.subscriptions = Subscriptions(eventSources: context.eventSources, eventPipe: EventPipe())
 
+            /// Captured the reusable sinks from this render pass.
+            self.previousSinks = context.sinkStore.usedSinks
+
             /// Capture all the pipes to be enabled after render completes.
             self.eventPipes = context.eventPipes
+            self.eventPipes.append(contentsOf: context.sinkStore.eventPipes)
             self.eventPipes.append(self.subscriptions.eventPipe)
 
             /// Set all event pipes to `pending`.
@@ -119,12 +127,16 @@ extension WorkflowNode.SubtreeManager {
 
 }
 
+// MARK: - Render Context
+
 extension WorkflowNode.SubtreeManager {
 
     /// The workflow context implementation used by the subtree manager.
     fileprivate final class Context: RenderContextType {
 
         private (set) internal var eventPipes: [EventPipe]
+
+        private (set) internal var sinkStore: SinkStore
         
         private let originalChildWorkflows: [ChildKey:AnyChildWorkflow]
         private (set) internal var usedChildWorkflows: [ChildKey:AnyChildWorkflow]
@@ -134,8 +146,10 @@ extension WorkflowNode.SubtreeManager {
 
         private (set) internal var eventSources: [Signal<AnyWorkflowAction<WorkflowType>, NoError>] = []
 
-        internal init(originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalChildWorkers: [AnyChildWorker]) {
+        internal init(previousSinks: [ObjectIdentifier:AnyReusableSink], originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalChildWorkers: [AnyChildWorker]) {
             self.eventPipes = []
+
+            self.sinkStore = SinkStore(previousSinks: previousSinks)
 
             self.originalChildWorkflows = originalChildWorkflows
             self.usedChildWorkflows = [:]
@@ -191,13 +205,12 @@ extension WorkflowNode.SubtreeManager {
 
         func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
 
-            let eventPipe = EventPipe()
+            let reusableSink = sinkStore.findOrCreate(actionType: Action.self)
 
             let sink = Sink<Action> { action in
-                let event = Output.update(AnyWorkflowAction(action), source: .external)
-                eventPipe.handle(event: event)
+                reusableSink.handle(action: action)
             }
-            eventPipes.append(eventPipe)
+
             return sink
         }
 
@@ -226,6 +239,73 @@ extension WorkflowNode.SubtreeManager {
 
 }
 
+
+// MARK: - Reusable Sink
+
+extension WorkflowNode.SubtreeManager {
+
+    fileprivate struct SinkStore {
+
+        var eventPipes: [EventPipe] {
+            return usedSinks.values.map { reusableSink -> EventPipe in
+                reusableSink.eventPipe
+            }
+        }
+
+        private var previousSinks: [ObjectIdentifier:AnyReusableSink]
+        private (set) var usedSinks: [ObjectIdentifier:AnyReusableSink]
+
+        init(previousSinks: [ObjectIdentifier:AnyReusableSink]) {
+            self.previousSinks = previousSinks
+            self.usedSinks = [:]
+        }
+
+        mutating func findOrCreate<Action: WorkflowAction>(actionType: Action.Type) -> ReusableSink<Action> {
+            let key = ObjectIdentifier(actionType)
+
+            let reusableSink: ReusableSink<Action>
+
+            if let previousSink = previousSinks.removeValue(forKey: key) as? ReusableSink<Action> {
+                // Reuse a previous sink, creating a new event pipe to send the action through.
+                previousSink.eventPipe = EventPipe()
+                reusableSink = previousSink
+            } else if let usedSink = usedSinks[key] as? ReusableSink<Action> {
+                // Multiple sinks using the same backing sink.
+                reusableSink = usedSink
+            } else {
+                // Create a new reusable sink.
+                reusableSink = ReusableSink<Action>()
+            }
+
+            usedSinks[key] = reusableSink
+
+            return reusableSink
+        }
+
+    }
+
+    /// Type-erased base class for reusable sinks.
+    fileprivate class AnyReusableSink {
+
+        var eventPipe: EventPipe
+
+        init() {
+            eventPipe = EventPipe()
+        }
+    }
+
+    fileprivate final class ReusableSink<Action: WorkflowAction>: AnyReusableSink where Action.WorkflowType == WorkflowType {
+
+        func handle(action: Action) {
+            let output = Output.update(AnyWorkflowAction(action), source: .external)
+
+            eventPipe.handle(event: output)
+        }
+    }
+}
+
+
+// MARK: - EventPipe
 
 extension WorkflowNode.SubtreeManager {
     fileprivate final class EventPipe {
@@ -295,6 +375,8 @@ extension WorkflowNode.SubtreeManager {
     }
 }
 
+// MARK: - ChildKey
+
 extension WorkflowNode.SubtreeManager {
     
     struct ChildKey: Hashable {
@@ -319,6 +401,8 @@ extension WorkflowNode.SubtreeManager {
     }
 
 }
+
+// MARK: - Workers
 
 extension WorkflowNode.SubtreeManager {
 
@@ -372,6 +456,8 @@ extension WorkflowNode.SubtreeManager {
 }
 
 
+// MARK: - Subscriptions
+
 extension WorkflowNode.SubtreeManager {
     fileprivate final class Subscriptions {
         private var (lifetime, token) = Lifetime.make()
@@ -395,6 +481,8 @@ extension WorkflowNode.SubtreeManager {
 }
 
 
+// MARK: - Child Workflows
+
 extension WorkflowNode.SubtreeManager {
 
     /// Abstract base class for running children in the subtree.
@@ -415,9 +503,9 @@ extension WorkflowNode.SubtreeManager {
         }
         
     }
-    
+
     fileprivate final class ChildWorkflow<W: Workflow>: AnyChildWorkflow {
-        
+
         private let node: WorkflowNode<W>
         private var outputMap: (W.Output) -> AnyWorkflowAction<WorkflowType>
         

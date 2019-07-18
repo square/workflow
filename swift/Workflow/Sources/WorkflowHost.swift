@@ -57,7 +57,7 @@ public final class WorkflowHost<WorkflowType: Workflow> {
     public func update(workflow: WorkflowType) {
         rootNode.update(workflow: workflow)
 
-        // Treat the update as an "output" from the workflow as an external event to force a render pass.
+        // Treat the update as an "output" from the workflow originating from an external event to force a render pass.
         let output = WorkflowNode<WorkflowType>.Output(
             outputEvent: nil,
             debugInfo: WorkflowUpdateDebugInfo(
