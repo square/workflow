@@ -53,6 +53,19 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
     }
 
+    /// Update the input for the workflow. Will cause a render pass.
+    public func update(workflow: WorkflowType) {
+        rootNode.update(workflow: workflow)
+
+        // Treat the update as an "output" from the workflow as an external event to force a render pass.
+        let output = WorkflowNode<WorkflowType>.Output(
+            outputEvent: nil,
+            debugInfo: WorkflowUpdateDebugInfo(
+                workflowType: "\(WorkflowType.self)",
+                kind: .didUpdate(source: .external)))
+        handle(output: output)
+    }
+
     private func handle(output: WorkflowNode<WorkflowType>.Output) {
         mutableRendering.value = rootNode.render()
 
