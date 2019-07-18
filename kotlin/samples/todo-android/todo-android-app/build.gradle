@@ -32,6 +32,12 @@ android {
   packagingOptions {
     exclude 'META-INF/atomicfu.kotlin_module'
   }
+
+  testOptions {
+    unitTests.all {
+      useJUnitPlatform()
+    }
+  }
 }
 
 dependencies {
@@ -51,6 +57,5 @@ dependencies {
   implementation deps.rxjava2.rxjava2
   implementation deps.timber
 
-  testImplementation deps.test.junit
-  testImplementation deps.test.truth
+  testImplementation deps.kotlin.test.kotlintest
 }

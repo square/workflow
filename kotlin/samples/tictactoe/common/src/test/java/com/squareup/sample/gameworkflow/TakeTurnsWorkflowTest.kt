@@ -15,7 +15,6 @@
  */
 package com.squareup.sample.gameworkflow
 
-import com.google.common.truth.Truth.assertThat
 import com.squareup.sample.gameworkflow.Ending.Draw
 import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
@@ -25,31 +24,31 @@ import com.squareup.sample.gameworkflow.Player.O
 import com.squareup.sample.gameworkflow.Player.X
 import com.squareup.workflow.testing.WorkflowTester
 import com.squareup.workflow.testing.testFromStart
-import org.junit.Test
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.StringSpec
 
-class TakeTurnsWorkflowTest {
-  @Test fun readWriteCompletedGame() {
+class TakeTurnsWorkflowTest : StringSpec({
+  "read write completed game" {
     val turn = Turn()
     val before = CompletedGame(Quitted, turn)
     val out = before.toSnapshot()
     val after = CompletedGame.fromSnapshot(out.bytes)
-    assertThat(after).isEqualTo(before)
+    after shouldBe before
   }
 
-  @Test fun startsGameWithGivenNames() {
+  "starts game with given names" {
     RealTakeTurnsWorkflow().testFromStart(
         TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
       val (x, o) = awaitNextRendering().playerInfo
 
-      assertThat(x)
-          .isEqualTo("higgledy")
-      assertThat(o)
-          .isEqualTo("piggledy")
+      x shouldBe "higgledy"
+      o shouldBe "piggledy"
     }
   }
 
-  @Test fun xWins() {
+  "x wins" {
     RealTakeTurnsWorkflow().testFromStart(
         TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
@@ -68,11 +67,11 @@ class TakeTurnsWorkflowTest {
       )
 
       val result = awaitNextOutput()
-      assertThat(result).isEqualTo(CompletedGame(Victory, expectedLastTurn))
+      result shouldBe CompletedGame(Victory, expectedLastTurn)
     }
   }
 
-  @Test fun draw() {
+  "draw" {
     RealTakeTurnsWorkflow().testFromStart(
         TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
@@ -97,11 +96,11 @@ class TakeTurnsWorkflowTest {
       )
 
       val result = awaitNextOutput()
-      assertThat(result).isEqualTo(CompletedGame(Draw, expectedLastTurn))
+      result shouldBe CompletedGame(Draw, expectedLastTurn)
     }
   }
 
-  @Test fun quiteAndResume() {
+  "quite and resume" {
     var output: CompletedGame? = null
 
     RealTakeTurnsWorkflow().testFromStart(
@@ -111,7 +110,7 @@ class TakeTurnsWorkflowTest {
       output = awaitNextOutput()
     }
 
-    assertThat(output!!.ending).isSameInstanceAs(Quitted)
+    output!!.ending shouldBeSameInstanceAs Quitted
 
     RealTakeTurnsWorkflow().testFromStart(
         TakeTurnsInput.resumeGame(
@@ -119,10 +118,10 @@ class TakeTurnsWorkflowTest {
             output!!.lastTurn
         )
     ) {
-      assertThat(awaitNextRendering().gameState).isEqualTo(output!!.lastTurn)
+      awaitNextRendering().gameState shouldBe output!!.lastTurn
     }
   }
-}
+})
 
 private fun WorkflowTester<*, *, GamePlayScreen>.takeSquare(event: TakeSquare) {
   awaitNextRendering().onEvent(event)

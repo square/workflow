@@ -15,12 +15,12 @@
  */
 package com.squareup.workflow.ui
 
-import com.google.common.truth.Truth.assertThat
-import org.junit.Test
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.AnnotationSpec
 
-// If you try to replace isTrue() with isTrue compilation fails.
-@Suppress("UsePropertyAccessSyntax")
-class CompatibleTest {
+class CompatibleTest : AnnotationSpec() {
   private object Able
   private object Baker
   private object Charlie
@@ -29,18 +29,18 @@ class CompatibleTest {
     val able = object : Any() {}
     val baker = object : Any() {}
 
-    assertThat(compatible(able, baker)).isFalse()
+    compatible(able, baker) shouldBe false
   }
 
   @Test fun `Same type matches`() {
-    assertThat(compatible("Able", "Baker")).isTrue()
+    compatible("Able", "Baker") shouldBe true
   }
 
   @Test fun `isCompatibleWith is honored`() {
     data class K(override val compatibilityKey: String) : Compatible
 
-    assertThat(compatible(K("hey"), K("hey"))).isTrue()
-    assertThat(compatible(K("hey"), K("ho"))).isFalse()
+    compatible(K("hey"), K("hey")) shouldBe true
+    compatible(K("hey"), K("ho")) shouldBe false
   }
 
   @Test fun `Different Compatible types do not match`() {
@@ -49,14 +49,14 @@ class CompatibleTest {
     class Able(override val compatibilityKey: String) : A()
     class Alpha(override val compatibilityKey: String) : A()
 
-    assertThat(compatible(Able("Hey"), Alpha("Hey"))).isFalse()
+    compatible(Able("Hey"), Alpha("Hey")) shouldBe false
   }
 
   @Test fun `goTo pushes`() {
     val stack = listOf<Any>(Able).goTo(Baker)
         .goTo(Charlie)
 
-    assertThat(stack).isEqualTo(listOf(Able, Baker, Charlie))
+    stack shouldBe listOf(Able, Baker, Charlie)
   }
 
   @Test fun `goTo pops to bottom`() {
@@ -64,7 +64,7 @@ class CompatibleTest {
         .goTo(Charlie)
         .goTo(Able)
 
-    assertThat(stack).isEqualTo(listOf(Able))
+    stack shouldBe listOf(Able)
   }
 
   @Test fun `goTo pops to middle`() {
@@ -72,7 +72,7 @@ class CompatibleTest {
         .goTo(Charlie)
         .goTo(Baker)
 
-    assertThat(stack).isEqualTo(listOf(Able, Baker))
+    stack shouldBe listOf(Able, Baker)
   }
 
   @Test fun `goTo Named works`() {
@@ -83,7 +83,7 @@ class CompatibleTest {
         Named(Able, "three")
     ).goTo(Named(Able, "one"))
 
-    assertThat(stack).hasSize(1)
-    assertThat(stack[0]).isSameInstanceAs(originalAble)
+    stack shouldHaveSize 1
+    stack[0] shouldBeSameInstanceAs originalAble
   }
 }

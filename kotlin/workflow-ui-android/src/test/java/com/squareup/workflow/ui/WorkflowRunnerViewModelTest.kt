@@ -1,6 +1,5 @@
 package com.squareup.workflow.ui
 
-import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
@@ -9,6 +8,8 @@ import com.squareup.workflow.asWorker
 import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.stateless
 import com.squareup.workflow.ui.WorkflowRunner.Config
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.AnnotationSpec
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Unconfined
@@ -24,10 +25,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
-import org.junit.Test
 
 @UseExperimental(ExperimentalWorkflowUi::class, ExperimentalCoroutinesApi::class)
-class WorkflowRunnerViewModelTest {
+class WorkflowRunnerViewModelTest : AnnotationSpec() {
 
   private val scope = CoroutineScope(Unconfined)
   @Suppress("RemoveRedundantSpreadOperator")
@@ -41,13 +41,13 @@ class WorkflowRunnerViewModelTest {
 
     val runner = WorkflowRunnerViewModel(scope, snapshotsFlow, emptyFlow(), viewRegistry)
 
-    assertThat(runner.getLastSnapshotForTest()).isEqualTo(Snapshot.EMPTY)
+    runner.getLastSnapshotForTest() shouldBe Snapshot.EMPTY
 
     snapshotsChannel.offer(RenderingAndSnapshot(Unit, snapshot1))
-    assertThat(runner.getLastSnapshotForTest()).isEqualTo(snapshot1)
+    runner.getLastSnapshotForTest() shouldBe snapshot1
 
     snapshotsChannel.offer(RenderingAndSnapshot(Unit, snapshot2))
-    assertThat(runner.getLastSnapshotForTest()).isEqualTo(snapshot2)
+    runner.getLastSnapshotForTest() shouldBe snapshot2
   }
 
   @Test fun hostCancelledOnResultAndNoSooner() {
@@ -61,11 +61,11 @@ class WorkflowRunnerViewModelTest {
     }
     val runner = WorkflowRunnerViewModel(scope, emptyFlow(), flowOf("fnord"), viewRegistry)
 
-    assertThat(cancelled).isFalse()
+    cancelled shouldBe false
     val tester = runner.result.test()
-    assertThat(cancelled).isTrue()
+    cancelled shouldBe true
     tester.assertComplete()
-    assertThat(tester.values()).isEqualTo(listOf("fnord"))
+    tester.values() shouldBe listOf("fnord")
   }
 
   @Test fun hostCancelledOnCleared() {
@@ -79,10 +79,10 @@ class WorkflowRunnerViewModelTest {
     }
     val runner = WorkflowRunnerViewModel(scope, emptyFlow(), emptyFlow(), viewRegistry)
 
-    assertThat(cancelled).isFalse()
+    cancelled shouldBe false
     val tester = runner.result.test()
     runner.clearForTest()
-    assertThat(cancelled).isTrue()
+    cancelled shouldBe true
     tester.assertComplete()
     tester.assertNoValues()
   }
@@ -101,7 +101,7 @@ class WorkflowRunnerViewModelTest {
     tester.assertNotComplete()
     runBlocking { outputs.send("fnord") }
     tester.assertComplete()
-    assertThat(tester.values()).isEqualTo(listOf("fnord"))
+    tester.values() shouldBe listOf("fnord")
   }
 
   @Test fun resultEmptyOnCleared() {

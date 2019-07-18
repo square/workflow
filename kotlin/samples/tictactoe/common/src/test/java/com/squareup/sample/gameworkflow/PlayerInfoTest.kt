@@ -15,14 +15,15 @@
  */
 package com.squareup.sample.gameworkflow
 
-import com.google.common.truth.Truth.assertThat
-import org.junit.Test
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.StringSpec
 
-class PlayerInfoTest {
-  @Test fun readWriteTurn() {
+class PlayerInfoTest : StringSpec({
+  "read write turn" {
     val before = PlayerInfo("able", "baker")
     val out = before.toSnapshot()
     val after = PlayerInfo.fromSnapshot(out.bytes)
-    assertThat(after).isEqualTo(before)
+
+    after shouldBe before
   }
-}
+})

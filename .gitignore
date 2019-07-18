@@ -35,6 +35,9 @@ local.properties
 *.iml
 .idea/
 
+# kotlinetest
+.kotlintest
+
 # cocoapods-generate
 gen/
 

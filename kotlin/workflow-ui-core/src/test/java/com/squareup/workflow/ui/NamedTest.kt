@@ -15,82 +15,66 @@
  */
 package com.squareup.workflow.ui
 
-import com.google.common.truth.Truth.assertThat
-import org.junit.Test
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
+import io.kotlintest.specs.AnnotationSpec
 
-// If you try to replace isTrue() with isTrue compilation fails.
-@Suppress("UsePropertyAccessSyntax")
-class NamedTest {
+class NamedTest : AnnotationSpec() {
   object Whut
   object Hey
 
   @Test fun `same type same name matches`() {
-    assertThat(compatible(Named(Hey, "eh"), Named(Hey, "eh"))).isTrue()
+    compatible(Named(Hey, "eh"), Named(Hey, "eh")) shouldBe true
   }
 
   @Test fun `same type diff name matches`() {
-    assertThat(compatible(Named(Hey, "blam"), Named(Hey, "bloom"))).isFalse()
+    compatible(Named(Hey, "blam"), Named(Hey, "bloom")) shouldBe false
   }
 
   @Test fun `diff type same name no match`() {
-    assertThat(compatible(Named(Hey, "a"), Named(Whut, "a"))).isFalse()
+    compatible(Named(Hey, "a"), Named(Whut, "a")) shouldBe false
   }
 
   @Test fun recursion() {
-    assertThat(
-        compatible(
-            Named(Named(Hey, "one"), "ho"),
-            Named(Named(Hey, "one"), "ho")
-        )
-    ).isTrue()
 
-    assertThat(
-        compatible(
-            Named(Named(Hey, "one"), "ho"),
-            Named(Named(Hey, "two"), "ho")
-        )
-    ).isFalse()
+    compatible(Named(Named(Hey, "one"), "ho"), Named(Named(Hey, "one"), "ho")) shouldBe true
 
-    assertThat(
-        compatible(
-            Named(Named(Hey, "a"), "ho"),
-            Named(Named(Whut, "a"), "ho")
-        )
-    ).isFalse()
+    compatible(Named(Named(Hey, "one"), "ho"), Named(Named(Hey, "two"), "ho")) shouldBe false
+
+    compatible(Named(Named(Hey, "a"), "ho"), Named(Named(Whut, "a"), "ho")) shouldBe false
   }
 
   @Test fun `key recursion`() {
-    assertThat(Named(Named(Hey, "one"), "ho").compatibilityKey)
-        .isEqualTo(Named(Named(Hey, "one"), "ho").compatibilityKey)
+    Named(Named(Hey, "one"), "ho").compatibilityKey shouldBe
+        Named(Named(Hey, "one"), "ho").compatibilityKey
 
-    assertThat(Named(Named(Hey, "one"), "ho").compatibilityKey)
-        .isNotEqualTo(Named(Named(Hey, "two"), "ho").compatibilityKey)
+    Named(Named(Hey, "one"), "ho").compatibilityKey shouldNotBe
+        Named(Named(Hey, "two"), "ho").compatibilityKey
 
-    assertThat(Named(Named(Hey, "a"), "ho").compatibilityKey)
-        .isNotEqualTo(Named(Named(Whut, "a"), "ho").compatibilityKey)
+    Named(Named(Hey, "a"), "ho").compatibilityKey shouldNotBe
+        Named(Named(Whut, "a"), "ho").compatibilityKey
   }
 
   @Test fun `recursive keys are legible`() {
-    assertThat(Named(Named(Hey, "one"), "ho").compatibilityKey)
-        .isEqualTo("com.squareup.workflow.ui.NamedTest\$Hey-Named(one)-Named(ho)")
+    Named(Named(Hey, "one"), "ho").compatibilityKey shouldBe
+        "com.squareup.workflow.ui.NamedTest\$Hey-Named(one)-Named(ho)"
   }
 
   private class Foo(override val compatibilityKey: String) : Compatible
 
   @Test fun `the test Compatible class actually works`() {
-    assertThat(compatible(Foo("bar"), Foo("bar"))).isTrue()
-    assertThat(compatible(Foo("bar"), Foo("baz"))).isFalse()
+    compatible(Foo("bar"), Foo("bar")) shouldBe true
+    compatible(Foo("bar"), Foo("baz")) shouldBe false
   }
 
   @Test fun `wrapping custom Compatible compatibility works`() {
-    assertThat(compatible(Named(Foo("bar"), "name"), Named(Foo("bar"), "name"))).isTrue()
-    assertThat(compatible(Named(Foo("bar"), "name"), Named(Foo("baz"), "name"))).isFalse()
+    compatible(Named(Foo("bar"), "name"), Named(Foo("bar"), "name")) shouldBe true
+    compatible(Named(Foo("bar"), "name"), Named(Foo("baz"), "name")) shouldBe false
   }
 
   @Test fun `wrapping custom Compatible keys work`() {
-    assertThat(Named(Foo("bar"), "name").compatibilityKey)
-        .isEqualTo(Named(Foo("bar"), "name").compatibilityKey)
-    assertThat(Named(Foo("bar"), "name").compatibilityKey)
-        .isNotEqualTo(Named(Foo("baz"), "name").compatibilityKey)
+    Named(Foo("bar"), "name").compatibilityKey shouldBe Named(Foo("bar"), "name").compatibilityKey
+    Named(Foo("bar"), "name").compatibilityKey shouldNotBe
+        Named(Foo("baz"), "name").compatibilityKey
   }
 }
