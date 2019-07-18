@@ -40,7 +40,7 @@ Artifacts are hosted on Maven Central. If you're using Gradle, ensure `mavenCent
     <th>Depend on this if…</th>
   </tr>
   <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-core:x.y.z</code></td>
+    <td nowrap><code>com.squareup.workflow:workflow-core-jvm:x.y.z</code></td>
     <td>You are writing a library module/project that uses Workflows, but you don't need to interact with the runtime from the outside.</td>
   </tr>
   <tr>
@@ -48,7 +48,7 @@ Artifacts are hosted on Maven Central. If you're using Gradle, ensure `mavenCent
     <td>You need to interact with RxJava2 from your Workflows.</td>
   </tr>
   <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-testing:x.y.z</code></td>
+    <td nowrap><code>com.squareup.workflow:workflow-testing-jvm:x.y.z</code></td>
     <td>You are writing tests. This should only be included as a test dependency.</td>
   </tr>
   <tr>
@@ -67,11 +67,11 @@ Most code shouldn't need to depend on these directly. They should generally only
     <th>Depend on this if…</th>
   </tr>
   <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-runtime:x.y.z</code></td>
+    <td nowrap><code>com.squareup.workflow:workflow-runtime-jvm:x.y.z</code></td>
     <td>You need to interact directly with the runtime, i.e. streams of renderings and outputs.</td>
   </tr>
   <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-ui:x.y.z</code></td>
+    <td nowrap><code>com.squareup.workflow:workflow-ui-core-jvm:x.y.z</code></td>
     <td>You are writing workflow-ui-android for another UI framework. Defines the core types used by that artifact.</td>
   </tr>
 </table>

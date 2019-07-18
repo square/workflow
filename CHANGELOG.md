@@ -1,6 +1,52 @@
 Change Log
 ==========
 
+## Version 0.18.0
+
+_2019-7-16_
+
+### Kotlin
+
+#### Core API changes:
+
+ * Added builder functions for creating stateful workflows. (#441)
+ * Introduce Kotlin Flows:
+   * Convert the Worker API to use Flow instead of using its own Emitter type. (#435)
+   * Convert InputT streams from channels to Flows. (#433)
+ * Add Completable.asWorker() operator. (#423)
+ * Rename WorkflowAction.noop() to noAction(). (#420)
+ * Change RenderContext.onEvent return type to be a raw function type. (#387)
+ * Moves Named.key up to Compatible.compatibilityKey. (#429)
+
+#### Runtime changes:
+
+ * Replace WorkflowHost with the launchWorkflowIn function. (#447)
+ * Delete flatMapWorkflow. (#377)
+ * Allow specifying a different CoroutineDispatcher in the WorkflowRunner. (#379)
+
+#### Version changes:
+
+ * Bump Kotlin to latest version (1.3.41), along with Dokka and detekt. (#451)
+ * Migrate to AndroidX. (#59, #469 - thanks @charbgr!)
+ * Bump AGP to latest beta version (3.5.0-beta05). (#427)
+ * Update coroutines dependency to 1.3.0-M2. (#409)
+
+#### Other changes:
+
+ * Don't throw from runningWorker when the worker finishes. (#456)
+ * Less hacky lifecycle search in ModalContainer. (#448)
+ * Fix Worker backpressure (too much buffering). (#446)
+ * Set up a teardown hook for dialogs. (#432)
+ * Artifact name changes (#419)
+   * Add -jvm suffixes to all modules that could be MPP one day.
+   * Add the -core suffix to the artifact for workflow-ui-core.
+ * Remove (incorrect) manual implementation of ensureActive. (#378)
+ * Fix WorkflowPool to work with ConflatedBroadcastChannel. (#475)
+
+### Swift
+
+ * Rename AnyWorkflowAction.identity to `noAction` (#444)
+
 ## Version 0.17.3
 
 _2019-6-12_
