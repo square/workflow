@@ -4,7 +4,8 @@ Workflows provide a way to build complex applications out of small, isolated pie
 
 ----
 
-*__Note:__ One important difference between workflows and components found in web frontend frameworks comes from the vast differences between the DOM and native UI paradigms (iOS/Android). The DOM is already declarative (meaning that we can always reason about the element tree in a web page). UIKit, for is not – it very much relies on a procedural programming model where transitions are performed by imperative methods like `push`, `fadeOut`, etc. For this reason, workflows do not ever refer directly to views. They are instead responsible for rendering view models. This view model can then be used to update the UI.*
+!!! note
+    One important difference between workflows and components found in web frontend frameworks comes from the vast differences between the DOM and native UI paradigms (iOS/Android). The DOM is already declarative (meaning that we can always reason about the element tree in a web page). UIKit, for is not – it very much relies on a procedural programming model where transitions are performed by imperative methods like `push`, `fadeOut`, etc. For this reason, workflows do not ever refer directly to views. They are instead responsible for rendering view models. This view model can then be used to update the UI.
 
 ----
 
@@ -17,7 +18,7 @@ While specific APIs differ between Swift and Kotlin, the Workflow library shares
 
 `Workflow` is a protocol (in Swift) and interface (in Kotlin) that defines the contract for a single node in the workflow hierarchy.
 
-```swift
+```swift tab="Swift"
 public protocol Workflow: AnyWorkflowConvertible {
 
     associatedtype State
@@ -36,7 +37,7 @@ public protocol Workflow: AnyWorkflowConvertible {
 
 ```
 
-```kotlin
+```kotlin tab="Kotlin"
 interface Workflow<in InputT : Any, StateT : Any, out OutputT : Any, out RenderingT : Any> {
 
   fun initialState(input: InputT): StateT
@@ -124,6 +125,7 @@ A workflow can ask the infrastructure to await the result of a worker by handing
 ### Workflows are advanced by `Action`s
 
 Any time something happens that should advance a workflow – a UI event, a network response, a child's output event – actions are used to perform the update. For example, a workflow may respond to UI events by mapping those events into a type conforming to `WorkflowAction`. These types implement the logic to advance a workflow by:
+
 - Advancing to a new state
 - (Optionally) emitting an output event up the tree.
 

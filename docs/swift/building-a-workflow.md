@@ -141,7 +141,8 @@ struct WelcomeFlowWorkflow: Workflow {
 }
 ```
 
-*__Note:__ Workflows (and their `State`) should always be implemented through value types (structs and enums) due to the way the framework handles state changes. This means that you can never capture references to `self`, but the consistent flow of data pays dividends – try this architecture for a while and we are confident that you will see the benefits.*
+!!! note
+    Workflows (and their `State`) should always be implemented through value types (structs and enums) due to the way the framework handles state changes. This means that you can never capture references to `self`, but the consistent flow of data pays dividends – try this architecture for a while and we are confident that you will see the benefits.
 
 ## Workers, or "Asynchronous work the workflow needs done"
 

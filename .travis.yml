@@ -9,6 +9,14 @@ notifications:
 
 matrix:
   include:
+    # Verify the documentation site builds successfully, but don't deploy it.
+    - language: python
+      python:
+        - "2.7"
+      install:
+        - pip install mkdocs-material
+      script:
+        - mkdocs build
     - language: android
       name: "Android"
       jdk: oraclejdk8
