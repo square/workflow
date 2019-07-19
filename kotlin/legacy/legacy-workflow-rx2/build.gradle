@@ -36,6 +36,10 @@ dependencies {
   implementation deps.kotlin.reflect
 
   testImplementation deps.kotlin.test.jdk
-  testImplementation deps.kotlin.test.kotlintest
+  testImplementation deps.kotlin.test.mockito
+  testImplementation deps.test.hamcrestCore
+  testImplementation deps.test.junit
+  testImplementation deps.test.truth
+  testImplementation deps.test.mockito
   testImplementation deps.rxjava2.extensions
 }
