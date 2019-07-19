@@ -53,7 +53,9 @@ extension AnyWorkflowConvertible where Output == Never {
             .render(
                 context: context,
                 key: key,
-                outputMap: { switch $0 {} })
+                outputMap: { event -> AnyWorkflowAction<T> in
+                    switch event {}
+                })
     }
 
 }

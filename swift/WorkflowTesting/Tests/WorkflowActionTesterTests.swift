@@ -1,6 +1,5 @@
 import XCTest
 import ReactiveSwift
-import Result
 import Workflow
 @testable import WorkflowTesting
 

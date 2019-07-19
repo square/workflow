@@ -1,5 +1,4 @@
 import ReactiveSwift
-import Result
 
 /// Defines a node in the workflow tree.
 ///

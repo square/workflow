@@ -1,7 +1,7 @@
 @testable import Workflow
 
 
-public extension WorkflowAction {
+extension WorkflowAction {
 
     /// Returns a state tester containing `self`.
     public static func tester(withState state: WorkflowType.State) -> WorkflowActionTester<WorkflowType, Self> {

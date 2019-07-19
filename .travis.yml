@@ -99,20 +99,6 @@ matrix:
         - bundle exec pod repo update
         - bundle exec pod install
     - language: swift
-      name: "Swift - SPM (Xcode 10.1)"
-      os: osx
-      osx_image: xcode10.1
-      cache:
-        directories:
-          - .build
-      before_install:
-        - gem update --system
-        - gem install bundler
-        - swift --version
-        - swift build --verbose
-      script:
-        - swift test
-    - language: swift
       name: "Swift - SPM (Xcode 10.2)"
       os: osx
       osx_image: xcode10.2

@@ -10,13 +10,12 @@ Pod::Spec.new do |s|
   # 1.7 is needed for `swift_versions` support
   s.cocoapods_version = '>= 1.7.0.beta.1'
 
-  s.swift_versions = ['4.2']
+  s.swift_versions = ['5.0']
   s.ios.deployment_target = '9.3'
 
   s.source_files = 'swift/WorkflowTesting/Sources/*.swift'
 
   s.dependency 'ReactiveSwift', '~> 5.0.0'
-  s.dependency 'Result'
   s.dependency 'Workflow', "#{s.version}"
   s.framework = 'XCTest'
 
