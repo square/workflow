@@ -13,7 +13,7 @@
 1. Make sure you're on the `master` branch (or fix branch, e.g. `v0.1-fixes`).
 
 1. Confirm that the kotlin build is green before committing any changes
-   ```
+   ```bash
    (cd kotlin && ./gradlew build connectedCheck)
    ```
 
@@ -21,13 +21,13 @@
    E.g. `VERSION_NAME=0.1.0`
 
 3. Create a commit and tag the commit with the version number:
-   ```
+   ```bash
    git commit -am "Releasing v0.1.0."
    git tag v0.1.0
    ```
 
 4. Upload the kotlin artifacts:
-   ```
+   ```bash
    (cd kotlin && ./gradlew clean build && ./gradlew uploadArchives --no-parallel --no-daemon)
    ```
 
@@ -35,15 +35,15 @@
    the artifacts will be split across multiple (invalid) staging repositories.
 
 5. Publish to CocoaPods:
-    ```
+    ```bash
     bundle exec pod trunk push Workflow.podspec
     bundle exec pod trunk push WorkflowUI.podspec
     ```
 
 6. Bump the version
-  - **Kotlin:** Update the `VERSION_NAME` property in `kotlin/gradle.properties` to the new snapshot 
-    version, e.g. `VERSION_NAME=0.2.0-SNAPSHOT`.
-  - **Swift:** Update `s.version` in `*.podspec` to the new version, e.g. `0.2.0`.
+    - **Kotlin:** Update the `VERSION_NAME` property in `kotlin/gradle.properties` to the new snapshot 
+      version, e.g. `VERSION_NAME=0.2.0-SNAPSHOT`.
+    - **Swift:** Update `s.version` in `*.podspec` to the new version, e.g. `0.2.0`.
 
 7. Commit the new snapshot version:
    ```
@@ -67,13 +67,20 @@
      7. Hit "Publish release".
 
 10. If this was a fix release, merge changes to the master branch:
-   ```
-   git checkout master
-   git reset --hard origin/master
-   git merge --no-ff v0.1-fixes
-   # Resolve conflicts. Accept master's versions of gradle.properties and podspecs.
-   git push origin master
-   ```
+    ```bash
+    git checkout master
+    git reset --hard origin/master
+    git merge --no-ff v0.1-fixes
+    # Resolve conflicts. Accept master's versions of gradle.properties and podspecs.
+    git push origin master
+    ```
+
+11. Publish the website:
+    ```bash
+    # If you haven't already installed mkdocs, run:
+    # pip install mkdocs mkdocs-material
+    ./deploy_website.sh
+    ```
 
 ---
 
@@ -83,7 +90,7 @@
 
 To build and install the current version to your local Maven repository (`~/.m2`), run:
 
-```
+```bash
 ./gradlew clean installArchives
 ```
 
@@ -105,6 +112,6 @@ SONATYPE_NEXUS_PASSWORD=<password>
 
 To deploy a new snapshot release, you don't need to update any properties. Just run:
 
-```
+```bash
 ./gradlew clean uploadArchives
 ```
