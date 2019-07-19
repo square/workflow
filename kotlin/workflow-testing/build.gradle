@@ -21,7 +21,7 @@ apply plugin: 'org.jetbrains.dokka'
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
-dokka rootProject.ext.defaultDokkaConfig
+apply from: rootProject.file('.buildscript/configure-dokka.gradle')
 
 dependencies {
   compileOnly deps.annotations.intellij
