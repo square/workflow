@@ -38,12 +38,12 @@ git clone $REPO $DIR
 cd $DIR
 
 # Generate the API docs.
-./gradlew dokka
+(cd kotlin && ./gradlew dokka)
 
 # Build the site and push the new files up to GitHub.
 mkdocs gh-deploy
 git checkout gh-pages
-git push
+git push origin gh-pages:gh-pages
 
 # Delete our temp folder.
 cd ..
