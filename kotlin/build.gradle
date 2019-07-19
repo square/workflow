@@ -119,11 +119,6 @@ buildscript {
   }
 }
 
-rootProject.ext.defaultDokkaConfig = {
-    outputFormat = 'gfm'
-    outputDirectory = "$buildDir/docs"
-}
-
 allprojects {
   group = GROUP
   version = VERSION_NAME

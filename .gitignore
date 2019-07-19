@@ -50,3 +50,6 @@ xcuserdata/
 
 # Sample workspace
 SampleApp.xcworkspace
+
+# Special Mkdocs files
+docs/kotlin/api/
