@@ -17,6 +17,7 @@ buildscript {
   ext.versions = [
       'targetSdk': 29,
       'dokka': '0.9.18',
+      'jmh': '1.21',
       'kotlin': '1.3.41',
       'kotlinCoroutines': '1.3.0-RC2',
   ]
@@ -80,6 +81,11 @@ buildscript {
       ],
       'dokkaAndroid': "org.jetbrains.dokka:dokka-android-gradle-plugin:${versions.dokka}",
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
+      'jmh': [
+          'gradlePlugin': "me.champeau.gradle:jmh-gradle-plugin:0.4.8",
+          'core': "org.openjdk.jmh:jmh-core:${versions.jmh}",
+          'generator': "org.openjdk.jmh:jmh-generator-annprocess:${versions.jmh}",
+      ],
       // Source of "API 'variant.getJavaCompile()' is obsolete" warning, because of course it is.
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:0.8.0",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:5.1.0",
@@ -106,6 +112,7 @@ buildscript {
     classpath deps.detekt
     classpath deps.dokka
     classpath deps.dokkaAndroid
+    classpath deps.jmh.gradlePlugin
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
     classpath deps.mavenPublish
