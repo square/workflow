@@ -31,6 +31,9 @@ theme:
     primary: 'red'
     accent: 'pink'
 
+extra_css:
+  - 'css/app.css'
+
 markdown_extensions:
   - admonition
   - smarty
