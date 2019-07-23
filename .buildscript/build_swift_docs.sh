@@ -27,6 +27,17 @@ function build_swift_docs() {
     local OUTPUT_DIR="$(realpath "$3")"
     local SCHEMES="$4"
     local DIR=swiftdocs-clone
+    local GA_HEAD=$(cat <<-END_HEREDOC
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=$WORKFLOW_GOOGLE_ANALYTICS_KEY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '$WORKFLOW_GOOGLE_ANALYTICS_KEY');
+</script>
+END_HEREDOC
+)
 
     # Delete any existing temporary website clone.
     rm -rf $DIR
@@ -47,6 +58,7 @@ function build_swift_docs() {
             --author Square \
             --author_url https://developer.squareup.com \
             --github_url https://github.com/square/workflow \
+            --head "$GA_HEAD" \
             --output "$OUTPUT_DIR/$scheme"
     done
 
