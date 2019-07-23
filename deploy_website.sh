@@ -22,11 +22,21 @@
 # pip install mkdocs mkdocs-material
 # Preview the site as you're editing it with:
 # mkdocs serve
+# It also uses CocoaPods and Jazzy to build the Swift docs.
+# See .buildscript/build_swift_docs.sh for setup info.
+#
+# Usage deploy_website.sh SHA_OR_REF_TO_DEPLOY
 
 set -ex
 
+# Get the actual SHA, even if a ref was passed.
+SHA=$(git rev-parse $1)
 REPO="git@github.com:square/workflow.git"
-DIR=temp-clone
+DIR=mkdocs-clone
+SWIFT_API_DIR=swift/api
+SWIFT_SCHEMES="Workflow WorkflowUI WorkflowTesting"
+
+source .buildscript/build_swift_docs.sh
 
 # Delete any existing temporary website clone.
 rm -rf $DIR
@@ -35,16 +45,27 @@ rm -rf $DIR
 git clone $REPO $DIR
 
 # Move working directory into temp folder.
-cd $DIR
+pushd $DIR
+git checkout $SHA
 
-# Generate the API docs.
+# Generate the Kotlin API docs.
 (cd kotlin && ./gradlew dokka)
 
-# Build the site and push the new files up to GitHub.
+# Build the site
 mkdocs gh-deploy
+# Remove Dokka markdown.
+git clean -fdx
 git checkout gh-pages
+
+# Generate the Swift API docs.
+# Clone local repo because this script doesn't need to push.
+build_swift_docs $SHA ".git" $SWIFT_API_DIR "$SWIFT_SCHEMES" && \
+    git add $SWIFT_API_DIR && \
+    git commit -m "Deployed Swift docs from $SHA"
+
+# Push the new files up to GitHub.
 git push origin gh-pages:gh-pages
 
 # Delete our temp folder.
-cd ..
+popd
 rm -rf $DIR
