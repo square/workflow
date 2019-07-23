@@ -57,15 +57,21 @@ nav:
   - 'Overview': index.md
   - 'Documentation': overview.md
   - 'Concepts': concepts.md
-  - 'Kotlin':
-    - 'Overview': kotlin/index.md
-    - 'API Reference':
+  - 'API Reference':
+    - 'Kotlin':
       - 'workflow-core': 'kotlin/api/workflow-core/com.squareup.workflow/index.md'
       - 'workflow-runtime': 'kotlin/api/workflow-runtime/com.squareup.workflow/index.md'
       - 'workflow-ui-core': 'kotlin/api/workflow-ui-core/com.squareup.workflow.ui/index.md'
       - 'workflow-ui-android': 'kotlin/api/workflow-ui-android/com.squareup.workflow.ui/index.md'
       - 'workflow-testing': 'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md'
       - 'workflow-rx2': 'kotlin/api/workflow-rx2/com.squareup.workflow.rx2/index.md'
+    - 'Swift':
+      # mkdocs will warn about these not existing, that's fine, deploy_website.sh manually adds them.
+      - 'Workflow ⏏': 'swift/api/Workflow/index.html'
+      - 'WorkflowUI ⏏': 'swift/api/WorkflowUI/index.html'
+      - 'WorkflowTesting ⏏': 'swift/api/WorkflowTesting/index.html'
+  - 'Kotlin':
+    - 'Overview': kotlin/index.md
   - 'Swift':
     - 'Overview': swift/index.md
     - 'Adding Workflow to a project': swift/adding-workflow-to-a-project.md
