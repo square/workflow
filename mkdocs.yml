@@ -83,3 +83,8 @@ nav:
   - 'Change Log ⏏': CHANGELOG.md
   - 'Contributing': CONTRIBUTING.md
   - 'Code of Conduct': CODE_OF_CONDUCT.md
+
+# Google Analytics. Add export WORKFLOW_GOOGLE_ANALYTICS_KEY="UA-XXXXXXXXX-X" to your ~/.bashrc
+google_analytics:
+  - !!python/object/apply:os.getenv ["WORKFLOW_GOOGLE_ANALYTICS_KEY"]
+  - auto

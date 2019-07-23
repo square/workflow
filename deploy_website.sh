@@ -41,6 +41,11 @@ source .buildscript/build_swift_docs.sh
 # Delete any existing temporary website clone.
 rm -rf $DIR
 
+if [ -z "$WORKFLOW_GOOGLE_ANALYTICS_KEY" ]; then
+    echo "Must set WORKFLOW_GOOGLE_ANALYTICS_KEY to deploy." >&2
+    exit 1
+fi
+
 # Clone the current repo into temp folder.
 git clone $REPO $DIR
 
