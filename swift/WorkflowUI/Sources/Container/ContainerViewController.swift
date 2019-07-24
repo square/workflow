@@ -5,20 +5,23 @@ import Workflow
 
 
 /// Drives view controllers from a root Workflow.
-public final class ContainerViewController<Output, ScreenType>: UIViewController where ScreenType: Screen {
+public final class ContainerViewController<WorkflowType>: UIViewController where WorkflowType: Workflow, WorkflowType.Rendering: Screen {
+
+    public typealias Output = WorkflowType.Output
+    public typealias ScreenType = WorkflowType.Rendering
 
     /// Emits output events from the bound workflow.
     public let output: Signal<Output, NoError>
 
     internal let rootViewController: ScreenViewController<ScreenType>
 
-    private let workflowHost: Any
+    private let workflowHost: WorkflowHost<WorkflowType>
 
     private let rendering: Property<ScreenType>
 
     private let (lifetime, token) = Lifetime.make()
 
-    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, NoError>, viewRegistry: ViewRegistry) {
+    private init(workflowHost: WorkflowHost<WorkflowType>, rendering: Property<ScreenType>, output: Signal<Output, NoError>, viewRegistry: ViewRegistry) {
         self.workflowHost = workflowHost
         self.rootViewController = viewRegistry.provideView(for: rendering.value)
         self.rendering = rendering
@@ -34,7 +37,7 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
             }
     }
 
-    public convenience init<W: Workflow>(workflow: W, viewRegistry: ViewRegistry) where W.Rendering == ScreenType, W.Output == Output {
+    public convenience init(workflow: WorkflowType, viewRegistry: ViewRegistry) {
         let host = WorkflowHost(workflow: workflow)
         self.init(
             workflowHost: host,
@@ -45,6 +48,10 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
 
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    public func update(workflow: WorkflowType) {
+        workflowHost.update(workflow: workflow)
     }
 
     private func render(screen: ScreenType) {

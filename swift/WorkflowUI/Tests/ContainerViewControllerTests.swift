@@ -80,6 +80,28 @@ class ContainerViewControllerTests: XCTestCase {
 
         disposable?.dispose()
     }
+
+    func test_updating_workflow_causes_render_update() {
+        let (signal, _) = Signal<Int, NoError>.pipe()
+        let workflow = MockWorkflow(subscription: signal)
+        let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
+
+        withExtendedLifetime(container) {
+
+            let expectation = XCTestExpectation(description: "View Controller updated")
+
+            let vc = container.rootViewController as! TestScreenViewController
+            vc.onScreenChange = {
+                expectation.fulfill()
+            }
+
+            container.update(workflow: MockWorkflow(subscription: signal))
+
+            wait(for: [expectation], timeout: 1.0)
+
+            XCTAssertEqual("10", vc.screen.string)
+        }
+    }
 }
 
 
@@ -96,7 +118,7 @@ fileprivate struct MockWorkflow: Workflow {
     }
 
     func workflowDidChange(from previousWorkflow: MockWorkflow, state: inout State) {
-
+        state = 10
     }
 
     func render(state: State, context: RenderContext<MockWorkflow>) -> TestScreen {
