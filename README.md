@@ -4,14 +4,17 @@
 [![CocoaPods compatible](https://img.shields.io/cocoapods/v/Workflow.svg)](https://cocoapods.org/pods/Workflow)
 [![Maven Central](https://img.shields.io/maven-central/v/com.squareup.workflow/workflow-core-jvm.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.squareup.workflow%22)
 
-An architecture that allows composable state machines to drive UI navigation and content, where the state machines are cleanly separated from UI code.
+An architecture that allows composable state machines to drive UI navigation and content, where the
+ state machines are cleanly separated from UI code.
 
 _**This project is currently experimental and the API subject to breaking changes without notice.**
-Follow Square's engineering blog, [The Corner](https://developer.squareup.com/blog/), to see when this project becomes stable._
+Follow Square's engineering blog, [The Corner](https://developer.squareup.com/blog/), to see when
+this project becomes stable._
 
 Workflow is a library for making composable state machines, and UIs driven by those state machines.
 
-This project is under active development. The workflow code is being piloted in production apps. The view code is not (yet).
+This project is under active development. The workflow code is being piloted in production apps. The
+view code is not (yet).
 
 More documentation and samples will be coming soon!
 
@@ -21,7 +24,8 @@ More documentation and samples will be coming soon!
 
 [![CocoaPods compatible](https://img.shields.io/cocoapods/v/Workflow.svg)](https://cocoapods.org/pods/Workflow)
 
-If you use CocoaPods to manage your dependencies, simply add Workflow and WorkflowUI to your Podfile:
+If you use CocoaPods to manage your dependencies, simply add Workflow and WorkflowUI to your
+Podfile:
 
 ```ruby
 pod 'Workflow'
@@ -32,7 +36,8 @@ pod 'WorkflowUI'
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.squareup.workflow/workflow-core-jvm.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.squareup.workflow%22)
 
-Artifacts are hosted on Maven Central. If you're using Gradle, ensure `mavenCentral()` appears in your `repositories` block, and then add dependencies on the following artifacts:
+Artifacts are hosted on Maven Central. If you're using Gradle, ensure `mavenCentral()` appears in
+your `repositories` block, and then add dependencies on the following artifacts:
 
 <table>
   <tr>
@@ -41,7 +46,8 @@ Artifacts are hosted on Maven Central. If you're using Gradle, ensure `mavenCent
   </tr>
   <tr>
     <td nowrap><code>com.squareup.workflow:workflow-core-jvm:x.y.z</code></td>
-    <td>You are writing a library module/project that uses Workflows, but you don't need to interact with the runtime from the outside.</td>
+    <td>You are writing a library module/project that uses Workflows, but you don't need to interact
+    with the runtime from the outside.</td>
   </tr>
   <tr>
     <td nowrap><code>com.squareup.workflow:workflow-rx2:x.y.z</code></td>
@@ -59,7 +65,8 @@ Artifacts are hosted on Maven Central. If you're using Gradle, ensure `mavenCent
 
 #### Lower-level Artifacts
 
-Most code shouldn't need to depend on these directly. They should generally only be used to build higher-level integrations with UI frameworks.
+Most code shouldn't need to depend on these directly. They should generally only be used to build
+higher-level integrations with UI frameworks.
 
 <table>
   <tr>
@@ -72,25 +79,32 @@ Most code shouldn't need to depend on these directly. They should generally only
   </tr>
   <tr>
     <td nowrap><code>com.squareup.workflow:workflow-ui-core-jvm:x.y.z</code></td>
-    <td>You are writing workflow-ui-android for another UI framework. Defines the core types used by that artifact.</td>
+    <td>You are writing workflow-ui-android for another UI framework. Defines the core types used by
+    that artifact.</td>
   </tr>
 </table>
 
 ## Resources
 
- * [SF Android GDG @ Square 2019 - Hello Workflow](https://www.youtube.com/watch?v=8PlYtfsgDKs) (live coding)
- * [Android Dialogs 5-part Coding Series](https://twitter.com/chiuki/status/1100810374410956800)
-   * [1](https://www.youtube.com/watch?v=JJ4-8AR5HhA), [2](https://www.youtube.com/watch?v=XB6frWBGvp0), [3](https://www.youtube.com/watch?v=NdFJMkT-t3c), [4](https://www.youtube.com/watch?v=aRxmyO6fwSs), [5](https://www.youtube.com/watch?v=aKaZa-1KN2M)
- * [Reactive Workflows a Year Later – Droidcon NYC 2018](https://www.youtube.com/watch?v=cw9ZF9-ilac)
- * [The Reactive Workflow Pattern – Fragmented Podcast](https://www.youtube.com/watch?v=mUBXgYnT7w0)
- * [The Reactive Workflow Pattern Update – Droidcon SF 2017](https://www.youtube.com/watch?v=mvBVkU2mCF4)
- * [The Rx Workflow Pattern – Droidcon NYC 2017](https://www.youtube.com/watch?v=KjoMnsc2lPo) ([slides](https://speakerdeck.com/rjrjr/reactive-workflows))
+* [SF Android GDG @ Square 2019 - Hello Workflow](https://www.youtube.com/watch?v=8PlYtfsgDKs)
+  (live coding)
+* [Android Dialogs 5-part Coding Series](https://twitter.com/chiuki/status/1100810374410956800)
+  * [1](https://www.youtube.com/watch?v=JJ4-8AR5HhA),
+    [2](https://www.youtube.com/watch?v=XB6frWBGvp0),
+    [3](https://www.youtube.com/watch?v=NdFJMkT-t3c),
+    [4](https://www.youtube.com/watch?v=aRxmyO6fwSs),
+    [5](https://www.youtube.com/watch?v=aKaZa-1KN2M)
+* [Reactive Workflows a Year Later – Droidcon NYC 2018](https://www.youtube.com/watch?v=cw9ZF9-ilac)
+* [The Reactive Workflow Pattern – Fragmented Podcast](https://www.youtube.com/watch?v=mUBXgYnT7w0)
+* [The Reactive Workflow Pattern Update – Droidcon SF 2017](https://www.youtube.com/watch?v=mvBVkU2mCF4)
+* [The Rx Workflow Pattern – Droidcon NYC 2017](https://www.youtube.com/watch?v=KjoMnsc2lPo)
+  ([slides](https://speakerdeck.com/rjrjr/reactive-workflows))
 
 ## Releasing and Deploying
 
 See [RELEASING.md](RELEASING.md).
 
-# License
+## License
 
 <pre>
 Copyright 2019 Square Inc.

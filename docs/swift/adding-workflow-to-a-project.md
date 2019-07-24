@@ -2,7 +2,6 @@
 
 This document will guide you through the process of adding Workflow to an iOS project.
 
-
 ## Libraries
 
 You'll need the following four libraries:
@@ -14,7 +13,8 @@ import ReactiveSwift
 import Result
 ```
 
-The easiest way to integrate these libraries is via Cocoapods. If you are using Cocoapods, you can simply add the dependencies to your `.podspec`.
+The easiest way to integrate these libraries is via Cocoapods. If you are using Cocoapods, you can
+simply add the dependencies to your `.podspec`.
 
 ```ruby
 # MySoftware.podspec

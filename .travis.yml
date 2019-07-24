@@ -17,6 +17,12 @@ matrix:
         - pip install mkdocs-material
       script:
         - mkdocs build
+    # Ensure docs are formatted correctly.
+    - language: ruby
+      install:
+        - gem install mdl
+      script:
+        - ./lint_docs.sh
     - language: android
       name: "Android"
       jdk: oraclejdk8

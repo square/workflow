@@ -12,6 +12,5 @@ we use [Square's code style definitions][2].
 Before your code can be accepted into the project you must also sign the
 [Individual Contributor License Agreement (CLA)][1].
 
-
  [1]: https://spreadsheets.google.com/spreadsheet/viewform?formkey=dDViT2xzUHAwRkI3X3k5Z0lQM091OGc6MQ&ndplr=1
  [2]: https://github.com/square/java-code-styles
