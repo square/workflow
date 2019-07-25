@@ -79,12 +79,122 @@ and assign it to @apgar or @timdonnelly.*
    git push origin master
    ```
 
-1. Publish the website:
-   ```bash
-   # If you haven't already installed mkdocs, run:
-   # pip install mkdocs mkdocs-material
-   ./deploy_website.sh
-   ```
+1. Publish the website. See below.
+
+## Deploying the documentation website
+
+Official Workflow documentation lives at <https://squareup.github.io/workflow>. The website content
+consists of three parts:
+
+1. Markdown documentation: Lives in the `docs/` folder, and consists of a set of hand-written
+   Markdown files that document high-level concepts. The static site generator
+   [mkdocs](https://www.mkdocs.org/) (with [Material](https://squidfunk.github.io/mkdocs-material/)
+   theming) is used to convert the Markdown to static, styled HTML.
+1. Kotlin API reference: Kdoc embedded in Kotlin source files is converted to GitHub-flavored
+   Markdown by Dokka and then included in the statically-generated website.
+1. Swift API reference: Markup comments from Swift files are converted directly to HTML by
+   [Jazzy](https://github.com/realm/jazzy) _after_ the site is generated, but dropped into the same
+   directory structure as the generated HTML.
+
+### Setting up the site generators
+
+If you've already done this, you can skip to _Deploying the website to production_ below.
+
+#### Kotlin: Dokka
+
+Dokka runs as a Gradle plugin, so you need to be able to build the Kotlin source with Gradle, but
+that's it. To generate the docs manually, run:
+
+```bash
+cd kotlin
+./gradlew dokka
+```
+
+#### Swift: Jazzy
+
+Jazzy is a RubyGem that generates an HTML site from Swift files. You need Ruby, rubygems,
+bundler (2.x), Xcode 10.1+, CocoaPods, and of course Jazzy itself, to run it. Assuming you've
+already got Xcode, Ruby, and rubygems set up, install the rest of the dependencies:
+
+```bash
+gem install bundler cocoapods jazzy
+```
+
+If that succeeded, you need to generate an Xcode project before running Jazzy:
+
+```bash
+cd swift/Samples/SampleApp/
+bundle exec pod install
+# If this is your first time running CocoaPods, that will fail and you'll need to run this instead:
+#bundle exec pod install --repo-update
+```
+
+You can manually generate the docs to verify everything is working correctly by running:
+
+```bash
+#cd swift/Samples/SampleApp/
+jazzy --xcodebuild-arguments "-scheme,Workflow,-workspace,SampleApp.xcworkspace"
+```
+
+#### mkdocs
+
+Mkdocs is written in Python, so you'll need Python and pip in order to run it. Assuming those are
+set up, run:
+
+```bash
+pip install mkdocs mkdocs-material
+```
+
+Generate the site manually with:
+
+```bash
+mkdocs build
+```
+
+While you're working on the documentation files, you can run the site locally with:
+
+```bash
+mkdocs serve
+```
+
+### Deploying the website to production
+
+Before deploying the website for real, you need to export our Google Analytics key in an environment
+variable so that it will get added to the HTML. Get the key from one of the project maintainers,
+then add the following to your `.bashrc` and re-source it:
+
+```bash
+export WORKFLOW_GOOGLE_ANALYTICS_KEY=UA-__________-1
+```
+
+Now you're ready to publish the site! Just choose a tag or SHA to deploy from, and run:
+
+```bash
+./deploy_website.sh TAG_OR_SHA
+# For example:
+#./deploy_website.sh v0.18.0
+```
+
+This will clone the repo to a temporary directory, checkout the right SHA, build Kotlin and Swift
+API docs, generate HTML, and push the newly-generated content to the `gh-pages` branch on GitHub.
+
+### Validating Markdown
+
+Since all of our high-level documentation is written in Markdown, we run a linter in CI to ensure
+we use consistent formatting. Lint errors will fail your PR builds, so to run locally, install
+[markdownlint](https://github.com/markdownlint/markdownlint):
+
+```bash
+gem install mdl
+```
+
+Run the linter using the `lint_docs.sh`:
+
+```bash
+./lint_docs.sh
+```
+
+Rules can be configured by editing `.markdownlint.rb`.
 
 ---
 
