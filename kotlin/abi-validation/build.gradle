@@ -1,0 +1,60 @@
+/*
+ * Copyright (C) 2019 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import me.champeau.gradle.japicmp.JapicmpTask
+
+apply plugin: 'java-library'
+apply plugin: 'me.champeau.gradle.japicmp'
+
+configurations {
+  baseline
+  latest
+}
+
+dependencies {
+  [
+      ['workflow-core', 'workflow-core-jvm', 'runtimeElements'],
+      ['workflow-runtime', 'workflow-runtime-jvm', 'runtimeElements'],
+      ['workflow-testing', 'workflow-testing-jvm', 'runtimeElements'],
+      ['workflow-ui-core', 'workflow-ui-core-jvm', 'runtimeElements'],
+      ['workflow-ui-android', 'workflow-ui-android', 'releaseRuntimeElements'],
+      ['workflow-rx2', 'workflow-rx2', 'runtimeElements'],
+  ].forEach {
+    def moduleName = it[0]
+    def artifactName = it[1]
+    def configuration = it[2]
+
+    baseline("com.squareup.workflow:$artifactName:0.18.0") {
+      transitive = false
+      force = true
+    }
+    latest project(path: ":$moduleName", configuration: configuration)
+  }
+}
+
+// TODO This breaks for android modules because they don't have a jar task.
+task japicmp(type: JapicmpTask, dependsOn: 'jar') {
+  oldClasspath = configurations.baseline
+  newClasspath = configurations.latest
+  onlyBinaryIncompatibleModified = true
+  failOnModification = false
+  txtOutputFile = file("$buildDir/reports/japi.txt")
+  ignoreMissingClasses = true
+  includeSynthetic = true
+  packageExcludes = [
+      'com.squareup.workflow.internal',
+  ]
+}
+check.dependsOn japicmp

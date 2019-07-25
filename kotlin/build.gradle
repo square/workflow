@@ -82,6 +82,7 @@ buildscript {
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
       // Source of "API 'variant.getJavaCompile()' is obsolete" warning, because of course it is.
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:0.8.0",
+      'japicmp': 'me.champeau.gradle:japicmp-gradle-plugin:0.2.8',
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:5.1.0",
       'lanterna': "com.googlecode.lanterna:lanterna:3.0.1",
       'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0-RC16",
@@ -107,6 +108,7 @@ buildscript {
     classpath deps.detekt
     classpath deps.dokka
     classpath deps.dokkaAndroid
+    classpath deps.japicmp
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
     classpath deps.mavenPublish
