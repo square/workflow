@@ -19,6 +19,7 @@ repo_name: Workflow
 repo_url: https://github.com/square/workflow
 site_description: "A library for making composable state machines, and UIs driven by those state machines."
 site_author: Square, Inc.
+site_url: https://square.github.io/workflow/
 remote_branch: gh-pages
 
 copyright: 'Copyright &copy; 2019 Square, Inc.'
@@ -52,6 +53,18 @@ markdown_extensions:
   - pymdownx.smartsymbols
   - pymdownx.superfences
   - tables
+
+extra:
+  # type is the name of the FontAwesome icon without the fa- prefix.
+  social:
+    - type: globe
+      link: https://square.github.io/
+    - type: github-alt
+      link: https://github.com/square
+    - type: twitter
+      link: https://twitter.com/squareeng
+    - type: linkedin
+      link: https://www.linkedin.com/company/joinsquare/
 
 nav:
   - 'Overview': index.md
