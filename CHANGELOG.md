@@ -1,6 +1,24 @@
 Change Log
 ==========
 
+## Version 0.19.0
+
+_2019-7-29_
+
+### Swift
+
+ * Update to build with Swift 5.
+ * Allow sinks to be reused across render passes if a sink of the same action type is declared. (#443)
+ * Support updating the root workflow input on a `WorkflowHost`. (#351)
+ * Add support for `RenderTester` to expect child workflows and outputs. (#442)
+
+### Kotlin
+
+ * `WorkflowRunner` now delivers single result instead of output stream (#468)
+ * Use single object for `noAction` instead of creating it on every call (#473)
+ * Upgrade AGP to 3.5.0-rc01. (#484)
+ * Use Java 8 (#492)
+
 ## Version 0.18.0
 
 _2019-7-16_
