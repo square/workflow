@@ -5,21 +5,44 @@ import Workflow
 /// for a `render` test to pass.
 public struct RenderExpectations<WorkflowType: Workflow> {
     var expectedState: ExpectedState<WorkflowType>?
+    var expectedOutput: ExpectedOutput<WorkflowType>?
     var expectedWorkers: [ExpectedWorker]
+    var expectedWorkflows: [ExpectedWorkflow]
 
     public init(
         expectedState: ExpectedState<WorkflowType>? = nil,
-        expectedWorkers: [ExpectedWorker] = []) {
+        expectedOutput: ExpectedOutput<WorkflowType>? = nil,
+        expectedWorkers: [ExpectedWorker] = [],
+        expectedWorkflows: [ExpectedWorkflow] = []) {
 
         self.expectedState = expectedState
+        self.expectedOutput = expectedOutput
         self.expectedWorkers = expectedWorkers
+        self.expectedWorkflows = expectedWorkflows
+    }
+}
+
+
+public struct ExpectedOutput<WorkflowType: Workflow> {
+    let output: WorkflowType.Output
+    let isEquivalent: (WorkflowType.Output, WorkflowType.Output) -> Bool
+
+    public init<Output>(output: Output, isEquivalent: @escaping (Output, Output) -> Bool) where Output == WorkflowType.Output {
+        self.output = output
+        self.isEquivalent = isEquivalent
+    }
+
+    public init<Output>(output: Output) where Output == WorkflowType.Output, Output: Equatable {
+        self.init(output: output, isEquivalent: { (expected, actual) in
+            return expected == actual
+        })
     }
 }
 
 
 public struct ExpectedState<WorkflowType: Workflow> {
-    var state: WorkflowType.State
-    var isEquivalent: (WorkflowType.State, WorkflowType.State) -> Bool
+    let state: WorkflowType.State
+    let isEquivalent: (WorkflowType.State, WorkflowType.State) -> Bool
 
     /// Create a new expected state from a state with an equivalence block. `isEquivalent` will be
     /// called to validate that the expected state matches the actual state after a render pass.
@@ -37,8 +60,8 @@ public struct ExpectedState<WorkflowType: Workflow> {
 
 
 public struct ExpectedWorker {
-    var worker: Any
-    private var output: Any?
+    let worker: Any
+    private let output: Any?
 
     /// Create a new expected worker with an optional output. If `output` is not nil, it will be emitted
     /// when this worker is declared in the render pass.
@@ -61,5 +84,20 @@ public struct ExpectedWorker {
         }
 
         return outputMap(output)
+    }
+}
+
+
+public struct ExpectedWorkflow {
+    let workflowType: Any.Type
+    let key: String
+    let rendering: Any
+    private let output: Any?
+
+    public init<WorkflowType: Workflow>(type: WorkflowType.Type, key: String = "", rendering: WorkflowType.Rendering, output: WorkflowType.Output? = nil) {
+        self.workflowType = type
+        self.key = key
+        self.rendering = rendering
+        self.output = output
     }
 }
