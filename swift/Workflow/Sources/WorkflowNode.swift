@@ -1,5 +1,4 @@
 import ReactiveSwift
-import Result
 
 /// Manages a running workflow.
 final class WorkflowNode<WorkflowType: Workflow> {
