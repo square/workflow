@@ -15,54 +15,26 @@
 # limitations under the License.
 #
 
-# This script uses Jazzy.
-# https://github.com/realm/jazzy
-# It requires ruby, bundler (2.x), CocoaPods, and Jazzy to build.
-# gem install bundler jazzy
+# This script uses SourceDocs.
+# https://github.com/eneko/SourceDocs
+# brew install sourcedocs
+# It requires Xcode (minimum 10.2) to run.
+#
+# Usage: ./build_swift_docs.sh OUTPUT_DIR
 
-# Usage: build_swift_docs SHA REPO_URL_OR_PATH OUTPUT_DIR SPACE_SEPARATED_SCHEMES
-function build_swift_docs() {
-    local SHA=$1
-    local REPO="$2"
-    local OUTPUT_DIR="$(realpath "$3")"
-    local SCHEMES="$4"
-    local DIR=swiftdocs-clone
-    local GA_HEAD=$(cat <<-END_HEREDOC
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=$WORKFLOW_GOOGLE_ANALYTICS_KEY"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', '$WORKFLOW_GOOGLE_ANALYTICS_KEY');
-</script>
-END_HEREDOC
-)
+set -ex
 
-    # Delete any existing temporary website clone.
-    rm -rf $DIR
+SOURCEDOCS_OUTPUT_DIR="$1"
+WORKFLOW_SCHEMES="Workflow WorkflowUI WorkflowTesting"
 
-    # Clone the current repo into temp folder.
-    git clone $REPO $DIR
+# Prepare the Xcode project.
+bundle exec pod install
 
-    # Move working directory into temp folder.
-    pushd $DIR
-    git checkout $SHA
-
-    # Generate the API docs.
-    cd swift/Samples/SampleApp/
-    bundle exec pod install
-    for scheme in $SCHEMES; do
-        jazzy \
-            --xcodebuild-arguments "-scheme,$scheme,-workspace,SampleApp.xcworkspace" \
-            --author Square \
-            --author_url https://developer.squareup.com \
-            --github_url https://github.com/square/workflow \
-            --head "$GA_HEAD" \
-            --output "$OUTPUT_DIR/$scheme"
-    done
-
-    # Delete our temp folder.
-    popd
-    rm -rf $DIR
-}
+# Generate the API docs.
+for scheme in $WORKFLOW_SCHEMES; do
+    sourcedocs generate \
+        --output-folder "$SOURCEDOCS_OUTPUT_DIR/$scheme" \
+        -- \
+        -scheme $scheme \
+        -workspace SampleApp.xcworkspace
+done

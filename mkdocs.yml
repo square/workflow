@@ -79,10 +79,9 @@ nav:
       - 'workflow-testing': 'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md'
       - 'workflow-rx2': 'kotlin/api/workflow-rx2/com.squareup.workflow.rx2/index.md'
     - 'Swift':
-      # mkdocs will warn about these not existing, that's fine, deploy_website.sh manually adds them.
-      - 'Workflow ⏏': 'swift/api/Workflow/index.html'
-      - 'WorkflowUI ⏏': 'swift/api/WorkflowUI/index.html'
-      - 'WorkflowTesting ⏏': 'swift/api/WorkflowTesting/index.html'
+      - 'Workflow': 'swift/api/Workflow/README.md'
+      - 'WorkflowUI': 'swift/api/WorkflowUI/README.md'
+      - 'WorkflowTesting': 'swift/api/WorkflowTesting/README.md'
   - 'Kotlin':
     - 'Overview': kotlin/index.md
   - 'Swift':
