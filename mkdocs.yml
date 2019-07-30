@@ -31,6 +31,8 @@ theme:
   palette:
     primary: 'red'
     accent: 'pink'
+  feature:
+    tabs: true
 
 extra_css:
   - 'css/app.css'
@@ -68,29 +70,38 @@ extra:
 
 nav:
   - 'Overview': index.md
-  - 'Documentation': overview.md
-  - 'Concepts': concepts.md
-  - 'API Reference':
-    - 'Kotlin':
-      - 'workflow-core': 'kotlin/api/workflow-core/com.squareup.workflow/index.md'
-      - 'workflow-runtime': 'kotlin/api/workflow-runtime/com.squareup.workflow/index.md'
-      - 'workflow-ui-core': 'kotlin/api/workflow-ui-core/com.squareup.workflow.ui/index.md'
-      - 'workflow-ui-android': 'kotlin/api/workflow-ui-android/com.squareup.workflow.ui/index.md'
-      - 'workflow-testing': 'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md'
-      - 'workflow-rx2': 'kotlin/api/workflow-rx2/com.squareup.workflow.rx2/index.md'
-    - 'Swift':
-      - 'Workflow': 'swift/api/Workflow/README.md'
-      - 'WorkflowUI': 'swift/api/WorkflowUI/README.md'
-      - 'WorkflowTesting': 'swift/api/WorkflowTesting/README.md'
-  - 'Kotlin':
-    - 'Overview': kotlin/index.md
-  - 'Swift':
-    - 'Overview': swift/index.md
-    - 'Adding Workflow to a project': swift/adding-workflow-to-a-project.md
-    - 'Tooling': swift/tooling.md
-    - 'Building a Workflow': swift/building-a-workflow.md
-    - 'Building a View Controller from a Screen': swift/building-a-view-controller-from-screen.md
-    - 'Using a Workflow to Show UI': swift/using-a-workflow-for-ui.md
+  - 'User Guide':
+    - 'Core Concepts': 'userguide/concepts.md'
+    - 'Workflow Core':
+      - 'Workflow': 'userguide/core-workflow.md'
+      - 'Worker': 'userguide/core-worker.md'
+      - 'Patterns': 'userguide/core-patterns.md'
+    - 'Workflow UI': 'userguide/ui-concepts.md'
+    - 'Workflow Testing': 'userguide/testing-concepts.md'
+    - 'Motivation & Architectural Concepts': 'userguide/motivation.md'
+    - 'Comparison with other frameworks': 'userguide/comparison.md'
+    - 'Under the Hood: Implementation Notes': 'userguide/implementation.md'
+  - 'Tutorials & Samples':
+    - 'Tutorial':
+      - 'Overview': 'tutorial/index.md'
+      - 'Adding Workflow to a project': 'tutorial/adding-workflow-to-a-project.md'
+      - 'Tooling': 'tutorial/tooling.md'
+      - 'Building a Workflow': 'tutorial/building-a-workflow.md'
+      - 'Building a View Controller from a Screen': 'tutorial/building-a-view-controller-from-screen.md'
+      - 'Using a Workflow to Show UI': 'tutorial/using-a-workflow-for-ui.md'
+    - 'Code Recipes': 'code-recipes.md'
+    - 'Development Process': 'development-process.md'
+  - 'Kotlin API':
+    - 'workflow-core': 'kotlin/api/workflow-core/com.squareup.workflow/index.md'
+    - 'workflow-runtime': 'kotlin/api/workflow-runtime/com.squareup.workflow/index.md'
+    - 'workflow-ui-core': 'kotlin/api/workflow-ui-core/com.squareup.workflow.ui/index.md'
+    - 'workflow-ui-android': 'kotlin/api/workflow-ui-android/com.squareup.workflow.ui/index.md'
+    - 'workflow-testing': 'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md'
+    - 'workflow-rx2': 'kotlin/api/workflow-rx2/com.squareup.workflow.rx2/index.md'
+  - 'Swift API':
+    - 'Workflow ': 'swift/api/Workflow/README.md'
+    - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
+    - 'WorkflowTesting ': 'swift/api/WorkflowTesting/README.md'
   - 'FAQ': faq.md
   - 'Change Log ⏏': CHANGELOG.md
   - 'Contributing': CONTRIBUTING.md

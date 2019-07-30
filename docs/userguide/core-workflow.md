@@ -1,4 +1,4 @@
-# Concepts
+# Workflow Core: Workflow
 
 Workflows provide a way to build complex applications out of small, isolated pieces with a
 predictable data flow and a consistent API contract. They are conceptually similar to components in
