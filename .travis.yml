@@ -11,20 +11,35 @@ matrix:
   include:
     # Verify the documentation site builds successfully, but don't deploy it.
     - language: python
+      name: "Documentation: Static site"
       python:
         - "2.7"
       install:
         - pip install mkdocs-material
       script:
         - mkdocs build
+    # Verify the Swift documentation builds successfully.
+    - language: swift
+      name: "Documentation: Swift API"
+      os: osx
+      osx_image: xcode10.2
+      install:
+        - gem update --system
+        - bundle install
+        - brew install sourcedocs
+        - cd swift/Samples/SampleApp
+        - bundle exec pod repo update
+      script:
+        - ../../../.buildscript/build_swift_docs.sh /tmp/swiftdocs
     # Ensure docs are formatted correctly.
     - language: ruby
+      name: "Documentation: Markdown lint"
       install:
         - gem install mdl
       script:
         - ./lint_docs.sh
     - language: android
-      name: "Android"
+      name: "Kotlin & Android"
       jdk: oraclejdk8
       env:
         - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="

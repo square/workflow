@@ -92,9 +92,9 @@ consists of three parts:
    theming) is used to convert the Markdown to static, styled HTML.
 1. Kotlin API reference: Kdoc embedded in Kotlin source files is converted to GitHub-flavored
    Markdown by Dokka and then included in the statically-generated website.
-1. Swift API reference: Markup comments from Swift files are converted directly to HTML by
-   [Jazzy](https://github.com/realm/jazzy) _after_ the site is generated, but dropped into the same
-   directory structure as the generated HTML.
+1. Swift API reference: Markup comments from Swift files are converted Markdown by
+   [Sourcedocs](https://github.com/eneko/SourceDocs) and then included in the statically-generated
+   website.
 
 ### Setting up the site generators
 
@@ -110,17 +110,18 @@ cd kotlin
 ./gradlew dokka
 ```
 
-#### Swift: Jazzy
+#### Swift: Sourcedocs
 
-Jazzy is a RubyGem that generates an HTML site from Swift files. You need Ruby, rubygems,
-bundler (2.x), Xcode 10.1+, CocoaPods, and of course Jazzy itself, to run it. Assuming you've
+Sourcedocs generates a Markdown site from Swift files. You need Ruby, rubygems,
+bundler (2.x), Xcode 10.2+, CocoaPods, and of course Sourcedocs itself, to run it. Assuming you've
 already got Xcode, Ruby, and rubygems set up, install the rest of the dependencies:
 
 ```bash
-gem install bundler cocoapods jazzy
+gem install bundler cocoapods
+brew install sourcedocs
 ```
 
-If that succeeded, you need to generate an Xcode project before running Jazzy:
+If that succeeded, you need to generate an Xcode project before running Sourcedocs:
 
 ```bash
 cd swift/Samples/SampleApp/
@@ -133,7 +134,9 @@ You can manually generate the docs to verify everything is working correctly by 
 
 ```bash
 #cd swift/Samples/SampleApp/
-jazzy --xcodebuild-arguments "-scheme,Workflow,-workspace,SampleApp.xcworkspace"
+sourcedocs generate -- -scheme Workflow -workspace SampleApp.xcworkspace
+sourcedocs generate -- -scheme WorkflowUI -workspace SampleApp.xcworkspace
+sourcedocs generate -- -scheme WorkflowTesting -workspace SampleApp.xcworkspace
 ```
 
 #### mkdocs
