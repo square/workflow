@@ -87,7 +87,8 @@ internal object RealWorkflowLoop : WorkflowLoop {
           output = select {
             // Stop trying to read from the inputs channel after it's closed.
             if (!inputsClosed) {
-              @Suppress("EXPERIMENTAL_API_USAGE")
+              // TODO(https://github.com/square/workflow/issues/512) Replace with receiveOrClosed.
+              @Suppress("EXPERIMENTAL_API_USAGE", "DEPRECATION")
               inputsChannel.onReceiveOrNull { newInput ->
                 if (newInput == null) {
                   inputsClosed = true

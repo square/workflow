@@ -24,6 +24,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.onReceiveOrNull
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -59,5 +60,7 @@ internal inline fun <T, R> SelectBuilder<R>.onReceiveOutputOrFinished(
   channel: ReceiveChannel<Output<T>>,
   crossinline handler: (OutputOrFinished<T>) -> R
 ) {
-  channel.onReceiveOrNull { maybeOutput -> handler(maybeOutput ?: Finished) }
+  // TODO(https://github.com/square/workflow/issues/512) Replace with receiveOrClosed?
+  channel.onReceiveOrNull()
+      .invoke { maybeOutput -> handler(maybeOutput ?: Finished) }
 }
