@@ -26,7 +26,7 @@ import ReactiveSwift
 /// After a workflow node has been created, or any time its state changes,
 /// a render pass occurs. The render pass takes the workflow that was passed
 /// down from the parent along with the current state and generates a value
-/// of type `Rendering`. In a common case, a workflpw might render to a screen
+/// of type `Rendering`. In a common case, a workflow might render to a screen
 /// model for display.
 ///
 /// ```
