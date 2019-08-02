@@ -166,7 +166,7 @@ public final class RenderTester<WorkflowType: Workflow> {
             expectedWorkers: expectedWorkers,
             expectedWorkflows: expectedWorkflows)
 
-        return self.render(with: expectations, assertions: assertions)
+        return self.render(with: expectations, assertions: assertions, file: file, line: line)
     }
 
     /// Assert the internal state.
