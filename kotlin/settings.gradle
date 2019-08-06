@@ -18,6 +18,8 @@ rootProject.name = "workflow"
 include ':legacy:legacy-workflow-core'
 include ':legacy:legacy-workflow-rx2'
 include ':legacy:legacy-workflow-test'
+include ':samples:dungeon:app'
+include ':samples:dungeon:common'
 include ':samples:hello-terminal:hello-terminal-app'
 include ':samples:hello-terminal:terminal-workflow'
 include ':samples:hello-terminal:todo-terminal-app'
