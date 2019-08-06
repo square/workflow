@@ -18,22 +18,24 @@ package com.squareup.sample.dungeon
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
+import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
+import timber.log.Timber
 
 @UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
 
-  //  private lateinit var rootWorkflow: DungeonAppWorkflow
+  private lateinit var rootWorkflow: DungeonAppWorkflow
   private lateinit var workflowRunner: WorkflowRunner<*>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    workflowRunner = setContentWorkflow<Unit>(savedInstanceState) {
-      //      WorkflowRunner.Config(rootWorkflow, viewRegistry)
-      TODO()
+    workflowRunner = setContentWorkflow(savedInstanceState) {
+      Timber.d("Initializing…")
+      WorkflowRunner.Config(DungeonAppWorkflow(), viewRegistry)
     }
   }
 
@@ -49,6 +51,6 @@ class MainActivity : AppCompatActivity() {
 //  override fun onRetainCustomNonConfigurationInstance(): Any = rootWorkflow
 
   private companion object {
-//    val viewRegistry = ViewRegistry(TodoEditorLayoutRunner) + TodoListsLayoutRunner
+    val viewRegistry = ViewRegistry(BoardLayoutRunner)
   }
 }

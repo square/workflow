@@ -21,7 +21,7 @@ android rootProject.ext.defaultAndroidConfig
 android {
   defaultConfig {
     applicationId "com.squareup.sample.dungeon"
-    minSdkVersion 23
+    minSdkVersion 24
     multiDexEnabled true
     targetSdkVersion versions.targetSdk
     versionCode 1
@@ -43,8 +43,10 @@ dependencies {
   implementation deps.androidx.appcompat
   implementation deps.androidx.constraint_layout
   implementation deps.androidx.material
+  implementation "androidx.gridlayout:gridlayout:1.0.0"
   implementation deps.androidx.lifecycle
   implementation deps.kotlin.coroutines.rx2
+  implementation deps.kotlin.stdLib.jdk8
   implementation deps.kotlin.reflect
   implementation deps.okio
   implementation deps.rxandroid2
