@@ -75,7 +75,7 @@ buildscript {
               'common': "org.jetbrains.kotlin:kotlin-test-common",
               'annotations': "org.jetbrains.kotlin:kotlin-test-annotations-common",
               'jdk': "org.jetbrains.kotlin:kotlin-test-junit",
-              'mockito': "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
+              'mockito': "com.nhaarman:mockito-kotlin-kt1.1:1.6.0"
           ]
       ],
       'dokkaAndroid': "org.jetbrains.dokka:dokka-android-gradle-plugin:${versions.dokka}",
