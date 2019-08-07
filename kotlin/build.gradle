@@ -84,7 +84,7 @@ buildscript {
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:0.8.0",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:5.1.0",
       'lanterna': "com.googlecode.lanterna:lanterna:3.0.1",
-      'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0-RC16",
+      'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0.RC9",
       'okio': "com.squareup.okio:okio:2.3.0",
       'rxjava2':[
           'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.3",
