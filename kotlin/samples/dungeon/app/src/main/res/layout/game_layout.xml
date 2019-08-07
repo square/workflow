@@ -10,8 +10,9 @@
       android:id="@+id/board_container"
       android:layout_width="match_parent"
       android:layout_height="0dp"
+      android:layout_margin="@dimen/default_gap"
       app:layout_constraintBottom_toTopOf="@+id/move_up"
-      app:layout_constraintDimensionRatio=""
+      app:layout_constraintDimensionRatio="1"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +24,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      app:layout_constraintGuide_percent=".75"
+      app:layout_constraintGuide_percent="0.79"
       />
   <com.google.android.material.floatingactionbutton.FloatingActionButton
       android:id="@+id/move_left"
