@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-  implementation project(':samples:todo-android:todo-android-common')
+  implementation project(':samples:todo-android:common')
   implementation project(':workflow-ui-android')
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')

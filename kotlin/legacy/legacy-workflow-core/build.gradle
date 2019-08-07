@@ -15,7 +15,8 @@
  */
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
-apply plugin: 'com.vanniktech.maven.publish'
+
+apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
