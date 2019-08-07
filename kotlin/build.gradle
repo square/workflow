@@ -97,7 +97,7 @@ buildscript {
       'test': [
           'truth': "com.google.truth:truth:1.0",
           'junit': "junit:junit:4.12",
-          'mockito': "org.mockito:mockito-core:2.7.5",
+          'mockito': "org.mockito:mockito-core:3.0.0",
           'hamcrestCore': "org.hamcrest:hamcrest-core:1.3"
       ]
   ]
