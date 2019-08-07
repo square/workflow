@@ -18,7 +18,6 @@ package com.squareup.sample.dungeon
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
-import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
 
     workflowRunner = setContentWorkflow(savedInstanceState) {
-      WorkflowRunner.Config(DungeonAppWorkflow(GameWorkflow()), viewRegistry)
+      WorkflowRunner.Config(Component.appWorkflow, Component.viewRegistry)
     }
   }
 
@@ -43,9 +42,5 @@ class MainActivity : AppCompatActivity() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     workflowRunner.onSaveInstanceState(outState)
-  }
-
-  private companion object {
-    val viewRegistry = ViewRegistry(BoardView, GameLayoutRunner)
   }
 }

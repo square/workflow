@@ -70,8 +70,10 @@ class BoardView(context: Context) : View(context) {
   }
 
   private fun update(board: Board) {
-    this.board = board
-    invalidate()
+    if (this.board != board) {
+      this.board = board
+      invalidate()
+    }
   }
 
   @UseExperimental(ExperimentalWorkflowUi::class)
