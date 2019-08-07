@@ -46,6 +46,6 @@ class MainActivity : AppCompatActivity() {
   }
 
   private companion object {
-    val viewRegistry = ViewRegistry(BoardLayoutRunner, GameLayoutRunner)
+    val viewRegistry = ViewRegistry(BoardView, GameLayoutRunner)
   }
 }

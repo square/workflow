@@ -28,10 +28,13 @@ data class Board(
     }
   }
 
-  private val Location.index: Int get() = (y * width) + x
+  fun cellIndexOf(
+    x: Int,
+    y: Int
+  ): Int = (y * width) + x
 
   fun withOverlay(players: Map<Location, BoardCell>): Board {
-    val playersByIndex = players.mapKeys { (location, _) -> location.index }
+    val playersByIndex = players.mapKeys { (location, _) -> cellIndexOf(location.x, location.y) }
     return copy(cells = cells.mapIndexed { index, cell ->
       playersByIndex[index] ?: cell
     })
