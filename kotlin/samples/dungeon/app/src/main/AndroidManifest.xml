@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2019 Square Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +13,21 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.squareup.sample.todo"
-    >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.squareup.sample.todo">
 
   <application
-      android:label="@string/app_name"
-      android:theme="@style/AppTheme"
       android:allowBackup="true"
-      >
+      android:label="@string/app_name"
+      android:theme="@style/AppTheme">
 
-    <activity android:name="com.squareup.sample.dungeon.MainActivity">
+    <activity
+        android:name="com.squareup.sample.dungeon.MainActivity"
+        android:screenOrientation="portrait">
 
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
 
     </activity>

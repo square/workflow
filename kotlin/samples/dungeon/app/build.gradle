@@ -46,7 +46,6 @@ dependencies {
   implementation "androidx.gridlayout:gridlayout:1.0.0"
   implementation deps.androidx.lifecycle
   implementation deps.kotlin.coroutines.rx2
-  implementation deps.kotlin.stdLib.jdk8
   implementation deps.kotlin.reflect
   implementation deps.okio
   implementation deps.rxandroid2

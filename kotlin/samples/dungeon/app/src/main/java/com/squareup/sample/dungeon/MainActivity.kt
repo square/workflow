@@ -22,20 +22,17 @@ import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
-import timber.log.Timber
 
 @UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
 
-  private lateinit var rootWorkflow: DungeonAppWorkflow
   private lateinit var workflowRunner: WorkflowRunner<*>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     workflowRunner = setContentWorkflow(savedInstanceState) {
-      Timber.d("Initializing…")
-      WorkflowRunner.Config(DungeonAppWorkflow(), viewRegistry)
+      WorkflowRunner.Config(DungeonAppWorkflow(GameWorkflow()), viewRegistry)
     }
   }
 
@@ -48,9 +45,7 @@ class MainActivity : AppCompatActivity() {
     workflowRunner.onSaveInstanceState(outState)
   }
 
-//  override fun onRetainCustomNonConfigurationInstance(): Any = rootWorkflow
-
   private companion object {
-    val viewRegistry = ViewRegistry(BoardLayoutRunner)
+    val viewRegistry = ViewRegistry(BoardLayoutRunner, GameLayoutRunner)
   }
 }

@@ -2,7 +2,6 @@ package com.squareup.sample.dungeon
 
 import android.view.View
 import android.widget.TextView
-import androidx.core.widget.TextViewCompat
 import androidx.gridlayout.widget.GridLayout
 import androidx.gridlayout.widget.GridLayout.spec
 import com.squareup.sample.todo.R
@@ -12,14 +11,14 @@ import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 
 @UseExperimental(ExperimentalWorkflowUi::class)
-class BoardLayoutRunner(view: View) : LayoutRunner<BoardRendering> {
+class BoardLayoutRunner(view: View) : LayoutRunner<Board> {
 
   private val board: GridLayout = view.findViewById(R.id.board)
   private val cells = mutableListOf<TextView>()
   private var width: Int = 0
   private var height: Int = 0
 
-  override fun showRendering(rendering: BoardRendering) {
+  override fun showRendering(rendering: Board) {
     if (width != rendering.width || height != rendering.height) {
       width = rendering.width
       height = rendering.height
@@ -40,13 +39,14 @@ class BoardLayoutRunner(view: View) : LayoutRunner<BoardRendering> {
         val cell = TextView(board.context)
         // TODO get the grid to fill up available space
         val params = GridLayout.LayoutParams(spec(y), spec(x))
+        cell.tag = "cell position: ($x, $y)"
         board.addView(cell, params)
         cells += cell
       }
     }
   }
 
-  companion object : ViewBinding<BoardRendering> by bind(
-      R.layout.dungeon_view, ::BoardLayoutRunner
+  companion object : ViewBinding<Board> by bind(
+      R.layout.board_view, ::BoardLayoutRunner
   )
 }
