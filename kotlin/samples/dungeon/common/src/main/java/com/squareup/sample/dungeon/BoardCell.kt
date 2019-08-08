@@ -9,5 +9,7 @@ data class BoardCell(val codePoint: Int) {
 
   private val string = String(Character.toChars(codePoint))
 
+  val isEmpty get() = Character.isWhitespace(codePoint)
+
   override fun toString(): String = string
 }

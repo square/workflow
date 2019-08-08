@@ -3,7 +3,7 @@ package com.squareup.sample.dungeon
 import kotlin.streams.toList
 
 private const val WALL = "🌳"
-private const val SPACE = "\u00A0"
+private const val SPACE = " "
 
 data class Board(
   val width: Int,
@@ -14,11 +14,6 @@ data class Board(
     val x: Int,
     val y: Int
   ) {
-    fun up(): Location = copy(y = y - 1)
-    fun down(): Location = copy(y = y + 1)
-    fun left(): Location = copy(x = x - 1)
-    fun right(): Location = copy(x = x + 1)
-
     override fun toString(): String = "($x, $y)"
   }
 
@@ -32,6 +27,11 @@ data class Board(
     x: Int,
     y: Int
   ): Int = (y * width) + x
+
+  operator fun get(
+    x: Int,
+    y: Int
+  ): BoardCell = cells[cellIndexOf(x, y)]
 
   fun withOverlay(players: Map<Location, BoardCell>): Board {
     val playersByIndex = players.mapKeys { (location, _) -> cellIndexOf(location.x, location.y) }

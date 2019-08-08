@@ -59,7 +59,7 @@ class BoardView(context: Context) : View(context) {
 
     for (x in 0 until board.width) {
       for (y in 0 until board.height) {
-        val cell = board.cells[board.cellIndexOf(x, y)]
+        val cell = board[x, y]
         val xPos = cellWidth * x.toFloat()
         // drawText's y parameter refers to the _baseline_ of the text to draw, so we need to offset
         // by the glyph height.

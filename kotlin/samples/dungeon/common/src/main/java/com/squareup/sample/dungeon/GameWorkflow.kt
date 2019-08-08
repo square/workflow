@@ -46,14 +46,17 @@ class GameWorkflow(
 
   private fun Game.movePlayer(directions: EnumSet<Direction>): Game {
     var (x, y) = playerLocation
-    if (UP in directions) y -= 1
-    if (DOWN in directions) y += 1
     if (LEFT in directions) x -= 1
     if (RIGHT in directions) x += 1
-
     // Don't let the player leave the board.
     x = x.coerceIn(0 until board.width)
+    // Don't allow collisions with obstacles on the board.
+    if (!board[x, y].isEmpty) x = playerLocation.x
+
+    if (UP in directions) y -= 1
+    if (DOWN in directions) y += 1
     y = y.coerceIn(0 until board.height)
+    if (!board[x, y].isEmpty) y = playerLocation.y
 
     return copy(playerLocation = Location(x, y))
   }
