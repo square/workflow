@@ -30,8 +30,11 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    // Ignore config changes for now.
+    val component = Component(applicationContext)
+
     workflowRunner = setContentWorkflow(savedInstanceState) {
-      WorkflowRunner.Config(Component.appWorkflow, Component.viewRegistry)
+      WorkflowRunner.Config(component.appWorkflow, component.viewRegistry)
     }
   }
 

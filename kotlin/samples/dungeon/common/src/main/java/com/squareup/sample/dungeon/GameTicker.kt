@@ -10,9 +10,9 @@ class GameTicker(periodMs: Int = 1000 / 15) {
 
   private class TickerWorker(private val periodMs: Int) : Worker<Long> {
     override fun run(): Flow<Long> = flow {
-      val count = 0L
+      var count = 0L
       while (true) {
-        emit(count)
+        emit(count++)
         delay(periodMs.toLong())
       }
     }

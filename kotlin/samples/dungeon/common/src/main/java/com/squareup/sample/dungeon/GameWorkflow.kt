@@ -5,6 +5,8 @@ import com.squareup.sample.dungeon.Direction.DOWN
 import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
+import com.squareup.sample.dungeon.GameWorkflow.Output
+import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -13,7 +15,14 @@ import java.util.EnumSet
 
 class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow
-) : StatefulWorkflow<Unit, Game, Nothing, GameRendering>() {
+) : StatefulWorkflow<Unit, Game, Output, GameRendering>() {
+
+  sealed class Output {
+    /**
+     * Emitted by [GameWorkflow] if the controller should be vibrated.
+     */
+    object Vibrate : Output()
+  }
 
   override fun initialState(
     input: Unit,
@@ -32,32 +41,48 @@ class GameWorkflow(
   override fun render(
     input: Unit,
     state: Game,
-    context: RenderContext<Game, Nothing>
+    context: RenderContext<Game, Output>
   ): GameRendering {
+
     return GameRendering(
         board = state.withPlayer(),
         player = context.renderChild(playerWorkflow, state) { movePlayerDirections ->
-          enterState(state.movePlayer(movePlayerDirections))
+          var collisionDetected = false
+          val newState = state.movePlayer(movePlayerDirections) { collisionDetected = true }
+          val output = if (collisionDetected) Vibrate else null
+          enterState(newState, emittingOutput = output)
         }
     )
   }
 
   override fun snapshotState(state: Game): Snapshot = Snapshot.EMPTY
 
-  private fun Game.movePlayer(directions: EnumSet<Direction>): Game {
+  private fun Game.movePlayer(
+    directions: EnumSet<Direction>,
+    onCollisionDetected: () -> Unit
+  ): Game {
     var (x, y) = playerLocation
     if (LEFT in directions) x -= 1
     if (RIGHT in directions) x += 1
     // Don't let the player leave the board.
     x = x.coerceIn(0 until board.width)
     // Don't allow collisions with obstacles on the board.
-    if (!board[x, y].isEmpty) x = playerLocation.x
+    if (!board[x, y].isEmpty) {
+      onCollisionDetected()
+      x = playerLocation.x
+    }
 
     if (UP in directions) y -= 1
     if (DOWN in directions) y += 1
     y = y.coerceIn(0 until board.height)
-    if (!board[x, y].isEmpty) y = playerLocation.y
+    if (!board[x, y].isEmpty) {
+      onCollisionDetected()
+      y = playerLocation.y
+    }
 
-    return copy(playerLocation = Location(x, y))
+    val newLocation = Location(x, y)
+    println("Moved player ${player.cell} to $newLocation")
+
+    return copy(playerLocation = newLocation)
   }
 }
