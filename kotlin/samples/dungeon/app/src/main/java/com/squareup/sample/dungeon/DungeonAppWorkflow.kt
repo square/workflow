@@ -1,6 +1,7 @@
 package com.squareup.sample.dungeon
 
 import android.os.Vibrator
+import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
@@ -26,7 +27,14 @@ class DungeonAppWorkflow(
   ): Any {
     return context.renderChild(gameWorkflow) { output ->
       when (output) {
-        Vibrate -> vibrate()
+        Vibrate -> vibrate(50)
+        PlayerWasEaten -> {
+          vibrate(20)
+          vibrate(20)
+          vibrate(20)
+          vibrate(20)
+          vibrate(1000)
+        }
       }
       noAction()
     }
@@ -34,8 +42,8 @@ class DungeonAppWorkflow(
 
   override fun snapshotState(state: Unit): Snapshot = Snapshot.EMPTY
 
-  private fun vibrate() {
+  private fun vibrate(durationMs: Long) {
     @Suppress("DEPRECATION")
-    vibrator.vibrate(50L)
+    vibrator.vibrate(durationMs)
   }
 }

@@ -32,7 +32,7 @@ class GameLayoutRunner(
   private val moveUp: View = view.findViewById(R.id.move_up)
   private val moveDown: View = view.findViewById(R.id.move_down)
 
-  private var playerEvent: (PlayerWorkflow.Event) -> Unit = {}
+  private var playerEvent: ((PlayerWorkflow.Event) -> Unit)? = null
 
   init {
     moveLeft.registerPlayerEventHandlers(LEFT)
@@ -50,13 +50,20 @@ class GameLayoutRunner(
     }
 
     playerEvent = rendering.player.onEvent
+
+    // Disable the views if we don't have an event handler, e.g. when the game has finished.
+    val controlsEnabled = playerEvent != null
+    moveLeft.isEnabled = controlsEnabled
+    moveRight.isEnabled = controlsEnabled
+    moveUp.isEnabled = controlsEnabled
+    moveDown.isEnabled = controlsEnabled
   }
 
   private fun View.registerPlayerEventHandlers(direction: Direction) {
     setOnTouchListener { _, motionEvent ->
       when (motionEvent.action and ACTION_MASK) {
-        ACTION_DOWN -> playerEvent(StartMoving(direction))
-        ACTION_UP -> playerEvent(StopMoving(direction))
+        ACTION_DOWN -> playerEvent?.invoke(StartMoving(direction))
+        ACTION_UP -> playerEvent?.invoke(StopMoving(direction))
       }
       // Always return false, so the button ripples and animates correctly.
       return@setOnTouchListener false

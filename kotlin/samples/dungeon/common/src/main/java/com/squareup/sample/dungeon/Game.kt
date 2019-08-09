@@ -10,6 +10,8 @@ data class Game(
   val aiActors: List<Location>
 ) {
 
+  val isPlayerEaten: Boolean get() = aiActors.any { it == playerLocation }
+
   override fun toString(): String = board.withOverlay(
       (aiActors + playerLocation)
           .map { it to PLACEHOLDER_CELL }

@@ -25,7 +25,7 @@ class PlayerWorkflow(
    */
   data class Rendering(
     val avatar: BoardCell,
-    val onEvent: (Event) -> Unit
+    val onEvent: ((Event) -> Unit)?
   )
 
   override fun initialState(

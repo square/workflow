@@ -15,7 +15,7 @@ class Component(context: Context) {
 
   val viewRegistry = ViewRegistry(BoardView, GameLayoutRunner)
 
-  val random = Random(42)
+  val random = Random(System.currentTimeMillis())
 
   val vibrator = context.getSystemService(Vibrator::class.java)!!
 

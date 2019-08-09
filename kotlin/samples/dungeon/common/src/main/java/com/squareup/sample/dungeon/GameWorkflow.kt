@@ -7,7 +7,9 @@ import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
 import com.squareup.sample.dungeon.GameWorkflow.Output
+import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
+import com.squareup.sample.dungeon.GameWorkflow.State
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -18,64 +20,89 @@ class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow,
   private val aiWorkflows: List<AiWorkflow>,
   private val random: Random
-) : StatefulWorkflow<Unit, Game, Output, GameRendering>() {
+) : StatefulWorkflow<Unit, State, Output, GameRendering>() {
+
+  /**
+   * @param finishedSnapshot If non-null, the game is finished and this was the last rendering
+   * before the game finished.
+   */
+  data class State(
+    val game: Game,
+    val finishedSnapshot: GameRendering? = null
+  )
 
   sealed class Output {
     /**
      * Emitted by [GameWorkflow] if the controller should be vibrated.
      */
     object Vibrate : Output()
+
+    object PlayerWasEaten : Output()
   }
 
   override fun initialState(
     input: Unit,
     snapshot: Snapshot?
-  ): Game {
+  ): State {
     val board = Board(
         width = 16,
         height = 16,
         cells = Board.EMPTY
     )
-    return Game(
+    return State(game = Game(
         board = board,
         playerLocation = random.nextEmptyLocation(board),
         aiActors = aiWorkflows.map { random.nextEmptyLocation(board) }
-    )
+    ))
   }
 
   override fun render(
     input: Unit,
-    state: Game,
-    context: RenderContext<Game, Output>
+    state: State,
+    context: RenderContext<State, Output>
   ): GameRendering {
+    // If the game has already finished, just render the finished game.
+    state.finishedSnapshot?.let { return it }
 
-    val player = context.renderChild(playerWorkflow, state) { movement ->
-      val (newLocation, collided) = state.playerLocation.move(movement, state.board)
-      val newState = state.copy(playerLocation = newLocation)
+    val game = state.game
+    // Save the rendering before we return it, so we can put it in the state if something happens
+    // that causes the game to finish.
+    lateinit var rendering: GameRendering
+
+    val player = context.renderChild(playerWorkflow, game) { movement ->
+      val (newLocation, collided) = game.playerLocation.move(movement, game.board)
+      val newGame = game.copy(playerLocation = newLocation)
       val output = if (collided) Vibrate else null
-      return@renderChild enterState(newState, emittingOutput = output)
+      return@renderChild enterState(State(newGame), emittingOutput = output)
     }
 
-    val renderedAis = aiWorkflows.zip(state.aiActors)
+    val renderedAis = aiWorkflows.zip(game.aiActors)
         .mapIndexed { index, (aiWorkflow, aiLocation) ->
-          val aiInput = Input(state.board, aiLocation)
+          val aiInput = Input(game.board, aiLocation)
           val aiCell =
             context.renderChild(aiWorkflow, aiInput, key = index.toString()) { movement ->
-              val (newLocation, _) = aiLocation.move(movement, state.board)
-              val newState = state.copy(aiActors = state.aiActors.replaceAt(index, newLocation))
-              return@renderChild enterState(newState)
+              val (newLocation, _) = aiLocation.move(movement, game.board)
+              val newGame = game.copy(aiActors = game.aiActors.replaceAt(index, newLocation))
+
+              // Check if AI captured player.
+              return@renderChild if (newGame.isPlayerEaten) {
+                enterState(State(newGame, rendering.freeze()), emittingOutput = PlayerWasEaten)
+              } else {
+                enterState(State(newGame))
+              }
             }
           return@mapIndexed aiLocation to aiCell
         }
 
-    val renderedBoard = state.board.withOverlay(
-        renderedAis.toMap() + (state.playerLocation to player.avatar)
+    val renderedBoard = game.board.withOverlay(
+        renderedAis.toMap() + (game.playerLocation to player.avatar)
     )
 
     return GameRendering(renderedBoard, player)
+        .also { rendering = it }
   }
 
-  override fun snapshotState(state: Game): Snapshot = Snapshot.EMPTY
+  override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 }
 
 private fun Random.nextEmptyLocation(board: Board): Location =
@@ -118,6 +145,11 @@ private fun Location.move(
 
   return MoveResult(Location(x, y), collisionDetected)
 }
+
+/**
+ * Removes event handlers from the rendering.
+ */
+private fun GameRendering.freeze(): GameRendering = copy(player = player.copy(onEvent = null))
 
 private fun <T> List<T>.replaceAt(
   index: Int,
