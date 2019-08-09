@@ -24,12 +24,11 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.delayFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlin.experimental.ExperimentalTypeInference
 import kotlin.reflect.KClass
 
@@ -320,7 +319,10 @@ private class TimerWorker(
 ) : Worker<Unit> {
 
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  override fun run() = flowOf(Unit).delayFlow(delayMs)
+  override fun run() = flow {
+    delay(delayMs)
+    emit(Unit)
+  }
 
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
     otherWorker is TimerWorker && otherWorker.key == key
