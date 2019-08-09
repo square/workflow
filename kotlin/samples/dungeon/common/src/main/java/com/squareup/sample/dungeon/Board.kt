@@ -1,5 +1,7 @@
 package com.squareup.sample.dungeon
 
+import kotlin.math.hypot
+import kotlin.math.roundToInt
 import kotlin.streams.toList
 
 private const val WALL = "🌳"
@@ -15,6 +17,9 @@ data class Board(
     val y: Int
   ) {
     override fun toString(): String = "($x, $y)"
+
+    fun distanceTo(other: Location): Int =
+      hypot(other.x - x.toFloat(), other.y - y.toFloat()).roundToInt()
   }
 
   init {
@@ -33,8 +38,8 @@ data class Board(
     y: Int
   ): BoardCell = cells[cellIndexOf(x, y)]
 
-  fun withOverlay(players: Map<Location, BoardCell>): Board {
-    val playersByIndex = players.mapKeys { (location, _) -> cellIndexOf(location.x, location.y) }
+  fun withOverlay(actors: Map<Location, BoardCell>): Board {
+    val playersByIndex = actors.mapKeys { (location, _) -> cellIndexOf(location.x, location.y) }
     return copy(cells = cells.mapIndexed { index, cell ->
       playersByIndex[index] ?: cell
     })

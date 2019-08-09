@@ -4,6 +4,9 @@ import android.content.Context
 import android.os.Vibrator
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
+import kotlin.random.Random
+
+private const val AI_COUNT = 4
 
 /** Fake Dagger. */
 @Suppress("MemberVisibilityCanBePrivate")
@@ -12,13 +15,17 @@ class Component(context: Context) {
 
   val viewRegistry = ViewRegistry(BoardView, GameLayoutRunner)
 
+  val random = Random(42)
+
   val vibrator = context.getSystemService(Vibrator::class.java)!!
 
   val ticker = GameTicker()
 
-  val playerWorkflow = PlayerWorkflow(ticker)
+  val playerWorkflow = PlayerWorkflow(ticker = ticker)
 
-  val gameWorkflow = GameWorkflow(playerWorkflow)
+  val aiWorkflows = List(AI_COUNT) { AiWorkflow(random = random, ticker = ticker) }
+
+  val gameWorkflow = GameWorkflow(playerWorkflow, aiWorkflows, random)
 
   val appWorkflow = DungeonAppWorkflow(gameWorkflow, vibrator)
 }

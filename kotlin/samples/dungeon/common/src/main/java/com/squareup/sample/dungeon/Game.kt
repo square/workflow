@@ -2,13 +2,16 @@ package com.squareup.sample.dungeon
 
 import com.squareup.sample.dungeon.Board.Location
 
+private val PLACEHOLDER_CELL = BoardCell("?")
+
 data class Game(
   val board: Board,
-  val player: Player,
-  val playerLocation: Location
+  val playerLocation: Location,
+  val aiActors: List<Location>
 ) {
 
-  fun withPlayer(): Board = board.withOverlay(mapOf(playerLocation to player.cell))
-
-  override fun toString(): String = withPlayer().toString()
+  override fun toString(): String = board.withOverlay(
+      (aiActors + playerLocation)
+          .map { it to PLACEHOLDER_CELL }
+          .toMap()).toString()
 }
