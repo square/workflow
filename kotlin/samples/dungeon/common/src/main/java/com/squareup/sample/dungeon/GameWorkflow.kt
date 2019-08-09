@@ -15,11 +15,12 @@
  */
 package com.squareup.sample.dungeon
 
-import com.squareup.sample.dungeon.AiWorkflow.Input
+import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
 import com.squareup.sample.dungeon.Direction.DOWN
 import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
+import com.squareup.sample.dungeon.GameWorkflow.GameRendering
 import com.squareup.sample.dungeon.GameWorkflow.Output
 import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
@@ -30,11 +31,15 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.renderChild
+import kotlin.math.roundToLong
 import kotlin.random.Random
 
 class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow,
-  private val aiWorkflows: List<AiWorkflow>,
+  private val aiWorkflows: List<ActorWorkflow>,
+  private val ticker: GameTicker,
   private val random: Random
 ) : StatefulWorkflow<Board, State, Output, GameRendering>() {
 
@@ -56,6 +61,11 @@ class GameWorkflow(
     object PlayerWasEaten : Output()
   }
 
+  data class GameRendering(
+    val board: Board,
+    val onPlayerEvent: ((PlayerWorkflow.Event) -> Unit)?
+  )
+
   override fun initialState(
     input: Board,
     snapshot: Snapshot?
@@ -63,7 +73,7 @@ class GameWorkflow(
     return State(game = Game(
         board = input,
         playerLocation = random.nextEmptyLocation(input),
-        aiActors = aiWorkflows.map { random.nextEmptyLocation(input) }
+        aiLocations = aiWorkflows.map { random.nextEmptyLocation(input) }
     ))
   }
 
@@ -76,40 +86,76 @@ class GameWorkflow(
     state.finishedSnapshot?.let { return it }
 
     val game = state.game
+    val board = game.board
     // Save the rendering before we return it, so we can put it in the state if something happens
     // that causes the game to finish.
     lateinit var rendering: GameRendering
 
-    val player = context.renderChild(playerWorkflow, game) { movement ->
-      val (newLocation, collided) = game.playerLocation.move(movement, game.board)
-      val newGame = game.copy(playerLocation = newLocation)
-      val output = if (collided) Vibrate else null
-      return@renderChild enterState(State(newGame), emittingOutput = output)
-    }
+    // Render the player.
+    val playerInput = ActorInput(board, game.playerLocation, ticker.ticks)
+    val playerRendering = context.renderChild(playerWorkflow, playerInput)
 
-    val renderedAis = aiWorkflows.zip(game.aiActors)
+    // Render all the other actors.
+    val aiRenderings = aiWorkflows.zip(game.aiLocations)
         .mapIndexed { index, (aiWorkflow, aiLocation) ->
-          val aiInput = Input(game.board, aiLocation)
-          val aiCell =
-            context.renderChild(aiWorkflow, aiInput, key = index.toString()) { movement ->
-              val (newLocation, _) = aiLocation.move(movement, game.board)
-              val newGame = game.copy(aiActors = game.aiActors.replaceAt(index, newLocation))
-
-              // Check if AI captured player.
-              return@renderChild if (newGame.isPlayerEaten) {
-                enterState(State(newGame, rendering.freeze()), emittingOutput = PlayerWasEaten)
-              } else {
-                enterState(State(newGame))
-              }
-            }
-          return@mapIndexed aiLocation to aiCell
+          val aiInput = ActorInput(game.board, aiLocation, ticker.ticks)
+          aiLocation to context.renderChild(aiWorkflow, aiInput, key = index.toString())
         }
 
-    val renderedBoard = game.board.withOverlay(
-        renderedAis.toMap() + (game.playerLocation to player.avatar)
-    )
+    // Calculate new locations for player and other actors.
+    context.onWorkerOutput(ticker.ticks) { tick ->
+      // Calculate if this tick should result in movement based on the movement's speed.
+      fun Movement.isTimeToMove(): Boolean {
+        val ticksPerSecond = ticker.ticksPerSecond
+        val ticksPerCell = (ticksPerSecond / cellsPerSecond).roundToLong()
+        return tick % ticksPerCell == 0L
+      }
 
-    return GameRendering(renderedBoard, player)
+      // Execute player movement.
+      var output: Output? = null
+      var newPlayerLocation: Location = game.playerLocation
+      if (playerRendering.actorRendering.movement.isTimeToMove()) {
+        val moveResult = game.playerLocation.move(playerRendering.actorRendering.movement, board)
+        newPlayerLocation = moveResult.newLocation
+        if (moveResult.collisionDetected) output = Vibrate
+      }
+
+      // Execute AI movement.
+      val newAiLocations = aiRenderings.map { (location, rendering) ->
+        return@map if (rendering.movement.isTimeToMove()) {
+          location.move(rendering.movement, board)
+              // Don't care about collisions.
+              .newLocation
+        } else {
+          location
+        }
+      }
+
+      val newGame = game.copy(
+          playerLocation = newPlayerLocation,
+          aiLocations = newAiLocations
+      )
+
+      // Check if AI captured player.
+      return@onWorkerOutput if (newGame.isPlayerEaten) {
+        enterState(
+            state.copy(game = newGame, finishedSnapshot = rendering.freeze()),
+            emittingOutput = PlayerWasEaten
+        )
+      } else {
+        enterState(
+            state.copy(game = newGame),
+            emittingOutput = output
+        )
+      }
+    }
+
+    val aiOverlay = aiRenderings.map { (a, b) -> a to b.avatar }
+        .toMap()
+    val renderedBoard = game.board.withOverlay(
+        aiOverlay + (game.playerLocation to playerRendering.actorRendering.avatar)
+    )
+    return GameRendering(renderedBoard, playerRendering.onEvent)
         .also { rendering = it }
   }
 
@@ -160,9 +206,4 @@ private fun Location.move(
 /**
  * Removes event handlers from the rendering.
  */
-private fun GameRendering.freeze(): GameRendering = copy(player = player.copy(onEvent = null))
-
-private fun <T> List<T>.replaceAt(
-  index: Int,
-  newValue: T
-): List<T> = mapIndexed { i, t -> if (index == i) newValue else t }
+private fun GameRendering.freeze(): GameRendering = copy(onPlayerEvent = null)

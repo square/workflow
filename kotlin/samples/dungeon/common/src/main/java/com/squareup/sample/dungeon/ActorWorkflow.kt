@@ -15,22 +15,27 @@
  */
 package com.squareup.sample.dungeon
 
+import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
+import com.squareup.sample.dungeon.ActorWorkflow.ActorRendering
 import com.squareup.sample.dungeon.board.Board
 import com.squareup.sample.dungeon.board.Board.Location
 import com.squareup.sample.dungeon.board.BoardCell
+import com.squareup.workflow.Worker
+import com.squareup.workflow.Workflow
 
-private val PLACEHOLDER_CELL = BoardCell("?")
+/**
+ * Schema for a workflow that can plug into the [GameWorkflow] to represent an "actor" in the game.
+ */
+interface ActorWorkflow : Workflow<ActorInput, Nothing, ActorRendering> {
 
-data class Game(
-  val board: Board,
-  val playerLocation: Location,
-  val aiLocations: List<Location>
-) {
+  data class ActorInput(
+    val board: Board,
+    val myLocation: Location,
+    val ticks: Worker<Long>
+  )
 
-  val isPlayerEaten: Boolean get() = aiLocations.any { it == playerLocation }
-
-  override fun toString(): String = board.withOverlay(
-      (aiLocations + playerLocation)
-          .map { it to PLACEHOLDER_CELL }
-          .toMap()).toString()
+  data class ActorRendering(
+    val avatar: BoardCell,
+    val movement: Movement
+  )
 }

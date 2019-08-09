@@ -43,11 +43,11 @@ class Component(context: Context) {
 
   val ticker = GameTicker()
 
-  val playerWorkflow = PlayerWorkflow(ticker = ticker)
+  val playerWorkflow = PlayerWorkflow()
 
-  val aiWorkflows = List(AI_COUNT) { AiWorkflow(random = random, ticker = ticker) }
+  val aiWorkflows = List(AI_COUNT) { AiWorkflow(random = random) }
 
-  val gameWorkflow = GameWorkflow(playerWorkflow, aiWorkflows, random)
+  val gameWorkflow = GameWorkflow(playerWorkflow, aiWorkflows, ticker, random)
 
   val appWorkflow = DungeonAppWorkflow(gameWorkflow, vibrator, boardLoader)
 }

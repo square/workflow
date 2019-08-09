@@ -21,21 +21,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /** Provides the heartbeat for the game. */
-class GameTicker(periodMs: Int = 1000 / 15) {
+class GameTicker(val ticksPerSecond: Int = 15) {
 
-  private class TickerWorker(private val periodMs: Int) : Worker<Long> {
+  private val periodMs: Long = 1000L / ticksPerSecond
+
+  val ticks: Worker<Long> = object : Worker<Long> {
     override fun run(): Flow<Long> = flow {
       var count = 0L
       while (true) {
         emit(count++)
-        delay(periodMs.toLong())
+        delay(periodMs)
       }
     }
 
-    override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean {
-      return (otherWorker is TickerWorker) && (otherWorker.periodMs == periodMs)
-    }
+    override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = otherWorker === this
   }
-
-  val ticks: Worker<Long> = TickerWorker(periodMs)
 }

@@ -24,6 +24,7 @@ import com.squareup.sample.dungeon.Direction.DOWN
 import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
+import com.squareup.sample.dungeon.GameWorkflow.GameRendering
 import com.squareup.sample.dungeon.PlayerWorkflow.Event.StartMoving
 import com.squareup.sample.dungeon.PlayerWorkflow.Event.StopMoving
 import com.squareup.sample.todo.R
@@ -64,7 +65,7 @@ class GameLayoutRunner(
       boardView.showRendering(rendering.board)
     }
 
-    playerEvent = rendering.player.onEvent
+    playerEvent = rendering.onPlayerEvent
 
     // Disable the views if we don't have an event handler, e.g. when the game has finished.
     val controlsEnabled = playerEvent != null

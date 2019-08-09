@@ -15,6 +15,8 @@
  */
 package com.squareup.sample.dungeon
 
+import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
+import com.squareup.sample.dungeon.ActorWorkflow.ActorRendering
 import com.squareup.sample.dungeon.PlayerWorkflow.Event.StartMoving
 import com.squareup.sample.dungeon.PlayerWorkflow.Event.StopMoving
 import com.squareup.sample.dungeon.PlayerWorkflow.Rendering
@@ -22,14 +24,15 @@ import com.squareup.sample.dungeon.board.BoardCell
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.onWorkerOutput
 
+/**
+ * Workflow that represents the actual player of the game in the [GameWorkflow].
+ */
 class PlayerWorkflow(
   private val avatar: BoardCell = BoardCell("👩🏻‍🎤"),
-  private val ticker: GameTicker
-) : StatefulWorkflow<Game, Movement, Movement, Rendering>() {
+  private val cellsPerSecond: Float = 15f
+) : StatefulWorkflow<ActorInput, Movement, Nothing, Rendering>() {
 
   sealed class Event {
     data class StartMoving(val direction: Direction) : Event()
@@ -40,27 +43,22 @@ class PlayerWorkflow(
    * @param onEvent Call to change the directions the player is currently moving.
    */
   data class Rendering(
-    val avatar: BoardCell,
+    val actorRendering: ActorRendering,
     val onEvent: ((Event) -> Unit)?
   )
 
   override fun initialState(
-    input: Game,
+    input: ActorInput,
     snapshot: Snapshot?
-  ): Movement = Movement()
+  ): Movement = Movement(cellsPerSecond = cellsPerSecond)
 
   override fun render(
-    input: Game,
+    input: ActorInput,
     state: Movement,
-    context: RenderContext<Movement, Movement>
+    context: RenderContext<Movement, Nothing>
   ): Rendering {
-    context.onWorkerOutput(ticker.ticks) {
-      println("tick: $it, moving player $state")
-      emitOutput("move player $state", state)
-    }
-
     return Rendering(
-        avatar = avatar,
+        actorRendering = ActorRendering(avatar = avatar, movement = state),
         onEvent = context.onEvent { event ->
           val newMovement = when (event) {
             is StartMoving -> state + event.direction

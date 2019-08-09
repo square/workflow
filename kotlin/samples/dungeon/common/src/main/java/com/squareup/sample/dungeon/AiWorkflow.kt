@@ -15,39 +15,37 @@
  */
 package com.squareup.sample.dungeon
 
-import com.squareup.sample.dungeon.AiWorkflow.Input
+import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
+import com.squareup.sample.dungeon.ActorWorkflow.ActorRendering
 import com.squareup.sample.dungeon.AiWorkflow.State
-import com.squareup.sample.dungeon.board.Board.Location
 import com.squareup.sample.dungeon.Direction.DOWN
 import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
-import com.squareup.sample.dungeon.board.Board
 import com.squareup.sample.dungeon.board.BoardCell
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.onWorkerOutput
+import kotlinx.coroutines.flow.collect
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
+/**
+ * Simple AI workflow that just moves around in squiggly spirals and tries to eat the player.
+ */
 class AiWorkflow(
   private val avatar: BoardCell = BoardCell("👻"),
   private val random: Random,
-  private val ticker: GameTicker,
-  private val speedFactor: Int = random.nextInt(2, 4)
-) : StatefulWorkflow<Input, State, Movement, BoardCell>() {
-
-  data class Input(
-    val board: Board,
-    val myLocation: Location
-  )
+  private val cellsPerSecond: Float = random.nextFloat() * 3f + 4f // Between 4 and 7.
+) : ActorWorkflow, StatefulWorkflow<ActorInput, State, Nothing, ActorRendering>() {
 
   data class State(val direction: Direction)
 
   override fun initialState(
-    input: Input,
+    input: ActorInput,
     snapshot: Snapshot?
   ): State {
     val startingDirection = random.nextEnum(Direction::class)
@@ -55,32 +53,33 @@ class AiWorkflow(
   }
 
   override fun render(
-    input: Input,
+    input: ActorInput,
     state: State,
-    context: RenderContext<State, Movement>
-  ): BoardCell {
-    // Moves in a square.
-    context.onWorkerOutput(ticker.ticks) { tick ->
-      val newState = if (tick % random.nextInt(2, 5) == 0L) {
-        // Rotate 90 degrees.
-        val newDirection = when (state.direction) {
-          UP -> RIGHT
-          RIGHT -> DOWN
-          DOWN -> LEFT
-          LEFT -> UP
-        }
-        println("AI changing direction from ${state.direction} to $newDirection")
-        state.copy(direction = newDirection)
-      } else state
-
-      // Move slower.
-      val shouldMove = tick % speedFactor == 0L
-      val movement = if (shouldMove) Movement(newState.direction) else Movement()
-
-      return@onWorkerOutput enterState(newState, emittingOutput = movement)
+    context: RenderContext<State, Nothing>
+  ): ActorRendering {
+    // Scale the tick frequency by a random amount to make direction changes look more arbitrary.
+    val directionTicks = Worker.create {
+      input.ticks.run()
+          .collect { tick ->
+            if (tick % random.nextInt(2, 5) == 0L) {
+              emit(Unit)
+            }
+          }
     }
 
-    return avatar
+    context.onWorkerOutput(directionTicks) {
+      // Rotate 90 degrees.
+      val newDirection = when (state.direction) {
+        UP -> RIGHT
+        RIGHT -> DOWN
+        DOWN -> LEFT
+        LEFT -> UP
+      }
+      println("AI changing direction from ${state.direction} to $newDirection")
+      return@onWorkerOutput enterState(state.copy(direction = newDirection))
+    }
+
+    return ActorRendering(avatar, Movement(state.direction, cellsPerSecond = cellsPerSecond))
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
