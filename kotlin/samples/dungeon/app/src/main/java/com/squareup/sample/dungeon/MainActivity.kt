@@ -34,7 +34,11 @@ class MainActivity : AppCompatActivity() {
     val component = Component(applicationContext)
 
     workflowRunner = setContentWorkflow(savedInstanceState) {
-      WorkflowRunner.Config(component.appWorkflow, component.viewRegistry)
+      WorkflowRunner.Config(
+          workflow = component.appWorkflow,
+          viewRegistry = component.viewRegistry,
+          input = "simple_maze.txt"
+      )
     }
   }
 

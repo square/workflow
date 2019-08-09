@@ -16,46 +16,68 @@
 package com.squareup.sample.dungeon
 
 import android.os.Vibrator
+import com.squareup.sample.dungeon.DungeonAppWorkflow.State
+import com.squareup.sample.dungeon.DungeonAppWorkflow.State.Loading
+import com.squareup.sample.dungeon.DungeonAppWorkflow.State.Running
 import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
+import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.renderChild
+import com.squareup.workflow.onWorkerOutput
+
+typealias BoardPath = String
 
 class DungeonAppWorkflow(
   private val gameWorkflow: GameWorkflow,
-  private val vibrator: Vibrator
-) : StatefulWorkflow<Unit, Unit, Nothing, Any>() {
+  private val vibrator: Vibrator,
+  private val boardLoader: BoardLoader
+) : StatefulWorkflow<BoardPath, State, Nothing, Any>() {
 
-  override fun initialState(
-    input: Unit,
-    snapshot: Snapshot?
-  ) {
+  sealed class State {
+    object Loading : State()
+    data class Running(val board: Board) : State()
   }
 
+  override fun initialState(
+    input: BoardPath,
+    snapshot: Snapshot?
+  ): State = Loading
+
   override fun render(
-    input: Unit,
-    state: Unit,
-    context: RenderContext<Unit, Nothing>
+    input: BoardPath,
+    state: State,
+    context: RenderContext<State, Nothing>
   ): Any {
-    return context.renderChild(gameWorkflow) { output ->
-      when (output) {
-        Vibrate -> vibrate(50)
-        PlayerWasEaten -> {
-          vibrate(20)
-          vibrate(20)
-          vibrate(20)
-          vibrate(20)
-          vibrate(1000)
+    return when (state) {
+      Loading -> {
+        context.onWorkerOutput(boardLoader.load(input)) { board ->
+          enterState(Running(board))
+        }
+        Loading
+      }
+      is Running -> {
+        context.renderChild(gameWorkflow, state.board) { output ->
+          when (output) {
+            Vibrate -> vibrate(50)
+            PlayerWasEaten -> {
+              vibrate(20)
+              vibrate(20)
+              vibrate(20)
+              vibrate(20)
+              vibrate(1000)
+            }
+          }
+          noAction()
         }
       }
-      noAction()
     }
   }
 
-  override fun snapshotState(state: Unit): Snapshot = Snapshot.EMPTY
+  override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
   private fun vibrate(durationMs: Long) {
     @Suppress("DEPRECATION")

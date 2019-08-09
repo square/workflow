@@ -18,6 +18,7 @@ package com.squareup.sample.dungeon
 import com.squareup.sample.dungeon.PlayerWorkflow.Event.StartMoving
 import com.squareup.sample.dungeon.PlayerWorkflow.Event.StopMoving
 import com.squareup.sample.dungeon.PlayerWorkflow.Rendering
+import com.squareup.sample.dungeon.board.BoardCell
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow

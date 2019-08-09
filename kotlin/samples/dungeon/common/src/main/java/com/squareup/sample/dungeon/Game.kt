@@ -15,7 +15,9 @@
  */
 package com.squareup.sample.dungeon
 
-import com.squareup.sample.dungeon.Board.Location
+import com.squareup.sample.dungeon.board.Board
+import com.squareup.sample.dungeon.board.Board.Location
+import com.squareup.sample.dungeon.board.BoardCell
 
 private val PLACEHOLDER_CELL = BoardCell("?")
 

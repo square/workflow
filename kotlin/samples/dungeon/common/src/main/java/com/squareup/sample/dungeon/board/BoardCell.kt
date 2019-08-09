@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.dungeon
+package com.squareup.sample.dungeon.board
+
+import kotlin.streams.asSequence
 
 data class BoardCell(val codePoint: Int) {
   constructor(emoji: String) : this(emoji.codePointAt(0))
@@ -24,7 +26,20 @@ data class BoardCell(val codePoint: Int) {
 
   private val string = String(Character.toChars(codePoint))
 
-  val isEmpty get() = Character.isWhitespace(codePoint)
+  val isEmpty get() = this == EMPTY_FLOOR
+  val isWall get() = this in WALL_CELLS
+  val isToxic get() = this in TOXIC
 
   override fun toString(): String = string
+
+  companion object {
+    val EMPTY_FLOOR = BoardCell(" ")
+    val WALL_CELLS = "🌳🧱".asBoardCells()
+    val TOXIC = "🔥🌊".asBoardCells()
+  }
 }
+
+fun String.asBoardCells(): List<BoardCell> = codePoints()
+    .asSequence()
+    .map(::BoardCell)
+    .toList()

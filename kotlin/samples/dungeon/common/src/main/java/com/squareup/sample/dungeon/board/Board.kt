@@ -13,14 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.dungeon
-
-import kotlin.math.hypot
-import kotlin.math.roundToInt
-import kotlin.streams.toList
-
-private const val WALL = "🌳"
-private const val SPACE = " "
+package com.squareup.sample.dungeon.board
 
 data class Board(
   val width: Int,
@@ -32,9 +25,6 @@ data class Board(
     val y: Int
   ) {
     override fun toString(): String = "($x, $y)"
-
-    fun distanceTo(other: Location): Int =
-      hypot(other.x - x.toFloat(), other.y - y.toFloat()).roundToInt()
   }
 
   init {
@@ -42,11 +32,6 @@ data class Board(
       "Cells must be $width×$height=${width * height}, but was ${cells.size}"
     }
   }
-
-  fun cellIndexOf(
-    x: Int,
-    y: Int
-  ): Int = (y * width) + x
 
   operator fun get(
     x: Int,
@@ -68,12 +53,24 @@ data class Board(
         }
   }
 
+  private fun cellIndexOf(
+    x: Int,
+    y: Int
+  ): Int = (y * width) + x
+
   companion object {
-    val EMPTY = ((WALL.repeat(16)) +
-        (WALL + SPACE.repeat(14) + WALL).repeat(14) +
-        (WALL.repeat(16)))
-        .codePoints()
-        .toList()
-        .map(::BoardCell)
+    /**
+     * Builds a board from a square list of [BoardCell] lists.
+     */
+    fun fromRows(rows: List<List<BoardCell>>): Board {
+      val width = rows.map { it.size }
+          .distinct()
+          .singleOrNull()
+          ?: throw IllegalArgumentException("Expected all rows to be the same length.")
+      val height = rows.size
+      require(width == height) { "Expected board to be square, but was $width × $height" }
+      val cells = rows.reduce { acc, row -> acc + row }
+      return Board(width, height, cells)
+    }
   }
 }

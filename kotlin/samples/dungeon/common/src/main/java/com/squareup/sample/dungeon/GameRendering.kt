@@ -15,6 +15,8 @@
  */
 package com.squareup.sample.dungeon
 
+import com.squareup.sample.dungeon.board.Board
+
 data class GameRendering(
   val board: Board,
   val player: PlayerWorkflow.Rendering

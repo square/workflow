@@ -15,4 +15,5 @@
   -->
 <resources>
   <string name="app_name">Dungeon Crawler</string>
+  <string name="loading_board">Loading board…</string>
 </resources>

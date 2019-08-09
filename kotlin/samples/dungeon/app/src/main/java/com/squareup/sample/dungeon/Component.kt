@@ -19,6 +19,7 @@ import android.content.Context
 import android.os.Vibrator
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
+import kotlinx.coroutines.Dispatchers
 import kotlin.random.Random
 
 private const val AI_COUNT = 4
@@ -28,11 +29,17 @@ private const val AI_COUNT = 4
 @UseExperimental(ExperimentalWorkflowUi::class)
 class Component(context: Context) {
 
-  val viewRegistry = ViewRegistry(BoardView, GameLayoutRunner)
+  val viewRegistry = ViewRegistry(
+      BoardView,
+      GameLayoutRunner,
+      LoadingBoardBinding
+  )
 
   val random = Random(System.currentTimeMillis())
 
   val vibrator = context.getSystemService(Vibrator::class.java)!!
+
+  val boardLoader = BoardLoader(Dispatchers.IO, context.assets)
 
   val ticker = GameTicker()
 
@@ -42,5 +49,5 @@ class Component(context: Context) {
 
   val gameWorkflow = GameWorkflow(playerWorkflow, aiWorkflows, random)
 
-  val appWorkflow = DungeonAppWorkflow(gameWorkflow, vibrator)
+  val appWorkflow = DungeonAppWorkflow(gameWorkflow, vibrator, boardLoader)
 }

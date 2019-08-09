@@ -17,11 +17,13 @@ package com.squareup.sample.dungeon
 
 import com.squareup.sample.dungeon.AiWorkflow.Input
 import com.squareup.sample.dungeon.AiWorkflow.State
-import com.squareup.sample.dungeon.Board.Location
+import com.squareup.sample.dungeon.board.Board.Location
 import com.squareup.sample.dungeon.Direction.DOWN
 import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
+import com.squareup.sample.dungeon.board.Board
+import com.squareup.sample.dungeon.board.BoardCell
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow

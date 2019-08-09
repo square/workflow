@@ -16,7 +16,6 @@
 package com.squareup.sample.dungeon
 
 import com.squareup.sample.dungeon.AiWorkflow.Input
-import com.squareup.sample.dungeon.Board.Location
 import com.squareup.sample.dungeon.Direction.DOWN
 import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
@@ -25,6 +24,8 @@ import com.squareup.sample.dungeon.GameWorkflow.Output
 import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
 import com.squareup.sample.dungeon.GameWorkflow.State
+import com.squareup.sample.dungeon.board.Board
+import com.squareup.sample.dungeon.board.Board.Location
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -35,7 +36,7 @@ class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow,
   private val aiWorkflows: List<AiWorkflow>,
   private val random: Random
-) : StatefulWorkflow<Unit, State, Output, GameRendering>() {
+) : StatefulWorkflow<Board, State, Output, GameRendering>() {
 
   /**
    * @param finishedSnapshot If non-null, the game is finished and this was the last rendering
@@ -56,23 +57,18 @@ class GameWorkflow(
   }
 
   override fun initialState(
-    input: Unit,
+    input: Board,
     snapshot: Snapshot?
   ): State {
-    val board = Board(
-        width = 16,
-        height = 16,
-        cells = Board.EMPTY
-    )
     return State(game = Game(
-        board = board,
-        playerLocation = random.nextEmptyLocation(board),
-        aiActors = aiWorkflows.map { random.nextEmptyLocation(board) }
+        board = input,
+        playerLocation = random.nextEmptyLocation(input),
+        aiActors = aiWorkflows.map { random.nextEmptyLocation(input) }
     ))
   }
 
   override fun render(
-    input: Unit,
+    input: Board,
     state: State,
     context: RenderContext<State, Output>
   ): GameRendering {

@@ -21,6 +21,8 @@ import android.graphics.Paint
 import android.graphics.Paint.FontMetrics
 import android.graphics.Rect
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.ui.BuilderBinding
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewBinding
@@ -38,7 +40,12 @@ private const val EMOJI_FOR_MEASURE = "🌳"
  */
 class BoardView(context: Context) : View(context) {
 
-  private val textPaint = Paint()
+  private val textPaint = Paint().apply {
+    // Set the text color correctly in case the map contains regular text characters (emojis ignore
+    // the text paint color).
+    @Suppress("DEPRECATION")
+    color = ContextCompat.getColor(context, android.R.color.primary_text_dark)
+  }
   private val glyphBounds = Rect()
   private var board: Board? = null
   private var cellWidth: Int = 0
