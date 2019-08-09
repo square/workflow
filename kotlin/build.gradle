@@ -88,7 +88,7 @@ buildscript {
       'okio': "com.squareup.okio:okio:2.3.0",
       'rxjava2':[
           'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.11",
-          'interop': "com.github.akarnokd:rxjava2-interop:0.11.4",
+          'interop': "com.github.akarnokd:rxjava2-interop:0.13.7",
           'extensions': "com.github.akarnokd:rxjava2-extensions:0.20.4"
       ],
       'annotations': [
