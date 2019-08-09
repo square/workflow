@@ -89,7 +89,7 @@ buildscript {
       'rxjava2':[
           'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.11",
           'interop': "com.github.akarnokd:rxjava2-interop:0.11.4",
-          'extensions': "com.github.akarnokd:rxjava2-extensions:0.20.4"
+          'extensions': "com.github.akarnokd:rxjava2-extensions:0.20.10"
       ],
       'annotations': [
           'intellij': "org.jetbrains:annotations:13.0",
