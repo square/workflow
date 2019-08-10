@@ -39,7 +39,7 @@ buildscript {
   }
 
   ext.deps = [
-      'android_gradle_plugin': "com.android.tools.build:gradle:3.5.0-rc02",
+      'android_gradle_plugin': "com.android.tools.build:gradle:3.5.0-rc03",
 
       'androidx': [
           'annotations': "androidx.annotation:annotation:1.1.0",
