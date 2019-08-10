@@ -41,13 +41,11 @@ class Component(context: Context) {
 
   val boardLoader = BoardLoader(Dispatchers.IO, context.assets)
 
-  val ticker = GameTicker()
-
   val playerWorkflow = PlayerWorkflow()
 
   val aiWorkflows = List(AI_COUNT) { AiWorkflow(random = random) }
 
-  val gameWorkflow = GameWorkflow(playerWorkflow, aiWorkflows, ticker, random)
+  val gameWorkflow = GameWorkflow(playerWorkflow, aiWorkflows, random)
 
   val appWorkflow = DungeonAppWorkflow(gameWorkflow, vibrator, boardLoader)
 }

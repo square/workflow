@@ -60,7 +60,8 @@ class DungeonAppWorkflow(
         Loading
       }
       is Running -> {
-        context.renderChild(gameWorkflow, state.board) { output ->
+        val gameInput = GameWorkflow.Input(state.board)
+        context.renderChild(gameWorkflow, gameInput) { output ->
           when (output) {
             Vibrate -> vibrate(50)
             PlayerWasEaten -> {

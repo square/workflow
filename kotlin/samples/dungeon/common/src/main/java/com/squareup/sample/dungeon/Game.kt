@@ -15,22 +15,11 @@
  */
 package com.squareup.sample.dungeon
 
-import com.squareup.sample.dungeon.board.Board
 import com.squareup.sample.dungeon.board.Board.Location
-import com.squareup.sample.dungeon.board.BoardCell
-
-private val PLACEHOLDER_CELL = BoardCell("?")
 
 data class Game(
-  val board: Board,
   val playerLocation: Location,
   val aiLocations: List<Location>
 ) {
-
   val isPlayerEaten: Boolean get() = aiLocations.any { it == playerLocation }
-
-  override fun toString(): String = board.withOverlay(
-      (aiLocations + playerLocation)
-          .map { it to PLACEHOLDER_CELL }
-          .toMap()).toString()
 }

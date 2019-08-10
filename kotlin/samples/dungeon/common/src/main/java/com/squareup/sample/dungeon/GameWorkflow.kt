@@ -21,6 +21,7 @@ import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
 import com.squareup.sample.dungeon.GameWorkflow.GameRendering
+import com.squareup.sample.dungeon.GameWorkflow.Input
 import com.squareup.sample.dungeon.GameWorkflow.Output
 import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
@@ -30,18 +31,27 @@ import com.squareup.sample.dungeon.board.Board.Location
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.renderChild
+import kotlinx.coroutines.delay
 import kotlin.math.roundToLong
 import kotlin.random.Random
 
 class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow,
   private val aiWorkflows: List<ActorWorkflow>,
-  private val ticker: GameTicker,
   private val random: Random
-) : StatefulWorkflow<Board, State, Output, GameRendering>() {
+) : StatefulWorkflow<Input, State, Output, GameRendering>() {
+
+  /**
+   * @param board Should not change while the game is running.
+   */
+  data class Input(
+    val board: Board,
+    val ticksPerSecond: Int = 15
+  )
 
   /**
    * @param finishedSnapshot If non-null, the game is finished and this was the last rendering
@@ -67,46 +77,57 @@ class GameWorkflow(
   )
 
   override fun initialState(
-    input: Board,
+    input: Input,
     snapshot: Snapshot?
   ): State {
+    val board = input.board
     return State(game = Game(
-        board = input,
-        playerLocation = random.nextEmptyLocation(input),
-        aiLocations = aiWorkflows.map { random.nextEmptyLocation(input) }
+        playerLocation = random.nextEmptyLocation(board),
+        aiLocations = aiWorkflows.map { random.nextEmptyLocation(board) }
     ))
   }
 
+  override fun onInputChanged(
+    old: Input,
+    new: Input,
+    state: State
+  ): State {
+    check(old.board == new.board) { "Expected board to not change during the game." }
+    return state
+  }
+
   override fun render(
-    input: Board,
+    input: Input,
     state: State,
     context: RenderContext<State, Output>
   ): GameRendering {
     // If the game has already finished, just render the finished game.
     state.finishedSnapshot?.let { return it }
 
+    val ticker = createTickerWorker(input.ticksPerSecond)
+
     val game = state.game
-    val board = game.board
+    val board = input.board
     // Save the rendering before we return it, so we can put it in the state if something happens
     // that causes the game to finish.
     lateinit var rendering: GameRendering
 
     // Render the player.
-    val playerInput = ActorInput(board, game.playerLocation, ticker.ticks)
+    val playerInput = ActorInput(board, game.playerLocation, ticker)
     val playerRendering = context.renderChild(playerWorkflow, playerInput)
 
     // Render all the other actors.
     val aiRenderings = aiWorkflows.zip(game.aiLocations)
         .mapIndexed { index, (aiWorkflow, aiLocation) ->
-          val aiInput = ActorInput(game.board, aiLocation, ticker.ticks)
+          val aiInput = ActorInput(board, aiLocation, ticker)
           aiLocation to context.renderChild(aiWorkflow, aiInput, key = index.toString())
         }
 
     // Calculate new locations for player and other actors.
-    context.onWorkerOutput(ticker.ticks) { tick ->
+    context.onWorkerOutput(ticker) { tick ->
       // Calculate if this tick should result in movement based on the movement's speed.
       fun Movement.isTimeToMove(): Boolean {
-        val ticksPerSecond = ticker.ticksPerSecond
+        val ticksPerSecond = input.ticksPerSecond
         val ticksPerCell = (ticksPerSecond / cellsPerSecond).roundToLong()
         return tick % ticksPerCell == 0L
       }
@@ -152,7 +173,7 @@ class GameWorkflow(
 
     val aiOverlay = aiRenderings.map { (a, b) -> a to b.avatar }
         .toMap()
-    val renderedBoard = game.board.withOverlay(
+    val renderedBoard = board.withOverlay(
         aiOverlay + (game.playerLocation to playerRendering.actorRendering.avatar)
     )
     return GameRendering(renderedBoard, playerRendering.onEvent)
@@ -170,6 +191,22 @@ private fun Random.nextLocation(
   width: Int,
   height: Int
 ) = Location(nextInt(width), nextInt(height))
+
+/**
+ * Creates a [Worker] that emits [ticksPerSecond] ticks every second.
+ *
+ * The emitted value is a monotonically-increasing integer.
+ * Workers that have the same [ticksPerSecond] value will be considered equivalent.
+ */
+private fun createTickerWorker(ticksPerSecond: Int): Worker<Long> =
+  Worker.create(key = "ticker: $ticksPerSecond") {
+    val periodMs = 1000L / ticksPerSecond
+    var count = 0L
+    while (true) {
+      emit(count++)
+      delay(periodMs)
+    }
+  }
 
 private data class MoveResult(
   val newLocation: Location,
