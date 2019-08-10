@@ -28,12 +28,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlin.experimental.ExperimentalTypeInference
 import kotlin.reflect.KClass
 
 /**
  * Represents a unit of asynchronous work that can have zero, one, or multiple outputs.
+ *
+ * [Worker]s are effectively [Flow]s that can be compared to determine equivalence.
  *
  * A [Workflow] uses [Worker]s to perform asynchronous work during the render pass by calling
  * [RenderContext.onWorkerOutput] or [RenderContext.runningWorker]. When equivalent [Worker]s are
@@ -184,6 +187,11 @@ interface Worker<out T> {
     ): Worker<Nothing> = TypedWorker(Nothing::class, key, flow { block() })
 
     /**
+     * Returns a [Worker] that finishes immediately without emitting anything.
+     */
+    fun <T> finished(): Worker<T> = FinishedWorker
+
+    /**
      * Creates a [Worker] from a function that returns a single value.
      *
      * Shorthand for `flow { emit(block()) }.asWorker(key)`.
@@ -291,6 +299,49 @@ inline fun <reified T> ReceiveChannel<T>.asWorker(
 }
 
 /**
+ * Returns a [Worker] that transforms this [Worker]'s [Flow] by calling [transform].
+ *
+ * The returned worker is considered equivalent with any other worker returned by this function
+ * with the same receiver and the same [key].
+ *
+ * ## Examples
+ *
+ * ### Same source and key are equivalent
+ *
+ * ```
+ * val secondsWorker = millisWorker.transform {
+ *   it.map { millis -> millis / 1000 }.distinctUntilChanged()
+ * }
+ *
+ * val otherSecondsWorker = millisWorker.transform {
+ *   it.map { millis -> millis.toSeconds() }
+ * }
+ *
+ * assert(secondsWorker.doesSameWorkAs(otherSecondsWorker))
+ * ```
+ *
+ * ### Different sources are not equivalent
+ *
+ * ```
+ * val secondsWorker = millisWorker.transform {
+ *   it.map { millis -> millis / 1000 }.distinctUntilChanged()
+ * }
+ *
+ * val otherSecondsWorker = secondsWorker.transform { it }
+ *
+ * assert(!secondsWorker.doesSameWorkAs(otherSecondsWorker))
+ * ```
+ */
+fun <T, R> Worker<T>.transform(
+  key: String = "",
+  transform: (Flow<T>) -> Flow<R>
+): Worker<R> = WorkerWrapper(
+    wrapped = this,
+    flow = transform(run()),
+    key = key
+)
+
+/**
  * A generic [Worker] implementation that defines equivalent workers as those having equivalent
  * [key]s and equivalent [type]s. This is used by all the [Worker] builder functions.
  */
@@ -326,4 +377,22 @@ private class TimerWorker(
 
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
     otherWorker is TimerWorker && otherWorker.key == key
+}
+
+private object FinishedWorker : Worker<Nothing> {
+  override fun run(): Flow<Nothing> = emptyFlow()
+  override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = otherWorker === FinishedWorker
+}
+
+private class WorkerWrapper<T, R>(
+  private val wrapped: Worker<T>,
+  private val flow: Flow<R>,
+  private val key: String
+) : Worker<R> {
+  override fun run(): Flow<R> = flow
+  override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean {
+    return otherWorker is WorkerWrapper<*, *> &&
+        key == otherWorker.key &&
+        wrapped.doesSameWorkAs(otherWorker.wrapped)
+  }
 }
