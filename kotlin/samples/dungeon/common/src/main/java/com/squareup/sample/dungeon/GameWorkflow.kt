@@ -39,6 +39,8 @@ import kotlinx.coroutines.delay
 import kotlin.math.roundToLong
 import kotlin.random.Random
 
+private val PAUSED_TICKER = Worker.createSideEffect(key = "noop") {}
+
 class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow,
   private val aiWorkflows: List<ActorWorkflow>,
@@ -58,8 +60,7 @@ class GameWorkflow(
    * before the game finished.
    */
   data class State(
-    val game: Game,
-    val finishedSnapshot: GameRendering? = null
+    val game: Game
   )
 
   sealed class Output {
@@ -101,16 +102,11 @@ class GameWorkflow(
     state: State,
     context: RenderContext<State, Output>
   ): GameRendering {
-    // If the game has already finished, just render the finished game.
-    state.finishedSnapshot?.let { return it }
-
-    val ticker = createTickerWorker(input.ticksPerSecond)
-
+    val running = !state.game.isPlayerEaten
+    // Stop actors from ticking if the game is paused or finished.
+    val ticker = if (running) createTickerWorker(input.ticksPerSecond) else PAUSED_TICKER
     val game = state.game
     val board = input.board
-    // Save the rendering before we return it, so we can put it in the state if something happens
-    // that causes the game to finish.
-    lateinit var rendering: GameRendering
 
     // Render the player.
     val playerInput = ActorInput(board, game.playerLocation, ticker)
@@ -123,51 +119,54 @@ class GameWorkflow(
           aiLocation to context.renderChild(aiWorkflow, aiInput, key = index.toString())
         }
 
-    // Calculate new locations for player and other actors.
-    context.onWorkerOutput(ticker) { tick ->
-      // Calculate if this tick should result in movement based on the movement's speed.
-      fun Movement.isTimeToMove(): Boolean {
-        val ticksPerSecond = input.ticksPerSecond
-        val ticksPerCell = (ticksPerSecond / cellsPerSecond).roundToLong()
-        return tick % ticksPerCell == 0L
-      }
-
-      // Execute player movement.
-      var output: Output? = null
-      var newPlayerLocation: Location = game.playerLocation
-      if (playerRendering.actorRendering.movement.isTimeToMove()) {
-        val moveResult = game.playerLocation.move(playerRendering.actorRendering.movement, board)
-        newPlayerLocation = moveResult.newLocation
-        if (moveResult.collisionDetected) output = Vibrate
-      }
-
-      // Execute AI movement.
-      val newAiLocations = aiRenderings.map { (location, rendering) ->
-        return@map if (rendering.movement.isTimeToMove()) {
-          location.move(rendering.movement, board)
-              // Don't care about collisions.
-              .newLocation
-        } else {
-          location
+    // If the game is paused or finished, just render the board without ticking.
+    if (running) {
+      // Calculate new locations for player and other actors.
+      context.onWorkerOutput(ticker) { tick ->
+        // Calculate if this tick should result in movement based on the movement's speed.
+        fun Movement.isTimeToMove(): Boolean {
+          val ticksPerSecond = input.ticksPerSecond
+          val ticksPerCell = (ticksPerSecond / cellsPerSecond).roundToLong()
+          return tick % ticksPerCell == 0L
         }
-      }
 
-      val newGame = game.copy(
-          playerLocation = newPlayerLocation,
-          aiLocations = newAiLocations
-      )
+        // Execute player movement.
+        var output: Output? = null
+        var newPlayerLocation: Location = game.playerLocation
+        if (playerRendering.actorRendering.movement.isTimeToMove()) {
+          val moveResult = game.playerLocation.move(playerRendering.actorRendering.movement, board)
+          newPlayerLocation = moveResult.newLocation
+          if (moveResult.collisionDetected) output = Vibrate
+        }
 
-      // Check if AI captured player.
-      return@onWorkerOutput if (newGame.isPlayerEaten) {
-        enterState(
-            state.copy(game = newGame, finishedSnapshot = rendering.freeze()),
-            emittingOutput = PlayerWasEaten
+        // Execute AI movement.
+        val newAiLocations = aiRenderings.map { (location, rendering) ->
+          return@map if (rendering.movement.isTimeToMove()) {
+            location.move(rendering.movement, board)
+                // Don't care about collisions.
+                .newLocation
+          } else {
+            location
+          }
+        }
+
+        val newGame = game.copy(
+            playerLocation = newPlayerLocation,
+            aiLocations = newAiLocations
         )
-      } else {
-        enterState(
-            state.copy(game = newGame),
-            emittingOutput = output
-        )
+
+        // Check if AI captured player.
+        return@onWorkerOutput if (newGame.isPlayerEaten) {
+          enterState(
+              state.copy(game = newGame),
+              emittingOutput = PlayerWasEaten
+          )
+        } else {
+          enterState(
+              state.copy(game = newGame),
+              emittingOutput = output
+          )
+        }
       }
     }
 
@@ -177,7 +176,6 @@ class GameWorkflow(
         aiOverlay + (game.playerLocation to playerRendering.actorRendering.avatar)
     )
     return GameRendering(renderedBoard, playerRendering.onEvent)
-        .also { rendering = it }
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY

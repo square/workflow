@@ -30,6 +30,7 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.onWorkerOutput
 import kotlinx.coroutines.flow.collect
+import java.util.UUID
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -42,32 +43,33 @@ class AiWorkflow(
   private val cellsPerSecond: Float = random.nextFloat() * 3f + 4f // Between 4 and 7.
 ) : ActorWorkflow, StatefulWorkflow<ActorInput, State, Nothing, ActorRendering>() {
 
-  data class State(val direction: Direction)
+  data class State(
+    val direction: Direction,
+    val directionTicker: Worker<Unit>
+  )
 
   override fun initialState(
     input: ActorInput,
     snapshot: Snapshot?
   ): State {
     val startingDirection = random.nextEnum(Direction::class)
-    return State(startingDirection)
+    return State(startingDirection, input.ticks.createDirectionTicker(random))
   }
+
+  override fun onInputChanged(
+    old: ActorInput,
+    new: ActorInput,
+    state: State
+  ): State = if (!old.ticks.doesSameWorkAs(new.ticks)) {
+    state.copy(directionTicker = new.ticks.createDirectionTicker(random))
+  } else state
 
   override fun render(
     input: ActorInput,
     state: State,
     context: RenderContext<State, Nothing>
   ): ActorRendering {
-    // Scale the tick frequency by a random amount to make direction changes look more arbitrary.
-    val directionTicks = Worker.create {
-      input.ticks.run()
-          .collect { tick ->
-            if (tick % random.nextInt(2, 5) == 0L) {
-              emit(Unit)
-            }
-          }
-    }
-
-    context.onWorkerOutput(directionTicks) {
+    context.onWorkerOutput(state.directionTicker) {
       // Rotate 90 degrees.
       val newDirection = when (state.direction) {
         UP -> RIGHT
@@ -89,3 +91,16 @@ private fun <T : Enum<T>> Random.nextEnum(enumClass: KClass<T>): T {
   val values = enumClass.java.enumConstants
   return values[nextInt(values.size)]
 }
+
+/**
+ * Scales the tick frequency by a random amount to make direction changes look more arbitrary.
+ */
+private fun Worker<Long>.createDirectionTicker(random: Random): Worker<Unit> =
+  Worker.create(key = UUID.randomUUID().toString()) {
+    run()
+        .collect { tick ->
+          if (tick % random.nextInt(2, 5) == 0L) {
+            emit(Unit)
+          }
+        }
+  }
