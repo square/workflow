@@ -17,14 +17,15 @@ package com.squareup.sample.dungeon
 
 import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
 import com.squareup.sample.dungeon.ActorWorkflow.ActorRendering
-import com.squareup.sample.dungeon.PlayerWorkflow.Event.StartMoving
-import com.squareup.sample.dungeon.PlayerWorkflow.Event.StopMoving
+import com.squareup.sample.dungeon.PlayerWorkflow.Action.StartMoving
+import com.squareup.sample.dungeon.PlayerWorkflow.Action.StopMoving
 import com.squareup.sample.dungeon.PlayerWorkflow.Rendering
 import com.squareup.sample.dungeon.board.BoardCell
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Mutator
 
 /**
  * Workflow that represents the actual player of the game in the [GameWorkflow].
@@ -34,17 +35,26 @@ class PlayerWorkflow(
   private val cellsPerSecond: Float = 15f
 ) : StatefulWorkflow<ActorInput, Movement, Nothing, Rendering>() {
 
-  sealed class Event {
-    data class StartMoving(val direction: Direction) : Event()
-    data class StopMoving(val direction: Direction) : Event()
+  sealed class Action : WorkflowAction<Movement, Nothing> {
+    class StartMoving(private val direction: Direction) : Action() {
+      override fun Mutator<Movement>.apply(): Nothing? {
+        state += direction
+        return null
+      }
+    }
+
+    class StopMoving(private val direction: Direction) : Action() {
+      override fun Mutator<Movement>.apply(): Nothing? {
+        state -= direction
+        return null
+      }
+    }
   }
 
-  /**
-   * @param onEvent Call to change the directions the player is currently moving.
-   */
   data class Rendering(
     val actorRendering: ActorRendering,
-    val onEvent: ((Event) -> Unit)?
+    val onStartMoving: (Direction) -> Unit,
+    val onStopMoving: (Direction) -> Unit
   )
 
   override fun initialState(
@@ -57,15 +67,13 @@ class PlayerWorkflow(
     state: Movement,
     context: RenderContext<Movement, Nothing>
   ): Rendering {
+    val sink = context.makeSink<Action>()
+
     return Rendering(
         actorRendering = ActorRendering(avatar = avatar, movement = state),
-        onEvent = context.onEvent { event ->
-          val newMovement = when (event) {
-            is StartMoving -> state + event.direction
-            is StopMoving -> state - event.direction
-          }
-          enterState(newMovement)
-        })
+        onStartMoving = { sink.send(StartMoving(it)) },
+        onStopMoving = { sink.send(StopMoving(it)) }
+    )
   }
 
   override fun snapshotState(state: Movement): Snapshot = Snapshot.EMPTY

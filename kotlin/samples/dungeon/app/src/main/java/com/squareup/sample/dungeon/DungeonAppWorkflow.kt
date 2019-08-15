@@ -25,7 +25,7 @@ import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.onWorkerOutput
 
@@ -55,7 +55,10 @@ class DungeonAppWorkflow(
     return when (state) {
       Loading -> {
         context.onWorkerOutput(boardLoader.load(input)) { board ->
-          enterState(Running(board))
+          WorkflowAction {
+            this.state = Running(board)
+            return@WorkflowAction null
+          }
         }
         Loading
       }

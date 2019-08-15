@@ -24,6 +24,7 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
@@ -108,7 +109,7 @@ class RealRenderContextTest {
 
     val behavior = context.buildBehavior()
     val update = behavior.nextActionFromEvent.getCompleted()
-    val (state, output) = update("state")
+    val (state, output) = update.applyTo("state")
     assertEquals("state", state)
     assertEquals("foo", output)
   }
@@ -130,7 +131,7 @@ class RealRenderContextTest {
 
     @Suppress("UNCHECKED_CAST")
     case as WorkflowOutputCase<String, String, String, String>
-    val (state, output) = case.handler.invoke("output").invoke("state")
+    val (state, output) = case.handler.invoke("output").applyTo("state")
     assertEquals("state", state)
     assertEquals("output:output", output)
 

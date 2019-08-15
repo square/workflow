@@ -32,7 +32,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.renderChild
 import kotlinx.coroutines.delay
@@ -55,10 +55,6 @@ class GameWorkflow(
     val ticksPerSecond: Int = 15
   )
 
-  /**
-   * @param finishedSnapshot If non-null, the game is finished and this was the last rendering
-   * before the game finished.
-   */
   data class State(
     val game: Game
   )
@@ -74,7 +70,9 @@ class GameWorkflow(
 
   data class GameRendering(
     val board: Board,
-    val onPlayerEvent: ((PlayerWorkflow.Event) -> Unit)?
+    val onStartMoving: (Direction) -> Unit,
+    val onStopMoving: (Direction) -> Unit,
+    val gameOver: Boolean = false
   )
 
   override fun initialState(
@@ -156,16 +154,12 @@ class GameWorkflow(
         )
 
         // Check if AI captured player.
-        return@onWorkerOutput if (newGame.isPlayerEaten) {
-          enterState(
-              state.copy(game = newGame),
-              emittingOutput = PlayerWasEaten
-          )
-        } else {
-          enterState(
-              state.copy(game = newGame),
-              emittingOutput = output
-          )
+        return@onWorkerOutput if (newGame.isPlayerEaten) WorkflowAction {
+          this.state = state.copy(game = newGame)
+          PlayerWasEaten
+        } else WorkflowAction {
+          this.state = state.copy(game = newGame)
+          output
         }
       }
     }
@@ -175,7 +169,7 @@ class GameWorkflow(
     val renderedBoard = board.withOverlay(
         aiOverlay + (game.playerLocation to playerRendering.actorRendering.avatar)
     )
-    return GameRendering(renderedBoard, playerRendering.onEvent)
+    return GameRendering(renderedBoard, playerRendering.onStartMoving, playerRendering.onStopMoving)
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
@@ -237,8 +231,3 @@ private fun Location.move(
 
   return MoveResult(Location(x, y), collisionDetected)
 }
-
-/**
- * Removes event handlers from the rendering.
- */
-private fun GameRendering.freeze(): GameRendering = copy(onPlayerEvent = null)

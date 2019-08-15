@@ -15,8 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-
 /**
  * Minimal implementation of [Workflow] that maintains no state of its own.
  *
@@ -110,6 +108,6 @@ fun <InputT, OutputT : Any, FromRenderingT, ToRenderingT>
       transform: (FromRenderingT) -> ToRenderingT
     ): Workflow<InputT, OutputT, ToRenderingT> = Workflow.stateless { input ->
   // @formatter:on
-  renderChild(this@mapRendering, input) { emitOutput(it) }
+  renderChild(this@mapRendering, input) { output -> WorkflowAction { output } }
       .let(transform)
 }

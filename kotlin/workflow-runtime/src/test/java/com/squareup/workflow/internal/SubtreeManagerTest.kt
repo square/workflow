@@ -22,6 +22,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
 import kotlinx.coroutines.Dispatchers.Unconfined
@@ -152,7 +153,7 @@ class SubtreeManagerTest {
 
       eventHandler("event!")
       val update = tickOutput.await()!!
-      val (_, output) = update.invoke("state")
+      val (_, output) = update.applyTo("state")
       assertEquals("case output:workflow output:event!", output)
     }
   }

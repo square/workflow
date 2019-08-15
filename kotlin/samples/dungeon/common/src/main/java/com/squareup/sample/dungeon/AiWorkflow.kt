@@ -27,7 +27,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.onWorkerOutput
 import kotlinx.coroutines.flow.collect
 import java.util.UUID
@@ -78,7 +78,10 @@ class AiWorkflow(
         LEFT -> UP
       }
       println("AI changing direction from ${state.direction} to $newDirection")
-      return@onWorkerOutput enterState(state.copy(direction = newDirection))
+      return@onWorkerOutput WorkflowAction {
+        this.state = state.copy(direction = newDirection)
+        null
+      }
     }
 
     return ActorRendering(avatar, Movement(state.direction, cellsPerSecond = cellsPerSecond))

@@ -40,50 +40,12 @@ import com.squareup.workflow.WorkflowAction.Companion.noAction
  */
 interface RenderContext<StateT, in OutputT : Any> {
 
-  /**
-   * Given a function that takes an [event][EventT] and can mutate the state or emit an output,
-   * returns a function that will perform that workflow update when called with an event.
-   * The returned function is valid until the next render pass.
-   *
-   * For example, if you have a rendering type of `Screen`:
-   *
-   *    data class Screen(
-   *      val label: String,
-   *      val onClick: () -> Unit
-   *    )
-   *
-   * Then, from your `render` method, construct the screen like this:
-   *
-   *    return Screen(
-   *      button1Label = "Hello",
-   *      button2Label = "World",
-   *      onClick = context.onEvent { buttonIndex ->
-   *        emitOutput("Button $buttonIndex clicked!")
-   *      }
-   *    )
-   *
-   * ## Equivalence & Testing
-   *
-   * It is common in unit tests to get a rendering from a workflow, then (since renderings should be
-   * value types) create the expected rendering instance and compare them. However, when comparing
-   * renderings there is no meaningful way to compare event handlers (other than a null check if
-   * they're nullable), and so two renderings that are identical but have different event handler
-   * functions should still be considered equal. In order to support this pattern, the functions
-   * returned by this method are all considered equal: `foo == bar` whenever `foo` and `bar` are
-   * values returned by this method. More precisely, this function returns instances of
-   * [EventHandler], and all [EventHandler] instances are considered equal.
-   *
-   * However, since event handling functions are always valid only for the rendering for which they
-   * were created, this means that you can't dedup event handlers in production (e.g. with something
-   * like RxJava's `distinctUntilChanged`). Event handlers must _always_ be updated, and if you
-   * need to de-dup other view data, you must do it at a more granular level.
-   *
-   * @param handler A function that returns the [WorkflowAction] to perform when the event handler
-   * is invoked.
-   */
+  @Deprecated("Use makeSink.")
   fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<StateT, OutputT>
   ): (EventT) -> Unit
+
+  fun <A : WorkflowAction<StateT, OutputT>> makeSink(): Sink<A>
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its

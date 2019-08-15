@@ -21,6 +21,7 @@ import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
@@ -119,7 +120,7 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
     handler: (OutputT) -> T?
   ) {
     fun acceptUpdate(action: WorkflowAction<StateT, OutputT>): T? {
-      val (newState, output) = action(state)
+      val (newState, output) = action.applyTo(state)
       state = newState
       return output?.let(handler)
     }
