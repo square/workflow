@@ -15,6 +15,14 @@
  */
 package com.squareup.sample.authworkflow
 
+import com.squareup.sample.authworkflow.Action.CancelLogin
+import com.squareup.sample.authworkflow.Action.CancelSecondFactor
+import com.squareup.sample.authworkflow.Action.HandleAuthResponse
+import com.squareup.sample.authworkflow.Action.HandleSecondFactorResponse
+import com.squareup.sample.authworkflow.Action.SubmitLogin
+import com.squareup.sample.authworkflow.Action.SubmitSecondFactor
+import com.squareup.sample.authworkflow.AuthResult.Authorized
+import com.squareup.sample.authworkflow.AuthResult.Canceled
 import com.squareup.sample.authworkflow.AuthService.AuthRequest
 import com.squareup.sample.authworkflow.AuthService.AuthResponse
 import com.squareup.sample.authworkflow.AuthService.SecondFactorRequest
@@ -22,18 +30,12 @@ import com.squareup.sample.authworkflow.AuthState.Authorizing
 import com.squareup.sample.authworkflow.AuthState.AuthorizingSecondFactor
 import com.squareup.sample.authworkflow.AuthState.LoginPrompt
 import com.squareup.sample.authworkflow.AuthState.SecondFactorPrompt
-import com.squareup.sample.authworkflow.LoginScreen.Event.Cancel
-import com.squareup.sample.authworkflow.LoginScreen.Event.SubmitLogin
-import com.squareup.sample.authworkflow.Result.Authorized
-import com.squareup.sample.authworkflow.Result.Canceled
-import com.squareup.sample.authworkflow.SecondFactorScreen.Event.CancelSecondFactor
-import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.runningWorker
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.BackStackScreen
@@ -42,11 +44,91 @@ import com.squareup.workflow.ui.BackStackScreen
  * We define this otherwise redundant typealias to keep composite workflows
  * that build on [AuthWorkflow] decoupled from it, for ease of testing.
  */
-typealias AuthWorkflow = Workflow<Unit, Result, BackStackScreen<*>>
+typealias AuthWorkflow = Workflow<Unit, AuthResult, BackStackScreen<*>>
 
-sealed class Result {
-  data class Authorized(val token: String) : Result()
-  object Canceled : Result()
+sealed class AuthState {
+  internal data class LoginPrompt(val errorMessage: String = "") : AuthState()
+
+  internal data class Authorizing(
+    val email: String,
+    val password: String
+  ) : AuthState()
+
+  internal data class SecondFactorPrompt(
+    val tempToken: String,
+    val errorMessage: String = ""
+  ) : AuthState()
+
+  internal data class AuthorizingSecondFactor(
+    val tempToken: String,
+    val secondFactor: String
+  ) : AuthState()
+}
+
+sealed class AuthResult {
+  data class Authorized(val token: String) : AuthResult()
+  object Canceled : AuthResult()
+}
+
+internal sealed class Action : WorkflowAction<AuthState, AuthResult> {
+  class SubmitLogin(
+    val email: String,
+    val password: String
+  ) : Action()
+
+  object CancelLogin : Action()
+
+  class HandleAuthResponse(val response: AuthResponse) : Action()
+
+  class SubmitSecondFactor(
+    val tempToken: String,
+    val secondFactor: String
+  ) : Action()
+
+  object CancelSecondFactor : Action()
+
+  class HandleSecondFactorResponse(
+    val tempToken: String,
+    val response: AuthResponse
+  ) : Action()
+
+  final override fun Mutator<AuthState>.apply(): AuthResult? {
+    when (this@Action) {
+      is SubmitLogin -> {
+        state = when {
+          email.isValidEmail -> Authorizing(email, password)
+          else -> LoginPrompt(email.emailValidationErrorMessage)
+        }
+      }
+
+      CancelLogin -> return Canceled
+
+      is HandleAuthResponse -> {
+        when {
+          response.isLoginFailure -> state = LoginPrompt(response.errorMessage)
+          response.twoFactorRequired -> state = SecondFactorPrompt(response.token)
+        }
+
+        return Authorized(response.token)
+      }
+
+      is SubmitSecondFactor -> {
+        state = AuthorizingSecondFactor(tempToken, secondFactor)
+      }
+
+      CancelSecondFactor -> state = LoginPrompt()
+
+      is HandleSecondFactorResponse -> {
+        if (response.isSecondFactorFailure) {
+          state = SecondFactorPrompt(tempToken, response.errorMessage)
+        } else {
+          return Authorized(response.token)
+        }
+      }
+    }
+
+    return null
+  }
 }
 
 /**
@@ -60,7 +142,7 @@ sealed class Result {
  * Token is "1234".
  */
 class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
-    StatefulWorkflow<Unit, AuthState, Result, BackStackScreen<*>>() {
+    StatefulWorkflow<Unit, AuthState, AuthResult, BackStackScreen<*>>() {
 
   override fun initialState(
     input: Unit,
@@ -70,40 +152,27 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
   override fun render(
     input: Unit,
     state: AuthState,
-    context: RenderContext<AuthState, Result>
+    context: RenderContext<AuthState, AuthResult>
   ): BackStackScreen<*> {
+    val sink = context.makeActionSink<Action>()
+
     return when (state) {
       is LoginPrompt -> {
         BackStackScreen(
             LoginScreen(
                 state.errorMessage,
-                context.onEvent { event ->
-                  when {
-                    event is SubmitLogin && event.isValidLoginRequest ->
-                      enterState(Authorizing(event))
-                    event is SubmitLogin -> enterState(LoginPrompt(event.userInputErrorMessage))
-                    event === Cancel -> emitOutput(Canceled)
-                    else -> throw IllegalStateException("Unknown event $event")
-                  }
-                }
+                onLogin = { email, password -> sink.send(SubmitLogin(email, password)) },
+                onCancel = { sink.send(CancelLogin) }
             ),
-            onGoBack = context.onEvent {
-              emitOutput(Canceled)
-            }
+            onGoBack = { sink.send(CancelLogin) }
         )
       }
 
       is Authorizing -> {
         context.runningWorker(
-            authService.login(AuthRequest(state.loginInfo.email, state.loginInfo.password))
+            authService.login(AuthRequest(state.email, state.password))
                 .asWorker()
-        ) { response ->
-          when {
-            response.isLoginFailure -> enterState(LoginPrompt(response.errorMessage))
-            response.twoFactorRequired -> enterState(SecondFactorPrompt(response.token))
-            else -> emitOutput(Authorized(response.token))
-          }
-        }
+        ) { HandleAuthResponse(it) }
 
         BackStackScreen(
             LoginScreen(),
@@ -116,25 +185,16 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
             LoginScreen(),
             SecondFactorScreen(
                 state.errorMessage,
-                context.onEvent { event ->
-                  when (event) {
-                    is SubmitSecondFactor ->
-                      enterState(AuthorizingSecondFactor(state.tempToken, event))
-
-                    CancelSecondFactor -> enterState(LoginPrompt())
-                  }
-                }
-            ))
+                onSubmit = { sink.send(SubmitSecondFactor(state.tempToken, it)) },
+                onCancel = { sink.send(CancelSecondFactor) }
+            )
+        )
       }
 
       is AuthorizingSecondFactor -> {
-        val request = SecondFactorRequest(state.tempToken, state.event.secondFactor)
-        context.runningWorker(authService.secondFactor(request).asWorker()) { response ->
-          when {
-            response.isSecondFactorFailure ->
-              enterState(SecondFactorPrompt(state.tempToken, response.errorMessage))
-            else -> emitOutput(Authorized(response.token))
-          }
+        val request = SecondFactorRequest(state.tempToken, state.secondFactor)
+        context.runningWorker(authService.secondFactor(request).asWorker()) {
+          HandleSecondFactorResponse(state.tempToken, it)
         }
 
         BackStackScreen(
@@ -150,16 +210,16 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
    * It'd be silly to restore an in progress login session, so saves nothing.
    */
   override fun snapshotState(state: AuthState): Snapshot = Snapshot.EMPTY
-
-  private val AuthResponse.isLoginFailure: Boolean
-    get() = token.isEmpty() && errorMessage.isNotEmpty()
-
-  private val SubmitLogin.isValidLoginRequest: Boolean
-    get() = userInputErrorMessage.isBlank()
-
-  private val AuthResponse.isSecondFactorFailure: Boolean
-    get() = token.isNotEmpty() && errorMessage.isNotEmpty()
-
-  private val SubmitLogin.userInputErrorMessage: String
-    get() = if (email.indexOf('@') < 0) "Invalid address" else ""
 }
+
+private val AuthResponse.isLoginFailure: Boolean
+  get() = token.isEmpty() && errorMessage.isNotEmpty()
+
+private val AuthResponse.isSecondFactorFailure: Boolean
+  get() = token.isNotEmpty() && errorMessage.isNotEmpty()
+
+private val String.isValidEmail: Boolean
+  get() = emailValidationErrorMessage.isBlank()
+
+private val String.emailValidationErrorMessage: String
+  get() = if (indexOf('@') < 0) "Invalid address" else ""

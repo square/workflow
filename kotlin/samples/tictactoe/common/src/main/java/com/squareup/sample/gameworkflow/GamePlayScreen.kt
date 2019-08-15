@@ -18,14 +18,6 @@ package com.squareup.sample.gameworkflow
 data class GamePlayScreen(
   val playerInfo: PlayerInfo = PlayerInfo(),
   val gameState: Turn = Turn(),
-  val onEvent: (Event) -> Unit = { }
-) {
-  sealed class Event {
-    data class TakeSquare(
-      val row: Int,
-      val col: Int
-    ) : Event()
-
-    object Quit : Event()
-  }
-}
+  val onQuit: () -> Unit = {},
+  val onClick: (row: Int, col: Int) -> Unit = { _, _ -> }
+)

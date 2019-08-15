@@ -18,15 +18,18 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
+import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateless
@@ -34,6 +37,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.test.fail
@@ -102,15 +106,26 @@ class RealRenderContextTest {
 
   @Test fun `make sink gets event`() {
     val context = RealRenderContext<String, String>(PoisonRenderer())
-    val handler = context.onEvent<String> { event -> emitOutput(event) }
-
-    handler("foo")
+    val sink: Sink<String> = context.makeEventSink { it }
+    sink.send("foo")
 
     val behavior = context.buildBehavior()
     val update = behavior.nextActionFromEvent.getCompleted()
-    val (state, output) = update("state")
+    val (state, output) = update.applyTo("state")
     assertEquals("state", state)
     assertEquals("foo", output)
+  }
+
+  @Test fun `make sink works with OutputT of Nothing`() {
+    val context = RealRenderContext<String, Nothing>(PoisonRenderer())
+    val sink: Sink<String> = context.makeEventSink { null }
+    sink.send("foo")
+
+    val behavior = context.buildBehavior()
+    val update = behavior.nextActionFromEvent.getCompleted()
+    val (state, output) = update.applyTo("state")
+    assertEquals("state", state)
+    assertNull(output)
   }
 
   @Test fun `renderChild works`() {
@@ -118,7 +133,7 @@ class RealRenderContextTest {
     val workflow = TestWorkflow()
 
     val (case, child, id, input) = context.renderChild(workflow, "input", "key") { output ->
-      emitOutput("output:$output")
+      WorkflowAction { "output:$output" }
     }
 
     assertSame(workflow, child)
@@ -130,7 +145,7 @@ class RealRenderContextTest {
 
     @Suppress("UNCHECKED_CAST")
     case as WorkflowOutputCase<String, String, String, String>
-    val (state, output) = case.handler.invoke("output").invoke("state")
+    val (state, output) = case.handler.invoke("output").applyTo("state")
     assertEquals("state", state)
     assertEquals("output:output", output)
 

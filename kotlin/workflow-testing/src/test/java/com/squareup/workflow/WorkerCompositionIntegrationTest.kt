@@ -20,8 +20,6 @@ package com.squareup.workflow
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CancellationException
@@ -82,9 +80,7 @@ class WorkerCompositionIntegrationTest {
         stops++
       }
     }
-    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
-      runningWorker(worker) { noAction() }
-    }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> { runningWorker(worker) { noAction() } }
 
     workflow.testFromStart {
       assertEquals(1, starts)
@@ -137,7 +133,7 @@ class WorkerCompositionIntegrationTest {
   @Test fun `runningWorkerUntilFinished gets output`() {
     val channel = Channel<String>(capacity = 1)
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(channel.asWorker()) { emitOutput(it) }
+      runningWorkerUntilFinished(channel.asWorker()) { WorkflowAction { it } }
     }
 
     workflow.testFromStart {
@@ -152,7 +148,7 @@ class WorkerCompositionIntegrationTest {
   @Test fun `runningWorkerUntilFinished gets finished`() {
     val channel = Channel<String>()
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(channel.asWorker()) { emitOutput(it) }
+      runningWorkerUntilFinished(channel.asWorker()) { WorkflowAction { it } }
     }
 
     workflow.testFromStart {
@@ -167,7 +163,7 @@ class WorkerCompositionIntegrationTest {
   @Test fun `runningWorkerUntilFinished gets finished after value`() {
     val channel = Channel<String>()
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(channel.asWorker()) { emitOutput(it) }
+      runningWorkerUntilFinished(channel.asWorker()) { WorkflowAction { it } }
     }
 
     workflow.testFromStart {
@@ -186,7 +182,7 @@ class WorkerCompositionIntegrationTest {
   @Test fun `runningWorkerUntilFinished gets error`() {
     val channel = Channel<String>()
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(channel.asWorker()) { emitOutput(it) }
+      runningWorkerUntilFinished(channel.asWorker()) { WorkflowAction { it } }
     }
 
     workflow.testFromStart {
@@ -219,11 +215,19 @@ class WorkerCompositionIntegrationTest {
   // See https://github.com/square/workflow/issues/261.
   @Test fun `onWorkerOutput closes over latest state`() {
     val triggerOutput = Channel<Unit>()
-    val workflow = Workflow.stateful<Int, Int, (Unit) -> Unit>(
+
+    val incrementState = WorkflowAction<Int, Int> {
+      state += 1
+      null
+    }
+
+    val workflow = Workflow.stateful<Int, Int, () -> Unit>(
         initialState = 0,
         render = { state ->
-          runningWorker(triggerOutput.asWorker()) { emitOutput(state) }
-          return@stateful onEvent { enterState(state + 1) }
+          runningWorker(triggerOutput.asWorker()) { WorkflowAction { state } }
+
+          val sink = makeActionSink<WorkflowAction<Int, Int>>()
+          return@stateful { sink.send(incrementState) }
         }
     )
 
@@ -232,13 +236,13 @@ class WorkerCompositionIntegrationTest {
       assertEquals(0, awaitNextOutput())
 
       awaitNextRendering()
-          .invoke(Unit)
+          .invoke()
       triggerOutput.offer(Unit)
 
       assertEquals(1, awaitNextOutput())
 
       awaitNextRendering()
-          .invoke(Unit)
+          .invoke()
       triggerOutput.offer(Unit)
 
       assertEquals(2, awaitNextOutput())

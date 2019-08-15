@@ -1,5 +1,6 @@
 package com.squareup.sample.hellotodo
 
+import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowLeft
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowRight
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Backspace
@@ -10,8 +11,7 @@ import com.squareup.sample.hellotodo.EditTextWorkflow.EditTextState
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.runningWorker
 
 class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, String>() {
@@ -50,29 +50,7 @@ class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, 
     state: EditTextState,
     context: RenderContext<EditTextState, String>
   ): String {
-    context.runningWorker(input.terminalInput.keyStrokes) { key ->
-      when (key.keyType) {
-        Character -> enterState(
-            moveCursor(input, state, 1),
-            emittingOutput = input.text.insertCharAt(state.cursorPosition, key.character!!)
-        )
-        Backspace -> {
-          if (input.text.isEmpty()) {
-            noAction()
-          } else {
-            enterState(
-                moveCursor(input, state, -1),
-                emittingOutput = input.text.removeRange(
-                    state.cursorPosition - 1, state.cursorPosition
-                )
-            )
-          }
-        }
-        ArrowLeft -> enterState(moveCursor(input, state, -1))
-        ArrowRight -> enterState(moveCursor(input, state, 1))
-        else -> noAction()
-      }
-    }
+    context.runningWorker(input.terminalInput.keyStrokes) { key -> onKeystroke(input, key) }
 
     return buildString {
       input.text.forEachIndexed { index, c ->
@@ -83,6 +61,36 @@ class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, 
   }
 
   override fun snapshotState(state: EditTextState): Snapshot = Snapshot.EMPTY
+}
+
+private fun onKeystroke(
+  input: EditTextInput,
+  key: KeyStroke
+) = WorkflowAction<EditTextState, String> {
+  when (key.keyType) {
+    Character -> {
+      state = moveCursor(input, state, 1)
+      input.text.insertCharAt(state.cursorPosition, key.character!!)
+    }
+
+    Backspace -> {
+      if (input.text.isEmpty()) {
+        null
+      } else {
+        state = moveCursor(input, state, -1)
+        input.text.removeRange(state.cursorPosition - 1, state.cursorPosition)
+      }
+    }
+    ArrowLeft -> {
+      state = moveCursor(input, state, -1)
+      null
+    }
+    ArrowRight -> {
+      state = moveCursor(input, state, 1)
+      null
+    }
+    else -> null
+  }
 }
 
 private fun moveCursor(

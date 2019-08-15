@@ -18,21 +18,21 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.asWorker
+import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateful
 import com.squareup.workflow.writeUtf8WithLength
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
@@ -85,7 +85,7 @@ class WorkflowNodeTest {
     }
   }
 
-  private val context: CoroutineContext = Dispatchers.Unconfined
+  private val context: CoroutineContext = Unconfined
 
   @Test fun `inputs are passed to on changed`() {
     val oldAndNewInputs = mutableListOf<Pair<String, String>>()
@@ -126,7 +126,7 @@ class WorkflowNodeTest {
   }
 
   @Test fun `accepts event`() {
-    lateinit var eventHandler: (String) -> Unit
+    lateinit var sink: Sink<String>
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
@@ -141,14 +141,14 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        eventHandler = context.onEvent { event -> emitOutput(event) }
+        sink = context.makeEventSink { it }
         return ""
       }
     }
     val node = WorkflowNode(workflow.id(), workflow, "", null, context)
 
     node.render(workflow, "")
-    eventHandler("event")
+    sink.send("event")
     val result = runBlocking {
       withTimeout(10) {
         select<String?> {
@@ -160,7 +160,7 @@ class WorkflowNodeTest {
   }
 
   @Test fun `throws on subsequent events on same rendering`() {
-    lateinit var eventHandler: (String) -> Unit
+    lateinit var sink: Sink<String>
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
@@ -175,26 +175,20 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        eventHandler = context.onEvent { event -> emitOutput(event) }
+        sink = context.makeEventSink { it }
         return ""
       }
     }
     val node = WorkflowNode(workflow.id(), workflow, "", null, context)
 
     node.render(workflow, "")
-    eventHandler("event")
+    sink.send("event")
 
     val e = assertFailsWith<IllegalStateException> {
-      eventHandler("event2")
+      sink.send("event2")
     }
-    val expectedMessagePrefix =
-      "Expected to successfully deliver event. Are you using an old rendering?\n" +
-          "\tevent=event2\n" +
-          "\tupdate=WorkflowAction(emitOutput(event2))@"
-    assertTrue(
-        e.message!!.startsWith(expectedMessagePrefix),
-        "Expected\n\t${e.message}\nto start with\n\t$expectedMessagePrefix"
-    )
+    assertTrue(e.message!!.startsWith("Expected to successfully deliver "))
+    assertTrue(e.message!!.endsWith("Are you using an old rendering?"))
   }
 
   @Test fun `worker gets value`() {
@@ -217,7 +211,7 @@ class WorkflowNodeTest {
         context.runningWorkerUntilFinished(channel.asWorker()) {
           check(update == null)
           update = it
-          emitOutput("update:$it")
+          WorkflowAction { "update:$it" }
         }
         return ""
       }
@@ -274,7 +268,7 @@ class WorkflowNodeTest {
         context.runningWorkerUntilFinished(channel.asWorker()) {
           check(update == null)
           update = it
-          emitOutput("update:$it")
+          WorkflowAction { "update:$it" }
         }
         return ""
       }
@@ -301,7 +295,7 @@ class WorkflowNodeTest {
 
   @Test fun `worker is cancelled`() {
     val channel = Channel<String>(capacity = 0)
-    lateinit var doClose: (Unit) -> Unit
+    lateinit var doClose: () -> Unit
     val workflow = object : StringWorkflow() {
       override fun initialState(
         input: String,
@@ -311,19 +305,28 @@ class WorkflowNodeTest {
         return input
       }
 
+      fun update(value: OutputOrFinished<String>) = WorkflowAction<String, String> {
+        "update:$value"
+      }
+
+      val finish = WorkflowAction<String, String> {
+        state = "finished"
+        null
+      }
+
       override fun render(
         input: String,
         state: String,
         context: RenderContext<String, String>
       ): String {
+        val sink = context.makeActionSink<WorkflowAction<String, String>>()
+
         when (state) {
           "listen" -> {
             context.runningWorkerUntilFinished(channel.asWorker(closeOnCancel = true)) {
-              emitOutput("update:$it")
+              update(it)
             }
-            doClose = context.onEvent {
-              enterState("finished")
-            }
+            doClose = { sink.send(finish) }
           }
         }
         return ""
@@ -334,7 +337,7 @@ class WorkflowNodeTest {
     runBlocking {
       node.render(workflow, "listen")
       assertFalse(channel.isClosedForSend)
-      doClose(Unit)
+      doClose()
 
       // This tick will process the event handler, it won't close the channel yet.
       withTimeout(1) {

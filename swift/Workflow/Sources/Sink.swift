@@ -1,4 +1,6 @@
-/// Sink is a type that receives incoming values (commonly events or actions)
+/// Sink is a type that receives incoming values (commonly events or `WorkflowAction`)
+///
+/// Use `RenderContext.makeSink` to create instances.
 public struct Sink<Value> {
 
     private let onValue: (Value) -> Void

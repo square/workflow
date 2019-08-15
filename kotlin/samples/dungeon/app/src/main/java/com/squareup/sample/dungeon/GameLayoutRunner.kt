@@ -25,8 +25,6 @@ import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
 import com.squareup.sample.dungeon.GameWorkflow.GameRendering
-import com.squareup.sample.dungeon.PlayerWorkflow.Event.StartMoving
-import com.squareup.sample.dungeon.PlayerWorkflow.Event.StopMoving
 import com.squareup.sample.todo.R
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
@@ -48,7 +46,7 @@ class GameLayoutRunner(
   private val moveUp: View = view.findViewById(R.id.move_up)
   private val moveDown: View = view.findViewById(R.id.move_down)
 
-  private var playerEvent: ((PlayerWorkflow.Event) -> Unit)? = null
+  private lateinit var rendering: GameRendering
 
   init {
     moveLeft.registerPlayerEventHandlers(LEFT)
@@ -65,10 +63,10 @@ class GameLayoutRunner(
       boardView.showRendering(rendering.board)
     }
 
-    playerEvent = rendering.onPlayerEvent
+    this.rendering = rendering
 
     // Disable the views if we don't have an event handler, e.g. when the game has finished.
-    val controlsEnabled = playerEvent != null
+    val controlsEnabled = !rendering.gameOver
     moveLeft.isEnabled = controlsEnabled
     moveRight.isEnabled = controlsEnabled
     moveUp.isEnabled = controlsEnabled
@@ -78,8 +76,8 @@ class GameLayoutRunner(
   private fun View.registerPlayerEventHandlers(direction: Direction) {
     setOnTouchListener { _, motionEvent ->
       when (motionEvent.action and ACTION_MASK) {
-        ACTION_DOWN -> playerEvent?.invoke(StartMoving(direction))
-        ACTION_UP -> playerEvent?.invoke(StopMoving(direction))
+        ACTION_DOWN -> rendering.onStartMoving(direction)
+        ACTION_UP -> rendering.onStopMoving(direction)
       }
       // Always return false, so the button ripples and animates correctly.
       return@setOnTouchListener false

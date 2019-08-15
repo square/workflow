@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Sink
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Workflow
@@ -54,8 +57,8 @@ class RealRenderContext<StateT, OutputT : Any>(
       EventHandler<EventT> {
     checkNotFrozen()
     return EventHandler { event ->
-      // Run the handler synchronously, so we only have to emit the resulting action and don't need the
-      // update channel to be generic on each event type.
+      // Run the handler synchronously, so we only have to emit the resulting action and don't
+      // need the update channel to be generic on each event type.
       val update = handler(event)
 
       // If this returns false, we lost the race with another event being sent.
@@ -67,15 +70,25 @@ class RealRenderContext<StateT, OutputT : Any>(
     }
   }
 
-  // @formatter:off
-  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT>
-      renderChild(
-        child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-        input: ChildInputT,
-        key: String,
-        handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
-      ): ChildRenderingT {
-    // @formatter:on
+  override fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> {
+    checkNotFrozen()
+
+    return object : Sink<A> {
+      override fun send(value: A) {
+        // If this returns false, we lost the race with another event being sent.
+        check(nextUpdateFromEvent.complete(value)) {
+          "Expected to successfully deliver $value. Are you using an old rendering?"
+        }
+      }
+    }
+  }
+
+  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
+    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
+    input: ChildInputT,
+    key: String,
+    handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+  ): ChildRenderingT {
     checkNotFrozen()
     val id = child.id(key)
     val case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT> =

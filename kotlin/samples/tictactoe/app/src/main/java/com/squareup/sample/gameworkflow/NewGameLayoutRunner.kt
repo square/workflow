@@ -18,8 +18,6 @@ package com.squareup.sample.gameworkflow
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import com.squareup.sample.gameworkflow.NewGameScreen.Event.CancelNewGame
-import com.squareup.sample.gameworkflow.NewGameScreen.Event.StartGame
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
@@ -39,10 +37,10 @@ internal class NewGameLayoutRunner(private val view: View) : LayoutRunner<NewGam
     if (playerO.text.isBlank()) playerO.setText(rendering.defaultNameO)
 
     button.setOnClickListener {
-      rendering.onEvent(StartGame(playerX.text.toString(), playerO.text.toString()))
+      rendering.onStartGame(playerX.text.toString(), playerO.text.toString())
     }
 
-    view.setBackHandler { rendering.onEvent(CancelNewGame) }
+    view.setBackHandler { rendering.onCancel() }
   }
 
   companion object : ViewBinding<NewGameScreen> by bind(

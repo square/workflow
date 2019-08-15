@@ -62,13 +62,11 @@ internal class TreeWorkflow(
         }
         .toMap()
 
+    val sink = context.makeActionSink<WorkflowAction<String, Nothing>>()
+
     return Rendering(
         data = "$name:$state",
-        setData = context.onEvent { newState ->
-          WorkflowAction.enterState(
-              newState
-          )
-        },
+        setData = { sink.send(onEvent(it)) },
         children = childRenderings
     )
   }
@@ -77,4 +75,9 @@ internal class TreeWorkflow(
     Snapshot.write {
       it.writeUtf8WithLength(state)
     }
+
+  private fun onEvent(newState: String) = WorkflowAction<String, Nothing> {
+    state = newState
+    null
+  }
 }
