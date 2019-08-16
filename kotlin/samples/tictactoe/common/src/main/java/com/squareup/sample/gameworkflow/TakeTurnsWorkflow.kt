@@ -18,16 +18,14 @@ package com.squareup.sample.gameworkflow
 import com.squareup.sample.gameworkflow.Ending.Draw
 import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
-import com.squareup.sample.gameworkflow.GamePlayScreen.Event.Quit
-import com.squareup.sample.gameworkflow.GamePlayScreen.Event.TakeSquare
+import com.squareup.sample.gameworkflow.RealTakeTurnsWorkflow.Action.Quit
+import com.squareup.sample.gameworkflow.RealTakeTurnsWorkflow.Action.TakeSquare
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction.Mutator
 
 typealias TakeTurnsWorkflow = Workflow<TakeTurnsInput, CompletedGame, GamePlayScreen>
 
@@ -54,6 +52,30 @@ class TakeTurnsInput private constructor(
 class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
     StatefulWorkflow<TakeTurnsInput, Turn, CompletedGame, GamePlayScreen>() {
 
+  sealed class Action : WorkflowAction<Turn, CompletedGame> {
+    class TakeSquare(
+      private val row: Int,
+      private val col: Int
+    ) : Action() {
+      override fun Mutator<Turn>.apply(): CompletedGame? {
+        val newBoard = state.board.takeSquare(row, col, state.playing)
+
+        return when {
+          newBoard.hasVictory() -> CompletedGame(Victory, state.copy(board = newBoard))
+          newBoard.isFull() -> CompletedGame(Draw, state.copy(board = newBoard))
+          else -> {
+            state = Turn(playing = state.playing.other, board = newBoard)
+            null
+          }
+        }
+      }
+    }
+
+    object Quit : Action() {
+      override fun Mutator<Turn>.apply() = CompletedGame(Quitted, state)
+    }
+  }
+
   override fun initialState(
     input: TakeTurnsInput,
     snapshot: Snapshot?
@@ -64,31 +86,14 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
     state: Turn,
     context: RenderContext<Turn, CompletedGame>
   ): GamePlayScreen {
+    val sink = context.makeSink<Action>()
+
     return GamePlayScreen(
         playerInfo = input.playerInfo,
         gameState = state,
-        onEvent = context.onEvent { event ->
-          when (event) {
-            is TakeSquare -> onTakeSquare(state, event)
-            Quit -> emitOutput(CompletedGame(Quitted, state))
-          }
-        }
+        onQuit = { sink.send(Quit) },
+        onClick = { row, col -> sink.send(TakeSquare(row, col)) }
     )
-  }
-
-  private fun onTakeSquare(
-    lastTurn: Turn,
-    event: TakeSquare
-  ): WorkflowAction<Turn, CompletedGame> {
-
-    val newBoard = lastTurn.board.takeSquare(event.row, event.col, lastTurn.playing)
-
-    return when {
-      newBoard == lastTurn.board -> noAction()
-      newBoard.hasVictory() -> emitOutput(CompletedGame(Victory, lastTurn.copy(board = newBoard)))
-      newBoard.isFull() -> emitOutput(CompletedGame(Draw, lastTurn.copy(board = newBoard)))
-      else -> enterState(Turn(playing = lastTurn.playing.other, board = newBoard))
-    }
   }
 
   override fun snapshotState(state: Turn) = Snapshot.EMPTY
