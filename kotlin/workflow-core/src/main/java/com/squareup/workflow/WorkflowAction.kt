@@ -48,6 +48,12 @@ interface WorkflowAction<StateT, out OutputT : Any> {
       override fun toString(): String = "WorkflowAction(${name()})@${hashCode()}"
     }
 
+    inline operator fun <StateT, OutputT : Any> invoke(
+      crossinline apply: Mutator<StateT>.() -> OutputT?
+    ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
+      override fun Mutator<StateT>.apply() = apply.invoke(this)
+    }
+
     /**
      * Returns a [WorkflowAction] that does nothing: no output will be emitted, and `render` will be
      * called again with the same `state` as last time.

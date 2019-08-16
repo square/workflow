@@ -16,8 +16,8 @@
 package com.squareup.sample.mainworkflow
 
 import com.squareup.sample.authworkflow.AuthWorkflow
-import com.squareup.sample.authworkflow.Result.Authorized
-import com.squareup.sample.authworkflow.Result.Canceled
+import com.squareup.sample.authworkflow.AuthResult.Authorized
+import com.squareup.sample.authworkflow.AuthResult.Canceled
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RealRunGameWorkflow
 import com.squareup.sample.gameworkflow.RunGameScreen

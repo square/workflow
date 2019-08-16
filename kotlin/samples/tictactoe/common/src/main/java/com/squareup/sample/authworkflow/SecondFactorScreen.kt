@@ -17,11 +17,6 @@ package com.squareup.sample.authworkflow
 
 data class SecondFactorScreen(
   val errorMessage: String = "",
-  val onEvent: (Event) -> Unit = {}
-) {
-  sealed class Event {
-    data class SubmitSecondFactor(val secondFactor: String) : Event()
-
-    object CancelSecondFactor : Event()
-  }
-}
+  val onSubmit: (String) -> Unit = {},
+  val onCancel: () -> Unit = {}
+)

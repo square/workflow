@@ -15,13 +15,11 @@
  */
 package com.squareup.sample.authworkflow
 
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import com.squareup.sample.authworkflow.SecondFactorScreen.Event.CancelSecondFactor
-import com.squareup.sample.authworkflow.SecondFactorScreen.Event.SubmitSecondFactor
+import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
@@ -39,13 +37,13 @@ internal class SecondFactorLayoutRunner(
   private val button: Button = view.findViewById(R.id.second_factor_submit_button)
 
   override fun showRendering(rendering: SecondFactorScreen) {
-    view.setBackHandler { rendering.onEvent(CancelSecondFactor) }
-    toolbar.setNavigationOnClickListener { rendering.onEvent(CancelSecondFactor) }
+    view.setBackHandler { rendering.onCancel }
+    toolbar.setNavigationOnClickListener { rendering.onCancel }
 
     error.text = rendering.errorMessage
 
     button.setOnClickListener {
-      rendering.onEvent(SubmitSecondFactor(secondFactor.text.toString()))
+      rendering.onSubmit(secondFactor.text.toString())
     }
   }
 

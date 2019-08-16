@@ -2,7 +2,7 @@ package com.squareup.sample.mainworkflow
 
 import com.google.common.truth.Truth.assertThat
 import com.squareup.sample.authworkflow.AuthWorkflow
-import com.squareup.sample.authworkflow.Result.Authorized
+import com.squareup.sample.authworkflow.AuthResult.Authorized
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow

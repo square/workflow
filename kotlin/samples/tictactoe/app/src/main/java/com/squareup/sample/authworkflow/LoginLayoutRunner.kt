@@ -19,8 +19,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import com.squareup.sample.authworkflow.LoginScreen.Event.Cancel
-import com.squareup.sample.authworkflow.LoginScreen.Event.SubmitLogin
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
@@ -44,11 +42,11 @@ internal class LoginLayoutRunner(view: View) : LayoutRunner<LoginScreen> {
     error.text = rendering.errorMessage
 
     loginButton.setOnClickListener {
-      rendering.onEvent(SubmitLogin(email.text.toString(), password.text.toString()))
+      rendering.onLogin(email.text.toString(), password.text.toString())
     }
 
     cancelButton.setOnClickListener {
-      rendering.onEvent(Cancel)
+      rendering.onCancel
     }
   }
 
