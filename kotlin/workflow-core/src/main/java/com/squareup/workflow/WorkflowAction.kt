@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DeprecatedCallableAddReplaceWith")
-
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Mutator
@@ -68,7 +66,6 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * Convenience function that returns a [WorkflowAction] that will just set the state to [newState]
      * (without considering the current state) and optionally emit an output.
      */
-    @Deprecated("Use WorkflowAction.invoke, or implement the interface directly.")
     fun <StateT, OutputT : Any> enterState(
       newState: StateT,
       emittingOutput: OutputT? = null
@@ -82,7 +79,6 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * Convenience function that returns a [WorkflowAction] that will just set the state to [newState]
      * (without considering the current state) and optionally emit an output.
      */
-    @Deprecated("Use WorkflowAction.invoke, or implement the interface directly.")
     fun <StateT, OutputT : Any> enterState(
       name: String,
       newState: StateT,
@@ -96,7 +92,6 @@ interface WorkflowAction<StateT, out OutputT : Any> {
     /**
      * Convenience function to implement [WorkflowAction] without returning the output.
      */
-    @Deprecated("Use WorkflowAction.invoke, or implement the interface directly.")
     fun <StateT, OutputT : Any> modifyState(
       name: () -> String,
       emittingOutput: OutputT? = null,
@@ -110,14 +105,12 @@ interface WorkflowAction<StateT, out OutputT : Any> {
     /**
      * Convenience function to implement [WorkflowAction] without changing the state.
      */
-    @Deprecated("Use WorkflowAction.invoke, or implement the interface directly.")
     fun <StateT, OutputT : Any> emitOutput(output: OutputT): WorkflowAction<StateT, OutputT> =
       WorkflowAction({ "emitOutput($output)" }) { output }
 
     /**
      * Convenience function to implement [WorkflowAction] without changing the state.
      */
-    @Deprecated("Use WorkflowAction.invoke, or implement the interface directly.")
     fun <StateT, OutputT : Any> emitOutput(
       name: String,
       output: OutputT

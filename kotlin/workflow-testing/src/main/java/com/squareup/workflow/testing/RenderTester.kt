@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
+
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.EventHandler
@@ -321,7 +323,9 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
 }
 
 private object NoopRenderContext : RenderContext<Any?, Any> {
-  override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<Any?, Any>): EventHandler<EventT> {
+  override fun <EventT : Any> onEvent(
+    handler: (EventT) -> WorkflowAction<Any?, Any>
+  ): EventHandler<EventT> {
     throw UnsupportedOperationException()
   }
 

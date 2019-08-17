@@ -133,8 +133,7 @@ subprojects {
 
   tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-      // TODO turn this back on before merging
-//      kotlinOptions.allWarningsAsErrors = true
+      kotlinOptions.allWarningsAsErrors = true
 
       // Don't panic, all this does is allow us to use the @Experimental meta-annotation.
       // to define our own experiments.

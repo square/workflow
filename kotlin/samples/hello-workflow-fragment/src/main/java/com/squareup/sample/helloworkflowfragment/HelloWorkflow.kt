@@ -22,6 +22,7 @@ import com.squareup.sample.helloworkflowfragment.HelloWorkflow.State.Hello
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.parse
 
@@ -51,10 +52,13 @@ object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
     input: Unit,
     state: State,
     context: RenderContext<State, Nothing>
-  ): Rendering = Rendering(
-      message = state.name,
-      onClick = context.onEvent { enterState(state.theOtherState()) }
-  )
+  ): Rendering {
+    val sink = context.makeSink<WorkflowAction<State, Nothing>>()
+    return Rendering(
+        message = state.name,
+        onClick = { sink.send(enterState(state.theOtherState())) }
+    )
+  }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.of(if (state == Hello) 1 else 0)
 }
