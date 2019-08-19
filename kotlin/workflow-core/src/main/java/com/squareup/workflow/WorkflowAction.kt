@@ -24,6 +24,11 @@ import com.squareup.workflow.WorkflowAction.Mutator
 interface WorkflowAction<StateT, out OutputT : Any> {
   class Mutator<S>(var state: S)
 
+  /**
+   * Called with the current state of a workflow, allowing the state to be updated.
+   *
+   * @return an output value for the workflow to emit, or null to emit nothing.
+   */
   fun Mutator<StateT>.apply(): OutputT?
 
   companion object {

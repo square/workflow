@@ -15,16 +15,18 @@
  */
 package com.squareup.sample.todo
 
+import com.squareup.sample.todo.TodoAction.GoBackClicked
+import com.squareup.sample.todo.TodoAction.ListAction.DeleteClicked
+import com.squareup.sample.todo.TodoAction.ListAction.DoneClicked
+import com.squareup.sample.todo.TodoAction.ListAction.TextChanged
+import com.squareup.sample.todo.TodoAction.ListAction.TitleChanged
 import com.squareup.sample.todo.TodoEditorOutput.Done
 import com.squareup.sample.todo.TodoEditorOutput.ListUpdated
-import com.squareup.sample.todo.TodoEvent.DeleteClicked
-import com.squareup.sample.todo.TodoEvent.DoneClicked
-import com.squareup.sample.todo.TodoEvent.GoBackClicked
-import com.squareup.sample.todo.TodoEvent.TextChanged
-import com.squareup.sample.todo.TodoEvent.TitleChanged
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Sink
 import com.squareup.workflow.StatelessWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Mutator
 
 data class TodoList(
   val title: String,
@@ -36,26 +38,57 @@ data class TodoRow(
   val done: Boolean = false
 )
 
-data class TodoRendering(
+sealed class TodoAction : WorkflowAction<Nothing, TodoEditorOutput> {
+  object GoBackClicked : TodoAction()
+
+  sealed class ListAction : TodoAction() {
+    abstract val list: TodoList
+
+    class TitleChanged(
+      override val list: TodoList,
+      val newTitle: String
+    ) : ListAction()
+
+    class DoneClicked(
+      override val list: TodoList,
+      val index: Int
+    ) : ListAction()
+
+    class TextChanged(
+      override val list: TodoList,
+      val index: Int,
+      val newText: String
+    ) : ListAction()
+
+    class DeleteClicked(
+      override val list: TodoList,
+      val index: Int
+    ) : ListAction()
+  }
+
+  override fun Mutator<Nothing>.apply(): TodoEditorOutput {
+    return when (this@TodoAction) {
+      is GoBackClicked -> Done
+      is TitleChanged -> ListUpdated(list.copy(title = newTitle))
+      is DoneClicked -> ListUpdated(list.updateRow(index) { copy(done = !done) })
+      is TextChanged -> ListUpdated(list.updateRow(index) { copy(text = newText) })
+      is DeleteClicked -> ListUpdated(list.removeRow(index))
+    }
+  }
+}
+
+class TodoRendering(
   val list: TodoList,
-  val onEvent: (TodoEvent) -> Unit
+  val onTitleChanged: (title: String) -> Unit,
+  val onDoneClicked: (index: Int) -> Unit,
+  val onTextChanged: (index: Int, text: String) -> Unit,
+  val onDeleteClicked: (index: Int) -> Unit,
+  val onGoBackClicked: () -> Unit
 )
 
 sealed class TodoEditorOutput {
   data class ListUpdated(val newList: TodoList) : TodoEditorOutput()
   object Done : TodoEditorOutput()
-}
-
-sealed class TodoEvent {
-  data class TitleChanged(val title: String) : TodoEvent()
-  data class DoneClicked(val index: Int) : TodoEvent()
-  data class TextChanged(
-    val index: Int,
-    val text: String
-  ) : TodoEvent()
-
-  data class DeleteClicked(val index: Int) : TodoEvent()
-  object GoBackClicked : TodoEvent()
 }
 
 class TodoEditorWorkflow : StatelessWorkflow<TodoList, TodoEditorOutput, TodoRendering>() {
@@ -64,22 +97,25 @@ class TodoEditorWorkflow : StatelessWorkflow<TodoList, TodoEditorOutput, TodoRen
     input: TodoList,
     context: RenderContext<Nothing, TodoEditorOutput>
   ): TodoRendering {
+    val rawSink = context.makeActionSink<TodoAction>()
+
+    // Make event handling idempotent until https://github.com/square/workflow/issues/541 is fixed.
+    var eventFired = false
+    val sink = object : Sink<TodoAction> {
+      override fun send(value: TodoAction) {
+        if (eventFired) return
+        eventFired = true
+        rawSink.send(value)
+      }
+    }
+
     return TodoRendering(
-        list = input.copy(rows = input.rows + TodoRow("")),
-        onEvent = context.onEvent {
-          println("got event: $it")
-          when (it) {
-            is GoBackClicked -> emitOutput(Done)
-            is TitleChanged -> emitOutput(ListUpdated(input.copy(title = it.title)))
-            is DoneClicked -> emitOutput(ListUpdated(input.updateRow(it.index) {
-              copy(done = !done)
-            }))
-            is TextChanged -> emitOutput(ListUpdated(input.updateRow(it.index) {
-              copy(text = it.text)
-            }))
-            is DeleteClicked -> emitOutput(ListUpdated(input.removeRow(it.index)))
-          }
-        }
+        input.copy(rows = input.rows + TodoRow("")),
+        onTitleChanged = { sink.send(TitleChanged(input, it)) },
+        onDoneClicked = { sink.send(DoneClicked(input, it)) },
+        onTextChanged = { index, newText -> sink.send(TextChanged(input, index, newText)) },
+        onDeleteClicked = { sink.send(DeleteClicked(input, it)) },
+        onGoBackClicked = { sink.send(GoBackClicked) }
     )
   }
 }

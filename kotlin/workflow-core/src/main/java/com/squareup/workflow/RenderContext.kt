@@ -21,6 +21,7 @@ import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction.Mutator
 
 /**
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
@@ -28,7 +29,7 @@ import com.squareup.workflow.WorkflowAction.Companion.noAction
  *
  * ## Handling Events
  *
- * See [onEvent].
+ * See [makeActionSink].
  *
  * ## Performing Asynchronous Work
  *
@@ -40,12 +41,20 @@ import com.squareup.workflow.WorkflowAction.Companion.noAction
  */
 interface RenderContext<StateT, in OutputT : Any> {
 
-  @Deprecated("Use makeSink.")
+  @Deprecated("Use makeActionSink.")
   fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<StateT, OutputT>
   ): (EventT) -> Unit
 
-  fun <A : WorkflowAction<StateT, OutputT>> makeSink(): Sink<A>
+  /**
+   * Creates a sink that will a single [WorkflowAction] of the given type.
+   * Invokes that action by calling [WorkflowAction.apply] to update the current
+   * state, and optionally emit the returned output value if it is non-null.
+   *
+   * Note that only a single action can be processed the sink (or sinks) created
+   * during a `render` call. Redundant calls to [Sink.send] will
+   */
+  fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A>
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
@@ -96,10 +105,10 @@ fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<Unit, ChildOutputT, ChildRenderingT>,
-      key: String = "",
-      handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
-    ): ChildRenderingT = renderChild(child, Unit, key, handler)
+  child: Workflow<Unit, ChildOutputT, ChildRenderingT>,
+  key: String = "",
+  handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+): ChildRenderingT = renderChild(child, Unit, key, handler)
 // @formatter:on
 
 /**
@@ -111,10 +120,10 @@ fun <InputT, StateT, OutputT : Any, ChildRenderingT>
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<InputT, Nothing, ChildRenderingT>,
-      input: InputT,
-      key: String = ""
-    ): ChildRenderingT = renderChild(child, input, key) { noAction() }
+  child: Workflow<InputT, Nothing, ChildRenderingT>,
+  input: InputT,
+  key: String = ""
+): ChildRenderingT = renderChild(child, input, key) { noAction() }
 // @formatter:on
 
 /**
@@ -126,9 +135,9 @@ fun <StateT, OutputT : Any, ChildRenderingT>
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<Unit, Nothing, ChildRenderingT>,
-      key: String = ""
-    ): ChildRenderingT = renderChild(child, Unit, key) { noAction() }
+  child: Workflow<Unit, Nothing, ChildRenderingT>,
+  key: String = ""
+): ChildRenderingT = renderChild(child, Unit, key) { noAction() }
 // @formatter:on
 
 /**
@@ -164,5 +173,19 @@ fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
   // Need to cast to Any so the compiler doesn't complain about unreachable code.
   onWorkerOutput(worker as Worker<Any>, key) {
     throw AssertionError("Worker<Nothing> emitted $it")
+  }
+}
+
+/**
+ * Alternative to [RenderContext.makeActionSink] that allows externally defined
+ * event types to be mapped to anonymous [WorkflowAction]s.
+ */
+fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink(
+  block: Mutator<StateT>.(EventT) -> OutputT
+): Sink<EventT> {
+  val actionSink = makeActionSink<WorkflowAction<StateT, OutputT>>()
+
+  return actionSink.contraMap { event ->
+    WorkflowAction { block.invoke(this, event) }
   }
 }

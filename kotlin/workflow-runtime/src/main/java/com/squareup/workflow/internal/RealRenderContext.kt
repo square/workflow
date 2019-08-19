@@ -70,7 +70,7 @@ class RealRenderContext<StateT, OutputT : Any>(
     }
   }
 
-  override fun <A : WorkflowAction<StateT, OutputT>> makeSink(): Sink<A> {
+  override fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> {
     checkNotFrozen()
 
     return object : Sink<A> {

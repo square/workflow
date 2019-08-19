@@ -53,7 +53,7 @@ object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
     state: State,
     context: RenderContext<State, Nothing>
   ): Rendering {
-    val sink = context.makeSink<WorkflowAction<State, Nothing>>()
+    val sink = context.makeActionSink<WorkflowAction<State, Nothing>>()
     return Rendering(
         message = state.name,
         onClick = { sink.send(enterState(state.theOtherState())) }

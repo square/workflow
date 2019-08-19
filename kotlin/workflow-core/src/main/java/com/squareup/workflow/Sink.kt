@@ -2,7 +2,7 @@ package com.squareup.workflow
 
 /**
  * An object that receives values (commonly events or [WorkflowAction]).
- * Use [RenderContext.makeSink] to create instances.
+ * Use [RenderContext.makeActionSink] to create instances.
  */
 interface Sink<T> {
   fun send(value: T)

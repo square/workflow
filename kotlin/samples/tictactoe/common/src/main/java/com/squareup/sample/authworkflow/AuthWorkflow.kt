@@ -155,7 +155,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
     context: RenderContext<AuthState, AuthResult>
   ): BackStackScreen<*> {
 
-    val sink = context.makeSink<Action>()
+    val sink = context.makeActionSink<Action>()
 
     return when (state) {
       is LoginPrompt -> {

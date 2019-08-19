@@ -67,7 +67,7 @@ class PlayerWorkflow(
     state: Movement,
     context: RenderContext<Movement, Nothing>
   ): Rendering {
-    val sink = context.makeSink<Action>()
+    val sink = context.makeActionSink<Action>()
 
     return Rendering(
         actorRendering = ActorRendering(avatar = avatar, movement = state),

@@ -183,7 +183,7 @@ class RealRunGameWorkflow(
     state: RunGameState,
     context: RenderContext<RunGameState, RunGameResult>
   ): RunGameScreen {
-    val sink = context.makeSink<Action>()
+    val sink = context.makeActionSink<Action>()
 
     return when (state) {
       is NewGame -> {

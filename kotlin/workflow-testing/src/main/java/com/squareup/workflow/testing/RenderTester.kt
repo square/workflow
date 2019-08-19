@@ -289,7 +289,7 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
     handler: (EventT) -> WorkflowAction<S, O>
   ): EventHandler<EventT> = realContext.onEvent(handler)
 
-  override fun <A : WorkflowAction<S, O>> makeSink(): Sink<A> = realContext.makeSink()
+  override fun <A : WorkflowAction<S, O>> makeActionSink(): Sink<A> = realContext.makeActionSink()
 
   override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
     child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
@@ -329,7 +329,7 @@ private object NoopRenderContext : RenderContext<Any?, Any> {
     throw UnsupportedOperationException()
   }
 
-  override fun <A : WorkflowAction<Any?, Any>> makeSink(): Sink<A> {
+  override fun <A : WorkflowAction<Any?, Any>> makeActionSink(): Sink<A> {
     throw UnsupportedOperationException()
   }
 

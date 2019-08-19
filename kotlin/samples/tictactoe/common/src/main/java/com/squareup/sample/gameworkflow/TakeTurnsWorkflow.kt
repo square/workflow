@@ -86,7 +86,7 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
     state: Turn,
     context: RenderContext<Turn, CompletedGame>
   ): GamePlayScreen {
-    val sink = context.makeSink<Action>()
+    val sink = context.makeActionSink<Action>()
 
     return GamePlayScreen(
         playerInfo = input.playerInfo,
