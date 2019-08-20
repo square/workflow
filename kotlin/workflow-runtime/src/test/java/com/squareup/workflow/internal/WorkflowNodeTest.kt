@@ -349,7 +349,8 @@ class WorkflowNodeTest {
 
     assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size)
+        .bytes
+    assertNotEquals(0, snapshot.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
@@ -378,7 +379,8 @@ class WorkflowNodeTest {
 
     assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size)
+        .bytes
+    assertNotEquals(0, snapshot.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
@@ -435,7 +437,8 @@ class WorkflowNodeTest {
 
     assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo").rendering)
     val snapshot = originalNode.snapshot(parentWorkflow)
-    assertNotEquals(0, snapshot.bytes.size)
+        .bytes
+    assertNotEquals(0, snapshot.size)
 
     val restoredNode = WorkflowNode(
         parentWorkflow.id(),
@@ -483,7 +486,7 @@ class WorkflowNodeTest {
     assertEquals(1, snapshotWrites)
     assertEquals(0, restoreCalls)
 
-    WorkflowNode(workflow.id(), workflow, Unit, snapshot, Unconfined)
+    WorkflowNode(workflow.id(), workflow, Unit, snapshot.bytes, Unconfined)
 
     assertEquals(1, snapshotCalls)
     assertEquals(1, snapshotWrites)
@@ -512,7 +515,8 @@ class WorkflowNodeTest {
 
     assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size)
+        .bytes
+    assertNotEquals(0, snapshot.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),

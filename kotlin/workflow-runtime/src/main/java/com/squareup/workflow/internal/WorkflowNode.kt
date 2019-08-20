@@ -35,6 +35,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.selects.SelectBuilder
+import okio.ByteString
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -47,7 +48,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   val id: WorkflowId<PropsT, OutputT, RenderingT>,
   workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
   initialProps: PropsT,
-  snapshot: Snapshot?,
+  snapshot: ByteString?,
   baseContext: CoroutineContext,
   initialState: StateT? = null
 ) : CoroutineScope {
@@ -231,7 +232,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     lastProps = newProps
   }
 
-  /** @see Snapshot.parsePartial */
+  /** @see ByteString.parsePartialSnapshot */
   private fun Snapshot.withState(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
   ): Snapshot {
@@ -242,24 +243,23 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     }
   }
 
-  private fun Snapshot.restoreState(
+  private fun ByteString.restoreState(
     input: PropsT,
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
   ): StateT {
-    val (state, childrenSnapshot) = parsePartial(input, workflow)
+    val (state, childrenSnapshot) = parsePartialSnapshot(input, workflow)
     subtreeManager.restoreChildrenFromSnapshot(childrenSnapshot)
     return state
   }
 
   /** @see Snapshot.withState */
-  private fun Snapshot.parsePartial(
+  private fun ByteString.parsePartialSnapshot(
     input: PropsT,
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
-  ): Pair<StateT, Snapshot> =
-    bytes.parse { source ->
-      val stateSnapshot = source.readByteStringWithLength()
-      val childrenSnapshot = source.readByteString()
-      val state = workflow.initialState(input, Snapshot.of(stateSnapshot))
-      return Pair(state, Snapshot.of(childrenSnapshot))
-    }
+  ): Pair<StateT, ByteString> = parse { source ->
+    val stateSnapshot = source.readByteStringWithLength()
+    val childrenSnapshot = source.readByteString()
+    val state = workflow.initialState(input, Snapshot.of(stateSnapshot))
+    return Pair(state, childrenSnapshot)
+  }
 }
