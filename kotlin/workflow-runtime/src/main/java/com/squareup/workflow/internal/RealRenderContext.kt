@@ -84,7 +84,7 @@ class RealRenderContext<StateT, OutputT : Any>(
     return renderer.render(case, child, id, input)
   }
 
-  override fun <T> onWorkerOutputOrFinished(
+  override fun <T> runningWorkerUntilFinished(
     worker: Worker<T>,
     key: String,
     handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>

@@ -27,8 +27,8 @@ import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
-import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.renderChild
+import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateless
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -148,7 +148,7 @@ class RealRenderContextTest {
     val child = Workflow.stateless<Unit, Nothing, Unit> { fail() }
     assertFailsWith<IllegalStateException> { context.renderChild(child) }
     val worker = Worker.from { Unit }
-    assertFailsWith<IllegalStateException> { context.onWorkerOutput(worker) { fail() } }
+    assertFailsWith<IllegalStateException> { context.runningWorker(worker) { fail() } }
     assertFailsWith<IllegalStateException> { context.buildBehavior() }
   }
 }

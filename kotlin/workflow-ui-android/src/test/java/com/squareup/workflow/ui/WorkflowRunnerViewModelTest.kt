@@ -6,7 +6,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateless
 import com.squareup.workflow.ui.WorkflowRunner.Config
 import kotlinx.coroutines.CancellationException
@@ -91,7 +91,7 @@ class WorkflowRunnerViewModelTest {
     val outputs = BroadcastChannel<String>(1)
     val runner = Workflow
         .stateless<Unit, String, Unit> {
-          onWorkerOutput(outputs.asWorker()) { emitOutput(it) }
+          runningWorker(outputs.asWorker()) { emitOutput(it) }
           Unit
         }
         .run()
@@ -107,7 +107,7 @@ class WorkflowRunnerViewModelTest {
   @Test fun resultEmptyOnCleared() {
     val runner = Workflow
         .stateless<Unit, String, Unit> {
-          onWorkerOutput(flowNever<String>().asWorker()) { emitOutput(it) }
+          runningWorker(flowNever<String>().asWorker()) { emitOutput(it) }
         }
         .run()
 

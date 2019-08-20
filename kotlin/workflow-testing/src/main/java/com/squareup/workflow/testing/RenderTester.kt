@@ -292,11 +292,11 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
     handler: (ChildOutputT) -> WorkflowAction<S, O>
   ): ChildRenderingT = realContext.renderChild(child, input, key, handler)
 
-  override fun <T> onWorkerOutputOrFinished(
+  override fun <T> runningWorkerUntilFinished(
     worker: Worker<T>,
     key: String,
     handler: (OutputOrFinished<T>) -> WorkflowAction<S, O>
-  ) = realContext.onWorkerOutputOrFinished(worker, key, handler)
+  ) = realContext.runningWorkerUntilFinished(worker, key, handler)
 
   override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> render(
     case: WorkflowOutputCase<ChildInputT, ChildOutputT, S, O>,
@@ -330,7 +330,7 @@ private object NoopRenderContext : RenderContext<Any?, Any> {
     throw UnsupportedOperationException()
   }
 
-  override fun <T> onWorkerOutputOrFinished(
+  override fun <T> runningWorkerUntilFinished(
     worker: Worker<T>,
     key: String,
     handler: (OutputOrFinished<T>) -> WorkflowAction<Any?, Any>

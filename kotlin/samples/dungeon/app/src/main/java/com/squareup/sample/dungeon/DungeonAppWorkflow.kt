@@ -27,7 +27,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.runningWorker
 
 typealias BoardPath = String
 
@@ -54,7 +54,7 @@ class DungeonAppWorkflow(
   ): Any {
     return when (state) {
       Loading -> {
-        context.onWorkerOutput(boardLoader.load(input)) { board ->
+        context.runningWorker(boardLoader.load(input)) { board ->
           enterState(Running(board))
         }
         Loading

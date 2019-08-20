@@ -12,7 +12,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.runningWorker
 
 class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, String>() {
 
@@ -50,7 +50,7 @@ class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, 
     state: EditTextState,
     context: RenderContext<EditTextState, String>
   ): String {
-    context.onWorkerOutput(input.terminalInput.keyStrokes) { key ->
+    context.runningWorker(input.terminalInput.keyStrokes) { key ->
       when (key.keyType) {
         Character -> enterState(
             moveCursor(input, state, 1),

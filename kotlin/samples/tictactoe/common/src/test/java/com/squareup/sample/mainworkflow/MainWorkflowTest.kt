@@ -10,8 +10,8 @@ import com.squareup.sample.panel.PanelContainerScreen
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.rendering
+import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
 import com.squareup.workflow.ui.BackStackScreen
@@ -37,7 +37,7 @@ class MainWorkflowTest {
 
   @Test fun `starts game on auth`() {
     val authWorkflow: AuthWorkflow = Workflow.stateless {
-      onWorkerOutput(Worker.from { Unit }) { emitOutput(Authorized("auth")) }
+      runningWorker(Worker.from { Unit }) { emitOutput(Authorized("auth")) }
       authScreen()
     }
 

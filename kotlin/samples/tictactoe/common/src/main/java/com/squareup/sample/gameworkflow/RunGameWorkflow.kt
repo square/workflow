@@ -42,7 +42,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.runningWorker
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
@@ -160,7 +160,7 @@ class RealRunGameWorkflow(
 
       is GameOver -> {
         if (state.syncState == SAVING) {
-          context.onWorkerOutput(gameLog.logGame(state.completedGame).asWorker()) { result ->
+          context.runningWorker(gameLog.logGame(state.completedGame).asWorker()) { result ->
             when (result) {
               TRY_LATER -> enterState(state.copy(syncState = SAVE_FAILED))
               LOGGED -> enterState(state.copy(syncState = SAVED))
