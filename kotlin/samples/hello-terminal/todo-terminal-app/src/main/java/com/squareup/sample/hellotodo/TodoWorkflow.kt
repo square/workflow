@@ -30,7 +30,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.runningWorker
 
 class TodoWorkflow : TerminalWorkflow,
     StatefulWorkflow<TerminalInput, TodoList, ExitCode, TerminalRendering>() {
@@ -83,7 +83,7 @@ class TodoWorkflow : TerminalWorkflow,
     context: RenderContext<TodoList, ExitCode>
   ): TerminalRendering {
 
-    context.onWorkerOutput(input.keyStrokes) { key ->
+    context.runningWorker(input.keyStrokes) { key ->
       when (key.keyType) {
         ArrowUp -> enterState(state.moveFocusUp())
         ArrowDown -> enterState(state.moveFocusDown())

@@ -28,8 +28,8 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.renderChild
+import com.squareup.workflow.runningWorker
 
 class HelloTerminalWorkflow : TerminalWorkflow,
     StatefulWorkflow<TerminalInput, State, ExitCode, TerminalRendering>() {
@@ -65,7 +65,7 @@ class HelloTerminalWorkflow : TerminalWorkflow,
     val prompt = "> "
     val cursor = context.renderChild(cursorWorkflow)
 
-    context.onWorkerOutput(input.keyStrokes) { key ->
+    context.runningWorker(input.keyStrokes) { key ->
       when {
         key.keyType == Backspace -> enterState(state.backspace())
         key.character == 'Q' -> emitOutput(0)

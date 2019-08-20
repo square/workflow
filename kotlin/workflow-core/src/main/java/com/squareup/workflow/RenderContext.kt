@@ -32,7 +32,7 @@ import com.squareup.workflow.WorkflowAction.Companion.noAction
  *
  * ## Performing Asynchronous Work
  *
- * See [onWorkerOutput], [onWorkerOutputOrFinished], and [runningWorker].
+ * See [runningWorker] and [runningWorkerUntilFinished].
  *
  * ## Composing Children
  *
@@ -119,11 +119,27 @@ interface RenderContext<StateT, in OutputT : Any> {
    *
    * @param key An optional string key that is used to distinguish between identical [Worker]s.
    */
-  fun <T> onWorkerOutputOrFinished(
+  fun <T> runningWorkerUntilFinished(
     worker: Worker<T>,
     key: String = "",
     handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
   )
+
+  /**
+   * Ensures [worker] is running. When the [Worker] emits an output or finishes, [handler] is called
+   * to determine the [WorkflowAction] to take.
+   *
+   * @param key An optional string key that is used to distinguish between identical [Worker]s.
+   */
+  @Deprecated(
+      "Use runningWorkerUntilFinished",
+      ReplaceWith("this.runningWorkerUntilFinished(worker, key, handler)")
+  )
+  fun <T> onWorkerOutputOrFinished(
+    worker: Worker<T>,
+    key: String = "",
+    handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
+  ) = runningWorkerUntilFinished(worker, key, handler)
 }
 
 /**
@@ -176,11 +192,11 @@ fun <StateT, OutputT : Any, ChildRenderingT>
  *
  * @param key An optional string key that is used to distinguish between identical [Worker]s.
  */
-fun <StateT, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
+fun <StateT, OutputT : Any, T> RenderContext<StateT, OutputT>.runningWorker(
   worker: Worker<T>,
   key: String = "",
   handler: (T) -> WorkflowAction<StateT, OutputT>
-) = onWorkerOutputOrFinished(worker, key) { outputOrFinished ->
+) = runningWorkerUntilFinished(worker, key) { outputOrFinished ->
   when (outputOrFinished) {
     is Output -> handler(outputOrFinished.value)
     Finished -> noAction()
@@ -200,7 +216,24 @@ fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
   key: String = ""
 ) {
   // Need to cast to Any so the compiler doesn't complain about unreachable code.
-  onWorkerOutput(worker as Worker<Any>, key) {
+  runningWorker(worker as Worker<Any>, key) {
     throw AssertionError("Worker<Nothing> emitted $it")
   }
 }
+
+/**
+ * Ensures [worker] is running. When the [Worker] emits an output, [handler] is called
+ * to determine the [WorkflowAction] to take. When the worker finishes, nothing happens (although
+ * another render pass may be triggered).
+ *
+ * @param key An optional string key that is used to distinguish between identical [Worker]s.
+ */
+@Deprecated(
+    "Use runningWorker",
+    ReplaceWith("runningWorker(worker, key, handler)", "com.squareup.workflow.runningWorker")
+)
+fun <StateT, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
+  worker: Worker<T>,
+  key: String = "",
+  handler: (T) -> WorkflowAction<StateT, OutputT>
+) = runningWorker(worker, key, handler)

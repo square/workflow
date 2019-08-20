@@ -34,7 +34,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.runningWorker
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.BackStackScreen
 
@@ -94,7 +94,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
       }
 
       is Authorizing -> {
-        context.onWorkerOutput(
+        context.runningWorker(
             authService.login(AuthRequest(state.loginInfo.email, state.loginInfo.password))
                 .asWorker()
         ) { response ->
@@ -129,7 +129,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
 
       is AuthorizingSecondFactor -> {
         val request = SecondFactorRequest(state.tempToken, state.event.secondFactor)
-        context.onWorkerOutput(authService.secondFactor(request).asWorker()) { response ->
+        context.runningWorker(authService.secondFactor(request).asWorker()) { response ->
           when {
             response.isSecondFactorFailure ->
               enterState(SecondFactorPrompt(state.tempToken, response.errorMessage))

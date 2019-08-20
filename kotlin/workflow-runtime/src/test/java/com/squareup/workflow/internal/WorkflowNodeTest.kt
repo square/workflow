@@ -214,7 +214,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        context.onWorkerOutputOrFinished(channel.asWorker()) {
+        context.runningWorkerUntilFinished(channel.asWorker()) {
           check(update == null)
           update = it
           emitOutput("update:$it")
@@ -271,7 +271,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        context.onWorkerOutputOrFinished(channel.asWorker()) {
+        context.runningWorkerUntilFinished(channel.asWorker()) {
           check(update == null)
           update = it
           emitOutput("update:$it")
@@ -318,7 +318,7 @@ class WorkflowNodeTest {
       ): String {
         when (state) {
           "listen" -> {
-            context.onWorkerOutputOrFinished(channel.asWorker(closeOnCancel = true)) {
+            context.runningWorkerUntilFinished(channel.asWorker(closeOnCancel = true)) {
               emitOutput("update:$it")
             }
             doClose = context.onEvent {

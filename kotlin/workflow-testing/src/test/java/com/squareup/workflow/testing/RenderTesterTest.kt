@@ -87,7 +87,7 @@ class RenderTesterTest {
     val workflow = Workflow.stateful<Unit, String, String, Unit>(
         initialState = { _, _ -> fail() },
         render = { _, _ ->
-          onWorkerOutputOrFinished(worker) {
+          runningWorkerUntilFinished(worker) {
             enterState(
                 "state: $it",
                 emittingOutput = "output: $it"

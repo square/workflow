@@ -20,7 +20,7 @@ package com.squareup.workflow.testing
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
 import kotlinx.coroutines.CancellationException
@@ -158,7 +158,7 @@ class WorkflowTesterTest {
     val deferred = CompletableDeferred<Unit>()
     deferred.completeExceptionally(ExpectedException())
     val workflow = Workflow.stateless<Unit, Unit, Unit> {
-      onWorkerOutput(deferred.asWorker()) { fail("Shouldn't get here.") }
+      runningWorker(deferred.asWorker()) { fail("Shouldn't get here.") }
     }
 
     workflow.testFromStart {

@@ -42,7 +42,7 @@ class WorkerCompositionIntegrationTest {
     var started = false
     val worker = Worker.create<Unit> { started = true }
     val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) onWorkerOutput(worker) { noAction() }
+      if (input) runningWorker(worker) { noAction() }
     }
 
     workflow.testFromStart(false) {
@@ -60,7 +60,7 @@ class WorkerCompositionIntegrationTest {
       }
     }
     val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) onWorkerOutput(worker) { noAction() }
+      if (input) runningWorker(worker) { noAction() }
     }
 
     workflow.testFromStart(true) {
@@ -82,8 +82,8 @@ class WorkerCompositionIntegrationTest {
         stops++
       }
     }
-    val workflow = Workflow.stateless<Unit, Nothing, Unit> { _ ->
-      onWorkerOutput(worker) { noAction() }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      runningWorker(worker) { noAction() }
     }
 
     workflow.testFromStart {
@@ -113,7 +113,7 @@ class WorkerCompositionIntegrationTest {
       }
     }
     val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) onWorkerOutput(worker) { noAction() }
+      if (input) runningWorker(worker) { noAction() }
     }
 
     workflow.testFromStart(false) {
@@ -134,10 +134,10 @@ class WorkerCompositionIntegrationTest {
     }
   }
 
-  @Test fun `onWorkerOutputOrFinished gets output`() {
+  @Test fun `runningWorkerUntilFinished gets output`() {
     val channel = Channel<String>(capacity = 1)
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
+      runningWorkerUntilFinished(channel.asWorker()) { emitOutput(it) }
     }
 
     workflow.testFromStart {
@@ -149,10 +149,10 @@ class WorkerCompositionIntegrationTest {
     }
   }
 
-  @Test fun `onWorkerOutputOrFinished gets finished`() {
+  @Test fun `runningWorkerUntilFinished gets finished`() {
     val channel = Channel<String>()
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
+      runningWorkerUntilFinished(channel.asWorker()) { emitOutput(it) }
     }
 
     workflow.testFromStart {
@@ -164,10 +164,10 @@ class WorkerCompositionIntegrationTest {
     }
   }
 
-  @Test fun `onWorkerOutputOrFinished gets finished after value`() {
+  @Test fun `runningWorkerUntilFinished gets finished after value`() {
     val channel = Channel<String>()
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
+      runningWorkerUntilFinished(channel.asWorker()) { emitOutput(it) }
     }
 
     workflow.testFromStart {
@@ -183,10 +183,10 @@ class WorkerCompositionIntegrationTest {
     }
   }
 
-  @Test fun `onWorkerOutputOrFinished gets error`() {
+  @Test fun `runningWorkerUntilFinished gets error`() {
     val channel = Channel<String>()
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      onWorkerOutputOrFinished(channel.asWorker()) { emitOutput(it) }
+      runningWorkerUntilFinished(channel.asWorker()) { emitOutput(it) }
     }
 
     workflow.testFromStart {
@@ -203,7 +203,7 @@ class WorkerCompositionIntegrationTest {
   @Test fun `onWorkerOutput does nothing when worker finished`() {
     val channel = Channel<Unit>()
     val workflow = Workflow.stateless<Unit, Unit, Unit> {
-      onWorkerOutput(channel.asWorker()) { fail("Expected handler to not be invoked.") }
+      runningWorker(channel.asWorker()) { fail("Expected handler to not be invoked.") }
     }
 
     workflow.testFromStart {
@@ -222,7 +222,7 @@ class WorkerCompositionIntegrationTest {
     val workflow = Workflow.stateful<Int, Int, (Unit) -> Unit>(
         initialState = 0,
         render = { state ->
-          onWorkerOutput(triggerOutput.asWorker()) { emitOutput(state) }
+          runningWorker(triggerOutput.asWorker()) { emitOutput(state) }
           return@stateful onEvent { enterState(state + 1) }
         }
     )

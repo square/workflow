@@ -33,8 +33,8 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.onWorkerOutput
 import com.squareup.workflow.renderChild
+import com.squareup.workflow.runningWorker
 import kotlinx.coroutines.delay
 import kotlin.math.roundToLong
 import kotlin.random.Random
@@ -122,7 +122,7 @@ class GameWorkflow(
     // If the game is paused or finished, just render the board without ticking.
     if (running) {
       // Calculate new locations for player and other actors.
-      context.onWorkerOutput(ticker) { tick ->
+      context.runningWorker(ticker) { tick ->
         // Calculate if this tick should result in movement based on the movement's speed.
         fun Movement.isTimeToMove(): Boolean {
           val ticksPerSecond = input.ticksPerSecond
@@ -156,7 +156,7 @@ class GameWorkflow(
         )
 
         // Check if AI captured player.
-        return@onWorkerOutput if (newGame.isPlayerEaten) {
+        return@runningWorker if (newGame.isPlayerEaten) {
           enterState(
               state.copy(game = newGame),
               emittingOutput = PlayerWasEaten

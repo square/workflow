@@ -106,7 +106,7 @@ class WorkflowCompositionIntegrationTest {
   @Test fun `renderChild closes over latest state`() {
     val triggerChildOutput = Channel<Unit>()
     val child = Workflow.stateless<Unit, Unit, Unit> {
-      onWorkerOutput(triggerChildOutput.asWorker()) { emitOutput(Unit) }
+      runningWorker(triggerChildOutput.asWorker()) { emitOutput(Unit) }
     }
     val workflow = Workflow.stateful<Int, Int, (Unit) -> Unit>(
         initialState = 0,

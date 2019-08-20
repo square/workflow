@@ -108,7 +108,7 @@ import kotlin.reflect.KClass
 interface Worker<out T> {
 
   /**
-   * Used by [RenderContext.onWorkerOutputOrFinished] to distinguish between the two events of a
+   * Used by [RenderContext.runningWorkerUntilFinished] to distinguish between the two events of a
    * [Worker] emitting an output and finishing.
    */
   sealed class OutputOrFinished<out T> {

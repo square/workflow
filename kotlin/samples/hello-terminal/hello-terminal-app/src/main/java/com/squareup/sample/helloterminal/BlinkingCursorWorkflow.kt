@@ -20,7 +20,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.onWorkerOutput
+import com.squareup.workflow.runningWorker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 
@@ -55,7 +55,7 @@ class BlinkingCursorWorkflow(
     state: Boolean,
     context: RenderContext<Boolean, Nothing>
   ): String {
-    context.onWorkerOutput(intervalWorker) { enterState(it) }
+    context.runningWorker(intervalWorker) { enterState(it) }
     return if (state) cursorString else ""
   }
 
