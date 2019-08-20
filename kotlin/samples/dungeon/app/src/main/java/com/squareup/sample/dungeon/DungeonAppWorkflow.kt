@@ -48,23 +48,23 @@ class DungeonAppWorkflow(
   }
 
   override fun initialState(
-    input: BoardPath,
+    props: BoardPath,
     snapshot: Snapshot?
   ): State = Loading
 
   override fun render(
-    input: BoardPath,
+    props: BoardPath,
     state: State,
     context: RenderContext<State, Nothing>
   ): Any {
     return when (state) {
       Loading -> {
-        context.runningWorker(boardLoader.load(input)) { startRunning(it) }
+        context.runningWorker(boardLoader.load(props)) { startRunning(it) }
         Loading
       }
 
       is Running -> {
-        val gameInput = GameWorkflow.Input(state.board)
+        val gameInput = GameWorkflow.Props(state.board)
         context.renderChild(gameWorkflow, gameInput) { output ->
           when (output) {
             Vibrate -> vibrate(50)

@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 @OutputTimeUnit(MILLISECONDS)
 open class DeepRenderBenchmark {
 
-  private val deepInput = CompletableDeferred<Int>()
+  private val deepProps = CompletableDeferred<Int>()
   private lateinit var renderings: Flow<Int>
   private lateinit var dispatcher: ExecutorCoroutineDispatcher
 
@@ -61,7 +61,7 @@ open class DeepRenderBenchmark {
     val runtimeScope = CoroutineScope(dispatcher)
     val deepWorkflow = DeepRenderWorkflow()
 
-    launchWorkflowIn(runtimeScope, deepWorkflow, deepInput::await.asFlow()) { r, _ ->
+    launchWorkflowIn(runtimeScope, deepWorkflow, deepProps::await.asFlow()) { r, _ ->
       renderings = r.map { it.rendering.result }
     }
   }
@@ -71,7 +71,7 @@ open class DeepRenderBenchmark {
   }
 
   @Benchmark open fun deepRender() {
-    deepInput.complete(100)
+    deepProps.complete(100)
     runBlocking {
       renderings.first()
     }

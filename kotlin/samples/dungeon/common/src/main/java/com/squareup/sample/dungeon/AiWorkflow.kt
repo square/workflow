@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.dungeon
 
-import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
+import com.squareup.sample.dungeon.ActorWorkflow.ActorProps
 import com.squareup.sample.dungeon.ActorWorkflow.ActorRendering
 import com.squareup.sample.dungeon.AiWorkflow.State
 import com.squareup.sample.dungeon.Direction.DOWN
@@ -42,7 +42,7 @@ class AiWorkflow(
   private val avatar: BoardCell = BoardCell("👻"),
   private val random: Random,
   private val cellsPerSecond: Float = random.nextFloat() * 3f + 4f // Between 4 and 7.
-) : ActorWorkflow, StatefulWorkflow<ActorInput, State, Nothing, ActorRendering>() {
+) : ActorWorkflow, StatefulWorkflow<ActorProps, State, Nothing, ActorRendering>() {
 
   data class State(
     val direction: Direction,
@@ -50,23 +50,23 @@ class AiWorkflow(
   )
 
   override fun initialState(
-    input: ActorInput,
+    props: ActorProps,
     snapshot: Snapshot?
   ): State {
     val startingDirection = random.nextEnum(Direction::class)
-    return State(startingDirection, input.ticks.createDirectionTicker(random))
+    return State(startingDirection, props.ticks.createDirectionTicker(random))
   }
 
-  override fun onInputChanged(
-    old: ActorInput,
-    new: ActorInput,
+  override fun onPropsChanged(
+    old: ActorProps,
+    new: ActorProps,
     state: State
   ): State = if (!old.ticks.doesSameWorkAs(new.ticks)) {
     state.copy(directionTicker = new.ticks.createDirectionTicker(random))
   } else state
 
   override fun render(
-    input: ActorInput,
+    props: ActorProps,
     state: State,
     context: RenderContext<State, Nothing>
   ): ActorRendering {

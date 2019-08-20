@@ -58,7 +58,7 @@ import io.reactivex.Flowable
  *   }
  */
 @ExperimentalWorkflowUi
-abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
+abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
   private lateinit var _runner: WorkflowRunner<OutputT>
 
   /**
@@ -71,7 +71,7 @@ abstract class WorkflowFragment<InputT, OutputT : Any> : Fragment() {
    * Called from [onActivityCreated], so it should be safe for implementations
    * to call [getActivity].
    */
-  protected abstract fun onCreateWorkflow(): Config<InputT, OutputT>
+  protected abstract fun onCreateWorkflow(): Config<PropsT, OutputT>
 
   final override fun onCreateView(
     inflater: LayoutInflater,

@@ -56,13 +56,13 @@ class MainWorkflow(
 ) : StatefulWorkflow<Unit, MainState, Unit, RunGameScreen>() {
 
   override fun initialState(
-    input: Unit,
+    props: Unit,
     snapshot: Snapshot?
   ): MainState = snapshot?.let { MainState.fromSnapshot(snapshot.bytes) }
       ?: Authenticating
 
   override fun render(
-    input: Unit,
+    props: Unit,
     state: MainState,
     context: RenderContext<MainState, Unit>
   ): RunGameScreen = when (state) {

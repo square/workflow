@@ -7,7 +7,7 @@ Small, simple sample library for writing terminal applications with workflows.
 The API entry points are `TerminalWorkflow` and `TerminalWorkflowRunner`. Create one of each of
 those, and pass your workflow to `TerminalWorkflowRunner.run()`.
 
-Your `TerminalWorkflow` will get the current size of the terminal as `InputT`, render a
+Your `TerminalWorkflow` will get the current size of the terminal as `PropsT`, render a
 `TerminalRendering` that includes the text to display, foreground and background colors, and an
 event handler to receive keystroke events. It can also exit the process by emitting an integer
 exit code.

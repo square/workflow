@@ -40,10 +40,10 @@ import kotlin.coroutines.CoroutineContext
  * @param initialState Allows unit tests to start the node from a given state, instead of calling
  * [StatefulWorkflow.initialState].
  */
-internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
-  val id: WorkflowId<InputT, OutputT, RenderingT>,
-  workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-  initialInput: InputT,
+internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
+  val id: WorkflowId<PropsT, OutputT, RenderingT>,
+  workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+  initialProps: PropsT,
   snapshot: Snapshot?,
   baseContext: CoroutineContext,
   initialState: StateT? = null
@@ -75,10 +75,10 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
     )
 
   private var state: StateT = initialState
-      ?: snapshot?.restoreState(initialInput, workflow)
-      ?: workflow.initialState(initialInput, snapshot = null)
+      ?: snapshot?.restoreState(initialProps, workflow)
+      ?: workflow.initialState(initialProps, snapshot = null)
 
-  private var lastInput: InputT = initialInput
+  private var lastProps: PropsT = initialProps
 
   private var behavior: Behavior<StateT, OutputT>? = null
 
@@ -89,10 +89,10 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
    */
   @Suppress("UNCHECKED_CAST")
   fun render(
-    workflow: StatefulWorkflow<InputT, *, OutputT, RenderingT>,
-    input: InputT
+    workflow: StatefulWorkflow<PropsT, *, OutputT, RenderingT>,
+    input: PropsT
   ): RenderingT =
-    renderWithStateType(workflow as StatefulWorkflow<InputT, StateT, OutputT, RenderingT>, input)
+    renderWithStateType(workflow as StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>, input)
 
   /**
    * Walk the tree of state machines again, this time gathering snapshots and aggregating them
@@ -102,7 +102,7 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
     val childrenSnapshot = subtreeManager.createChildrenSnapshot()
     @Suppress("UNCHECKED_CAST")
     return childrenSnapshot.withState(
-        workflow as StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
+        workflow as StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
     )
   }
 
@@ -169,10 +169,10 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
    * state type to our `StateT`.
    */
   private fun renderWithStateType(
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-    input: InputT
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+    input: PropsT
   ): RenderingT {
-    updateInputAndState(workflow, input)
+    updatePropsAndState(workflow, input)
 
     val context = RealRenderContext(subtreeManager)
     val rendering = workflow.render(input, state, context)
@@ -187,17 +187,17 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
     return rendering
   }
 
-  private fun updateInputAndState(
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-    newInput: InputT
+  private fun updatePropsAndState(
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+    newProps: PropsT
   ) {
-    state = workflow.onInputChanged(lastInput, newInput, state)
-    lastInput = newInput
+    state = workflow.onPropsChanged(lastProps, newProps, state)
+    lastProps = newProps
   }
 
   /** @see Snapshot.parsePartial */
   private fun Snapshot.withState(
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
   ): Snapshot {
     val stateSnapshot = workflow.snapshotState(state)
     return Snapshot.write { sink ->
@@ -207,8 +207,8 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
   }
 
   private fun Snapshot.restoreState(
-    input: InputT,
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
+    input: PropsT,
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
   ): StateT {
     val (state, childrenSnapshot) = parsePartial(input, workflow)
     subtreeManager.restoreChildrenFromSnapshot(childrenSnapshot)
@@ -217,8 +217,8 @@ internal class WorkflowNode<InputT, StateT, OutputT : Any, RenderingT>(
 
   /** @see Snapshot.withState */
   private fun Snapshot.parsePartial(
-    input: InputT,
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>
+    input: PropsT,
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
   ): Pair<StateT, Snapshot> =
     bytes.parse { source ->
       val stateSnapshot = source.readByteStringWithLength()

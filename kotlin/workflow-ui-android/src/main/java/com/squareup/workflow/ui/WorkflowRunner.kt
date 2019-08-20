@@ -66,18 +66,18 @@ interface WorkflowRunner<out OutputT : Any> {
   val viewRegistry: ViewRegistry
 
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  class Config<InputT, OutputT : Any> constructor(
-    val workflow: Workflow<InputT, OutputT, Any>,
+  class Config<PropsT, OutputT : Any> constructor(
+    val workflow: Workflow<PropsT, OutputT, Any>,
     val viewRegistry: ViewRegistry,
-    val inputs: Flow<InputT>,
+    val props: Flow<PropsT>,
     val dispatcher: CoroutineDispatcher
   ) {
     constructor(
-      workflow: Workflow<InputT, OutputT, Any>,
+      workflow: Workflow<PropsT, OutputT, Any>,
       viewRegistry: ViewRegistry,
-      input: InputT,
+      props: PropsT,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ) : this(workflow, viewRegistry, flowOf(input), dispatcher)
+    ) : this(workflow, viewRegistry, flowOf(props), dispatcher)
   }
 
   companion object {
@@ -101,10 +101,10 @@ interface WorkflowRunner<out OutputT : Any> {
      * once per [lifecycle][FragmentActivity.getLifecycle], and always called from the UI thread.
      */
     @UseExperimental(ExperimentalCoroutinesApi::class)
-    fun <InputT, OutputT : Any> startWorkflow(
+    fun <PropsT, OutputT : Any> startWorkflow(
       activity: FragmentActivity,
       savedInstanceState: Bundle?,
-      configure: () -> Config<InputT, OutputT>
+      configure: () -> Config<PropsT, OutputT>
     ): WorkflowRunner<OutputT> {
       val factory = WorkflowRunnerViewModel.Factory(savedInstanceState, configure)
 
@@ -124,10 +124,10 @@ interface WorkflowRunner<out OutputT : Any> {
      * once per [lifecycle][Fragment.getLifecycle], and always called from the UI thread.
      */
     @UseExperimental(ExperimentalCoroutinesApi::class)
-    fun <InputT, OutputT : Any> startWorkflow(
+    fun <PropsT, OutputT : Any> startWorkflow(
       fragment: Fragment,
       savedInstanceState: Bundle?,
-      configure: () -> Config<InputT, OutputT>
+      configure: () -> Config<PropsT, OutputT>
     ): WorkflowRunner<OutputT> {
       val factory = WorkflowRunnerViewModel.Factory(savedInstanceState, configure)
 
@@ -153,9 +153,9 @@ interface WorkflowRunner<out OutputT : Any> {
  */
 @ExperimentalWorkflowUi
 @UseExperimental(ExperimentalCoroutinesApi::class)
-fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
+fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
   savedInstanceState: Bundle?,
-  configure: () -> Config<InputT, OutputT>,
+  configure: () -> Config<PropsT, OutputT>,
   onResult: ((OutputT) -> Unit)
 ): WorkflowRunner<OutputT> {
   val runner = WorkflowRunner.startWorkflow(this, savedInstanceState, configure)
@@ -175,9 +175,9 @@ fun <InputT, OutputT : Any> FragmentActivity.setContentWorkflow(
 
 @ExperimentalWorkflowUi
 @UseExperimental(ExperimentalCoroutinesApi::class)
-fun <InputT> FragmentActivity.setContentWorkflow(
+fun <PropsT> FragmentActivity.setContentWorkflow(
   savedInstanceState: Bundle?,
-  configure: () -> Config<InputT, Nothing>
+  configure: () -> Config<PropsT, Nothing>
 ): WorkflowRunner<Nothing> = setContentWorkflow(savedInstanceState, configure) {}
 
 /**

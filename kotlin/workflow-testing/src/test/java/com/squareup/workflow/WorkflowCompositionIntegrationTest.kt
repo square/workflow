@@ -28,11 +28,11 @@ class WorkflowCompositionIntegrationTest {
     val root = TreeWorkflow("root", TreeWorkflow("leaf"))
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") {
+    root.testFromStart("initial props") {
       awaitNextRendering()
           .let {
-            assertEquals("root:initial input", it.data)
-            assertEquals("leaf:initial input[0]", it["leaf"].data)
+            assertEquals("root:initial props", it.data)
+            assertEquals("leaf:initial props[0]", it["leaf"].data)
           }
     }
   }
@@ -45,12 +45,12 @@ class WorkflowCompositionIntegrationTest {
     )
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") {
+    root.testFromStart("initial props") {
       awaitNextRendering()
           .let {
-            assertEquals("root:initial input", it.data)
-            assertEquals("leaf1:initial input[0]", it["leaf1"].data)
-            assertEquals("leaf2:initial input[1]", it["leaf2"].data)
+            assertEquals("root:initial props", it.data)
+            assertEquals("leaf1:initial props[0]", it["leaf1"].data)
+            assertEquals("leaf2:initial props[1]", it["leaf2"].data)
           }
     }
   }
@@ -69,15 +69,15 @@ class WorkflowCompositionIntegrationTest {
         )
     )
 
-    root.testFromStart("initial input") {
+    root.testFromStart("initial props") {
       awaitNextRendering()
           .let {
-            assertEquals("root:initial input", it.data)
-            assertEquals("middle1:initial input[0]", it["middle1"].data)
-            assertEquals("middle2:initial input[1]", it["middle2"].data)
-            assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
-            assertEquals("leaf2:initial input[0][1]", it["middle1", "leaf2"].data)
-            assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
+            assertEquals("root:initial props", it.data)
+            assertEquals("middle1:initial props[0]", it["middle1"].data)
+            assertEquals("middle2:initial props[1]", it["middle2"].data)
+            assertEquals("leaf1:initial props[0][0]", it["middle1", "leaf1"].data)
+            assertEquals("leaf2:initial props[0][1]", it["middle1", "leaf2"].data)
+            assertEquals("leaf3:initial props[1][0]", it["middle2", "leaf3"].data)
           }
     }
   }
@@ -91,7 +91,7 @@ class WorkflowCompositionIntegrationTest {
 
     // Setup initial state and change the state the workflow in the tree.
     assertFails {
-      root.testFromStart("initial input") {
+      root.testFromStart("initial props") {
         awaitNextRendering()
       }
     }.let { error ->

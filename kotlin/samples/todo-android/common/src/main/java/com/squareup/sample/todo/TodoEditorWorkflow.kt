@@ -94,7 +94,7 @@ sealed class TodoEditorOutput {
 class TodoEditorWorkflow : StatelessWorkflow<TodoList, TodoEditorOutput, TodoRendering>() {
 
   override fun render(
-    input: TodoList,
+    props: TodoList,
     context: RenderContext<Nothing, TodoEditorOutput>
   ): TodoRendering {
     val rawSink = context.makeActionSink<TodoAction>()
@@ -110,11 +110,11 @@ class TodoEditorWorkflow : StatelessWorkflow<TodoList, TodoEditorOutput, TodoRen
     }
 
     return TodoRendering(
-        input.copy(rows = input.rows + TodoRow("")),
-        onTitleChanged = { sink.send(TitleChanged(input, it)) },
-        onDoneClicked = { sink.send(DoneClicked(input, it)) },
-        onTextChanged = { index, newText -> sink.send(TextChanged(input, index, newText)) },
-        onDeleteClicked = { sink.send(DeleteClicked(input, it)) },
+        props.copy(rows = props.rows + TodoRow("")),
+        onTitleChanged = { sink.send(TitleChanged(props, it)) },
+        onDoneClicked = { sink.send(DoneClicked(props, it)) },
+        onTextChanged = { index, newText -> sink.send(TextChanged(props, index, newText)) },
+        onDeleteClicked = { sink.send(DeleteClicked(props, it)) },
         onGoBackClicked = { sink.send(GoBackClicked) }
     )
   }

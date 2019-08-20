@@ -45,9 +45,9 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  internal class Factory<InputT, OutputT : Any>(
+  internal class Factory<PropsT, OutputT : Any>(
     savedInstanceState: Bundle?,
-    private val configure: () -> WorkflowRunner.Config<InputT, OutputT>
+    private val configure: () -> WorkflowRunner.Config<PropsT, OutputT>
   ) : ViewModelProvider.Factory {
     private val snapshot = savedInstanceState
         ?.getParcelable<PickledWorkflow>(BUNDLE_KEY)
@@ -56,7 +56,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
       return with(configure()) {
         launchWorkflowIn(
-            CoroutineScope(dispatcher), workflow, inputs, snapshot
+            CoroutineScope(dispatcher), workflow, props, snapshot
         ) { renderings, output ->
           @Suppress("UNCHECKED_CAST")
           WorkflowRunnerViewModel(this, renderings, output, viewRegistry) as T

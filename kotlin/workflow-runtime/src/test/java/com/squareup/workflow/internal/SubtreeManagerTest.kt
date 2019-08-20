@@ -42,26 +42,26 @@ class SubtreeManagerTest {
     var started = 0
 
     data class Rendering(
-      val input: String,
+      val props: String,
       val state: String,
       val eventHandler: (String) -> Unit
     )
 
     override fun initialState(
-      input: String,
+      props: String,
       snapshot: Snapshot?
     ): String {
       started++
-      return "initialState:$input"
+      return "initialState:$props"
     }
 
     override fun render(
-      input: String,
+      props: String,
       state: String,
       context: RenderContext<String, String>
     ): Rendering {
       val sink: Sink<String> = context.makeEventSink { it }
-      return Rendering(input, state) { sink.send("workflow output:$it") }
+      return Rendering(props, state) { sink.send("workflow output:$it") }
     }
 
     override fun snapshotState(state: String) = fail()
@@ -73,13 +73,13 @@ class SubtreeManagerTest {
     var serializes = 0
 
     override fun initialState(
-      input: Unit,
+      props: Unit,
       snapshot: Snapshot?
     ) {
     }
 
     override fun render(
-      input: Unit,
+      props: Unit,
       state: Unit,
       context: RenderContext<Unit, Nothing>
     ) {
@@ -99,10 +99,10 @@ class SubtreeManagerTest {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
-    val input = "input"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) { fail() }
+    val props = "props"
+    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { fail() }
 
-    manager.render(case, workflow, id, input)
+    manager.render(case, workflow, id, props)
     assertEquals(1, workflow.started)
   }
 
@@ -110,11 +110,11 @@ class SubtreeManagerTest {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
-    val input = "input"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) { fail() }
+    val props = "props"
+    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { fail() }
 
-    manager.render(case, workflow, id, input)
-    manager.render(case, workflow, id, input)
+    manager.render(case, workflow, id, props)
+    manager.render(case, workflow, id, props)
     assertEquals(1, workflow.started)
   }
 
@@ -122,26 +122,26 @@ class SubtreeManagerTest {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
-    val input = "input"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) { fail() }
+    val props = "props"
+    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { fail() }
 
-    val (composeInput, composeState) = manager.render(case, workflow, id, input)
-    assertEquals("input", composeInput)
-    assertEquals("initialState:input", composeState)
+    val (composeProps, composeState) = manager.render(case, workflow, id, props)
+    assertEquals("props", composeProps)
+    assertEquals("initialState:props", composeState)
   }
 
   @Test fun `tick children handles child output`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
-    val input = "input"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) { output ->
+    val props = "props"
+    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { output ->
       WorkflowAction { "case output:$output" }
     }
 
     // Initialize the child so tickChildren has something to work with, and so that we can send
     // an event to trigger an output.
-    val (_, _, eventHandler) = manager.render(case, workflow, id, "input")
+    val (_, _, eventHandler) = manager.render(case, workflow, id, "props")
 
     runBlocking {
       val tickOutput = async {

@@ -78,9 +78,9 @@ interface RenderContext<StateT, in OutputT : Any> {
    * @param key An optional string key that is used to distinguish between workflows of the same
    * type.
    */
-  fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
-    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-    input: ChildInputT,
+  fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> renderChild(
+    child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    props: ChildPropsT,
     key: String = "",
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT
@@ -132,13 +132,13 @@ fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
  * output.
  */
-fun <InputT, StateT, OutputT : Any, ChildRenderingT>
+fun <PropsT, StateT, OutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<InputT, Nothing, ChildRenderingT>,
-      input: InputT,
+      child: Workflow<PropsT, Nothing, ChildRenderingT>,
+      input: PropsT,
       key: String = ""
     ): ChildRenderingT = renderChild(child, input, key) { noAction() }
 // @formatter:on

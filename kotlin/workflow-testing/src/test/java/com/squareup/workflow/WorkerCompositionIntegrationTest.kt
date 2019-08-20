@@ -39,13 +39,13 @@ class WorkerCompositionIntegrationTest {
   @Test fun `worker started`() {
     var started = false
     val worker = Worker.create<Unit> { started = true }
-    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) runningWorker(worker) { noAction() }
+    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { props ->
+      if (props) runningWorker(worker) { noAction() }
     }
 
     workflow.testFromStart(false) {
       assertFalse(started)
-      sendInput(true)
+      sendProps(true)
       assertTrue(started)
     }
   }
@@ -57,13 +57,13 @@ class WorkerCompositionIntegrationTest {
         cancelled = true
       }
     }
-    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) runningWorker(worker) { noAction() }
+    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { props ->
+      if (props) runningWorker(worker) { noAction() }
     }
 
     workflow.testFromStart(true) {
       assertFalse(cancelled)
-      sendInput(false)
+      sendProps(false)
       assertTrue(cancelled)
     }
   }
@@ -86,11 +86,11 @@ class WorkerCompositionIntegrationTest {
       assertEquals(1, starts)
       assertEquals(0, stops)
 
-      sendInput(Unit)
+      sendProps(Unit)
       assertEquals(1, starts)
       assertEquals(0, stops)
 
-      sendInput(Unit)
+      sendProps(Unit)
       assertEquals(1, starts)
       assertEquals(0, stops)
     }
@@ -108,23 +108,23 @@ class WorkerCompositionIntegrationTest {
         stops++
       }
     }
-    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { input ->
-      if (input) runningWorker(worker) { noAction() }
+    val workflow = Workflow.stateless<Boolean, Nothing, Unit> { props ->
+      if (props) runningWorker(worker) { noAction() }
     }
 
     workflow.testFromStart(false) {
       assertEquals(0, starts)
       assertEquals(0, stops)
 
-      sendInput(true)
+      sendProps(true)
       assertEquals(1, starts)
       assertEquals(0, stops)
 
-      sendInput(false)
+      sendProps(false)
       assertEquals(1, starts)
       assertEquals(1, stops)
 
-      sendInput(true)
+      sendProps(true)
       assertEquals(2, starts)
       assertEquals(1, stops)
     }

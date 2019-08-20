@@ -37,9 +37,9 @@ internal interface WorkflowLoop {
    * This function is the lowest-level entry point into the runtime. Don't call this directly, instead
    * call [com.squareup.workflow.launchWorkflowIn].
    */
-  suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-    inputs: Flow<InputT>,
+  suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+    props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT? = null,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
@@ -50,23 +50,23 @@ internal interface WorkflowLoop {
 internal object RealWorkflowLoop : WorkflowLoop {
 
   @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
-  override suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-    inputs: Flow<InputT>,
+  override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+    props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit
   ): Nothing = coroutineScope {
-    val inputsChannel = inputs.produceIn(this)
+    val inputsChannel = props.produceIn(this)
     inputsChannel.consume {
       var output: OutputT? = null
-      var input: InputT = inputsChannel.receive()
+      var input: PropsT = inputsChannel.receive()
       var inputsClosed = false
       val rootNode = WorkflowNode(
           id = workflow.id(),
           workflow = workflow,
-          initialInput = input,
+          initialProps = input,
           snapshot = initialSnapshot,
           baseContext = coroutineContext,
           initialState = initialState

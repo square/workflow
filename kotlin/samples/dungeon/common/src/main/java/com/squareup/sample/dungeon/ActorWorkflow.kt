@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.dungeon
 
-import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
+import com.squareup.sample.dungeon.ActorWorkflow.ActorProps
 import com.squareup.sample.dungeon.ActorWorkflow.ActorRendering
 import com.squareup.sample.dungeon.board.Board
 import com.squareup.sample.dungeon.board.Board.Location
@@ -26,9 +26,9 @@ import com.squareup.workflow.Workflow
 /**
  * Schema for a workflow that can plug into the [GameWorkflow] to represent an "actor" in the game.
  */
-interface ActorWorkflow : Workflow<ActorInput, Nothing, ActorRendering> {
+interface ActorWorkflow : Workflow<ActorProps, Nothing, ActorRendering> {
 
-  data class ActorInput(
+  data class ActorProps(
     val board: Board,
     val myLocation: Location,
     val ticks: Worker<Long>

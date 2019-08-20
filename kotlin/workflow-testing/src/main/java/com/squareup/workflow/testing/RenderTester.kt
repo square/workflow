@@ -110,12 +110,12 @@ fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRender(
  * Use [testRenderInitialState] to automatically calculate the initial state from the input.
  */
 fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRender(
-  input: I,
+  props: I,
   state: S,
   block: TestRenderResult<S, O, R>.() -> Unit
 ) {
   val testRenderContext = TestOnlyRenderContext<S, O>()
-  val rendering = render(input, state, testRenderContext)
+  val rendering = render(props, state, testRenderContext)
   val result = TestRenderResult(rendering, state, testRenderContext.buildBehavior())
   result.block()
 }
@@ -172,7 +172,7 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
    * handler with the given [output] (as an [Output]). Returns the new state and output returned by
    * the output handler.
    */
-  fun <CInputT, COutputT : Any, CRenderingT> Workflow<CInputT, COutputT, CRenderingT>.handleOutput(
+  fun <CPropsT, COutputT : Any, CRenderingT> Workflow<CPropsT, COutputT, CRenderingT>.handleOutput(
     output: COutputT,
     key: String = ""
   ): Pair<StateT, OutputT?> {
@@ -256,14 +256,14 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
     return action.applyTo(state)
   }
 
-  private fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> findWorkflowCase(
-    workflow: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
+  private fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> findWorkflowCase(
+    workflow: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
     key: String
-  ): WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT> {
+  ): WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT> {
     val id = WorkflowId(workflow, key)
     @Suppress("UNCHECKED_CAST")
     return behavior.childCases.singleOrNull { it.id == id }
-        as WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>?
+        as WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT>?
         ?: throw AssertionError("Expected workflow to be rendered: $workflow (key=\"$key\")")
   }
 
@@ -291,12 +291,12 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
 
   override fun <A : WorkflowAction<S, O>> makeActionSink(): Sink<A> = realContext.makeActionSink()
 
-  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
-    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-    input: ChildInputT,
+  override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> renderChild(
+    child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    props: ChildPropsT,
     key: String,
     handler: (ChildOutputT) -> WorkflowAction<S, O>
-  ): ChildRenderingT = realContext.renderChild(child, input, key, handler)
+  ): ChildRenderingT = realContext.renderChild(child, props, key, handler)
 
   override fun <T> runningWorkerUntilFinished(
     worker: Worker<T>,
@@ -304,19 +304,19 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
     handler: (OutputOrFinished<T>) -> WorkflowAction<S, O>
   ) = realContext.runningWorkerUntilFinished(worker, key, handler)
 
-  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> render(
-    case: WorkflowOutputCase<ChildInputT, ChildOutputT, S, O>,
-    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-    id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
-    input: ChildInputT
+  override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
+    case: WorkflowOutputCase<ChildPropsT, ChildOutputT, S, O>,
+    child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    props: ChildPropsT
   ): ChildRenderingT {
     @Suppress("UNCHECKED_CAST")
     val childStatefulWorkflow =
-      child.asStatefulWorkflow() as StatefulWorkflow<ChildInputT, Any?, ChildOutputT, ChildRenderingT>
-    val childInitialState = childStatefulWorkflow.initialState(input, null)
+      child.asStatefulWorkflow() as StatefulWorkflow<ChildPropsT, Any?, ChildOutputT, ChildRenderingT>
+    val childInitialState = childStatefulWorkflow.initialState(props, null)
     // Allow the workflow-under-test to *render* children, but those children must not try to
     // use the RenderContext themselves.
-    return childStatefulWorkflow.render(input, childInitialState, NoopRenderContext)
+    return childStatefulWorkflow.render(props, childInitialState, NoopRenderContext)
   }
 
   fun buildBehavior(): Behavior<S, O> = realContext.buildBehavior()
@@ -333,9 +333,9 @@ private object NoopRenderContext : RenderContext<Any?, Any> {
     throw UnsupportedOperationException()
   }
 
-  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
-    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-    input: ChildInputT,
+  override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> renderChild(
+    child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    props: ChildPropsT,
     key: String,
     handler: (ChildOutputT) -> WorkflowAction<Any?, Any>
   ): ChildRenderingT {

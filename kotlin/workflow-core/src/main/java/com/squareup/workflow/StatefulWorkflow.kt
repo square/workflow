@@ -21,7 +21,7 @@ package com.squareup.workflow
  * arbitrary asynchronous events from the outside world, and be [saved][snapshotState] to a
  * serialized form to be restored later.
  *
- * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
+ * The basic purpose of a `Workflow` is to take some [props][PropsT] and return a
  * [rendering][RenderingT]. To that end, a workflow may keep track of internal [state][StateT],
  * recursively ask other workflows to render themselves, subscribe to data streams from the outside
  * world, and handle events both from its [renderings][RenderContext.onEvent] and from workflows
@@ -30,15 +30,15 @@ package com.squareup.workflow
  *
  * Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows
  * are started as necessary whenever another workflow asks for them, and are cleaned up automatically
- * when they're no longer needed. [Input][InputT] propagates down the tree, [outputs][OutputT] and
+ * when they're no longer needed. [Props][PropsT] propagate down the tree, [outputs][OutputT] and
  * [renderings][RenderingT] propagate up the tree.
  *
- * @param InputT Typically a data class that is used to pass configuration information or bits of
+ * @param PropsT Typically a data class that is used to pass configuration information or bits of
  * state that the workflow can always get from its parent and needn't duplicate in its own state.
- * May be [Unit] if the workflow does not need any input data.
+ * May be [Unit] if the workflow does not need any props data.
  *
  * @param StateT Typically a data class that contains all of the internal state for this workflow.
- * The state is seeded via [input][InputT] in [initialState]. It can be [serialized][snapshotState]
+ * The state is seeded via [props][PropsT] in [initialState]. It can be [serialized][snapshotState]
  * and later used to restore the workflow. **Implementations of the `Workflow`
  * interface should not generally contain their own state directly.** They may inject objects like
  * instances of their child workflows, or network clients, but should not contain directly mutable
@@ -51,17 +51,17 @@ package com.squareup.workflow
  * May be [Nothing] if the workflow doesn't need to emit anything.
  *
  * @param RenderingT The value returned to this workflow's parent during [composition][render].
- * Typically represents a "view" of this workflow's input, current state, and children's renderings.
+ * Typically represents a "view" of this workflow's props, current state, and children's renderings.
  * A workflow that represents a UI component may use a view model as its rendering type.
  *
  * @see StatelessWorkflow
  */
 abstract class StatefulWorkflow<
-    in InputT,
+    in PropsT,
     StateT,
     out OutputT : Any,
     out RenderingT
-    > : Workflow<InputT, OutputT, RenderingT> {
+    > : Workflow<PropsT, OutputT, RenderingT> {
 
   /**
    * Called from [RenderContext.renderChild] when the state machine is first started, to get the
@@ -74,34 +74,34 @@ abstract class StatefulWorkflow<
    * [Snapshot.EMPTY] should create their initial state by parsing their snapshot.
    */
   abstract fun initialState(
-    input: InputT,
+    props: PropsT,
     snapshot: Snapshot?
   ): StateT
 
   /**
    * Called from [RenderContext.renderChild] instead of [initialState] when the workflow is already
-   * running. This allows the workflow to detect changes in input, and possibly change its state in
+   * running. This allows the workflow to detect changes in props, and possibly change its state in
    * response. This method is called eagerly: `old` and `new` might be the same value, so it is up
    * to implementing code to perform any diffing if desired.
    *
    * Default implementation does nothing.
    */
-  open fun onInputChanged(
-    old: InputT,
-    new: InputT,
+  open fun onPropsChanged(
+    old: PropsT,
+    new: PropsT,
     state: StateT
   ): StateT = state
 
   /**
    * Called at least once† any time one of the following things happens:
-   *  - This workflow's [input] changes (via the parent passing a different one in).
+   *  - This workflow's [props] changes (via the parent passing a different one in).
    *  - This workflow's [state] changes.
    *  - A descendant (immediate or transitive child) workflow:
    *    - Changes its internal state.
    *    - Emits an output.
    *
    * **Never call this method directly.** To nest the rendering of a child workflow in your own,
-   * pass the child and any required input to [RenderContext.renderChild].
+   * pass the child and any required props to [RenderContext.renderChild].
    *
    * This method *should not* have any side effects, and in particular should not do anything that
    * blocks the current thread. It may be called multiple times for the same state. It must do all its
@@ -111,7 +111,7 @@ abstract class StatefulWorkflow<
    * multiple times. Allowing this method to be invoked multiple times makes the internals simpler._
    */
   abstract fun render(
-    input: InputT,
+    props: PropsT,
     state: StateT,
     context: RenderContext<StateT, OutputT>
   ): RenderingT
@@ -135,46 +135,46 @@ abstract class StatefulWorkflow<
   /**
    * Satisfies the [Workflow] interface by returning `this`.
    */
-  final override fun asStatefulWorkflow(): StatefulWorkflow<InputT, StateT, OutputT, RenderingT> =
+  final override fun asStatefulWorkflow(): StatefulWorkflow<PropsT, StateT, OutputT, RenderingT> =
     this
 }
 
 /**
  * Returns a stateful [Workflow] implemented via the given functions.
  */
-inline fun <InputT, StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
-  crossinline initialState: (InputT, Snapshot?) -> StateT,
-  crossinline render: RenderContext<StateT, OutputT>.(input: InputT, state: StateT) -> RenderingT,
+inline fun <PropsT, StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
+  crossinline initialState: (PropsT, Snapshot?) -> StateT,
+  crossinline render: RenderContext<StateT, OutputT>.(props: PropsT, state: StateT) -> RenderingT,
   crossinline snapshot: (StateT) -> Snapshot,
-  crossinline onInputChanged: (
-    old: InputT,
-    new: InputT,
+  crossinline onPropsChanged: (
+    old: PropsT,
+    new: PropsT,
     state: StateT
   ) -> StateT = { _, _, state -> state }
-): StatefulWorkflow<InputT, StateT, OutputT, RenderingT> =
-  object : StatefulWorkflow<InputT, StateT, OutputT, RenderingT>() {
+): StatefulWorkflow<PropsT, StateT, OutputT, RenderingT> =
+  object : StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>() {
     override fun initialState(
-      input: InputT,
+      props: PropsT,
       snapshot: Snapshot?
-    ): StateT = initialState(input, snapshot)
+    ): StateT = initialState(props, snapshot)
 
-    override fun onInputChanged(
-      old: InputT,
-      new: InputT,
+    override fun onPropsChanged(
+      old: PropsT,
+      new: PropsT,
       state: StateT
-    ): StateT = onInputChanged(old, new, state)
+    ): StateT = onPropsChanged(old, new, state)
 
     override fun render(
-      input: InputT,
+      props: PropsT,
       state: StateT,
       context: RenderContext<StateT, OutputT>
-    ): RenderingT = render(context, input, state)
+    ): RenderingT = render(context, props, state)
 
     override fun snapshotState(state: StateT): Snapshot = snapshot(state)
   }
 
 /**
- * Returns a stateful [Workflow], with no input, implemented via the given functions.
+ * Returns a stateful [Workflow], with no props, implemented via the given functions.
  */
 inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
   crossinline initialState: (Snapshot?) -> StateT,
@@ -191,23 +191,23 @@ inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
  *
  * This overload does not support snapshotting, but there are other overloads that do.
  */
-inline fun <InputT, StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
-  crossinline initialState: (InputT) -> StateT,
-  crossinline render: RenderContext<StateT, OutputT>.(input: InputT, state: StateT) -> RenderingT,
-  crossinline onInputChanged: (
-    old: InputT,
-    new: InputT,
+inline fun <PropsT, StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
+  crossinline initialState: (PropsT) -> StateT,
+  crossinline render: RenderContext<StateT, OutputT>.(props: PropsT, state: StateT) -> RenderingT,
+  crossinline onPropsChanged: (
+    old: PropsT,
+    new: PropsT,
     state: StateT
   ) -> StateT = { _, _, state -> state }
 ) = stateful(
-    { input, _ -> initialState(input) },
+    { props, _ -> initialState(props) },
     render,
     { Snapshot.EMPTY },
-    onInputChanged
+    onPropsChanged
 )
 
 /**
- * Returns a stateful [Workflow], with no input, implemented via the given function.
+ * Returns a stateful [Workflow], with no props, implemented via the given function.
  *
  * This overload does not support snapshotting, but there are other overloads that do.
  */

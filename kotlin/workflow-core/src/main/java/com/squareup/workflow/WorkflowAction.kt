@@ -39,8 +39,9 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * Convenience to create a [WorkflowAction] from the [apply] lambda.
      * The returned object will include the string returned from [name] in its [toString].
      *
-     * Most useful in smaller workflows with few actions. Most workflows are better
-     * served with a sealed class hierarchy implementing the [WorkflowAction] interface directly.
+     * Particularly useful in smaller workflows with few actions, especially those that never call
+     * [RenderContext.makeActionSink]. Most workflows are better served with a sealed class
+     * hierarchy implementing the [WorkflowAction] interface directly.
      *
      * @param name Function that returns a string describing the update for debugging.
      * @param apply Function that defines the workflow update.

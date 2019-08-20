@@ -36,7 +36,7 @@ class TakeTurnsWorkflowTest {
 
   @Test fun startsGameWithGivenNames() {
     RealTakeTurnsWorkflow().testFromStart(
-        TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
+        TakeTurnsProps.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
       val (x, o) = awaitNextRendering().playerInfo
 
@@ -49,7 +49,7 @@ class TakeTurnsWorkflowTest {
 
   @Test fun xWins() {
     RealTakeTurnsWorkflow().testFromStart(
-        TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
+        TakeTurnsProps.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
       takeSquare(0, 0)
       takeSquare(1, 0)
@@ -72,7 +72,7 @@ class TakeTurnsWorkflowTest {
 
   @Test fun draw() {
     RealTakeTurnsWorkflow().testFromStart(
-        TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
+        TakeTurnsProps.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
       takeSquare(0, 0) // X - -
       takeSquare(0, 1) // X O -
@@ -103,7 +103,7 @@ class TakeTurnsWorkflowTest {
     var output: CompletedGame? = null
 
     RealTakeTurnsWorkflow().testFromStart(
-        TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
+        TakeTurnsProps.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
       awaitNextRendering().onQuit()
       output = awaitNextOutput()
@@ -112,7 +112,7 @@ class TakeTurnsWorkflowTest {
     assertThat(output!!.ending).isSameInstanceAs(Quitted)
 
     RealTakeTurnsWorkflow().testFromStart(
-        TakeTurnsInput.resumeGame(
+        TakeTurnsProps.resumeGame(
             PlayerInfo("higgledy", "piggledy"),
             output!!.lastTurn
         )

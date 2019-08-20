@@ -29,37 +29,37 @@ import kotlin.test.fail
 
 class RenderTesterTest {
 
-  @Test fun `stateless input and rendering`() {
-    val workflow = Workflow.stateless<String, String, String> { input ->
-      return@stateless "input: $input"
+  @Test fun `stateless props and rendering`() {
+    val workflow = Workflow.stateless<String, String, String> { props ->
+      return@stateless "props: $props"
     } as StatelessWorkflow
 
     workflow.testRender("start") {
-      assertEquals("input: start", rendering)
+      assertEquals("props: start", rendering)
     }
   }
 
   @Test fun `stateful workflow gets state`() {
     val workflow = Workflow.stateful<String, String, Nothing, String>(
         initialState = { _, _ -> fail("Expected initialState not to be called.") },
-        render = { input, state -> "input=$input, state=$state" },
+        render = { props, state -> "props=$props, state=$state" },
         snapshot = { fail("Expected snapshotState not to be called.") }
     )
 
-    workflow.testRender(input = "foo", state = "bar") {
-      assertEquals("input=foo, state=bar", rendering)
+    workflow.testRender(props = "foo", state = "bar") {
+      assertEquals("props=foo, state=bar", rendering)
     }
   }
 
   @Test fun `testRenderInitialState uses correct state`() {
     val workflow = Workflow.stateful<String, String, String, String>(
-        initialState = { input, _ -> input },
-        render = { input, state -> "input: $input, state: $state" },
+        initialState = { props, _ -> props },
+        render = { props, state -> "props: $props, state: $state" },
         snapshot = { fail() }
     )
 
     workflow.testRenderInitialState("initial") {
-      assertEquals("input: initial, state: initial", rendering)
+      assertEquals("props: initial, state: initial", rendering)
     }
   }
 
@@ -72,15 +72,15 @@ class RenderTesterTest {
     }
   }
 
-  @Test fun `renders child with input`() {
-    val child = MockChildWorkflow<String, String> { "input: $it" }
+  @Test fun `renders child with props`() {
+    val child = MockChildWorkflow<String, String> { "props: $it" }
     val workflow = Workflow.stateless<Unit, Nothing, String> {
       "child: " + renderChild(child, "foo")
     } as StatelessWorkflow
 
     workflow.testRender {
-      assertEquals("foo", child.lastSeenInput)
-      assertEquals("child: input: foo", rendering)
+      assertEquals("foo", child.lastSeenProps)
+      assertEquals("child: props: foo", rendering)
     }
   }
 

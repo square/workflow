@@ -24,4 +24,4 @@ typealias ExitCode = Int
  *
  * To run one of these workflows, pass it to [TerminalWorkflowRunner.run].
  */
-interface TerminalWorkflow : Workflow<TerminalInput, ExitCode, TerminalRendering>
+interface TerminalWorkflow : Workflow<TerminalProps, ExitCode, TerminalRendering>

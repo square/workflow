@@ -38,11 +38,11 @@ class RealRenderContext<StateT, OutputT : Any>(
 ) : RenderContext<StateT, OutputT> {
 
   interface Renderer<StateT, in OutputT : Any> {
-    fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> render(
-      case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
-      child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-      id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
-      input: ChildInputT
+    fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
+      case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT>,
+      child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+      id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
+      props: ChildPropsT
     ): ChildRenderingT
   }
 
@@ -83,18 +83,18 @@ class RealRenderContext<StateT, OutputT : Any>(
     }
   }
 
-  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT> renderChild(
-    child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-    input: ChildInputT,
+  override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> renderChild(
+    child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    props: ChildPropsT,
     key: String,
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT {
     checkNotFrozen()
     val id = child.id(key)
-    val case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT> =
-      WorkflowOutputCase(child, id, input, handler)
+    val case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT> =
+      WorkflowOutputCase(child, id, props, handler)
     childCases += case
-    return renderer.render(case, child, id, input)
+    return renderer.render(case, child, id, props)
   }
 
   override fun <T> runningWorkerUntilFinished(

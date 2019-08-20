@@ -15,16 +15,16 @@
  */
 package com.squareup.sample.dungeon
 
-import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
+import com.squareup.sample.dungeon.ActorWorkflow.ActorProps
 import com.squareup.sample.dungeon.Direction.DOWN
 import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
 import com.squareup.sample.dungeon.GameWorkflow.GameRendering
-import com.squareup.sample.dungeon.GameWorkflow.Input
 import com.squareup.sample.dungeon.GameWorkflow.Output
 import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
+import com.squareup.sample.dungeon.GameWorkflow.Props
 import com.squareup.sample.dungeon.GameWorkflow.State
 import com.squareup.sample.dungeon.board.Board
 import com.squareup.sample.dungeon.board.Board.Location
@@ -43,12 +43,12 @@ class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow,
   private val aiWorkflows: List<ActorWorkflow>,
   private val random: Random
-) : StatefulWorkflow<Input, State, Output, GameRendering>() {
+) : StatefulWorkflow<Props, State, Output, GameRendering>() {
 
   /**
    * @param board Should not change while the game is running.
    */
-  data class Input(
+  data class Props(
     val board: Board,
     val ticksPerSecond: Int = 15
   )
@@ -74,19 +74,19 @@ class GameWorkflow(
   )
 
   override fun initialState(
-    input: Input,
+    props: Props,
     snapshot: Snapshot?
   ): State {
-    val board = input.board
+    val board = props.board
     return State(game = Game(
         playerLocation = random.nextEmptyLocation(board),
         aiLocations = aiWorkflows.map { random.nextEmptyLocation(board) }
     ))
   }
 
-  override fun onInputChanged(
-    old: Input,
-    new: Input,
+  override fun onPropsChanged(
+    old: Props,
+    new: Props,
     state: State
   ): State {
     check(old.board == new.board) { "Expected board to not change during the game." }
@@ -94,24 +94,24 @@ class GameWorkflow(
   }
 
   override fun render(
-    input: Input,
+    props: Props,
     state: State,
     context: RenderContext<State, Output>
   ): GameRendering {
     val running = !state.game.isPlayerEaten
     // Stop actors from ticking if the game is paused or finished.
-    val ticker = if (running) createTickerWorker(input.ticksPerSecond) else Worker.finished()
+    val ticker = if (running) createTickerWorker(props.ticksPerSecond) else Worker.finished()
     val game = state.game
-    val board = input.board
+    val board = props.board
 
     // Render the player.
-    val playerInput = ActorInput(board, game.playerLocation, ticker)
+    val playerInput = ActorProps(board, game.playerLocation, ticker)
     val playerRendering = context.renderChild(playerWorkflow, playerInput)
 
     // Render all the other actors.
     val aiRenderings = aiWorkflows.zip(game.aiLocations)
         .mapIndexed { index, (aiWorkflow, aiLocation) ->
-          val aiInput = ActorInput(board, aiLocation, ticker)
+          val aiInput = ActorProps(board, aiLocation, ticker)
           aiLocation to context.renderChild(aiWorkflow, aiInput, key = index.toString())
         }
 
@@ -121,7 +121,7 @@ class GameWorkflow(
       context.runningWorker(ticker) { tick ->
         // Calculate if this tick should result in movement based on the movement's speed.
         fun Movement.isTimeToMove(): Boolean {
-          val ticksPerSecond = input.ticksPerSecond
+          val ticksPerSecond = props.ticksPerSecond
           val ticksPerCell = (ticksPerSecond / cellsPerSecond).roundToLong()
           return tick % ticksPerCell == 0L
         }

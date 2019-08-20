@@ -18,45 +18,45 @@ package com.squareup.workflow
 /**
  * Minimal implementation of [Workflow] that maintains no state of its own.
  *
- * @param InputT Typically a data class that is used to pass configuration information or bits of
+ * @param PropsT Typically a data class that is used to pass configuration information or bits of
  * state that the workflow can always get from its parent and needn't duplicate in its own state.
- * May be [Unit] if the workflow does not need any input data.
+ * May be [Unit] if the workflow does not need any props data.
  *
  * @param OutputT Typically a sealed class that represents "events" that this workflow can send
  * to its parent.
  * May be [Nothing] if the workflow doesn't need to emit anything.
  *
  * @param RenderingT The value returned to this workflow's parent during [composition][render].
- * Typically represents a "view" of this workflow's input, current state, and children's renderings.
+ * Typically represents a "view" of this workflow's props, current state, and children's renderings.
  * A workflow that represents a UI component may use a view model as its rendering type.
  *
  * @see StatefulWorkflow
  */
-abstract class StatelessWorkflow<InputT, OutputT : Any, RenderingT> :
-    Workflow<InputT, OutputT, RenderingT> {
+abstract class StatelessWorkflow<PropsT, OutputT : Any, RenderingT> :
+    Workflow<PropsT, OutputT, RenderingT> {
 
   @Suppress("UNCHECKED_CAST")
-  private val statefulWorkflow = Workflow.stateful<InputT, Unit, OutputT, RenderingT>(
+  private val statefulWorkflow = Workflow.stateful<PropsT, Unit, OutputT, RenderingT>(
       initialState = { Unit },
-      render = { input, _ -> render(input, this as RenderContext<Nothing, OutputT>) }
+      render = { props, _ -> render(props, this as RenderContext<Nothing, OutputT>) }
   )
 
   /**
    * Called at least once any time one of the following things happens:
-   *  - This workflow's [input] changes (via the parent passing a different one in).
+   *  - This workflow's [props] change (via the parent passing a different one in).
    *  - A descendant (immediate or transitive child) workflow:
    *    - Changes its internal state.
    *    - Emits an output.
    *
    * **Never call this method directly.** To get the rendering from a child workflow, pass the child
-   * and any required input to [RenderContext.renderChild].
+   * and any required props to [RenderContext.renderChild].
    *
    * This method *should not* have any side effects, and in particular should not do anything that
    * blocks the current thread. It may be called multiple times for the same state. It must do all its
    * work by calling methods on [context].
    */
   abstract fun render(
-    input: InputT,
+    props: PropsT,
     context: RenderContext<Nothing, OutputT>
   ): RenderingT
 
@@ -67,7 +67,7 @@ abstract class StatelessWorkflow<InputT, OutputT : Any, RenderingT> :
    * This method is called a few times per instance, but we don't need to allocate a new
    * [StatefulWorkflow] every time, so we store it in a private property.
    */
-  final override fun asStatefulWorkflow(): StatefulWorkflow<InputT, *, OutputT, RenderingT> =
+  final override fun asStatefulWorkflow(): StatefulWorkflow<PropsT, *, OutputT, RenderingT> =
     statefulWorkflow
 }
 
@@ -75,17 +75,17 @@ abstract class StatelessWorkflow<InputT, OutputT : Any, RenderingT> :
  * Returns a stateless [Workflow] via the given [render] function.
  *
  * Note that while the returned workflow doesn't have any _internal_ state of its own, it may use
- * [input][InputT] received from its parent, and it may render child workflows that do have
+ * [props][PropsT] received from its parent, and it may render child workflows that do have
  * their own internal state.
  */
-inline fun <InputT, OutputT : Any, RenderingT> Workflow.Companion.stateless(
-  crossinline render: RenderContext<Nothing, OutputT>.(input: InputT) -> RenderingT
-): Workflow<InputT, OutputT, RenderingT> =
-  object : StatelessWorkflow<InputT, OutputT, RenderingT>() {
+inline fun <PropsT, OutputT : Any, RenderingT> Workflow.Companion.stateless(
+  crossinline render: RenderContext<Nothing, OutputT>.(props: PropsT) -> RenderingT
+): Workflow<PropsT, OutputT, RenderingT> =
+  object : StatelessWorkflow<PropsT, OutputT, RenderingT>() {
     override fun render(
-      input: InputT,
+      props: PropsT,
       context: RenderContext<Nothing, OutputT>
-    ): RenderingT = render(context, input)
+    ): RenderingT = render(context, props)
   }
 
 /**
@@ -103,11 +103,11 @@ fun <OutputT : Any, RenderingT> Workflow.Companion.rendering(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-fun <InputT, OutputT : Any, FromRenderingT, ToRenderingT>
-    Workflow<InputT, OutputT, FromRenderingT>.mapRendering(
+fun <PropsT, OutputT : Any, FromRenderingT, ToRenderingT>
+    Workflow<PropsT, OutputT, FromRenderingT>.mapRendering(
       transform: (FromRenderingT) -> ToRenderingT
-    ): Workflow<InputT, OutputT, ToRenderingT> = Workflow.stateless { input ->
+    ): Workflow<PropsT, OutputT, ToRenderingT> = Workflow.stateless { props ->
   // @formatter:on
-  renderChild(this@mapRendering, input) { output -> WorkflowAction { output } }
+  renderChild(this@mapRendering, props) { output -> WorkflowAction { output } }
       .let(transform)
 }

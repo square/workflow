@@ -36,14 +36,14 @@ data class Behavior<StateT, out OutputT : Any> internal constructor(
 
   // @formatter:off
   data class WorkflowOutputCase<
-      ChildInputT,
+      ChildPropsT,
       ChildOutputT : Any,
       ParentStateT,
       out ParentOutputT : Any
       > internal constructor(
         val workflow: Workflow<*, ChildOutputT, *>,
-        val id: WorkflowId<ChildInputT, ChildOutputT, *>,
-        val input: ChildInputT,
+        val id: WorkflowId<ChildPropsT, ChildOutputT, *>,
+        val props: ChildPropsT,
         val handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
       ) {
         @Suppress("UNCHECKED_CAST")

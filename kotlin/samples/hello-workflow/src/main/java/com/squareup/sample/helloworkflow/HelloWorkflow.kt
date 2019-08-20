@@ -47,13 +47,13 @@ object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
   }
 
   override fun initialState(
-    input: Unit,
+    props: Unit,
     snapshot: Snapshot?
   ): State = snapshot?.bytes?.parse { source -> if (source.readInt() == 1) Hello else Goodbye }
       ?: Hello
 
   override fun render(
-    input: Unit,
+    props: Unit,
     state: State,
     context: RenderContext<State, Nothing>
   ): Rendering {

@@ -5,8 +5,8 @@ import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Arro
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowRight
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Backspace
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Character
-import com.squareup.sample.helloterminal.terminalworkflow.TerminalInput
-import com.squareup.sample.hellotodo.EditTextWorkflow.EditTextInput
+import com.squareup.sample.helloterminal.terminalworkflow.TerminalProps
+import com.squareup.sample.hellotodo.EditTextWorkflow.EditTextProps
 import com.squareup.sample.hellotodo.EditTextWorkflow.EditTextState
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
@@ -14,11 +14,11 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.runningWorker
 
-class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, String>() {
+class EditTextWorkflow : StatefulWorkflow<EditTextProps, EditTextState, String, String>() {
 
-  data class EditTextInput(
+  data class EditTextProps(
     val text: String,
-    val terminalInput: TerminalInput
+    val terminalProps: TerminalProps
   )
 
   /**
@@ -30,13 +30,13 @@ class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, 
   )
 
   override fun initialState(
-    input: EditTextInput,
+    props: EditTextProps,
     snapshot: Snapshot?
-  ) = EditTextState(input.text.length)
+  ) = EditTextState(props.text.length)
 
-  override fun onInputChanged(
-    old: EditTextInput,
-    new: EditTextInput,
+  override fun onPropsChanged(
+    old: EditTextProps,
+    new: EditTextProps,
     state: EditTextState
   ): EditTextState {
     return if (old.text != new.text) {
@@ -46,17 +46,17 @@ class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, 
   }
 
   override fun render(
-    input: EditTextInput,
+    props: EditTextProps,
     state: EditTextState,
     context: RenderContext<EditTextState, String>
   ): String {
-    context.runningWorker(input.terminalInput.keyStrokes) { key -> onKeystroke(input, key) }
+    context.runningWorker(props.terminalProps.keyStrokes) { key -> onKeystroke(props, key) }
 
     return buildString {
-      input.text.forEachIndexed { index, c ->
+      props.text.forEachIndexed { index, c ->
         append(if (index == state.cursorPosition) "|$c" else "$c")
       }
-      if (state.cursorPosition == input.text.length) append("|")
+      if (state.cursorPosition == props.text.length) append("|")
     }
   }
 
@@ -64,29 +64,29 @@ class EditTextWorkflow : StatefulWorkflow<EditTextInput, EditTextState, String, 
 }
 
 private fun onKeystroke(
-  input: EditTextInput,
+  props: EditTextProps,
   key: KeyStroke
 ) = WorkflowAction<EditTextState, String> {
   when (key.keyType) {
     Character -> {
-      state = moveCursor(input, state, 1)
-      input.text.insertCharAt(state.cursorPosition, key.character!!)
+      state = moveCursor(props, state, 1)
+      props.text.insertCharAt(state.cursorPosition, key.character!!)
     }
 
     Backspace -> {
-      if (input.text.isEmpty()) {
+      if (props.text.isEmpty()) {
         null
       } else {
-        state = moveCursor(input, state, -1)
-        input.text.removeRange(state.cursorPosition - 1, state.cursorPosition)
+        state = moveCursor(props, state, -1)
+        props.text.removeRange(state.cursorPosition - 1, state.cursorPosition)
       }
     }
     ArrowLeft -> {
-      state = moveCursor(input, state, -1)
+      state = moveCursor(props, state, -1)
       null
     }
     ArrowRight -> {
-      state = moveCursor(input, state, 1)
+      state = moveCursor(props, state, 1)
       null
     }
     else -> null
@@ -94,11 +94,11 @@ private fun onKeystroke(
 }
 
 private fun moveCursor(
-  input: EditTextInput,
+  props: EditTextProps,
   state: EditTextState,
   delta: Int
 ): EditTextState =
-  state.copy(cursorPosition = (state.cursorPosition + delta).coerceIn(0..input.text.length + 1))
+  state.copy(cursorPosition = (state.cursorPosition + delta).coerceIn(0..props.text.length + 1))
 
 private fun String.insertCharAt(
   index: Int,

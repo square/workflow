@@ -178,28 +178,28 @@ class WorkflowTesterTest {
     }
   }
 
-  @Test fun `workflow gets inputs from sendInput`() {
-    val workflow = Workflow.stateless<String, Nothing, String> { input -> input }
+  @Test fun `workflow gets props from sendProps`() {
+    val workflow = Workflow.stateless<String, Nothing, String> { props -> props }
 
     workflow.testFromStart("one") {
       assertEquals("one", awaitNextRendering())
-      sendInput("two")
+      sendProps("two")
       assertEquals("two", awaitNextRendering())
     }
   }
 
-  @Test fun `sendInput duplicate values all trigger render passes`() {
+  @Test fun `sendProps duplicate values all trigger render passes`() {
     var renders = 0
-    val input = "input"
+    val props = "props"
     val workflow = Workflow.stateless<String, Nothing, Unit> { renders++ }
 
-    workflow.testFromStart(input) {
+    workflow.testFromStart(props) {
       assertEquals(1, renders)
 
-      sendInput(input)
+      sendProps(props)
       assertEquals(2, renders)
 
-      sendInput(input)
+      sendProps(props)
       assertEquals(3, renders)
     }
   }
