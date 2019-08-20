@@ -20,7 +20,6 @@ import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.writeUtf8WithLength
 import okio.ByteString
-import kotlin.reflect.jvm.jvmName
 
 /**
  * The state of [MainWorkflow]. Indicates which nested workflow is running, and records
@@ -33,7 +32,7 @@ sealed class MainState {
   internal object RunningGame : MainState()
 
   fun toSnapshot(): Snapshot {
-    return Snapshot.write { sink -> sink.writeUtf8WithLength(this::class.jvmName) }
+    return Snapshot.write { sink -> sink.writeUtf8WithLength(this::class.java.name) }
   }
 
   companion object {
@@ -41,8 +40,8 @@ sealed class MainState {
       val mainStateName = it.readUtf8WithLength()
 
       return when (mainStateName) {
-        Authenticating::class.jvmName -> Authenticating
-        RunningGame::class.jvmName -> RunningGame
+        Authenticating::class.java.name -> Authenticating
+        RunningGame::class.java.name -> RunningGame
         else -> throw IllegalArgumentException("Unrecognized state: $mainStateName")
       }
     }

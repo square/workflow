@@ -22,7 +22,6 @@ import com.squareup.workflow.writeUtf8WithLength
 import okio.Buffer
 import okio.ByteString
 import kotlin.reflect.KClass
-import kotlin.reflect.jvm.jvmName
 
 internal typealias AnyId = WorkflowId<*, *, *>
 
@@ -48,7 +47,7 @@ internal fun <W : Workflow<I, O, R>, I, O : Any, R>
 
 internal fun WorkflowId<*, *, *>.toByteString(): ByteString = Buffer()
     .also { sink ->
-      sink.writeUtf8WithLength(type.jvmName)
+      sink.writeUtf8WithLength(type.java.name)
       sink.writeUtf8WithLength(name)
     }
     .readByteString()

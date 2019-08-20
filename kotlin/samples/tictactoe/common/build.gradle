@@ -22,7 +22,6 @@ dependencies {
   implementation project(':workflow-rx2')
 
   implementation deps.kotlin.stdLib.jdk6
-  implementation deps.kotlin.reflect
   implementation deps.rxjava2.rxjava2
 
   testImplementation deps.test.hamcrestCore

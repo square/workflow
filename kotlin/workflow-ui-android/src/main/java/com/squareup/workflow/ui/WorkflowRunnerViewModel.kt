@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.rx2.asObservable
 import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CancellationException
-import kotlin.reflect.jvm.jvmName
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
 @ExperimentalWorkflowUi
@@ -101,6 +100,6 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   internal fun getLastSnapshotForTest() = lastSnapshot
 
   private companion object {
-    val BUNDLE_KEY = WorkflowRunner::class.jvmName + "-workflow"
+    val BUNDLE_KEY = WorkflowRunner::class.java.name + "-workflow"
   }
 }

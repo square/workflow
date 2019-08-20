@@ -31,7 +31,6 @@ dependencies {
   api deps.kotlin.stdLib.jdk6
 
   implementation project(':workflow-runtime')
-  implementation deps.kotlin.reflect
 
   testImplementation deps.kotlin.test.jdk
 }
