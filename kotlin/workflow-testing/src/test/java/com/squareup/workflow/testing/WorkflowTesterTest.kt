@@ -137,10 +137,11 @@ class WorkflowTesterTest {
           }
         },
         render = {},
-        snapshot = { Snapshot.EMPTY }
+        snapshot = { Snapshot.of("dummy snapshot") }
     )
 
-    // Get a valid snapshot (can't use Snapshot.EMPTY).
+    // Get a valid snapshot (can't use the raw snapshot directly,
+    // see https://github.com/square/workflow/issues/538).
     val snapshot = workflow.testFromStart {
       awaitNextSnapshot()
     }
