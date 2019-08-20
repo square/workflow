@@ -21,7 +21,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
- * [Worker] that performs some action when the worker is started and/or cancelled.
+ * [Worker] that performs some action when the worker is started and/or stopped.
+ *
+ * A [Worker] is stopped when its parent [Workflow] finishes a render pass without running the
+ * worker, or when the parent workflow is itself torn down.
  */
 abstract class LifecycleWorker : Worker<Nothing> {
 
@@ -31,7 +34,8 @@ abstract class LifecycleWorker : Worker<Nothing> {
    * one or more additional render passes may occur before this method is called.
    * This behavior may change to be more strict in the future.
    *
-   * This method will be called exactly once for each matching call to [onCancelled].
+   * This method will be called exactly once for each matching call to [onStopped], and it will
+   * always be called first.
    *
    * Invoked on the dispatcher running the workflow.
    */
@@ -39,15 +43,16 @@ abstract class LifecycleWorker : Worker<Nothing> {
 
   /**
    * Called when this worker has been torn down. It is executed concurrently with the parent
-   * workflow – the render pass that cancels this worker *will not* wait for this method to return,
-   * and one or more additional render passes may occur before this method is called.
+   * workflow – the render pass that cancels (stops) this worker *will not* wait for this method to
+   * return, and one or more additional render passes may occur before this method is called.
    * This behavior may change to be more strict in the future.
    *
-   * This method will be called exactly once for each matching call to [onStarted].
+   * This method will be called exactly once for each matching call to [onStarted], and it will
+   * always be called second.
    *
    * Invoked on the dispatcher running the workflow.
    */
-  open fun onCancelled() {}
+  open fun onStopped() {}
 
   @UseExperimental(ExperimentalCoroutinesApi::class)
   final override fun run(): Flow<Nothing> = flow {
@@ -60,7 +65,7 @@ abstract class LifecycleWorker : Worker<Nothing> {
       // doesn't block the cancellation, but ensures it's run on the correct dispatcher.
       suspendCancellableCoroutine<Nothing> { }
     } finally {
-      onCancelled()
+      onStopped()
     }
   }
 

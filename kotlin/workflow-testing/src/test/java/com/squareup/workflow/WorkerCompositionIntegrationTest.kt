@@ -55,7 +55,7 @@ class WorkerCompositionIntegrationTest {
   @Test fun `worker cancelled when dropped`() {
     var cancelled = false
     val worker = object : LifecycleWorker() {
-      override fun onCancelled() {
+      override fun onStopped() {
         cancelled = true
       }
     }
@@ -78,7 +78,7 @@ class WorkerCompositionIntegrationTest {
         starts++
       }
 
-      override fun onCancelled() {
+      override fun onStopped() {
         stops++
       }
     }
@@ -108,7 +108,7 @@ class WorkerCompositionIntegrationTest {
         starts++
       }
 
-      override fun onCancelled() {
+      override fun onStopped() {
         stops++
       }
     }

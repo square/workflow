@@ -50,7 +50,7 @@ class LifecycleWorkerTest {
   @Test fun `onCancelled called on cancel`() {
     var onCancelledCalled = false
     val worker = object : LifecycleWorker() {
-      override fun onCancelled() {
+      override fun onStopped() {
         onCancelledCalled = true
       }
     }
