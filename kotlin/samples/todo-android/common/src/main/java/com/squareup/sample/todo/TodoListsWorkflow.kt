@@ -27,12 +27,12 @@ data class TodoListsRendering(
 
 class TodoListsWorkflow : StatelessWorkflow<List<TodoList>, Int, TodoListsRendering>() {
   override fun render(
-    input: List<TodoList>,
+    props: List<TodoList>,
     context: RenderContext<Nothing, Int>
   ): TodoListsRendering {
     // A sink that emits the given index as the result of this workflow.
     val sink: Sink<Int> = context.makeEventSink { index: Int -> index }
 
-    return TodoListsRendering(lists = input, onRowClicked = sink::send)
+    return TodoListsRendering(lists = props, onRowClicked = sink::send)
   }
 }

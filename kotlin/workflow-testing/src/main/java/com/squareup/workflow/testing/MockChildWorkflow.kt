@@ -30,7 +30,7 @@ import com.squareup.workflow.stateless
  * @see StatefulWorkflow.testRender
  * @see com.squareup.workflow.StatelessWorkflow.testRender
  */
-class MockChildWorkflow<I, R>(private val renderer: (I) -> R) : Workflow<I, Nothing, R> {
+class MockChildWorkflow<P, R>(private val renderer: (P) -> R) : Workflow<P, Nothing, R> {
 
   /**
    * Creates a [MockChildWorkflow] that will always render the same value, [rendering].
@@ -39,23 +39,23 @@ class MockChildWorkflow<I, R>(private val renderer: (I) -> R) : Workflow<I, Noth
 
   private object NullSentinal
 
-  private var _lastSeenInput: Any? = null
+  private var _lastSeenProps: Any? = null
 
   /**
    * Returns the last input value used to render this instance.
    */
-  val lastSeenInput: I
+  val lastSeenProps: P
     @Suppress("UNCHECKED_CAST")
     get() =
-      (_lastSeenInput ?: error("Expected MockChildWorkflow to be rendered before reading input."))
-          .takeUnless { it === NullSentinal } as I
+      (_lastSeenProps ?: error("Expected MockChildWorkflow to be rendered before reading input."))
+          .takeUnless { it === NullSentinal } as P
 
   private val workflow = Workflow
-      .stateless<I, Nothing, R> { input ->
-        _lastSeenInput = input ?: NullSentinal
+      .stateless<P, Nothing, R> { input ->
+        _lastSeenProps = input ?: NullSentinal
         return@stateless renderer(input)
       }
       .asStatefulWorkflow()
 
-  override fun asStatefulWorkflow(): StatefulWorkflow<I, *, Nothing, R> = workflow
+  override fun asStatefulWorkflow(): StatefulWorkflow<P, *, Nothing, R> = workflow
 }

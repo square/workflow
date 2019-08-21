@@ -491,9 +491,9 @@ private fun simpleLoop(
     onOutput: suspend (Any?) -> Unit
   ) -> Nothing
 ): WorkflowLoop = object : WorkflowLoop {
-  override suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-    inputs: Flow<InputT>,
+  override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+    props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
@@ -508,9 +508,9 @@ private fun simpleLoop(
 
 private object HangingLoop : WorkflowLoop {
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  override suspend fun <InputT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
-    workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-    inputs: Flow<InputT>,
+  override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+    props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,

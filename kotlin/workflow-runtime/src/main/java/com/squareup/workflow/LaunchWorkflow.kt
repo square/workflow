@@ -43,8 +43,8 @@ internal typealias Configurator <O, R, T> = CoroutineScope.(
 
 /**
  * Launches the [workflow] in a new coroutine in [scope]. The workflow tree is seeded with
- * [initialSnapshot] and the first value emitted by [inputs].  Subsequent values emitted from
- * [inputs] will be used to re-render the workflow.
+ * [initialSnapshot] and the first value emitted by [props].  Subsequent values emitted from
+ * [props] will be used to re-render the workflow.
  *
  * This is the primary low-level entry point into the workflow runtime. If you are writing an app,
  * you should probably be using a higher-level entry point that will also let you define UI bindings
@@ -81,7 +81,7 @@ internal typealias Configurator <O, R, T> = CoroutineScope.(
  * in any workflows will be reported to this scope, and cancelling this scope will cancel the
  * workflow runtime. The scope passed to [beforeStart] will be a child of this scope.
  * @param workflow The root workflow to start.
- * @param inputs Stream of input values for the root workflow. The first value emitted is passed to
+ * @param props Stream of input values for the root workflow. The first value emitted is passed to
  * the root workflow's [StatefulWorkflow.initialState], and subsequent emissions are passed as
  * input updates to the root workflow. If this flow completes before emitting anything, the runtime
  * will fail (report an exception up through [scope]). If this flow completes _after_ emitting at
@@ -97,10 +97,10 @@ internal typealias Configurator <O, R, T> = CoroutineScope.(
  * @return The value returned by [beforeStart].
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
-fun <InputT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
+fun <PropsT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
   scope: CoroutineScope,
-  workflow: Workflow<InputT, OutputT, RenderingT>,
-  inputs: Flow<InputT>,
+  workflow: Workflow<PropsT, OutputT, RenderingT>,
+  props: Flow<PropsT>,
   initialSnapshot: Snapshot? = null,
   beforeStart: CoroutineScope.(
     renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
@@ -110,7 +110,7 @@ fun <InputT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
     scope,
     RealWorkflowLoop,
     workflow.asStatefulWorkflow(),
-    inputs,
+    props,
     initialSnapshot = initialSnapshot,
     initialState = null,
     beforeStart = beforeStart
@@ -118,8 +118,8 @@ fun <InputT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
 
 /**
  * Launches the [workflow] in a new coroutine in [scope]. The workflow tree is seeded with
- * [initialState] and the first value emitted by [inputs].  Subsequent values emitted from
- * [inputs] will be used to re-render the workflow.
+ * [initialState] and the first value emitted by [props].  Subsequent values emitted from
+ * [props] will be used to re-render the workflow.
  *
  * See [launchWorkflowIn] for documentation about most of the parameters and behavior.
  *
@@ -127,10 +127,10 @@ fun <InputT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
  */
 @TestOnly
 @UseExperimental(ExperimentalCoroutinesApi::class)
-fun <InputT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFromStateIn(
+fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFromStateIn(
   scope: CoroutineScope,
-  workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-  inputs: Flow<InputT>,
+  workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+  props: Flow<PropsT>,
   initialState: StateT,
   beforeStart: CoroutineScope.(
     renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
@@ -140,18 +140,18 @@ fun <InputT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFr
     scope,
     RealWorkflowLoop,
     workflow,
-    inputs,
+    props,
     initialState = initialState,
     initialSnapshot = null,
     beforeStart = beforeStart
 )
 
 @UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
-internal fun <InputT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowImpl(
+internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowImpl(
   scope: CoroutineScope,
   workflowLoop: WorkflowLoop,
-  workflow: StatefulWorkflow<InputT, StateT, OutputT, RenderingT>,
-  inputs: Flow<InputT>,
+  workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+  props: Flow<PropsT>,
   initialSnapshot: Snapshot?,
   initialState: StateT?,
   beforeStart: Configurator<OutputT, RenderingT, RunnerT>
@@ -167,7 +167,7 @@ internal fun <InputT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
     // Run the workflow processing loop forever, or until it fails or is cancelled.
     workflowLoop.runWorkflowLoop(
         workflow,
-        inputs,
+        props,
         initialSnapshot = initialSnapshot,
         initialState = initialState,
         onRendering = renderingsAndSnapshots::send,

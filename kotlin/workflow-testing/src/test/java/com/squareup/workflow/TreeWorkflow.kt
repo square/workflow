@@ -44,20 +44,20 @@ internal class TreeWorkflow(
   }
 
   override fun initialState(
-    input: String,
+    props: String,
     snapshot: Snapshot?
   ): String = snapshot?.bytes?.parse {
     it.readUtf8WithLength()
-  } ?: input
+  } ?: props
 
   override fun render(
-    input: String,
+    props: String,
     state: String,
     context: RenderContext<String, Nothing>
   ): Rendering {
     val childRenderings = children
         .mapIndexed { index, child ->
-          val childRendering = context.renderChild(child, "$input[$index]", child.name)
+          val childRendering = context.renderChild(child, "$props[$index]", child.name)
           Pair(child.name, childRendering)
         }
         .toMap()

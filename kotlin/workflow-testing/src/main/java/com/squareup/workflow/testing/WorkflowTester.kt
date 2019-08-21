@@ -55,12 +55,12 @@ import kotlin.coroutines.EmptyCoroutineContext
  *    - Block until something becomes available, and then return it.
  *  - [hasRendering], [hasOutput], [hasSnapshot]
  *    - Return `true` if the previous methods won't block.
- *  - [sendInput]
- *    - Send a new [InputT] to the root workflow.
+ *  - [sendProps]
+ *    - Send a new [PropsT] to the root workflow.
  */
-class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal constructor(
+class WorkflowTester<PropsT, OutputT : Any, RenderingT> @TestOnly internal constructor(
   private val scope: CoroutineScope,
-  private val inputs: SendChannel<InputT>,
+  private val props: SendChannel<PropsT>,
   private val renderingsAndSnapshotsFlow: Flow<RenderingAndSnapshot<RenderingT>>,
   private val outputsFlow: Flow<OutputT>
 ) {
@@ -95,7 +95,7 @@ class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal const
   /**
    * Runs the test from [block], and then cancels the workflow runtime after it's done.
    */
-  internal fun <T> runTest(block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T): T =
+  internal fun <T> runTest(block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T): T =
     try {
       block(this)
     } finally {
@@ -122,10 +122,10 @@ class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal const
   /**
    * Sends [input] to the workflow.
    */
-  fun sendInput(input: InputT) {
+  fun sendProps(input: PropsT) {
     runBlocking {
       withTimeout(DEFAULT_TIMEOUT_MS) {
-        inputs.send(input)
+        props.send(input)
       }
     }
   }
@@ -216,16 +216,16 @@ class WorkflowTester<InputT, OutputT : Any, RenderingT> @TestOnly internal const
  */
 // @formatter:off
 @TestOnly
-fun <T, InputT, OutputT : Any, RenderingT>
-    Workflow<InputT, OutputT, RenderingT>.testFromStart(
-      input: InputT,
+fun <T, PropsT, OutputT : Any, RenderingT>
+    Workflow<PropsT, OutputT, RenderingT>.testFromStart(
+      props: PropsT,
       snapshot: Snapshot? = null,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
+      block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
     ): T
 // @formatter:on
 {
-  val inputs = ConflatedBroadcastChannel(input)
+  val inputs = ConflatedBroadcastChannel(props)
 
   val tester = launchWorkflowIn(
       CoroutineScope(Unconfined + context),
@@ -261,16 +261,16 @@ fun <T, OutputT : Any, RenderingT> Workflow<Unit, OutputT, RenderingT>.testFromS
  */
 // @formatter:off
 @TestOnly
-fun <T, InputT, StateT, OutputT : Any, RenderingT>
-    StatefulWorkflow<InputT, StateT, OutputT, RenderingT>.testFromState(
-      input: InputT,
+fun <T, PropsT, StateT, OutputT : Any, RenderingT>
+    StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.testFromState(
+      props: PropsT,
       initialState: StateT,
       context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<InputT, OutputT, RenderingT>.() -> T
+      block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
     ): T
 // @formatter:on
 {
-  val inputs = ConflatedBroadcastChannel(input)
+  val inputs = ConflatedBroadcastChannel(props)
   val scope = CoroutineScope(Unconfined + context)
 
   val tester = launchWorkflowForTestFromStateIn(

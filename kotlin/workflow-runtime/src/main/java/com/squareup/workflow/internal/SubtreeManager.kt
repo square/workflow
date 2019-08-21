@@ -52,19 +52,19 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     )
 
   // @formatter:off
-  override fun <ChildInputT, ChildOutputT : Any, ChildRenderingT>
+  override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT>
       render(
-        case: WorkflowOutputCase<ChildInputT, ChildOutputT, StateT, OutputT>,
-        child: Workflow<ChildInputT, ChildOutputT, ChildRenderingT>,
-        id: WorkflowId<ChildInputT, ChildOutputT, ChildRenderingT>,
-        input: ChildInputT
+        case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT>,
+        child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+        id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
+        props: ChildPropsT
       ): ChildRenderingT {
   // @formatter:on
     // Start tracking this case so we can be ready to render it.
     @Suppress("UNCHECKED_CAST")
     val childNode = hostLifetimeTracker.ensure(case) as
-        WorkflowNode<ChildInputT, *, ChildOutputT, ChildRenderingT>
-    return childNode.render(child.asStatefulWorkflow(), input)
+        WorkflowNode<ChildPropsT, *, ChildOutputT, ChildRenderingT>
+    return childNode.render(child.asStatefulWorkflow(), props)
   }
 
   /**
@@ -132,7 +132,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     WorkflowNode(
         id,
         workflow.asStatefulWorkflow() as StatefulWorkflow<IC, *, OC, *>,
-        input,
+        props,
         snapshotCache[id],
         contextForChildren
     )

@@ -101,7 +101,7 @@ private suspend fun runTerminalWorkflow(
   keyStrokes: Worker<KeyStroke>,
   resizes: ReceiveChannel<TerminalSize>
 ): ExitCode = coroutineScope {
-  var input = TerminalInput(screen.terminalSize.toSize(), keyStrokes)
+  var input = TerminalProps(screen.terminalSize.toSize(), keyStrokes)
   val inputs = ConflatedBroadcastChannel(input)
 
   // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically

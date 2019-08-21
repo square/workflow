@@ -55,31 +55,31 @@ class WorkflowNodeTest {
     override fun snapshotState(state: String): Snapshot = fail("not expected")
   }
 
-  private class InputRenderingWorkflow(
-    private val onInputChanged: (String, String, String) -> String
+  private class PropsRenderingWorkflow(
+    private val onPropsChanged: (String, String, String) -> String
   ) : StringWorkflow() {
 
     override fun initialState(
-      input: String,
+      props: String,
       snapshot: Snapshot?
     ): String {
       assertNull(snapshot)
-      return "starting:$input"
+      return "starting:$props"
     }
 
-    override fun onInputChanged(
+    override fun onPropsChanged(
       old: String,
       new: String,
       state: String
-    ): String = onInputChanged.invoke(old, new, state)
+    ): String = onPropsChanged.invoke(old, new, state)
 
     override fun render(
-      input: String,
+      props: String,
       state: String,
       context: RenderContext<String, String>
     ): String {
       return """
-        input:$input
+        props:$props
         state:$state
       """.trimIndent()
     }
@@ -87,21 +87,21 @@ class WorkflowNodeTest {
 
   private val context: CoroutineContext = Unconfined
 
-  @Test fun `inputs are passed to on changed`() {
-    val oldAndNewInputs = mutableListOf<Pair<String, String>>()
-    val workflow = InputRenderingWorkflow { old, new, state ->
-      oldAndNewInputs += old to new
+  @Test fun `props are passed to on changed`() {
+    val oldAndNewProps = mutableListOf<Pair<String, String>>()
+    val workflow = PropsRenderingWorkflow { old, new, state ->
+      oldAndNewProps += old to new
       state
     }
     val node = WorkflowNode(workflow.id(), workflow, "foo", null, context)
 
     node.render(workflow, "foo2")
 
-    assertEquals(listOf("foo" to "foo2"), oldAndNewInputs)
+    assertEquals(listOf("foo" to "foo2"), oldAndNewProps)
   }
 
-  @Test fun `inputs are rendered`() {
-    val workflow = InputRenderingWorkflow { old, new, _ ->
+  @Test fun `props are rendered`() {
+    val workflow = PropsRenderingWorkflow { old, new, _ ->
       "$old->$new"
     }
     val node = WorkflowNode(workflow.id(), workflow, "foo", null, context)
@@ -110,7 +110,7 @@ class WorkflowNodeTest {
 
     assertEquals(
         """
-          input:foo2
+          props:foo2
           state:foo->foo2
         """.trimIndent(), rendering
     )
@@ -119,7 +119,7 @@ class WorkflowNodeTest {
 
     assertEquals(
         """
-          input:foo3
+          props:foo3
           state:foo2->foo3
         """.trimIndent(), rendering2
     )
@@ -129,15 +129,15 @@ class WorkflowNodeTest {
     lateinit var sink: Sink<String>
     val workflow = object : StringWorkflow() {
       override fun initialState(
-        input: String,
+        props: String,
         snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
-        return input
+        return props
       }
 
       override fun render(
-        input: String,
+        props: String,
         state: String,
         context: RenderContext<String, String>
       ): String {
@@ -163,15 +163,15 @@ class WorkflowNodeTest {
     lateinit var sink: Sink<String>
     val workflow = object : StringWorkflow() {
       override fun initialState(
-        input: String,
+        props: String,
         snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
-        return input
+        return props
       }
 
       override fun render(
-        input: String,
+        props: String,
         state: String,
         context: RenderContext<String, String>
       ): String {
@@ -196,15 +196,15 @@ class WorkflowNodeTest {
     var update: OutputOrFinished<String>? = null
     val workflow = object : StringWorkflow() {
       override fun initialState(
-        input: String,
+        props: String,
         snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
-        return input
+        return props
       }
 
       override fun render(
-        input: String,
+        props: String,
         state: String,
         context: RenderContext<String, String>
       ): String {
@@ -253,15 +253,15 @@ class WorkflowNodeTest {
     var update: OutputOrFinished<String>? = null
     val workflow = object : StringWorkflow() {
       override fun initialState(
-        input: String,
+        props: String,
         snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
-        return input
+        return props
       }
 
       override fun render(
-        input: String,
+        props: String,
         state: String,
         context: RenderContext<String, String>
       ): String {
@@ -298,11 +298,11 @@ class WorkflowNodeTest {
     lateinit var doClose: () -> Unit
     val workflow = object : StringWorkflow() {
       override fun initialState(
-        input: String,
+        props: String,
         snapshot: Snapshot?
       ): String {
         assertNull(snapshot)
-        return input
+        return props
       }
 
       fun update(value: OutputOrFinished<String>) = WorkflowAction<String, String> {
@@ -315,7 +315,7 @@ class WorkflowNodeTest {
       }
 
       override fun render(
-        input: String,
+        props: String,
         state: String,
         context: RenderContext<String, String>
       ): String {
@@ -357,11 +357,11 @@ class WorkflowNodeTest {
 
   @Test fun `snapshots non-empty without children`() {
     val workflow = Workflow.stateful<String, String, Nothing, String>(
-        initialState = { input, snapshot ->
+        initialState = { props, snapshot ->
           snapshot?.bytes?.parse {
             it.readUtf8WithLength()
                 .removePrefix("state:")
-          } ?: input
+          } ?: props
         },
         render = { _, state -> state },
         snapshot = { state ->
@@ -373,49 +373,49 @@ class WorkflowNodeTest {
     val originalNode = WorkflowNode(
         workflow.id(),
         workflow,
-        initialInput = "initial input",
+        initialProps = "initial props",
         snapshot = null,
         baseContext = Unconfined
     )
 
-    assertEquals("initial input", originalNode.render(workflow, "foo"))
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
         workflow,
-        // This input should be ignored, since snapshot is non-null.
-        initialInput = "new input",
+        // These props should be ignored, since snapshot is non-null.
+        initialProps = "new props",
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial input", restoredNode.render(workflow, "foo"))
+    assertEquals("initial props", restoredNode.render(workflow, "foo"))
   }
 
   @Test fun `snapshots empty without children`() {
     val workflow = Workflow.stateful<String, String, Nothing, String>(
-        initialState = { input, snapshot -> if (snapshot != null) "restored" else input },
+        initialState = { props, snapshot -> if (snapshot != null) "restored" else props },
         render = { _, state -> state },
         snapshot = { Snapshot.EMPTY }
     )
     val originalNode = WorkflowNode(
         workflow.id(),
         workflow,
-        initialInput = "initial input",
+        initialProps = "initial props",
         snapshot = null,
         baseContext = Unconfined
     )
 
-    assertEquals("initial input", originalNode.render(workflow, "foo"))
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
         workflow,
-        // This input should be ignored, since snapshot is non-null.
-        initialInput = "new input",
+        // These props should be ignored, since snapshot is non-null.
+        initialProps = "new props",
         snapshot = snapshot,
         baseContext = Unconfined
     )
@@ -426,12 +426,12 @@ class WorkflowNodeTest {
     var restoredChildState: String? = null
     var restoredParentState: String? = null
     val childWorkflow = Workflow.stateful<String, String, Nothing, String>(
-        initialState = { input, snapshot ->
+        initialState = { props, snapshot ->
           snapshot?.bytes?.parse {
             it.readUtf8WithLength()
                 .removePrefix("child state:")
                 .also { state -> restoredChildState = state }
-          } ?: input
+          } ?: props
         },
         render = { _, state -> state },
         snapshot = { state ->
@@ -441,14 +441,14 @@ class WorkflowNodeTest {
         }
     )
     val parentWorkflow = Workflow.stateful<String, String, Nothing, String>(
-        initialState = { input, snapshot ->
+        initialState = { props, snapshot ->
           snapshot?.bytes?.parse {
             it.readUtf8WithLength()
                 .removePrefix("parent state:")
                 .also { state -> restoredParentState = state }
-          } ?: input
+          } ?: props
         },
-        render = { _, state -> "$state|" + renderChild(childWorkflow, "child input") },
+        render = { _, state -> "$state|" + renderChild(childWorkflow, "child props") },
         snapshot = { state ->
           Snapshot.write {
             it.writeUtf8WithLength("parent state:$state")
@@ -459,26 +459,26 @@ class WorkflowNodeTest {
     val originalNode = WorkflowNode(
         parentWorkflow.id(),
         parentWorkflow,
-        initialInput = "initial input",
+        initialProps = "initial props",
         snapshot = null,
         baseContext = Unconfined
     )
 
-    assertEquals("initial input|child input", originalNode.render(parentWorkflow, "foo"))
+    assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo"))
     val snapshot = originalNode.snapshot(parentWorkflow)
     assertNotEquals(0, snapshot.bytes.size)
 
     val restoredNode = WorkflowNode(
         parentWorkflow.id(),
         parentWorkflow,
-        // This input should be ignored, since snapshot is non-null.
-        initialInput = "new input",
+        // These props should be ignored, since snapshot is non-null.
+        initialProps = "new props",
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial input|child input", restoredNode.render(parentWorkflow, "foo"))
-    assertEquals("child input", restoredChildState)
-    assertEquals("initial input", restoredParentState)
+    assertEquals("initial props|child props", restoredNode.render(parentWorkflow, "foo"))
+    assertEquals("child props", restoredChildState)
+    assertEquals("initial props", restoredParentState)
   }
 
   @Test fun `snapshot counts`() {
@@ -521,14 +521,14 @@ class WorkflowNodeTest {
     assertEquals(1, restoreCalls)
   }
 
-  @Test fun `restore gets input`() {
+  @Test fun `restore gets props`() {
     val workflow = Workflow.stateful<String, String, Nothing, String>(
-        initialState = { input, snapshot ->
+        initialState = { props, snapshot ->
           snapshot?.bytes?.parse {
-            // Tags the restored state with the input so we can check it.
+            // Tags the restored state with the props so we can check it.
             val deserialized = it.readUtf8WithLength()
-            return@parse "input:$input|state:$deserialized"
-          } ?: input
+            return@parse "props:$props|state:$deserialized"
+          } ?: props
         },
         render = { _, state -> state },
         snapshot = { state -> Snapshot.write { it.writeUtf8WithLength(state) } }
@@ -536,22 +536,22 @@ class WorkflowNodeTest {
     val originalNode = WorkflowNode(
         workflow.id(),
         workflow,
-        initialInput = "initial input",
+        initialProps = "initial props",
         snapshot = null,
         baseContext = Unconfined
     )
 
-    assertEquals("initial input", originalNode.render(workflow, "foo"))
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
         workflow,
-        initialInput = "new input",
+        initialProps = "new props",
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("input:new input|state:initial input", restoredNode.render(workflow, "foo"))
+    assertEquals("props:new props|state:initial props", restoredNode.render(workflow, "foo"))
   }
 }

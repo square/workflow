@@ -50,7 +50,7 @@ class RealRenderContextTest {
       val case: WorkflowOutputCase<*, *, *, *>,
       val child: Workflow<*, *, *>,
       val id: WorkflowId<*, *, *>,
-      val input: Any?
+      val props: Any?
     )
 
     @Suppress("UNCHECKED_CAST")
@@ -58,20 +58,20 @@ class RealRenderContextTest {
       case: WorkflowOutputCase<IC, OC, String, String>,
       child: Workflow<IC, OC, RC>,
       id: WorkflowId<IC, OC, RC>,
-      input: IC
+      props: IC
     ): RC {
-      return Rendering(case, child, id, input) as RC
+      return Rendering(case, child, id, props) as RC
     }
   }
 
   private class TestWorkflow : StatefulWorkflow<String, String, String, Rendering>() {
     override fun initialState(
-      input: String,
+      props: String,
       snapshot: Snapshot?
     ): String = fail()
 
     override fun render(
-      input: String,
+      props: String,
       state: String,
       context: RenderContext<String, String>
     ): Rendering {
@@ -86,7 +86,7 @@ class RealRenderContextTest {
       case: WorkflowOutputCase<IC, OC, S, O>,
       child: Workflow<IC, OC, RC>,
       id: WorkflowId<IC, OC, RC>,
-      input: IC
+      props: IC
     ): RC = fail()
   }
 
@@ -132,16 +132,16 @@ class RealRenderContextTest {
     val context = RealRenderContext(TestRenderer())
     val workflow = TestWorkflow()
 
-    val (case, child, id, input) = context.renderChild(workflow, "input", "key") { output ->
+    val (case, child, id, props) = context.renderChild(workflow, "props", "key") { output ->
       WorkflowAction { "output:$output" }
     }
 
     assertSame(workflow, child)
     assertEquals(workflow.id("key"), id)
-    assertEquals("input", input)
+    assertEquals("props", props)
     assertEquals<Workflow<*, *, *>>(workflow, case.workflow)
     assertEquals(workflow.id("key"), case.id)
-    assertEquals("input", case.input)
+    assertEquals("props", case.props)
 
     @Suppress("UNCHECKED_CAST")
     case as WorkflowOutputCase<String, String, String, String>

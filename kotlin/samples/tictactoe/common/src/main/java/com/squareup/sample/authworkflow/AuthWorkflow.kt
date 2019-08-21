@@ -145,12 +145,12 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
     StatefulWorkflow<Unit, AuthState, AuthResult, BackStackScreen<*>>() {
 
   override fun initialState(
-    input: Unit,
+    props: Unit,
     snapshot: Snapshot?
   ): AuthState = LoginPrompt()
 
   override fun render(
-    input: Unit,
+    props: Unit,
     state: AuthState,
     context: RenderContext<AuthState, AuthResult>
   ): BackStackScreen<*> {

@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
       WorkflowRunner.Config(
           workflow = component.appWorkflow,
           viewRegistry = component.viewRegistry,
-          input = "simple_maze.txt"
+          props = "simple_maze.txt"
       )
     }
   }

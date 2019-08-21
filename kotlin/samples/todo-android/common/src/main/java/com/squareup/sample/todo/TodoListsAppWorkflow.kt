@@ -41,7 +41,7 @@ sealed class TodoListsAppState {
 class TodoListsAppWorkflow :
     StatefulWorkflow<Unit, TodoListsAppState, Nothing, BackStackScreen<*>>() {
   override fun initialState(
-    input: Unit,
+    props: Unit,
     snapshot: Snapshot?
   ): TodoListsAppState = ShowingLists(
       listOf(
@@ -73,7 +73,7 @@ class TodoListsAppWorkflow :
   }
 
   override fun render(
-    input: Unit,
+    props: Unit,
     state: TodoListsAppState,
     context: RenderContext<TodoListsAppState, Nothing>
   ): BackStackScreen<*> {

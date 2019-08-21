@@ -20,10 +20,10 @@ import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowDown
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowUp
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Enter
-import com.squareup.sample.helloterminal.terminalworkflow.TerminalInput
+import com.squareup.sample.helloterminal.terminalworkflow.TerminalProps
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalWorkflow
-import com.squareup.sample.hellotodo.EditTextWorkflow.EditTextInput
+import com.squareup.sample.hellotodo.EditTextWorkflow.EditTextProps
 import com.squareup.sample.hellotodo.TodoWorkflow.TodoList
 import com.squareup.sample.hellotodo.TodoWorkflow.TodoList.Companion.TITLE_FIELD_INDEX
 import com.squareup.workflow.RenderContext
@@ -35,7 +35,7 @@ import com.squareup.workflow.runningWorker
 private typealias TodoAction = WorkflowAction<TodoList, Nothing>
 
 class TodoWorkflow : TerminalWorkflow,
-    StatefulWorkflow<TerminalInput, TodoList, ExitCode, TerminalRendering>() {
+    StatefulWorkflow<TerminalProps, TodoList, ExitCode, TerminalRendering>() {
 
   data class TodoList(
     val title: String = "[untitled]",
@@ -60,7 +60,7 @@ class TodoWorkflow : TerminalWorkflow,
   )
 
   override fun initialState(
-    input: TerminalInput,
+    props: TerminalProps,
     snapshot: Snapshot?
   ) = TodoList(
       title = "Grocery list",
@@ -73,17 +73,17 @@ class TodoWorkflow : TerminalWorkflow,
   )
 
   override fun render(
-    input: TerminalInput,
+    props: TerminalProps,
     state: TodoList,
     context: RenderContext<TodoList, ExitCode>
   ): TerminalRendering {
 
-    context.runningWorker(input.keyStrokes) { onKeystroke(it) }
+    context.runningWorker(props.keyStrokes) { onKeystroke(it) }
 
     return TerminalRendering(buildString {
-      appendln(state.renderTitle(input, context))
+      appendln(state.renderTitle(props, context))
       appendln(renderSelection(state.titleSeparator, false))
-      appendln(state.renderItems(input, context))
+      appendln(state.renderItems(props, context))
     })
   }
 
@@ -119,14 +119,14 @@ private fun setLabel(
 }
 
 private fun TodoList.renderTitle(
-  input: TerminalInput,
+  props: TerminalProps,
   context: RenderContext<TodoList, *>
 ): String {
   val isSelected = focusedField == TITLE_FIELD_INDEX
   val titleString = if (isSelected) {
     context.renderChild(
         EditTextWorkflow(),
-        input = EditTextInput(title, input),
+        props = EditTextProps(title, props),
         key = TITLE_FIELD_INDEX.toString()
     ) { updateTitle(it) }
   } else {
@@ -138,7 +138,7 @@ private fun TodoList.renderTitle(
 private val TodoList.titleSeparator get() = "–".repeat(title.length + 1)
 
 private fun TodoList.renderItems(
-  input: TerminalInput,
+  props: TerminalProps,
   context: RenderContext<TodoList, *>
 ): String =
   items
@@ -148,7 +148,7 @@ private fun TodoList.renderItems(
         val label = if (isSelected) {
           context.renderChild(
               EditTextWorkflow(),
-              input = EditTextInput(item.label, input),
+              props = EditTextProps(item.label, props),
               key = index.toString()
           ) { newText -> setLabel(index, newText) }
         } else {

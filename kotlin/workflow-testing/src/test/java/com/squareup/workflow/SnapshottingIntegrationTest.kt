@@ -27,10 +27,10 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") {
+    root.testFromStart("initial props") {
       awaitNextRendering()
           .let {
-            assertEquals("root:initial input", it.data)
+            assertEquals("root:initial props", it.data)
             it.setData("new data")
           }
 
@@ -39,7 +39,7 @@ class SnapshottingIntegrationTest {
       snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) {
+    root.testFromStart("unused props", snapshot!!) {
       assertEquals("root:new data", awaitNextRendering().data)
     }
   }
@@ -49,10 +49,10 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state the workflow in the tree.
-    root.testFromStart("initial input") {
+    root.testFromStart("initial props") {
       awaitNextRendering()
           .let {
-            assertEquals("root:initial input", it.data)
+            assertEquals("root:initial props", it.data)
             it["leaf"].setData("new leaf data")
           }
       awaitNextRendering()
@@ -67,7 +67,7 @@ class SnapshottingIntegrationTest {
       snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) {
+    root.testFromStart("unused props", snapshot!!) {
       awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
@@ -92,15 +92,15 @@ class SnapshottingIntegrationTest {
     var snapshot: Snapshot? = null
 
     // Setup initial state and change the state of two workflows in the tree.
-    root.testFromStart("initial input") {
+    root.testFromStart("initial props") {
       awaitNextRendering()
           .let {
-            assertEquals("root:initial input", it.data)
-            assertEquals("middle1:initial input[0]", it["middle1"].data)
-            assertEquals("middle2:initial input[1]", it["middle2"].data)
-            assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
-            assertEquals("leaf2:initial input[0][1]", it["middle1", "leaf2"].data)
-            assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
+            assertEquals("root:initial props", it.data)
+            assertEquals("middle1:initial props[0]", it["middle1"].data)
+            assertEquals("middle2:initial props[1]", it["middle2"].data)
+            assertEquals("leaf1:initial props[0][0]", it["middle1", "leaf1"].data)
+            assertEquals("leaf2:initial props[0][1]", it["middle1", "leaf2"].data)
+            assertEquals("leaf3:initial props[1][0]", it["middle2", "leaf3"].data)
 
             it["middle1", "leaf2"].setData("new leaf data")
           }
@@ -110,25 +110,25 @@ class SnapshottingIntegrationTest {
       awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
-            assertEquals("middle1:initial input[0]", it["middle1"].data)
-            assertEquals("middle2:initial input[1]", it["middle2"].data)
-            assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
+            assertEquals("middle1:initial props[0]", it["middle1"].data)
+            assertEquals("middle2:initial props[1]", it["middle2"].data)
+            assertEquals("leaf1:initial props[0][0]", it["middle1", "leaf1"].data)
             assertEquals("leaf2:new leaf data", it["middle1", "leaf2"].data)
-            assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
+            assertEquals("leaf3:initial props[1][0]", it["middle2", "leaf3"].data)
           }
 
       snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused input", snapshot!!) {
+    root.testFromStart("unused props", snapshot!!) {
       awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
-            assertEquals("middle1:initial input[0]", it["middle1"].data)
-            assertEquals("middle2:initial input[1]", it["middle2"].data)
-            assertEquals("leaf1:initial input[0][0]", it["middle1", "leaf1"].data)
+            assertEquals("middle1:initial props[0]", it["middle1"].data)
+            assertEquals("middle2:initial props[1]", it["middle2"].data)
+            assertEquals("leaf1:initial props[0][0]", it["middle1", "leaf1"].data)
             assertEquals("leaf2:new leaf data", it["middle1", "leaf2"].data)
-            assertEquals("leaf3:initial input[1][0]", it["middle2", "leaf3"].data)
+            assertEquals("leaf3:initial props[1][0]", it["middle2", "leaf3"].data)
           }
     }
   }
@@ -136,8 +136,8 @@ class SnapshottingIntegrationTest {
   // See https://github.com/square/workflow/issues/404
   @Test fun `descendant snapshots are independent over state transitions`() {
     val workflow = Workflow.stateful<String, String, Nothing, Unit>(
-        initialState = { input, _ -> input },
-        onInputChanged = { _, new, _ -> new },
+        initialState = { props, _ -> props },
+        onPropsChanged = { _, new, _ -> new },
         render = { _, _ -> },
         snapshot = { state ->
           Snapshot.write {
@@ -150,15 +150,15 @@ class SnapshottingIntegrationTest {
       renderChild(workflow, it)
     }
 
-    root.testFromStart("input1") {
+    root.testFromStart("props1") {
       val snapshot1 = awaitNextSnapshot()
 
-      // Change the input (and thus the state) to make a different snapshot.
-      sendInput("input2")
+      // Change the props (and thus the state) to make a different snapshot.
+      sendProps("props2")
       val snapshot2 = awaitNextSnapshot()
 
-      // Send a new input to trigger a new render pass, but with the same snapshot.
-      sendInput("input2")
+      // Send a new props to trigger a new render pass, but with the same snapshot.
+      sendProps("props2")
       val snapshot3 = awaitNextSnapshot()
 
       assertNotEquals(snapshot1.bytes, snapshot2.bytes)

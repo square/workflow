@@ -20,8 +20,8 @@ package com.squareup.workflow
  * [delegate to children][RenderContext.renderChild], [subscribe][RenderContext.onWorkerOutput] to
  * arbitrary asynchronous events from the outside world.
  *
- * The basic purpose of a `Workflow` is to take some [input][InputT] and return a
- * [rendering][RenderingT]. To that end, a workflow may keep track of internal
+ * The basic purpose of a `Workflow` is to take some input (in the form of [PropsT]) and
+ * return a [rendering][RenderingT]. To that end, a workflow may keep track of internal
  * [state][StatefulWorkflow], recursively ask other workflows to render themselves, subscribe to
  * data streams from the outside world, and handle events both from its
  * [renderings][RenderContext.onEvent] and from workflows it's delegated to (its "children"). A
@@ -29,7 +29,7 @@ package com.squareup.workflow
  *
  * Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows
  * are started as necessary whenever another workflow asks for them, and are cleaned up
- * automatically when they're no longer needed. [Input][InputT] propagates down the tree,
+ * automatically when they're no longer needed. [Props][PropsT] propagates down the tree,
  * [outputs][OutputT] and [renderings][RenderingT] propagate up the tree.
  *
  * ## Implementing `Workflow`
@@ -47,7 +47,7 @@ package com.squareup.workflow
  *
  * ### [Stateless Workflows][StatelessWorkflow]
  *
- * If your workflow simply needs to delegate to other workflows, maybe transforming inputs, outputs,
+ * If your workflow simply needs to delegate to other workflows, maybe transforming propss, outputs,
  * or renderings, extend [StatelessWorkflow], or just pass a lambda to the [stateless] function
  * below.
  *
@@ -59,28 +59,28 @@ package com.squareup.workflow
  * workflow is about to be torn down by its parent. See the documentation on [RenderContext] for
  * more information about what it can do.
  *
- * @param InputT Typically a data class that is used to pass configuration information or bits of
+ * @param PropsT Typically a data class that is used to pass configuration information or bits of
  * state that the workflow can always get from its parent and needn't duplicate in its own state.
- * May be [Unit] if the workflow does not need any input data.
+ * May be [Unit] if the workflow does not need any props data.
  *
  * @param OutputT Typically a sealed class that represents "events" that this workflow can send
  * to its parent.
  * May be [Nothing] if the workflow doesn't need to emit anything.
  *
  * @param RenderingT The value returned to this workflow's parent during [composition][renderChild].
- * Typically represents a "view" of this workflow's input, current state, and children's renderings.
+ * Typically represents a "view" of this workflow's props, current state, and children's renderings.
  * A workflow that represents a UI component may use a view model as its rendering type.
  *
  * @see StatefulWorkflow
  * @see StatelessWorkflow
  */
-interface Workflow<in InputT, out OutputT : Any, out RenderingT> {
+interface Workflow<in PropsT, out OutputT : Any, out RenderingT> {
 
   /**
    * Provides a [StatefulWorkflow] view of this workflow. Necessary because [StatefulWorkflow] is
    * the common API required for [RenderContext.renderChild] to do its work.
    */
-  fun asStatefulWorkflow(): StatefulWorkflow<InputT, *, OutputT, RenderingT>
+  fun asStatefulWorkflow(): StatefulWorkflow<PropsT, *, OutputT, RenderingT>
 
   /**
    * Empty companion serves as a hook point to allow us to create `Workflow.foo`

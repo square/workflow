@@ -27,18 +27,18 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Mutator
 
-typealias TakeTurnsWorkflow = Workflow<TakeTurnsInput, CompletedGame, GamePlayScreen>
+typealias TakeTurnsWorkflow = Workflow<TakeTurnsProps, CompletedGame, GamePlayScreen>
 
-class TakeTurnsInput private constructor(
+class TakeTurnsProps private constructor(
   val playerInfo: PlayerInfo,
   val initialTurn: Turn = Turn()
 ) {
   companion object {
-    fun newGame(playerInfo: PlayerInfo): TakeTurnsInput = TakeTurnsInput(playerInfo)
+    fun newGame(playerInfo: PlayerInfo): TakeTurnsProps = TakeTurnsProps(playerInfo)
     fun resumeGame(
       playerInfo: PlayerInfo,
       turn: Turn
-    ): TakeTurnsInput = TakeTurnsInput(playerInfo, turn)
+    ): TakeTurnsProps = TakeTurnsProps(playerInfo, turn)
   }
 }
 
@@ -50,7 +50,7 @@ class TakeTurnsInput private constructor(
  * http://go/sf-taketurns
  */
 class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
-    StatefulWorkflow<TakeTurnsInput, Turn, CompletedGame, GamePlayScreen>() {
+    StatefulWorkflow<TakeTurnsProps, Turn, CompletedGame, GamePlayScreen>() {
 
   sealed class Action : WorkflowAction<Turn, CompletedGame> {
     class TakeSquare(
@@ -77,19 +77,19 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
   }
 
   override fun initialState(
-    input: TakeTurnsInput,
+    props: TakeTurnsProps,
     snapshot: Snapshot?
-  ): Turn = input.initialTurn
+  ): Turn = props.initialTurn
 
   override fun render(
-    input: TakeTurnsInput,
+    props: TakeTurnsProps,
     state: Turn,
     context: RenderContext<Turn, CompletedGame>
   ): GamePlayScreen {
     val sink = context.makeActionSink<Action>()
 
     return GamePlayScreen(
-        playerInfo = input.playerInfo,
+        playerInfo = props.playerInfo,
         gameState = state,
         onQuit = { sink.send(Quit) },
         onClick = { row, col -> sink.send(TakeSquare(row, col)) }

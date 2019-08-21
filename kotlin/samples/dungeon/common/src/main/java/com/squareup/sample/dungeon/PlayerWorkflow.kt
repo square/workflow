@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.dungeon
 
-import com.squareup.sample.dungeon.ActorWorkflow.ActorInput
+import com.squareup.sample.dungeon.ActorWorkflow.ActorProps
 import com.squareup.sample.dungeon.ActorWorkflow.ActorRendering
 import com.squareup.sample.dungeon.PlayerWorkflow.Action.StartMoving
 import com.squareup.sample.dungeon.PlayerWorkflow.Action.StopMoving
@@ -33,7 +33,7 @@ import com.squareup.workflow.WorkflowAction.Mutator
 class PlayerWorkflow(
   private val avatar: BoardCell = BoardCell("👩🏻‍🎤"),
   private val cellsPerSecond: Float = 15f
-) : StatefulWorkflow<ActorInput, Movement, Nothing, Rendering>() {
+) : StatefulWorkflow<ActorProps, Movement, Nothing, Rendering>() {
 
   sealed class Action : WorkflowAction<Movement, Nothing> {
     class StartMoving(private val direction: Direction) : Action() {
@@ -58,12 +58,12 @@ class PlayerWorkflow(
   )
 
   override fun initialState(
-    input: ActorInput,
+    props: ActorProps,
     snapshot: Snapshot?
   ): Movement = Movement(cellsPerSecond = cellsPerSecond)
 
   override fun render(
-    input: ActorInput,
+    props: ActorProps,
     state: Movement,
     context: RenderContext<Movement, Nothing>
   ): Rendering {

@@ -46,12 +46,12 @@ class BlinkingCursorWorkflow(
   }
 
   override fun initialState(
-    input: Unit,
+    props: Unit,
     snapshot: Snapshot?
   ): Boolean = true
 
   override fun render(
-    input: Unit,
+    props: Unit,
     state: Boolean,
     context: RenderContext<Boolean, Nothing>
   ): String {

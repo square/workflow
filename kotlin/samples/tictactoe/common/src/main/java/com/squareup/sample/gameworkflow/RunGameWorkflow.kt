@@ -171,7 +171,7 @@ class RealRunGameWorkflow(
         RunGameScreen>() {
 
   override fun initialState(
-    input: Unit,
+    props: Unit,
     snapshot: Snapshot?
   ): RunGameState {
     return snapshot?.let { RunGameState.fromSnapshot(snapshot.bytes) }
@@ -179,7 +179,7 @@ class RealRunGameWorkflow(
   }
 
   override fun render(
-    input: Unit,
+    props: Unit,
     state: RunGameState,
     context: RenderContext<RunGameState, RunGameResult>
   ): RunGameScreen {
@@ -206,9 +206,9 @@ class RealRunGameWorkflow(
         // and the GamePlayScreen it renders is immediately returned.
         val takeTurnsScreen = context.renderChild(
             takeTurnsWorkflow,
-            input = state.resume
-                ?.let { TakeTurnsInput.resumeGame(state.playerInfo, it) }
-                ?: TakeTurnsInput.newGame(state.playerInfo)
+            props = state.resume
+                ?.let { TakeTurnsProps.resumeGame(state.playerInfo, it) }
+                ?: TakeTurnsProps.newGame(state.playerInfo)
         ) { StopPlaying(it) }
 
         simpleScreen(takeTurnsScreen)
