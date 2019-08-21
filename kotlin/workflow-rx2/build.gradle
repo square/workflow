@@ -32,7 +32,6 @@ dependencies {
   api deps.rxjava2.rxjava2
 
   implementation deps.kotlin.coroutines.rx2
-  implementation deps.kotlin.reflect
 
   testImplementation project(':workflow-testing')
   testImplementation deps.kotlin.test.jdk

@@ -30,7 +30,5 @@ dependencies {
   api deps.kotlin.stdLib.jdk6
   api deps.kotlin.coroutines.core
 
-  implementation deps.kotlin.reflect
-
   testImplementation deps.kotlin.test.jdk
 }

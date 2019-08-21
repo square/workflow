@@ -15,8 +15,6 @@
  */
 package com.squareup.workflow.ui
 
-import kotlin.reflect.jvm.jvmName
-
 /**
  * Allows renderings that do not implement [Compatible] themselves to be distinguished
  * by more than just their type. Instances are [compatible] if they have the same name
@@ -44,7 +42,7 @@ data class Named<W : Any>(
       value: Any,
       name: String = ""
     ): String {
-      return ((value as? Compatible)?.compatibilityKey ?: value::class.jvmName) + "-Named($name)"
+      return ((value as? Compatible)?.compatibilityKey ?: value::class.java.name) + "-Named($name)"
     }
   }
 }

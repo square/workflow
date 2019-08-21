@@ -61,7 +61,7 @@ interface HandlesBack {
       // let's be strict.
       require(this !is HandlesBack) {
         "Cannot set back handlers on views that implement " +
-            HandlesBack::class.simpleName
+            HandlesBack::class.java.simpleName
       }
 
       setTag(R.id.workflow_back_handler, handlesBack)

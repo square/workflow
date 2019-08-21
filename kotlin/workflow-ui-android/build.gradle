@@ -46,7 +46,6 @@ dependencies {
   implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.coroutines.core
   implementation deps.kotlin.coroutines.rx2
-  implementation deps.kotlin.reflect
 
   testImplementation deps.test.junit
   testImplementation deps.test.truth

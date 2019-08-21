@@ -23,7 +23,6 @@ import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.writeByteStringWithLength
 import com.squareup.workflow.writeUtf8WithLength
 import okio.ByteString
-import kotlin.reflect.jvm.jvmName
 
 /**
  * The state of a [RealRunGameWorkflow].
@@ -57,7 +56,7 @@ sealed class RunGameState {
 
   fun toSnapshot(): Snapshot {
     return Snapshot.write { sink ->
-      sink.writeUtf8WithLength(this::class.jvmName)
+      sink.writeUtf8WithLength(this::class.java.name)
 
       when (this) {
         is Playing -> {
@@ -89,26 +88,26 @@ sealed class RunGameState {
         val className = source.readUtf8WithLength()
 
         return when (className) {
-          Playing::class.jvmName -> Playing(
+          Playing::class.java.name -> Playing(
               PlayerInfo.fromSnapshot(source.readByteStringWithLength())
           )
 
-          NewGame::class.jvmName -> NewGame(
+          NewGame::class.java.name -> NewGame(
               source.readUtf8WithLength(),
               source.readUtf8WithLength()
           )
 
-          MaybeQuitting::class.jvmName -> MaybeQuitting(
+          MaybeQuitting::class.java.name -> MaybeQuitting(
               PlayerInfo.fromSnapshot(source.readByteStringWithLength()),
               CompletedGame.fromSnapshot(source.readByteStringWithLength())
           )
 
-          MaybeQuittingForSure::class.jvmName -> MaybeQuittingForSure(
+          MaybeQuittingForSure::class.java.name -> MaybeQuittingForSure(
               PlayerInfo.fromSnapshot(source.readByteStringWithLength()),
               CompletedGame.fromSnapshot(source.readByteStringWithLength())
           )
 
-          GameOver::class.jvmName -> GameOver(
+          GameOver::class.java.name -> GameOver(
               PlayerInfo.fromSnapshot(source.readByteStringWithLength()),
               CompletedGame.fromSnapshot(source.readByteStringWithLength())
           )

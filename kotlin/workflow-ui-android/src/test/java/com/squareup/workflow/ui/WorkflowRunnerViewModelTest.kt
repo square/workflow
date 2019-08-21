@@ -56,7 +56,7 @@ class WorkflowRunnerViewModelTest {
       if (e is CancellationException) {
         cancelled = true
       } else throw AssertionError(
-          "Expected ${CancellationException::class.simpleName}", e
+          "Expected ${CancellationException::class.java.simpleName}", e
       )
     }
     val runner = WorkflowRunnerViewModel(scope, emptyFlow(), flowOf("fnord"), viewRegistry)
@@ -74,7 +74,7 @@ class WorkflowRunnerViewModelTest {
       if (e is CancellationException) {
         cancelled = true
       } else throw AssertionError(
-          "Expected ${CancellationException::class.simpleName}", e
+          "Expected ${CancellationException::class.java.simpleName}", e
       )
     }
     val runner = WorkflowRunnerViewModel(scope, emptyFlow(), emptyFlow(), viewRegistry)

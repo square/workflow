@@ -102,7 +102,7 @@ class ViewRegistry private constructor(
           }
         }
         ?: throw IllegalArgumentException(
-            "A binding for ${initialRendering::class.qualifiedName} must be registered " +
+            "A binding for ${initialRendering::class.java.name} must be registered " +
                 "to display $initialRendering."
         )
   }

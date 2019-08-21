@@ -276,4 +276,4 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.doLaunch(
   }
 }
 
-private fun Reactor<*, *, *>.getWorkflowCoroutineName() = "workflow(${this::class.qualifiedName})"
+private fun Reactor<*, *, *>.getWorkflowCoroutineName() = "workflow(${this::class::java.name})"
