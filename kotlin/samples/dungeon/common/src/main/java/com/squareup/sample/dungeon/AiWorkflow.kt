@@ -29,8 +29,9 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.runningWorker
-import kotlinx.coroutines.flow.collect
-import java.util.UUID
+import com.squareup.workflow.transform
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.transform
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -99,12 +100,12 @@ private fun <T : Enum<T>> Random.nextEnum(enumClass: KClass<T>): T {
 /**
  * Scales the tick frequency by a random amount to make direction changes look more arbitrary.
  */
+@UseExperimental(ExperimentalCoroutinesApi::class)
 private fun Worker<Long>.createDirectionTicker(random: Random): Worker<Unit> =
-  Worker.create(key = UUID.randomUUID().toString()) {
-    run()
-        .collect { tick ->
-          if (tick % random.nextInt(2, 5) == 0L) {
-            emit(Unit)
-          }
-        }
+  transform { flow ->
+    flow.transform { tick ->
+      if (tick % random.nextInt(2, 5) == 0L) {
+        emit(Unit)
+      }
+    }
   }

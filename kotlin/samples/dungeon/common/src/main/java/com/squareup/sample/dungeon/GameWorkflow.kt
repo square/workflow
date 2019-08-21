@@ -39,8 +39,6 @@ import kotlinx.coroutines.delay
 import kotlin.math.roundToLong
 import kotlin.random.Random
 
-private val PAUSED_TICKER = Worker.createSideEffect(key = "noop") {}
-
 class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow,
   private val aiWorkflows: List<ActorWorkflow>,
@@ -102,7 +100,7 @@ class GameWorkflow(
   ): GameRendering {
     val running = !state.game.isPlayerEaten
     // Stop actors from ticking if the game is paused or finished.
-    val ticker = if (running) createTickerWorker(input.ticksPerSecond) else PAUSED_TICKER
+    val ticker = if (running) createTickerWorker(input.ticksPerSecond) else Worker.finished()
     val game = state.game
     val board = input.board
 

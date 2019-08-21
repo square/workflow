@@ -19,6 +19,12 @@ package com.squareup.workflow
 
 import com.squareup.workflow.testing.test
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -242,5 +248,46 @@ class WorkerTest {
       assertEquals(Unit, nextOutput())
       assertFinished()
     }
+  }
+
+  @Test fun `finished worker is equivalent to self`() {
+    assertTrue(Worker.finished<Unit>().doesSameWorkAs(Worker.finished<String>()))
+  }
+
+  @Test fun `transformed workers are equivalent with equivalent source and key`() {
+    val source = Worker.create<Unit>(key = "source") {}
+    val transformed1 = source.transform { flow -> flow.buffer(1) }
+    val transformed2 = source.transform { flow -> flow.conflate() }
+
+    assertTrue(transformed1.doesSameWorkAs(transformed2))
+  }
+
+  @Test fun `transformed workers are not equivalent with equivalent source and different key`() {
+    val source = Worker.create<Unit>(key = "source") {}
+    val transformed1 = source.transform(key = "foo") { flow -> flow.conflate() }
+    val transformed2 = source.transform(key = "bar") { flow -> flow.conflate() }
+
+    assertFalse(transformed1.doesSameWorkAs(transformed2))
+  }
+
+  @Test fun `transformed workers are not equivalent with same key and nonequivalent source`() {
+    val source1 = Worker.create<Unit>(key = "source1") {}
+    val source2 = Worker.create<Unit>(key = "source2") {}
+    val transformed1 = source1.transform { flow -> flow.conflate() }
+    val transformed2 = source2.transform { flow -> flow.conflate() }
+
+    assertFalse(transformed1.doesSameWorkAs(transformed2))
+  }
+
+  @Test fun `transformed workers transform flows`() {
+    val source = flowOf(1, 2, 3).asWorker()
+    val transformed = source.transform { flow -> flow.map { it.toString() } }
+
+    val transformedValues = runBlocking {
+      transformed.run()
+          .toList()
+    }
+
+    assertEquals(listOf("1", "2", "3"), transformedValues)
   }
 }
