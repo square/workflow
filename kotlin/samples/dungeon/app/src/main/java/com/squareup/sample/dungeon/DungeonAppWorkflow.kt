@@ -25,11 +25,11 @@ import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.runningWorker
 
-typealias BoardPath = String
+private typealias BoardPath = String
 
 class DungeonAppWorkflow(
   private val gameWorkflow: GameWorkflow,
@@ -40,6 +40,11 @@ class DungeonAppWorkflow(
   sealed class State {
     object Loading : State()
     data class Running(val board: Board) : State()
+  }
+
+  private fun startRunning(board: Board) = WorkflowAction<State, Nothing> {
+    state = Running(board)
+    null
   }
 
   override fun initialState(
@@ -54,11 +59,10 @@ class DungeonAppWorkflow(
   ): Any {
     return when (state) {
       Loading -> {
-        context.runningWorker(boardLoader.load(input)) { board ->
-          enterState(Running(board))
-        }
+        context.runningWorker(boardLoader.load(input)) { startRunning(it) }
         Loading
       }
+
       is Running -> {
         val gameInput = GameWorkflow.Input(state.board)
         context.renderChild(gameWorkflow, gameInput) { output ->

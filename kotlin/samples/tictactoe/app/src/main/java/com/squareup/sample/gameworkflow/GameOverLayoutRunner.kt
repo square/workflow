@@ -22,9 +22,6 @@ import android.view.ViewGroup
 import com.squareup.sample.gameworkflow.Ending.Draw
 import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
-import com.squareup.sample.gameworkflow.GameOverScreen.Event.Exit
-import com.squareup.sample.gameworkflow.GameOverScreen.Event.PlayAgain
-import com.squareup.sample.gameworkflow.GameOverScreen.Event.TrySaveAgain
 import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
@@ -52,10 +49,10 @@ internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameO
 
   override fun showRendering(rendering: GameOverScreen) {
     exitItem.setOnMenuItemClickListener {
-      rendering.onEvent(PlayAgain)
+      rendering.onPlayAgain()
       true
     }
-    view.setBackHandler { rendering.onEvent(Exit) }
+    view.setBackHandler { rendering.onExit() }
 
     when (rendering.endGameState.syncState) {
       SAVING -> {
@@ -67,7 +64,7 @@ internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameO
         saveItem.isEnabled = true
         saveItem.title = "Unsaved"
         saveItem.setOnMenuItemClickListener {
-          rendering.onEvent(TrySaveAgain)
+          rendering.onTrySaveAgain()
           true
         }
       }

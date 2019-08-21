@@ -16,6 +16,7 @@
 package com.squareup.sample.hellotodo
 
 import com.squareup.sample.helloterminal.terminalworkflow.ExitCode
+import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowDown
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.ArrowUp
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Enter
@@ -28,9 +29,10 @@ import com.squareup.sample.hellotodo.TodoWorkflow.TodoList.Companion.TITLE_FIELD
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.runningWorker
+
+private typealias TodoAction = WorkflowAction<TodoList, Nothing>
 
 class TodoWorkflow : TerminalWorkflow,
     StatefulWorkflow<TerminalInput, TodoList, ExitCode, TerminalRendering>() {
@@ -45,13 +47,6 @@ class TodoWorkflow : TerminalWorkflow,
     fun moveFocusDown() = copy(focusedField = (focusedField + 1).coerceAtMost(items.size - 1))
     fun toggleChecked(index: Int) = copy(items = items.mapIndexed { i, item ->
       item.copy(checked = item.checked xor (index == i))
-    })
-
-    fun setItemLabel(
-      index: Int,
-      newLabel: String
-    ) = copy(items = items.mapIndexed { i, item ->
-      if (index == i) item.copy(label = newLabel) else item
     })
 
     companion object {
@@ -83,20 +78,7 @@ class TodoWorkflow : TerminalWorkflow,
     context: RenderContext<TodoList, ExitCode>
   ): TerminalRendering {
 
-    context.runningWorker(input.keyStrokes) { key ->
-      when (key.keyType) {
-        ArrowUp -> enterState(state.moveFocusUp())
-        ArrowDown -> enterState(state.moveFocusDown())
-        Enter -> {
-          if (state.focusedField > TITLE_FIELD_INDEX) {
-            enterState(state.toggleChecked(state.focusedField))
-          } else {
-            noAction()
-          }
-        }
-        else -> noAction()
-      }
-    }
+    context.runningWorker(input.keyStrokes) { onKeystroke(it) }
 
     return TerminalRendering(buildString {
       appendln(state.renderTitle(input, context))
@@ -106,6 +88,34 @@ class TodoWorkflow : TerminalWorkflow,
   }
 
   override fun snapshotState(state: TodoList): Snapshot = Snapshot.EMPTY
+}
+
+private fun onKeystroke(key: KeyStroke): TodoAction = WorkflowAction {
+  @Suppress("NON_EXHAUSTIVE_WHEN")
+  when (key.keyType) {
+    ArrowUp -> state = state.moveFocusUp()
+    ArrowDown -> state = state.moveFocusDown()
+    Enter -> if (state.focusedField > TITLE_FIELD_INDEX) {
+      state = state.toggleChecked(state.focusedField)
+    }
+  }
+
+  null
+}
+
+private fun updateTitle(newTitle: String): TodoAction = WorkflowAction {
+  state = state.copy(title = newTitle)
+  null
+}
+
+private fun setLabel(
+  index: Int,
+  text: String
+): TodoAction = WorkflowAction {
+  state = state.copy(items = state.items.mapIndexed { i, item ->
+    if (index == i) item.copy(label = text) else item
+  })
+  null
 }
 
 private fun TodoList.renderTitle(
@@ -118,7 +128,7 @@ private fun TodoList.renderTitle(
         EditTextWorkflow(),
         input = EditTextInput(title, input),
         key = TITLE_FIELD_INDEX.toString()
-    ) { newText -> enterState(copy(title = newText)) }
+    ) { updateTitle(it) }
   } else {
     title
   }
@@ -140,7 +150,7 @@ private fun TodoList.renderItems(
               EditTextWorkflow(),
               input = EditTextInput(item.label, input),
               key = index.toString()
-          ) { newText -> enterState(setItemLabel(index, newText)) }
+          ) { newText -> setLabel(index, newText) }
         } else {
           item.label
         }

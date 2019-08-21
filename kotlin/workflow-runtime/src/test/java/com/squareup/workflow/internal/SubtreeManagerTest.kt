@@ -18,12 +18,14 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
+import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
+import com.squareup.workflow.makeEventSink
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -57,9 +59,10 @@ class SubtreeManagerTest {
       input: String,
       state: String,
       context: RenderContext<String, String>
-    ): Rendering = Rendering(input, state, context.onEvent {
-      emitOutput("workflow output:$it")
-    })
+    ): Rendering {
+      val sink: Sink<String> = context.makeEventSink { it }
+      return Rendering(input, state) { sink.send("workflow output:$it") }
+    }
 
     override fun snapshotState(state: String) = fail()
   }
@@ -132,8 +135,8 @@ class SubtreeManagerTest {
     val workflow = TestWorkflow()
     val id = workflow.id()
     val input = "input"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) {
-      emitOutput("case output:$it")
+    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, input) { output ->
+      WorkflowAction { "case output:$output" }
     }
 
     // Initialize the child so tickChildren has something to work with, and so that we can send
@@ -152,7 +155,7 @@ class SubtreeManagerTest {
 
       eventHandler("event!")
       val update = tickOutput.await()!!
-      val (_, output) = update.invoke("state")
+      val (_, output) = update.applyTo("state")
       assertEquals("case output:workflow output:event!", output)
     }
   }

@@ -15,9 +15,11 @@
  */
 package com.squareup.workflow.testing
 
+import com.squareup.workflow.Sink
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
@@ -88,10 +90,10 @@ class RenderTesterTest {
         initialState = { _, _ -> fail() },
         render = { _, _ ->
           runningWorkerUntilFinished(worker) {
-            enterState(
-                "state: $it",
-                emittingOutput = "output: $it"
-            )
+            WorkflowAction {
+              state = "state: $it"
+              "output: $it"
+            }
           }
         },
         snapshot = { fail() }
@@ -119,10 +121,10 @@ class RenderTesterTest {
         initialState = { _, _ -> fail() },
         render = { _, _ ->
           renderChild(child) {
-            enterState(
-                "state: $it",
-                emittingOutput = "output: $it"
-            )
+            WorkflowAction {
+              state = "state: $it"
+              "output: $it"
+            }
           }
         },
         snapshot = { fail() }
@@ -138,21 +140,19 @@ class RenderTesterTest {
   }
 
   @Test fun `getEventResult works`() {
-    val workflow = Workflow.stateful<Unit, String, String, (String) -> Unit>(
+    val workflow = Workflow.stateful<Unit, String, String, Sink<String>>(
         initialState = { _, _ -> fail() },
         render = { _, state ->
-          onEvent { event ->
-            enterState(
-                newState = "from $state on $event",
-                emittingOutput = "event: $event"
-            )
+          makeEventSink { event ->
+            this@makeEventSink.state = "from $state on $event"
+            "event: $event"
           }
         },
         snapshot = { fail() }
     )
 
     workflow.testRender(state = "initial") {
-      rendering.invoke("foo")
+      rendering.send("foo")
 
       val (state, output) = getEventResult()
       assertEquals("from initial on foo", state)

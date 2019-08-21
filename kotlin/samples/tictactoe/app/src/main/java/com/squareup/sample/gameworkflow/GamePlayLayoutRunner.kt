@@ -15,11 +15,9 @@
  */
 package com.squareup.sample.gameworkflow
 
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.view.ViewGroup
-import com.squareup.sample.gameworkflow.GamePlayScreen.Event.Quit
-import com.squareup.sample.gameworkflow.GamePlayScreen.Event.TakeSquare
+import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
@@ -36,14 +34,14 @@ internal class GamePlayLayoutRunner(private val view: View) : LayoutRunner<GameP
     renderBanner(rendering.gameState, rendering.playerInfo)
     rendering.gameState.board.render(boardView)
 
-    setCellClickListeners(boardView, rendering.gameState) { rendering.onEvent(it) }
-    view.setBackHandler { rendering.onEvent(Quit) }
+    setCellClickListeners(boardView, rendering.gameState, rendering.onClick)
+    view.setBackHandler(rendering.onQuit)
   }
 
   private fun setCellClickListeners(
     viewGroup: ViewGroup,
     turn: Turn,
-    takeSquareHandler: (TakeSquare) -> Unit
+    takeSquareHandler: (row: Int, col: Int) -> Unit
   ) {
     for (i in 0..8) {
       val cell = viewGroup.getChildAt(i)
@@ -54,7 +52,7 @@ internal class GamePlayLayoutRunner(private val view: View) : LayoutRunner<GameP
 
       val cellClickListener =
         if (box != null) null
-        else View.OnClickListener { takeSquareHandler(TakeSquare(row, col)) }
+        else View.OnClickListener { takeSquareHandler(row, col) }
 
       cell.setOnClickListener(cellClickListener)
     }

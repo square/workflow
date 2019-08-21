@@ -17,6 +17,7 @@ package com.squareup.sample.helloterminal
 
 import com.squareup.sample.helloterminal.HelloTerminalWorkflow.State
 import com.squareup.sample.helloterminal.terminalworkflow.ExitCode
+import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke
 import com.squareup.sample.helloterminal.terminalworkflow.KeyStroke.KeyType.Backspace
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalInput
 import com.squareup.sample.helloterminal.terminalworkflow.TerminalRendering
@@ -25,11 +26,11 @@ import com.squareup.sample.helloterminal.terminalworkflow.TerminalWorkflow
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
-import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.runningWorker
+
+private typealias HelloTerminalAction = WorkflowAction<State, ExitCode>
 
 class HelloTerminalWorkflow : TerminalWorkflow,
     StatefulWorkflow<TerminalInput, State, ExitCode, TerminalRendering>() {
@@ -65,14 +66,7 @@ class HelloTerminalWorkflow : TerminalWorkflow,
     val prompt = "> "
     val cursor = context.renderChild(cursorWorkflow)
 
-    context.runningWorker(input.keyStrokes) { key ->
-      when {
-        key.keyType == Backspace -> enterState(state.backspace())
-        key.character == 'Q' -> emitOutput(0)
-        key.character != null -> enterState(state.append(key.character!!))
-        else -> noAction()
-      }
-    }
+    context.runningWorker(input.keyStrokes) { onKeystroke(it) }
 
     return TerminalRendering(
         text = header + prompt + state.text + cursor,
@@ -81,4 +75,14 @@ class HelloTerminalWorkflow : TerminalWorkflow,
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
+
+  private fun onKeystroke(key: KeyStroke): HelloTerminalAction = WorkflowAction {
+    when {
+      key.character == 'Q' -> return@WorkflowAction 0
+      key.keyType == Backspace -> state = state.backspace()
+      key.character != null -> state = state.append(key.character!!)
+    }
+
+    null
+  }
 }

@@ -27,7 +27,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.runningWorker
 import kotlinx.coroutines.flow.collect
 import java.util.UUID
@@ -69,22 +69,26 @@ class AiWorkflow(
     state: State,
     context: RenderContext<State, Nothing>
   ): ActorRendering {
-    context.runningWorker(state.directionTicker) {
-      // Rotate 90 degrees.
-      val newDirection = when (state.direction) {
-        UP -> RIGHT
-        RIGHT -> DOWN
-        DOWN -> LEFT
-        LEFT -> UP
-      }
-      println("AI changing direction from ${state.direction} to $newDirection")
-      return@runningWorker enterState(state.copy(direction = newDirection))
-    }
+    context.runningWorker(state.directionTicker) { updateDirection }
 
     return ActorRendering(avatar, Movement(state.direction, cellsPerSecond = cellsPerSecond))
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
+}
+
+private val updateDirection = WorkflowAction<State, Nothing> {
+  // Rotate 90 degrees.
+  val newDirection = when (state.direction) {
+    UP -> RIGHT
+    RIGHT -> DOWN
+    DOWN -> LEFT
+    LEFT -> UP
+  }
+  println("AI changing direction from ${state.direction} to $newDirection")
+  state = state.copy(direction = newDirection)
+
+  null
 }
 
 private fun <T : Enum<T>> Random.nextEnum(enumClass: KClass<T>): T {

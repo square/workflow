@@ -40,8 +40,8 @@ sealed class RunGameState {
   ) : RunGameState()
 
   internal data class MaybeQuitting(
-    val completedGame: CompletedGame,
-    val playerInfo: PlayerInfo
+    val playerInfo: PlayerInfo,
+    val completedGame: CompletedGame
   ) : RunGameState()
 
   internal data class MaybeQuittingForSure(
@@ -99,8 +99,8 @@ sealed class RunGameState {
           )
 
           MaybeQuitting::class.jvmName -> MaybeQuitting(
-              CompletedGame.fromSnapshot(source.readByteStringWithLength()),
-              PlayerInfo.fromSnapshot(source.readByteStringWithLength())
+              PlayerInfo.fromSnapshot(source.readByteStringWithLength()),
+              CompletedGame.fromSnapshot(source.readByteStringWithLength())
           )
 
           MaybeQuittingForSure::class.jvmName -> MaybeQuittingForSure(

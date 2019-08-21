@@ -138,7 +138,7 @@ class SnapshottingIntegrationTest {
     val workflow = Workflow.stateful<String, String, Nothing, Unit>(
         initialState = { input, _ -> input },
         onInputChanged = { _, new, _ -> new },
-        render = { _, _ -> Unit },
+        render = { _, _ -> },
         snapshot = { state ->
           Snapshot.write {
             it.writeUtf8WithLength(state)

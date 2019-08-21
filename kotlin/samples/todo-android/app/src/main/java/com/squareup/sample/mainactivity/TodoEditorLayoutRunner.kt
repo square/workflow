@@ -15,16 +15,10 @@
  */
 package com.squareup.sample.mainactivity
 
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.todo.R
-import com.squareup.sample.todo.TodoEvent
-import com.squareup.sample.todo.TodoEvent.DeleteClicked
-import com.squareup.sample.todo.TodoEvent.DoneClicked
-import com.squareup.sample.todo.TodoEvent.GoBackClicked
-import com.squareup.sample.todo.TodoEvent.TextChanged
-import com.squareup.sample.todo.TodoEvent.TitleChanged
 import com.squareup.sample.todo.TodoRendering
 import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
@@ -57,27 +51,19 @@ internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<Tod
     titleText.text.replace(0, titleText.text.length, rendering.list.title)
     itemContainer.setRows(rendering.list.rows.map { Pair(it.done, it.text) })
 
-    // Make event handling idempotent.
-    var eventFired = false
-    fun onEvent(event: TodoEvent) {
-      if (eventFired) return
-      eventFired = true
-      rendering.onEvent(event)
-    }
+    toolbar.setNavigationOnClickListener { rendering.onGoBackClicked() }
+    view.setBackHandler { rendering.onGoBackClicked() }
 
-    toolbar.setNavigationOnClickListener { onEvent(GoBackClicked) }
-    view.setBackHandler { onEvent(GoBackClicked) }
-
-    titleText.setTextChangedListener { onEvent(TitleChanged(it)) }
+    titleText.setTextChangedListener { rendering.onTitleChanged(it) }
 
     itemContainer.onDoneClickedListener = { index ->
-      onEvent(DoneClicked(index))
+      rendering.onDoneClicked(index)
     }
     itemContainer.onTextChangedListener = { index, text ->
-      onEvent(TextChanged(index, text))
+      rendering.onTextChanged(index, text)
     }
     itemContainer.onDeleteClickedListener = { index ->
-      onEvent(DeleteClicked(index))
+      rendering.onDeleteClicked(index)
     }
   }
 

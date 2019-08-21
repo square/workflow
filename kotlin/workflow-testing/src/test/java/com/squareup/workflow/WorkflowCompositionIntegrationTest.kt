@@ -15,8 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Companion.enterState
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
@@ -106,13 +104,18 @@ class WorkflowCompositionIntegrationTest {
   @Test fun `renderChild closes over latest state`() {
     val triggerChildOutput = Channel<Unit>()
     val child = Workflow.stateless<Unit, Unit, Unit> {
-      runningWorker(triggerChildOutput.asWorker()) { emitOutput(Unit) }
+      runningWorker(triggerChildOutput.asWorker()) { WorkflowAction { Unit } }
     }
-    val workflow = Workflow.stateful<Int, Int, (Unit) -> Unit>(
+    val incrementState = WorkflowAction<Int, Nothing> {
+      state += 1
+      null
+    }
+    val workflow = Workflow.stateful<Int, Int, () -> Unit>(
         initialState = 0,
         render = { state ->
-          renderChild(child) { emitOutput(state) }
-          return@stateful onEvent { enterState(state + 1) }
+          renderChild(child) { WorkflowAction { state } }
+          val sink = makeActionSink<WorkflowAction<Int, Int>>()
+          return@stateful { sink.send(incrementState) }
         }
     )
 
@@ -121,13 +124,13 @@ class WorkflowCompositionIntegrationTest {
       assertEquals(0, awaitNextOutput())
 
       awaitNextRendering()
-          .invoke(Unit)
+          .invoke()
       triggerChildOutput.offer(Unit)
 
       assertEquals(1, awaitNextOutput())
 
       awaitNextRendering()
-          .invoke(Unit)
+          .invoke()
       triggerChildOutput.offer(Unit)
 
       assertEquals(2, awaitNextOutput())

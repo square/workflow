@@ -19,8 +19,6 @@ import com.google.common.truth.Truth.assertThat
 import com.squareup.sample.gameworkflow.Ending.Draw
 import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
-import com.squareup.sample.gameworkflow.GamePlayScreen.Event.Quit
-import com.squareup.sample.gameworkflow.GamePlayScreen.Event.TakeSquare
 import com.squareup.sample.gameworkflow.Player.O
 import com.squareup.sample.gameworkflow.Player.X
 import com.squareup.workflow.testing.WorkflowTester
@@ -53,11 +51,11 @@ class TakeTurnsWorkflowTest {
     RealTakeTurnsWorkflow().testFromStart(
         TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
-      takeSquare(TakeSquare(0, 0))
-      takeSquare(TakeSquare(1, 0))
-      takeSquare(TakeSquare(0, 1))
-      takeSquare(TakeSquare(1, 1))
-      takeSquare(TakeSquare(0, 2))
+      takeSquare(0, 0)
+      takeSquare(1, 0)
+      takeSquare(0, 1)
+      takeSquare(1, 1)
+      takeSquare(0, 2)
 
       val expectedLastTurn = Turn(
           board = listOf(
@@ -76,17 +74,17 @@ class TakeTurnsWorkflowTest {
     RealTakeTurnsWorkflow().testFromStart(
         TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
-      takeSquare(TakeSquare(0, 0)) // X - -
-      takeSquare(TakeSquare(0, 1)) // X O -
-      takeSquare(TakeSquare(0, 2)) // X O X
+      takeSquare(0, 0) // X - -
+      takeSquare(0, 1) // X O -
+      takeSquare(0, 2) // X O X
 
-      takeSquare(TakeSquare(1, 2)) // - - O
-      takeSquare(TakeSquare(1, 0)) // X - O
-      takeSquare(TakeSquare(1, 1)) // X O O
+      takeSquare(1, 2) // - - O
+      takeSquare(1, 0) // X - O
+      takeSquare(1, 1) // X O O
 
-      takeSquare(TakeSquare(2, 2)) // - - X
-      takeSquare(TakeSquare(2, 0)) // O - X
-      takeSquare(TakeSquare(2, 1)) // O X X
+      takeSquare(2, 2) // - - X
+      takeSquare(2, 0) // O - X
+      takeSquare(2, 1) // O X X
 
       val expectedLastTurn = Turn(
           board = listOf(
@@ -107,7 +105,7 @@ class TakeTurnsWorkflowTest {
     RealTakeTurnsWorkflow().testFromStart(
         TakeTurnsInput.newGame(PlayerInfo("higgledy", "piggledy"))
     ) {
-      awaitNextRendering().onEvent(Quit)
+      awaitNextRendering().onQuit()
       output = awaitNextOutput()
     }
 
@@ -124,6 +122,6 @@ class TakeTurnsWorkflowTest {
   }
 }
 
-private fun WorkflowTester<*, *, GamePlayScreen>.takeSquare(event: TakeSquare) {
-  awaitNextRendering().onEvent(event)
+private fun WorkflowTester<*, *, GamePlayScreen>.takeSquare(row: Int, col: Int) {
+  awaitNextRendering().onClick(row, col)
 }

@@ -15,15 +15,17 @@
  */
 package com.squareup.sample.todo
 
-import com.squareup.sample.todo.TodoListsAppState.EditingList
-import com.squareup.sample.todo.TodoListsAppState.ShowingLists
 import com.squareup.sample.todo.TodoEditorOutput.Done
 import com.squareup.sample.todo.TodoEditorOutput.ListUpdated
+import com.squareup.sample.todo.TodoListsAppState.EditingList
+import com.squareup.sample.todo.TodoListsAppState.ShowingLists
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.enterState
+import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.ui.BackStackScreen
+
+private typealias TodoListsAction = WorkflowAction<TodoListsAppState, Nothing>
 
 sealed class TodoListsAppState {
   abstract val lists: List<TodoList>
@@ -52,6 +54,24 @@ class TodoListsAppWorkflow :
   private val listsWorkflow = TodoListsWorkflow()
   private val editorWorkflow = TodoEditorWorkflow()
 
+  private fun onListSelected(index: Int): TodoListsAction = WorkflowAction {
+    state = EditingList(state.lists, index)
+    null
+  }
+
+  private fun onEditOutput(output: TodoEditorOutput): TodoListsAction = WorkflowAction {
+    state = when (output) {
+      is ListUpdated -> {
+        val oldState = state as EditingList
+        oldState.copy(
+            lists = state.lists.updateRow(oldState.editingIndex, output.newList)
+        )
+      }
+      Done -> ShowingLists(state.lists)
+    }
+    null
+  }
+
   override fun render(
     input: Unit,
     state: TodoListsAppState,
@@ -60,20 +80,13 @@ class TodoListsAppWorkflow :
     val listOfLists = context.renderChild(
         listsWorkflow,
         state.lists
-    ) { index -> enterState(EditingList(state.lists, index)) }
+    ) { index -> onListSelected(index) }
 
     return when (state) {
       is ShowingLists -> BackStackScreen(listOfLists)
       is EditingList -> context.renderChild(
-          editorWorkflow, state.lists[state.editingIndex]
-      ) { result ->
-        when (result) {
-          is ListUpdated -> enterState(
-              state.copy(lists = state.lists.updateRow(state.editingIndex, result.newList))
-          )
-          Done -> enterState(ShowingLists(state.lists))
-        }
-      }.let { editScreen ->
+          editorWorkflow, state.lists[state.editingIndex], handler = this::onEditOutput
+      ).let { editScreen ->
         BackStackScreen(listOfLists, editScreen)
       }
     }
