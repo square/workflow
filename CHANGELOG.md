@@ -1,6 +1,24 @@
 Change Log
 ==========
 
+## Version 0.20.0
+
+_2019-8-21_
+
+### Kotlin
+
+ * Rename `onWorkerOutput` to `runningWorker` (and friends). (#546)
+ * Add Kotlin `Sink`, `makeActionSink`, `makeEventSink`. (#537)
+ * Rename `LifecycleWorker.onCancelled` to `onStopped`. (#550)
+ * Create a `Worker.transform` operator. (#533)
+ * Remove all non-test dependencies on Kotlin Reflect. (#551)
+ * Rename `InputT` -> `PropsT` (#549)
+ * Update a bunch of dependency versions.
+
+### Swift
+
+ * Plumb file and line to convenience render tester method (#516)
+
 ## Version 0.19.0
 
 _2019-7-29_
