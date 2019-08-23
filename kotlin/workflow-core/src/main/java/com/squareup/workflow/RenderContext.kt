@@ -129,32 +129,31 @@ fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
 // @formatter:on
 
 /**
- * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
- * output.
+ * Convenience alias of [RenderContext.renderChild] that forwards child outputs.
  */
 fun <PropsT, StateT, OutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<PropsT, Nothing, ChildRenderingT>,
+      child: Workflow<PropsT, OutputT, ChildRenderingT>,
       input: PropsT,
       key: String = ""
-    ): ChildRenderingT = renderChild(child, input, key) { noAction() }
+    ): ChildRenderingT = renderChild(child, input, key) { output -> WorkflowAction { output } }
 // @formatter:on
 
 /**
- * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
- * output.
+ * Convenience alias of [RenderContext.renderChild] for workflows that don't take input, and
+ * forwards child outputs.
  */
 fun <StateT, OutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
 // Intellij refuses to format this parameter list correctly because of the weird line break,
 // and detekt will complain about it.
 // @formatter:off
-      child: Workflow<Unit, Nothing, ChildRenderingT>,
+      child: Workflow<Unit, OutputT, ChildRenderingT>,
       key: String = ""
-    ): ChildRenderingT = renderChild(child, Unit, key) { noAction() }
+    ): ChildRenderingT = renderChild(child, Unit, key) { output -> WorkflowAction { output } }
 // @formatter:on
 
 /**
