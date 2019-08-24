@@ -22,12 +22,10 @@ import android.widget.TextView
 import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoList
 import com.squareup.sample.todo.TodoListsRendering
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 internal class TodoListsLayoutRunner(view: View) : LayoutRunner<TodoListsRendering> {
   private val inflater = LayoutInflater.from(view.context)
   private val listsContainer = view.findViewById<ViewGroup>(R.id.todo_lists_container)

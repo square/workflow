@@ -18,12 +18,10 @@ package com.squareup.sample.helloworkflowfragment
 import android.annotation.SuppressLint
 import android.view.View
 import android.widget.TextView
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 class HelloFragmentLayoutRunner(view: View) : LayoutRunner<HelloWorkflow.Rendering> {
   private val messageView = view.findViewById<TextView>(R.id.hello_message)
 

@@ -26,14 +26,12 @@ import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
 import com.squareup.sample.dungeon.GameWorkflow.GameRendering
 import com.squareup.sample.todo.R
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.showRendering
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 class GameLayoutRunner(
   view: View,
   private val viewRegistry: ViewRegistry

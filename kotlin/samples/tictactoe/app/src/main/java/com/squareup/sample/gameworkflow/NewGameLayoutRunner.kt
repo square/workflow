@@ -19,13 +19,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.setBackHandler
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 internal class NewGameLayoutRunner(private val view: View) : LayoutRunner<NewGameScreen> {
 
   private val playerX: EditText = view.findViewById(R.id.player_X)

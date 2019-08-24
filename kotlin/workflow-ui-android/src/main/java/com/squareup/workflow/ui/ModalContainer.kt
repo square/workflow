@@ -45,7 +45,6 @@ import com.squareup.workflow.ui.ModalContainer.Companion.forContainerScreen
  *
  * @param ModalRenderingT the type of the nested renderings to be shown in a dialog window.
  */
-@ExperimentalWorkflowUi
 abstract class ModalContainer<ModalRenderingT : Any>
 @JvmOverloads constructor(
   context: Context,

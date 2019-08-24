@@ -20,13 +20,11 @@ import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoRendering
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.setBackHandler
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<TodoRendering> {
 
   private val toolbar = view.findViewById<Toolbar>(R.id.todo_editor_toolbar)

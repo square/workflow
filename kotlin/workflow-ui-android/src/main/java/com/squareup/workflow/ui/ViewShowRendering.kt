@@ -23,7 +23,6 @@ import android.view.View
  */
 typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT) -> Unit
 
-@ExperimentalWorkflowUi
 data class ShowRenderingTag<out RenderingT : Any>(
   val showing: RenderingT,
   val showRendering: ViewShowRendering<RenderingT>
@@ -36,7 +35,6 @@ data class ShowRenderingTag<out RenderingT : Any>(
  *
  * Intended for use by implementations of [ViewBinding.buildView].
  */
-@ExperimentalWorkflowUi
 fun <RenderingT : Any> View.bindShowRendering(
   initialRendering: RenderingT,
   showRendering: ViewShowRendering<RenderingT>
@@ -52,7 +50,6 @@ fun <RenderingT : Any> View.bindShowRendering(
  * call this method. Otherwise returns the [compatibility][compatible] of the new
  * [rendering] and the current one.
  */
-@ExperimentalWorkflowUi
 fun View.canShowRendering(rendering: Any): Boolean {
   return showRenderingTag?.showing?.matches(rendering) == true
 }
@@ -60,7 +57,6 @@ fun View.canShowRendering(rendering: Any): Boolean {
 /**
  * Shows [rendering] in a view that has been initialized by [bindShowRendering].
  */
-@ExperimentalWorkflowUi
 fun <RenderingT : Any> View.showRendering(rendering: RenderingT) {
   showRenderingTag
       ?.let { tag ->
@@ -78,7 +74,6 @@ fun <RenderingT : Any> View.showRendering(rendering: RenderingT) {
  * Returns the [ShowRenderingTag] established by the last call to [View.bindShowRendering],
  * or null if none has been set.
  */
-@ExperimentalWorkflowUi
 val View.showRenderingTag: ShowRenderingTag<*>?
   get() = getTag(R.id.view_show_rendering_function) as? ShowRenderingTag<*>
 

@@ -18,13 +18,11 @@ package com.squareup.sample.mainactivity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.sample.todo.TodoListsAppWorkflow
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
 
   private lateinit var rootWorkflow: TodoListsAppWorkflow

@@ -15,10 +15,10 @@
  */
 package com.squareup.sample.gameworkflow
 
-import androidx.appcompat.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.gameworkflow.Ending.Draw
 import com.squareup.sample.gameworkflow.Ending.Quitted
 import com.squareup.sample.gameworkflow.Ending.Victory
@@ -26,13 +26,11 @@ import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.setBackHandler
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameOverScreen> {
   private val boardView: ViewGroup = view.findViewById(R.id.game_play_board)
   private val toolbar: Toolbar = view.findViewById(R.id.game_play_toolbar)

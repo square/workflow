@@ -27,7 +27,6 @@ import kotlin.reflect.KClass
  *
  * Sets of bindings are gathered in [ViewRegistry] instances.
  */
-@ExperimentalWorkflowUi
 interface ViewBinding<RenderingT : Any> {
   val type: KClass<RenderingT>
 

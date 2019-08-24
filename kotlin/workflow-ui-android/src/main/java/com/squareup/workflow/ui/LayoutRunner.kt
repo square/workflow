@@ -58,7 +58,6 @@ import kotlin.reflect.KClass
  * Optionally, they can also have a second [ViewRegistry] argument, to allow
  * nested renderings to be displayed via nested calls to [ViewRegistry.buildView].
  */
-@ExperimentalWorkflowUi
 interface LayoutRunner<RenderingT : Any> {
   fun showRendering(rendering: RenderingT)
 
