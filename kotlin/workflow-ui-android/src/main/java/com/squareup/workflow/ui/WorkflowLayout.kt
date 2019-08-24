@@ -33,7 +33,6 @@ import io.reactivex.disposables.Disposable
  * [Activity.setContentWorkflow][setContentWorkflow] or subclass [WorkflowFragment]
  * rather than manage this class directly.
  */
-@ExperimentalWorkflowUi
 class WorkflowLayout(
   context: Context,
   attributeSet: AttributeSet? = null

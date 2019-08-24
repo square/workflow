@@ -25,7 +25,6 @@ import android.widget.FrameLayout
 import com.squareup.sample.mainworkflow.display
 import com.squareup.sample.mainworkflow.isTablet
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ModalContainer
 import com.squareup.workflow.ui.ViewBinding
 import kotlin.math.min
@@ -38,7 +37,6 @@ import kotlin.math.min
  * based on the screen size. The result looks suspiciously like the modal
  * flow container in Square PoS.
  */
-@UseExperimental(ExperimentalWorkflowUi::class)
 object PanelContainer : ViewBinding<PanelContainerScreen<*, *>>
 by ModalContainer.forContainerScreen(
     R.id.tic_tac_workflow_panel_container,

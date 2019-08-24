@@ -19,13 +19,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.setBackHandler
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 internal class GamePlayLayoutRunner(private val view: View) : LayoutRunner<GamePlayScreen> {
   private val boardView: ViewGroup = view.findViewById(R.id.game_play_board)
   private val toolbar: Toolbar = view.findViewById(R.id.game_play_toolbar)

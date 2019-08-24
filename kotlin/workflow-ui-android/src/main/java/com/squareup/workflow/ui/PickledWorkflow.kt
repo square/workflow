@@ -20,7 +20,6 @@ import android.os.Parcelable
 import com.squareup.workflow.Snapshot
 import okio.ByteString
 
-@ExperimentalWorkflowUi
 internal class PickledWorkflow(internal val snapshot: Snapshot) : Parcelable {
   override fun describeContents(): Int = 0
 

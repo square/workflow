@@ -15,10 +15,8 @@
  */
 package com.squareup.sample.gameworkflow
 
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 val TicTacToeViewBindings = ViewRegistry(
     NewGameLayoutRunner,
     GamePlayLayoutRunner,

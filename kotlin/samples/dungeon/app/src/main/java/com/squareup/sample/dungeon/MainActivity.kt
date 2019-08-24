@@ -17,12 +17,10 @@ package com.squareup.sample.dungeon
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
 
   private lateinit var workflowRunner: WorkflowRunner<*>

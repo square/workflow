@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.flowOf
  * It is simplest to use [Activity.setContentWorkflow][setContentWorkflow]
  * or subclass [WorkflowFragment] rather than instantiate a [WorkflowRunner] directly.
  */
-@ExperimentalWorkflowUi
 interface WorkflowRunner<out OutputT : Any> {
   /**
    * To be called from [FragmentActivity.onSaveInstanceState] or [Fragment.onSaveInstanceState].
@@ -65,7 +64,6 @@ interface WorkflowRunner<out OutputT : Any> {
 
   val viewRegistry: ViewRegistry
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   class Config<PropsT, OutputT : Any> constructor(
     val workflow: Workflow<PropsT, OutputT, Any>,
     val viewRegistry: ViewRegistry,
@@ -151,7 +149,6 @@ interface WorkflowRunner<out OutputT : Any> {
  * values, so this is also a good place from which to call [FragmentActivity.finish]. Called
  * only while the activity is active, and always called from the UI thread.
  */
-@ExperimentalWorkflowUi
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
   savedInstanceState: Bundle?,
@@ -173,7 +170,6 @@ fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
   return runner
 }
 
-@ExperimentalWorkflowUi
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun <PropsT> FragmentActivity.setContentWorkflow(
   savedInstanceState: Bundle?,
@@ -194,7 +190,6 @@ fun <PropsT> FragmentActivity.setContentWorkflow(
  *
  * @see WorkflowFragment.onBackPressed
  */
-@ExperimentalWorkflowUi
 @CheckResult
 fun FragmentActivity.workflowOnBackPressed(): Boolean {
   return HandlesBack.Helper.onBackPressed(this.findViewById(R.id.workflow_layout))

@@ -54,7 +54,6 @@ import kotlin.reflect.KClass
  * Note in particular the [ViewRegistry] argument to the [viewConstructor] lambda. This allows
  * nested renderings to be displayed via nested calls to [ViewRegistry.buildView].
  */
-@ExperimentalWorkflowUi
 class BuilderBinding<RenderingT : Any>(
   override val type: KClass<RenderingT>,
   private val viewConstructor: (

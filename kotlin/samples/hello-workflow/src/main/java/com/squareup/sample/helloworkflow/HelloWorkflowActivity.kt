@@ -17,15 +17,12 @@ package com.squareup.sample.helloworkflow
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 private val viewRegistry = ViewRegistry(HelloLayoutRunner)
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 class HelloWorkflowActivity : AppCompatActivity() {
   private lateinit var runner: WorkflowRunner<Unit>
 

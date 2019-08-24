@@ -20,13 +20,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.setBackHandler
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 internal class LoginLayoutRunner(view: View) : LayoutRunner<LoginScreen> {
   private val error: TextView = view.findViewById(R.id.login_error_message)
   private val email: EditText = view.findViewById(R.id.login_email)

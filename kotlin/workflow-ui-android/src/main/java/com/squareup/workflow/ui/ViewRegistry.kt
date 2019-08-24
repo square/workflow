@@ -57,7 +57,6 @@ import kotlin.reflect.KClass
  *  - [AlertContainerScreen]`<*>` (Use [ModalContainer.forAlertContainerScreen] to set
  *    a different dialog theme.)
  */
-@ExperimentalWorkflowUi
 class ViewRegistry private constructor(
   private val bindings: Map<KClass<*>, ViewBinding<*>>
 ) {
@@ -134,7 +133,6 @@ class ViewRegistry private constructor(
   }
 }
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 private object NamedBinding : ViewBinding<Named<*>>
 by BuilderBinding(
     type = Named::class,

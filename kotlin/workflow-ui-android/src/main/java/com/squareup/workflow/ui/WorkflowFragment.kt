@@ -57,7 +57,6 @@ import io.reactivex.Flowable
  *     }
  *   }
  */
-@ExperimentalWorkflowUi
 abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
   private lateinit var _runner: WorkflowRunner<OutputT>
 

@@ -17,7 +17,6 @@ package com.squareup.sample.dungeon
 
 import android.content.Context
 import android.os.Vibrator
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 import kotlinx.coroutines.Dispatchers
 import kotlin.random.Random
@@ -26,7 +25,6 @@ private const val AI_COUNT = 4
 
 /** Fake Dagger. */
 @Suppress("MemberVisibilityCanBePrivate")
-@UseExperimental(ExperimentalWorkflowUi::class)
 class Component(context: Context) {
 
   val viewRegistry = ViewRegistry(

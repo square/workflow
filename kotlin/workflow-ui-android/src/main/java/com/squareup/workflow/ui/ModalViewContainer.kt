@@ -29,7 +29,6 @@ import kotlin.reflect.KClass
 /**
  * Class returned by [ModalContainer.forContainerScreen], qv for details.
  */
-@ExperimentalWorkflowUi
 @PublishedApi
 internal class ModalViewContainer
 @JvmOverloads constructor(

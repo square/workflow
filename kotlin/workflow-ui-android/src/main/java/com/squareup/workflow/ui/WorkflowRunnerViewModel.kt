@@ -35,7 +35,6 @@ import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CancellationException
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
-@ExperimentalWorkflowUi
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   private val scope: CoroutineScope,
   renderingsFlow: Flow<RenderingAndSnapshot<Any>>,

@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
@@ -28,7 +27,6 @@ import com.squareup.workflow.ui.workflowOnBackPressed
 import io.reactivex.disposables.Disposables
 import timber.log.Timber
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 class MainActivity : AppCompatActivity() {
   private var loggingSub = Disposables.disposed()
 

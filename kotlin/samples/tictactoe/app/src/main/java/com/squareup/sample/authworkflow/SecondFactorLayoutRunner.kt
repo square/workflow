@@ -21,13 +21,11 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ExperimentalWorkflowUi
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.setBackHandler
 
-@UseExperimental(ExperimentalWorkflowUi::class)
 internal class SecondFactorLayoutRunner(
   private val view: View
 ) : LayoutRunner<SecondFactorScreen> {
