@@ -21,8 +21,11 @@ import com.squareup.workflow.ui.WorkflowFragment
 import com.squareup.workflow.ui.WorkflowRunner
 
 @UseExperimental(ExperimentalWorkflowUi::class)
+private val viewRegistry = ViewRegistry(HelloFragmentLayoutRunner)
+
+@UseExperimental(ExperimentalWorkflowUi::class)
 class HelloWorkflowFragment : WorkflowFragment<Unit, Unit>() {
   override fun onCreateWorkflow(): WorkflowRunner.Config<Unit, Unit> {
-    return WorkflowRunner.Config(HelloWorkflow, ViewRegistry(HelloFragmentLayoutRunner))
+    return WorkflowRunner.Config(HelloWorkflow, viewRegistry)
   }
 }
