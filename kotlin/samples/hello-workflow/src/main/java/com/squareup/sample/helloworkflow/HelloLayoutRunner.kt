@@ -28,7 +28,7 @@ class HelloLayoutRunner(view: View) : LayoutRunner<HelloWorkflow.Rendering> {
 
   override fun showRendering(rendering: HelloWorkflow.Rendering) {
     messageView.text = rendering.message
-    messageView.setOnClickListener { rendering.onClick(Unit) }
+    messageView.setOnClickListener { rendering.onClick() }
   }
 
   companion object : ViewBinding<HelloWorkflow.Rendering> by bind(

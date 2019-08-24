@@ -30,7 +30,7 @@ class HelloFragmentLayoutRunner(view: View) : LayoutRunner<HelloWorkflow.Renderi
   @SuppressLint("SetTextI18n")
   override fun showRendering(rendering: HelloWorkflow.Rendering) {
     messageView.text = rendering.message + " Fragment!"
-    messageView.setOnClickListener { rendering.onClick(Unit) }
+    messageView.setOnClickListener { rendering.onClick() }
   }
 
   companion object : ViewBinding<HelloWorkflow.Rendering> by bind(
