@@ -108,6 +108,6 @@ fun <PropsT, OutputT : Any, FromRenderingT, ToRenderingT>
       transform: (FromRenderingT) -> ToRenderingT
     ): Workflow<PropsT, OutputT, ToRenderingT> = Workflow.stateless { props ->
   // @formatter:on
-  renderChild(this@mapRendering, props) { output -> WorkflowAction { output } }
+  renderChild(this@mapRendering, props) { output -> WorkflowAction({ "mapRendering" }) { output } }
       .let(transform)
 }

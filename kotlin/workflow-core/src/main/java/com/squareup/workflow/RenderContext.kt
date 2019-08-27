@@ -203,7 +203,7 @@ fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink
   val actionSink = makeActionSink<WorkflowAction<StateT, OutputT>>()
 
   return actionSink.contraMap { event ->
-    WorkflowAction { block.invoke(this, event) }
+    WorkflowAction({ "eventSink" }) { block.invoke(this, event) }
   }
 }
 
