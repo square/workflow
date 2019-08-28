@@ -8,8 +8,8 @@ architecture patterns such as React (though they are fully native and type-safe)
     One important difference between workflows and components found in web frontend frameworks comes
     from the vast differences between the DOM and native UI paradigms (iOS/Android). The DOM is
     already declarative (meaning that we can always reason about the element tree in a web page).
-    UIKit, for is not – it very much relies on a procedural programming model where transitions are
-    performed by imperative methods like `push`, `fadeOut`, etc. For this reason, workflows do not
+    UIKit, for example, is not – it very much relies on a procedural programming model where transitions
+    are performed by imperative methods like `push`, `fadeOut`, etc. For this reason, workflows do not
     ever refer directly to views. They are instead responsible for rendering view models. This view
     model can then be used to update the UI.
 
