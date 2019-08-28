@@ -25,8 +25,8 @@ import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.workflowAction
 import com.squareup.workflow.runningWorker
 
 private typealias BoardPath = String
@@ -42,7 +42,7 @@ class DungeonAppWorkflow(
     data class Running(val board: Board) : State()
   }
 
-  private fun startRunning(board: Board) = WorkflowAction<State, Nothing> {
+  private fun startRunning(board: Board) = workflowAction {
     state = Running(board)
     null
   }

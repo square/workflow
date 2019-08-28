@@ -27,7 +27,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
-import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.workflowAction
 import com.squareup.workflow.runningWorker
 import com.squareup.workflow.transform
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -76,20 +76,20 @@ class AiWorkflow(
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
-}
 
-private val updateDirection = WorkflowAction<State, Nothing> {
-  // Rotate 90 degrees.
-  val newDirection = when (state.direction) {
-    UP -> RIGHT
-    RIGHT -> DOWN
-    DOWN -> LEFT
-    LEFT -> UP
+  private val updateDirection = workflowAction {
+    // Rotate 90 degrees.
+    val newDirection = when (state.direction) {
+      UP -> RIGHT
+      RIGHT -> DOWN
+      DOWN -> LEFT
+      LEFT -> UP
+    }
+    println("AI changing direction from ${state.direction} to $newDirection")
+    state = state.copy(direction = newDirection)
+
+    null
   }
-  println("AI changing direction from ${state.direction} to $newDirection")
-  state = state.copy(direction = newDirection)
-
-  null
 }
 
 private fun <T : Enum<T>> Random.nextEnum(enumClass: KClass<T>): T {

@@ -15,18 +15,25 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowAction.Companion.toString
+import com.squareup.workflow.WorkflowAction.Mutator
+
 /**
- * A composable, stateful object that can [handle events][RenderContext.onEvent],
- * [delegate to children][RenderContext.renderChild], [subscribe][RenderContext.onWorkerOutput] to
+ * A composable, stateful object that can [handle events][RenderContext.makeActionSink],
+ * [delegate to children][RenderContext.renderChild], [subscribe][RenderContext.runningWorker] to
  * arbitrary asynchronous events from the outside world, and be [saved][snapshotState] to a
  * serialized form to be restored later.
  *
  * The basic purpose of a `Workflow` is to take some [props][PropsT] and return a
- * [rendering][RenderingT]. To that end, a workflow may keep track of internal [state][StateT],
+ * [rendering][RenderingT] that serves as a public representation of its current state,
+ * and which can be used to update that state. A rendering typically serves as a view  model,
+ * though this is not assumed, and is not the only use case.
+ *
+ * To that end, a workflow may keep track of internal [state][StateT],
  * recursively ask other workflows to render themselves, subscribe to data streams from the outside
- * world, and handle events both from its [renderings][RenderContext.onEvent] and from workflows
- * it's delegated to (its "children"). A `Workflow` may also emit [output events][OutputT] up to its
- * parent `Workflow`.
+ * world, and handle events both from its [renderings][RenderContext.makeActionSink] and from
+ * workflows it's delegated to (its "children"). A `Workflow` may also emit
+ * [output events][OutputT] up to its parent `Workflow`.
  *
  * Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows
  * are started as necessary whenever another workflow asks for them, and are cleaned up automatically
@@ -218,3 +225,22 @@ inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
     { initialState },
     { _, state -> render(state) }
 )
+
+/**
+ * Convenience to create a [WorkflowAction] with parameter types matching those
+ * of the receiving [StatefulWorkflow]. The action will invoke the given [lambda][block]
+ * when it is [applied][WorkflowAction.apply].
+ *
+ * The returned object will include the string returned from [name] in its [toString].
+ *
+ * @param name Function that returns a string describing the update for debugging.
+ * @param block Function that defines the workflow update.
+ */
+fun <PropsT, StateT, OutputT : Any, RenderingT>
+    StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.workflowAction(
+      name: () -> String = { "" },
+      block: Mutator<StateT>.() -> OutputT?
+    ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
+  override fun Mutator<StateT>.apply() = block.invoke(this)
+  override fun toString(): String = "Action(${name()})-${this@workflowAction}"
+}

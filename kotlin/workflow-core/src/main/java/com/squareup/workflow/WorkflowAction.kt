@@ -17,6 +17,7 @@
 
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowAction.Companion.toString
 import com.squareup.workflow.WorkflowAction.Mutator
 
 /**
@@ -36,12 +37,11 @@ interface WorkflowAction<StateT, out OutputT : Any> {
   companion object {
 
     /**
-     * Convenience to create a [WorkflowAction] from the [apply] lambda.
+     * Creates a [WorkflowAction] from the [apply] lambda.
      * The returned object will include the string returned from [name] in its [toString].
      *
-     * Particularly useful in smaller workflows with few actions, especially those that never call
-     * [RenderContext.makeActionSink]. Most workflows are better served with a sealed class
-     * hierarchy implementing the [WorkflowAction] interface directly.
+     * If defining actions within a [StatefulWorkflow], use the [StatefulWorkflow.workflowAction]
+     * extension instead, to do this without being forced to repeat its parameter types.
      *
      * @param name Function that returns a string describing the update for debugging.
      * @param apply Function that defines the workflow update.
