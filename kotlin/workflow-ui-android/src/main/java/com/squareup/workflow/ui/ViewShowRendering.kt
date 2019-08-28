@@ -16,15 +16,17 @@
 package com.squareup.workflow.ui
 
 import android.view.View
+import com.squareup.workflow.RenderScope
 
 /**
  * Function attached to a view created by [ViewRegistry], to allow it
  * to respond to [View.showRendering].
  */
-typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT) -> Unit
+typealias ViewShowRendering<RenderingT> = RenderScope.(@UnsafeVariance RenderingT) -> Unit
 
-data class ShowRenderingTag<out RenderingT : Any>(
+internal data class ShowRenderingTag<out RenderingT : Any>(
   val showing: RenderingT,
+  val renderScope: ViewRenderScope,
   val showRendering: ViewShowRendering<RenderingT>
 )
 
@@ -39,8 +41,15 @@ fun <RenderingT : Any> View.bindShowRendering(
   initialRendering: RenderingT,
   showRendering: ViewShowRendering<RenderingT>
 ) {
-  setTag(R.id.view_show_rendering_function, ShowRenderingTag(initialRendering, showRendering))
-  showRendering.invoke(initialRendering)
+  // TODO wire up lifecycle
+  val renderScope = ViewRenderScope()
+  val view = this
+
+  setTag(
+      R.id.view_show_rendering_function,
+      ShowRenderingTag(initialRendering, renderScope, showRendering)
+  )
+  showRendering.invoke(renderScope, initialRendering)
 }
 
 /**
@@ -64,8 +73,12 @@ fun <RenderingT : Any> View.showRendering(rendering: RenderingT) {
           "Expected $this to be able to update of ${tag.showing} from $rendering"
         }
 
+        // Stop listening to events from the last call, so the next call doesn't register duplicate
+        // handlers.
+        tag.renderScope.clearHandlers()
+
         @Suppress("UNCHECKED_CAST")
-        (tag.showRendering as ViewShowRendering<RenderingT>).invoke(rendering)
+        (tag.showRendering as ViewShowRendering<RenderingT>).invoke(tag.renderScope, rendering)
       }
       ?: error("Expected $this to have a showRendering function for $rendering.")
 }
@@ -74,7 +87,7 @@ fun <RenderingT : Any> View.showRendering(rendering: RenderingT) {
  * Returns the [ShowRenderingTag] established by the last call to [View.bindShowRendering],
  * or null if none has been set.
  */
-val View.showRenderingTag: ShowRenderingTag<*>?
+internal val View.showRenderingTag: ShowRenderingTag<*>?
   get() = getTag(R.id.view_show_rendering_function) as? ShowRenderingTag<*>
 
 private fun Any.matches(other: Any) = compatible(this, other)

@@ -20,6 +20,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import com.squareup.workflow.RenderContext
+import com.squareup.workflow.RenderScope
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import kotlin.reflect.KClass
 
@@ -59,7 +61,7 @@ import kotlin.reflect.KClass
  * nested renderings to be displayed via nested calls to [ViewRegistry.buildView].
  */
 interface LayoutRunner<RenderingT : Any> {
-  fun showRendering(rendering: RenderingT)
+  fun RenderScope.showRendering(rendering: RenderingT)
 
   class Binding<RenderingT : Any>
   constructor(
