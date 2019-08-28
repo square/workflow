@@ -1,6 +1,5 @@
 import XCTest
 import ReactiveSwift
-import Result
 import Workflow
 import WorkflowTesting
 
@@ -260,7 +259,7 @@ fileprivate struct TestWorker: Worker {
         case failure
     }
 
-    func run() -> SignalProducer<Output, NoError> {
+    func run() -> SignalProducer<Output, Never> {
         return SignalProducer(value: .success)
     }
 

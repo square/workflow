@@ -2,7 +2,6 @@ import XCTest
 @testable import Workflow
 
 import ReactiveSwift
-import Result
 
 
 final class ConcurrencyTests: XCTestCase {
@@ -468,7 +467,7 @@ final class ConcurrencyTests: XCTestCase {
             struct DelayWorker: Worker {
                 typealias Output = Action
 
-                func run() -> SignalProducer<Output, NoError> {
+                func run() -> SignalProducer<Output, Never> {
                     return SignalProducer(value: .update).delay(0.1, on: QueueScheduler.main)
                 }
 
@@ -501,7 +500,7 @@ final class ConcurrencyTests: XCTestCase {
     // MARK - Test Types
 
     fileprivate class TestSignal {
-        let (signal, observer) = Signal<Int, NoError>.pipe()
+        let (signal, observer) = Signal<Int, Never>.pipe()
         var sent: Bool = false
 
         func send(value: Int) {
@@ -595,7 +594,7 @@ final class ConcurrencyTests: XCTestCase {
         struct TestWorker: Worker {
             typealias Output = TestWorkflow.Action
 
-            func run() -> SignalProducer<Output, NoError> {
+            func run() -> SignalProducer<Output, Never> {
                 return SignalProducer(value: .update)
             }
 

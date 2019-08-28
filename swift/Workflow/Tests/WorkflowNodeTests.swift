@@ -2,7 +2,6 @@ import XCTest
 @testable import Workflow
 
 import ReactiveSwift
-import Result
 
 
 final class WorkflowNodeTests: XCTestCase {
@@ -212,7 +211,7 @@ final class WorkflowNodeTests: XCTestCase {
                 return true
             }
 
-            func run() -> SignalProducer<Int, NoError> {
+            func run() -> SignalProducer<Int, Never> {
                 return SignalProducer{ observer, lifetime in
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
                         observer.send(value: 1)

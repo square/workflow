@@ -1,6 +1,5 @@
 import Dispatch
 import ReactiveSwift
-import Result
 
 extension WorkflowNode {
 
@@ -144,7 +143,7 @@ extension WorkflowNode.SubtreeManager {
         private let originalChildWorkers: [AnyChildWorker]
         private (set) internal var usedChildWorkers: [AnyChildWorker]
 
-        private (set) internal var eventSources: [Signal<AnyWorkflowAction<WorkflowType>, NoError>] = []
+        private (set) internal var eventSources: [Signal<AnyWorkflowAction<WorkflowType>, Never>] = []
 
         internal init(previousSinks: [ObjectIdentifier:AnyReusableSink], originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalChildWorkers: [AnyChildWorker]) {
             self.eventPipes = []
@@ -214,7 +213,7 @@ extension WorkflowNode.SubtreeManager {
             return sink
         }
 
-        func subscribe<Action>(signal: Signal<Action, NoError>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+        func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
             eventSources.append(signal.map { AnyWorkflowAction($0) })
         }
 
@@ -419,7 +418,7 @@ extension WorkflowNode.SubtreeManager {
 
         let worker: W
 
-        let signalProducer: SignalProducer<W.Output, NoError>
+        let signalProducer: SignalProducer<W.Output, Never>
 
         private var outputMap: (W.Output) -> AnyWorkflowAction<WorkflowType>
 
@@ -463,7 +462,7 @@ extension WorkflowNode.SubtreeManager {
         private var (lifetime, token) = Lifetime.make()
         private (set) internal var eventPipe: EventPipe
 
-        init(eventSources: [Signal<AnyWorkflowAction<WorkflowType>, NoError>], eventPipe: EventPipe) {
+        init(eventSources: [Signal<AnyWorkflowAction<WorkflowType>, Never>], eventPipe: EventPipe) {
             self.eventPipe = eventPipe
 
             Signal

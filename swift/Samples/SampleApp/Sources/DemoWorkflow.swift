@@ -1,7 +1,6 @@
 import Workflow
 import WorkflowUI
 import ReactiveSwift
-import Result
 
 
 // MARK: Input and Output
@@ -111,7 +110,7 @@ struct RefreshWorker: Worker {
         case error(Error)
     }
 
-    func run() -> SignalProducer<RefreshWorker.Output, NoError> {
+    func run() -> SignalProducer<RefreshWorker.Output, Never> {
         return SignalProducer(value: .success("We did it!"))
             .delay(1.0, on: QueueScheduler.main)
     }
@@ -200,12 +199,12 @@ extension DemoWorkflow {
 
 
 fileprivate class TimerSignal {
-    let signal: Signal<Void, NoError>
-    let observer: Signal<Void, NoError>.Observer
+    let signal: Signal<Void, Never>
+    let observer: Signal<Void, Never>.Observer
     let timer: Timer
 
     init() {
-        let (signal, observer) = Signal<Void, NoError>.pipe()
+        let (signal, observer) = Signal<Void, Never>.pipe()
 
         let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak observer] _ in
             observer?.send(value: ())

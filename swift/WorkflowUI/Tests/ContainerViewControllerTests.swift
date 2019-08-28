@@ -1,7 +1,6 @@
 import XCTest
 
 import ReactiveSwift
-import Result
 import Workflow
 @testable import WorkflowUI
 
@@ -29,7 +28,7 @@ class ContainerViewControllerTests: XCTestCase {
     }()
 
     func test_initialization_renders_workflow() {
-        let (signal, _) = Signal<Int, NoError>.pipe()
+        let (signal, _) = Signal<Int, Never>.pipe()
         let workflow = MockWorkflow(subscription: signal)
         let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
 
@@ -40,7 +39,7 @@ class ContainerViewControllerTests: XCTestCase {
     }
 
     func test_workflow_update_causes_rerender() {
-        let (signal, observer) = Signal<Int, NoError>.pipe()
+        let (signal, observer) = Signal<Int, Never>.pipe()
         let workflow = MockWorkflow(subscription: signal)
         let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
 
@@ -63,7 +62,7 @@ class ContainerViewControllerTests: XCTestCase {
 
     func test_workflow_output_causes_container_output() {
 
-        let (signal, observer) = Signal<Int, NoError>.pipe()
+        let (signal, observer) = Signal<Int, Never>.pipe()
         let workflow = MockWorkflow(subscription: signal)
         let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
 
@@ -85,7 +84,7 @@ class ContainerViewControllerTests: XCTestCase {
 
 fileprivate struct MockWorkflow: Workflow {
 
-    var subscription: Signal<Int, NoError>
+    var subscription: Signal<Int, Never>
 
     typealias State = Int
 

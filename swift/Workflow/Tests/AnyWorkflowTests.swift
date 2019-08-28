@@ -1,7 +1,6 @@
 import XCTest
 @testable import Workflow
 import ReactiveSwift
-import Result
 
 public class AnyWorkflowTests: XCTestCase {
 

@@ -1,6 +1,5 @@
 import UIKit
 import ReactiveSwift
-import Result
 import Workflow
 
 
@@ -8,7 +7,7 @@ import Workflow
 public final class ContainerViewController<Output, ScreenType>: UIViewController where ScreenType: Screen {
 
     /// Emits output events from the bound workflow.
-    public let output: Signal<Output, NoError>
+    public let output: Signal<Output, Never>
 
     internal let rootViewController: ScreenViewController<ScreenType>
 
@@ -18,7 +17,7 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
 
     private let (lifetime, token) = Lifetime.make()
 
-    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, NoError>, viewRegistry: ViewRegistry) {
+    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, viewRegistry: ViewRegistry) {
         self.workflowHost = workflowHost
         self.rootViewController = viewRegistry.provideView(for: rendering.value)
         self.rendering = rendering

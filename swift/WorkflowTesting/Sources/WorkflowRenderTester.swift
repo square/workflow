@@ -1,6 +1,5 @@
 import XCTest
 import ReactiveSwift
-import Result
 @testable import Workflow
 
 
@@ -209,7 +208,7 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
     }
 
     func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action : WorkflowAction, T == Action.WorkflowType {
-        let (signal, observer) = Signal<AnyWorkflowAction<WorkflowType>, NoError>.pipe()
+        let (signal, observer) = Signal<AnyWorkflowAction<WorkflowType>, Never>.pipe()
         let sink = Sink<Action> { action in
             observer.send(value: AnyWorkflowAction(action))
         }
@@ -217,7 +216,7 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
         return sink
     }
 
-    func subscribe<Action>(signal: Signal<Action, NoError>) where Action : WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
+    func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
         signal
             .take(during: lifetime)
             .observeValues { [weak self] action in

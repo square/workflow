@@ -1,5 +1,4 @@
 import ReactiveSwift
-import Result
 
 /// Defines a type that receives debug information about a running workflow hierarchy.
 public protocol WorkflowDebugger {
@@ -21,7 +20,7 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
     private let debugger: WorkflowDebugger?
 
-    private let (outputEvent, outputEventObserver) = Signal<WorkflowType.Output, NoError>.pipe()
+    private let (outputEvent, outputEventObserver) = Signal<WorkflowType.Output, Never>.pipe()
 
     private let rootNode: WorkflowNode<WorkflowType>
 
@@ -81,7 +80,7 @@ public final class WorkflowHost<WorkflowType: Workflow> {
     }
 
     /// A signal containing output events emitted by the root workflow in the hierarchy.
-    public var output: Signal<WorkflowType.Output, NoError> {
+    public var output: Signal<WorkflowType.Output, Never> {
         return outputEvent
     }
 

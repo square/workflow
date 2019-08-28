@@ -1,7 +1,6 @@
 import XCTest
 @testable import Workflow
 import ReactiveSwift
-import Result
 
 
 final class SubtreeManagerTests: XCTestCase {
@@ -167,8 +166,8 @@ final class SubtreeManagerTests: XCTestCase {
 
                 typealias Output = Void
 
-                func run() -> SignalProducer<Void, NoError> {
-                    return SignalProducer<Void, NoError>({ [weak startExpectation, weak endExpectation] (observer, lifetime) in
+                func run() -> SignalProducer<Void, Never> {
+                    return SignalProducer<Void, Never>({ [weak startExpectation, weak endExpectation] (observer, lifetime) in
                         lifetime.observeEnded {
                             endExpectation?.fulfill()
                         }
@@ -214,7 +213,7 @@ final class SubtreeManagerTests: XCTestCase {
 
     func test_subscriptionsUnsubscribe() {
         struct SubscribingWorkflow: Workflow {
-            var signal: Signal<Void, NoError>?
+            var signal: Signal<Void, Never>?
 
             struct State {}
 
@@ -246,7 +245,7 @@ final class SubtreeManagerTests: XCTestCase {
             emittedExpectation.fulfill()
         }
 
-        let (signal, observer) = Signal<Void, NoError>.pipe()
+        let (signal, observer) = Signal<Void, Never>.pipe()
 
         let isSubscribing = manager.render { context -> Bool in
             SubscribingWorkflow(
