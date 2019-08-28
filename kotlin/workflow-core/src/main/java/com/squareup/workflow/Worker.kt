@@ -108,17 +108,17 @@ import kotlin.reflect.KClass
  * @see Deferred.asWorker
  * @see BroadcastChannel.asWorker
  */
-interface Worker<out T> {
+interface Worker<out OutputT> {
 
   /**
    * Used by [RenderContext.runningWorkerUntilFinished] to distinguish between the two events of a
    * [Worker] emitting an output and finishing.
    */
-  sealed class OutputOrFinished<out T> {
+  sealed class OutputOrFinished<out OutputT> {
     /**
      * Indicates that a [Worker] emitted an output value.
      */
-    data class Output<out T>(val value: T) : OutputOrFinished<T>()
+    data class Output<out OutputT>(val value: OutputT) : OutputOrFinished<OutputT>()
 
     /**
      * Indicates that a [Worker] finished, and will not emit any more output values.
@@ -136,7 +136,7 @@ interface Worker<out T> {
    * being collected will be cancelled.
    */
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  fun run(): Flow<T>
+  fun run(): Flow<OutputT>
 
   /**
    * Override this method to define equivalence between [Worker]s. At the end of every render pass,
@@ -160,10 +160,10 @@ interface Worker<out T> {
      * use [createSideEffect] instead (since `Nothing` can't be used as a reified type parameter).
      */
     @UseExperimental(ExperimentalTypeInference::class, ExperimentalCoroutinesApi::class)
-    inline fun <reified T> create(
+    inline fun <reified OutputT> create(
       key: String = "",
-      @BuilderInference noinline block: suspend FlowCollector<T>.() -> Unit
-    ): Worker<T> = flow(block).asWorker(key)
+      @BuilderInference noinline block: suspend FlowCollector<OutputT>.() -> Unit
+    ): Worker<OutputT> = flow(block).asWorker(key)
 
     /**
      * Creates a [Worker] that just performs some side effects and doesn't emit anything. Run the
@@ -189,7 +189,7 @@ interface Worker<out T> {
     /**
      * Returns a [Worker] that finishes immediately without emitting anything.
      */
-    fun <T> finished(): Worker<T> = FinishedWorker
+    fun <OutputT> finished(): Worker<OutputT> = FinishedWorker
 
     /**
      * Creates a [Worker] from a function that returns a single value.
@@ -200,10 +200,10 @@ interface Worker<out T> {
      * builder functions that have the same output type.
      */
     @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    inline fun <reified T> from(
+    inline fun <reified OutputT> from(
       key: String = "",
-      noinline block: suspend () -> T
-    ): Worker<T> = block.asFlow().asWorker(key)
+      noinline block: suspend () -> OutputT
+    ): Worker<OutputT> = block.asFlow().asWorker(key)
 
     /**
      * Creates a [Worker] from a function that returns a single value.
@@ -213,13 +213,13 @@ interface Worker<out T> {
      * builder functions that have the same output type.
      */
     @UseExperimental(ExperimentalCoroutinesApi::class)
-    inline fun <reified T : Any> fromNullable(
+    inline fun <reified OutputT : Any> fromNullable(
       key: String = "",
         // This could be crossinline, but there's a coroutines bug that will cause the coroutine
         // to immediately resume on suspension inside block when it is crossinline.
         // See https://youtrack.jetbrains.com/issue/KT-31197.
-      noinline block: suspend () -> T?
-    ): Worker<T> = create(key) {
+      noinline block: suspend () -> OutputT?
+    ): Worker<OutputT> = create(key) {
       block()?.let { emit(it) }
     }
 
@@ -244,9 +244,9 @@ interface Worker<out T> {
  * This **SHOULD NOT** be used in production code.
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
-inline fun <reified T> Flow<T>.asWorker(
+inline fun <reified OutputT> Flow<OutputT>.asWorker(
   key: String = ""
-): Worker<T> = TypedWorker(T::class, key, this)
+): Worker<OutputT> = TypedWorker(OutputT::class, key, this)
 
 /**
  * Returns a [Worker] that will await this [Deferred] and then emit it.
@@ -258,14 +258,15 @@ inline fun <reified T> Flow<T>.asWorker(
  * Worker.from { doThing().await() }
  * ```
  */
-inline fun <reified T> Deferred<T>.asWorker(key: String = ""): Worker<T> = from(key) { await() }
+inline fun <reified OutputT> Deferred<OutputT>.asWorker(key: String = ""): Worker<OutputT> =
+  from(key) { await() }
 
 /**
  * Shorthand for `.asFlow().asWorker(key)`.
  */
 @ExperimentalCoroutinesApi
 @UseExperimental(FlowPreview::class)
-inline fun <reified T> BroadcastChannel<T>.asWorker(key: String = ""): Worker<T> =
+inline fun <reified OutputT> BroadcastChannel<OutputT>.asWorker(key: String = ""): Worker<OutputT> =
   asFlow().asWorker(key)
 
 /**
@@ -284,10 +285,10 @@ inline fun <reified T> BroadcastChannel<T>.asWorker(key: String = ""): Worker<T>
  * True by default.
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
-inline fun <reified T> ReceiveChannel<T>.asWorker(
+inline fun <reified OutputT> ReceiveChannel<OutputT>.asWorker(
   key: String = "",
   closeOnCancel: Boolean = true
-): Worker<T> = create(key) {
+): Worker<OutputT> = create(key) {
   if (closeOnCancel) {
     // Using consumeEach ensures that the channel is closed if this coroutine is cancelled.
     consumeEach { emit(it) }
@@ -347,14 +348,14 @@ fun <T, R> Worker<T>.transform(
  */
 @PublishedApi
 @UseExperimental(ExperimentalCoroutinesApi::class)
-internal class TypedWorker<T>(
-  /** Can't be `KClass<T>` because `T` doesn't have upper bound `Any`. */
+internal class TypedWorker<OutputT>(
+  /** Can't be `KClass<OutputT>` because `OutputT` doesn't have upper bound `Any`. */
   private val type: KClass<*>,
   private val key: String,
-  private val work: Flow<T>
-) : Worker<T> {
+  private val work: Flow<OutputT>
+) : Worker<OutputT> {
 
-  override fun run(): Flow<T> = work
+  override fun run(): Flow<OutputT> = work
 
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
     otherWorker is TypedWorker &&
