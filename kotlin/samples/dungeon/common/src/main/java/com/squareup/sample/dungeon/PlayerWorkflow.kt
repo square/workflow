@@ -36,6 +36,7 @@ class PlayerWorkflow(
 ) : StatefulWorkflow<ActorProps, Movement, Nothing, Rendering>() {
 
   sealed class Action : WorkflowAction<Movement, Nothing> {
+
     class StartMoving(private val direction: Direction) : Action() {
       override fun Mutator<Movement>.apply(): Nothing? {
         state += direction

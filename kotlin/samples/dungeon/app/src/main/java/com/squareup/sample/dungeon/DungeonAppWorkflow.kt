@@ -25,9 +25,8 @@ import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.workflowAction
 import com.squareup.workflow.runningWorker
+import com.squareup.workflow.workflowAction
 
 private typealias BoardPath = String
 
@@ -40,11 +39,6 @@ class DungeonAppWorkflow(
   sealed class State {
     object Loading : State()
     data class Running(val board: Board) : State()
-  }
-
-  private fun startRunning(board: Board) = workflowAction {
-    state = Running(board)
-    null
   }
 
   override fun initialState(
@@ -65,24 +59,31 @@ class DungeonAppWorkflow(
 
       is Running -> {
         val gameInput = GameWorkflow.Props(state.board)
-        context.renderChild(gameWorkflow, gameInput) { output ->
-          when (output) {
-            Vibrate -> vibrate(50)
-            PlayerWasEaten -> {
-              vibrate(20)
-              vibrate(20)
-              vibrate(20)
-              vibrate(20)
-              vibrate(1000)
-            }
-          }
-          noAction()
-        }
+        context.renderChild(gameWorkflow, gameInput) { handleGameOutput(it) }
       }
     }
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
+
+  private fun startRunning(board: Board) = workflowAction {
+    state = Running(board)
+    return@workflowAction null
+  }
+
+  private fun handleGameOutput(output: GameWorkflow.Output) = workflowAction {
+    when (output) {
+      Vibrate -> vibrate(50)
+      PlayerWasEaten -> {
+        vibrate(20)
+        vibrate(20)
+        vibrate(20)
+        vibrate(20)
+        vibrate(1000)
+      }
+    }
+    return@workflowAction null
+  }
 
   private fun vibrate(durationMs: Long) {
     @Suppress("DEPRECATION")
