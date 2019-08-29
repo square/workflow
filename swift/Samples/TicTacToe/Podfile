@@ -1,0 +1,9 @@
+source 'https://github.com/CocoaPods/Specs.git'
+project 'TicTacToe.xcodeproj'
+platform :ios, '9.3'
+
+target 'TicTacToe' do
+    pod 'Workflow', path: '../../../Workflow.podspec', :testspecs => ['Tests']
+    pod 'WorkflowUI', path: '../../../WorkflowUI.podspec', :testspecs => ['Tests']
+    pod 'BackStackContainer', path: '../BackStackContainer/BackStackContainer.podspec'
+end
