@@ -139,15 +139,30 @@ interface Worker<out OutputT> {
   fun run(): Flow<OutputT>
 
   /**
-   * Override this method to define equivalence between [Worker]s. At the end of every render pass,
-   * the set of [Worker]s that were requested by the workflow are compared to the set from the last
-   * render pass using this method. Equivalent workers are allowed to keep running. New workers
-   * are started ([run] is called and the returned [Flow] is collected). Old workers are cancelled
-   * by cancelling their collecting coroutines.
+   * Override this method to define equivalence between [Worker]s.
+   *
+   * At the end of every render pass, the set of [Worker]s that were requested by the workflow are
+   * compared to the set from the last render pass using this method. Equivalent workers are allowed
+   * to keep running. New workers are started ([run] is called and the returned [Flow] is
+   * collected). Old workers are cancelled by cancelling their collecting coroutines.
    *
    * Implementations of this method should not be based on object identity. For example, a [Worker]
    * that performs a network request might check that two workers are requests to the same endpoint
    * and have the same request data.
+   *
+   * Most implementations of this method will check for concrete type equality, and then match
+   * on constructor parameters.
+   *
+   * E.g:
+   *
+   * ```
+   * class SearchWorker(private val query: String): Worker<SearchResult> {
+   *   // run omitted for example.
+   *
+   *   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
+   *     otherWorker is SearchWorker && otherWorker.query == query
+   * }
+   * ```
    */
   fun doesSameWorkAs(otherWorker: Worker<*>): Boolean
 
