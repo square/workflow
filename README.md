@@ -4,19 +4,20 @@
 [![CocoaPods compatible](https://img.shields.io/cocoapods/v/Workflow.svg)](https://cocoapods.org/pods/Workflow)
 [![Maven Central](https://img.shields.io/maven-central/v/com.squareup.workflow/workflow-core-jvm.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.squareup.workflow%22)
 
-An architecture that allows composable state machines to drive UI navigation and content, where the
- state machines are cleanly separated from UI code.
+A unidirectional data flow library for Kotlin and Swift, emphasizing:
+
+* Strong support for state-machine driven UI and navigation.
+* Composition and scaling.
+* Effortless separation of business and UI concerns.
+
+Also see the [slide deck presented at droidcon NYC 2019](https://docs.google.com/presentation/d/19-DkVCn-XawssyHQ_cboIX_s-Lf6rNg-ryAehA9xBVs/edit#slide=id.g4088c7565d_2_5).
 
 _**This project is currently experimental and the API subject to breaking changes without notice.**
 Follow Square's engineering blog, [The Corner](https://developer.squareup.com/blog/), to see when
 this project becomes stable._
 
-Workflow is a library for making composable state machines, and UIs driven by those state machines.
-
-This project is under active development. The workflow code is being piloted in production apps. The
-view code is not (yet).
-
-More documentation and samples will be coming soon!
+While the API is not yet stable, this code is in heavy production use in Android and iOS
+apps with millions of users.
 
 ## Using Workflows in your project
 
