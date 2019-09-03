@@ -111,24 +111,6 @@ import kotlin.reflect.KClass
 interface Worker<out OutputT> {
 
   /**
-   * Used by [RenderContext.runningWorkerUntilFinished] to distinguish between the two events of a
-   * [Worker] emitting an output and finishing.
-   */
-  sealed class OutputOrFinished<out OutputT> {
-    /**
-     * Indicates that a [Worker] emitted an output value.
-     */
-    data class Output<out OutputT>(val value: OutputT) : OutputOrFinished<OutputT>()
-
-    /**
-     * Indicates that a [Worker] finished, and will not emit any more output values.
-     */
-    object Finished : OutputOrFinished<Nothing>() {
-      override fun toString(): String = "Finished"
-    }
-  }
-
-  /**
    * Returns a [Flow] to execute the work represented by this worker.
    *
    * The [Flow] is invoked in the context of the workflow runtime. When this [Worker], its parent

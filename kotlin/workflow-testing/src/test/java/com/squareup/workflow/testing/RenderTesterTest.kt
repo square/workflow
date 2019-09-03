@@ -89,7 +89,7 @@ class RenderTesterTest {
     val workflow = Workflow.stateful<Unit, String, String, Unit>(
         initialState = { _, _ -> fail() },
         render = { _, _ ->
-          runningWorkerUntilFinished(worker) {
+          runningWorker(worker) {
             WorkflowAction {
               state = "state: $it"
               "output: $it"
@@ -103,15 +103,9 @@ class RenderTesterTest {
       assertNoWorkflowsRendered()
       worker.assertRan()
 
-      // Output
       val (outputState, output) = worker.handleOutput("work!")
-      assertEquals("state: Output(value=work!)", outputState)
-      assertEquals("output: Output(value=work!)", output)
-
-      // Finish
-      val (finishState, finish) = worker.handleFinish()
-      assertEquals("state: Finished", finishState)
-      assertEquals("output: Finished", finish)
+      assertEquals("state: work!", outputState)
+      assertEquals("output: work!", output)
     }
   }
 

@@ -17,9 +17,6 @@
 
 package com.squareup.workflow
 
-import com.squareup.workflow.Worker.OutputOrFinished
-import com.squareup.workflow.Worker.OutputOrFinished.Finished
-import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.testing.WorkerSink
 import com.squareup.workflow.testing.testFromStart
@@ -131,10 +128,10 @@ class WorkerCompositionIntegrationTest {
     }
   }
 
-  @Test fun `runningWorkerUntilFinished gets output`() {
+  @Test fun `runningWorker gets output`() {
     val worker = WorkerSink<String>("")
-    val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(worker) { WorkflowAction { it } }
+    val workflow = Workflow.stateless<Unit, String, Unit> {
+      runningWorker(worker) { WorkflowAction { it } }
     }
 
     workflow.testFromStart {
@@ -142,48 +139,14 @@ class WorkerCompositionIntegrationTest {
 
       worker.send("foo")
 
-      assertEquals(Output("foo"), awaitNextOutput())
+      assertEquals("foo", awaitNextOutput())
     }
   }
 
-  @Test fun `runningWorkerUntilFinished gets finished`() {
+  @Test fun `runningWorker gets error`() {
     val channel = Channel<String>()
-    val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(channel.asWorker()) { WorkflowAction { it } }
-    }
-
-    workflow.testFromStart {
-      assertFalse(this.hasOutput)
-
-      channel.close()
-
-      assertEquals(Finished, awaitNextOutput())
-    }
-  }
-
-  @Test fun `runningWorkerUntilFinished gets finished after value`() {
-    val channel = Channel<String>()
-    val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(channel.asWorker()) { WorkflowAction { it } }
-    }
-
-    workflow.testFromStart {
-      assertFalse(this.hasOutput)
-
-      channel.offer("foo")
-
-      assertEquals(Output("foo"), awaitNextOutput())
-
-      channel.close()
-
-      assertEquals(Finished, awaitNextOutput())
-    }
-  }
-
-  @Test fun `runningWorkerUntilFinished gets error`() {
-    val channel = Channel<String>()
-    val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(channel.asWorker()) { WorkflowAction { it } }
+    val workflow = Workflow.stateless<Unit, String, Unit> {
+      runningWorker(channel.asWorker()) { WorkflowAction { it } }
     }
 
     workflow.testFromStart {
