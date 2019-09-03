@@ -21,6 +21,7 @@ import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Worker.OutputOrFinished.Finished
 import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.testing.WorkerSink
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
@@ -131,15 +132,15 @@ class WorkerCompositionIntegrationTest {
   }
 
   @Test fun `runningWorkerUntilFinished gets output`() {
-    val channel = Channel<String>(capacity = 1)
+    val worker = WorkerSink<String>("")
     val workflow = Workflow.stateless<Unit, OutputOrFinished<String>, Unit> {
-      runningWorkerUntilFinished(channel.asWorker()) { WorkflowAction { it } }
+      runningWorkerUntilFinished(worker) { WorkflowAction { it } }
     }
 
     workflow.testFromStart {
       assertFalse(this.hasOutput)
 
-      channel.offer("foo")
+      worker.send("foo")
 
       assertEquals(Output("foo"), awaitNextOutput())
     }
@@ -214,7 +215,7 @@ class WorkerCompositionIntegrationTest {
 
   // See https://github.com/square/workflow/issues/261.
   @Test fun `onWorkerOutput closes over latest state`() {
-    val triggerOutput = Channel<Unit>()
+    val triggerOutput = WorkerSink<Unit>("")
 
     val incrementState = WorkflowAction<Int, Int> {
       state += 1
@@ -224,7 +225,7 @@ class WorkerCompositionIntegrationTest {
     val workflow = Workflow.stateful<Int, Int, () -> Unit>(
         initialState = 0,
         render = { state ->
-          runningWorker(triggerOutput.asWorker()) { WorkflowAction { state } }
+          runningWorker(triggerOutput) { WorkflowAction { state } }
 
           val sink = makeActionSink<WorkflowAction<Int, Int>>()
           return@stateful { sink.send(incrementState) }
@@ -232,18 +233,18 @@ class WorkerCompositionIntegrationTest {
     )
 
     workflow.testFromStart {
-      triggerOutput.offer(Unit)
+      triggerOutput.send(Unit)
       assertEquals(0, awaitNextOutput())
 
       awaitNextRendering()
           .invoke()
-      triggerOutput.offer(Unit)
+      triggerOutput.send(Unit)
 
       assertEquals(1, awaitNextOutput())
 
       awaitNextRendering()
           .invoke()
-      triggerOutput.offer(Unit)
+      triggerOutput.send(Unit)
 
       assertEquals(2, awaitNextOutput())
     }

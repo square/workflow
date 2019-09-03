@@ -15,8 +15,8 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.testing.WorkerSink
 import com.squareup.workflow.testing.testFromStart
-import kotlinx.coroutines.channels.Channel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -102,9 +102,9 @@ class WorkflowCompositionIntegrationTest {
 
   // See https://github.com/square/workflow/issues/261.
   @Test fun `renderChild closes over latest state`() {
-    val triggerChildOutput = Channel<Unit>()
+    val triggerChildOutput = WorkerSink<Unit>("")
     val child = Workflow.stateless<Unit, Unit, Unit> {
-      runningWorker(triggerChildOutput.asWorker()) { WorkflowAction { Unit } }
+      runningWorker(triggerChildOutput) { WorkflowAction { Unit } }
     }
     val incrementState = WorkflowAction<Int, Nothing> {
       state += 1
@@ -120,18 +120,18 @@ class WorkflowCompositionIntegrationTest {
     )
 
     workflow.testFromStart {
-      triggerChildOutput.offer(Unit)
+      triggerChildOutput.send(Unit)
       assertEquals(0, awaitNextOutput())
 
       awaitNextRendering()
           .invoke()
-      triggerChildOutput.offer(Unit)
+      triggerChildOutput.send(Unit)
 
       assertEquals(1, awaitNextOutput())
 
       awaitNextRendering()
           .invoke()
-      triggerChildOutput.offer(Unit)
+      triggerChildOutput.send(Unit)
 
       assertEquals(2, awaitNextOutput())
     }
