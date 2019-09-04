@@ -10,8 +10,6 @@ A unidirectional data flow library for Kotlin and Swift, emphasizing:
 * Composition and scaling.
 * Effortless separation of business and UI concerns.
 
-Also see the [slide deck presented at droidcon NYC 2019](https://docs.google.com/presentation/d/19-DkVCn-XawssyHQ_cboIX_s-Lf6rNg-ryAehA9xBVs/edit#slide=id.g4088c7565d_2_5).
-
 _**This project is currently experimental and the API subject to breaking changes without notice.**
 Follow Square's engineering blog, [The Corner](https://developer.squareup.com/blog/), to see when
 this project becomes stable._
@@ -95,6 +93,7 @@ higher-level integrations with UI frameworks.
 
 ## Resources
 
+* Square Workflow – Droidcon NYC 2019 ([slides](https://docs.google.com/presentation/d/19-DkVCn-XawssyHQ_cboIX_s-Lf6rNg-ryAehA9xBVs))
 * [SF Android GDG @ Square 2019 - Hello Workflow](https://www.youtube.com/watch?v=8PlYtfsgDKs)
   (live coding)
 * [Android Dialogs 5-part Coding Series](https://twitter.com/chiuki/status/1100810374410956800)
