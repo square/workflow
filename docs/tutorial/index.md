@@ -1,5 +1,12 @@
 # Swift
 
+!!! tip
+    For a comprehensive tutorial with code that you can build and follow along with, see the
+    [Tutorials](https://github.com/square/workflow/tree/master/swift/Samples/Tutorial#tutorial) in
+    the repo.
+
+    This section will be restructured soon to incorporate that and Kotlin tutorials.
+
 The Workflow infrastructure is split into several modules.
 
 ## `Workflow`
