@@ -17,8 +17,6 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.Worker.OutputOrFinished.Finished
-import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
@@ -28,6 +26,7 @@ import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -56,7 +55,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    * continues to listen to the worker after it finishes.
    */
   private class WorkerSession(
-    val channel: ReceiveChannel<Output<*>>,
+    val channel: ReceiveChannel<*>,
     var tombstone: Boolean = false
   )
 
@@ -115,6 +114,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    *
    * It is an error to call this method after calling [cancel].
    */
+  @UseExperimental(InternalCoroutinesApi::class)
   fun <T : Any> tick(
     selector: SelectBuilder<T?>,
     handler: (OutputT) -> T?
@@ -132,13 +132,18 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     workerTracker.lifetimes
         .filter { (_, session) -> !session.tombstone }
         .forEach { (case, session) ->
-          selector.onReceiveOutputOrFinished(session.channel) { outputOrFinished ->
-            if (outputOrFinished === Finished) {
-              // Set the tombstone flag so we don't continue to listen to the subscription.
-              session.tombstone = true
+          with(selector) {
+            session.channel.onReceiveOrClosed { valueOrClosed ->
+              if (valueOrClosed.isClosed) {
+                // Set the tombstone flag so we don't continue to listen to the subscription.
+                session.tombstone = true
+                // Nothing to do on close other than update the session, so don't emit any output.
+                return@onReceiveOrClosed null
+              } else {
+                val update = case.acceptUpdate(valueOrClosed.value)
+                acceptUpdate(update)
+              }
             }
-            val update = case.acceptUpdate(outputOrFinished)
-            acceptUpdate(update)
           }
         }
 

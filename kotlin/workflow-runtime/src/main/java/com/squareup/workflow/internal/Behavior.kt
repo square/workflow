@@ -16,7 +16,6 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.Worker
-import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import kotlinx.coroutines.Deferred
@@ -55,11 +54,11 @@ data class Behavior<StateT, out OutputT : Any> internal constructor(
   data class WorkerCase<T, StateT, out OutputT : Any> internal constructor(
     val worker: Worker<T>,
     val key: String,
-    val handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
+    val handler: (T) -> WorkflowAction<StateT, OutputT>
   ) {
     @Suppress("UNCHECKED_CAST")
-    fun acceptUpdate(value: OutputOrFinished<*>): WorkflowAction<StateT, OutputT> =
-      handler(value as OutputOrFinished<T>)
+    fun acceptUpdate(value: Any?): WorkflowAction<StateT, OutputT> =
+      handler(value as T)
 
     /** Override `equals` so this class can be used as its own key. */
     override fun equals(other: Any?): Boolean =

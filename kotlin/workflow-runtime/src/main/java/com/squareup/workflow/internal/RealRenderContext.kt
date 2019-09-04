@@ -21,7 +21,6 @@ import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
 import com.squareup.workflow.Worker
-import com.squareup.workflow.Worker.OutputOrFinished
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.WorkerCase
@@ -97,10 +96,10 @@ class RealRenderContext<StateT, OutputT : Any>(
     return renderer.render(case, child, id, props)
   }
 
-  override fun <T> runningWorkerUntilFinished(
+  override fun <T> runningWorker(
     worker: Worker<T>,
     key: String,
-    handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
+    handler: (T) -> WorkflowAction<StateT, OutputT>
   ) {
     checkNotFrozen()
     workerCases += WorkerCase(worker, key, handler)

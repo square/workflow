@@ -17,9 +17,6 @@
 
 package com.squareup.workflow
 
-import com.squareup.workflow.Worker.OutputOrFinished
-import com.squareup.workflow.Worker.OutputOrFinished.Finished
-import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.WorkflowAction.Mutator
 
@@ -86,32 +83,17 @@ interface RenderContext<StateT, in OutputT : Any> {
   ): ChildRenderingT
 
   /**
-   * Ensures [worker] is running. When the [Worker] emits an output or finishes, [handler] is called
-   * to determine the [WorkflowAction] to take.
+   * Ensures [worker] is running. When the [Worker] emits an output, [handler] is called
+   * to determine the [WorkflowAction] to take. When the worker finishes, nothing happens (although
+   * another render pass may be triggered).
    *
    * @param key An optional string key that is used to distinguish between identical [Worker]s.
    */
-  fun <T> runningWorkerUntilFinished(
+  fun <T> runningWorker(
     worker: Worker<T>,
     key: String = "",
-    handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
+    handler: (T) -> WorkflowAction<StateT, OutputT>
   )
-
-  /**
-   * Ensures [worker] is running. When the [Worker] emits an output or finishes, [handler] is called
-   * to determine the [WorkflowAction] to take.
-   *
-   * @param key An optional string key that is used to distinguish between identical [Worker]s.
-   */
-  @Deprecated(
-      "Use runningWorkerUntilFinished",
-      ReplaceWith("this.runningWorkerUntilFinished(worker, key, handler)")
-  )
-  fun <T> onWorkerOutputOrFinished(
-    worker: Worker<T>,
-    key: String = "",
-    handler: (OutputOrFinished<T>) -> WorkflowAction<StateT, OutputT>
-  ) = runningWorkerUntilFinished(worker, key, handler)
 }
 
 /**
@@ -156,24 +138,6 @@ fun <StateT, OutputT : Any, ChildRenderingT>
       key: String = ""
     ): ChildRenderingT = renderChild(child, Unit, key) { noAction() }
 // @formatter:on
-
-/**
- * Ensures [worker] is running. When the [Worker] emits an output, [handler] is called
- * to determine the [WorkflowAction] to take. When the worker finishes, nothing happens (although
- * another render pass may be triggered).
- *
- * @param key An optional string key that is used to distinguish between identical [Worker]s.
- */
-fun <StateT, OutputT : Any, T> RenderContext<StateT, OutputT>.runningWorker(
-  worker: Worker<T>,
-  key: String = "",
-  handler: (T) -> WorkflowAction<StateT, OutputT>
-) = runningWorkerUntilFinished(worker, key) { outputOrFinished ->
-  when (outputOrFinished) {
-    is Output -> handler(outputOrFinished.value)
-    Finished -> noAction()
-  }
-}
 
 /**
  * Ensures a [Worker] that never emits anything is running. Since [worker] can't emit anything,

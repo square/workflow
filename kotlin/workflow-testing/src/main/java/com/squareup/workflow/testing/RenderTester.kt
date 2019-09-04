@@ -23,9 +23,6 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Worker
-import com.squareup.workflow.Worker.OutputOrFinished
-import com.squareup.workflow.Worker.OutputOrFinished.Finished
-import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
@@ -196,14 +193,7 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
   fun <T : Any> Worker<T>.handleOutput(
     output: T,
     key: String = ""
-  ): Pair<StateT, OutputT?> = executeWorkerAction(this, Output(output), key)
-
-  /**
-   * Asserts that this worker was ran with the given [key] and then executes the output handler
-   * with [Finished]. Returns the new state and output returned by the output handler.
-   */
-  fun <T : Any> Worker<T>.handleFinish(key: String = ""): Pair<StateT, OutputT?> =
-    executeWorkerAction(this, Finished, key)
+  ): Pair<StateT, OutputT?> = executeWorkerAction(this, output, key)
 
   /**
    * Throws an [AssertionError] if any [Workflow]s were rendered.
@@ -248,7 +238,7 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
 
   private fun <T : Any> executeWorkerAction(
     worker: Worker<T>,
-    outputOrFinished: OutputOrFinished<T>,
+    outputOrFinished: T,
     key: String = ""
   ): Pair<StateT, OutputT?> {
     val case = findWorkerCase(worker, key)
@@ -298,11 +288,11 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
     handler: (ChildOutputT) -> WorkflowAction<S, O>
   ): ChildRenderingT = realContext.renderChild(child, props, key, handler)
 
-  override fun <T> runningWorkerUntilFinished(
+  override fun <T> runningWorker(
     worker: Worker<T>,
     key: String,
-    handler: (OutputOrFinished<T>) -> WorkflowAction<S, O>
-  ) = realContext.runningWorkerUntilFinished(worker, key, handler)
+    handler: (T) -> WorkflowAction<S, O>
+  ) = realContext.runningWorker(worker, key, handler)
 
   override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
     case: WorkflowOutputCase<ChildPropsT, ChildOutputT, S, O>,
@@ -342,10 +332,10 @@ private object NoopRenderContext : RenderContext<Any?, Any> {
     throw UnsupportedOperationException()
   }
 
-  override fun <T> runningWorkerUntilFinished(
+  override fun <T> runningWorker(
     worker: Worker<T>,
     key: String,
-    handler: (OutputOrFinished<T>) -> WorkflowAction<Any?, Any>
+    handler: (T) -> WorkflowAction<Any?, Any>
   ) {
     throw UnsupportedOperationException()
   }

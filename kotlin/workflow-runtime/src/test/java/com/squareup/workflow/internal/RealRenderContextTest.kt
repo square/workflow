@@ -31,7 +31,6 @@ import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.renderChild
-import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateless
 import kotlin.test.Test
 import kotlin.test.assertEquals

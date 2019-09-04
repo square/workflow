@@ -21,9 +21,6 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.Worker.OutputOrFinished
-import com.squareup.workflow.Worker.OutputOrFinished.Finished
-import com.squareup.workflow.Worker.OutputOrFinished.Output
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.asWorker
@@ -193,7 +190,7 @@ class WorkflowNodeTest {
 
   @Test fun `worker gets value`() {
     val channel = Channel<String>(capacity = 1)
-    var update: OutputOrFinished<String>? = null
+    var update: String? = null
     val workflow = object : StringWorkflow() {
       override fun initialState(
         props: String,
@@ -208,7 +205,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        context.runningWorkerUntilFinished(channel.asWorker()) {
+        context.runningWorker(channel.asWorker()) {
           check(update == null)
           update = it
           WorkflowAction { "update:$it" }
@@ -244,53 +241,8 @@ class WorkflowNodeTest {
       }
     }
 
-    assertEquals(Output("element"), update)
-    assertEquals("update:${Output("element")}", output)
-  }
-
-  @Test fun `worker gets close`() {
-    val channel = Channel<String>(capacity = 0)
-    var update: OutputOrFinished<String>? = null
-    val workflow = object : StringWorkflow() {
-      override fun initialState(
-        props: String,
-        snapshot: Snapshot?
-      ): String {
-        assertNull(snapshot)
-        return props
-      }
-
-      override fun render(
-        props: String,
-        state: String,
-        context: RenderContext<String, String>
-      ): String {
-        context.runningWorkerUntilFinished(channel.asWorker()) {
-          check(update == null)
-          update = it
-          WorkflowAction { "update:$it" }
-        }
-        return ""
-      }
-    }
-    val node = WorkflowNode(workflow.id(), workflow, "", null, context)
-
-    assertEquals(null, update)
-    node.render(workflow, "")
-    assertEquals(null, update)
-
-    channel.close()
-
-    val output = runBlocking {
-      withTimeout(1) {
-        select<String?> {
-          node.tick(this) { it }
-        }
-      }
-    }
-
-    assertEquals(Finished, update)
-    assertEquals("update:$Finished", output)
+    assertEquals("element", update)
+    assertEquals("update:element", output)
   }
 
   @Test fun `worker is cancelled`() {
@@ -305,7 +257,7 @@ class WorkflowNodeTest {
         return props
       }
 
-      fun update(value: OutputOrFinished<String>) = WorkflowAction<String, String> {
+      fun update(value: String) = WorkflowAction<String, String> {
         "update:$value"
       }
 
@@ -323,7 +275,7 @@ class WorkflowNodeTest {
 
         when (state) {
           "listen" -> {
-            context.runningWorkerUntilFinished(channel.asWorker(closeOnCancel = true)) {
+            context.runningWorker(channel.asWorker(closeOnCancel = true)) {
               update(it)
             }
             doClose = { sink.send(finish) }
