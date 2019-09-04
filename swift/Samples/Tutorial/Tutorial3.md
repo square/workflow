@@ -4,7 +4,11 @@ _State throughout a tree of workflows_
 
 ## Setup
 
-Start from the completed code from Tutorial 2, or if you're jumping ahead, the completed `Tutorial2` pod.
+To follow this tutorial:
+- Open your terminal and run `bundle exec pod install` in the `swift/Samples/Tutorial` directory.
+- Open `Tutorial.xcworkspace` and build the `Tutorial` Scheme.
+
+Start from implementation of `Tutorial2` if you're skipping ahead. You can run this by updating the `AppDelegate` to import `Tutorial2` instead of `TutorialBase`.
 
 ## Editing TODO items
 

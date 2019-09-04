@@ -4,7 +4,11 @@ _Multiple Screens and Navigation_
 
 ## Setup
 
-Start from the completed code from Tutorial 1, or if you're jumping ahead, the completed `Tutorial1` pod.
+To follow this tutorial:
+- Open your terminal and run `bundle exec pod install` in the `swift/Samples/Tutorial` directory.
+- Open `Tutorial.xcworkspace` and build the `Tutorial` Scheme.
+
+Start from implementation of `Tutorial1` if you're skipping ahead. You can run this by updating the `AppDelegate` to import `Tutorial1` instead of `TutorialBase`.
 
 ## Second Workflow
 
