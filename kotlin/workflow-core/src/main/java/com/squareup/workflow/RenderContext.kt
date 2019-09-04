@@ -30,7 +30,7 @@ import com.squareup.workflow.WorkflowAction.Mutator
  *
  * ## Performing Asynchronous Work
  *
- * See [runningWorker] and [runningWorkerUntilFinished].
+ * See [runningWorker].
  *
  * ## Composing Children
  *
