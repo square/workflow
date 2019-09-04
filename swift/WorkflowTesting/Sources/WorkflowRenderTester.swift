@@ -39,6 +39,9 @@ extension Workflow {
 /// Usage: Set up a set of `RenderExpectations` and then validate with a call to `render`.
 /// Side-effects may be performed against the rendering to validate the behavior of actions.
 ///
+/// There is also a convenience `render` method where each expectation
+/// is an individual parameter.
+///
 /// Child workflows will always be rendered based upon their initial state.
 ///
 /// To directly test actions and their effects, use the `WorkflowActionTester`.
@@ -49,6 +52,7 @@ extension Workflow {
 ///     .render(
 ///         with: RenderExpectations(
 ///         expectedState: ExpectedState(state: TestWorkflow.State()),
+///         expectedOutput: ExpectedOutput(output: TestWorkflow.Output.finished),
 ///         expectedWorkers: [
 ///             ExpectedWorker(
 ///                 worker: TestWorker(),
@@ -58,9 +62,38 @@ extension Workflow {
 ///         expectedWorkflows: [
 ///             ExpectedWorkflow(
 ///                 type: ChildWorkflow.self,
+///                 key: "key",
 ///                 rendering: "rendering",
-///                 output: ChildWorkflow.Output.success
+///                 output: ChildWorkflow.Output.success),
+///             ...,
 ///         ]),
+///         assertions: { rendering in
+///             XCTAssertEqual("expected text on rendering", rendering.text)
+///         }
+///     .render(...) // continue testing. The state will be updated based on actions or outputs.
+/// ```
+///
+/// Using the convenience API
+/// ```
+/// workflow
+///     .renderTester(initialState: TestWorkflow.State())
+///     .render(
+///         expectedState: ExpectedState(state: TestWorkflow.State()),
+///         expectedOutput: ExpectedOutput(output: TestWorkflow.Output.finished),
+///         expectedWorkers: [
+///             ExpectedWorker(
+///                 worker: TestWorker(),
+///                 output: TestWorker.Output.success),
+///             ...,
+///         ]
+///         expectedWorkflows: [
+///             ExpectedWorkflow(
+///                 type: ChildWorkflow.self,
+///                 key: "key",
+///                 rendering: "rendering",
+///                 output: ChildWorkflow.Output.success)
+///             ...,
+///         ],
 ///         assertions: { rendering in
 ///             XCTAssertEqual("expected text on rendering", rendering.text)
 ///         }
@@ -220,6 +253,9 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
         }
 
         let expectedWorkflow = expectations.expectedWorkflows.remove(at: workflowIndex)
+        if let childOutput = expectedWorkflow.output as? Child.Output {
+            apply(action: outputMap(childOutput))
+        }
         return expectedWorkflow.rendering as! Child.Rendering
     }
 
