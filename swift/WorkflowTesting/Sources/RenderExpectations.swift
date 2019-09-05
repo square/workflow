@@ -107,7 +107,7 @@ public struct ExpectedWorkflow {
     let workflowType: Any.Type
     let key: String
     let rendering: Any
-    private let output: Any?
+    let output: Any?
 
     public init<WorkflowType: Workflow>(type: WorkflowType.Type, key: String = "", rendering: WorkflowType.Rendering, output: WorkflowType.Output? = nil) {
         self.workflowType = type

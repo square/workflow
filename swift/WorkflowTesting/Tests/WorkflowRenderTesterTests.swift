@@ -142,6 +142,25 @@ final class WorkflowRenderTesterTests: XCTestCase {
                 })
     }
 
+    func test_childWorkflowOutput() {
+        // Test that a child emitting an output is handled as an action by the parent
+        ParentWorkflow(initialText: "hello")
+            .renderTester()
+            .render(
+                expectedState: ExpectedState(state: ParentWorkflow.State(text: "Failed")),
+                expectedWorkflows: [
+                    ExpectedWorkflow(
+                        type: ChildWorkflow.self,
+                        rendering: "olleh",
+                        output: .failure)],
+                assertions: { rendering in
+                    XCTAssertEqual("olleh", rendering)
+            })
+        .assert{ state in
+            XCTAssertEqual("Failed", state.text)
+        }
+    }
+
     func test_implict_expectations() {
         TestWorkflow(initialText: "hello")
             .renderTester()
@@ -296,7 +315,7 @@ fileprivate struct ParentWorkflow: Workflow {
 
     var initialText: String
 
-    struct State {
+    struct State: Equatable {
         var text: String
     }
 
