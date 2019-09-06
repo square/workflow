@@ -19,8 +19,10 @@ package com.squareup.workflow
 
 import com.squareup.workflow.testing.test
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -36,17 +38,9 @@ class WorkerTest {
 
   private class ExpectedException : RuntimeException()
 
-  @Test fun `create returns equivalent workers unkeyed`() {
+  @Test fun `create returns equivalent workers`() {
     val worker1 = Worker.create<Unit> {}
     val worker2 = Worker.create<Unit> {}
-
-    assertNotSame(worker1, worker2)
-    assertTrue(worker1.doesSameWorkAs(worker2))
-  }
-
-  @Test fun `create returns equivalent workers keyed`() {
-    val worker1 = Worker.create<Unit>("key") {}
-    val worker2 = Worker.create<Unit>("key") {}
 
     assertNotSame(worker1, worker2)
     assertTrue(worker1.doesSameWorkAs(worker2))
@@ -55,13 +49,6 @@ class WorkerTest {
   @Test fun `create returns non-equivalent workers based on type`() {
     val worker1 = Worker.create<Unit> {}
     val worker2 = Worker.create<Int> {}
-
-    assertFalse(worker1.doesSameWorkAs(worker2))
-  }
-
-  @Test fun `create returns non-equivalent workers based on key`() {
-    val worker1 = Worker.create<Unit>("key1") {}
-    val worker2 = Worker.create<Unit>("key2") {}
 
     assertFalse(worker1.doesSameWorkAs(worker2))
   }
@@ -96,23 +83,16 @@ class WorkerTest {
   }
 
   @Test fun `createSideEffect returns equivalent workers`() {
-    val worker1 = Worker.createSideEffect("key") {}
-    val worker2 = Worker.createSideEffect("key") {}
+    val worker1 = Worker.createSideEffect {}
+    val worker2 = Worker.createSideEffect {}
 
     assertNotSame(worker1, worker2)
     assertTrue(worker1.doesSameWorkAs(worker2))
   }
 
-  @Test fun `createSideEffect returns non-equivalent workers based on key`() {
-    val worker1 = Worker.createSideEffect("key1") {}
-    val worker2 = Worker.createSideEffect("key2") {}
-
-    assertFalse(worker1.doesSameWorkAs(worker2))
-  }
-
   @Test fun `createSideEffect runs`() {
     var ran = false
-    val worker = Worker.createSideEffect("") {
+    val worker = Worker.createSideEffect {
       ran = true
     }
 
@@ -122,7 +102,7 @@ class WorkerTest {
   }
 
   @Test fun `createSideEffect finishes`() {
-    val worker = Worker.createSideEffect("") {}
+    val worker = Worker.createSideEffect {}
 
     worker.test {
       assertFinished()
@@ -130,7 +110,7 @@ class WorkerTest {
   }
 
   @Test fun `createSideEffect propagates exceptions`() {
-    val worker = Worker.createSideEffect("") { throw ExpectedException() }
+    val worker = Worker.createSideEffect { throw ExpectedException() }
 
     worker.test {
       assertTrue(getException() is ExpectedException)
@@ -254,25 +234,23 @@ class WorkerTest {
     assertTrue(Worker.finished<Unit>().doesSameWorkAs(Worker.finished<String>()))
   }
 
-  @Test fun `transformed workers are equivalent with equivalent source and key`() {
-    val source = Worker.create<Unit>(key = "source") {}
+  @Test fun `transformed workers are equivalent with equivalent source`() {
+    val source = Worker.create<Unit> {}
     val transformed1 = source.transform { flow -> flow.buffer(1) }
     val transformed2 = source.transform { flow -> flow.conflate() }
 
     assertTrue(transformed1.doesSameWorkAs(transformed2))
   }
 
-  @Test fun `transformed workers are not equivalent with equivalent source and different key`() {
-    val source = Worker.create<Unit>(key = "source") {}
-    val transformed1 = source.transform(key = "foo") { flow -> flow.conflate() }
-    val transformed2 = source.transform(key = "bar") { flow -> flow.conflate() }
-
-    assertFalse(transformed1.doesSameWorkAs(transformed2))
-  }
-
-  @Test fun `transformed workers are not equivalent with same key and nonequivalent source`() {
-    val source1 = Worker.create<Unit>(key = "source1") {}
-    val source2 = Worker.create<Unit>(key = "source2") {}
+  @Test fun `transformed workers are not equivalent with nonequivalent source`() {
+    val source1 = object : Worker<Unit> {
+      override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = false
+      override fun run(): Flow<Unit> = emptyFlow()
+    }
+    val source2 = object : Worker<Unit> {
+      override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = false
+      override fun run(): Flow<Unit> = emptyFlow()
+    }
     val transformed1 = source1.transform { flow -> flow.conflate() }
     val transformed2 = source2.transform { flow -> flow.conflate() }
 

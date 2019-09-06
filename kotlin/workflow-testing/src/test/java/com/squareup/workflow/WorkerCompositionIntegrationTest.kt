@@ -227,7 +227,7 @@ class WorkerCompositionIntegrationTest {
 
   @Test fun `runningWorker doesn't throw when worker finishes`() {
     // No-op worker, completes immediately.
-    val worker = Worker.createSideEffect("") {}
+    val worker = Worker.createSideEffect {}
     val workflow = Workflow.stateless<Unit, Unit, Unit> {
       runningWorker(worker)
     }
