@@ -46,7 +46,7 @@ buildscript {
           'annotations': "androidx.annotation:annotation:1.1.0",
           'appcompat': "androidx.appcompat:appcompat:1.0.2",
           'constraint_layout': "androidx.constraintlayout:constraintlayout:1.1.3",
-          'lifecycle': "androidx.lifecycle:lifecycle-extensions:2.0.0",
+          'lifecycle': "androidx.lifecycle:lifecycle-extensions:2.1.0",
           'lifecycleReactivestreams': "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.1.0",
           // Note that we're not using the actual androidx material dep yet, it's still alpha.
           'material': "com.google.android.material:material:1.0.0",
