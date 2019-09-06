@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    // TODO: https://github.com/square/workflow/issues/603 Remove use of deprecated property.
+    @Suppress("DEPRECATION")
     rootWorkflow = lastCustomNonConfigurationInstance as? TodoListsAppWorkflow
         ?: TodoListsAppWorkflow()
 
