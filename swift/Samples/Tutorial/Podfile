@@ -14,6 +14,7 @@ target 'Tutorial' do
     pod 'Tutorial3', path: 'Frameworks/Tutorial3Complete/Tutorial3.podspec'
     pod 'Tutorial4', path: 'Frameworks/Tutorial4Complete/Tutorial4.podspec', :testspecs => ['Tests']
     pod 'Tutorial5', path: 'Frameworks/Tutorial5Complete/Tutorial5.podspec', :testspecs => ['Tests']
+    pod 'Tutorial6', path: 'Frameworks/Tutorial6Complete/Tutorial6.podspec', :testspecs => ['Tests']
 end
 
 target 'TutorialTests' do

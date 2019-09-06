@@ -27,3 +27,4 @@ The tutorial uses cocoapods as the dependency management. To get set up, run `bu
 - [Tutorial 3](Tutorial3.md) - State throughout a tree of workflows
 - [Tutorial 4](Tutorial4.md) - Refactoring
 - [Tutorial 5](Tutorial5.md) - Testing
+- [Tutorial 6](Tutorial6.md) - Workers
