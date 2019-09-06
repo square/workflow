@@ -316,7 +316,7 @@ class RxWorkersTest {
 
   @Test fun `completable emits`() {
     val subject = CompletableSubject.create()
-    val worker = subject.asWorker("")
+    val worker = subject.asWorker()
 
     worker.test {
       subject.onComplete()
@@ -326,7 +326,7 @@ class RxWorkersTest {
 
   @Test fun `completable throws`() {
     val subject = CompletableSubject.create()
-    val worker = subject.asWorker("")
+    val worker = subject.asWorker()
 
     worker.test {
       subject.onError(ExpectedException())
@@ -338,7 +338,7 @@ class RxWorkersTest {
     var subscriptions = 0
     val subject = CompletableSubject.create()
     val worker = subject.doOnSubscribe { subscriptions++ }
-        .asWorker("")
+        .asWorker()
 
     assertEquals(0, subscriptions)
 
@@ -351,7 +351,7 @@ class RxWorkersTest {
     var cancels = 0
     val subject = CompletableSubject.create()
     val worker = subject.doOnDispose { cancels++ }
-        .asWorker("")
+        .asWorker()
 
     assertEquals(0, cancels)
 

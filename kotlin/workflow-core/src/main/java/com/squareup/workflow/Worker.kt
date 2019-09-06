@@ -158,9 +158,8 @@ interface Worker<out OutputT> {
      */
     @UseExperimental(ExperimentalTypeInference::class, ExperimentalCoroutinesApi::class)
     inline fun <reified OutputT> create(
-      key: String = "",
       @BuilderInference noinline block: suspend FlowCollector<OutputT>.() -> Unit
-    ): Worker<OutputT> = flow(block).asWorker(key)
+    ): Worker<OutputT> = flow(block).asWorker()
 
     /**
      * Creates a [Worker] that just performs some side effects and doesn't emit anything. Run the
@@ -179,9 +178,8 @@ interface Worker<out OutputT> {
      */
     @UseExperimental(ExperimentalCoroutinesApi::class)
     fun createSideEffect(
-      key: String,
       block: suspend () -> Unit
-    ): Worker<Nothing> = TypedWorker(Nothing::class, key, flow { block() })
+    ): Worker<Nothing> = TypedWorker(Nothing::class, flow { block() })
 
     /**
      * Returns a [Worker] that finishes immediately without emitting anything.
@@ -197,10 +195,8 @@ interface Worker<out OutputT> {
      * builder functions that have the same output type.
      */
     @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    inline fun <reified OutputT> from(
-      key: String = "",
-      noinline block: suspend () -> OutputT
-    ): Worker<OutputT> = block.asFlow().asWorker(key)
+    inline fun <reified OutputT> from(noinline block: suspend () -> OutputT): Worker<OutputT> =
+      block.asFlow().asWorker()
 
     /**
      * Creates a [Worker] from a function that returns a single value.
@@ -211,12 +207,11 @@ interface Worker<out OutputT> {
      */
     @UseExperimental(ExperimentalCoroutinesApi::class)
     inline fun <reified OutputT : Any> fromNullable(
-      key: String = "",
         // This could be crossinline, but there's a coroutines bug that will cause the coroutine
         // to immediately resume on suspension inside block when it is crossinline.
         // See https://youtrack.jetbrains.com/issue/KT-31197.
       noinline block: suspend () -> OutputT?
-    ): Worker<OutputT> = create(key) {
+    ): Worker<OutputT> = create {
       block()?.let { emit(it) }
     }
 
@@ -241,9 +236,8 @@ interface Worker<out OutputT> {
  * This **SHOULD NOT** be used in production code.
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
-inline fun <reified OutputT> Flow<OutputT>.asWorker(
-  key: String = ""
-): Worker<OutputT> = TypedWorker(OutputT::class, key, this)
+inline fun <reified OutputT> Flow<OutputT>.asWorker(): Worker<OutputT> =
+  TypedWorker(OutputT::class, this)
 
 /**
  * Returns a [Worker] that will await this [Deferred] and then emit it.
@@ -255,16 +249,16 @@ inline fun <reified OutputT> Flow<OutputT>.asWorker(
  * Worker.from { doThing().await() }
  * ```
  */
-inline fun <reified OutputT> Deferred<OutputT>.asWorker(key: String = ""): Worker<OutputT> =
-  from(key) { await() }
+inline fun <reified OutputT> Deferred<OutputT>.asWorker(): Worker<OutputT> =
+  from { await() }
 
 /**
  * Shorthand for `.asFlow().asWorker(key)`.
  */
 @ExperimentalCoroutinesApi
 @UseExperimental(FlowPreview::class)
-inline fun <reified OutputT> BroadcastChannel<OutputT>.asWorker(key: String = ""): Worker<OutputT> =
-  asFlow().asWorker(key)
+inline fun <reified OutputT> BroadcastChannel<OutputT>.asWorker(): Worker<OutputT> =
+  asFlow().asWorker()
 
 /**
  * Returns a [Worker] that will, when performed, emit whatever this channel receives.
@@ -283,9 +277,8 @@ inline fun <reified OutputT> BroadcastChannel<OutputT>.asWorker(key: String = ""
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
 inline fun <reified OutputT> ReceiveChannel<OutputT>.asWorker(
-  key: String = "",
   closeOnCancel: Boolean = true
-): Worker<OutputT> = create(key) {
+): Worker<OutputT> = create {
   if (closeOnCancel) {
     // Using consumeEach ensures that the channel is closed if this coroutine is cancelled.
     consumeEach { emit(it) }
@@ -341,25 +334,22 @@ fun <T, R> Worker<T>.transform(
 
 /**
  * A generic [Worker] implementation that defines equivalent workers as those having equivalent
- * [key]s and equivalent [type]s. This is used by all the [Worker] builder functions.
+ * [type]s. This is used by all the [Worker] builder functions.
  */
 @PublishedApi
 @UseExperimental(ExperimentalCoroutinesApi::class)
 internal class TypedWorker<OutputT>(
   /** Can't be `KClass<OutputT>` because `OutputT` doesn't have upper bound `Any`. */
   private val type: KClass<*>,
-  private val key: String,
   private val work: Flow<OutputT>
 ) : Worker<OutputT> {
 
   override fun run(): Flow<OutputT> = work
 
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
-    otherWorker is TypedWorker &&
-        otherWorker.type == type &&
-        otherWorker.key == key
+    otherWorker is TypedWorker && otherWorker.type == type
 
-  override fun toString(): String = "TypedWorker(key=\"$key\", type=$type)"
+  override fun toString(): String = "TypedWorker($type)"
 }
 
 private class TimerWorker(

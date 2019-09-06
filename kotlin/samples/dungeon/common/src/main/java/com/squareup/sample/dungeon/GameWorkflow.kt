@@ -34,10 +34,11 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
-import com.squareup.workflow.workflowAction
 import com.squareup.workflow.renderChild
-import com.squareup.workflow.runningWorker
+import com.squareup.workflow.workflowAction
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlin.math.roundToLong
 import kotlin.random.Random
 
@@ -102,7 +103,8 @@ class GameWorkflow(
   ): GameRendering {
     val running = !state.game.isPlayerEaten
     // Stop actors from ticking if the game is paused or finished.
-    val ticker = if (running) createTickerWorker(props.ticksPerSecond) else Worker.finished()
+    val ticker: Worker<Long> =
+      if (running) TickerWorker(props.ticksPerSecond) else Worker.finished()
     val game = state.game
     val board = props.board
 
@@ -208,8 +210,12 @@ private fun Random.nextLocation(
  * The emitted value is a monotonically-increasing integer.
  * Workers that have the same [ticksPerSecond] value will be considered equivalent.
  */
-private fun createTickerWorker(ticksPerSecond: Int): Worker<Long> =
-  Worker.create(key = "ticker: $ticksPerSecond") {
+private class TickerWorker(private val ticksPerSecond: Int) : Worker<Long> {
+
+  override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
+    otherWorker is TickerWorker && ticksPerSecond == otherWorker.ticksPerSecond
+
+  override fun run(): Flow<Long> = flow {
     val periodMs = 1000L / ticksPerSecond
     var count = 0L
     while (true) {
@@ -217,6 +223,7 @@ private fun createTickerWorker(ticksPerSecond: Int): Worker<Long> =
       delay(periodMs)
     }
   }
+}
 
 private data class MoveResult(
   val newLocation: Location,

@@ -37,8 +37,8 @@ import kotlinx.coroutines.rx2.await
  * is nullable so that the resulting [Worker] is non-nullable instead of having
  * platform nullability.
  */
-inline fun <reified T : Any> Observable<out T?>.asWorker(key: String = ""): Worker<T> =
-  this.toFlowable(BUFFER).asWorker(key)
+inline fun <reified T : Any> Observable<out T?>.asWorker(): Worker<T> =
+  this.toFlowable(BUFFER).asWorker()
 
 /**
  * Creates a [Worker] from this [Flowable].
@@ -51,11 +51,11 @@ inline fun <reified T : Any> Observable<out T?>.asWorker(key: String = ""): Work
  * platform nullability.
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
-inline fun <reified T : Any> Flowable<out T?>.asWorker(key: String = ""): Worker<T> =
+inline fun <reified T : Any> Flowable<out T?>.asWorker(): Worker<T> =
 // This cast works because RxJava types don't actually allow nulls, it's just that they can't
   // express that in their types because Java.
   @Suppress("UNCHECKED_CAST")
-  (this as Flowable<T>).asFlow().asWorker(key)
+  (this as Flowable<T>).asFlow().asWorker()
 
 /**
  * Creates a [Worker] from this [Maybe].
@@ -67,8 +67,8 @@ inline fun <reified T : Any> Flowable<out T?>.asWorker(key: String = ""): Worker
  * is nullable so that the resulting [Worker] is non-nullable instead of having
  * platform nullability.
  */
-inline fun <reified T : Any> Maybe<out T?>.asWorker(key: String = ""): Worker<T> =
-  Worker.fromNullable(key) { await() }
+inline fun <reified T : Any> Maybe<out T?>.asWorker(): Worker<T> =
+  Worker.fromNullable { await() }
 
 /**
  * Creates a [Worker] from this [Single].
@@ -80,10 +80,10 @@ inline fun <reified T : Any> Maybe<out T?>.asWorker(key: String = ""): Worker<T>
  * is nullable so that the resulting [Worker] is non-nullable instead of having
  * platform nullability.
  */
-inline fun <reified T : Any> Single<out T?>.asWorker(key: String = ""): Worker<T> =
+inline fun <reified T : Any> Single<out T?>.asWorker(): Worker<T> =
 // This !! works because RxJava types don't actually allow nulls, it's just that they can't
   // express that in their types because Java.
-  Worker.from(key) { await()!! }
+  Worker.from { await()!! }
 
 /**
  * Creates a [Worker] from this [Completable].
@@ -94,5 +94,4 @@ inline fun <reified T : Any> Single<out T?>.asWorker(key: String = ""): Worker<T
  * The key is required for this operator because there is no type information available to
  * distinguish workers.
  */
-fun Completable.asWorker(key: String) =
-  Worker.createSideEffect(key) { await() }
+fun Completable.asWorker() = Worker.createSideEffect { await() }
