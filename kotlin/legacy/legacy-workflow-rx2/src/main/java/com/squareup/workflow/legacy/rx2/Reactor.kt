@@ -267,4 +267,4 @@ fun <S : Any, E : Any, O : Any> Reactor<S, E, O>.toCoroutineReactor() =
   }
 
 private fun Reactor<*, *, *>.getWorkflowCoroutineName(name: String?) =
-  "workflow(${name ?: this::class::java.name})"
+  "workflow(${name ?: this::class.java.name})"
