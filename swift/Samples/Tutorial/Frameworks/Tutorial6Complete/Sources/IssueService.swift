@@ -18,6 +18,11 @@ import ReactiveSwift
 import Result
 
 
+protocol IssueService {
+    func fetchIssues() -> SignalProducer<[GithubIssue], AnyError>
+}
+
+
 // HAX test JSON decoding
 let data = """
         [
@@ -39,7 +44,7 @@ struct GithubIssue: Codable {
     var body: String
 }
 
-struct IssueService {
+struct RealIssueService: IssueService {
     func fetchIssues() -> SignalProducer<[GithubIssue], AnyError> {
         let url = URL(string: "https://api.github.com/repos/square/workflow/issues")!
         let urlRequest = URLRequest(url: url)

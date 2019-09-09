@@ -33,10 +33,12 @@ public final class TutorialContainerViewController: UIViewController {
         viewRegistry.registerBackStackContainer()
         // Register the `TodoEditScreen` and view controller with the convenience method the template provided.
         viewRegistry.registerTodoEditScreen()
+        // Register the `LoadingScreen` and view controller with the convenience method the template provided.
+        viewRegistry.registerLoadingScreen()
 
         // Create a `ContainerViewController` with the `RootWorkflow` as the root workflow, with the view registry we just created.
         containerViewController = ContainerViewController(
-            workflow: RootWorkflow(),
+            workflow: RootWorkflow(issueService: RealIssueService()),
             viewRegistry: viewRegistry)
 
         super.init(nibName: nil, bundle: nil)
@@ -54,33 +56,6 @@ public final class TutorialContainerViewController: UIViewController {
         addChild(containerViewController)
         view.addSubview(containerViewController.view)
         containerViewController.didMove(toParent: self)
-
-        // HAX test JSON decoding
-        let data = """
-        [
-          {
-            "url": "https://api.github.com/repos/square/workflow/issues/605",
-            "title": "Remove key from TypedWorker helpers",
-            "body": "_Everybody_ is confused why this exists along with the key passed to `runningWorker`, I don't think I've seen anyone actually use this, and if you _do_ need this functionality it's just better to write a custom worker anyway."
-          },
-          {
-            "url": "https://api.github.com/repos/square/workflow/issues/604",
-            "title": "RenderTester should allow test to inspect which workers were all rendered",
-            "body": ""
-          }
-        ]
-        """.data(using: .utf8)!
-
-        struct GithubIssue: Codable {
-            var title: String
-            var body: String
-        }
-
-        let decoder = JSONDecoder()
-        guard let issues = try? decoder.decode([GithubIssue].self, from: data) else {
-            return
-        }
-        print("Issues: \(issues)")
     }
 
     public override func viewDidLayoutSubviews() {

@@ -127,3 +127,167 @@ struct IssueService {
 ```
 
 Since the `Worker` API's `run` method must return a `SignalProducer`, we are using the reactive extensions to the foundation API provided by `ReactiveSwift` for our URLSession request.
+
+## Loading Screen
+
+We'll add a loading screen on login to fetch the list of outstanding issues.
+
+Add a `LoadingScreen` and `LoadingWorkflow` using the templates:
+
+```swift
+import Workflow
+import WorkflowUI
+
+
+struct LoadingScreen: Screen {
+    // The loading screen does not have any parameters, will just show "Loading..."
+}
+
+
+final class LoadingViewController: ScreenViewController<LoadingScreen> {
+    let loadingLabel: UILabel
+
+    required init(screen: LoadingScreen, viewRegistry: ViewRegistry) {
+        loadingLabel = UILabel(frame: .zero)
+
+        super.init(screen: screen, viewRegistry: viewRegistry)
+        update(with: screen)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        loadingLabel.text = "Loading..."
+        loadingLabel.font = UIFont.systemFont(ofSize: 44.0)
+        loadingLabel.textColor = .black
+        loadingLabel.textAlignment = .center
+        view.addSubview(loadingLabel)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        loadingLabel.frame = view.bounds
+    }
+
+    // ...rest of the implementation...
+```
+
+Define the output for the `LoadingWorkflow` to include the list of TODOs, and an action for when the load completes. The `Rendering` will always be a `LoadingScreen`:
+
+```swift
+// MARK: Input and Output
+
+struct LoadingWorkflow: Workflow {
+    // The issue service dependency is passed into the workflow.
+    var issueService: IssueService
+
+    enum Output {
+        // Output when the todo's have finished loading.
+        case loadCompleted([TodoModel])
+        // Output if the load failed.
+        case loadFailed(Error)
+    }
+}
+
+// ...default state implementation...
+
+// MARK: Actions
+
+extension LoadingWorkflow {
+
+    enum Action: WorkflowAction {
+
+        typealias WorkflowType = LoadingWorkflow
+
+        case loadCompleted([TodoModel])
+        case loadFailed(Error)
+
+        func apply(toState state: inout LoadingWorkflow.State) -> LoadingWorkflow.Output? {
+
+            switch self {
+            case .loadCompleted(let todos):
+                return .loadCompleted(todos)
+
+            case .loadFailed(let error):
+                return .loadFailed(error)
+            }
+
+        }
+    }
+}
+
+// MARK: Rendering
+
+extension LoadingWorkflow {
+    typealias Rendering = LoadingScreen
+
+    func render(state: LoadingWorkflow.State, context: RenderContext<LoadingWorkflow>) -> String {
+        return LoadingScreen()
+    }
+}
+```
+
+### Issue Loading Worker
+
+Define an `IssueLoadingWorker` conforming to the `Worker` protocol in the `LoadingWorkflow`. The `Output` will be defined as the `Action` type for this workflow. The `run` method will map the result from the `fetchIssues` call into an action this workflow can receive:
+
+```swift
+// MARK: Workers
+
+extension LoadingWorkflow {
+
+    struct IssueLoadingWorker: Worker {
+
+        // This worker will use the `LoadingWorkflow` `Action` as its output.
+        typealias Output = Action
+
+        // The worker needs a `IssueService` to request Github Issues.
+        var issueService: IssueService
+
+        func run() -> SignalProducer<Output, NoError> {
+            // Fetch the issues, and map them from any array of `GithubIssue`s to `TodoModel`s.
+            return issueService.fetchIssues().map { githubIssues in
+                let todos = githubIssues.map { issue -> TodoModel in
+                    return TodoModel(title: issue.title, note: issue.body)
+                }
+
+                // Return as a `.loadCompleted` action.
+                return .loadCompleted(todos)
+            }
+            .flatMapError { error in
+                // As the SignalProducer must return a `NoError`, flat map the error to our failure action.
+                SignalProducer(value: .loadFailed(error))
+            }
+        }
+
+        // Always consider two workers equivalent.
+        func isEquivalent(to otherWorker: IssueLoadingWorker) -> Bool {
+            return true
+        }
+
+    }
+
+}
+```
+
+To request our worker to be run, we specify it in the `render` method with a call to `awaitResult`. The infrastructure will ensure that a single `IssueLoadingWorker` is running even across multiple render passes:
+
+```swift
+// MARK: Rendering
+
+extension LoadingWorkflow {
+    typealias Rendering = LoadingScreen
+
+    func render(state: LoadingWorkflow.State, context: RenderContext<LoadingWorkflow>) -> Rendering {
+
+        // Request that the `IssueLoadingWorker` be run if it has not been started. When it outputs, the action
+        // returned from it will be applied.
+        context.awaitResult(for: IssueLoadingWorker(issueService: issueService))
+
+        return LoadingScreen()
+    }
+}
+```
+
+## Populating the TODO list from Github issues

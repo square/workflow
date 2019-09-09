@@ -24,6 +24,7 @@ import Result
 
 struct TodoWorkflow: Workflow {
     var name: String
+    var issueService: IssueService
 
     enum Output {
         case back
@@ -39,6 +40,8 @@ extension TodoWorkflow {
         var todos: [TodoModel]
         var step: Step
         enum Step: Equatable {
+            // Show a loading screen while fetching the initial set of TODO items
+            case loading
             // Showing the list of todo items.
             case list
             // Editing a single item. The state holds the index so it can be updated when a save action is received.
@@ -47,12 +50,20 @@ extension TodoWorkflow {
     }
 
     func makeInitialState() -> TodoWorkflow.State {
-        return State(
-            todos: [TodoModel(
+        /*
+        let todos: [TodoModel]
+        if initialTodos.count > 0 {
+            todos = initialTodos
+        } else {
+            todos = [TodoModel(
                 title: "Take the cat for a walk",
                 note: "Cats really need their outside sunshine time. Don't forget to walk Charlie. Hamilton is less excited about the prospect.")
-            ],
-            step: .list)
+            ]
+        }
+         */
+        return State(
+            todos: [],
+            step: .loading)
     }
 
     func workflowDidChange(from previousWorkflow: TodoWorkflow, state: inout State) {
@@ -64,6 +75,26 @@ extension TodoWorkflow {
 // MARK: Actions
 
 extension TodoWorkflow {
+
+    enum LoadAction: WorkflowAction {
+        typealias WorkflowType = TodoWorkflow
+
+        case loaded(todos: [TodoModel])
+        case loadingFailed(Error)
+
+        func apply(toState state: inout State) -> Output? {
+            switch self {
+
+            case .loaded(todos: let todos):
+                state.todos = todos
+                state.step = .list
+                return nil
+
+            case .loadingFailed:
+                return .back
+            }
+        }
+    }
 
     enum ListAction: WorkflowAction {
 
@@ -172,6 +203,22 @@ extension TodoWorkflow {
             .rendered(with: context)
 
         switch state.step {
+        case .loading:
+            let loadingScreen = LoadingWorkflow(issueService: issueService)
+                .mapOutput({ output -> LoadAction in
+                    switch output {
+                    case .loadCompleted(let todos):
+                        return .loaded(todos: todos)
+                    case .loadFailed(let error):
+                        return .loadingFailed(error)
+                    }
+                })
+                .rendered(with: context)
+            return [
+                BackStackScreen.Item(
+                    screen: loadingScreen,
+                    barVisibility: .hidden)
+            ]
 
         case .list:
             // Return only the list item.
