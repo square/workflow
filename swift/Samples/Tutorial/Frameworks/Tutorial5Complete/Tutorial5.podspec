@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name         = 'Tutorial4'
+  s.name         = 'Tutorial5'
   s.version      = '1.0.0.LOCAL'
   s.summary      = 'See the README.'
   s.homepage     = 'https://github.com/square/workflow'
@@ -25,5 +25,6 @@ Pod::Spec.new do |s|
     test_spec.source_files = 'Tests/**/*.swift'
 
     test_spec.framework = 'XCTest'
+    test_spec.dependency 'WorkflowTesting'
   end
 end
