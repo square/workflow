@@ -147,6 +147,7 @@ extension RootWorkflow {
         // When the state is `.todo`, defer to the TodoListWorkflow.
         case .todo(name: let name):
 
+            // The `issueService` is passed to the `TodoWorkflow`:
             let todoBackStackItems = TodoWorkflow(name: name, issueService: issueService)
                 .mapOutput({ output -> Action in
                     switch output {

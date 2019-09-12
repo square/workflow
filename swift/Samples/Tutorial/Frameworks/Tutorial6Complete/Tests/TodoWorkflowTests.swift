@@ -24,7 +24,7 @@ class TodoWorkflowTests: XCTestCase {
     func testSelectingTodo() {
         let todos: [TodoModel] = [TodoModel(title: "Title", note: "Note")]
 
-        TodoWorkflow(name: "MyName")
+        TodoWorkflow(name: "MyName", issueService: FakeIssueService())
             // Start from the list step to validate selecting a todo:
             .renderTester(initialState: TodoWorkflow.State(
                 todos: todos,
@@ -60,7 +60,7 @@ class TodoWorkflowTests: XCTestCase {
     func testSavingTodo() {
         let todos: [TodoModel] = [TodoModel(title: "Title", note: "Note")]
 
-        TodoWorkflow(name: "MyName")
+        TodoWorkflow(name: "MyName", issueService: FakeIssueService())
             // Start from the edit step so we can simulate saving:
             .renderTester(initialState: TodoWorkflow.State(
                 todos: todos,

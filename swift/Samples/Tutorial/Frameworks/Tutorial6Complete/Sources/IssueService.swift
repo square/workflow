@@ -18,38 +18,24 @@ import ReactiveSwift
 import Result
 
 
+// Define the `IssueService` as a protocol so it can be mocked in tests.
 protocol IssueService {
     func fetchIssues() -> SignalProducer<[GithubIssue], AnyError>
 }
 
-
-// HAX test JSON decoding
-let data = """
-        [
-          {
-            "url": "https://api.github.com/repos/square/workflow/issues/605",
-            "title": "Remove key from TypedWorker helpers",
-            "body": "_Everybody_ is confused why this exists along with the key passed to `runningWorker`, I don't think I've seen anyone actually use this, and if you _do_ need this functionality it's just better to write a custom worker anyway."
-          },
-          {
-            "url": "https://api.github.com/repos/square/workflow/issues/604",
-            "title": "RenderTester should allow test to inspect which workers were all rendered",
-            "body": ""
-          }
-        ]
-        """.data(using: .utf8)!
 
 struct GithubIssue: Codable {
     var title: String
     var body: String
 }
 
+
+// The real `IssueService` that will request the issue list from github.
 struct RealIssueService: IssueService {
     func fetchIssues() -> SignalProducer<[GithubIssue], AnyError> {
         let url = URL(string: "https://api.github.com/repos/square/workflow/issues")!
         let urlRequest = URLRequest(url: url)
         return URLSession.shared.reactive.data(with: urlRequest).attemptMap { arg in
-            // TODO: Inspect the response before trying to decode.
             let (data, _) = arg
 
             let decoder = JSONDecoder()

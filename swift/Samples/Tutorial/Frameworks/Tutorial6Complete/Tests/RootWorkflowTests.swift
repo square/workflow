@@ -22,10 +22,11 @@ import WorkflowTesting
 @testable import WorkflowUI
 import Workflow
 
+
 class RootWorkflowTests: XCTestCase {
 
     func testWelcomeRendering() {
-        RootWorkflow()
+        RootWorkflow(issueService: FakeIssueService())
             // Start in the `.welcome` state
             .renderTester(initialState: RootWorkflow.State.welcome)
             .render(
@@ -57,7 +58,7 @@ class RootWorkflowTests: XCTestCase {
     }
 
     func testLogin() {
-        RootWorkflow()
+        RootWorkflow(issueService: FakeIssueService())
             // Start in the `.welcome` state
             .renderTester(initialState: RootWorkflow.State.welcome)
             .render(
@@ -95,7 +96,8 @@ class RootWorkflowTests: XCTestCase {
     }
 
     func testAppFlow() {
-        let workflowHost = WorkflowHost(workflow: RootWorkflow())
+
+        let workflowHost = WorkflowHost(workflow: RootWorkflow(issueService: MockIssueService()))
 
         // First rendering is just the welcome screen. Update the name.
         do {
@@ -122,6 +124,33 @@ class RootWorkflowTests: XCTestCase {
 
             welcomeScreen.onLoginTapped()
         }
+
+        // Expect the loading screen.
+        do {
+            let backStack = workflowHost.rendering.value
+            XCTAssertEqual(2, backStack.items.count)
+
+            guard let _ = backStack.items[0].screen.wrappedScreen as? WelcomeScreen else {
+                XCTFail("Expected first screen of `WelcomeScreen`")
+                return
+            }
+
+            guard let _ = backStack.items[1].screen.wrappedScreen as? LoadingScreen else {
+                XCTFail("Expected second screen of `LoadingScreen`")
+                return
+            }
+        }
+
+        let expectation = XCTestExpectation(description: "Todo List Screen Shown")
+        let disposable = workflowHost.rendering.signal.observeValues { rendering in
+            guard let _ = rendering.items[1].screen.wrappedScreen as? TodoListScreen else {
+                return
+            }
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1.0)
+        disposable?.dispose()
 
         // Expect the todo list. Edit the first todo.
         do {

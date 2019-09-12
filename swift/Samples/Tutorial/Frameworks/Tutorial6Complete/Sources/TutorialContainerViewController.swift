@@ -38,6 +38,7 @@ public final class TutorialContainerViewController: UIViewController {
 
         // Create a `ContainerViewController` with the `RootWorkflow` as the root workflow, with the view registry we just created.
         containerViewController = ContainerViewController(
+            // Create a `RealIssueService` and pass it to the `RootWorkflow`.
             workflow: RootWorkflow(issueService: RealIssueService()),
             viewRegistry: viewRegistry)
 

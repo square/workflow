@@ -24,6 +24,7 @@ import Result
 
 struct TodoWorkflow: Workflow {
     var name: String
+    // Have the `IssueService` be provided as a dependency to the `TodoWorkflow`:
     var issueService: IssueService
 
     enum Output {
@@ -50,19 +51,9 @@ extension TodoWorkflow {
     }
 
     func makeInitialState() -> TodoWorkflow.State {
-        /*
-        let todos: [TodoModel]
-        if initialTodos.count > 0 {
-            todos = initialTodos
-        } else {
-            todos = [TodoModel(
-                title: "Take the cat for a walk",
-                note: "Cats really need their outside sunshine time. Don't forget to walk Charlie. Hamilton is less excited about the prospect.")
-            ]
-        }
-         */
         return State(
             todos: [],
+            // Start from the `.loading` step, which will show our loading screen and fetch the initial list.
             step: .loading)
     }
 
@@ -86,11 +77,14 @@ extension TodoWorkflow {
             switch self {
 
             case .loaded(todos: let todos):
+                // Populate the `todos` from a successful load.
                 state.todos = todos
                 state.step = .list
                 return nil
 
             case .loadingFailed:
+                // For now, just go back if we fail to load the issues.
+                // We could also consider showing a default TODO if this fails, or an error message, etc.
                 return .back
             }
         }
@@ -203,9 +197,11 @@ extension TodoWorkflow {
             .rendered(with: context)
 
         switch state.step {
+        // Add a case for the loading step:
         case .loading:
             let loadingScreen = LoadingWorkflow(issueService: issueService)
                 .mapOutput({ output -> LoadAction in
+                    // Map the output of the LoadingWorkflow to our LoadAction.
                     switch output {
                     case .loadCompleted(let todos):
                         return .loaded(todos: todos)
