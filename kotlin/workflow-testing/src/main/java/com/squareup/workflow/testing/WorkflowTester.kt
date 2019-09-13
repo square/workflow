@@ -232,8 +232,8 @@ fun <T, PropsT, OutputT : Any, RenderingT>
       this@testFromStart,
       inputs.asFlow(),
       snapshot
-  ) { renderings, outputs ->
-    WorkflowTester(this, inputs, renderings, outputs)
+  ) { session ->
+    WorkflowTester(this, inputs, session.renderingsAndSnapshots, session.outputs)
         .apply { collectFromWorkflow() }
   }
 
@@ -278,8 +278,8 @@ fun <T, PropsT, StateT, OutputT : Any, RenderingT>
       this@testFromState,
       inputs.asFlow(),
       initialState
-  ) { renderings, outputs ->
-    WorkflowTester(this, inputs, renderings, outputs)
+  ) { session ->
+    WorkflowTester(this, inputs, session.renderingsAndSnapshots, session.outputs)
         .apply { collectFromWorkflow() }
   }
 

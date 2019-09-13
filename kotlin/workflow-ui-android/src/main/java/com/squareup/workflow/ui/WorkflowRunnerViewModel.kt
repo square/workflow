@@ -55,9 +55,11 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
       return with(configure()) {
         launchWorkflowIn(
             CoroutineScope(dispatcher), workflow, props, snapshot
-        ) { renderings, output ->
+        ) { session ->
           @Suppress("UNCHECKED_CAST")
-          WorkflowRunnerViewModel(this, renderings, output, viewRegistry) as T
+          WorkflowRunnerViewModel(
+              this, session.renderingsAndSnapshots, session.outputs, viewRegistry
+          ) as T
         }
       }
     }

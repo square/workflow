@@ -80,7 +80,7 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { renderings, _ -> renderings }
+    ) { it.renderingsAndSnapshots }
 
     assertTrue(rendered)
     runBlocking {
@@ -103,7 +103,7 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { _, outputs -> outputs }
+    ) { it.outputs }
 
     assertTrue(rendered)
     runBlocking {
@@ -129,7 +129,7 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { renderings, _ -> renderings }
+    ) { it.renderingsAndSnapshots }
 
     runBlocking {
       assertEquals("foo", renderings.first().rendering)
@@ -150,10 +150,10 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { _, outputs ->
+    ) { session ->
       Pair(
-          outputs.produceIn(this),
-          outputs.produceIn(this)
+          session.outputs.produceIn(this),
+          session.outputs.produceIn(this)
       )
     }
 
@@ -181,7 +181,7 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { renderings, _ -> renderings }
+    ) { it.renderingsAndSnapshots }
 
     runBlocking {
       assertEquals("six", renderings.first().rendering)
@@ -202,7 +202,7 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { _, outputs -> outputs }
+    ) { it.outputs }
 
     runBlocking {
       val outputsChannel = outputs.produceIn(this)
@@ -235,13 +235,13 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { _, outputs ->
+    ) { session ->
       // Disable buffering for this subscription channel.
       // There will still be some buffering:
       //  - BroadcastChannel buffer has the minimum buffer size of 1.
       //  - Implicit buffer from the asFlow coroutine.
       //  - Implicit buffer from the coroutine created by produceIn.
-      outputs.buffer(0)
+      session.outputs.buffer(0)
           .produceIn(this)
           .also { assertNull(it.poll()) }
     }
@@ -270,7 +270,7 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { renderings, outputs -> Pair(renderings, outputs) }
+    ) { Pair(it.renderingsAndSnapshots, it.outputs) }
 
     runBlocking {
       assertTrue(renderings.toList().isEmpty())
@@ -290,11 +290,14 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { r, o ->
+    ) { session ->
       coroutineContext[Job]!!.invokeOnCompletion {
         cancelled = true
       }
-      Pair(r.produceIn(this), o.produceIn(this))
+      Pair(
+          session.renderingsAndSnapshots.produceIn(this),
+          session.outputs.produceIn(this)
+      )
     }
 
     assertFalse(cancelled)
@@ -319,8 +322,12 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { r, o ->
-      Triple(coroutineContext[Job]!!, r.produceIn(this), o.produceIn(this))
+    ) { session ->
+      Triple(
+          coroutineContext[Job]!!,
+          session.renderingsAndSnapshots.produceIn(this),
+          session.outputs.produceIn(this)
+      )
     }
 
     assertTrue(parentJob.children.count() > 0)
@@ -344,7 +351,13 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { r, o -> Triple(coroutineContext[Job]!!, r.produceIn(this), o.produceIn(this)) }
+    ) { session ->
+      Triple(
+          coroutineContext[Job]!!,
+          session.renderingsAndSnapshots.produceIn(this),
+          session.outputs.produceIn(this)
+      )
+    }
 
     assertTrue(job.isCancelled)
     assertTrue(renderings.isClosedForReceive)
@@ -368,12 +381,16 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { renderings, outputs ->
+    ) { session ->
       launch {
         trigger.await()
-        renderings.collect { throw ExpectedException() }
+        session.renderingsAndSnapshots.collect { throw ExpectedException() }
       }
-      Triple(coroutineContext[Job]!!, renderings.produceIn(this), outputs.produceIn(this))
+      Triple(
+          coroutineContext[Job]!!,
+          session.renderingsAndSnapshots.produceIn(this),
+          session.outputs.produceIn(this)
+      )
     }
 
     assertTrue(job.isActive)
@@ -411,12 +428,16 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { renderings, outputs ->
+    ) { session ->
       launch {
         trigger.await()
-        outputs.collect { throw ExpectedException() }
+        session.outputs.collect { throw ExpectedException() }
       }
-      Triple(coroutineContext[Job]!!, renderings.produceIn(this), outputs.produceIn(this))
+      Triple(
+          coroutineContext[Job]!!,
+          session.renderingsAndSnapshots.produceIn(this),
+          session.outputs.produceIn(this)
+      )
     }
 
     assertTrue(job.isActive)
@@ -446,7 +467,7 @@ class LaunchWorkflowTest {
           emptyFlow(),
           initialSnapshot = null,
           initialState = null
-      ) { _, _ ->
+      ) { _ ->
         throw ExpectedException()
       }
     }
@@ -468,8 +489,12 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { r, o ->
-      Triple(coroutineContext[Job]!!, r.produceIn(this), o.produceIn(this))
+    ) { session ->
+      Triple(
+          coroutineContext[Job]!!,
+          session.renderingsAndSnapshots.produceIn(this),
+          session.outputs.produceIn(this)
+      )
     }
 
     assertTrue(job.isCancelled)
