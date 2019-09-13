@@ -24,6 +24,7 @@ import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 import com.squareup.workflow.ui.workflowOnBackPressed
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
 import timber.log.Timber
 
@@ -48,7 +49,10 @@ class MainActivity : AppCompatActivity() {
       finish()
     }
 
-    loggingSub = workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) }
+    loggingSub = CompositeDisposable(
+        workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) },
+        workflowRunner.debugSnapshots.subscribe { Timber.v("debug snapshot: %s", it) }
+    )
   }
 
   override fun onBackPressed() {

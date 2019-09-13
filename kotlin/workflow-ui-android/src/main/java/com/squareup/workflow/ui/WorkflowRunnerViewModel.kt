@@ -18,15 +18,15 @@ package com.squareup.workflow.ui
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
+import com.squareup.workflow.WorkflowSession
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
 import com.squareup.workflow.launchWorkflowIn
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -37,8 +37,7 @@ import java.util.concurrent.CancellationException
 @UseExperimental(ExperimentalCoroutinesApi::class)
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   private val scope: CoroutineScope,
-  renderingsFlow: Flow<RenderingAndSnapshot<Any>>,
-  output: Flow<OutputT>,
+  private val session: WorkflowSession<OutputT, Any>,
   override val viewRegistry: ViewRegistry
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
@@ -57,15 +56,13 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
             CoroutineScope(dispatcher), workflow, props, snapshot
         ) { session ->
           @Suppress("UNCHECKED_CAST")
-          WorkflowRunnerViewModel(
-              this, session.renderingsAndSnapshots, session.outputs, viewRegistry
-          ) as T
+          WorkflowRunnerViewModel(this, session, viewRegistry) as T
         }
       }
     }
   }
 
-  override val result: Maybe<out OutputT> = output.asObservable()
+  override val result: Maybe<out OutputT> = session.outputs.asObservable()
       .firstElement()
       .doAfterTerminate {
         scope.cancel(CancellationException("WorkflowRunnerViewModel delivered result"))
@@ -73,7 +70,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
       .cache()
 
   init {
-    renderingsFlow
+    session.renderingsAndSnapshots
         .map { it.snapshot }
         .onEach { lastSnapshot = it }
         .launchIn(scope)
@@ -82,8 +79,11 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  override val renderings: Observable<out Any> = renderingsFlow
+  override val renderings: Observable<out Any> = session.renderingsAndSnapshots
       .map { it.rendering }
+      .asObservable()
+
+  override val debugSnapshots: Observable<WorkflowHierarchyDebugSnapshot> = session.debugSnapshots
       .asObservable()
 
   override fun onCleared() {

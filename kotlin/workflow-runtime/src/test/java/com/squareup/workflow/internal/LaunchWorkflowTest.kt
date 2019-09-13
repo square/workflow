@@ -19,6 +19,7 @@ import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
 import com.squareup.workflow.launchWorkflowImpl
 import com.squareup.workflow.stateless
 import kotlinx.coroutines.CancellationException
@@ -67,7 +68,7 @@ class LaunchWorkflowTest {
 
   @Test fun `renderings flow replays to new collectors`() {
     var rendered = false
-    val loop = simpleLoop { onRendering, _ ->
+    val loop = simpleLoop { onRendering, _, _ ->
       onRendering(RenderingAndSnapshot("foo", Snapshot.EMPTY))
       rendered = true
       hang()
@@ -90,7 +91,7 @@ class LaunchWorkflowTest {
 
   @Test fun `outputs flow does not replay to new collectors`() {
     var rendered = false
-    val loop = simpleLoop { _, onOutput ->
+    val loop = simpleLoop { _, onOutput, _ ->
       onOutput("foo")
       rendered = true
       hang()
@@ -116,8 +117,31 @@ class LaunchWorkflowTest {
     }
   }
 
+  @Test fun `debug flow replays to new collectors`() {
+    var rendered = false
+    val loop = simpleLoop { _, _, onDebug ->
+      onDebug(debugSnapshot("foo"))
+      rendered = true
+      hang()
+    }
+
+    val debugger = launchWorkflowImpl(
+        scope,
+        loop,
+        workflow,
+        emptyFlow(),
+        initialSnapshot = null,
+        initialState = null
+    ) { it.debugSnapshots }
+
+    assertTrue(rendered)
+    runBlocking {
+      assertEquals(debugSnapshot("foo"), debugger.first())
+    }
+  }
+
   @Test fun `renderings flow is multicasted`() {
-    val loop = simpleLoop { onRendering, _ ->
+    val loop = simpleLoop { onRendering, _, _ ->
       onRendering(RenderingAndSnapshot("foo", Snapshot.EMPTY))
       hang()
     }
@@ -138,7 +162,7 @@ class LaunchWorkflowTest {
   }
 
   @Test fun `outputs flow is multicasted`() {
-    val loop = simpleLoop { _, onOutput ->
+    val loop = simpleLoop { _, onOutput, _ ->
       onOutput("foo")
       hang()
     }
@@ -163,8 +187,29 @@ class LaunchWorkflowTest {
     }
   }
 
+  @Test fun `debug flow is multicasted`() {
+    val loop = simpleLoop { _, _, onDebug ->
+      onDebug(debugSnapshot("foo"))
+      hang()
+    }
+
+    val debugger = launchWorkflowImpl(
+        scope,
+        loop,
+        workflow,
+        emptyFlow(),
+        initialSnapshot = null,
+        initialState = null
+    ) { it.debugSnapshots }
+
+    runBlocking {
+      assertEquals(debugSnapshot("foo"), debugger.first())
+      assertEquals(debugSnapshot("foo"), debugger.first())
+    }
+  }
+
   @Test fun `renderings flow has no backpressure`() {
-    val loop = simpleLoop { onRendering, _ ->
+    val loop = simpleLoop { onRendering, _, _ ->
       onRendering(RenderingAndSnapshot("one", Snapshot.EMPTY))
       onRendering(RenderingAndSnapshot("two", Snapshot.EMPTY))
       onRendering(RenderingAndSnapshot("three", Snapshot.EMPTY))
@@ -189,7 +234,7 @@ class LaunchWorkflowTest {
   }
 
   @Test fun `outputs flow has no backpressure when not subscribed`() {
-    val loop = simpleLoop { _, onOutput ->
+    val loop = simpleLoop { _, onOutput, _ ->
       onOutput("one")
       onOutput("two")
       hang()
@@ -214,10 +259,35 @@ class LaunchWorkflowTest {
     }
   }
 
+  @Test fun `debug flow has no backpressure`() {
+    val loop = simpleLoop { _, _, onDebug ->
+      onDebug(debugSnapshot("one"))
+      onDebug(debugSnapshot("two"))
+      onDebug(debugSnapshot("three"))
+      onDebug(debugSnapshot("four"))
+      onDebug(debugSnapshot("five"))
+      onDebug(debugSnapshot("six"))
+      hang()
+    }
+
+    val debugger = launchWorkflowImpl(
+        scope,
+        loop,
+        workflow,
+        emptyFlow(),
+        initialSnapshot = null,
+        initialState = null
+    ) { it.debugSnapshots }
+
+    runBlocking {
+      assertEquals(debugSnapshot("six"), debugger.first())
+    }
+  }
+
   @Test fun `outputs flow honors backpressure when subscribed`() {
     // Used to assert ordering.
     val counter = AtomicInteger(0)
-    val loop = simpleLoop { _, onOutput ->
+    val loop = simpleLoop { _, onOutput, _ ->
       assertEquals(0, counter.getAndIncrement())
       onOutput("one")
       onOutput("two")
@@ -263,18 +333,19 @@ class LaunchWorkflowTest {
   @Test fun `flows complete immediately when base context is already cancelled on start`() {
     val scope = scope + Job().apply { cancel() }
 
-    val (renderings, outputs) = launchWorkflowImpl(
+    val session = launchWorkflowImpl(
         scope,
         HangingLoop,
         workflow,
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { Pair(it.renderingsAndSnapshots, it.outputs) }
+    ) { session -> session }
 
     runBlocking {
-      assertTrue(renderings.toList().isEmpty())
-      assertTrue(outputs.toList().isEmpty())
+      assertTrue(session.renderingsAndSnapshots.toList().isEmpty())
+      assertTrue(session.outputs.toList().isEmpty())
+      assertTrue(session.debugSnapshots.toList().isEmpty())
     }
   }
 
@@ -283,7 +354,7 @@ class LaunchWorkflowTest {
     val scope = scope + parentJob
     var cancelled = false
 
-    val (renderings, outputs) = launchWorkflowImpl(
+    val (renderings, outputs, debugger) = launchWorkflowImpl(
         scope,
         HangingLoop,
         workflow,
@@ -294,9 +365,10 @@ class LaunchWorkflowTest {
       coroutineContext[Job]!!.invokeOnCompletion {
         cancelled = true
       }
-      Pair(
+      Triple(
           session.renderingsAndSnapshots.produceIn(this),
-          session.outputs.produceIn(this)
+          session.outputs.produceIn(this),
+          session.debugSnapshots.produceIn(this)
       )
     }
 
@@ -304,18 +376,20 @@ class LaunchWorkflowTest {
     assertTrue(parentJob.children.count() > 0)
     assertFalse(renderings.isClosedForReceive)
     assertFalse(outputs.isClosedForReceive)
+    assertFalse(debugger.isClosedForReceive)
 
     scope.cancel()
     assertTrue(parentJob.children.count() == 0)
     assertTrue(renderings.isClosedForReceive)
     assertTrue(outputs.isClosedForReceive)
+    assertTrue(debugger.isClosedForReceive)
   }
 
   @Test fun `cancelling internal scope cancels runtime`() {
     val parentJob = Job()
     val scope = scope + parentJob
 
-    val (job, renderings, outputs) = launchWorkflowImpl(
+    val (job, renderings, outputs, debugger) = launchWorkflowImpl(
         scope,
         HangingLoop,
         workflow,
@@ -323,28 +397,31 @@ class LaunchWorkflowTest {
         initialSnapshot = null,
         initialState = null
     ) { session ->
-      Triple(
+      Quadruple(
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
-          session.outputs.produceIn(this)
+          session.outputs.produceIn(this),
+          session.debugSnapshots.produceIn(this)
       )
     }
 
     assertTrue(parentJob.children.count() > 0)
     assertFalse(renderings.isClosedForReceive)
     assertFalse(outputs.isClosedForReceive)
+    assertFalse(debugger.isClosedForReceive)
 
     job.cancel()
     assertTrue(parentJob.children.count() == 0)
     assertTrue(renderings.isClosedForReceive)
     assertTrue(outputs.isClosedForReceive)
+    assertTrue(debugger.isClosedForReceive)
   }
 
   @Test fun `runtime cancelled when workflow throws cancellation`() {
-    val loop = simpleLoop { _, _ ->
+    val loop = simpleLoop { _, _, _ ->
       throw CancellationException("Workflow cancelled itself.")
     }
-    val (job, renderings, outputs) = launchWorkflowImpl(
+    val (job, renderings, outputs, debugger) = launchWorkflowImpl(
         scope,
         loop,
         workflow,
@@ -352,29 +429,31 @@ class LaunchWorkflowTest {
         initialSnapshot = null,
         initialState = null
     ) { session ->
-      Triple(
+      Quadruple(
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
-          session.outputs.produceIn(this)
+          session.outputs.produceIn(this),
+          session.debugSnapshots.produceIn(this)
       )
     }
 
     assertTrue(job.isCancelled)
     assertTrue(renderings.isClosedForReceive)
     assertTrue(outputs.isClosedForReceive)
+    assertTrue(debugger.isClosedForReceive)
   }
 
   @Test fun `error from renderings collector fails runtime`() {
     val parentJob = Job()
     val scope = scope + parentJob
     val trigger = CompletableDeferred<Unit>()
-    val loop = simpleLoop { onRendering, _ ->
+    val loop = simpleLoop { onRendering, _, _ ->
       // Need to emit something so collector invokes lambda.
       onRendering(RenderingAndSnapshot(Unit, Snapshot.EMPTY))
       hang()
     }
 
-    val (job, renderings, outputs) = launchWorkflowImpl(
+    val (job, renderings, outputs, debugger) = launchWorkflowImpl(
         scope,
         loop,
         workflow,
@@ -386,10 +465,11 @@ class LaunchWorkflowTest {
         trigger.await()
         session.renderingsAndSnapshots.collect { throw ExpectedException() }
       }
-      Triple(
+      Quadruple(
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
-          session.outputs.produceIn(this)
+          session.outputs.produceIn(this),
+          session.debugSnapshots.produceIn(this)
       )
     }
 
@@ -397,6 +477,7 @@ class LaunchWorkflowTest {
     assertTrue(parentJob.isActive)
     assertFalse(renderings.isClosedForReceive)
     assertFalse(outputs.isClosedForReceive)
+    assertFalse(debugger.isClosedForReceive)
 
     trigger.complete(Unit)
     assertTrue(job.isCancelled)
@@ -404,6 +485,7 @@ class LaunchWorkflowTest {
     runBlocking {
       assertFails { renderings.consumeEach { } }
       assertFails { outputs.consumeEach { } }
+      assertFails { debugger.consumeEach { } }
     }
   }
 
@@ -411,7 +493,7 @@ class LaunchWorkflowTest {
     val parentJob = Job()
     val scope = scope + parentJob
     val trigger = CompletableDeferred<Unit>()
-    val loop = simpleLoop { _, onOutput ->
+    val loop = simpleLoop { _, onOutput, _ ->
       // Keep emitting so it doesn't matter when outputs is collected.
       while (true) {
         onOutput(Unit)
@@ -421,7 +503,7 @@ class LaunchWorkflowTest {
       fail("type inference bug")
     }
 
-    val (job, renderings, outputs) = launchWorkflowImpl(
+    val (job, renderings, outputs, debugger) = launchWorkflowImpl(
         scope,
         loop,
         workflow,
@@ -433,10 +515,11 @@ class LaunchWorkflowTest {
         trigger.await()
         session.outputs.collect { throw ExpectedException() }
       }
-      Triple(
+      Quadruple(
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
-          session.outputs.produceIn(this)
+          session.outputs.produceIn(this),
+          session.debugSnapshots.produceIn(this)
       )
     }
 
@@ -444,12 +527,14 @@ class LaunchWorkflowTest {
     assertTrue(parentJob.isActive)
     assertFalse(renderings.isClosedForReceive)
     assertFalse(outputs.isClosedForReceive)
+    assertFalse(debugger.isClosedForReceive)
 
     trigger.complete(Unit)
     runBlocking {
       // Outputs must come first.
       assertFails { outputs.consumeEach { } }
       assertFails { renderings.consumeEach { } }
+      assertFails { debugger.consumeEach { } }
     }
     assertTrue(job.isCancelled)
     assertTrue(parentJob.isCancelled)
@@ -478,11 +563,11 @@ class LaunchWorkflowTest {
   @Test fun `error from loop fails runtime`() {
     val parentJob = Job()
     val scope = scope + parentJob
-    val loop = simpleLoop { _, _ ->
+    val loop = simpleLoop { _, _, _ ->
       throw ExpectedException()
     }
 
-    val (job, renderings, outputs) = launchWorkflowImpl(
+    val (job, renderings, outputs, debugger) = launchWorkflowImpl(
         scope,
         loop,
         workflow,
@@ -490,10 +575,11 @@ class LaunchWorkflowTest {
         initialSnapshot = null,
         initialState = null
     ) { session ->
-      Triple(
+      Quadruple(
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
-          session.outputs.produceIn(this)
+          session.outputs.produceIn(this),
+          session.debugSnapshots.produceIn(this)
       )
     }
 
@@ -502,9 +588,13 @@ class LaunchWorkflowTest {
     runBlocking {
       assertFails { renderings.consumeEach { } }
       assertFails { outputs.consumeEach { } }
+      assertFails { debugger.consumeEach { } }
     }
   }
 }
+
+private fun debugSnapshot(state: String) =
+  WorkflowHierarchyDebugSnapshot("type", "props", state, "rendering", emptyList())
 
 private suspend fun hang(): Nothing = suspendCancellableCoroutine { }
 
@@ -513,7 +603,8 @@ private suspend fun hang(): Nothing = suspendCancellableCoroutine { }
 private fun simpleLoop(
   block: suspend (
     onRendering: suspend (RenderingAndSnapshot<Any?>) -> Unit,
-    onOutput: suspend (Any?) -> Unit
+    onOutput: suspend (Any?) -> Unit,
+    onDebugSnapshot: suspend (WorkflowHierarchyDebugSnapshot) -> Unit
   ) -> Nothing
 ): WorkflowLoop = object : WorkflowLoop {
   override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
@@ -522,11 +613,13 @@ private fun simpleLoop(
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit
+    onOutput: suspend (OutputT) -> Unit,
+    onDebugSnapshot: suspend (WorkflowHierarchyDebugSnapshot) -> Unit
   ): Nothing {
     block(
         onRendering as suspend (RenderingAndSnapshot<Any?>) -> Unit,
-        onOutput as suspend (Any?) -> Unit
+        onOutput as suspend (Any?) -> Unit,
+        onDebugSnapshot
     )
   }
 }
@@ -539,8 +632,16 @@ private object HangingLoop : WorkflowLoop {
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit
+    onOutput: suspend (OutputT) -> Unit,
+    onDebugSnapshot: suspend (WorkflowHierarchyDebugSnapshot) -> Unit
   ): Nothing = hang()
 }
 
 private class ExpectedException : RuntimeException()
+
+private data class Quadruple<A, B, C, D>(
+  val first: A,
+  val second: B,
+  val third: C,
+  val fourth: D
+)

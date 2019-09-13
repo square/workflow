@@ -58,7 +58,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
         id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
         props: ChildPropsT
-      ): ChildRenderingT {
+      ): RenderingEnvelope<ChildRenderingT> {
   // @formatter:on
     // Start tracking this case so we can be ready to render it.
     @Suppress("UNCHECKED_CAST")

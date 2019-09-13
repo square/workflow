@@ -18,6 +18,7 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.consume
@@ -43,7 +44,8 @@ internal interface WorkflowLoop {
     initialSnapshot: Snapshot?,
     initialState: StateT? = null,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit
+    onOutput: suspend (OutputT) -> Unit,
+    onDebugSnapshot: suspend (WorkflowHierarchyDebugSnapshot) -> Unit
   ): Nothing
 }
 
@@ -56,7 +58,8 @@ internal object RealWorkflowLoop : WorkflowLoop {
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit
+    onOutput: suspend (OutputT) -> Unit,
+    onDebugSnapshot: suspend (WorkflowHierarchyDebugSnapshot) -> Unit
   ): Nothing = coroutineScope {
     val inputsChannel = props.produceIn(this)
     inputsChannel.consume {
@@ -76,10 +79,11 @@ internal object RealWorkflowLoop : WorkflowLoop {
         while (true) {
           coroutineContext.ensureActive()
 
-          val rendering = rootNode.render(workflow, input)
+          val (rendering, debugSnapshot) = rootNode.render(workflow, input)
           val snapshot = rootNode.snapshot(workflow)
 
           onRendering(RenderingAndSnapshot(rendering, snapshot))
+          onDebugSnapshot(debugSnapshot)
           output?.let { onOutput(it) }
 
           // Tick _might_ return an output, but if it returns null, it means the state or a child

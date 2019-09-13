@@ -104,6 +104,7 @@ class WorkflowNodeTest {
     val node = WorkflowNode(workflow.id(), workflow, "foo", null, context)
 
     val rendering = node.render(workflow, "foo2")
+        .rendering
 
     assertEquals(
         """
@@ -113,6 +114,7 @@ class WorkflowNodeTest {
     )
 
     val rendering2 = node.render(workflow, "foo3")
+        .rendering
 
     assertEquals(
         """
@@ -330,7 +332,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo"))
+    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
@@ -342,7 +344,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial props", restoredNode.render(workflow, "foo"))
+    assertEquals("initial props", restoredNode.render(workflow, "foo").rendering)
   }
 
   @Test fun `snapshots empty without children`() {
@@ -359,7 +361,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo"))
+    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
@@ -371,7 +373,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("restored", restoredNode.render(workflow, "foo"))
+    assertEquals("restored", restoredNode.render(workflow, "foo").rendering)
   }
 
   @Test fun `snapshots non-empty with children`() {
@@ -416,7 +418,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo"))
+    assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo").rendering)
     val snapshot = originalNode.snapshot(parentWorkflow)
     assertNotEquals(0, snapshot.bytes.size)
 
@@ -428,7 +430,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial props|child props", restoredNode.render(parentWorkflow, "foo"))
+    assertEquals("initial props|child props", restoredNode.render(parentWorkflow, "foo").rendering)
     assertEquals("child props", restoredChildState)
     assertEquals("initial props", restoredParentState)
   }
@@ -493,7 +495,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo"))
+    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
     assertNotEquals(0, snapshot.bytes.size)
 
@@ -504,6 +506,66 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("props:new props|state:initial props", restoredNode.render(workflow, "foo"))
+    assertEquals(
+        "props:new props|state:initial props",
+        restoredNode.render(workflow, "foo").rendering
+    )
+  }
+
+  @Test fun `rendering generates debug snapshots`() {
+    val child = PropsRenderingWorkflow { _, _, state -> state }
+
+    class TestWorkflow : StringWorkflow() {
+      override fun initialState(
+        props: String,
+        snapshot: Snapshot?
+      ): String = "initial state"
+
+      override fun render(
+        props: String,
+        state: String,
+        context: RenderContext<String, String>
+      ): String {
+        val childRendering = context.renderChild(child, props = "child props", key = "key") {
+          fail()
+        }
+        return "child:\n${childRendering.prependIndent()}"
+      }
+    }
+
+    val workflow = TestWorkflow()
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow,
+        initialProps = "initial props",
+        snapshot = null,
+        baseContext = Unconfined
+    )
+
+    val debugSnapshot = node.render(workflow, "props")
+        .debugSnapshot
+
+    assertEquals(TestWorkflow::class.java.name, debugSnapshot.workflowType)
+    assertEquals("props", debugSnapshot.props)
+    assertEquals("initial state", debugSnapshot.state)
+    assertEquals(
+        "child:\n" +
+            "    props:child props\n" +
+            "    state:starting:child props",
+        debugSnapshot.rendering
+    )
+    assertEquals(1, debugSnapshot.children.size)
+    with(debugSnapshot.children.single()) {
+      assertEquals("key", key)
+      assertEquals(PropsRenderingWorkflow::class.java.name, snapshot.workflowType)
+      assertEquals("child props", snapshot.props)
+      assertEquals("starting:child props", snapshot.state)
+      assertEquals(
+          "props:child props\n" +
+              "state:starting:child props",
+          snapshot.rendering
+      )
+      assertTrue(snapshot.children.isEmpty())
+    }
   }
 }
