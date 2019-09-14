@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     loggingSub = CompositeDisposable(
         workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) },
-        workflowRunner.debugSnapshots.subscribe { Timber.v("debug snapshot: %s", it) }
+        workflowRunner.debugInfo.subscribe { Timber.v("debug snapshot: %s", it) }
     )
   }
 

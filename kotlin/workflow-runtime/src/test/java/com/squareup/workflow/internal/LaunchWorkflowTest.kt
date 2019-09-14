@@ -19,7 +19,11 @@ import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.debugging.WorkflowDebugInfo
 import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
+import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo
+import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
+import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
 import com.squareup.workflow.launchWorkflowImpl
 import com.squareup.workflow.stateless
 import kotlinx.coroutines.CancellationException
@@ -120,7 +124,7 @@ class LaunchWorkflowTest {
   @Test fun `debug flow replays to new collectors`() {
     var rendered = false
     val loop = simpleLoop { _, _, onDebug ->
-      onDebug(debugSnapshot("foo"))
+      onDebug(debugInfo("foo"))
       rendered = true
       hang()
     }
@@ -132,11 +136,11 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { it.debugSnapshots }
+    ) { it.debugInfo }
 
     assertTrue(rendered)
     runBlocking {
-      assertEquals(debugSnapshot("foo"), debugger.first())
+      assertEquals(debugInfo("foo"), debugger.first())
     }
   }
 
@@ -189,7 +193,7 @@ class LaunchWorkflowTest {
 
   @Test fun `debug flow is multicasted`() {
     val loop = simpleLoop { _, _, onDebug ->
-      onDebug(debugSnapshot("foo"))
+      onDebug(debugInfo("foo"))
       hang()
     }
 
@@ -200,11 +204,11 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { it.debugSnapshots }
+    ) { it.debugInfo }
 
     runBlocking {
-      assertEquals(debugSnapshot("foo"), debugger.first())
-      assertEquals(debugSnapshot("foo"), debugger.first())
+      assertEquals(debugInfo("foo"), debugger.first())
+      assertEquals(debugInfo("foo"), debugger.first())
     }
   }
 
@@ -261,12 +265,12 @@ class LaunchWorkflowTest {
 
   @Test fun `debug flow has no backpressure`() {
     val loop = simpleLoop { _, _, onDebug ->
-      onDebug(debugSnapshot("one"))
-      onDebug(debugSnapshot("two"))
-      onDebug(debugSnapshot("three"))
-      onDebug(debugSnapshot("four"))
-      onDebug(debugSnapshot("five"))
-      onDebug(debugSnapshot("six"))
+      onDebug(debugInfo("one"))
+      onDebug(debugInfo("two"))
+      onDebug(debugInfo("three"))
+      onDebug(debugInfo("four"))
+      onDebug(debugInfo("five"))
+      onDebug(debugInfo("six"))
       hang()
     }
 
@@ -277,10 +281,10 @@ class LaunchWorkflowTest {
         emptyFlow(),
         initialSnapshot = null,
         initialState = null
-    ) { it.debugSnapshots }
+    ) { it.debugInfo }
 
     runBlocking {
-      assertEquals(debugSnapshot("six"), debugger.first())
+      assertEquals(debugInfo("six"), debugger.first())
     }
   }
 
@@ -345,7 +349,7 @@ class LaunchWorkflowTest {
     runBlocking {
       assertTrue(session.renderingsAndSnapshots.toList().isEmpty())
       assertTrue(session.outputs.toList().isEmpty())
-      assertTrue(session.debugSnapshots.toList().isEmpty())
+      assertTrue(session.debugInfo.toList().isEmpty())
     }
   }
 
@@ -368,7 +372,7 @@ class LaunchWorkflowTest {
       Triple(
           session.renderingsAndSnapshots.produceIn(this),
           session.outputs.produceIn(this),
-          session.debugSnapshots.produceIn(this)
+          session.debugInfo.produceIn(this)
       )
     }
 
@@ -401,7 +405,7 @@ class LaunchWorkflowTest {
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
           session.outputs.produceIn(this),
-          session.debugSnapshots.produceIn(this)
+          session.debugInfo.produceIn(this)
       )
     }
 
@@ -433,7 +437,7 @@ class LaunchWorkflowTest {
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
           session.outputs.produceIn(this),
-          session.debugSnapshots.produceIn(this)
+          session.debugInfo.produceIn(this)
       )
     }
 
@@ -469,7 +473,7 @@ class LaunchWorkflowTest {
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
           session.outputs.produceIn(this),
-          session.debugSnapshots.produceIn(this)
+          session.debugInfo.produceIn(this)
       )
     }
 
@@ -519,7 +523,7 @@ class LaunchWorkflowTest {
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
           session.outputs.produceIn(this),
-          session.debugSnapshots.produceIn(this)
+          session.debugInfo.produceIn(this)
       )
     }
 
@@ -579,7 +583,7 @@ class LaunchWorkflowTest {
           coroutineContext[Job]!!,
           session.renderingsAndSnapshots.produceIn(this),
           session.outputs.produceIn(this),
-          session.debugSnapshots.produceIn(this)
+          session.debugInfo.produceIn(this)
       )
     }
 
@@ -593,8 +597,13 @@ class LaunchWorkflowTest {
   }
 }
 
-private fun debugSnapshot(state: String) =
-  WorkflowHierarchyDebugSnapshot("type", "props", state, "rendering", emptyList())
+private fun debugInfo(
+  state: String,
+  kind: Kind = Kind.Updated(Source.Sink)
+) = WorkflowDebugInfo(
+    WorkflowHierarchyDebugSnapshot("type", "props", state, "rendering", emptyList()),
+    WorkflowUpdateDebugInfo("type", kind)
+)
 
 private suspend fun hang(): Nothing = suspendCancellableCoroutine { }
 
@@ -604,7 +613,7 @@ private fun simpleLoop(
   block: suspend (
     onRendering: suspend (RenderingAndSnapshot<Any?>) -> Unit,
     onOutput: suspend (Any?) -> Unit,
-    onDebugSnapshot: suspend (WorkflowHierarchyDebugSnapshot) -> Unit
+    onDebugSnapshot: suspend (WorkflowDebugInfo) -> Unit
   ) -> Nothing
 ): WorkflowLoop = object : WorkflowLoop {
   override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
@@ -614,7 +623,7 @@ private fun simpleLoop(
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
-    onDebugSnapshot: suspend (WorkflowHierarchyDebugSnapshot) -> Unit
+    onDebugSnapshot: suspend (WorkflowDebugInfo) -> Unit
   ): Nothing {
     block(
         onRendering as suspend (RenderingAndSnapshot<Any?>) -> Unit,
@@ -633,7 +642,7 @@ private object HangingLoop : WorkflowLoop {
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
-    onDebugSnapshot: suspend (WorkflowHierarchyDebugSnapshot) -> Unit
+    onDebugSnapshot: suspend (WorkflowDebugInfo) -> Unit
   ): Nothing = hang()
 }
 

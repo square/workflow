@@ -22,7 +22,11 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.applyTo
+import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo
+import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
+import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
 import com.squareup.workflow.makeEventSink
@@ -33,6 +37,7 @@ import kotlinx.coroutines.selects.select
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class SubtreeManagerTest {
@@ -41,10 +46,14 @@ class SubtreeManagerTest {
 
     var started = 0
 
+    /**
+     * @param eventHandler If called with null, causes the workflow to emit null.
+     * If passed non-null, emits the string wrapped with a header.
+     */
     data class Rendering(
       val props: String,
       val state: String,
-      val eventHandler: (String) -> Unit
+      val eventHandler: (String?) -> Unit
     )
 
     override fun initialState(
@@ -60,8 +69,8 @@ class SubtreeManagerTest {
       state: String,
       context: RenderContext<String, String>
     ): Rendering {
-      val sink: Sink<String> = context.makeEventSink { it }
-      return Rendering(props, state) { sink.send("workflow output:$it") }
+      val sink: Sink<String?> = context.makeEventSink { it }
+      return Rendering(props, state) { sink.send(it?.let { "workflow output:$it" }) }
     }
 
     override fun snapshotState(state: String) = fail()
@@ -130,7 +139,7 @@ class SubtreeManagerTest {
     assertEquals("initialState:props", composeState)
   }
 
-  @Test fun `tick children handles child output`() {
+  @Test fun `tickChildren handles child output`() {
     val manager = SubtreeManager<String, String>(context)
     val workflow = TestWorkflow()
     val id = workflow.id()
@@ -145,18 +154,94 @@ class SubtreeManagerTest {
 
     runBlocking {
       val tickOutput = async {
-        select<WorkflowAction<String, String>?> {
-          manager.tickChildren(this) { update ->
-            return@tickChildren update
+        select<OutputEnvelope<WorkflowAction<String, String>>> {
+          manager.tickChildren(this) { update, _ ->
+            return@tickChildren OutputEnvelope(
+                update,
+                // Kind/Source don't matter for this test.
+                WorkflowUpdateDebugInfo(id, Kind.Updated(Source.Sink))
+            )
           }
         }
       }
       assertFalse(tickOutput.isCompleted)
 
       eventHandler("event!")
-      val update = tickOutput.await()!!
+      val update = tickOutput.await().output!!
       val (_, output) = update.applyTo("state")
       assertEquals("case output:workflow output:event!", output)
+    }
+  }
+
+  @Test fun `tickChildren generates debug update when child emitted output`() {
+    val manager = SubtreeManager<String, String>(context)
+    val workflow = TestWorkflow()
+    val id = workflow.id(key = "key")
+    val props = "props"
+    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) {
+      noAction()
+    }
+
+    val (_, _, eventHandler) = manager.render(case, workflow, id, "props").rendering
+
+    runBlocking {
+      val tickOutput = async {
+        select<OutputEnvelope<Kind>> {
+          manager.tickChildren(this) { _, kind ->
+            return@tickChildren OutputEnvelope(
+                kind,
+                // Kind/Source don't matter for this test – we only care about
+                // the kind passed to _this_ callback.
+                WorkflowUpdateDebugInfo(id, Kind.Updated(Source.Sink))
+            )
+          }
+        }
+      }
+      assertFalse(tickOutput.isCompleted)
+
+      eventHandler("event!")
+      val kind = tickOutput.await().output!! as Kind.Updated
+      val source = kind.source as Source.Subtree
+      assertEquals("key", source.key)
+      assertEquals(TestWorkflow::class.java.name, source.childInfo.workflowType)
+      assertTrue(source.childInfo.kind is Kind.Updated)
+    }
+  }
+
+  @Test fun `tickChildren generates debug update when child didn't emit output`() {
+    val manager = SubtreeManager<String, String>(context)
+    val workflow = TestWorkflow()
+    val id = workflow.id(key = "key")
+    val props = "props"
+    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) {
+      noAction()
+    }
+
+    val (_, _, eventHandler) = manager.render(case, workflow, id, "props").rendering
+
+    runBlocking {
+      val tickOutput = async {
+        select<OutputEnvelope<Kind>> {
+          manager.tickChildren(this) { _, kind ->
+            return@tickChildren OutputEnvelope(
+                kind,
+                // Kind/Source don't matter for this test – we only care about
+                // the kind passed to _this_ callback.
+                WorkflowUpdateDebugInfo(id, Kind.Updated(Source.Sink))
+            )
+          }
+        }
+      }
+      assertFalse(tickOutput.isCompleted)
+
+      // Sending null will not emit an output.
+      eventHandler(null)
+      val kind = tickOutput.await().output!! as Kind.Passthrough
+      assertEquals(
+          "com.squareup.workflow.internal.SubtreeManagerTest\$TestWorkflow",
+          kind.childInfo.workflowType
+      )
+      assertTrue(kind.childInfo.kind is Kind.Updated)
     }
   }
 

@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow
-
-import com.squareup.workflow.debugging.WorkflowDebugInfo
-import kotlinx.coroutines.flow.Flow
+package com.squareup.workflow.debugging
 
 /**
- * A tuple of [Flow]s representing all the emissions from the workflow runtime.
+ * A pair of [WorkflowHierarchyDebugSnapshot] and optional [WorkflowUpdateDebugInfo].
  *
- * Passed to the function taken by [launchWorkflowIn].
- *
- * @param debugInfo A stream of [diagnostic information][WorkflowDebugInfo] about the runtime.
+ * The [WorkflowUpdateDebugInfo] will be null on the first render pass and non-null on every
+ * subsequent pass, since the first pass is the only one that is not triggered by some kind of
+ * update.
  */
-class WorkflowSession<out OutputT : Any, out RenderingT>(
-  val renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
-  val outputs: Flow<OutputT>,
-  val debugInfo: Flow<WorkflowDebugInfo>
+data class WorkflowDebugInfo(
+  val hierarchySnapshot: WorkflowHierarchyDebugSnapshot,
+  val updateInfo: WorkflowUpdateDebugInfo?
 )

@@ -41,7 +41,7 @@ class WorkflowRunnerViewModelTest {
     val session = WorkflowSession(
         renderingsAndSnapshots = snapshotsFlow,
         outputs = emptyFlow(),
-        debugSnapshots = emptyFlow()
+        debugInfo = emptyFlow()
     )
 
     val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
@@ -67,7 +67,7 @@ class WorkflowRunnerViewModelTest {
     val session = WorkflowSession<String, Nothing>(
         renderingsAndSnapshots = emptyFlow(),
         outputs = flowOf("fnord"),
-        debugSnapshots = emptyFlow()
+        debugInfo = emptyFlow()
     )
     val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
 
@@ -90,7 +90,7 @@ class WorkflowRunnerViewModelTest {
     val session = WorkflowSession<Nothing, Nothing>(
         renderingsAndSnapshots = emptyFlow(),
         outputs = emptyFlow(),
-        debugSnapshots = emptyFlow()
+        debugInfo = emptyFlow()
     )
     val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
 

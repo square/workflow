@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
+import com.squareup.workflow.debugging.WorkflowDebugInfo
 import com.squareup.workflow.internal.RealWorkflowLoop
 import com.squareup.workflow.internal.WorkflowLoop
 import com.squareup.workflow.internal.unwrapCancellationCause
@@ -152,7 +152,7 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
 ): RunnerT {
   val renderingsAndSnapshots = ConflatedBroadcastChannel<RenderingAndSnapshot<RenderingT>>()
   val outputs = BroadcastChannel<OutputT>(capacity = 1)
-  val debugSnapshots = ConflatedBroadcastChannel<WorkflowHierarchyDebugSnapshot>()
+  val debugSnapshots = ConflatedBroadcastChannel<WorkflowDebugInfo>()
   val workflowScope = scope + Job(parent = scope.coroutineContext[Job])
 
   // Give the caller a chance to start collecting outputs.
