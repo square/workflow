@@ -23,8 +23,15 @@ import android.view.View
  */
 typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT) -> Unit
 
+/**
+ * View tag that holds the function to make the view show instances of [RenderingT].
+ *
+ * @param initialRendering the first rendering for the view to show. Retained so
+ * [canShowRendering] can make comparisons to decide if the view can be updated
+ * from later renderings.
+ */
 data class ShowRenderingTag<out RenderingT : Any>(
-  val showing: RenderingT,
+  val initialRendering: RenderingT,
   val showRendering: ViewShowRendering<RenderingT>
 )
 
@@ -47,11 +54,11 @@ fun <RenderingT : Any> View.bindShowRendering(
  * True if this view is able to show [rendering].
  *
  * Returns `false` if [bindShowRendering] has not been called, so it is always safe to
- * call this method. Otherwise returns the [compatibility][compatible] of the new
- * [rendering] and the current one.
+ * call this method. Otherwise returns the [compatibility][compatible] of the initial
+ * [rendering] and the new one.
  */
 fun View.canShowRendering(rendering: Any): Boolean {
-  return showRenderingTag?.showing?.matches(rendering) == true
+  return showRenderingTag?.initialRendering?.matches(rendering) == true
 }
 
 /**
@@ -60,8 +67,8 @@ fun View.canShowRendering(rendering: Any): Boolean {
 fun <RenderingT : Any> View.showRendering(rendering: RenderingT) {
   showRenderingTag
       ?.let { tag ->
-        check(tag.showing.matches(rendering)) {
-          "Expected $this to be able to update of ${tag.showing} from $rendering"
+        check(tag.initialRendering.matches(rendering)) {
+          "Expected $this to be able show $rendering, should have matched ${tag.initialRendering}."
         }
 
         @Suppress("UNCHECKED_CAST")

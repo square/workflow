@@ -174,6 +174,6 @@ class ViewStateCache private constructor(
 }
 
 private val View.namedKey: String
-  get() = checkNotNull((showRenderingTag?.showing as? Named<*>)?.compatibilityKey) {
-    "Expected $this to be showing a Named rendering, found ${showRenderingTag?.showing}"
+  get() = checkNotNull((showRenderingTag?.initialRendering as? Named<*>)?.compatibilityKey) {
+    "Expected $this to be showing a Named rendering, found ${showRenderingTag?.initialRendering}"
   }

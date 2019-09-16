@@ -30,7 +30,6 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.HandlesBack
 import com.squareup.workflow.ui.Named
 import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
@@ -41,14 +40,11 @@ import com.squareup.workflow.ui.showRendering
 
 /**
  * A container view that can display a stream of [BackStackScreen] instances.
- *
- * This view is back button friendly -- it implements [HandlesBack], delegating
- * to displayed views that implement that interface themselves.
  */
 open class BackStackContainer(
   context: Context,
   attributeSet: AttributeSet?
-) : FrameLayout(context, attributeSet), HandlesBack {
+) : FrameLayout(context, attributeSet) {
   constructor(context: Context) : this(context, null)
 
   private val viewStateCache = ViewStateCache()
@@ -121,12 +117,6 @@ open class BackStackContainer(
 
     // This is the first view, just show it.
     addView(newView)
-  }
-
-  override fun onBackPressed(): Boolean {
-    return showing
-        ?.let { HandlesBack.Helper.onBackPressed(it) }
-        ?: false
   }
 
   override fun onSaveInstanceState(): Parcelable {

@@ -18,6 +18,8 @@ package com.squareup.workflow.ui
 import android.app.Dialog
 import android.content.Context
 import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.KeyEvent.ACTION_UP
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -37,7 +39,6 @@ internal class ModalViewContainer
   @StyleRes private val dialogThemeResId: Int = 0,
   private val modalDecorator: (View) -> View = { it }
 ) : ModalContainer<Any>(context, attributeSet) {
-
   override fun buildDialog(
     initialModalRendering: Any,
     viewRegistry: ViewRegistry
@@ -46,14 +47,36 @@ internal class ModalViewContainer
 
     return Dialog(context, dialogThemeResId)
         .apply {
-          // TODO fix back button dispatch in modals. This doesn't terminate for some reason.
-          // https://github.com/square/workflow/issues/466
-//          setOnKeyListener { _, keyCode, _ ->
-//            keyCode == KeyEvent.KEYCODE_BACK && HandlesBack.Helper.onBackPressed(view)
-//          }
+          // Dialogs are modal windows and so they block events, including back button presses
+          // -- that's their job! But we *want* the Activity's onBackPressedDispatcher to fire
+          // when back is pressed, so long as it doesn't look past this modal window for handlers.
+          //
+          // Here, we handle the ACTION_UP portion of a KEYCODE_BACK key event, and below
+          // we make sure that the root view has a backPressedHandler that will consume the
+          // onBackPressed call if no child of the root modal view does.
+
+          setOnKeyListener { _, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.action == ACTION_UP) {
+              view.context.onBackPressedDispatcherOwnerOrNull()
+                  ?.onBackPressedDispatcher
+                  ?.let {
+                    if (it.hasEnabledCallbacks()) it.onBackPressed()
+                  }
+              true
+            } else {
+              false
+            }
+          }
 
           setCancelable(false)
           setContentView(modalDecorator(view))
+              .apply {
+                // If the modal's root view has no backPressedHandler, add a no-op one to
+                // ensure that the `onBackPressed` call above will not leak up to handlers
+                // that should be blocked by this modal session.
+                if (backPressedHandler == null) backPressedHandler = { }
+              }
+
           window!!.setLayout(WRAP_CONTENT, WRAP_CONTENT)
 
           if (dialogThemeResId == 0) {

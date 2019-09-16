@@ -23,7 +23,7 @@ import com.squareup.sample.todo.TodoRendering
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.setBackHandler
+import com.squareup.workflow.ui.backPressedHandler
 
 internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<TodoRendering> {
 
@@ -50,7 +50,7 @@ internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<Tod
     itemContainer.setRows(rendering.list.rows.map { Pair(it.done, it.text) })
 
     toolbar.setNavigationOnClickListener { rendering.onGoBackClicked() }
-    view.setBackHandler { rendering.onGoBackClicked() }
+    view.backPressedHandler = { rendering.onGoBackClicked() }
 
     titleText.setTextChangedListener { rendering.onTitleChanged(it) }
 

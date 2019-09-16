@@ -32,7 +32,6 @@ import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import com.squareup.workflow.ui.HandlesBack.Helper
 import com.squareup.workflow.ui.ModalContainer.Companion.forAlertContainerScreen
 import com.squareup.workflow.ui.ModalContainer.Companion.forContainerScreen
 
@@ -49,18 +48,13 @@ abstract class ModalContainer<ModalRenderingT : Any>
 @JvmOverloads constructor(
   context: Context,
   attributeSet: AttributeSet? = null
-) : FrameLayout(context, attributeSet), HandlesBack {
+) : FrameLayout(context, attributeSet) {
 
   private val base: View? get() = getChildAt(0)
 
   private var dialogs: List<DialogRef<ModalRenderingT>> = emptyList()
 
   protected lateinit var registry: ViewRegistry
-
-  final override fun onBackPressed(): Boolean {
-    // This should only be hit if there are no modals showing, so we only need to consider the body.
-    return base?.let { Helper.onBackPressed(it) } == true
-  }
 
   protected fun update(newScreen: HasModals<*, ModalRenderingT>) {
     base?.takeIf { it.canShowRendering(newScreen.baseScreen) }
@@ -271,7 +265,7 @@ private val Dialog.decorView: View?
  * noise out of logcat. If someone manages to run this under a strange context whose
  * [Lifecycle] we can't find, just return null and let the caller no-op.
  */
-private tailrec fun Context.lifecycleOrNull(): Lifecycle? = when {
-  this is LifecycleOwner -> this.lifecycle
+private tailrec fun Context.lifecycleOrNull(): Lifecycle? = when (this) {
+  is LifecycleOwner -> this.lifecycle
   else -> (this as? ContextWrapper)?.baseContext?.lifecycleOrNull()
 }

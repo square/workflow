@@ -44,6 +44,7 @@ buildscript {
       'android_gradle_plugin': "com.android.tools.build:gradle:3.5.0",
 
       'androidx': [
+          'activity': "androidx.activity:activity-ktx:1.0.0",
           'annotations': "androidx.annotation:annotation:1.1.0",
           'appcompat': "androidx.appcompat:appcompat:1.1.0",
           'constraint_layout': "androidx.constraintlayout:constraintlayout:1.1.3",

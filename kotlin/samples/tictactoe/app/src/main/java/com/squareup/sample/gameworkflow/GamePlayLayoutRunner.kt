@@ -22,7 +22,7 @@ import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.setBackHandler
+import com.squareup.workflow.ui.backPressedHandler
 
 internal class GamePlayLayoutRunner(private val view: View) : LayoutRunner<GamePlayScreen> {
   private val boardView: ViewGroup = view.findViewById(R.id.game_play_board)
@@ -33,7 +33,7 @@ internal class GamePlayLayoutRunner(private val view: View) : LayoutRunner<GameP
     rendering.gameState.board.render(boardView)
 
     setCellClickListeners(boardView, rendering.gameState, rendering.onClick)
-    view.setBackHandler(rendering.onQuit)
+    view.backPressedHandler = rendering.onQuit
   }
 
   private fun setCellClickListeners(

@@ -92,20 +92,4 @@ abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
     super.onSaveInstanceState(outState)
     runner.onSaveInstanceState(outState)
   }
-
-  /**
-   * If your workflow needs to manage the back button, override [android.app.Activity.onBackPressed]
-   * and call this method, and have its views or [LayoutRunner]s use [HandlesBack].
-   *
-   * e.g.:
-   *
-   *    override fun onBackPressed() {
-   *      val workflowFragment =
-   *        supportFragmentManager.findFragmentByTag(MY_WORKFLOW) as? WorkflowFragment<*, *>
-   *      if (workflowFragment?.onBackPressed() != true) super.onBackPressed()
-   *    }
-   */
-  fun onBackPressed(): Boolean {
-    return isVisible && HandlesBack.Helper.onBackPressed(view!!)
-  }
 }

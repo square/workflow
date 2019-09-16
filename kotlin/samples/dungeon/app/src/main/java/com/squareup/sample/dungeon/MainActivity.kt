@@ -19,7 +19,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
-import com.squareup.workflow.ui.workflowOnBackPressed
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,10 +37,6 @@ class MainActivity : AppCompatActivity() {
           props = "simple_maze.txt"
       )
     }
-  }
-
-  override fun onBackPressed() {
-    if (!workflowOnBackPressed()) super.onBackPressed()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
