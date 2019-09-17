@@ -39,6 +39,7 @@ dependencies {
   implementation project(':workflow-ui-android')
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
+  implementation project(':workflow-tracing')
 
   implementation deps.androidx.appcompat
   implementation deps.androidx.constraint_layout

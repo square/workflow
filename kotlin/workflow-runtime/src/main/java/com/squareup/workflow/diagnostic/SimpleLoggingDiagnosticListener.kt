@@ -74,8 +74,11 @@ open class SimpleLoggingDiagnosticListener : WorkflowDiagnosticListener {
     println("onAfterSnapshotPass")
   }
 
-  override fun onRuntimeStarted(workflowScope: CoroutineScope) {
-    println("onRuntimeStarted($workflowScope)")
+  override fun onRuntimeStarted(
+    workflowScope: CoroutineScope,
+    rootWorkflowType: String
+  ) {
+    println("onRuntimeStarted($workflowScope, $rootWorkflowType)")
   }
 
   override fun onRuntimeStopped() {
