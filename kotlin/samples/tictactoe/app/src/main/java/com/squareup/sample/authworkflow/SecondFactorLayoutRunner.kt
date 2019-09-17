@@ -35,8 +35,8 @@ internal class SecondFactorLayoutRunner(
   private val button: Button = view.findViewById(R.id.second_factor_submit_button)
 
   override fun showRendering(rendering: SecondFactorScreen) {
-    view.setBackHandler { rendering.onCancel }
-    toolbar.setNavigationOnClickListener { rendering.onCancel }
+    view.setBackHandler { rendering.onCancel() }
+    toolbar.setNavigationOnClickListener { rendering.onCancel() }
 
     error.text = rendering.errorMessage
 

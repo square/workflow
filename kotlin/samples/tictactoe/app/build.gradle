@@ -26,12 +26,16 @@ android {
     targetSdkVersion versions.targetSdk
     versionCode 1
     versionName "1.0.0"
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
   // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
   packagingOptions {
     exclude 'META-INF/atomicfu.kotlin_module'
   }
+
+  testOptions.unitTests.includeAndroidResources = true
 }
 
 dependencies {
@@ -47,8 +51,14 @@ dependencies {
   implementation deps.okio
   implementation deps.rxandroid2
   implementation deps.rxjava2.rxjava2
+  implementation deps.test.androidx.espresso.idlingResource
   implementation deps.timber
 
-  testImplementation deps.test.junit
-  testImplementation deps.test.truth
+  androidTestImplementation deps.test.androidx.espresso.core
+  androidTestImplementation deps.test.androidx.espresso.intents
+  androidTestImplementation deps.test.androidx.junitExt
+  androidTestImplementation deps.test.androidx.runner
+  androidTestImplementation deps.test.androidx.truthExt
+  androidTestImplementation deps.test.junit
+  androidTestImplementation deps.test.truth
 }

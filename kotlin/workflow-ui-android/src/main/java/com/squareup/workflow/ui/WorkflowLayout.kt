@@ -23,10 +23,8 @@ import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.View
 import android.widget.FrameLayout
-import com.squareup.coordinators.Coordinator
-import com.squareup.coordinators.Coordinators
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.SerialDisposable
 
 /**
  * A view that can be driven by a [WorkflowRunner]. In most cases you'll use
@@ -134,21 +132,18 @@ class WorkflowLayout(
     source: Observable<S>,
     update: (S) -> Unit
   ) {
-    Coordinators.bind(this) {
-      object : Coordinator() {
-        var sub: Disposable? = null
+    val listener = object : OnAttachStateChangeListener {
+      var sub = SerialDisposable()
 
-        override fun attach(view: View) {
-          sub = source.subscribe { screen -> update(screen) }
-        }
+      override fun onViewAttachedToWindow(v: View?) {
+        sub.replace(source.subscribe { screen -> update(screen) })
+      }
 
-        override fun detach(view: View) {
-          sub?.let {
-            it.dispose()
-            sub = null
-          }
-        }
+      override fun onViewDetachedFromWindow(v: View?) {
+        sub.dispose()
       }
     }
+
+    this.addOnAttachStateChangeListener(listener)
   }
 }

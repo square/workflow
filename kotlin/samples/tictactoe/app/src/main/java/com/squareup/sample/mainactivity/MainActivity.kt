@@ -17,6 +17,7 @@ package com.squareup.sample.mainactivity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.espresso.IdlingResource
 import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
   private lateinit var component: MainComponent
   private lateinit var workflowRunner: WorkflowRunner<Unit>
 
+  lateinit var idlingResource: IdlingResource
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
@@ -40,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     component = lastCustomNonConfigurationInstance as? MainComponent
         ?: MainComponent()
+
+    idlingResource = component.idlingResource
 
     workflowRunner = setContentWorkflow(
         savedInstanceState,
