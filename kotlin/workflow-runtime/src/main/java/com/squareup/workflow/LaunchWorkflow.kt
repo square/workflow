@@ -17,6 +17,7 @@ package com.squareup.workflow
 
 import com.squareup.workflow.internal.RealWorkflowLoop
 import com.squareup.workflow.internal.WorkflowLoop
+import com.squareup.workflow.internal.id
 import com.squareup.workflow.internal.unwrapCancellationCause
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -164,7 +165,7 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
   val visitor = session.diagnosticListener
 
   val workflowJob = workflowScope.launch {
-    visitor?.onRuntimeStarted(this)
+    visitor?.onRuntimeStarted(this, workflow.id().typeDebugString)
     try {
       // Run the workflow processing loop forever, or until it fails or is cancelled.
       workflowLoop.runWorkflowLoop(

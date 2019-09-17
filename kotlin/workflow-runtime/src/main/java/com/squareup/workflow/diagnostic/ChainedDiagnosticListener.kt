@@ -88,8 +88,11 @@ internal class ChainedDiagnosticListener(
     visitors.forEach { it.onAfterSnapshotPass() }
   }
 
-  override fun onRuntimeStarted(workflowScope: CoroutineScope) {
-    visitors.forEach { it.onRuntimeStarted(workflowScope) }
+  override fun onRuntimeStarted(
+    workflowScope: CoroutineScope,
+    rootWorkflowType: String
+  ) {
+    visitors.forEach { it.onRuntimeStarted(workflowScope, rootWorkflowType) }
   }
 
   override fun onRuntimeStopped() {

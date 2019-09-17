@@ -23,6 +23,8 @@ import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
 import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
+import com.squareup.workflow.diagnostic.andThen
+import com.squareup.workflow.diagnostic.tracing.TracingDiagnosticListener
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
@@ -48,12 +50,14 @@ class MainActivity : AppCompatActivity() {
 
     idlingResource = component.idlingResource
 
+    val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-tictactoe.json")!!
     workflowRunner = setContentWorkflow(
         savedInstanceState,
         {
           WorkflowRunner.Config(
               component.mainWorkflow, viewRegistry,
               diagnosticListener = SimpleLoggingDiagnosticListener()
+                  .andThen(TracingDiagnosticListener(traceFile))
           )
         }
     ) {

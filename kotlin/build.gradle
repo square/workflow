@@ -21,6 +21,7 @@ buildscript {
       'jmh': '1.21',
       'kotlin': '1.3.50',
       'kotlinCoroutines': '1.3.1',
+      'moshiVersion': '1.8.0',
   ]
 
   rootProject.ext.defaultAndroidConfig = {
@@ -55,6 +56,7 @@ buildscript {
           'transition': "androidx.transition:transition:1.1.0",
       ],
 
+      'moshi': "com.squareup.moshi:moshi:${versions.moshiVersion}",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:2.1.1",
       'timber': "com.jakewharton.timber:timber:4.7.1",
 
@@ -72,6 +74,8 @@ buildscript {
               'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.kotlinCoroutines}",
               'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.kotlinCoroutines}"
           ],
+          'moshi': "com.squareup.moshi:moshi-kotlin:${versions.moshiVersion}",
+          'reflect': "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
           'test': [
               'common': "org.jetbrains.kotlin:kotlin-test-common",
               'annotations': "org.jetbrains.kotlin:kotlin-test-annotations-common",

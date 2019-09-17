@@ -122,7 +122,10 @@ interface WorkflowDiagnosticListener {
    * No other methods will be called until after this returns.
    */
   @VeryExperimentalWorkflow
-  fun onRuntimeStarted(workflowScope: CoroutineScope) = Unit
+  fun onRuntimeStarted(
+    workflowScope: CoroutineScope,
+    rootWorkflowType: String
+  ) = Unit
 
   /**
    * Called after the runtime has been cancelled or failed, after all workflow-related coroutines

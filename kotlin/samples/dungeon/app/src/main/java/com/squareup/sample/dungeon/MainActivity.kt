@@ -18,6 +18,8 @@ package com.squareup.sample.dungeon
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
+import com.squareup.workflow.diagnostic.andThen
+import com.squareup.workflow.diagnostic.tracing.TracingDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 
@@ -31,12 +33,14 @@ class MainActivity : AppCompatActivity() {
     // Ignore config changes for now.
     val component = Component(applicationContext)
 
+    val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-dungeon.json")!!
     workflowRunner = setContentWorkflow(savedInstanceState) {
       WorkflowRunner.Config(
           workflow = component.appWorkflow,
           viewRegistry = component.viewRegistry,
           props = "simple_maze.txt",
           diagnosticListener = SimpleLoggingDiagnosticListener()
+              .andThen(TracingDiagnosticListener(traceFile))
       )
     }
   }
