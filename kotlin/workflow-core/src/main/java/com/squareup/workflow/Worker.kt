@@ -171,7 +171,7 @@ interface Worker<out OutputT> {
      *
      * E.g.:
      * ```
-     * fun logOnEntered(message: String) = Worker.createSideEffect("logOnEntered") {
+     * fun logOnEntered(message: String) = Worker.createSideEffect() {
      *   println("Entered state: $message")
      * }
      * ```
@@ -230,10 +230,6 @@ interface Worker<out OutputT> {
 
 /**
  * Returns a [Worker] that will, when performed, emit whatever this [Flow] receives.
- *
- * **Warning:** The Flow API is very immature and so any breaking changes there (including in
- * transiently-included versions) will be compounded when layering Workflow APIs on top of it.
- * This **SHOULD NOT** be used in production code.
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
 inline fun <reified OutputT> Flow<OutputT>.asWorker(): Worker<OutputT> =
@@ -293,7 +289,7 @@ inline fun <reified OutputT> ReceiveChannel<OutputT>.asWorker(
  * Returns a [Worker] that transforms this [Worker]'s [Flow] by calling [transform].
  *
  * The returned worker is considered equivalent with any other worker returned by this function
- * with the same receiver and the same [key].
+ * with the same receiver.
  *
  * ## Examples
  *
@@ -324,12 +320,10 @@ inline fun <reified OutputT> ReceiveChannel<OutputT>.asWorker(
  * ```
  */
 fun <T, R> Worker<T>.transform(
-  key: String = "",
   transform: (Flow<T>) -> Flow<R>
 ): Worker<R> = WorkerWrapper(
     wrapped = this,
-    flow = transform(run()),
-    key = key
+    flow = transform(run())
 )
 
 /**
@@ -374,13 +368,10 @@ private object FinishedWorker : Worker<Nothing> {
 
 private class WorkerWrapper<T, R>(
   private val wrapped: Worker<T>,
-  private val flow: Flow<R>,
-  private val key: String
+  private val flow: Flow<R>
 ) : Worker<R> {
   override fun run(): Flow<R> = flow
-  override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean {
-    return otherWorker is WorkerWrapper<*, *> &&
-        key == otherWorker.key &&
+  override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
+    otherWorker is WorkerWrapper<*, *> &&
         wrapped.doesSameWorkAs(otherWorker.wrapped)
-  }
 }
