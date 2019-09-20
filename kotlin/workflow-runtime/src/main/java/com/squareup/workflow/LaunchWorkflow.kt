@@ -15,6 +15,7 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.debugging.WorkflowDebugInfo
 import com.squareup.workflow.internal.RealWorkflowLoop
 import com.squareup.workflow.internal.WorkflowLoop
 import com.squareup.workflow.internal.unwrapCancellationCause
@@ -37,8 +38,7 @@ import org.jetbrains.annotations.TestOnly
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
 internal typealias Configurator <O, R, T> = CoroutineScope.(
-  renderingsAndSnapshots: Flow<RenderingAndSnapshot<R>>,
-  outputs: Flow<O>
+  session: WorkflowSession<O, R>
 ) -> T
 
 /**
@@ -102,10 +102,7 @@ fun <PropsT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
   workflow: Workflow<PropsT, OutputT, RenderingT>,
   props: Flow<PropsT>,
   initialSnapshot: Snapshot? = null,
-  beforeStart: CoroutineScope.(
-    renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
-    outputs: Flow<OutputT>
-  ) -> RunnerT
+  beforeStart: CoroutineScope.(session: WorkflowSession<OutputT, RenderingT>) -> RunnerT
 ): RunnerT = launchWorkflowImpl(
     scope,
     RealWorkflowLoop,
@@ -132,10 +129,7 @@ fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFr
   workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
   props: Flow<PropsT>,
   initialState: StateT,
-  beforeStart: CoroutineScope.(
-    renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
-    outputs: Flow<OutputT>
-  ) -> RunnerT
+  beforeStart: CoroutineScope.(session: WorkflowSession<OutputT, RenderingT>) -> RunnerT
 ): RunnerT = launchWorkflowImpl(
     scope,
     RealWorkflowLoop,
@@ -158,10 +152,16 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
 ): RunnerT {
   val renderingsAndSnapshots = ConflatedBroadcastChannel<RenderingAndSnapshot<RenderingT>>()
   val outputs = BroadcastChannel<OutputT>(capacity = 1)
+  val debugSnapshots = ConflatedBroadcastChannel<WorkflowDebugInfo>()
   val workflowScope = scope + Job(parent = scope.coroutineContext[Job])
 
   // Give the caller a chance to start collecting outputs.
-  val result = beforeStart(workflowScope, renderingsAndSnapshots.asFlow(), outputs.asFlow())
+  val session = WorkflowSession(
+      renderingsAndSnapshots.asFlow(),
+      outputs.asFlow(),
+      debugSnapshots.asFlow()
+  )
+  val result = beforeStart(workflowScope, session)
 
   val workflowJob = workflowScope.launch {
     // Run the workflow processing loop forever, or until it fails or is cancelled.
@@ -171,7 +171,8 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
         initialSnapshot = initialSnapshot,
         initialState = initialState,
         onRendering = renderingsAndSnapshots::send,
-        onOutput = outputs::send
+        onOutput = outputs::send,
+        onDebugSnapshot = debugSnapshots::send
     )
   }
 
@@ -182,6 +183,7 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
     val realCause = cause?.unwrapCancellationCause()
     renderingsAndSnapshots.close(realCause)
     outputs.close(realCause)
+    debugSnapshots.close(realCause)
 
     // If the cancellation came from inside the workflow loop, the outer runtime scope needs to be
     // explicitly cancelled. See https://github.com/square/workflow/issues/464.

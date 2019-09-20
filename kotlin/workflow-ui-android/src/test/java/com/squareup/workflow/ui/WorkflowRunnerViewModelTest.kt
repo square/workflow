@@ -5,8 +5,8 @@ import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowSession
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateless
 import com.squareup.workflow.ui.WorkflowRunner.Config
 import kotlinx.coroutines.CancellationException
@@ -38,8 +38,13 @@ class WorkflowRunnerViewModelTest {
     val snapshot2 = Snapshot.of("two")
     val snapshotsChannel = Channel<RenderingAndSnapshot<Unit>>(UNLIMITED)
     val snapshotsFlow = flow { snapshotsChannel.consumeEach { emit(it) } }
+    val session = WorkflowSession(
+        renderingsAndSnapshots = snapshotsFlow,
+        outputs = emptyFlow(),
+        debugInfo = emptyFlow()
+    )
 
-    val runner = WorkflowRunnerViewModel(scope, snapshotsFlow, emptyFlow(), viewRegistry)
+    val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
 
     assertThat(runner.getLastSnapshotForTest()).isEqualTo(Snapshot.EMPTY)
 
@@ -59,7 +64,12 @@ class WorkflowRunnerViewModelTest {
           "Expected ${CancellationException::class.java.simpleName}", e
       )
     }
-    val runner = WorkflowRunnerViewModel(scope, emptyFlow(), flowOf("fnord"), viewRegistry)
+    val session = WorkflowSession<String, Nothing>(
+        renderingsAndSnapshots = emptyFlow(),
+        outputs = flowOf("fnord"),
+        debugInfo = emptyFlow()
+    )
+    val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
 
     assertThat(cancelled).isFalse()
     val tester = runner.result.test()
@@ -77,7 +87,12 @@ class WorkflowRunnerViewModelTest {
           "Expected ${CancellationException::class.java.simpleName}", e
       )
     }
-    val runner = WorkflowRunnerViewModel(scope, emptyFlow(), emptyFlow(), viewRegistry)
+    val session = WorkflowSession<Nothing, Nothing>(
+        renderingsAndSnapshots = emptyFlow(),
+        outputs = emptyFlow(),
+        debugInfo = emptyFlow()
+    )
+    val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
 
     assertThat(cancelled).isFalse()
     val tester = runner.result.test()

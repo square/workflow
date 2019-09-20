@@ -107,8 +107,8 @@ private suspend fun runTerminalWorkflow(
   // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically
   // if there's an error.
   val result =
-    launchWorkflowIn(this, workflow, inputs.asFlow()) { renderingsAndSnapshots, outputs ->
-      val renderings = renderingsAndSnapshots.map { it.rendering }
+    launchWorkflowIn(this, workflow, inputs.asFlow()) { session ->
+      val renderings = session.renderingsAndSnapshots.map { it.rendering }
           .produceIn(this)
 
       launch {
@@ -149,7 +149,7 @@ private suspend fun runTerminalWorkflow(
         }
       }
 
-      return@launchWorkflowIn async { outputs.first() }
+      return@launchWorkflowIn async { session.outputs.first() }
     }
 
   val exitCode = result.await()

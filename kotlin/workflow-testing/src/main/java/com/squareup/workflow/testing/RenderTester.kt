@@ -26,11 +26,13 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
 import com.squareup.workflow.internal.Behavior
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext
 import com.squareup.workflow.internal.RealRenderContext.Renderer
+import com.squareup.workflow.internal.RenderingEnvelope
 import com.squareup.workflow.internal.WorkflowId
 
 /**
@@ -166,7 +168,7 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
 
   /**
    * Asserts that  this workflow was rendered with the given [key] and then executes the output
-   * handler with the given [output] (as an [Output]). Returns the new state and output returned by
+   * handler with the given [output] (as a [COutputT]). Returns the new state and output returned by
    * the output handler.
    */
   fun <CPropsT, COutputT : Any, CRenderingT> Workflow<CPropsT, COutputT, CRenderingT>.handleOutput(
@@ -187,8 +189,7 @@ class TestRenderResult<StateT, OutputT : Any, RenderingT> internal constructor(
 
   /**
    * Asserts that this worker was ran with the given [key] and then executes the output handler
-   * with the given [output] (as an [Output]). Returns the new state and output returned by the
-   * output handler.
+   * with the given [output]. Returns the new state and output returned by the output handler.
    */
   fun <T : Any> Worker<T>.handleOutput(
     output: T,
@@ -299,14 +300,22 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
     child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
     id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
     props: ChildPropsT
-  ): ChildRenderingT {
+  ): RenderingEnvelope<ChildRenderingT> {
     @Suppress("UNCHECKED_CAST")
     val childStatefulWorkflow =
       child.asStatefulWorkflow() as StatefulWorkflow<ChildPropsT, Any?, ChildOutputT, ChildRenderingT>
     val childInitialState = childStatefulWorkflow.initialState(props, null)
     // Allow the workflow-under-test to *render* children, but those children must not try to
     // use the RenderContext themselves.
-    return childStatefulWorkflow.render(props, childInitialState, NoopRenderContext)
+    val rendering = childStatefulWorkflow.render(props, childInitialState, NoopRenderContext)
+    val debugSnapshot = WorkflowHierarchyDebugSnapshot(
+        workflowId = id,
+        props = props,
+        state = childInitialState,
+        rendering = rendering,
+        children = emptyList()
+    )
+    return RenderingEnvelope(rendering, debugSnapshot)
   }
 
   fun buildBehavior(): Behavior<S, O> = realContext.buildBehavior()

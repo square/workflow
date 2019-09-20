@@ -19,6 +19,9 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
+import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
@@ -58,7 +61,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
         id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
         props: ChildPropsT
-      ): ChildRenderingT {
+      ): RenderingEnvelope<ChildRenderingT> {
   // @formatter:on
     // Start tracking this case so we can be ready to render it.
     @Suppress("UNCHECKED_CAST")
@@ -79,15 +82,36 @@ internal class SubtreeManager<StateT, OutputT : Any>(
   /**
    * Uses [selector] to invoke [WorkflowNode.tick] for every running child workflow this instance
    * is managing.
+   *
+   * If one of this workflow's children emits an output, [handler] will be called with the action
+   * assigned to that workflow and a [Source.Subtree] describing the child that triggered the
+   * update.
+   *
+   * Note that if [handler] is called with [Kind.Passthrough], the workflow action that gets
+   * passed in will always be [noAction]. This is the only logical value because
+   * [Kind.Passthrough] specifically means that this workflow did not actually get updated
+   * itself, but one of its descendants did and this one is just part of the path down the tree.
    */
   fun <T : Any> tickChildren(
-    selector: SelectBuilder<T?>,
-    handler: (WorkflowAction<StateT, OutputT>) -> T?
+    selector: SelectBuilder<OutputEnvelope<T>>,
+    handler: (WorkflowAction<StateT, OutputT>, Kind) -> OutputEnvelope<T>
   ) {
     for ((case, host) in hostLifetimeTracker.lifetimes) {
       host.tick(selector) { output ->
-        val componentUpdate = case.acceptChildOutput(output)
-        return@tick handler(componentUpdate)
+        return@tick if (output.output != null) {
+          val componentUpdate = case.acceptChildOutput(output.output)
+          // This workflow's child emitted a non-null output: the WorkflowNode will execute the
+          // WorkflowAction, and we need to pass DidUpdate to indicate that this workflow actually
+          // got updated.
+          handler(
+              componentUpdate,
+              Kind.Updated(Source.Subtree(case.id.name, output.output, output.debugInfo))
+          )
+        } else {
+          // The child didn't actually emit an output, which means this workflow has nothing to do,
+          // which means we will only report our child updating.
+          handler(noAction(), Kind.Passthrough(case.id.name, output.debugInfo))
+        }
       }
     }
   }

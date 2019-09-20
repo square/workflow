@@ -39,6 +39,13 @@ internal constructor(
     workflow: Workflow<PropsT, OutputT, RenderingT>,
     name: String = ""
   ) : this(workflow::class, name)
+
+  /**
+   * String representation of this workflow's type (i.e. class name), suitable for use in
+   * diagnostic output (see [WorkflowHierarchyDebugSnapshot][com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot]
+   * ).
+   */
+  val typeDebugString: String = type.java.name
 }
 
 @Suppress("unused")

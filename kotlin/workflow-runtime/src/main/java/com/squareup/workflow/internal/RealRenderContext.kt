@@ -23,6 +23,7 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.Child
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import kotlinx.coroutines.CompletableDeferred
@@ -42,12 +43,13 @@ class RealRenderContext<StateT, OutputT : Any>(
       child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
       id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
       props: ChildPropsT
-    ): ChildRenderingT
+    ): RenderingEnvelope<ChildRenderingT>
   }
 
   private val nextUpdateFromEvent = CompletableDeferred<WorkflowAction<StateT, OutputT>>()
   private val workerCases = mutableListOf<WorkerCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
+  private val childDebugSnapshots = mutableListOf<Child>()
 
   /** Used to prevent modifications to this object after [buildBehavior] is called. */
   private var frozen = false
@@ -93,7 +95,11 @@ class RealRenderContext<StateT, OutputT : Any>(
     val case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT> =
       WorkflowOutputCase(child, id, props, handler)
     childCases += case
-    return renderer.render(case, child, id, props)
+    val (rendering, debugSnapshot) = renderer.render(case, child, id, props)
+    // Hold onto the description of this child's state for later, so we can include it in the
+    // parent's debug snapshot tree.
+    childDebugSnapshots += Child(key, debugSnapshot)
+    return rendering
   }
 
   override fun <T> runningWorker(
@@ -113,6 +119,7 @@ class RealRenderContext<StateT, OutputT : Any>(
     frozen = true
     return Behavior(
         childCases = childCases.toList(),
+        childDebugSnapshots = childDebugSnapshots.toList(),
         workerCases = workerCases.toList(),
         nextActionFromEvent = nextUpdateFromEvent
     )
