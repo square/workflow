@@ -39,14 +39,13 @@ import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
 import com.squareup.sample.panel.PanelContainerScreen
-import com.squareup.sample.panel.asPanelOver
+import com.squareup.sample.panel.startPanelOver
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Mutator
-import com.squareup.workflow.runningWorker
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
@@ -61,7 +60,7 @@ enum class RunGameResult {
   FinishedPlaying
 }
 
-typealias RunGameScreen = AlertContainerScreen<PanelContainerScreen<*, *>>
+typealias RunGameScreen = AlertContainerScreen<PanelContainerScreen<Any, Any>>
 
 /**
  * We define this otherwise redundant typealias to keep composite workflows
@@ -268,7 +267,7 @@ class RealRunGameWorkflow(
     vararg alerts: AlertScreen
   ): RunGameScreen {
     return AlertContainerScreen(
-        PanelContainerScreen<Any, Any>(base), *alerts
+        PanelContainerScreen(base), *alerts
     )
   }
 
@@ -277,7 +276,7 @@ class RealRunGameWorkflow(
     alert: AlertScreen
   ): RunGameScreen {
     return AlertContainerScreen(
-        PanelContainerScreen<Any, Any>(base), alert
+        PanelContainerScreen(base), alert
     )
   }
 
@@ -285,11 +284,11 @@ class RealRunGameWorkflow(
     base: Any,
     subflow: Any
   ): RunGameScreen {
-    return AlertContainerScreen(subflow.asPanelOver(base))
+    return AlertContainerScreen(subflow.startPanelOver(base))
   }
 
   private fun simpleScreen(screen: Any): RunGameScreen {
-    return AlertContainerScreen(PanelContainerScreen<Any, Any>(screen))
+    return AlertContainerScreen(PanelContainerScreen(screen))
   }
 
   private fun maybeQuitScreen(

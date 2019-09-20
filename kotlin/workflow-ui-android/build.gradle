@@ -42,7 +42,6 @@ dependencies {
   implementation deps.androidx.appcompat
   implementation deps.androidx.lifecycle
   implementation deps.androidx.lifecycleReactivestreams
-  implementation deps.coordinators
   implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.coroutines.core
   implementation deps.kotlin.coroutines.rx2

@@ -36,7 +36,6 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Mutator
-import com.squareup.workflow.runningWorker
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.BackStackScreen
 
@@ -44,7 +43,7 @@ import com.squareup.workflow.ui.BackStackScreen
  * We define this otherwise redundant typealias to keep composite workflows
  * that build on [AuthWorkflow] decoupled from it, for ease of testing.
  */
-typealias AuthWorkflow = Workflow<Unit, AuthResult, BackStackScreen<*>>
+typealias AuthWorkflow = Workflow<Unit, AuthResult, BackStackScreen<Any>>
 
 sealed class AuthState {
   internal data class LoginPrompt(val errorMessage: String = "") : AuthState()
@@ -104,12 +103,11 @@ internal sealed class Action : WorkflowAction<AuthState, AuthResult> {
       CancelLogin -> return Canceled
 
       is HandleAuthResponse -> {
-        when {
-          response.isLoginFailure -> state = LoginPrompt(response.errorMessage)
-          response.twoFactorRequired -> state = SecondFactorPrompt(response.token)
+        state = when {
+          response.isLoginFailure -> LoginPrompt(response.errorMessage)
+          response.twoFactorRequired -> SecondFactorPrompt(response.token)
+          else -> return Authorized(response.token)
         }
-
-        return Authorized(response.token)
       }
 
       is SubmitSecondFactor -> {
@@ -142,7 +140,7 @@ internal sealed class Action : WorkflowAction<AuthState, AuthResult> {
  * Token is "1234".
  */
 class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
-    StatefulWorkflow<Unit, AuthState, AuthResult, BackStackScreen<*>>() {
+    StatefulWorkflow<Unit, AuthState, AuthResult, BackStackScreen<Any>>() {
 
   override fun initialState(
     props: Unit,
@@ -153,7 +151,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
     props: Unit,
     state: AuthState,
     context: RenderContext<AuthState, AuthResult>
-  ): BackStackScreen<*> {
+  ): BackStackScreen<Any> {
     val sink = context.makeActionSink<Action>()
 
     return when (state) {

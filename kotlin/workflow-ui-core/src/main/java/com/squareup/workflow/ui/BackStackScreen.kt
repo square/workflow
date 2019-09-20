@@ -37,6 +37,9 @@ data class BackStackScreen<StackedT : Any>(
 
   init {
     require(stack.isNotEmpty()) { "Empty stacks are not allowed." }
+    require(!stack.asSequence().any { it is BackStackScreen<*> }) {
+      "BackStackScreen in a BackStackScreen is nonsensical: $this"
+    }
   }
 
   val top: StackedT = stack.last()

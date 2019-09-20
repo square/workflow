@@ -17,6 +17,7 @@ buildscript {
   ext.versions = [
       'targetSdk': 29,
       'dokka': '0.9.18',
+      'espresso': '3.1.0',
       'jmh': '1.21',
       'kotlin': '1.3.50',
       'kotlinCoroutines': '1.3.1',
@@ -53,7 +54,6 @@ buildscript {
           'transition': "androidx.transition:transition:1.1.0",
       ],
 
-      'coordinators': "com.squareup.coordinators:coordinators:0.4",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:2.1.1",
       'timber': "com.jakewharton.timber:timber:4.7.1",
 
@@ -99,10 +99,21 @@ buildscript {
           'intellij': "org.jetbrains:annotations:17.0.0",
       ],
       'test': [
-          'truth': "com.google.truth:truth:1.0",
+          'androidx': [
+              'espresso': [
+                  'core': "androidx.test.espresso:espresso-core:${versions.espresso}",
+                  'idlingResource': "androidx.test.espresso:espresso-idling-resource:${versions.espresso}",
+                  'intents': "androidx.test.espresso:espresso-intents:${versions.espresso}",
+              ],
+              'junitExt': "androidx.test.ext:junit:1.0.0",
+              'runner': "androidx.test:runner:1.1.0",
+              'truthExt': "androidx.test.ext:truth:1.0.0",
+          ],
+          'hamcrestCore': "org.hamcrest:hamcrest-core:2.1",
           'junit': "junit:junit:4.12",
           'mockito': "org.mockito:mockito-core:3.0.0",
-          'hamcrestCore': "org.hamcrest:hamcrest-core:2.1"
+          'robolectric': "org.robolectric:robolectric:4.3",
+          'truth': "com.google.truth:truth:1.0",
       ]
   ]
 

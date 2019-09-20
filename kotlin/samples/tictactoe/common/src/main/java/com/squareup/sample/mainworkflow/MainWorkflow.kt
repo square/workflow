@@ -19,6 +19,7 @@ import com.squareup.sample.authworkflow.AuthResult
 import com.squareup.sample.authworkflow.AuthResult.Authorized
 import com.squareup.sample.authworkflow.AuthResult.Canceled
 import com.squareup.sample.authworkflow.AuthWorkflow
+import com.squareup.sample.authworkflow.LoginScreen
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RealRunGameWorkflow
 import com.squareup.sample.gameworkflow.RunGameScreen
@@ -70,10 +71,28 @@ class MainWorkflow(
       val authScreen = context.renderChild(authWorkflow) { handleAuthResult(it) }
       val emptyGameScreen = GamePlayScreen()
 
-      AlertContainerScreen(authScreen.asPanelOver(emptyGameScreen))
+      AlertContainerScreen(authScreen.asPanelOver<Any, Any>(emptyGameScreen))
     }
 
-    is RunningGame -> context.renderChild(runGameWorkflow) { startAuth }
+    is RunningGame -> {
+      val childRendering = context.renderChild(runGameWorkflow) { startAuth }
+
+      val panels = childRendering.baseScreen.modals
+
+      if (panels.isEmpty()) {
+        childRendering
+      } else {
+        // The child may be showing a panel (that is, a modal subflow) to prompt for player names.
+        // If so, put a login screen behind it, so that we'll pop from the player name prompt
+        // to the login prompt if they cancel.
+
+        val backstackMod = listOf(LoginScreen()) + panels[0].stack
+        val panelMod = panels[0].copy(stack = backstackMod)
+        val panelsMod = panels.toMutableList()
+        panelsMod[0] = panelMod
+        childRendering.copy(baseScreen = childRendering.baseScreen.copy(modals = panelsMod))
+      }
+    }
   }
 
   override fun snapshotState(state: MainState): Snapshot = state.toSnapshot()
