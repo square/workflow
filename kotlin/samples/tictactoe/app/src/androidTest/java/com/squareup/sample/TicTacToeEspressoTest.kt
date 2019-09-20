@@ -66,12 +66,13 @@ class TicTacToeEspressoTest {
   }
 
   @Test fun backStackPopRestoresViewState() {
+    // The loading screen is pushed onto the back stack.
     onView(withId(R.id.login_email)).type("foo@bar")
     onView(withId(R.id.login_password)).type("bad password")
     onView(withId(R.id.login_button)).perform(click())
-    onView(withId(R.id.login_error_message))
-        .check(matches(withText("Unknown email or invalid password")))
-    rotate()
+
+    // Loading ends with an error, and we pop back to login. The
+    // email should have been restored from view state.
     onView(withId(R.id.login_email)).check(matches(withText("foo@bar")))
     onView(withId(R.id.login_error_message))
         .check(matches(withText("Unknown email or invalid password")))
@@ -90,6 +91,33 @@ class TicTacToeEspressoTest {
     onView(withText("Do you really want to concede the game?")).check(matches(isDisplayed()))
     rotate()
     onView(withText("Do you really want to concede the game?")).check(matches(isDisplayed()))
+  }
+
+  @Test fun canGoBackInModalView() {
+    // Log in and hit the 2fa screen.
+    onView(withId(R.id.login_email)).type("foo@2fa")
+    onView(withId(R.id.login_password)).type("password")
+    onView(withId(R.id.login_button)).perform(click())
+    onView(withId(R.id.second_factor)).check(matches(isDisplayed()))
+
+    // Use the back button to go back and see the login screen again.
+    pressBack()
+    // Make sure edit text was restored from view state cached by the back stack container.
+    onView(withId(R.id.login_email)).check(matches(withText("foo@2fa")))
+  }
+
+  @Test fun configChangePreservesBackStackViewStateCache() {
+    // Log in and hit the 2fa screen.
+    onView(withId(R.id.login_email)).type("foo@2fa")
+    onView(withId(R.id.login_password)).type("password")
+    onView(withId(R.id.login_button)).perform(click())
+    onView(withId(R.id.second_factor)).check(matches(isDisplayed()))
+
+    // Rotate and then use the back button to go back and see the login screen again.
+    rotate()
+    pressBack()
+    // Make sure edit text was restored from view state cached by the back stack container.
+    onView(withId(R.id.login_email)).check(matches(withText("foo@2fa")))
   }
 
   private fun ViewInteraction.type(text: String) {

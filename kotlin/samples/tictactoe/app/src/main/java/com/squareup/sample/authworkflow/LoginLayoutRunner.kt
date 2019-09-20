@@ -23,18 +23,13 @@ import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.setBackHandler
+import com.squareup.workflow.ui.backPressedHandler
 
-internal class LoginLayoutRunner(view: View) : LayoutRunner<LoginScreen> {
+internal class LoginLayoutRunner(val view: View) : LayoutRunner<LoginScreen> {
   private val error: TextView = view.findViewById(R.id.login_error_message)
   private val email: EditText = view.findViewById(R.id.login_email)
   private val password: EditText = view.findViewById(R.id.login_password)
   private val loginButton: Button = view.findViewById(R.id.login_button)
-  private val cancelButton: Button = view.findViewById(R.id.cancel_login_button)
-
-  init {
-    view.setBackHandler { cancelButton.performClick() }
-  }
 
   override fun showRendering(rendering: LoginScreen) {
     error.text = rendering.errorMessage
@@ -43,9 +38,7 @@ internal class LoginLayoutRunner(view: View) : LayoutRunner<LoginScreen> {
       rendering.onLogin(email.text.toString(), password.text.toString())
     }
 
-    cancelButton.setOnClickListener {
-      rendering.onCancel
-    }
+    view.backPressedHandler = { rendering.onCancel() }
   }
 
   companion object : ViewBinding<LoginScreen> by bind(

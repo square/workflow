@@ -21,7 +21,6 @@ import com.squareup.sample.todo.TodoListsAppWorkflow
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
-import com.squareup.workflow.ui.workflowOnBackPressed
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,10 +38,6 @@ class MainActivity : AppCompatActivity() {
     workflowRunner = setContentWorkflow(savedInstanceState) {
       WorkflowRunner.Config(rootWorkflow, viewRegistry)
     }
-  }
-
-  override fun onBackPressed() {
-    if (!workflowOnBackPressed()) super.onBackPressed()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

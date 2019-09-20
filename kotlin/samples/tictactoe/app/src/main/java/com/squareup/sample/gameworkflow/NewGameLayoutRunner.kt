@@ -22,7 +22,7 @@ import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.setBackHandler
+import com.squareup.workflow.ui.backPressedHandler
 
 internal class NewGameLayoutRunner(private val view: View) : LayoutRunner<NewGameScreen> {
 
@@ -38,7 +38,7 @@ internal class NewGameLayoutRunner(private val view: View) : LayoutRunner<NewGam
       rendering.onStartGame(playerX.text.toString(), playerO.text.toString())
     }
 
-    view.setBackHandler { rendering.onCancel() }
+    view.backPressedHandler = { rendering.onCancel() }
   }
 
   companion object : ViewBinding<NewGameScreen> by bind(

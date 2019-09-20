@@ -96,7 +96,7 @@ class ViewRegistry private constructor(
     return (allBindings[initialRendering::class] as? ViewBinding<RenderingT>)
         ?.buildView(this, initialRendering, contextForNewView, container)
         ?.apply {
-          checkNotNull(showRenderingTag?.showing) {
+          checkNotNull(showRenderingTag?.initialRendering) {
             "View.bindShowRendering must be called for $this."
           }
         }

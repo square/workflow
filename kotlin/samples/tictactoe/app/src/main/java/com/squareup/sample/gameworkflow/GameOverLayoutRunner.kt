@@ -29,7 +29,7 @@ import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.setBackHandler
+import com.squareup.workflow.ui.backPressedHandler
 
 internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameOverScreen> {
   private val boardView: ViewGroup = view.findViewById(R.id.game_play_board)
@@ -50,7 +50,7 @@ internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameO
       rendering.onPlayAgain()
       true
     }
-    view.setBackHandler { rendering.onExit() }
+    view.backPressedHandler = { rendering.onExit() }
 
     when (rendering.endGameState.syncState) {
       SAVING -> {

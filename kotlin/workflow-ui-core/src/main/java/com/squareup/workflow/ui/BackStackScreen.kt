@@ -16,7 +16,8 @@
 package com.squareup.workflow.ui
 
 /**
- * @param stack: screens that have are / have been displayed, ending in the current screen
+ * @param stack: screens that are being or have been displayed, ending in the current screen.
+ * Guaranteed not to be empty.
  *
  * @param onGoBack: function to call for a "go back" gesture. Null indicates such gestures
  * should be disabled.

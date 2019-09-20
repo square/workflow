@@ -24,7 +24,6 @@ import com.squareup.sample.panel.PanelContainer
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
-import com.squareup.workflow.ui.workflowOnBackPressed
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
 import timber.log.Timber
@@ -58,10 +57,6 @@ class MainActivity : AppCompatActivity() {
         workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) },
         workflowRunner.debugInfo.subscribe { Timber.v("debug snapshot: %s", it) }
     )
-  }
-
-  override fun onBackPressed() {
-    if (!workflowOnBackPressed()) super.onBackPressed()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

@@ -24,7 +24,7 @@ import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.setBackHandler
+import com.squareup.workflow.ui.backPressedHandler
 
 internal class SecondFactorLayoutRunner(
   private val view: View
@@ -35,7 +35,7 @@ internal class SecondFactorLayoutRunner(
   private val button: Button = view.findViewById(R.id.second_factor_submit_button)
 
   override fun showRendering(rendering: SecondFactorScreen) {
-    view.setBackHandler { rendering.onCancel() }
+    view.backPressedHandler = { rendering.onCancel() }
     toolbar.setNavigationOnClickListener { rendering.onCancel() }
 
     error.text = rendering.errorMessage

@@ -26,7 +26,7 @@ import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.mainworkflow.MainState.Authenticating
 import com.squareup.sample.mainworkflow.MainState.RunningGame
-import com.squareup.sample.panel.asPanelOver
+import com.squareup.sample.panel.inPanelOver
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -71,7 +71,7 @@ class MainWorkflow(
       val authScreen = context.renderChild(authWorkflow) { handleAuthResult(it) }
       val emptyGameScreen = GamePlayScreen()
 
-      AlertContainerScreen(authScreen.asPanelOver<Any, Any>(emptyGameScreen))
+      AlertContainerScreen(authScreen.inPanelOver<Any, Any>(emptyGameScreen))
     }
 
     is RunningGame -> {

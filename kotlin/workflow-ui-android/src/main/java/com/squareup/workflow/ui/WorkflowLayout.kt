@@ -34,7 +34,7 @@ import io.reactivex.disposables.SerialDisposable
 class WorkflowLayout(
   context: Context,
   attributeSet: AttributeSet? = null
-) : FrameLayout(context, attributeSet), HandlesBack {
+) : FrameLayout(context, attributeSet) {
   private var restoredChildState: SparseArray<Parcelable>? = null
   private val showing: View? get() = if (childCount > 0) getChildAt(0) else null
 
@@ -51,12 +51,6 @@ class WorkflowLayout(
     registry: ViewRegistry
   ) {
     takeWhileAttached(renderings) { show(it, registry) }
-  }
-
-  override fun onBackPressed(): Boolean {
-    return showing
-        ?.let { HandlesBack.Helper.onBackPressed(it) }
-        ?: false
   }
 
   private fun show(
