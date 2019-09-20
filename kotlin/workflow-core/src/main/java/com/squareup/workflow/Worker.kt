@@ -47,12 +47,12 @@ import kotlin.reflect.KClass
  *
  * ## Example: Network request
  *
- * Let's say you have a network service with an API that returns a [Deferred], and you want to
+ * Let's say you have a network service with an API that returns a number, and you want to
  * call that service from a [Workflow].
  *
  * ```
  * interface TimeService {
- *   fun getTime(timezone: String): Deferred<Long>
+ *   suspend fun getTime(timezone: String): Long
  * }
  * ```
  *
@@ -66,9 +66,9 @@ import kotlin.reflect.KClass
  *   val service: TimeService
  * ): Worker<Long> {
  *
- *   override suspend fun performWork(emitter: Emitter<Long>) {
- *     val timeDeferred = service.getTime(timezone)
- *     emitter.emitOutput(timeDeferred.await())
+ *   override fun run(): Flow<Long> = flow {
+ *     val time = service.getTime(timezone)
+ *     emit(time)
  *   }
  * }
  * ```
