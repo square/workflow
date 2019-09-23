@@ -70,7 +70,7 @@ internal object RealWorkflowLoop : WorkflowLoop {
           id = workflow.id(),
           workflow = workflow,
           initialProps = input,
-          snapshot = initialSnapshot,
+          snapshot = initialSnapshot?.bytes,
           baseContext = coroutineContext,
           initialState = initialState
       )

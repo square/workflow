@@ -75,7 +75,9 @@ abstract class StatefulWorkflow<
    * initial state.
    *
    * @param snapshot
-   * If the workflow is being created fresh, [snapshot] will be null.
+   * If the workflow is being created fresh, OR the workflow is being restored from an empty
+   * [Snapshot], [snapshot] will be null. A snapshot is considered "empty" if [Snapshot.bytes]
+   * returns an empty `ByteString`, probably because [snapshotState] returned [Snapshot.EMPTY].
    * If the workflow is being restored from a [Snapshot], [snapshot] will be the last value
    * returned from [snapshotState], and implementations that return something other than
    * [Snapshot.EMPTY] should create their initial state by parsing their snapshot.

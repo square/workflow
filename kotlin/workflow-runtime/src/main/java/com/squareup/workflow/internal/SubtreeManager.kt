@@ -27,6 +27,7 @@ import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
 import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.selects.SelectBuilder
+import okio.ByteString
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -42,7 +43,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
    * this cache. Then, when those children are started for the first time, they are also restored
    * from their snapshots.
    */
-  private val snapshotCache = mutableMapOf<AnyId, Snapshot>()
+  private val snapshotCache = mutableMapOf<AnyId, ByteString>()
 
   private val hostLifetimeTracker =
     LifetimeTracker<WorkflowOutputCase<*, *, StateT, OutputT>, AnyId, WorkflowNode<*, *, *, *>>(
@@ -136,13 +137,13 @@ internal class SubtreeManager<StateT, OutputT : Any>(
    * Extracts child snapshots and IDs from [snapshot] and caches them, so the next time those state
    * machines are asked to be started, they are restored from their snapshots.
    */
-  fun restoreChildrenFromSnapshot(snapshot: Snapshot) {
-    snapshot.bytes.parse { source ->
+  fun restoreChildrenFromSnapshot(snapshot: ByteString) {
+    snapshot.parse { source ->
       val childCount = source.readInt()
       val snapshots = List(childCount) {
         val id = restoreId(source.readByteStringWithLength())
         val childSnapshot = source.readByteStringWithLength()
-        Pair(id, Snapshot.of(childSnapshot))
+        Pair(id, childSnapshot)
       }
       // Populate the snapshot cache so when we are asked to create hosts for the snapshotted IDs,
       // they will be restored from their snapshots.

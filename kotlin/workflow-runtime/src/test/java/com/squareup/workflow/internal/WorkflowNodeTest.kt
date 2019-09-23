@@ -349,7 +349,8 @@ class WorkflowNodeTest {
 
     assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size)
+        .bytes
+    assertNotEquals(0, snapshot.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
@@ -364,9 +365,9 @@ class WorkflowNodeTest {
 
   @Test fun `snapshots empty without children`() {
     val workflow = Workflow.stateful<String, String, Nothing, String>(
-        initialState = { props, snapshot -> if (snapshot != null) "restored" else props },
+        initialState = { props, snapshot -> snapshot?.bytes?.utf8() ?: props },
         render = { _, state -> state },
-        snapshot = { Snapshot.EMPTY }
+        snapshot = { Snapshot.of("restored") }
     )
     val originalNode = WorkflowNode(
         workflow.id(),
@@ -378,7 +379,8 @@ class WorkflowNodeTest {
 
     assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size)
+        .bytes
+    assertNotEquals(0, snapshot.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
@@ -435,7 +437,8 @@ class WorkflowNodeTest {
 
     assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo").rendering)
     val snapshot = originalNode.snapshot(parentWorkflow)
-    assertNotEquals(0, snapshot.bytes.size)
+        .bytes
+    assertNotEquals(0, snapshot.size)
 
     val restoredNode = WorkflowNode(
         parentWorkflow.id(),
@@ -462,6 +465,9 @@ class WorkflowNodeTest {
           snapshotCalls++
           Snapshot.write {
             snapshotWrites++
+            // Snapshot will be discarded on restoration if it's empty, so we need to write
+            // something here so we actually get a non-null snapshot in restore.
+            it.writeUtf8("dummy value")
           }
         }
     )
@@ -483,7 +489,7 @@ class WorkflowNodeTest {
     assertEquals(1, snapshotWrites)
     assertEquals(0, restoreCalls)
 
-    WorkflowNode(workflow.id(), workflow, Unit, snapshot, Unconfined)
+    WorkflowNode(workflow.id(), workflow, Unit, snapshot.bytes, Unconfined)
 
     assertEquals(1, snapshotCalls)
     assertEquals(1, snapshotWrites)
@@ -512,7 +518,8 @@ class WorkflowNodeTest {
 
     assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
     val snapshot = originalNode.snapshot(workflow)
-    assertNotEquals(0, snapshot.bytes.size)
+        .bytes
+    assertNotEquals(0, snapshot.size)
 
     val restoredNode = WorkflowNode(
         workflow.id(),
@@ -715,5 +722,38 @@ class WorkflowNodeTest {
     assertEquals(TestWorkflow::class.java.name, debugInfo.workflowType)
     assertEquals("child key", source.key)
     assertEquals(child::class.java.name, source.childInfo.workflowType)
+  }
+
+  @Test fun `restore gets null snapshot when empty`() {
+    val workflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { props, snapshot ->
+          assertNull(snapshot)
+          "no snapshot: $props"
+        },
+        render = { _, state -> state },
+        snapshot = { Snapshot.EMPTY }
+    )
+    val originalNode = WorkflowNode(
+        workflow.id(),
+        workflow,
+        initialProps = "initial props",
+        snapshot = null,
+        baseContext = Unconfined
+    )
+
+    assertEquals("no snapshot: initial props", originalNode.render(workflow, "foo").rendering)
+    val snapshot = originalNode.snapshot(workflow)
+        .bytes
+    assertNotEquals(0, snapshot.size)
+
+    val restoredNode = WorkflowNode(
+        workflow.id(),
+        workflow,
+        // These props should be ignored, since snapshot is non-null.
+        initialProps = "new props",
+        snapshot = snapshot,
+        baseContext = Unconfined
+    )
+    assertEquals("no snapshot: new props", restoredNode.render(workflow, "foo").rendering)
   }
 }
