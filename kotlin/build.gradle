@@ -106,7 +106,7 @@ buildscript {
                   'idlingResource': "androidx.test.espresso:espresso-idling-resource:${versions.espresso}",
                   'intents': "androidx.test.espresso:espresso-intents:${versions.espresso}",
               ],
-              'junitExt': "androidx.test.ext:junit:1.0.0",
+              'junitExt': "androidx.test.ext:junit:1.1.1",
               'runner': "androidx.test:runner:1.1.0",
               'truthExt': "androidx.test.ext:truth:1.0.0",
           ],
