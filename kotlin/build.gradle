@@ -108,7 +108,7 @@ buildscript {
               ],
               'junitExt': "androidx.test.ext:junit:1.1.1",
               'runner': "androidx.test:runner:1.1.0",
-              'truthExt': "androidx.test.ext:truth:1.0.0",
+              'truthExt': "androidx.test.ext:truth:1.2.0",
           ],
           'hamcrestCore': "org.hamcrest:hamcrest-core:2.1",
           'junit': "junit:junit:4.12",
