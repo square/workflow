@@ -217,7 +217,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
         props = input,
         state = state,
         rendering = rendering,
-        children = behavior!!.childDebugSnapshots
+        children = behavior!!.childDebugSnapshots,
+        workers = behavior!!.childWorkerSnapshots
     )
 
     return RenderingEnvelope(rendering, debugSnapshot)

@@ -601,7 +601,7 @@ private fun debugInfo(
   state: String,
   kind: Kind = Kind.Updated(Source.Sink)
 ) = WorkflowDebugInfo(
-    WorkflowHierarchyDebugSnapshot("type", "props", state, "rendering", emptyList()),
+    WorkflowHierarchyDebugSnapshot("type", "props", state, "rendering", emptyList(), emptyList()),
     WorkflowUpdateDebugInfo("type", kind)
 )
 

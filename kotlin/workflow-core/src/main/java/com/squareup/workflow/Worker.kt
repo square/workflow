@@ -359,11 +359,14 @@ private class TimerWorker(
 
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
     otherWorker is TimerWorker && otherWorker.key == key
+
+  override fun toString(): String = "TimerWorker(delayMs=$delayMs)"
 }
 
 private object FinishedWorker : Worker<Nothing> {
   override fun run(): Flow<Nothing> = emptyFlow()
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = otherWorker === FinishedWorker
+  override fun toString(): String = "FinishedWorker"
 }
 
 private class WorkerWrapper<T, R>(
@@ -374,4 +377,6 @@ private class WorkerWrapper<T, R>(
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
     otherWorker is WorkerWrapper<*, *> &&
         wrapped.doesSameWorkAs(otherWorker.wrapped)
+
+  override fun toString(): String = "WorkerWrapper($wrapped)"
 }

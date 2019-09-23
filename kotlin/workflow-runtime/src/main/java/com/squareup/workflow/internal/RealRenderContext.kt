@@ -23,7 +23,7 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.Child
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.ChildWorkflow
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import kotlinx.coroutines.CompletableDeferred
@@ -49,7 +49,7 @@ class RealRenderContext<StateT, OutputT : Any>(
   private val nextUpdateFromEvent = CompletableDeferred<WorkflowAction<StateT, OutputT>>()
   private val workerCases = mutableListOf<WorkerCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
-  private val childDebugSnapshots = mutableListOf<Child>()
+  private val childDebugSnapshots = mutableListOf<ChildWorkflow>()
 
   /** Used to prevent modifications to this object after [buildBehavior] is called. */
   private var frozen = false
@@ -98,7 +98,7 @@ class RealRenderContext<StateT, OutputT : Any>(
     val (rendering, debugSnapshot) = renderer.render(case, child, id, props)
     // Hold onto the description of this child's state for later, so we can include it in the
     // parent's debug snapshot tree.
-    childDebugSnapshots += Child(key, debugSnapshot)
+    childDebugSnapshots += ChildWorkflow(key, debugSnapshot)
     return rendering
   }
 

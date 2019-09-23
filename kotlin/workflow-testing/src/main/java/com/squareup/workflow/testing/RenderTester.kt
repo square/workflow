@@ -313,7 +313,8 @@ private class TestOnlyRenderContext<S, O : Any> : RenderContext<S, O>, Renderer<
         props = props,
         state = childInitialState,
         rendering = rendering,
-        children = emptyList()
+        children = emptyList(),
+        workers = emptyList()
     )
     return RenderingEnvelope(rendering, debugSnapshot)
   }

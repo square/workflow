@@ -27,13 +27,15 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.Child
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.ChildWorkflow
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateless
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -63,7 +65,9 @@ class RealRenderContextTest {
     ): RenderingEnvelope<RC> {
       return RenderingEnvelope(
           Rendering(case, child, id, props) as RC,
-          WorkflowHierarchyDebugSnapshot(id, "props", "no state", "rendering", emptyList())
+          WorkflowHierarchyDebugSnapshot(
+              id, "props", "no state", "rendering", emptyList(), emptyList()
+          )
       )
     }
   }
@@ -180,8 +184,24 @@ class RealRenderContextTest {
 
     val expectedSnapshot =
       WorkflowHierarchyDebugSnapshot(
-          workflow.id(), "props", "no state", "rendering", emptyList()
+          workflow.id(), "props", "no state", "rendering", emptyList(), emptyList()
       )
-    assertEquals(listOf(Child("key", expectedSnapshot)), behavior.childDebugSnapshots)
+    assertEquals(listOf(ChildWorkflow("key", expectedSnapshot)), behavior.childDebugSnapshots)
+  }
+
+  @Test fun `runningWorker generates worker debug snapshot`() {
+    val context = RealRenderContext(TestRenderer())
+    val worker = object : Worker<Nothing> {
+      override fun run(): Flow<Nothing> = emptyFlow()
+      override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = false
+      override fun toString(): String = "TestWorker"
+    }
+
+    context.runningWorker(worker, key = "key") { fail() }
+    val behavior = context.buildBehavior()
+
+    val workerSnapshot = behavior.childWorkerSnapshots.single()
+    assertEquals("key", workerSnapshot.key)
+    assertEquals("TestWorker", workerSnapshot.description)
   }
 }

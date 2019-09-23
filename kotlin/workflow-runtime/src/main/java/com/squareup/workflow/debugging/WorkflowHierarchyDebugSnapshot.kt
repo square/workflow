@@ -15,8 +15,9 @@
  */
 package com.squareup.workflow.debugging
 
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.Child
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.ChildWorkflow
 import com.squareup.workflow.internal.WorkflowId
+import java.util.Objects
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 /**
@@ -28,14 +29,15 @@ import kotlin.LazyThreadSafetyMode.PUBLICATION
  * @param workflowType A string representation of the type of this workflow.
  * @param state The actual state value of the workflow.
  * @param children All the child workflows that were rendered by this workflow in the last render
- * pass. See [Child].
+ * pass. See [ChildWorkflow].
  */
 data class WorkflowHierarchyDebugSnapshot(
   val workflowType: String,
   val props: Any?,
   val state: Any?,
   val rendering: Any?,
-  val children: List<Child>
+  val children: List<ChildWorkflow>,
+  val workers: List<ChildWorker>
 ) {
   /** Convenience constructor to get the workflow type string the right way. */
   constructor(
@@ -43,8 +45,9 @@ data class WorkflowHierarchyDebugSnapshot(
     props: Any?,
     state: Any?,
     rendering: Any?,
-    children: List<Child>
-  ) : this(workflowId.typeDebugString, props, state, rendering, children)
+    children: List<ChildWorkflow>,
+    workers: List<ChildWorker>
+  ) : this(workflowId.typeDebugString, props, state, rendering, children, workers)
 
   /**
    * Represents a workflow that was rendered by the workflow represented by a particular
@@ -53,10 +56,32 @@ data class WorkflowHierarchyDebugSnapshot(
    * @param key The string key that was used to render this child.
    * @param snapshot The [WorkflowHierarchyDebugSnapshot] that describes the state of this child.
    */
-  data class Child(
+  data class ChildWorkflow(
     val key: String,
     val snapshot: WorkflowHierarchyDebugSnapshot
   )
+
+  /**
+   * Represents a worker that is being run by the workflow represented by a particular
+   * [WorkflowHierarchyDebugSnapshot].
+   *
+   * @param key The string key that was used to render this child.
+   * @param describe A function that returns a string that describes the worker. Includes the output
+   * of the worker's `toString` method.
+   */
+  class ChildWorker(
+    val key: String,
+    describe: () -> String
+  ) {
+    val description by lazy(PUBLICATION) { describe() }
+
+    override fun toString(): String = "ChildWorker(key=$key, description=$description)"
+    override fun hashCode(): Int = Objects.hash(key, description)
+    override fun equals(other: Any?): Boolean =
+      other is ChildWorker &&
+          key == other.key &&
+          description == other.description
+  }
 
   /**
    * This formatted string is expensive to generate, so cache it.
@@ -94,17 +119,33 @@ private fun StringBuilder.writeSnapshot(snapshot: WorkflowHierarchyDebugSnapshot
 
   if (snapshot.children.isNotEmpty()) {
     appendln()
-    appendln("children (${snapshot.children.size}):")
+    append("children (")
+    append(snapshot.children.size)
+    appendln("):")
 
-    val childIndent = "|   "
     for ((index, child) in snapshot.children.withIndex()) {
       append("| key: ")
       appendln(child.key.ifEmpty { "{no key}" })
       append(
           child.snapshot.toDescriptionString()
-              .prependIndent(childIndent)
+              .prependIndent("|   ")
       )
       if (index < snapshot.children.size - 1) appendln()
+    }
+  }
+
+  if (snapshot.workers.isNotEmpty()) {
+    appendln()
+    append("workers (")
+    append(snapshot.workers.size)
+    appendln("):")
+
+    for ((index, worker) in snapshot.workers.withIndex()) {
+      append("| [")
+      append(worker.key.ifEmpty { "{no key}" })
+      append("] ")
+      append(worker.description)
+      if (index < snapshot.workers.size - 1) appendln()
     }
   }
 }
