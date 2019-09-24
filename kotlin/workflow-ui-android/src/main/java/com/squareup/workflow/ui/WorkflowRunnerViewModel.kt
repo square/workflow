@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.WorkflowSession
-import com.squareup.workflow.debugging.WorkflowDebugInfo
 import com.squareup.workflow.launchWorkflowIn
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -81,9 +80,6 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   @UseExperimental(ExperimentalCoroutinesApi::class)
   override val renderings: Observable<out Any> = session.renderingsAndSnapshots
       .map { it.rendering }
-      .asObservable()
-
-  override val debugInfo: Observable<WorkflowDebugInfo> = session.debugInfo
       .asObservable()
 
   override fun onCleared() {

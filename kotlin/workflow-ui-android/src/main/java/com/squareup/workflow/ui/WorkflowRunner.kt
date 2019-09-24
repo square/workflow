@@ -24,7 +24,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.toLiveData
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.debugging.WorkflowDebugInfo
 import com.squareup.workflow.ui.WorkflowRunner.Config
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -61,8 +60,6 @@ interface WorkflowRunner<out OutputT : Any> {
    * A stream of the rendering values emitted by the running [Workflow].
    */
   val renderings: Observable<out Any>
-
-  val debugInfo: Observable<WorkflowDebugInfo>
 
   val viewRegistry: ViewRegistry
 

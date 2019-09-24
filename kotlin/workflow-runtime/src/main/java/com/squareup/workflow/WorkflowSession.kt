@@ -15,18 +15,14 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.debugging.WorkflowDebugInfo
 import kotlinx.coroutines.flow.Flow
 
 /**
  * A tuple of [Flow]s representing all the emissions from the workflow runtime.
  *
  * Passed to the function taken by [launchWorkflowIn].
- *
- * @param debugInfo A stream of [diagnostic information][WorkflowDebugInfo] about the runtime.
  */
 class WorkflowSession<out OutputT : Any, out RenderingT>(
   val renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
-  val outputs: Flow<OutputT>,
-  val debugInfo: Flow<WorkflowDebugInfo>
+  val outputs: Flow<OutputT>
 )

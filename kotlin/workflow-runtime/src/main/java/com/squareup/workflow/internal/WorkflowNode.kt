@@ -20,10 +20,6 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
@@ -95,7 +91,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   fun render(
     workflow: StatefulWorkflow<PropsT, *, OutputT, RenderingT>,
     input: PropsT
-  ): RenderingEnvelope<RenderingT> =
+  ): RenderingT =
     renderWithStateType(workflow as StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>, input)
 
   /**
@@ -121,18 +117,13 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    */
   @UseExperimental(InternalCoroutinesApi::class)
   fun <T : Any> tick(
-    selector: SelectBuilder<OutputEnvelope<T>>,
-    handler: (OutputEnvelope<OutputT>) -> OutputEnvelope<T>
+    selector: SelectBuilder<T?>,
+    handler: (OutputT) -> T?
   ) {
-    fun acceptUpdate(
-      action: WorkflowAction<StateT, OutputT>,
-      kind: Kind
-    ): OutputEnvelope<T> {
+    fun acceptUpdate(action: WorkflowAction<StateT, OutputT>): T? {
       val (newState, output) = action.applyTo(state)
       state = newState
-      val info = createDebugInfo(kind)
-      val envelope = OutputEnvelope(output, info)
-      return handler(envelope)
+      return output?.let(handler)
     }
 
     // Listen for any child workflow updates.
@@ -148,18 +139,10 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
                 // Set the tombstone flag so we don't continue to listen to the subscription.
                 session.tombstone = true
                 // Nothing to do on close other than update the session, so don't emit any output.
-                val debugInfo = createDebugInfo(
-                    Kind.Updated(
-                        Source.Worker(
-                            key = case.key,
-                            output = "{worker finished}"
-                        )
-                    )
-                )
-                return@onReceiveOrClosed OutputEnvelope(null, debugInfo)
+                return@onReceiveOrClosed null
               } else {
                 val update = case.acceptUpdate(valueOrClosed.value)
-                acceptUpdate(update, Kind.Updated(Source.Worker(case.key, valueOrClosed.value!!)))
+                acceptUpdate(update)
               }
             }
           }
@@ -168,7 +151,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     // Listen for any events.
     with(selector) {
       behavior!!.nextActionFromEvent.onAwait { update ->
-        acceptUpdate(update, Kind.Updated(Source.Sink))
+        acceptUpdate(update)
       }
     }
   }
@@ -188,19 +171,13 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   }
 
   /**
-   * Creates a [WorkflowUpdateDebugInfo] with this workflow's ID.
-   */
-  private fun createDebugInfo(kind: Kind): WorkflowUpdateDebugInfo =
-    WorkflowUpdateDebugInfo(id, kind)
-
-  /**
    * Contains the actual logic for [render], after we've casted the passed-in [Workflow]'s
    * state type to our `StateT`.
    */
   private fun renderWithStateType(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
     input: PropsT
-  ): RenderingEnvelope<RenderingT> {
+  ): RenderingT {
     updatePropsAndState(workflow, input)
 
     val context = RealRenderContext(subtreeManager)
@@ -213,15 +190,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
           workerTracker.track(workerCases)
         }
 
-    val debugSnapshot = WorkflowHierarchyDebugSnapshot(
-        workflowId = id,
-        props = input,
-        state = state,
-        rendering = rendering,
-        children = behavior!!.childDebugSnapshots
-    )
-
-    return RenderingEnvelope(rendering, debugSnapshot)
+    return rendering
   }
 
   private fun updatePropsAndState(

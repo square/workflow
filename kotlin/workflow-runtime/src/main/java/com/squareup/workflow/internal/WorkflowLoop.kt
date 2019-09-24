@@ -18,7 +18,6 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.debugging.WorkflowDebugInfo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.consume
@@ -44,8 +43,7 @@ internal interface WorkflowLoop {
     initialSnapshot: Snapshot?,
     initialState: StateT? = null,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit,
-    onDebugSnapshot: suspend (WorkflowDebugInfo) -> Unit
+    onOutput: suspend (OutputT) -> Unit
   ): Nothing
 }
 
@@ -58,12 +56,11 @@ internal object RealWorkflowLoop : WorkflowLoop {
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit,
-    onDebugSnapshot: suspend (WorkflowDebugInfo) -> Unit
+    onOutput: suspend (OutputT) -> Unit
   ): Nothing = coroutineScope {
     val inputsChannel = props.produceIn(this)
     inputsChannel.consume {
-      var output: OutputEnvelope<OutputT>? = null
+      var output: OutputT? = null
       var input: PropsT = inputsChannel.receive()
       var inputsClosed = false
       val rootNode = WorkflowNode(
@@ -79,12 +76,11 @@ internal object RealWorkflowLoop : WorkflowLoop {
         while (true) {
           coroutineContext.ensureActive()
 
-          val (rendering, debugSnapshot) = rootNode.render(workflow, input)
+          val rendering = rootNode.render(workflow, input)
           val snapshot = rootNode.snapshot(workflow)
 
           onRendering(RenderingAndSnapshot(rendering, snapshot))
-          onDebugSnapshot(WorkflowDebugInfo(debugSnapshot, output?.debugInfo))
-          output?.output?.let { onOutput(it) }
+          output?.let { onOutput(it) }
 
           // Tick _might_ return an output, but if it returns null, it means the state or a child
           // probably changed, so we should re-render/snapshot and emit again.

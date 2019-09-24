@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.debugging.WorkflowDebugInfo
 import com.squareup.workflow.internal.RealWorkflowLoop
 import com.squareup.workflow.internal.WorkflowLoop
 import com.squareup.workflow.internal.unwrapCancellationCause
@@ -152,15 +151,10 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
 ): RunnerT {
   val renderingsAndSnapshots = ConflatedBroadcastChannel<RenderingAndSnapshot<RenderingT>>()
   val outputs = BroadcastChannel<OutputT>(capacity = 1)
-  val debugSnapshots = ConflatedBroadcastChannel<WorkflowDebugInfo>()
   val workflowScope = scope + Job(parent = scope.coroutineContext[Job])
 
   // Give the caller a chance to start collecting outputs.
-  val session = WorkflowSession(
-      renderingsAndSnapshots.asFlow(),
-      outputs.asFlow(),
-      debugSnapshots.asFlow()
-  )
+  val session = WorkflowSession(renderingsAndSnapshots.asFlow(), outputs.asFlow())
   val result = beforeStart(workflowScope, session)
 
   val workflowJob = workflowScope.launch {
@@ -171,8 +165,7 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
         initialSnapshot = initialSnapshot,
         initialState = initialState,
         onRendering = renderingsAndSnapshots::send,
-        onOutput = outputs::send,
-        onDebugSnapshot = debugSnapshots::send
+        onOutput = outputs::send
     )
   }
 
@@ -183,7 +176,6 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
     val realCause = cause?.unwrapCancellationCause()
     renderingsAndSnapshots.close(realCause)
     outputs.close(realCause)
-    debugSnapshots.close(realCause)
 
     // If the cancellation came from inside the workflow loop, the outer runtime scope needs to be
     // explicitly cancelled. See https://github.com/square/workflow/issues/464.

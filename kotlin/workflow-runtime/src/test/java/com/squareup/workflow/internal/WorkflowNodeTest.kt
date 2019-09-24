@@ -21,21 +21,14 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.StatelessWorkflow
-import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateful
-import com.squareup.workflow.stateless
 import com.squareup.workflow.writeUtf8WithLength
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.TimeoutCancellationException
@@ -52,12 +45,6 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
-
-/**
- * Creates [WorkflowUpdateDebugInfo]s for tests that don't care about debug infos.
- */
-private fun emptyDebugInfo(id: WorkflowId<*, *, *>) =
-  WorkflowUpdateDebugInfo(id, Kind.Updated(Source.Sink))
 
 class WorkflowNodeTest {
 
@@ -117,7 +104,6 @@ class WorkflowNodeTest {
     val node = WorkflowNode(workflow.id(), workflow, "foo", null, context)
 
     val rendering = node.render(workflow, "foo2")
-        .rendering
 
     assertEquals(
         """
@@ -127,7 +113,6 @@ class WorkflowNodeTest {
     )
 
     val rendering2 = node.render(workflow, "foo3")
-        .rendering
 
     assertEquals(
         """
@@ -163,14 +148,12 @@ class WorkflowNodeTest {
     sink.send("event")
     val result = runBlocking {
       withTimeout(10) {
-        select<OutputEnvelope<String>> {
-          node.tick(this) {
-            OutputEnvelope("tick:${it.output}", emptyDebugInfo(workflow.id()))
-          }
+        select<String?> {
+          node.tick(this) { "tick:$it" }
         }
       }
     }
-    assertEquals("tick:event", result.output)
+    assertEquals("tick:event", result)
   }
 
   @Test fun `throws on subsequent events on same rendering`() {
@@ -240,7 +223,7 @@ class WorkflowNodeTest {
     val output = runBlocking {
       try {
         withTimeout(1) {
-          select<OutputEnvelope<String>> {
+          select<String?> {
             node.tick(this) { it }
           }
         }
@@ -252,14 +235,14 @@ class WorkflowNodeTest {
       channel.send("element")
 
       withTimeout(1) {
-        select<OutputEnvelope<String>> {
+        select<String?> {
           node.tick(this) { it }
         }
       }
     }
 
     assertEquals("element", update)
-    assertEquals("update:element", output.output)
+    assertEquals("update:element", output)
   }
 
   @Test fun `worker is cancelled`() {
@@ -310,7 +293,7 @@ class WorkflowNodeTest {
 
       // This tick will process the event handler, it won't close the channel yet.
       withTimeout(1) {
-        select<OutputEnvelope<String>> {
+        select<String?> {
           node.tick(this) { it }
         }
       }
@@ -347,7 +330,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
         .bytes
     assertNotEquals(0, snapshot.size)
@@ -360,7 +343,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial props", restoredNode.render(workflow, "foo").rendering)
+    assertEquals("initial props", restoredNode.render(workflow, "foo"))
   }
 
   @Test fun `snapshots empty without children`() {
@@ -377,7 +360,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
         .bytes
     assertNotEquals(0, snapshot.size)
@@ -390,7 +373,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("restored", restoredNode.render(workflow, "foo").rendering)
+    assertEquals("restored", restoredNode.render(workflow, "foo"))
   }
 
   @Test fun `snapshots non-empty with children`() {
@@ -435,7 +418,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo").rendering)
+    assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo"))
     val snapshot = originalNode.snapshot(parentWorkflow)
         .bytes
     assertNotEquals(0, snapshot.size)
@@ -448,7 +431,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial props|child props", restoredNode.render(parentWorkflow, "foo").rendering)
+    assertEquals("initial props|child props", restoredNode.render(parentWorkflow, "foo"))
     assertEquals("child props", restoredChildState)
     assertEquals("initial props", restoredParentState)
   }
@@ -516,7 +499,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
         .bytes
     assertNotEquals(0, snapshot.size)
@@ -528,232 +511,6 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals(
-        "props:new props|state:initial props",
-        restoredNode.render(workflow, "foo").rendering
-    )
-  }
-
-  @Test fun `rendering generates debug snapshots`() {
-    val child = PropsRenderingWorkflow { _, _, state -> state }
-
-    class TestWorkflow : StringWorkflow() {
-      override fun initialState(
-        props: String,
-        snapshot: Snapshot?
-      ): String = "initial state"
-
-      override fun render(
-        props: String,
-        state: String,
-        context: RenderContext<String, String>
-      ): String {
-        val childRendering = context.renderChild(child, props = "child props", key = "key") {
-          fail()
-        }
-        return "child:\n${childRendering.prependIndent()}"
-      }
-    }
-
-    val workflow = TestWorkflow()
-    val node = WorkflowNode(
-        workflow.id(),
-        workflow,
-        initialProps = "initial props",
-        snapshot = null,
-        baseContext = Unconfined
-    )
-
-    val debugSnapshot = node.render(workflow, "props")
-        .debugSnapshot
-
-    assertEquals(TestWorkflow::class.java.name, debugSnapshot.workflowType)
-    assertEquals("props", debugSnapshot.props)
-    assertEquals("initial state", debugSnapshot.state)
-    assertEquals(
-        "child:\n" +
-            "    props:child props\n" +
-            "    state:starting:child props",
-        debugSnapshot.rendering
-    )
-    assertEquals(1, debugSnapshot.children.size)
-    with(debugSnapshot.children.single()) {
-      assertEquals("key", key)
-      assertEquals(PropsRenderingWorkflow::class.java.name, snapshot.workflowType)
-      assertEquals("child props", snapshot.props)
-      assertEquals("starting:child props", snapshot.state)
-      assertEquals(
-          "props:child props\n" +
-              "state:starting:child props",
-          snapshot.rendering
-      )
-      assertTrue(snapshot.children.isEmpty())
-    }
-  }
-
-  @Test fun `tick generates debug update from worker`() {
-    val worker = Worker.from { "output" }
-
-    class TestWorkflow : StringWorkflow() {
-      override fun initialState(
-        props: String,
-        snapshot: Snapshot?
-      ): String = props
-
-      override fun render(
-        props: String,
-        state: String,
-        context: RenderContext<String, String>
-      ): String {
-        context.runningWorker(worker, key = "key") {
-          noAction()
-        }
-        return "$props $state"
-      }
-    }
-
-    val workflow = TestWorkflow()
-    val node = WorkflowNode(
-        workflow.id(key = "key"),
-        workflow,
-        initialProps = "initial props",
-        snapshot = null,
-        baseContext = Unconfined
-    )
-    node.render(workflow, "props")
-
-    val output = runBlocking {
-      select<OutputEnvelope<WorkflowUpdateDebugInfo>> {
-        node.tick(this) { envelope ->
-          OutputEnvelope(envelope.debugInfo, envelope.debugInfo)
-        }
-      }
-    }
-
-    val debugInfo = output.output!!
-    val kind = debugInfo.kind as Kind.Updated
-    val source = kind.source as Source.Worker
-    assertEquals(TestWorkflow::class.java.name, debugInfo.workflowType)
-    assertEquals("key", source.key)
-  }
-
-  @Test fun `tick generates debug update from event`() {
-    class TestWorkflow : StatelessWorkflow<Unit, Nothing, () -> Unit>() {
-      override fun render(
-        props: Unit,
-        context: RenderContext<Nothing, Nothing>
-      ): () -> Unit {
-        val sink: Sink<Unit> = context.makeEventSink { null }
-        return { sink.send(Unit) }
-      }
-    }
-
-    val workflow = TestWorkflow()
-    val node = WorkflowNode(
-        workflow.id(key = "key"),
-        workflow.asStatefulWorkflow(),
-        initialProps = Unit,
-        snapshot = null,
-        baseContext = Unconfined
-    )
-    val rendering = node.render(workflow.asStatefulWorkflow(), Unit)
-        .rendering
-    rendering()
-
-    val output = runBlocking {
-      select<OutputEnvelope<WorkflowUpdateDebugInfo>> {
-        node.tick(this) { envelope ->
-          OutputEnvelope(envelope.debugInfo, envelope.debugInfo)
-        }
-      }
-    }
-
-    val debugInfo = output.output!!
-    val kind = debugInfo.kind as Kind.Updated
-    assertEquals(TestWorkflow::class.java.name, debugInfo.workflowType)
-    assertTrue(kind.source is Source.Sink)
-  }
-
-  @Test fun `tick generates debug update from child`() {
-    val childWorker = Worker.from { "hello" }
-    val child = Workflow.stateless<String, String, Unit> {
-      runningWorker(childWorker, key = "worker key") { WorkflowAction { it } }
-    }
-
-    class TestWorkflow : StringWorkflow() {
-      override fun initialState(
-        props: String,
-        snapshot: Snapshot?
-      ): String = props
-
-      override fun render(
-        props: String,
-        state: String,
-        context: RenderContext<String, String>
-      ): String {
-        val rendering = context.renderChild(child, "child props", key = "child key") {
-          WorkflowAction { it }
-        }
-        return "$props $state $rendering"
-      }
-    }
-
-    val workflow = TestWorkflow()
-    val node = WorkflowNode(
-        workflow.id(key = "key"),
-        workflow,
-        initialProps = "initial props",
-        snapshot = null,
-        baseContext = Unconfined
-    )
-    node.render(workflow, "props")
-
-    val output = runBlocking {
-      select<OutputEnvelope<WorkflowUpdateDebugInfo>> {
-        node.tick(this) { envelope ->
-          OutputEnvelope(envelope.debugInfo, envelope.debugInfo)
-        }
-      }
-    }
-
-    val debugInfo = output.output!!
-    val kind = debugInfo.kind as Kind.Updated
-    val source = kind.source as Source.Subtree
-    assertEquals(TestWorkflow::class.java.name, debugInfo.workflowType)
-    assertEquals("child key", source.key)
-    assertEquals(child::class.java.name, source.childInfo.workflowType)
-  }
-
-  @Test fun `restore gets null snapshot when empty`() {
-    val workflow = Workflow.stateful<String, String, Nothing, String>(
-        initialState = { props, snapshot ->
-          assertNull(snapshot)
-          "no snapshot: $props"
-        },
-        render = { _, state -> state },
-        snapshot = { Snapshot.EMPTY }
-    )
-    val originalNode = WorkflowNode(
-        workflow.id(),
-        workflow,
-        initialProps = "initial props",
-        snapshot = null,
-        baseContext = Unconfined
-    )
-
-    assertEquals("no snapshot: initial props", originalNode.render(workflow, "foo").rendering)
-    val snapshot = originalNode.snapshot(workflow)
-        .bytes
-    assertNotEquals(0, snapshot.size)
-
-    val restoredNode = WorkflowNode(
-        workflow.id(),
-        workflow,
-        // These props should be ignored, since snapshot is non-null.
-        initialProps = "new props",
-        snapshot = snapshot,
-        baseContext = Unconfined
-    )
-    assertEquals("no snapshot: new props", restoredNode.render(workflow, "foo").rendering)
+    assertEquals("props:new props|state:initial props", restoredNode.render(workflow, "foo"))
   }
 }
