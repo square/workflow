@@ -139,7 +139,12 @@ fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFr
     beforeStart = beforeStart
 )
 
-@UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@UseExperimental(
+    ExperimentalCoroutinesApi::class,
+    FlowPreview::class,
+    VeryExperimentalWorkflow::class
+)
+@Suppress("LongParameterList")
 internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowImpl(
   scope: CoroutineScope,
   workflowLoop: WorkflowLoop,
@@ -156,17 +161,26 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
   // Give the caller a chance to start collecting outputs.
   val session = WorkflowSession(renderingsAndSnapshots.asFlow(), outputs.asFlow())
   val result = beforeStart(workflowScope, session)
+  val visitor = session.diagnosticListener
 
   val workflowJob = workflowScope.launch {
-    // Run the workflow processing loop forever, or until it fails or is cancelled.
-    workflowLoop.runWorkflowLoop(
-        workflow,
-        props,
-        initialSnapshot = initialSnapshot,
-        initialState = initialState,
-        onRendering = renderingsAndSnapshots::send,
-        onOutput = outputs::send
-    )
+    visitor?.onRuntimeStarted(this)
+    try {
+      // Run the workflow processing loop forever, or until it fails or is cancelled.
+      workflowLoop.runWorkflowLoop(
+          workflow,
+          props,
+          initialSnapshot = initialSnapshot,
+          initialState = initialState,
+          onRendering = renderingsAndSnapshots::send,
+          onOutput = outputs::send,
+          diagnosticListener = visitor
+      )
+    } finally {
+      // Only emit the runtime stopped debug event after all child coroutines have completed.
+      // coroutineScope does an implicit join on all its children.
+      visitor?.onRuntimeStopped()
+    }
   }
 
   // Ensure we close the channels when we're done, so that they propagate errors.

@@ -17,6 +17,7 @@ package com.squareup.sample.helloworkflow
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
@@ -29,7 +30,10 @@ class HelloWorkflowActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     runner = setContentWorkflow(savedInstanceState) {
-      WorkflowRunner.Config(HelloWorkflow, viewRegistry)
+      WorkflowRunner.Config(
+          HelloWorkflow, viewRegistry,
+          diagnosticListener = SimpleLoggingDiagnosticListener()
+      )
     }
   }
 

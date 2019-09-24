@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.debugging
+package com.squareup.workflow.diagnostic
 
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind.Passthrough
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind.Updated
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source.Sink
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source.Subtree
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source.Worker
-import com.squareup.workflow.internal.WorkflowId
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Passthrough
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Updated
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Sink
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Subtree
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Worker
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 /**
@@ -38,10 +37,6 @@ data class WorkflowUpdateDebugInfo(
   val workflowType: String,
   val kind: Kind
 ) {
-  constructor(
-    workflowId: WorkflowId<*, *, *>,
-    kind: Kind
-  ) : this(workflowId.typeDebugString, kind)
 
   /**
    * A sealed class that indicates whether a workflow actually executed a `WorkflowAction`, or

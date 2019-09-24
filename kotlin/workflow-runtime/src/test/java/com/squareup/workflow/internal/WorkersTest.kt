@@ -17,15 +17,18 @@
 
 package com.squareup.workflow.internal
 
+import com.squareup.workflow.Worker
 import com.squareup.workflow.asWorker
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class WorkersTest {
 
@@ -36,7 +39,12 @@ class WorkersTest {
     val counter = AtomicInteger(0)
 
     runBlocking {
-      val workerOutputs = launchWorker(worker)
+      val workerOutputs = launchWorker(
+          worker,
+          workerDiagnosticId = 0,
+          workflowDiagnosticId = 0,
+          diagnosticListener = null
+      )
 
       launch(start = UNDISPATCHED) {
         assertEquals(0, counter.getAndIncrement())
@@ -60,6 +68,32 @@ class WorkersTest {
 
       // Cancel the worker so we can exit this loop.
       workerOutputs.cancel()
+    }
+  }
+
+  @Test fun `emits diagnostic events`() {
+    val channel = Channel<String>()
+    val worker = Worker.create<String> { emitAll(channel) }
+    val workerId = 0L
+    val workflowId = 1L
+    val listener = RecordingDiagnosticListener()
+
+    runBlocking {
+      val outputs = launchWorker(worker, workerId, workflowId, listener)
+
+      // Start event is sent by WorkflowNode.
+      yield()
+      assertTrue(listener.consumeEvents().isEmpty())
+
+      channel.send("foo")
+      outputs.receive()
+
+      assertEquals("onWorkerOutput(0, 1, foo)", listener.consumeNextEvent())
+
+      channel.close()
+      yield()
+
+      assertEquals("onWorkerStopped(0, 1)", listener.consumeNextEvent())
     }
   }
 }

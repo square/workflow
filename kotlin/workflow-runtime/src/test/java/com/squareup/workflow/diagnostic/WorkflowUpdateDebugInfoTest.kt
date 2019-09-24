@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.debugging
+package com.squareup.workflow.diagnostic
 
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Passthrough
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Updated
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Sink
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Subtree
+import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Worker
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -25,11 +28,11 @@ class WorkflowUpdateDebugInfoTest {
   @Test fun `passthrough toDescriptionString`() {
     val update = WorkflowUpdateDebugInfo(
         "root type",
-        Kind.Passthrough(
+        Passthrough(
             "key",
             WorkflowUpdateDebugInfo(
                 "child type",
-                Kind.Updated(Source.Sink)
+                Updated(Sink)
             )
         )
     )
@@ -44,7 +47,7 @@ class WorkflowUpdateDebugInfoTest {
   @Test fun `updated worker toDescriptionString`() {
     val update = WorkflowUpdateDebugInfo(
         "root type",
-        Kind.Updated(Source.Worker("key", "output"))
+        Updated(Worker("key", "output"))
     )
     val expected = """
       root type updated from worker[key=key]: output
@@ -56,12 +59,12 @@ class WorkflowUpdateDebugInfoTest {
   @Test fun `updated subtree toDescriptionString`() {
     val update = WorkflowUpdateDebugInfo(
         "root type",
-        Kind.Updated(
-            Source.Subtree(
+        Updated(
+            Subtree(
                 "key", "output",
                 WorkflowUpdateDebugInfo(
                     "child type",
-                    Kind.Updated(Source.Sink)
+                    Updated(Sink)
                 )
             )
         )

@@ -17,8 +17,10 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
@@ -28,11 +30,14 @@ import okio.ByteString
 import kotlin.coroutines.CoroutineContext
 
 /**
- * Responsible for tracking child workflows, starting them and tearing them down when necessary. Also
- * manages restoring children from snapshots.
+ * Responsible for tracking child workflows, starting them and tearing them down when necessary.
+ * Also manages restoring children from snapshots.
  */
+@UseExperimental(VeryExperimentalWorkflow::class)
 internal class SubtreeManager<StateT, OutputT : Any>(
-  private val contextForChildren: CoroutineContext
+  private val contextForChildren: CoroutineContext,
+  private val parentDiagnosticId: Long,
+  private val diagnosticListener: WorkflowDiagnosticListener?
 ) : RealRenderContext.Renderer<StateT, OutputT> {
 
   /**
@@ -135,6 +140,8 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         workflow.asStatefulWorkflow() as StatefulWorkflow<IC, *, OC, *>,
         props,
         snapshotCache[id],
-        contextForChildren
+        contextForChildren,
+        parentDiagnosticId,
+        diagnosticListener
     )
 }

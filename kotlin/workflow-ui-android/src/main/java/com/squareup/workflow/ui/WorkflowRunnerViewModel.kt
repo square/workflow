@@ -36,7 +36,7 @@ import java.util.concurrent.CancellationException
 @UseExperimental(ExperimentalCoroutinesApi::class)
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   private val scope: CoroutineScope,
-  private val session: WorkflowSession<OutputT, Any>,
+  session: WorkflowSession<OutputT, Any>,
   override val viewRegistry: ViewRegistry
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
@@ -54,6 +54,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
         launchWorkflowIn(
             CoroutineScope(dispatcher), workflow, props, snapshot
         ) { session ->
+          session.diagnosticListener = diagnosticListener
           @Suppress("UNCHECKED_CAST")
           WorkflowRunnerViewModel(this, session, viewRegistry) as T
         }

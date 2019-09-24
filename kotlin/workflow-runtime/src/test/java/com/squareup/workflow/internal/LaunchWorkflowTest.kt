@@ -18,7 +18,9 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.launchWorkflowImpl
 import com.squareup.workflow.stateless
 import kotlinx.coroutines.CancellationException
@@ -29,6 +31,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
@@ -504,12 +507,37 @@ class LaunchWorkflowTest {
       assertFails { outputs.consumeEach { } }
     }
   }
+
+  @Test fun `emits diagnostic events`() {
+    val loop = simpleLoop { _, _ -> hang() }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> { }
+    val listener = RecordingDiagnosticListener()
+
+    runBlocking {
+      launchWorkflowImpl(
+          scope = this,
+          workflowLoop = loop,
+          workflow = workflow.asStatefulWorkflow(),
+          props = emptyFlow(),
+          initialSnapshot = null,
+          initialState = null,
+          beforeStart = { it.diagnosticListener = listener }
+      )
+      yield()
+      assertEquals(listOf("onRuntimeStarted"), listener.consumeEventNames())
+
+      // Cancel the runtime so we can finish.
+      coroutineContext.cancelChildren()
+      yield()
+      assertEquals(listOf("onRuntimeStopped"), listener.consumeEventNames())
+    }
+  }
 }
 
 private suspend fun hang(): Nothing = suspendCancellableCoroutine { }
 
 @Suppress("UNCHECKED_CAST")
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@UseExperimental(ExperimentalCoroutinesApi::class, VeryExperimentalWorkflow::class)
 private fun simpleLoop(
   block: suspend (
     onRendering: suspend (RenderingAndSnapshot<Any?>) -> Unit,
@@ -522,7 +550,8 @@ private fun simpleLoop(
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit
+    onOutput: suspend (OutputT) -> Unit,
+    diagnosticListener: WorkflowDiagnosticListener?
   ): Nothing {
     block(
         onRendering as suspend (RenderingAndSnapshot<Any?>) -> Unit,
@@ -531,15 +560,16 @@ private fun simpleLoop(
   }
 }
 
+@UseExperimental(ExperimentalCoroutinesApi::class, VeryExperimentalWorkflow::class)
 private object HangingLoop : WorkflowLoop {
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit
+    onOutput: suspend (OutputT) -> Unit,
+    diagnosticListener: WorkflowDiagnosticListener?
   ): Nothing = hang()
 }
 

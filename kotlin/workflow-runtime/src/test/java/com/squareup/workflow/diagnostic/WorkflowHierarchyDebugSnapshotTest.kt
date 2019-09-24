@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.debugging
+package com.squareup.workflow.diagnostic
 
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.Child
+import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorker
+import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorkflow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -28,37 +29,44 @@ class WorkflowHierarchyDebugSnapshotTest {
         "root state",
         "root rendering",
         children = listOf(
-            Child(
+            ChildWorkflow(
                 "first child",
                 WorkflowHierarchyDebugSnapshot(
                     "first child type",
                     "first child props",
                     "first child state",
                     "first child rendering",
-                    listOf(
-                        Child(
-                            "nested child",
+                    children = listOf(
+                        ChildWorkflow(
+                            "",
                             WorkflowHierarchyDebugSnapshot(
                                 "nested child type",
                                 "nested child props",
                                 "nested child state",
                                 "nested child rendering",
-                                emptyList()
+                                children = emptyList(),
+                                workers = emptyList()
                             )
                         )
-                    )
+                    ),
+                    workers = emptyList()
                 )
             ),
-            Child(
+            ChildWorkflow(
                 "second child",
                 WorkflowHierarchyDebugSnapshot(
                     "second child type",
                     "second child props",
                     "second child state",
                     "second child rendering",
-                    emptyList()
+                    children = emptyList(),
+                    workers = emptyList()
                 )
             )
+        ),
+        workers = listOf(
+            ChildWorker("first worker key", "first worker description"),
+            ChildWorker("", "second worker description")
         )
     )
     val expected = """
@@ -73,7 +81,7 @@ class WorkflowHierarchyDebugSnapshotTest {
       |   state: first child state
       |   rendering: first child rendering
       |   children (1):
-      |   | key: nested child
+      |   | key: {no key}
       |   |   workflowType: nested child type
       |   |   props: nested child props
       |   |   state: nested child state
@@ -83,6 +91,9 @@ class WorkflowHierarchyDebugSnapshotTest {
       |   props: second child props
       |   state: second child state
       |   rendering: second child rendering
+      workers (2):
+      | [first worker key] first worker description
+      | [{no key}] second worker description
     """.trimIndent()
 
     assertEquals(expected, snapshot.toDescriptionString())
@@ -95,16 +106,20 @@ class WorkflowHierarchyDebugSnapshotTest {
         "root state",
         "root rendering",
         children = listOf(
-            Child(
+            ChildWorkflow(
                 "second child",
                 WorkflowHierarchyDebugSnapshot(
                     "second child type",
                     "second child props",
                     "second child state",
                     "second child rendering",
-                    emptyList()
+                    children = emptyList(),
+                    workers = emptyList()
                 )
             )
+        ),
+        workers = listOf(
+            ChildWorker("key", "description")
         )
     )
     val formatted = snapshot.toString()
@@ -120,6 +135,8 @@ class WorkflowHierarchyDebugSnapshotTest {
         |   props: second child props
         |   state: second child state
         |   rendering: second child rendering
+        workers (1):
+        | [key] description
       )
     """.trimIndent()
 

@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.helloworkflowfragment
+package com.squareup.workflow.internal
 
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
-import com.squareup.workflow.ui.ViewRegistry
-import com.squareup.workflow.ui.WorkflowFragment
-import com.squareup.workflow.ui.WorkflowRunner
 
-private val viewRegistry = ViewRegistry(HelloFragmentLayoutRunner)
+/**
+ * Diagnostic listener that records all received events in a list for testing.
+ */
+class RecordingDiagnosticListener : SimpleLoggingDiagnosticListener() {
 
-class HelloWorkflowFragment : WorkflowFragment<Unit, Unit>() {
-  override fun onCreateWorkflow(): WorkflowRunner.Config<Unit, Unit> {
-    return WorkflowRunner.Config(HelloWorkflow, viewRegistry,
-        diagnosticListener = SimpleLoggingDiagnosticListener()
-    )
+  private var events: List<String> = emptyList()
+
+  override fun println(text: String) {
+    events = events + text
   }
+
+  fun consumeEvents(): List<String> = events
+      .also { events = emptyList() }
+
+  fun consumeEventNames(): List<String> = consumeEvents().map { it.substringBefore('(') }
+
+  fun consumeNextEvent(): String = events.first()
+      .also { events = events.subList(1, events.size) }
 }
