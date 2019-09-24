@@ -96,7 +96,8 @@ class SubtreeManagerTest {
   private val context = Unconfined
 
   @Test fun `render starts new child`() {
-    val manager = SubtreeManager<String, String>(context)
+    val manager =
+      SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
     val id = workflow.id()
     val props = "props"
@@ -107,7 +108,8 @@ class SubtreeManagerTest {
   }
 
   @Test fun `render doesn't start existing child`() {
-    val manager = SubtreeManager<String, String>(context)
+    val manager =
+      SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
     val id = workflow.id()
     val props = "props"
@@ -119,7 +121,8 @@ class SubtreeManagerTest {
   }
 
   @Test fun `render returns child rendering`() {
-    val manager = SubtreeManager<String, String>(context)
+    val manager =
+      SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
     val id = workflow.id()
     val props = "props"
@@ -131,7 +134,8 @@ class SubtreeManagerTest {
   }
 
   @Test fun `tick children handles child output`() {
-    val manager = SubtreeManager<String, String>(context)
+    val manager =
+      SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
     val id = workflow.id()
     val props = "props"
@@ -162,7 +166,7 @@ class SubtreeManagerTest {
 
   // See https://github.com/square/workflow/issues/404
   @Test fun `createChildSnapshot snapshots eagerly`() {
-    val manager = SubtreeManager<Unit, Nothing>(Unconfined)
+    val manager = SubtreeManager<Unit, Nothing>(Unconfined, parentDiagnosticId = 0)
     val workflow = SnapshotTestWorkflow()
     val id = workflow.id("1")
     val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(workflow, id, Unit) { fail() }
@@ -175,7 +179,7 @@ class SubtreeManagerTest {
 
   // See https://github.com/square/workflow/issues/404
   @Test fun `createChildSnapshot serializes lazily`() {
-    val manager = SubtreeManager<Unit, Nothing>(Unconfined)
+    val manager = SubtreeManager<Unit, Nothing>(Unconfined, parentDiagnosticId = 0)
     val workflow = SnapshotTestWorkflow()
     val id = workflow.id("1")
     val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(workflow, id, Unit) { fail() }

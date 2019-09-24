@@ -18,6 +18,9 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.VeryExperimentalWorkflow
+import com.squareup.workflow.diagnostic.IdCounter
+import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.consume
@@ -27,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.select
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@UseExperimental(ExperimentalCoroutinesApi::class, VeryExperimentalWorkflow::class)
 internal interface WorkflowLoop {
 
   /**
@@ -37,38 +40,48 @@ internal interface WorkflowLoop {
    * This function is the lowest-level entry point into the runtime. Don't call this directly, instead
    * call [com.squareup.workflow.launchWorkflowIn].
    */
+  @Suppress("LongParameterList")
   suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT? = null,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit
+    onOutput: suspend (OutputT) -> Unit,
+    diagnosticListener: WorkflowDiagnosticListener? = null
   ): Nothing
 }
 
+@UseExperimental(VeryExperimentalWorkflow::class)
 internal object RealWorkflowLoop : WorkflowLoop {
 
   @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
+  @Suppress("LongMethod")
   override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
-    onOutput: suspend (OutputT) -> Unit
+    onOutput: suspend (OutputT) -> Unit,
+    diagnosticListener: WorkflowDiagnosticListener?
   ): Nothing = coroutineScope {
+
     val inputsChannel = props.produceIn(this)
     inputsChannel.consume {
       var output: OutputT? = null
       var input: PropsT = inputsChannel.receive()
       var inputsClosed = false
+      var idCounter = if (diagnosticListener != null) IdCounter() else null
       val rootNode = WorkflowNode(
           id = workflow.id(),
           workflow = workflow,
           initialProps = input,
           snapshot = initialSnapshot?.bytes,
           baseContext = coroutineContext,
+          parentDiagnosticId = null,
+          diagnosticListener = diagnosticListener,
+          idCounter = idCounter,
           initialState = initialState
       )
 
@@ -76,8 +89,14 @@ internal object RealWorkflowLoop : WorkflowLoop {
         while (true) {
           coroutineContext.ensureActive()
 
+          diagnosticListener?.onBeforeRenderPass(input)
           val rendering = rootNode.render(workflow, input)
+          diagnosticListener?.apply {
+            onAfterRenderPass(rendering)
+            onBeforeSnapshotPass()
+          }
           val snapshot = rootNode.snapshot(workflow)
+          diagnosticListener?.onAfterSnapshotPass()
 
           onRendering(RenderingAndSnapshot(rendering, snapshot))
           output?.let { onOutput(it) }
@@ -90,6 +109,7 @@ internal object RealWorkflowLoop : WorkflowLoop {
               // TODO(https://github.com/square/workflow/issues/512) Replace with receiveOrClosed.
               @Suppress("EXPERIMENTAL_API_USAGE", "DEPRECATION")
               inputsChannel.onReceiveOrNull { newInput ->
+                diagnosticListener?.onPropsChanged(null, input, newInput, null, null)
                 if (newInput == null) {
                   inputsClosed = true
                 } else {

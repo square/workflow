@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.helloworkflowfragment
+package com.squareup.workflow.diagnostic
 
-import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
-import com.squareup.workflow.ui.ViewRegistry
-import com.squareup.workflow.ui.WorkflowFragment
-import com.squareup.workflow.ui.WorkflowRunner
+import kotlin.test.Test
 
-private val viewRegistry = ViewRegistry(HelloFragmentLayoutRunner)
+class ChainedDiagnosticListenerTest {
 
-class HelloWorkflowFragment : WorkflowFragment<Unit, Unit>() {
-  override fun onCreateWorkflow(): WorkflowRunner.Config<Unit, Unit> {
-    return WorkflowRunner.Config(HelloWorkflow, viewRegistry,
-        diagnosticListener = SimpleLoggingDiagnosticListener()
+  @Test fun `all methods are overridden`() {
+    assertOverridesAllMethods(
+        ChainedDiagnosticListener::class,
+        WorkflowDiagnosticListener::class
     )
   }
 }

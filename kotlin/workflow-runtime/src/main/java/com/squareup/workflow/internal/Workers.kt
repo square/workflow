@@ -15,14 +15,19 @@
  */
 package com.squareup.workflow.internal
 
+import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Worker
+import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.produceIn
 
 /**
@@ -31,14 +36,41 @@ import kotlinx.coroutines.flow.produceIn
  * will emit everything from the worker. The channel will be closed when the flow completes.
  */
 @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
-internal fun <T> CoroutineScope.launchWorker(worker: Worker<T>): ReceiveChannel<T> =
-  worker.run()
-      .catch { e ->
-        // Workers that failed (as opposed to just cancelled) should have their failure reason
-        // re-thrown from the workflow runtime. If we don't unwrap the cause here, they'll just
-        // cause the runtime to cancel.
-        val cancellationCause = e.unwrapCancellationCause()
-        throw cancellationCause ?: e
+internal fun <T> CoroutineScope.launchWorker(
+  worker: Worker<T>,
+  workerDiagnosticId: Long,
+  workflowDiagnosticId: Long,
+  diagnosticListener: WorkflowDiagnosticListener?
+): ReceiveChannel<T> = worker.run()
+    .wireUpDebugger(workerDiagnosticId, workflowDiagnosticId, diagnosticListener)
+    .catch { e ->
+      // Workers that failed (as opposed to just cancelled) should have their failure reason
+      // re-thrown from the workflow runtime. If we don't unwrap the cause here, they'll just
+      // cause the runtime to cancel.
+      val cancellationCause = e.unwrapCancellationCause()
+      throw cancellationCause ?: e
+    }
+    // produceIn implicitly creates a buffer (it uses a Channel to bridge between contexts). This
+    // operator is required to override the default buffer size.
+    .buffer(RENDEZVOUS)
+    .produceIn(this)
+
+@UseExperimental(VeryExperimentalWorkflow::class)
+private fun <T> Flow<T>.wireUpDebugger(
+  workerDiagnosticId: Long,
+  workflowDiagnosticId: Long,
+  diagnosticListener: WorkflowDiagnosticListener?
+): Flow<T> {
+  // Only wire up debugging operators if we're actually debugging.
+  if (diagnosticListener == null) return this
+  return flow {
+    try {
+      collect { output ->
+        diagnosticListener.onWorkerOutput(workerDiagnosticId, workflowDiagnosticId, output!!)
+        emit(output)
       }
-      .buffer(RENDEZVOUS)
-      .produceIn(this)
+    } finally {
+      diagnosticListener.onWorkerStopped(workerDiagnosticId, workflowDiagnosticId)
+    }
+  }
+}
