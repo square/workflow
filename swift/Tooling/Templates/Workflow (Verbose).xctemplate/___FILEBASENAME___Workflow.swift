@@ -3,7 +3,6 @@
 import Workflow
 import WorkflowUI
 import ReactiveSwift
-import Result
 
 
 // MARK: Input and Output
@@ -63,7 +62,7 @@ extension ___VARIABLE_productName___Workflow {
 
         }
 
-        func run() -> SignalProducer<Output, NoError> {
+        func run() -> SignalProducer<Output, Never> {
             fatalError()
         }
 

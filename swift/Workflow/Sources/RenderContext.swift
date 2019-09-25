@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import ReactiveSwift
-import Result
 
 /// `RenderContext` is the composition point for the workflow tree.
 ///
@@ -72,7 +71,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
-    public func subscribe<Action>(signal: Signal<Action, NoError>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+    public func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
         fatalError()
     }
 
@@ -109,7 +108,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
             return implementation.makeSink(of: actionType)
         }
 
-        override func subscribe<Action>(signal: Signal<Action, NoError>) where WorkflowType == Action.WorkflowType, Action : WorkflowAction {
+        override func subscribe<Action>(signal: Signal<Action, Never>) where WorkflowType == Action.WorkflowType, Action : WorkflowAction {
             assertStillValid()
             return implementation.subscribe(signal: signal)
         }
@@ -136,7 +135,7 @@ internal protocol RenderContextType: class {
 
     func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
-    func subscribe<Action>(signal: Signal<Action, NoError>) where Action: WorkflowAction, Action.WorkflowType == WorkflowType
+    func subscribe<Action>(signal: Signal<Action, Never>) where Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
     func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
     

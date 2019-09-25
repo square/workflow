@@ -12,7 +12,7 @@ Workflows and the UI that is ultimately displayed. On iOS, the container is impl
 public final class ContainerViewController<Output, ScreenType>: UIViewController where ScreenType: Screen {
 
     /// Emits output events from the bound workflow.
-    public let output: Signal<Output, NoError>
+    public let output: Signal<Output, Never>
 
     public convenience init<W: Workflow>(workflow: W, viewRegistry: ViewRegistry) where W.Rendering == ScreenType, W.Output == Output
 }

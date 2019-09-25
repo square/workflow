@@ -10,7 +10,6 @@ You'll need the following four libraries:
 import Workflow
 import WorkflowUI
 import ReactiveSwift
-import Result
 ```
 
 The easiest way to integrate these libraries is via Cocoapods. If you are using Cocoapods, you can
@@ -24,7 +23,6 @@ Pod::Spec.new do |s|
     s.dependency 'Workflow'
     s.dependency 'WorkflowUI'
     s.dependency 'ReactiveSwift'
-    s.dependency 'Result'
 
     # ...
 end

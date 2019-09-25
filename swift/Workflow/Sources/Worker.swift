@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import ReactiveSwift
-import Result
 
 /// Workers define a unit of asynchronous work.
 ///
@@ -30,7 +29,7 @@ public protocol Worker {
     associatedtype Output
     
     /// Returns a signal producer to execute the work represented by this worker.
-    func run() -> SignalProducer<Output, NoError>
+    func run() -> SignalProducer<Output, Never>
 
     /// Returns `true` if the other worker should be considered equivalent to `self`. Equivalence should take into
     /// account whatever data is meaninful to the task. For example, a worker that loads a user account from a server
