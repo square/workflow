@@ -93,7 +93,7 @@ higher-level integrations with UI frameworks.
 
 ## Resources
 
-* Square Workflow – Droidcon NYC 2019 ([slides](https://docs.google.com/presentation/d/19-DkVCn-XawssyHQ_cboIX_s-Lf6rNg-ryAehA9xBVs))
+* [Square Workflow – Droidcon NYC 2019](https://www.droidcon.com/media-detail?video=362741019) ([slides](https://docs.google.com/presentation/d/19-DkVCn-XawssyHQ_cboIX_s-Lf6rNg-ryAehA9xBVs))
 * [SF Android GDG @ Square 2019 - Hello Workflow](https://www.youtube.com/watch?v=8PlYtfsgDKs)
   (live coding)
 * [Android Dialogs 5-part Coding Series](https://twitter.com/chiuki/status/1100810374410956800)
