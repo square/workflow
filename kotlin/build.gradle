@@ -82,7 +82,7 @@ buildscript {
       'dokkaAndroid': "org.jetbrains.dokka:dokka-android-gradle-plugin:${versions.dokka}",
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
       'jmh': [
-          'gradlePlugin': "me.champeau.gradle:jmh-gradle-plugin:0.4.8",
+          'gradlePlugin': "me.champeau.gradle:jmh-gradle-plugin:0.5.0-rc-2",
           'core': "org.openjdk.jmh:jmh-core:${versions.jmh}",
           'generator': "org.openjdk.jmh:jmh-generator-annprocess:${versions.jmh}",
       ],

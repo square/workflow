@@ -16,10 +16,11 @@
 package com.squareup.workflow.benchmarks
 
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Sink
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Worker
-import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.launchWorkflowIn
+import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.runningWorker
 import kotlinx.coroutines.CompletableDeferred
@@ -61,8 +62,8 @@ open class DeepRenderBenchmark {
     val runtimeScope = CoroutineScope(dispatcher)
     val deepWorkflow = DeepRenderWorkflow()
 
-    launchWorkflowIn(runtimeScope, deepWorkflow, deepProps::await.asFlow()) { r, _ ->
-      renderings = r.map { it.rendering.result }
+    launchWorkflowIn(runtimeScope, deepWorkflow, deepProps::await.asFlow()) { session ->
+      renderings = session.renderingsAndSnapshots.map { it.rendering.result }
     }
   }
 
@@ -78,7 +79,7 @@ open class DeepRenderBenchmark {
   }
 }
 
-private val EMPTY_WORKER = Worker.createSideEffect("empty") {}
+private val EMPTY_WORKER = Worker.createSideEffect {}
 
 /**
  * JMH pukes if this is nested inside the workflow.
@@ -91,16 +92,20 @@ private data class DeepRendering(
 private class DeepRenderWorkflow : StatelessWorkflow<Int, Nothing, DeepRendering>() {
 
   override fun render(
-    input: Int,
+    props: Int,
     context: RenderContext<Nothing, Nothing>
   ): DeepRendering {
     context.runningWorker(EMPTY_WORKER)
 
-    val child = if (input == 0) null else context.renderChild(this, input - 1)
+    val child = if (props == 0) null else context.renderChild(this, props - 1)
 
+    val sink: Sink<Unit> = context.makeEventSink {
+      child?.dummyHandler
+      return@makeEventSink null
+    }
     return DeepRendering(
         result = child?.result ?: 0,
-        dummyHandler = context.onEvent { child?.dummyHandler; noAction() }
+        dummyHandler = { sink.send(Unit) }
     )
   }
 }
