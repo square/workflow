@@ -161,10 +161,10 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
   // Give the caller a chance to start collecting outputs.
   val session = WorkflowSession(renderingsAndSnapshots.asFlow(), outputs.asFlow())
   val result = beforeStart(workflowScope, session)
-  val visitor = session.diagnosticListener
+  val diagnosticListener = session.diagnosticListener
 
   val workflowJob = workflowScope.launch {
-    visitor?.onRuntimeStarted(this)
+    diagnosticListener?.onRuntimeStarted(this)
     try {
       // Run the workflow processing loop forever, or until it fails or is cancelled.
       workflowLoop.runWorkflowLoop(
@@ -174,12 +174,12 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
           initialState = initialState,
           onRendering = renderingsAndSnapshots::send,
           onOutput = outputs::send,
-          diagnosticListener = visitor
+          diagnosticListener = diagnosticListener
       )
     } finally {
       // Only emit the runtime stopped debug event after all child coroutines have completed.
       // coroutineScope does an implicit join on all its children.
-      visitor?.onRuntimeStopped()
+      diagnosticListener?.onRuntimeStopped()
     }
   }
 

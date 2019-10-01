@@ -72,7 +72,7 @@ internal object RealWorkflowLoop : WorkflowLoop {
       var output: OutputT? = null
       var input: PropsT = inputsChannel.receive()
       var inputsClosed = false
-      var idCounter = if (diagnosticListener != null) IdCounter() else null
+      val idCounter = if (diagnosticListener != null) IdCounter() else null
       val rootNode = WorkflowNode(
           id = workflow.id(),
           workflow = workflow,
