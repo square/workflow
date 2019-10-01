@@ -21,10 +21,11 @@ import androidx.test.espresso.IdlingResource
 import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
+import com.squareup.workflow.VeryExperimentalWorkflow
+import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
 import timber.log.Timber
 
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
   lateinit var idlingResource: IdlingResource
 
+  @UseExperimental(VeryExperimentalWorkflow::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
@@ -48,15 +50,17 @@ class MainActivity : AppCompatActivity() {
 
     workflowRunner = setContentWorkflow(
         savedInstanceState,
-        { WorkflowRunner.Config(component.mainWorkflow, viewRegistry) }
+        {
+          WorkflowRunner.Config(
+              component.mainWorkflow, viewRegistry,
+              diagnosticListener = SimpleLoggingDiagnosticListener()
+          )
+        }
     ) {
       finish()
     }
 
-    loggingSub = CompositeDisposable(
-        workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) },
-        workflowRunner.debugInfo.subscribe { Timber.v("debug snapshot: %s", it) }
-    )
+    loggingSub = workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

@@ -17,11 +17,11 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
+import com.squareup.workflow.diagnostic.IdCounter
+import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
@@ -31,11 +31,15 @@ import okio.ByteString
 import kotlin.coroutines.CoroutineContext
 
 /**
- * Responsible for tracking child workflows, starting them and tearing them down when necessary. Also
- * manages restoring children from snapshots.
+ * Responsible for tracking child workflows, starting them and tearing them down when necessary.
+ * Also manages restoring children from snapshots.
  */
+@UseExperimental(VeryExperimentalWorkflow::class)
 internal class SubtreeManager<StateT, OutputT : Any>(
-  private val contextForChildren: CoroutineContext
+  private val contextForChildren: CoroutineContext,
+  private val parentDiagnosticId: Long,
+  private val diagnosticListener: WorkflowDiagnosticListener? = null,
+  private val idCounter: IdCounter? = null
 ) : RealRenderContext.Renderer<StateT, OutputT> {
 
   /**
@@ -62,7 +66,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
         id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
         props: ChildPropsT
-      ): RenderingEnvelope<ChildRenderingT> {
+      ): ChildRenderingT {
   // @formatter:on
     // Start tracking this case so we can be ready to render it.
     @Suppress("UNCHECKED_CAST")
@@ -83,36 +87,15 @@ internal class SubtreeManager<StateT, OutputT : Any>(
   /**
    * Uses [selector] to invoke [WorkflowNode.tick] for every running child workflow this instance
    * is managing.
-   *
-   * If one of this workflow's children emits an output, [handler] will be called with the action
-   * assigned to that workflow and a [Source.Subtree] describing the child that triggered the
-   * update.
-   *
-   * Note that if [handler] is called with [Kind.Passthrough], the workflow action that gets
-   * passed in will always be [noAction]. This is the only logical value because
-   * [Kind.Passthrough] specifically means that this workflow did not actually get updated
-   * itself, but one of its descendants did and this one is just part of the path down the tree.
    */
   fun <T : Any> tickChildren(
-    selector: SelectBuilder<OutputEnvelope<T>>,
-    handler: (WorkflowAction<StateT, OutputT>, Kind) -> OutputEnvelope<T>
+    selector: SelectBuilder<T?>,
+    handler: (WorkflowAction<StateT, OutputT>) -> T?
   ) {
     for ((case, host) in hostLifetimeTracker.lifetimes) {
       host.tick(selector) { output ->
-        return@tick if (output.output != null) {
-          val componentUpdate = case.acceptChildOutput(output.output)
-          // This workflow's child emitted a non-null output: the WorkflowNode will execute the
-          // WorkflowAction, and we need to pass DidUpdate to indicate that this workflow actually
-          // got updated.
-          handler(
-              componentUpdate,
-              Kind.Updated(Source.Subtree(case.id.name, output.output, output.debugInfo))
-          )
-        } else {
-          // The child didn't actually emit an output, which means this workflow has nothing to do,
-          // which means we will only report our child updating.
-          handler(noAction(), Kind.Passthrough(case.id.name, output.debugInfo))
-        }
+        val componentUpdate = case.acceptChildOutput(output)
+        return@tick handler(componentUpdate)
       }
     }
   }
@@ -159,6 +142,9 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         workflow.asStatefulWorkflow() as StatefulWorkflow<IC, *, OC, *>,
         props,
         snapshotCache[id],
-        contextForChildren
+        contextForChildren,
+        parentDiagnosticId,
+        diagnosticListener,
+        idCounter
     )
 }

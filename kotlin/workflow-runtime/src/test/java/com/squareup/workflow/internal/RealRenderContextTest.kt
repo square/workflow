@@ -26,8 +26,6 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.applyTo
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.Child
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
@@ -60,11 +58,8 @@ class RealRenderContextTest {
       child: Workflow<IC, OC, RC>,
       id: WorkflowId<IC, OC, RC>,
       props: IC
-    ): RenderingEnvelope<RC> {
-      return RenderingEnvelope(
-          Rendering(case, child, id, props) as RC,
-          WorkflowHierarchyDebugSnapshot(id, "props", "no state", "rendering", emptyList())
-      )
+    ): RC {
+      return Rendering(case, child, id, props) as RC
     }
   }
 
@@ -91,7 +86,7 @@ class RealRenderContextTest {
       child: Workflow<IC, OC, RC>,
       id: WorkflowId<IC, OC, RC>,
       props: IC
-    ): RenderingEnvelope<RC> = fail()
+    ): RC = fail()
   }
 
   @Test fun `make sink completes update`() {
@@ -169,19 +164,5 @@ class RealRenderContextTest {
     val worker = Worker.from { Unit }
     assertFailsWith<IllegalStateException> { context.runningWorker(worker) { fail() } }
     assertFailsWith<IllegalStateException> { context.buildBehavior() }
-  }
-
-  @Test fun `renderChild generates child debug snapshot`() {
-    val context = RealRenderContext(TestRenderer())
-    val workflow = TestWorkflow()
-
-    context.renderChild(workflow, "props", key = "key") { fail() }
-    val behavior = context.buildBehavior()
-
-    val expectedSnapshot =
-      WorkflowHierarchyDebugSnapshot(
-          workflow.id(), "props", "no state", "rendering", emptyList()
-      )
-    assertEquals(listOf(Child("key", expectedSnapshot)), behavior.childDebugSnapshots)
   }
 }

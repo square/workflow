@@ -15,7 +15,6 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.debugging.WorkflowDebugInfo
 import com.squareup.workflow.internal.RealWorkflowLoop
 import com.squareup.workflow.internal.WorkflowLoop
 import com.squareup.workflow.internal.unwrapCancellationCause
@@ -140,7 +139,12 @@ fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFr
     beforeStart = beforeStart
 )
 
-@UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@UseExperimental(
+    ExperimentalCoroutinesApi::class,
+    FlowPreview::class,
+    VeryExperimentalWorkflow::class
+)
+@Suppress("LongParameterList")
 internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowImpl(
   scope: CoroutineScope,
   workflowLoop: WorkflowLoop,
@@ -152,28 +156,31 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
 ): RunnerT {
   val renderingsAndSnapshots = ConflatedBroadcastChannel<RenderingAndSnapshot<RenderingT>>()
   val outputs = BroadcastChannel<OutputT>(capacity = 1)
-  val debugSnapshots = ConflatedBroadcastChannel<WorkflowDebugInfo>()
   val workflowScope = scope + Job(parent = scope.coroutineContext[Job])
 
   // Give the caller a chance to start collecting outputs.
-  val session = WorkflowSession(
-      renderingsAndSnapshots.asFlow(),
-      outputs.asFlow(),
-      debugSnapshots.asFlow()
-  )
+  val session = WorkflowSession(renderingsAndSnapshots.asFlow(), outputs.asFlow())
   val result = beforeStart(workflowScope, session)
+  val visitor = session.diagnosticListener
 
   val workflowJob = workflowScope.launch {
-    // Run the workflow processing loop forever, or until it fails or is cancelled.
-    workflowLoop.runWorkflowLoop(
-        workflow,
-        props,
-        initialSnapshot = initialSnapshot,
-        initialState = initialState,
-        onRendering = renderingsAndSnapshots::send,
-        onOutput = outputs::send,
-        onDebugSnapshot = debugSnapshots::send
-    )
+    visitor?.onRuntimeStarted(this)
+    try {
+      // Run the workflow processing loop forever, or until it fails or is cancelled.
+      workflowLoop.runWorkflowLoop(
+          workflow,
+          props,
+          initialSnapshot = initialSnapshot,
+          initialState = initialState,
+          onRendering = renderingsAndSnapshots::send,
+          onOutput = outputs::send,
+          diagnosticListener = visitor
+      )
+    } finally {
+      // Only emit the runtime stopped debug event after all child coroutines have completed.
+      // coroutineScope does an implicit join on all its children.
+      visitor?.onRuntimeStopped()
+    }
   }
 
   // Ensure we close the channels when we're done, so that they propagate errors.
@@ -183,7 +190,6 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
     val realCause = cause?.unwrapCancellationCause()
     renderingsAndSnapshots.close(realCause)
     outputs.close(realCause)
-    debugSnapshots.close(realCause)
 
     // If the cancellation came from inside the workflow loop, the outer runtime scope needs to be
     // explicitly cancelled. See https://github.com/square/workflow/issues/464.

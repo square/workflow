@@ -17,13 +17,13 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
+import com.squareup.workflow.diagnostic.IdCounter
+import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
+import com.squareup.workflow.diagnostic.createId
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.parse
 import com.squareup.workflow.readByteStringWithLength
@@ -44,12 +44,16 @@ import kotlin.coroutines.CoroutineContext
  * @param initialState Allows unit tests to start the node from a given state, instead of calling
  * [StatefulWorkflow.initialState].
  */
+@UseExperimental(VeryExperimentalWorkflow::class)
 internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   val id: WorkflowId<PropsT, OutputT, RenderingT>,
   workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
   initialProps: PropsT,
   snapshot: ByteString?,
   baseContext: CoroutineContext,
+  parentDiagnosticId: Long? = null,
+  private val diagnosticListener: WorkflowDiagnosticListener? = null,
+  private val idCounter: IdCounter? = null,
   initialState: StateT? = null
 ) : CoroutineScope {
 
@@ -70,21 +74,60 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    */
   override val coroutineContext = baseContext + Job(baseContext[Job]) + CoroutineName(id.toString())
 
-  private val subtreeManager = SubtreeManager<StateT, OutputT>(coroutineContext)
+  /**
+   * ID used to uniquely identify this node to [WorkflowDiagnosticListener]s.
+   *
+   * Visible for testing.
+   */
+  internal val diagnosticId = idCounter.createId()
+
+  private val subtreeManager =
+    SubtreeManager<StateT, OutputT>(coroutineContext, diagnosticId, diagnosticListener, idCounter)
+
   private val workerTracker =
     LifetimeTracker<WorkerCase<*, StateT, OutputT>, Any, WorkerSession>(
         getKey = { case -> case },
-        start = { case -> WorkerSession(launchWorker(case.worker)) },
+        start = { case ->
+          var workerId = 0L
+          if (diagnosticListener != null) {
+            workerId = idCounter.createId()
+            diagnosticListener
+                .onWorkerStarted(workerId, diagnosticId, case.key, case.worker.toString())
+          }
+          val workerChannel = launchWorker(case.worker, workerId, diagnosticId, diagnosticListener)
+          WorkerSession(workerChannel)
+        },
         dispose = { _, session -> session.channel.cancel() }
     )
 
-  private var state: StateT = initialState
-      ?: snapshot?.restoreState(initialProps, workflow)
-      ?: workflow.initialState(initialProps, snapshot = null)
+  private var state: StateT
 
   private var lastProps: PropsT = initialProps
 
   private var behavior: Behavior<StateT, OutputT>? = null
+
+  init {
+    var restoredFromSnapshot = false
+    state = if (initialState != null) {
+      initialState
+    } else {
+      val snapshotToRestoreFrom = snapshot?.restoreState()
+      if (snapshotToRestoreFrom != null) {
+        restoredFromSnapshot = true
+      }
+      workflow.initialState(initialProps, snapshotToRestoreFrom)
+    }
+
+    if (diagnosticListener != null) {
+      diagnosticListener.onWorkflowStarted(
+          diagnosticId, parentDiagnosticId, id.typeDebugString, id.name, initialProps, state,
+          restoredFromSnapshot
+      )
+      coroutineContext[Job]!!.invokeOnCompletion {
+        diagnosticListener.onWorkflowStopped(diagnosticId)
+      }
+    }
+  }
 
   /**
    * Walk the tree of workflows, rendering each one and using
@@ -95,7 +138,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   fun render(
     workflow: StatefulWorkflow<PropsT, *, OutputT, RenderingT>,
     input: PropsT
-  ): RenderingEnvelope<RenderingT> =
+  ): RenderingT =
     renderWithStateType(workflow as StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>, input)
 
   /**
@@ -121,18 +164,14 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    */
   @UseExperimental(InternalCoroutinesApi::class)
   fun <T : Any> tick(
-    selector: SelectBuilder<OutputEnvelope<T>>,
-    handler: (OutputEnvelope<OutputT>) -> OutputEnvelope<T>
+    selector: SelectBuilder<T?>,
+    handler: (OutputT) -> T?
   ) {
-    fun acceptUpdate(
-      action: WorkflowAction<StateT, OutputT>,
-      kind: Kind
-    ): OutputEnvelope<T> {
+    fun acceptUpdate(action: WorkflowAction<StateT, OutputT>): T? {
       val (newState, output) = action.applyTo(state)
+      diagnosticListener?.onWorkflowAction(diagnosticId, action, state, newState, output)
       state = newState
-      val info = createDebugInfo(kind)
-      val envelope = OutputEnvelope(output, info)
-      return handler(envelope)
+      return output?.let(handler)
     }
 
     // Listen for any child workflow updates.
@@ -148,18 +187,10 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
                 // Set the tombstone flag so we don't continue to listen to the subscription.
                 session.tombstone = true
                 // Nothing to do on close other than update the session, so don't emit any output.
-                val debugInfo = createDebugInfo(
-                    Kind.Updated(
-                        Source.Worker(
-                            key = case.key,
-                            output = "{worker finished}"
-                        )
-                    )
-                )
-                return@onReceiveOrClosed OutputEnvelope(null, debugInfo)
+                return@onReceiveOrClosed null
               } else {
                 val update = case.acceptUpdate(valueOrClosed.value)
-                acceptUpdate(update, Kind.Updated(Source.Worker(case.key, valueOrClosed.value!!)))
+                acceptUpdate(update)
               }
             }
           }
@@ -167,8 +198,9 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
 
     // Listen for any events.
     with(selector) {
-      behavior!!.nextActionFromEvent.onAwait { update ->
-        acceptUpdate(update, Kind.Updated(Source.Sink))
+      behavior!!.nextActionFromEvent.onAwait { action ->
+        diagnosticListener?.onSinkReceived(diagnosticId, action)
+        acceptUpdate(action)
       }
     }
   }
@@ -188,23 +220,19 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   }
 
   /**
-   * Creates a [WorkflowUpdateDebugInfo] with this workflow's ID.
-   */
-  private fun createDebugInfo(kind: Kind): WorkflowUpdateDebugInfo =
-    WorkflowUpdateDebugInfo(id, kind)
-
-  /**
    * Contains the actual logic for [render], after we've casted the passed-in [Workflow]'s
    * state type to our `StateT`.
    */
   private fun renderWithStateType(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
     input: PropsT
-  ): RenderingEnvelope<RenderingT> {
+  ): RenderingT {
     updatePropsAndState(workflow, input)
 
     val context = RealRenderContext(subtreeManager)
+    diagnosticListener?.onBeforeWorkflowRendered(diagnosticId, input, state)
     val rendering = workflow.render(input, state, context)
+    diagnosticListener?.onAfterWorkflowRendered(diagnosticId, rendering)
 
     behavior = context.buildBehavior()
         .apply {
@@ -213,22 +241,16 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
           workerTracker.track(workerCases)
         }
 
-    val debugSnapshot = WorkflowHierarchyDebugSnapshot(
-        workflowId = id,
-        props = input,
-        state = state,
-        rendering = rendering,
-        children = behavior!!.childDebugSnapshots
-    )
-
-    return RenderingEnvelope(rendering, debugSnapshot)
+    return rendering
   }
 
   private fun updatePropsAndState(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
     newProps: PropsT
   ) {
-    state = workflow.onPropsChanged(lastProps, newProps, state)
+    val newState = workflow.onPropsChanged(lastProps, newProps, state)
+    diagnosticListener?.onPropsChanged(diagnosticId, lastProps, newProps, state, newState)
+    state = newState
     lastProps = newProps
   }
 
@@ -243,26 +265,19 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     }
   }
 
-  private fun ByteString.restoreState(
-    input: PropsT,
-    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
-  ): StateT {
-    val (state, childrenSnapshot) = parsePartialSnapshot(input, workflow)
+  private fun ByteString.restoreState(): Snapshot? {
+    val (snapshotToRestoreFrom, childrenSnapshot) = parsePartialSnapshot()
     subtreeManager.restoreChildrenFromSnapshot(childrenSnapshot)
-    return state
+    return snapshotToRestoreFrom
   }
 
   /** @see Snapshot.withState */
-  private fun ByteString.parsePartialSnapshot(
-    input: PropsT,
-    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
-  ): Pair<StateT, ByteString> = parse { source ->
+  private fun ByteString.parsePartialSnapshot(): Pair<Snapshot?, ByteString> = parse { source ->
     val stateSnapshot = source.readByteStringWithLength()
     val childrenSnapshot = source.readByteString()
     // Never pass an empty snapshot to initialState.
     val nonEmptySnapshot = stateSnapshot.takeIf { it.size > 0 }
         ?.let { Snapshot.of(it) }
-    val state = workflow.initialState(input, nonEmptySnapshot)
-    return Pair(state, childrenSnapshot)
+    return Pair(nonEmptySnapshot, childrenSnapshot)
   }
 }

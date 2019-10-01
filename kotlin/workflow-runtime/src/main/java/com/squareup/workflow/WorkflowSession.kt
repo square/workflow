@@ -15,18 +15,21 @@
  */
 package com.squareup.workflow
 
-import com.squareup.workflow.debugging.WorkflowDebugInfo
+import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import kotlinx.coroutines.flow.Flow
 
 /**
  * A tuple of [Flow]s representing all the emissions from the workflow runtime.
  *
- * Passed to the function taken by [launchWorkflowIn].
+ * Passed to [launchWorkflowIn]'s `beforeStart` function.
  *
- * @param debugInfo A stream of [diagnostic information][WorkflowDebugInfo] about the runtime.
+ * @param diagnosticListener Null by default. If set to a non-null value before `beforeStart`
+ * returns, that [WorkflowDiagnosticListener] will receive all diagnostic events from the runtime.
+ * Setting this property after `beforeStart` returns will have no effect.
  */
+@UseExperimental(VeryExperimentalWorkflow::class)
 class WorkflowSession<out OutputT : Any, out RenderingT>(
   val renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
   val outputs: Flow<OutputT>,
-  val debugInfo: Flow<WorkflowDebugInfo>
+  var diagnosticListener: WorkflowDiagnosticListener? = null
 )

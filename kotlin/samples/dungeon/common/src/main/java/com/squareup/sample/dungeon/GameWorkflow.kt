@@ -223,6 +223,8 @@ private class TickerWorker(private val ticksPerSecond: Int) : Worker<Long> {
       delay(periodMs)
     }
   }
+
+  override fun toString(): String = "TickerWorker(ticksPerSecond=$ticksPerSecond)"
 }
 
 private data class MoveResult(

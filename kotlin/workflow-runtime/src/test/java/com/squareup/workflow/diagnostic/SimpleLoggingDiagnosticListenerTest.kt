@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.debugging
+package com.squareup.workflow.diagnostic
 
-/**
- * A pair of [WorkflowHierarchyDebugSnapshot] and optional [WorkflowUpdateDebugInfo].
- *
- * The [WorkflowUpdateDebugInfo] will be null on the first render pass and non-null on every
- * subsequent pass, since the first pass is the only one that is not triggered by some kind of
- * update.
- */
-data class WorkflowDebugInfo(
-  val hierarchySnapshot: WorkflowHierarchyDebugSnapshot,
-  val updateInfo: WorkflowUpdateDebugInfo?
-)
+import kotlin.test.Test
+
+class SimpleLoggingDiagnosticListenerTest {
+
+  @Test fun `all methods are overridden`() {
+    assertOverridesAllMethods(
+        SimpleLoggingDiagnosticListener::class,
+        WorkflowDiagnosticListener::class
+    )
+  }
+}

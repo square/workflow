@@ -23,8 +23,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.toLiveData
+import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.debugging.WorkflowDebugInfo
+import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner.Config
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -62,32 +63,47 @@ interface WorkflowRunner<out OutputT : Any> {
    */
   val renderings: Observable<out Any>
 
-  val debugInfo: Observable<WorkflowDebugInfo>
-
   val viewRegistry: ViewRegistry
 
-  class Config<PropsT, OutputT : Any> constructor(
+  /**
+   * @param diagnosticListener If non-null, will receive all diagnostic events from the workflow
+   * runtime. See [com.squareup.workflow.WorkflowSession.diagnosticListener].
+   */
+  @UseExperimental(VeryExperimentalWorkflow::class)
+  class Config<PropsT, OutputT : Any>(
     val workflow: Workflow<PropsT, OutputT, Any>,
     val viewRegistry: ViewRegistry,
     val props: Flow<PropsT>,
-    val dispatcher: CoroutineDispatcher
+    val dispatcher: CoroutineDispatcher,
+    val diagnosticListener: WorkflowDiagnosticListener?
   ) {
+    /**
+     * @param diagnosticListener If non-null, will receive all diagnostic events from the workflow
+     * runtime. See [com.squareup.workflow.WorkflowSession.diagnosticListener].
+     */
     constructor(
       workflow: Workflow<PropsT, OutputT, Any>,
       viewRegistry: ViewRegistry,
       props: PropsT,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-    ) : this(workflow, viewRegistry, flowOf(props), dispatcher)
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+      diagnosticListener: WorkflowDiagnosticListener? = null
+    ) : this(workflow, viewRegistry, flowOf(props), dispatcher, diagnosticListener)
   }
 
   companion object {
+    /**
+     * @param diagnosticListener If non-null, will receive all diagnostic events from the workflow
+     * runtime. See [com.squareup.workflow.WorkflowSession.diagnosticListener].
+     */
+    @UseExperimental(VeryExperimentalWorkflow::class)
     @Suppress("FunctionName")
     fun <OutputT : Any> Config(
       workflow: Workflow<Unit, OutputT, Any>,
       viewRegistry: ViewRegistry,
-      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+      dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+      diagnosticListener: WorkflowDiagnosticListener? = null
     ): Config<Unit, OutputT> {
-      return Config(workflow, viewRegistry, Unit, dispatcher)
+      return Config(workflow, viewRegistry, Unit, dispatcher, diagnosticListener)
     }
 
     /**

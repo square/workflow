@@ -17,6 +17,7 @@ package com.squareup.sample.dungeon
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 
@@ -34,7 +35,8 @@ class MainActivity : AppCompatActivity() {
       WorkflowRunner.Config(
           workflow = component.appWorkflow,
           viewRegistry = component.viewRegistry,
-          props = "simple_maze.txt"
+          props = "simple_maze.txt",
+          diagnosticListener = SimpleLoggingDiagnosticListener()
       )
     }
   }

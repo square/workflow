@@ -18,7 +18,6 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.Child
 import kotlinx.coroutines.Deferred
 
 /**
@@ -30,7 +29,6 @@ import kotlinx.coroutines.Deferred
  */
 data class Behavior<StateT, out OutputT : Any> internal constructor(
   val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,
-  val childDebugSnapshots: List<Child>,
   val workerCases: List<WorkerCase<*, StateT, OutputT>>,
   val nextActionFromEvent: Deferred<WorkflowAction<StateT, OutputT>>
 ) {

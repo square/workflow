@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.WorkflowSession
-import com.squareup.workflow.debugging.WorkflowDebugInfo
 import com.squareup.workflow.launchWorkflowIn
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -37,7 +36,7 @@ import java.util.concurrent.CancellationException
 @UseExperimental(ExperimentalCoroutinesApi::class)
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   private val scope: CoroutineScope,
-  private val session: WorkflowSession<OutputT, Any>,
+  session: WorkflowSession<OutputT, Any>,
   override val viewRegistry: ViewRegistry
 ) : ViewModel(), WorkflowRunner<OutputT> {
 
@@ -55,6 +54,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
         launchWorkflowIn(
             CoroutineScope(dispatcher), workflow, props, snapshot
         ) { session ->
+          session.diagnosticListener = diagnosticListener
           @Suppress("UNCHECKED_CAST")
           WorkflowRunnerViewModel(this, session, viewRegistry) as T
         }
@@ -81,9 +81,6 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   @UseExperimental(ExperimentalCoroutinesApi::class)
   override val renderings: Observable<out Any> = session.renderingsAndSnapshots
       .map { it.rendering }
-      .asObservable()
-
-  override val debugInfo: Observable<WorkflowDebugInfo> = session.debugInfo
       .asObservable()
 
   override fun onCleared() {

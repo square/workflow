@@ -18,6 +18,7 @@ package com.squareup.sample.mainactivity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.sample.todo.TodoListsAppWorkflow
+import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
@@ -36,7 +37,10 @@ class MainActivity : AppCompatActivity() {
         ?: TodoListsAppWorkflow()
 
     workflowRunner = setContentWorkflow(savedInstanceState) {
-      WorkflowRunner.Config(rootWorkflow, viewRegistry)
+      WorkflowRunner.Config(
+          rootWorkflow, viewRegistry,
+          diagnosticListener = SimpleLoggingDiagnosticListener()
+      )
     }
   }
 

@@ -149,9 +149,8 @@ subprojects {
     project.tasks.findByName('check')?.dependsOn 'detekt'
 
     project.configurations.configureEach {
-      // No module depends on on Kotlin Reflect directly, but there could be transitive dependencies
-      // in tests with a lower version. This could cause problems with a newer Kotlin version that
-      // we use.
+      // There could be transitive dependencies in tests with a lower version. This could cause
+      // problems with a newer Kotlin version that we use.
       resolutionStrategy.force "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
     }
   }

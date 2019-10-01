@@ -42,7 +42,8 @@ internal constructor(
 
   /**
    * String representation of this workflow's type (i.e. class name), suitable for use in
-   * diagnostic output (see [WorkflowHierarchyDebugSnapshot][com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot]
+   * diagnostic output (see
+   * [WorkflowHierarchyDebugSnapshot][com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot]
    * ).
    */
   val typeDebugString: String = type.java.name

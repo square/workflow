@@ -21,28 +21,29 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.StatelessWorkflow
-import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Kind
-import com.squareup.workflow.debugging.WorkflowUpdateDebugInfo.Source
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
+import com.squareup.workflow.writeByteStringWithLength
 import com.squareup.workflow.writeUtf8WithLength
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.yield
+import okio.Buffer
+import okio.ByteString.Companion.encodeUtf8
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -52,12 +53,6 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
-
-/**
- * Creates [WorkflowUpdateDebugInfo]s for tests that don't care about debug infos.
- */
-private fun emptyDebugInfo(id: WorkflowId<*, *, *>) =
-  WorkflowUpdateDebugInfo(id, Kind.Updated(Source.Sink))
 
 class WorkflowNodeTest {
 
@@ -117,7 +112,6 @@ class WorkflowNodeTest {
     val node = WorkflowNode(workflow.id(), workflow, "foo", null, context)
 
     val rendering = node.render(workflow, "foo2")
-        .rendering
 
     assertEquals(
         """
@@ -127,7 +121,6 @@ class WorkflowNodeTest {
     )
 
     val rendering2 = node.render(workflow, "foo3")
-        .rendering
 
     assertEquals(
         """
@@ -163,14 +156,12 @@ class WorkflowNodeTest {
     sink.send("event")
     val result = runBlocking {
       withTimeout(10) {
-        select<OutputEnvelope<String>> {
-          node.tick(this) {
-            OutputEnvelope("tick:${it.output}", emptyDebugInfo(workflow.id()))
-          }
+        select<String?> {
+          node.tick(this) { "tick:$it" }
         }
       }
     }
-    assertEquals("tick:event", result.output)
+    assertEquals("tick:event", result)
   }
 
   @Test fun `throws on subsequent events on same rendering`() {
@@ -240,7 +231,7 @@ class WorkflowNodeTest {
     val output = runBlocking {
       try {
         withTimeout(1) {
-          select<OutputEnvelope<String>> {
+          select<String?> {
             node.tick(this) { it }
           }
         }
@@ -252,14 +243,14 @@ class WorkflowNodeTest {
       channel.send("element")
 
       withTimeout(1) {
-        select<OutputEnvelope<String>> {
+        select<String?> {
           node.tick(this) { it }
         }
       }
     }
 
     assertEquals("element", update)
-    assertEquals("update:element", output.output)
+    assertEquals("update:element", output)
   }
 
   @Test fun `worker is cancelled`() {
@@ -310,7 +301,7 @@ class WorkflowNodeTest {
 
       // This tick will process the event handler, it won't close the channel yet.
       withTimeout(1) {
-        select<OutputEnvelope<String>> {
+        select<String?> {
           node.tick(this) { it }
         }
       }
@@ -347,7 +338,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
         .bytes
     assertNotEquals(0, snapshot.size)
@@ -360,7 +351,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial props", restoredNode.render(workflow, "foo").rendering)
+    assertEquals("initial props", restoredNode.render(workflow, "foo"))
   }
 
   @Test fun `snapshots empty without children`() {
@@ -377,7 +368,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
         .bytes
     assertNotEquals(0, snapshot.size)
@@ -390,7 +381,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("restored", restoredNode.render(workflow, "foo").rendering)
+    assertEquals("restored", restoredNode.render(workflow, "foo"))
   }
 
   @Test fun `snapshots non-empty with children`() {
@@ -435,7 +426,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo").rendering)
+    assertEquals("initial props|child props", originalNode.render(parentWorkflow, "foo"))
     val snapshot = originalNode.snapshot(parentWorkflow)
         .bytes
     assertNotEquals(0, snapshot.size)
@@ -448,7 +439,7 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals("initial props|child props", restoredNode.render(parentWorkflow, "foo").rendering)
+    assertEquals("initial props|child props", restoredNode.render(parentWorkflow, "foo"))
     assertEquals("child props", restoredChildState)
     assertEquals("initial props", restoredParentState)
   }
@@ -516,7 +507,7 @@ class WorkflowNodeTest {
         baseContext = Unconfined
     )
 
-    assertEquals("initial props", originalNode.render(workflow, "foo").rendering)
+    assertEquals("initial props", originalNode.render(workflow, "foo"))
     val snapshot = originalNode.snapshot(workflow)
         .bytes
     assertNotEquals(0, snapshot.size)
@@ -528,232 +519,229 @@ class WorkflowNodeTest {
         snapshot = snapshot,
         baseContext = Unconfined
     )
-    assertEquals(
-        "props:new props|state:initial props",
-        restoredNode.render(workflow, "foo").rendering
-    )
+    assertEquals("props:new props|state:initial props", restoredNode.render(workflow, "foo"))
   }
 
-  @Test fun `rendering generates debug snapshots`() {
-    val child = PropsRenderingWorkflow { _, _, state -> state }
+  @Test fun `emits started diagnostic event not restored from snapshot`() {
+    val listener = RecordingDiagnosticListener()
+    val workflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { props, _ -> "($props:)" },
+        render = { state, props -> "($props:$state)" },
+        onPropsChanged = { old, new, state -> "($old:$new:$state)" },
+        snapshot = { Snapshot.EMPTY }
+    )
 
-    class TestWorkflow : StringWorkflow() {
-      override fun initialState(
-        props: String,
-        snapshot: Snapshot?
-      ): String = "initial state"
-
-      override fun render(
-        props: String,
-        state: String,
-        context: RenderContext<String, String>
-      ): String {
-        val childRendering = context.renderChild(child, props = "child props", key = "key") {
-          fail()
-        }
-        return "child:\n${childRendering.prependIndent()}"
-      }
-    }
-
-    val workflow = TestWorkflow()
     val node = WorkflowNode(
         workflow.id(),
-        workflow,
-        initialProps = "initial props",
+        workflow.asStatefulWorkflow(),
+        initialProps = "props",
         snapshot = null,
-        baseContext = Unconfined
+        baseContext = Unconfined,
+        parentDiagnosticId = 42,
+        diagnosticListener = listener
     )
 
-    val debugSnapshot = node.render(workflow, "props")
-        .debugSnapshot
-
-    assertEquals(TestWorkflow::class.java.name, debugSnapshot.workflowType)
-    assertEquals("props", debugSnapshot.props)
-    assertEquals("initial state", debugSnapshot.state)
     assertEquals(
-        "child:\n" +
-            "    props:child props\n" +
-            "    state:starting:child props",
-        debugSnapshot.rendering
+        listOf(
+            "onWorkflowStarted(${node.diagnosticId}, 42, " +
+                "${workflow.id().typeDebugString}," +
+                " , props, (props:), false)"
+        ),
+        listener.consumeEvents()
     )
-    assertEquals(1, debugSnapshot.children.size)
-    with(debugSnapshot.children.single()) {
-      assertEquals("key", key)
-      assertEquals(PropsRenderingWorkflow::class.java.name, snapshot.workflowType)
-      assertEquals("child props", snapshot.props)
-      assertEquals("starting:child props", snapshot.state)
-      assertEquals(
-          "props:child props\n" +
-              "state:starting:child props",
-          snapshot.rendering
-      )
-      assertTrue(snapshot.children.isEmpty())
-    }
   }
 
-  @Test fun `tick generates debug update from worker`() {
-    val worker = Worker.from { "output" }
-
-    class TestWorkflow : StringWorkflow() {
-      override fun initialState(
-        props: String,
-        snapshot: Snapshot?
-      ): String = props
-
-      override fun render(
-        props: String,
-        state: String,
-        context: RenderContext<String, String>
-      ): String {
-        context.runningWorker(worker, key = "key") {
-          noAction()
-        }
-        return "$props $state"
-      }
-    }
-
-    val workflow = TestWorkflow()
-    val node = WorkflowNode(
-        workflow.id(key = "key"),
-        workflow,
-        initialProps = "initial props",
-        snapshot = null,
-        baseContext = Unconfined
+  @Test fun `emits started diagnostic event restored from snapshot`() {
+    val listener = RecordingDiagnosticListener()
+    val workflow = Workflow.stateful<String, String, Nothing, String>(
+        initialState = { props, _ -> "($props:)" },
+        render = { state, props -> "($props:$state)" },
+        onPropsChanged = { old, new, state -> "($old:$new:$state)" },
+        snapshot = { Snapshot.EMPTY }
     )
-    node.render(workflow, "props")
-
-    val output = runBlocking {
-      select<OutputEnvelope<WorkflowUpdateDebugInfo>> {
-        node.tick(this) { envelope ->
-          OutputEnvelope(envelope.debugInfo, envelope.debugInfo)
+    // TODO use a valid snapshot
+    val snapshot = Buffer()
+        .apply {
+          writeByteStringWithLength("state".encodeUtf8())
+          // No children snapshots.
+          writeInt(0)
         }
-      }
-    }
+        .readByteString()
 
-    val debugInfo = output.output!!
-    val kind = debugInfo.kind as Kind.Updated
-    val source = kind.source as Source.Worker
-    assertEquals(TestWorkflow::class.java.name, debugInfo.workflowType)
-    assertEquals("key", source.key)
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = "props",
+        snapshot = snapshot,
+        baseContext = Unconfined,
+        parentDiagnosticId = 42,
+        diagnosticListener = listener
+    )
+
+    assertEquals(
+        listOf(
+            "onWorkflowStarted(${node.diagnosticId}, 42," +
+                " ${workflow.id().typeDebugString}," +
+                " , props, (props:), true)"
+        ),
+        listener.consumeEvents()
+    )
   }
 
-  @Test fun `tick generates debug update from event`() {
-    class TestWorkflow : StatelessWorkflow<Unit, Nothing, () -> Unit>() {
-      override fun render(
-        props: Unit,
-        context: RenderContext<Nothing, Nothing>
-      ): () -> Unit {
-        val sink: Sink<Unit> = context.makeEventSink { null }
-        return { sink.send(Unit) }
-      }
-    }
-
-    val workflow = TestWorkflow()
+  @Test fun `emits stopped diagnostic event`() {
+    val listener = RecordingDiagnosticListener()
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> { }
     val node = WorkflowNode(
-        workflow.id(key = "key"),
+        workflow.id(),
         workflow.asStatefulWorkflow(),
         initialProps = Unit,
         snapshot = null,
-        baseContext = Unconfined
+        baseContext = Unconfined,
+        parentDiagnosticId = 42,
+        diagnosticListener = listener
     )
-    val rendering = node.render(workflow.asStatefulWorkflow(), Unit)
-        .rendering
-    rendering()
+    listener.consumeEvents()
 
-    val output = runBlocking {
-      select<OutputEnvelope<WorkflowUpdateDebugInfo>> {
-        node.tick(this) { envelope ->
-          OutputEnvelope(envelope.debugInfo, envelope.debugInfo)
-        }
-      }
-    }
+    node.cancel()
 
-    val debugInfo = output.output!!
-    val kind = debugInfo.kind as Kind.Updated
-    assertEquals(TestWorkflow::class.java.name, debugInfo.workflowType)
-    assertTrue(kind.source is Source.Sink)
+    assertEquals(listOf("onWorkflowStopped(${node.diagnosticId})"), listener.consumeEvents())
   }
 
-  @Test fun `tick generates debug update from child`() {
-    val childWorker = Worker.from { "hello" }
-    val child = Workflow.stateless<String, String, Unit> {
-      runningWorker(childWorker, key = "worker key") { WorkflowAction { it } }
-    }
-
-    class TestWorkflow : StringWorkflow() {
-      override fun initialState(
-        props: String,
-        snapshot: Snapshot?
-      ): String = props
-
-      override fun render(
-        props: String,
-        state: String,
-        context: RenderContext<String, String>
-      ): String {
-        val rendering = context.renderChild(child, "child props", key = "child key") {
-          WorkflowAction { it }
-        }
-        return "$props $state $rendering"
-      }
-    }
-
-    val workflow = TestWorkflow()
-    val node = WorkflowNode(
-        workflow.id(key = "key"),
-        workflow,
-        initialProps = "initial props",
-        snapshot = null,
-        baseContext = Unconfined
-    )
-    node.render(workflow, "props")
-
-    val output = runBlocking {
-      select<OutputEnvelope<WorkflowUpdateDebugInfo>> {
-        node.tick(this) { envelope ->
-          OutputEnvelope(envelope.debugInfo, envelope.debugInfo)
-        }
-      }
-    }
-
-    val debugInfo = output.output!!
-    val kind = debugInfo.kind as Kind.Updated
-    val source = kind.source as Source.Subtree
-    assertEquals(TestWorkflow::class.java.name, debugInfo.workflowType)
-    assertEquals("child key", source.key)
-    assertEquals(child::class.java.name, source.childInfo.workflowType)
-  }
-
-  @Test fun `restore gets null snapshot when empty`() {
+  @Test fun `render emits diagnostic events`() {
+    val listener = RecordingDiagnosticListener()
     val workflow = Workflow.stateful<String, String, Nothing, String>(
-        initialState = { props, snapshot ->
-          assertNull(snapshot)
-          "no snapshot: $props"
-        },
-        render = { _, state -> state },
+        initialState = { props, _ -> "($props:)" },
+        render = { state, props -> "($props:$state)" },
+        onPropsChanged = { old, new, state -> "($old:$new:$state)" },
         snapshot = { Snapshot.EMPTY }
     )
-    val originalNode = WorkflowNode(
+    val node = WorkflowNode(
         workflow.id(),
-        workflow,
-        initialProps = "initial props",
+        workflow.asStatefulWorkflow(),
+        initialProps = "props",
         snapshot = null,
-        baseContext = Unconfined
+        baseContext = Unconfined,
+        parentDiagnosticId = 42,
+        diagnosticListener = listener
     )
+    listener.consumeEvents()
 
-    assertEquals("no snapshot: initial props", originalNode.render(workflow, "foo").rendering)
-    val snapshot = originalNode.snapshot(workflow)
-        .bytes
-    assertNotEquals(0, snapshot.size)
+    node.render(workflow.asStatefulWorkflow(), "props")
 
-    val restoredNode = WorkflowNode(
+    assertEquals(
+        listOf(
+            "onPropsChanged(${node.diagnosticId}, props, props, (props:), (props:props:(props:)))",
+            "onBeforeWorkflowRendered(${node.diagnosticId}, props, (props:props:(props:)))",
+            "onAfterWorkflowRendered(${node.diagnosticId}, ((props:props:(props:)):props))"
+        ), listener.consumeEvents()
+    )
+  }
+
+  @Test fun `tick emits diagnostic events for worker`() {
+    val listener = RecordingDiagnosticListener()
+    val channel = Channel<String>()
+    val action = object : WorkflowAction<String, String> {
+      override fun toString(): String = "TestAction"
+      override fun Mutator<String>.apply(): String? = "action output"
+    }
+    val workflow = Workflow.stateful<String, String, String, String>(
+        initialState = { props, _ -> "($props:)" },
+        render = { state, props ->
+          runningWorker(channel.asWorker()) { action }
+          "($props:$state)"
+        },
+        onPropsChanged = { old, new, state -> "($old:$new:$state)" },
+        snapshot = { Snapshot.EMPTY }
+    )
+    val node = WorkflowNode(
         workflow.id(),
-        workflow,
-        // These props should be ignored, since snapshot is non-null.
-        initialProps = "new props",
-        snapshot = snapshot,
-        baseContext = Unconfined
+        workflow.asStatefulWorkflow(),
+        initialProps = "props",
+        snapshot = null,
+        baseContext = Unconfined,
+        parentDiagnosticId = 42,
+        diagnosticListener = listener
     )
-    assertEquals("no snapshot: new props", restoredNode.render(workflow, "foo").rendering)
+    node.render(workflow.asStatefulWorkflow(), "props")
+    listener.consumeEvents()
+
+    runBlocking {
+      // Do the select in a separate coroutine so we can check the events before and after the
+      // update.
+      launch(start = UNDISPATCHED) {
+        select<String?> {
+          node.tick(this) { null }
+        }
+      }
+      yield()
+      assertEquals(emptyList(), listener.consumeEvents())
+
+      channel.send("foo")
+    }
+
+    assertTrue(
+        """onWorkerOutput\(\d+, ${node.diagnosticId}, foo\)""".toRegex()
+            .matches(listener.consumeNextEvent())
+    )
+    assertEquals(
+        listOf(
+            "onWorkflowAction(${node.diagnosticId}, TestAction, (props:props:(props:))," +
+                " (props:props:(props:)), action output)"
+        ), listener.consumeEvents()
+    )
+  }
+
+  @Test fun `tick emits diagnostic events for sink`() {
+    val listener = RecordingDiagnosticListener()
+    fun action(value: String) = object : WorkflowAction<String, String> {
+      override fun toString(): String = "TestAction"
+      override fun Mutator<String>.apply(): String? {
+        state = "state: $value"
+        return "output: $value"
+      }
+    }
+
+    val workflow = Workflow.stateful<String, String, String, (String) -> Unit>(
+        initialState = { props, _ -> "($props:)" },
+        render = { _, _ ->
+          val sink = makeActionSink<WorkflowAction<String, String>>()
+          return@stateful { sink.send(action(it)) }
+        },
+        onPropsChanged = { old, new, state -> "($old:$new:$state)" },
+        snapshot = { Snapshot.EMPTY }
+    )
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = "props",
+        snapshot = null,
+        baseContext = Unconfined,
+        parentDiagnosticId = 42,
+        diagnosticListener = listener
+    )
+    val rendering = node.render(workflow.asStatefulWorkflow(), "props")
+    listener.consumeEvents()
+
+    runBlocking {
+      // Do the select in a separate coroutine so we can check the events before and after the
+      // update.
+      launch(start = UNDISPATCHED) {
+        select<String?> {
+          node.tick(this) { null }
+        }
+      }
+      yield()
+      assertEquals(emptyList(), listener.consumeEvents())
+
+      rendering.invoke("foo")
+    }
+
+    assertEquals(
+        listOf(
+            "onSinkReceived(${node.diagnosticId}, TestAction)",
+            "onWorkflowAction(${node.diagnosticId}, TestAction, (props:props:(props:))," +
+                " state: foo, output: foo)"
+        ), listener.consumeEvents()
+    )
   }
 }
