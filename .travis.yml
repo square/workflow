@@ -90,6 +90,8 @@ matrix:
         - ./gradlew clean
         - ./gradlew build  --stacktrace
         - ./gradlew assembleAndroidTest --stacktrace
+        # Don't need to run the benchmarks but build them to ensure they don't get broken.
+        - ./gradlew jmhJar
 
       before_script:
         - android-wait-for-emulator
