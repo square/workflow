@@ -64,7 +64,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    * continues to listen to the worker after it finishes.
    */
   private class WorkerSession(
-    val channel: ReceiveChannel<*>,
+    val channel: ReceiveChannel<ValueOrDone<*>>,
     var tombstone: Boolean = false
   )
 
@@ -182,14 +182,14 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
         .filter { (_, session) -> !session.tombstone }
         .forEach { (case, session) ->
           with(selector) {
-            session.channel.onReceiveOrClosed { valueOrClosed ->
-              if (valueOrClosed.isClosed) {
+            session.channel.onReceive { valueOrDone ->
+              if (valueOrDone.isDone) {
                 // Set the tombstone flag so we don't continue to listen to the subscription.
                 session.tombstone = true
                 // Nothing to do on close other than update the session, so don't emit any output.
-                return@onReceiveOrClosed null
+                return@onReceive null
               } else {
-                val update = case.acceptUpdate(valueOrClosed.value)
+                val update = case.acceptUpdate(valueOrDone.value)
                 acceptUpdate(update)
               }
             }
