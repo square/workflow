@@ -64,7 +64,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    * [WorkflowDiagnosticListener]s. The object's hashcode is used as the ID, and the object is help onto
    * by the session to ensure uniqueness across the lifetime of the worker.
    */
-  private class WorkerSession(
+  private data class WorkerSession(
     val debugIdReservation: Any,
     val channel: ReceiveChannel<*>,
     var tombstone: Boolean = false
@@ -179,24 +179,57 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     // Listen for any child workflow updates.
     subtreeManager.tickChildren(selector, ::acceptUpdate)
 
+    System.err.println("Render pass for $debugId, ticking ${workerTracker.lifetimes.size} workers…")
+
     // Listen for any subscription updates.
     workerTracker.lifetimes
         .filter { (_, session) -> !session.tombstone }
         .forEach { (case, session) ->
+          val loopToken = Any()
+          System.err.println("selecting on ${session.debugIdReservation}…\n\tloopToken=$loopToken")
+          var firstResume: Exception? = null
+
           with(selector) {
-            session.channel.onReceiveOrClosed { valueOrClosed ->
-              if (valueOrClosed.isClosed) {
-                // Set the tombstone flag so we don't continue to listen to the subscription.
-                session.tombstone = true
-                // Nothing to do on close other than update the session, so don't emit any output.
-                return@onReceiveOrClosed null
-              } else {
-                val update = case.acceptUpdate(valueOrClosed.value)
-                acceptUpdate(update)
+            try {
+              session.channel.onReceiveOrClosed { valueOrClosed ->
+                val selectToken = Any()
+
+                if (firstResume != null) {
+                  System.err.println("=============================================")
+                  System.err.println("*** DOUBLE RESUME DETECTED!! ***")
+                  System.err.println("First stack trace:")
+                  firstResume!!.printStackTrace(System.err)
+                  System.err.println("Second stack trace:")
+                  RuntimeException().printStackTrace(System.err)
+                  System.err.println("=============================================")
+                }
+                firstResume = RuntimeException()
+
+                if (valueOrClosed.isClosed) {
+                  System.err.println(
+                      "Worker was closed, tombstoning…\n\tsession=$session\n\tcase=$case\n\tloopToken=$loopToken\n\tselectToken=$selectToken"
+                  )
+                  // Set the tombstone flag so we don't continue to listen to the subscription.
+                  session.tombstone = true
+                  // Nothing to do on close other than update the session, so don't emit any output.
+                  return@onReceiveOrClosed null
+                } else {
+                  System.err.println(
+                      "Worker emitted an output, updating…\n\tsession=$session\n\tcase=$case\n" +
+                          "\tloopToken=$loopToken\n" +
+                          "\tselectToken=$selectToken"
+                  )
+                  val update = case.acceptUpdate(valueOrClosed.value)
+                  acceptUpdate(update)
+                }
               }
+            } catch (e: Throwable) {
+              System.err.println("Error: $e\n\tsession=$session\n\tloopToken=$loopToken\n")
+              throw e
             }
           }
         }
+    System.err.println("Done selecting on workers.")
 
     // Listen for any events.
     with(selector) {

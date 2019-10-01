@@ -101,31 +101,39 @@ internal object RealWorkflowLoop : WorkflowLoop {
           // Tick _might_ return an output, but if it returns null, it means the state or a child
           // probably changed, so we should re-render/snapshot and emit again.
           output = select {
-            // Stop trying to read from the inputs channel after it's closed.
-            if (!inputsClosed) {
-              // TODO(https://github.com/square/workflow/issues/512) Replace with receiveOrClosed.
-              @Suppress("EXPERIMENTAL_API_USAGE", "DEPRECATION")
-              inputsChannel.onReceiveOrNull { newInput ->
-                diagnosticListener?.onPropsChanged(null, input, newInput, null, null)
-                if (newInput == null) {
-                  inputsClosed = true
-                } else {
-                  input = newInput
+            try {
+              // Stop trying to read from the inputs channel after it's closed.
+              if (!inputsClosed) {
+                // TODO(https://github.com/square/workflow/issues/512) Replace with receiveOrClosed.
+                @Suppress("EXPERIMENTAL_API_USAGE", "DEPRECATION")
+                inputsChannel.onReceiveOrNull { newInput ->
+                  diagnosticListener?.onPropsChanged(null, input, newInput, null, null)
+                  if (newInput == null) {
+                    inputsClosed = true
+                  } else {
+                    input = newInput
+                  }
+                  // No output. Returning from the select will go to the top of the loop to do another
+                  // render pass.
+                  return@onReceiveOrNull null
                 }
-                // No output. Returning from the select will go to the top of the loop to do another
-                // render pass.
-                return@onReceiveOrNull null
               }
-            }
 
-            // Tick the workflow tree.
-            rootNode.tick(this) { it }
+              // Tick the workflow tree.
+              rootNode.tick(this) { it }
+            } catch (e: Throwable) {
+              e.printStackTrace()
+              throw e
+            }
           }
         }
         // Compiler gets confused, and thinks both that this throw is unreachable, and without the
         // throw that the infinite while loop will exit normally and thus need a return statement.
         @Suppress("UNREACHABLE_CODE", "ThrowableNotThrown")
         throw AssertionError()
+      } catch (e: Throwable) {
+        e.printStackTrace()
+        throw e
       } finally {
         // There's a potential race condition if the producer coroutine is cancelled before it has a
         // chance to enter the try block, since we can't use CoroutineStart.ATOMIC. However, until we

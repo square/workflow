@@ -17,6 +17,7 @@ package com.squareup.sample.dungeon
 
 import android.os.Vibrator
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State
+import com.squareup.sample.dungeon.DungeonAppWorkflow.State.GameOver
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State.Loading
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State.Running
 import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
@@ -25,7 +26,11 @@ import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.runningWorker
+import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.ui.AlertContainerScreen
+import com.squareup.workflow.ui.AlertScreen
+import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
 import com.squareup.workflow.workflowAction
 
 private typealias BoardPath = String
@@ -34,11 +39,12 @@ class DungeonAppWorkflow(
   private val gameWorkflow: GameWorkflow,
   private val vibrator: Vibrator,
   private val boardLoader: BoardLoader
-) : StatefulWorkflow<BoardPath, State, Nothing, Any>() {
+) : StatefulWorkflow<BoardPath, State, Nothing, AlertContainerScreen<Any>>() {
 
   sealed class State {
     object Loading : State()
     data class Running(val board: Board) : State()
+    data class GameOver(val board: Board) : State()
   }
 
   override fun initialState(
@@ -50,16 +56,32 @@ class DungeonAppWorkflow(
     props: BoardPath,
     state: State,
     context: RenderContext<State, Nothing>
-  ): Any {
+  ): AlertContainerScreen<Any> {
     return when (state) {
       Loading -> {
         context.runningWorker(boardLoader.load(props)) { startRunning(it) }
-        Loading
+        AlertContainerScreen(Loading)
       }
 
       is Running -> {
         val gameInput = GameWorkflow.Props(state.board)
-        context.renderChild(gameWorkflow, gameInput) { handleGameOutput(it) }
+        val gameScreen = context.renderChild(gameWorkflow, gameInput) { handleGameOutput(it) }
+        AlertContainerScreen(gameScreen)
+      }
+
+      is GameOver -> {
+        val gameInput = GameWorkflow.Props(state.board)
+        val gameScreen = context.renderChild(gameWorkflow, gameInput) { noAction() }
+
+        val sink = context.makeActionSink<WorkflowAction<State, Nothing>>()
+        val gameOverDialog = AlertScreen(
+            buttons = mapOf(POSITIVE to "Restart"),
+            message = "You've been eaten, try again.",
+            cancelable = false,
+            onEvent = { sink.send(restartGame()) }
+        )
+
+        AlertContainerScreen(gameScreen, gameOverDialog)
       }
     }
   }
@@ -82,6 +104,11 @@ class DungeonAppWorkflow(
         vibrate(1000)
       }
     }
+    return@workflowAction null
+  }
+
+  private fun restartGame() = workflowAction {
+    state = Loading
     return@workflowAction null
   }
 

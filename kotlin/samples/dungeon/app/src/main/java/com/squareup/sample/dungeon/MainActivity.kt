@@ -39,8 +39,7 @@ class MainActivity : AppCompatActivity() {
           workflow = component.appWorkflow,
           viewRegistry = component.viewRegistry,
           props = "simple_maze.txt",
-          diagnosticListener = SimpleLoggingDiagnosticListener()
-              .andThen(TracingDiagnosticListener(traceFile))
+          diagnosticListener = TracingDiagnosticListener(traceFile)
       )
     }
   }
