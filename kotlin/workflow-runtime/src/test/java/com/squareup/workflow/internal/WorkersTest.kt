@@ -24,10 +24,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.yield
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class WorkersTest {
@@ -58,11 +60,11 @@ class WorkersTest {
       yield()
       assertEquals(1, counter.getAndIncrement())
 
-      assertEquals("a", workerOutputs.poll())
+      assertEquals("a", workerOutputs.poll()!!.value)
       yield()
       assertEquals(3, counter.getAndIncrement())
 
-      assertEquals("b", workerOutputs.poll())
+      assertEquals("b", workerOutputs.poll()!!.value)
       yield()
       assertEquals(6, counter.getAndIncrement())
 
@@ -94,6 +96,65 @@ class WorkersTest {
       yield()
 
       assertEquals("onWorkerStopped(0, 1)", listener.consumeNextEvent())
+      // Read the last event so the scope can complete.
+      assertTrue(outputs.receive().isDone)
     }
   }
+
+  @Test fun `emits done when complete immediately`() {
+    val channel = Channel<String>(capacity = 1)
+
+    runBlocking {
+      val workerOutputs = launchWorker(channel.asWorker(), 0, 0, null)
+      assertTrue(workerOutputs.isEmpty)
+
+      channel.close()
+      assertTrue(workerOutputs.receive().isDone)
+    }
+  }
+
+  @Test fun `emits done when complete after sending`() {
+    val channel = Channel<String>(capacity = 1)
+
+    runBlocking {
+      val workerOutputs = launchWorker(channel.asWorker(), 0, 0, null)
+      assertTrue(workerOutputs.isEmpty)
+
+      channel.send("foo")
+      assertEquals("foo", workerOutputs.receive().value)
+
+      channel.close()
+      assertTrue(workerOutputs.receive().isDone)
+    }
+  }
+
+  @Test fun `does not emit done when failed`() {
+    val channel = Channel<String>(capacity = 1)
+
+    runBlocking {
+      // Needed so that cancelling the channel doesn't cancel our job, which means receive will
+      // throw the JobCancellationException instead of the actual channel failure.
+      supervisorScope {
+        val workerOutputs = launchWorker(channel.asWorker(), 0, 0, null)
+        assertTrue(workerOutputs.isEmpty)
+
+        channel.close(ExpectedException())
+        assertFailsWith<ExpectedException> { workerOutputs.receive() }
+      }
+    }
+  }
+
+  @Test fun `completes after emitting done`() {
+    val channel = Channel<String>(capacity = 1)
+
+    runBlocking {
+      val workerOutputs = launchWorker(channel.asWorker(), 0, 0, null)
+      channel.close()
+      assertTrue(workerOutputs.receive().isDone)
+
+      assertTrue(channel.isClosedForReceive)
+    }
+  }
+
+  private class ExpectedException : RuntimeException()
 }

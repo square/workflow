@@ -12,13 +12,11 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.reduce
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class WorkerStressTest {
 
-  @Ignore("https://github.com/square/workflow/issues/626")
   @UseExperimental(ExperimentalCoroutinesApi::class)
   @Test fun `multiple subscriptions to single channel when closed`() {
     val channel = Channel<Unit>()

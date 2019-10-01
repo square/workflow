@@ -41,8 +41,9 @@ internal fun <T> CoroutineScope.launchWorker(
   workerDiagnosticId: Long,
   workflowDiagnosticId: Long,
   diagnosticListener: WorkflowDiagnosticListener?
-): ReceiveChannel<T> = worker.run()
+): ReceiveChannel<ValueOrDone<T>> = worker.run()
     .wireUpDebugger(workerDiagnosticId, workflowDiagnosticId, diagnosticListener)
+    .transformToValueOrDone()
     .catch { e ->
       // Workers that failed (as opposed to just cancelled) should have their failure reason
       // re-thrown from the workflow runtime. If we don't unwrap the cause here, they'll just
@@ -73,4 +74,36 @@ private fun <T> Flow<T>.wireUpDebugger(
       diagnosticListener.onWorkerStopped(workerDiagnosticId, workflowDiagnosticId)
     }
   }
+}
+
+/**
+ * Pretend we can use ReceiveChannel.onReceiveOrClosed.
+ *
+ * See https://github.com/Kotlin/kotlinx.coroutines/issues/1584 and
+ * https://github.com/square/workflow/issues/626.
+ */
+internal class ValueOrDone<out T> private constructor(private val _value: Any?) {
+
+  val isDone: Boolean get() = this === Done
+
+  @Suppress("UNCHECKED_CAST")
+  val value: T
+    get() {
+      check(!isDone)
+      return _value as T
+    }
+
+  companion object {
+    private val Done = ValueOrDone<Nothing>(null)
+
+    fun <T> value(value: T): ValueOrDone<T> = ValueOrDone(value)
+    fun done(): ValueOrDone<Nothing> = Done
+  }
+}
+
+private fun <T> Flow<T>.transformToValueOrDone(): Flow<ValueOrDone<T>> = flow {
+  collect {
+    emit(ValueOrDone.value(it))
+  }
+  emit(ValueOrDone.done())
 }
