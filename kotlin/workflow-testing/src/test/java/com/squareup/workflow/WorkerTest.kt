@@ -231,7 +231,7 @@ class WorkerTest {
   }
 
   @Test fun `finished worker is equivalent to self`() {
-    assertTrue(Worker.finished<Unit>().doesSameWorkAs(Worker.finished<String>()))
+    assertTrue(Worker.finished().doesSameWorkAs(Worker.finished()))
   }
 
   @Test fun `transformed workers are equivalent with equivalent source`() {

@@ -184,7 +184,7 @@ interface Worker<out OutputT> {
     /**
      * Returns a [Worker] that finishes immediately without emitting anything.
      */
-    fun <OutputT> finished(): Worker<OutputT> = FinishedWorker
+    fun finished(): Worker<Nothing> = FinishedWorker
 
     /**
      * Creates a [Worker] from a function that returns a single value.
