@@ -19,6 +19,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.sample.todo.TodoListsAppWorkflow
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
+import com.squareup.workflow.diagnostic.andThen
+import com.squareup.workflow.diagnostic.tracing.TracingDiagnosticListener
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
@@ -36,10 +38,12 @@ class MainActivity : AppCompatActivity() {
     rootWorkflow = lastCustomNonConfigurationInstance as? TodoListsAppWorkflow
         ?: TodoListsAppWorkflow()
 
+    val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-todo.json")!!
     workflowRunner = setContentWorkflow(savedInstanceState) {
       WorkflowRunner.Config(
           rootWorkflow, viewRegistry,
           diagnosticListener = SimpleLoggingDiagnosticListener()
+              .andThen(TracingDiagnosticListener(traceFile))
       )
     }
   }

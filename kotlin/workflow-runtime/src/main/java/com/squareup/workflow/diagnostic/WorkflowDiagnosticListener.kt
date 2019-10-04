@@ -155,7 +155,10 @@ interface WorkflowDiagnosticListener {
    * Corresponds to [onRuntimeStopped].
    */
   @VeryExperimentalWorkflow
-  fun onRuntimeStarted(workflowScope: CoroutineScope) = Unit
+  fun onRuntimeStarted(
+    workflowScope: CoroutineScope,
+    rootWorkflowType: String
+  ) = Unit
 
   /**
    * Called after the runtime has been cancelled or failed, after all workflow-related coroutines
