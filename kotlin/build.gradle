@@ -42,7 +42,7 @@ buildscript {
   }
 
   ext.deps = [
-      'android_gradle_plugin': "com.android.tools.build:gradle:3.5.0",
+      'android_gradle_plugin': "com.android.tools.build:gradle:3.5.1",
 
       'androidx': [
           'activity': "androidx.activity:activity-ktx:1.0.0",
