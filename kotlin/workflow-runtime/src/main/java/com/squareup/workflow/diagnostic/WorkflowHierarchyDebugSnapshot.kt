@@ -16,6 +16,8 @@
 package com.squareup.workflow.diagnostic
 
 import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorkflow
+import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Serializable
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 /**
@@ -29,11 +31,12 @@ import kotlin.LazyThreadSafetyMode.PUBLICATION
  * @param children All the child workflows that were rendered by this workflow in the last render
  * pass. See [ChildWorkflow].
  */
+@Serializable
 data class WorkflowHierarchyDebugSnapshot(
   val workflowType: String,
-  val props: Any?,
-  val state: Any?,
-  val rendering: Any?,
+  @ContextualSerialization val props: Any?,
+  @ContextualSerialization val state: Any?,
+  @ContextualSerialization val rendering: Any?,
   val children: List<ChildWorkflow>,
   val workers: List<ChildWorker>
 ) {
@@ -45,6 +48,7 @@ data class WorkflowHierarchyDebugSnapshot(
    * @param key The string key that was used to render this child.
    * @param snapshot The [WorkflowHierarchyDebugSnapshot] that describes the state of this child.
    */
+  @Serializable
   data class ChildWorkflow(
     val key: String,
     val snapshot: WorkflowHierarchyDebugSnapshot
@@ -58,6 +62,7 @@ data class WorkflowHierarchyDebugSnapshot(
    * @param description A string that describes the worker. Includes the output of the worker's
    * `toString` method.
    */
+  @Serializable
   data class ChildWorker(
     val key: String,
     val description: String

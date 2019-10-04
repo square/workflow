@@ -75,6 +75,8 @@ buildscript {
               'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.kotlinCoroutines}"
           ],
           'moshi': "com.squareup.moshi:moshi-kotlin:${versions.moshiVersion}",
+          'serialization': "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.13.0",
+          'serializationPlugin': "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}",
           'reflect': "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
           'test': [
               'common': "org.jetbrains.kotlin:kotlin-test-common",
@@ -131,6 +133,7 @@ buildscript {
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
     classpath deps.mavenPublish
+    classpath deps.kotlin.serializationPlugin
   }
 
   repositories {

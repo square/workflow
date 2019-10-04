@@ -17,6 +17,8 @@ package com.squareup.workflow.diagnostic
 
 import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorker
 import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorkflow
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -141,5 +143,117 @@ class WorkflowHierarchyDebugSnapshotTest {
     """.trimIndent()
 
     assertEquals(expected, formatted)
+  }
+
+  @UseExperimental(UnstableDefault::class)
+  @Test fun serialization() {
+    val snapshot = WorkflowHierarchyDebugSnapshot(
+        "root type",
+        "root props",
+        "root state",
+        "root rendering",
+        children = listOf(
+            ChildWorkflow(
+                "first child",
+                WorkflowHierarchyDebugSnapshot(
+                    "first child type",
+                    "first child props",
+                    "first child state",
+                    "first child rendering",
+                    children = listOf(
+                        ChildWorkflow(
+                            "",
+                            WorkflowHierarchyDebugSnapshot(
+                                "nested child type",
+                                "nested child props",
+                                "nested child state",
+                                "nested child rendering",
+                                children = emptyList(),
+                                workers = emptyList()
+                            )
+                        )
+                    ),
+                    workers = emptyList()
+                )
+            ),
+            ChildWorkflow(
+                "second child",
+                WorkflowHierarchyDebugSnapshot(
+                    "second child type",
+                    "second child props",
+                    "second child state",
+                    "second child rendering",
+                    children = emptyList(),
+                    workers = emptyList()
+                )
+            )
+        ),
+        workers = listOf(
+            ChildWorker("first worker key", "first worker description"),
+            ChildWorker("", "second worker description")
+        )
+    )
+    val actual = Json.indented.stringify(WorkflowHierarchyDebugSnapshot.serializer(), snapshot)
+    val expected = """
+      {
+          "workflowType": "root type",
+          "props": "root props",
+          "state": "root state",
+          "rendering": "root rendering",
+          "children": [
+              {
+                  "key": "first child",
+                  "snapshot": {
+                      "workflowType": "first child type",
+                      "props": "first child props",
+                      "state": "first child state",
+                      "rendering": "first child rendering",
+                      "children": [
+                          {
+                              "key": "",
+                              "snapshot": {
+                                  "workflowType": "nested child type",
+                                  "props": "nested child props",
+                                  "state": "nested child state",
+                                  "rendering": "nested child rendering",
+                                  "children": [
+                                  ],
+                                  "workers": [
+                                  ]
+                              }
+                          }
+                      ],
+                      "workers": [
+                      ]
+                  }
+              },
+              {
+                  "key": "second child",
+                  "snapshot": {
+                      "workflowType": "second child type",
+                      "props": "second child props",
+                      "state": "second child state",
+                      "rendering": "second child rendering",
+                      "children": [
+                      ],
+                      "workers": [
+                      ]
+                  }
+              }
+          ],
+          "workers": [
+              {
+                  "key": "first worker key",
+                  "description": "first worker description"
+              },
+              {
+                  "key": "",
+                  "description": "second worker description"
+              }
+          ]
+      }
+    """.trimIndent()
+
+    assertEquals(expected, actual)
   }
 }

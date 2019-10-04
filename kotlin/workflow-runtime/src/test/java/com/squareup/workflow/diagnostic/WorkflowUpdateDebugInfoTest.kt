@@ -20,60 +20,144 @@ import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Updated
 import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Sink
 import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Subtree
 import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Worker
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@UseExperimental(UnstableDefault::class)
 class WorkflowUpdateDebugInfoTest {
 
+  private val passthroughUpdate = WorkflowUpdateDebugInfo(
+      "root type",
+      Passthrough(
+          "key",
+          WorkflowUpdateDebugInfo(
+              "child type",
+              Updated(Sink)
+          )
+      )
+  )
+
+  private val workerUpdate = WorkflowUpdateDebugInfo(
+      "root type",
+      Updated(Worker("key", "output"))
+  )
+
+  private val subtreeUpdate = WorkflowUpdateDebugInfo(
+      "root type",
+      Updated(
+          Subtree(
+              "key", "output",
+              WorkflowUpdateDebugInfo(
+                  "child type",
+                  Updated(Sink)
+              )
+          )
+      )
+  )
+
+  private val json = Json(
+      configuration = JsonConfiguration(prettyPrint = true),
+      context = WorkflowUpdateDebugInfo.serializationModule
+  )
+
   @Test fun `passthrough toDescriptionString`() {
-    val update = WorkflowUpdateDebugInfo(
-        "root type",
-        Passthrough(
-            "key",
-            WorkflowUpdateDebugInfo(
-                "child type",
-                Updated(Sink)
-            )
-        )
-    )
     val expected = """
       root type passing through from workflow[key=key]
       ↳ child type updated from sink
     """.trimIndent()
 
-    assertEquals(expected, update.toDescriptionString())
+    assertEquals(expected, passthroughUpdate.toDescriptionString())
   }
 
   @Test fun `updated worker toDescriptionString`() {
-    val update = WorkflowUpdateDebugInfo(
-        "root type",
-        Updated(Worker("key", "output"))
-    )
     val expected = """
       root type updated from worker[key=key]: output
     """.trimIndent()
 
-    assertEquals(expected, update.toDescriptionString())
+    assertEquals(expected, workerUpdate.toDescriptionString())
   }
 
   @Test fun `updated subtree toDescriptionString`() {
-    val update = WorkflowUpdateDebugInfo(
-        "root type",
-        Updated(
-            Subtree(
-                "key", "output",
-                WorkflowUpdateDebugInfo(
-                    "child type",
-                    Updated(Sink)
-                )
-            )
-        )
-    )
     val expected = """
       root type updated from workflow[key=key]: output
       ↳ child type updated from sink
     """.trimIndent()
 
-    assertEquals(expected, update.toDescriptionString())
+    assertEquals(expected, subtreeUpdate.toDescriptionString())
   }
+
+  @Test fun `passthrough serialization`() {
+    val actual = json.stringify(WorkflowUpdateDebugInfo.serializer(), passthroughUpdate)
+    val expected = """
+      {
+          "workflowType": "root type",
+          "kind": {
+              "type": "com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Passthrough",
+              "key": "key",
+              "childInfo": {
+                  "workflowType": "child type",
+                  "kind": {
+                      "type": "com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Updated",
+                      "source": {
+                          "type": "kotlin.collections.LinkedHashMap"
+                      }
+                  }
+              }
+          }
+      }
+    """.trimIndent()
+
+    assertEquals(expected, actual)
+  }
+
+  @Test fun `updated worker serialization`() {
+    val actual = json.stringify(WorkflowUpdateDebugInfo.serializer(), workerUpdate)
+    val expected = """
+      {
+          "workflowType": "root type",
+          "kind": {
+              "type": "com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Updated",
+              "source": {
+                  "type": "com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Worker",
+                  "key": "key",
+                  "output": "output"
+              }
+          }
+      }
+    """.trimIndent()
+
+    assertEquals(expected, actual)
+  }
+
+  @Test fun `updated subtree serialization`() {
+    val actual = json.stringify(WorkflowUpdateDebugInfo.serializer(), subtreeUpdate)
+    val expected = """
+      {
+          "workflowType": "root type",
+          "kind": {
+              "type": "com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Updated",
+              "source": {
+                  "type": "com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Subtree",
+                  "key": "key",
+                  "output": "output",
+                  "childInfo": {
+                      "workflowType": "child type",
+                      "kind": {
+                          "type": "com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind.Updated",
+                          "source": {
+                              "type": "kotlin.collections.LinkedHashMap"
+                          }
+                      }
+                  }
+              }
+          }
+      }
+    """.trimIndent()
+
+    assertEquals(expected, actual)
+  }
+
 }

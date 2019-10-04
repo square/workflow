@@ -22,6 +22,20 @@ import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source
 import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Sink
 import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Subtree
 import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source.Worker
+import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Decoder
+import kotlinx.serialization.Encoder
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialDescriptor
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decode
+import kotlinx.serialization.encode
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonObjectSerializer
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.plus
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 /**
@@ -33,9 +47,10 @@ import kotlin.LazyThreadSafetyMode.PUBLICATION
  *
  * When a workflow handles an update, the type of update is indicated by [Source].
  */
+@Serializable
 data class WorkflowUpdateDebugInfo(
   val workflowType: String,
-  val kind: Kind
+  @Polymorphic val kind: Kind
 ) {
 
   /**
@@ -54,17 +69,28 @@ data class WorkflowUpdateDebugInfo(
      * - A worker ([Source.Worker])
      * - A child workflow emitting an output ([Source.Subtree])
      */
-    data class Updated(val source: Source) : Kind()
+    @Serializable
+    data class Updated(@Polymorphic val source: Source) : Kind()
 
     /**
      * Indicates that one of this workflow's descendants executed a
      * `WorkflowAction`, but none of its immediate children emitted an output, so this workflow
      * didn't get directly notified about it.
      */
+    @Serializable
     data class Passthrough(
       val key: String,
       val childInfo: WorkflowUpdateDebugInfo
     ) : Kind()
+
+    companion object {
+      internal val serializationModule = SerializersModule {
+        polymorphic<Kind> {
+          addSubclass(Updated.serializer())
+          addSubclass(Passthrough.serializer())
+        }
+      }
+    }
   }
 
   /**
@@ -90,9 +116,10 @@ data class WorkflowUpdateDebugInfo(
      * @param key The string key of the worker that emitted the output.
      * @param output The value emitted from the worker.
      */
+    @Serializable
     data class Worker(
       val key: String,
-      val output: Any
+      @ContextualSerialization val output: Any
     ) : Source()
 
     /**
@@ -103,11 +130,23 @@ data class WorkflowUpdateDebugInfo(
      * @param output The value emitted from the child.
      * @param childInfo The [WorkflowUpdateDebugInfo] that describes the child's update.
      */
+    @Serializable
     data class Subtree(
       val key: String,
-      val output: Any,
+      @ContextualSerialization val output: Any,
       val childInfo: WorkflowUpdateDebugInfo
     ) : Source()
+
+    companion object {
+      @UseExperimental(ImplicitReflectionSerializer::class)
+      internal val serializationModule = SerializersModule {
+        polymorphic<Source> {
+          addSubclass(Sink::class, SinkSerializer)
+          addSubclass(Worker.serializer())
+          addSubclass(Subtree.serializer())
+        }
+      }
+    }
   }
 
   /**
@@ -129,6 +168,13 @@ data class WorkflowUpdateDebugInfo(
    * Generates a multi-line, recursive string describing the update.
    */
   fun toDescriptionString(): String = lazyDescription
+
+  companion object {
+    /**
+     * Use this module if you need to use kotlinx serialization to serialize/deserialize this type.
+     */
+    val serializationModule = Kind.serializationModule + Source.serializationModule
+  }
 }
 
 private fun StringBuilder.writeUpdate(update: WorkflowUpdateDebugInfo) {
@@ -163,5 +209,26 @@ private fun StringBuilder.writeUpdate(update: WorkflowUpdateDebugInfo) {
       append("↳ ")
       append(kind.childInfo.toDescriptionString())
     }
+  }
+}
+
+// TODO this is gross
+private object SinkSerializer : KSerializer<Sink> {
+  private val jsonObjectSerizlier = JsonObjectSerializer
+
+  override val descriptor: SerialDescriptor = jsonObjectSerizlier.descriptor
+
+  @UseExperimental(ImplicitReflectionSerializer::class)
+  override fun deserialize(decoder: Decoder): Sink {
+    decoder.decode<JsonObject>()
+    return Sink
+  }
+
+  @UseExperimental(ImplicitReflectionSerializer::class)
+  override fun serialize(
+    encoder: Encoder,
+    obj: Sink
+  ) {
+    encoder.encode(JsonObject(emptyMap()))
   }
 }
