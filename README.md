@@ -17,6 +17,8 @@ this project becomes stable._
 While the API is not yet stable, this code is in heavy production use in Android and iOS
 apps with millions of users.
 
+<iframe title="vimeo-player" src="https://player.vimeo.com/video/362741019" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
 ## Using Workflows in your project
 
 ### Swift
