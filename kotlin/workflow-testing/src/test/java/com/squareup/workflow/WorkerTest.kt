@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
@@ -213,10 +214,12 @@ class WorkerTest {
   }
 
   @Test fun `timer emits and finishes after delay`() {
-    val worker = Worker.timer(1000)
     val testDispatcher = TestCoroutineDispatcher()
+    val worker = Worker.timer(1000)
+        // Run the timer on the test dispatcher so we can control time.
+        .transform { it.flowOn(testDispatcher) }
 
-    worker.test(context = testDispatcher) {
+    worker.test {
       assertNoOutput()
       assertNotFinished()
 

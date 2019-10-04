@@ -19,17 +19,16 @@ package com.squareup.workflow.testing
 
 import com.squareup.workflow.Worker
 import com.squareup.workflow.testing.WorkflowTester.Companion.DEFAULT_TIMEOUT_MS
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withTimeout
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.yield
 
 interface WorkerTester<T> {
 
@@ -68,66 +67,59 @@ interface WorkerTester<T> {
 
 /**
  * Test a [Worker] by defining assertions on its output within [block].
- *
- * If you need to control time (e.g. your worker uses `delay()`), create a
- * [TestCoroutineDispatcher][kotlinx.coroutines.test.TestCoroutineDispatcher] and pass it as
- * [context].
  */
 fun <T> Worker<T>.test(
   timeoutMs: Long = DEFAULT_TIMEOUT_MS,
-  context: CoroutineContext = EmptyCoroutineContext,
   block: suspend WorkerTester<T>.() -> Unit
 ) {
-  runBlocking(context) {
-    val internalJob = CompletableDeferred<Job>()
-    val channel: ReceiveChannel<T> = produce(SupervisorJob()) {
-      internalJob.complete(coroutineContext[Job]!!)
-      run().collect { send(it) }
-    }
+  runBlocking {
+    supervisorScope {
+      val channel: ReceiveChannel<T> = run().produceIn(this + Unconfined)
 
-    val tester = object : WorkerTester<T> {
-      override suspend fun nextOutput(): T = channel.receive()
+      val tester = object : WorkerTester<T> {
+        override suspend fun nextOutput(): T = channel.receive()
 
-      override fun assertNoOutput() {
-        if (!channel.isEmpty) {
-          throw AssertionError("Expected no output to have been emitted.")
+        override fun assertNoOutput() {
+          if (!channel.isEmpty) {
+            throw AssertionError("Expected no output to have been emitted.")
+          }
         }
-      }
 
-      override suspend fun assertFinished() {
-        try {
+        override suspend fun assertFinished() {
+          try {
+            val output = channel.receive()
+            throw AssertionError("Expected Worker to finish, but emitted output: $output")
+          } catch (e: ClosedReceiveChannelException) {
+            // Expected.
+          }
+        }
+
+        override fun assertNotFinished() {
+          if (channel.isClosedForReceive) {
+            throw AssertionError("Expected Worker to not be finished.")
+          }
+        }
+
+        override suspend fun getException(): Throwable = try {
           val output = channel.receive()
-          throw AssertionError("Expected Worker to finish, but emitted output: $output")
-        } catch (e: ClosedReceiveChannelException) {
-          // Expected.
+          throw AssertionError("Expected Worker to throw an exception, but emitted output: $output")
+        } catch (e: Throwable) {
+          e
+        }
+
+        override suspend fun cancelWorker() {
+          channel.cancel()
         }
       }
 
-      override fun assertNotFinished() {
-        if (channel.isClosedForReceive) {
-          throw AssertionError("Expected Worker to not be finished.")
-        }
+      // Yield to let the produce coroutine start, since we can't specify UNDISPATCHED.
+      yield()
+
+      withTimeout(timeoutMs) {
+        block(tester)
       }
 
-      override suspend fun getException(): Throwable = try {
-        val output = channel.receive()
-        throw AssertionError("Expected Worker to throw an exception, but emitted output: $output")
-      } catch (e: Throwable) {
-        e
-      }
-
-      override suspend fun cancelWorker() {
-        val job = internalJob.await()
-        channel.cancel()
-        job.join()
-      }
-    }
-
-    withTimeout(timeoutMs) {
-      // Wait for the worker coroutine to start, in case the worker is hot.
-      // This is necessary because produce doesn't let us specify CoroutineStart.UNDISPATCHED.
-      internalJob.await()
-      block(tester)
+      coroutineContext.cancelChildren()
     }
   }
 }
