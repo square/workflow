@@ -16,7 +16,8 @@
 
 /*
  * To generate and publish kdoc for a new module:
- *  - Apply either the 'org.jetbrains.dokka' or 'org.jetbrains.dokka-android' plugin.
+TODO now that there's only one plugin we can do this automatically in this script
+ *  - Apply the 'org.jetbrains.dokka' plugin.
  *  - Include this file with
  *      apply from: rootProject.file('.buildscript/configure-dokka.gradle')
  */
@@ -27,15 +28,18 @@ afterEvaluate { project ->
   project.tasks.dokka {
     outputDirectory = "$rootDir/../docs/kotlin/api"
     outputFormat = 'gfm'
-    reportUndocumented = false
-    skipDeprecated = true
-    jdkVersion = 8
-    packageOptions {
-      prefix = "com.squareup.workflow.internal"
-      suppress = true
-    }
-    if (project.file('Module.md').exists()) {
-      includes = ['Module.md']
+
+    configuration {
+      reportUndocumented = false
+      skipDeprecated = true
+      jdkVersion = 8
+      perPackageOption {
+        prefix = "com.squareup.workflow.internal"
+        suppress = true
+      }
+      if (project.file('Module.md').exists()) {
+        includes = ['Module.md']
+      }
     }
   }
 }

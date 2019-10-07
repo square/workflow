@@ -16,7 +16,7 @@
 buildscript {
   ext.versions = [
       'targetSdk': 29,
-      'dokka': '0.9.18',
+      'dokka': '0.10.0',
       'espresso': '3.1.0',
       'jmh': '1.21',
       'kotlin': '1.3.50',
@@ -83,7 +83,6 @@ buildscript {
               'mockito': "com.nhaarman:mockito-kotlin-kt1.1:1.6.0"
           ]
       ],
-      'dokkaAndroid': "org.jetbrains.dokka:dokka-android-gradle-plugin:${versions.dokka}",
       'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
       'jmh': [
           'gradlePlugin': "me.champeau.gradle:jmh-gradle-plugin:0.5.0-rc-2",
@@ -126,7 +125,6 @@ buildscript {
     classpath deps.android_gradle_plugin
     classpath deps.detekt
     classpath deps.dokka
-    classpath deps.dokkaAndroid
     classpath deps.jmh.gradlePlugin
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
