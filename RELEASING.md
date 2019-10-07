@@ -227,8 +227,12 @@ SONATYPE_NEXUS_PASSWORD=<password>
 
 #### Snapshot Releases
 
-To deploy a new snapshot release, you don't need to update any properties. Just run:
+Double-check that `gradle.properties` correctly contains the `-SNAPSHOT` suffix, then upload
+snapshot artifacts to Sonatype just like you would for a production release:
 
 ```bash
-./gradlew clean uploadArchives
+./gradlew clean build && ./gradlew uploadArchives --no-parallel --no-daemon
 ```
+
+You can verify the artifacts are available by visiting
+https://oss.sonatype.org/content/repositories/snapshots/com/squareup/workflow/.
