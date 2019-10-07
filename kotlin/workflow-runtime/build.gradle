@@ -31,5 +31,5 @@ dependencies {
   api deps.kotlin.coroutines.core
 
   testImplementation deps.kotlin.test.jdk
-  testImplementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
+  testImplementation deps.kotlin.reflect
 }
