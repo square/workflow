@@ -113,11 +113,10 @@ interface Worker<out OutputT> {
   /**
    * Returns a [Flow] to execute the work represented by this worker.
    *
-   * The [Flow] is invoked in the context of the workflow runtime. When this [Worker], its parent
+   * The [Flow] is collected in the context of the workflow runtime. When this [Worker], its parent
    * [Workflow], or any ancestor [Workflow]s are torn down, the coroutine in which this [Flow] is
    * being collected will be cancelled.
    */
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   fun run(): Flow<OutputT>
 
   /**
@@ -156,7 +155,7 @@ interface Worker<out OutputT> {
      * Note: If your worker just needs to perform side effects and doesn't need to emit anything,
      * use [createSideEffect] instead (since `Nothing` can't be used as a reified type parameter).
      */
-    @UseExperimental(ExperimentalTypeInference::class, ExperimentalCoroutinesApi::class)
+    @UseExperimental(ExperimentalTypeInference::class)
     inline fun <reified OutputT> create(
       @BuilderInference noinline block: suspend FlowCollector<OutputT>.() -> Unit
     ): Worker<OutputT> = flow(block).asWorker()
@@ -176,7 +175,6 @@ interface Worker<out OutputT> {
      * }
      * ```
      */
-    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun createSideEffect(
       block: suspend () -> Unit
     ): Worker<Nothing> = TypedWorker(Nothing::class, flow { block() })
@@ -194,7 +192,7 @@ interface Worker<out OutputT> {
      * The returned [Worker] will equate to any other workers created with any of the [Worker]
      * builder functions that have the same output type.
      */
-    @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    @UseExperimental(FlowPreview::class)
     inline fun <reified OutputT> from(noinline block: suspend () -> OutputT): Worker<OutputT> =
       block.asFlow().asWorker()
 
@@ -205,7 +203,6 @@ interface Worker<out OutputT> {
      * The returned [Worker] will equate to any other workers created with any of the [Worker]
      * builder functions that have the same output type.
      */
-    @UseExperimental(ExperimentalCoroutinesApi::class)
     inline fun <reified OutputT : Any> fromNullable(
         // This could be crossinline, but there's a coroutines bug that will cause the coroutine
         // to immediately resume on suspension inside block when it is crossinline.
@@ -231,7 +228,6 @@ interface Worker<out OutputT> {
 /**
  * Returns a [Worker] that will, when performed, emit whatever this [Flow] receives.
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
 inline fun <reified OutputT> Flow<OutputT>.asWorker(): Worker<OutputT> =
   TypedWorker(OutputT::class, this)
 
