@@ -25,6 +25,26 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  *
  * A [Worker] is stopped when its parent [Workflow] finishes a render pass without running the
  * worker, or when the parent workflow is itself torn down.
+ *
+ * This function is inline, and creates a unique (considered distinct by
+ * [doesSameWorkAs][LifecycleWorker.doesSameWorkAs]) worker at each _call site_.
+ */
+@Suppress("FunctionName")
+inline fun LifecycleWorker(
+  crossinline onStarted: () -> Unit = {},
+  crossinline onStopped: () -> Unit = {}
+): LifecycleWorker = object : LifecycleWorker() {
+  override fun onStarted() = onStarted.invoke()
+  override fun onStopped() = onStopped.invoke()
+}
+
+/**
+ * [Worker] that performs some action when the worker is started and/or stopped.
+ *
+ * A [Worker] is stopped when its parent [Workflow] finishes a render pass without running the
+ * worker, or when the parent workflow is itself torn down.
+ *
+ * By default, [doesSameWorkAs] treats all instances _of the same **concrete** type_ as equivalent.
  */
 abstract class LifecycleWorker : Worker<Nothing> {
 
