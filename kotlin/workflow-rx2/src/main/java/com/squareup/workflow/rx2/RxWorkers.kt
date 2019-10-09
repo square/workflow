@@ -26,6 +26,7 @@ import io.reactivex.Single
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx2.await
+import org.reactivestreams.Publisher
 
 /**
  * Creates a [Worker] from this [Observable].
@@ -41,9 +42,9 @@ inline fun <reified T : Any> Observable<out T?>.asWorker(): Worker<T> =
   this.toFlowable(BUFFER).asWorker()
 
 /**
- * Creates a [Worker] from this [Flowable].
+ * Creates a [Worker] from this [Publisher] ([Flowable] is a [Publisher]).
  *
- * The [Flowable] will be subscribed to when the [Worker] is started, and cancelled when it is
+ * The [Publisher] will be subscribed to when the [Worker] is started, and cancelled when it is
  * cancelled.
  *
  * RxJava doesn't allow nulls, but it can't express that in its types. The receiver type parameter
@@ -51,11 +52,11 @@ inline fun <reified T : Any> Observable<out T?>.asWorker(): Worker<T> =
  * platform nullability.
  */
 @UseExperimental(ExperimentalCoroutinesApi::class)
-inline fun <reified T : Any> Flowable<out T?>.asWorker(): Worker<T> =
+inline fun <reified T : Any> Publisher<out T?>.asWorker(): Worker<T> =
 // This cast works because RxJava types don't actually allow nulls, it's just that they can't
   // express that in their types because Java.
   @Suppress("UNCHECKED_CAST")
-  (this as Flowable<T>).asFlow().asWorker()
+  (this as Publisher<T>).asFlow().asWorker()
 
 /**
  * Creates a [Worker] from this [Maybe].

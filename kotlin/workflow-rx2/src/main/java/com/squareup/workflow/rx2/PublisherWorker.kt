@@ -6,16 +6,19 @@ import io.reactivex.Flowable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
+import org.reactivestreams.Publisher
 
 /**
- * An convenience implementation of [Worker] that is expressed in terms of Rx [Flowable] instead
- * of [Flow].
+ * An convenience implementation of [Worker] that is expressed in terms of Reactive Streams'
+ * [Publisher] instead of [Flow].
+ *
+ * If you're using RxJava, [Flowable] is a [Publisher].
  *
  * Subclassing this is equivalent to just implementing [Worker.run] directly and calling [asFlow]
- * on your [Flowable], but doesn't require you to add
+ * on your [Publisher], but doesn't require you to add
  * `@UseExperimental(ExperimentalCoroutinesApi::class)` to your code.
  */
-abstract class RxWorker<out OutputT : Any> : Worker<OutputT> {
+abstract class PublisherWorker<out OutputT : Any> : Worker<OutputT> {
 
   /**
    * Returns a [Flowable] to execute the work represented by this worker.
@@ -27,8 +30,8 @@ abstract class RxWorker<out OutputT : Any> : Worker<OutputT> {
    * its parent [Workflow], or any ancestor [Workflow]s are torn down, the subscription will be
    * [disposed][io.reactivex.disposables.Disposable.dispose].
    */
-  abstract fun runRx(): Flowable<out OutputT>
+  abstract fun runPublisher(): Publisher<out OutputT>
 
   @UseExperimental(ExperimentalCoroutinesApi::class)
-  final override fun run(): Flow<OutputT> = runRx().asFlow()
+  final override fun run(): Flow<OutputT> = runPublisher().asFlow()
 }
