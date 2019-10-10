@@ -49,21 +49,19 @@ abstract class ModalContainer<ModalRenderingT : Any>
   context: Context,
   attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet) {
+  init {
+    // Stub base view will be replaced by registry.
+    this.addView(View(context))
+  }
 
-  private val base: View? get() = getChildAt(0)
+  private val baseView: View get() = getChildAt(0)
 
   private var dialogs: List<DialogRef<ModalRenderingT>> = emptyList()
 
   protected lateinit var registry: ViewRegistry
 
   protected fun update(newScreen: HasModals<*, ModalRenderingT>) {
-    base?.takeIf { it.canShowRendering(newScreen.baseScreen) }
-        ?.showRendering(newScreen.baseScreen)
-        ?: run {
-          removeAllViews()
-          val newBase = registry.buildView(newScreen.baseScreen, this)
-          addView(newBase)
-        }
+    registry.updateView(baseView, newScreen.baseScreen)
 
     val newDialogs = mutableListOf<DialogRef<ModalRenderingT>>()
     for ((i, modal) in newScreen.modals.withIndex()) {
