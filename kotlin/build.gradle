@@ -53,7 +53,7 @@ buildscript {
           'lifecycleReactivestreams': "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.1.0",
           // Note that we're not using the actual androidx material dep yet, it's still alpha.
           'material': "com.google.android.material:material:1.0.0",
-          'transition': "androidx.transition:transition:1.1.0",
+          'transition': "androidx.transition:transition:1.2.0",
       ],
 
       'moshi': "com.squareup.moshi:moshi:${versions.moshiVersion}",
