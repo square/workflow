@@ -359,7 +359,6 @@ import Workflow
 import WorkflowUI
 import BackStackContainer
 import ReactiveSwift
-import Result
 
 
 // MARK: Input and Output

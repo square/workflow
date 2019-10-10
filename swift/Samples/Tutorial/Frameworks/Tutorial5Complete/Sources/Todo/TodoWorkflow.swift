@@ -17,7 +17,6 @@ import Workflow
 import WorkflowUI
 import BackStackContainer
 import ReactiveSwift
-import Result
 
 
 // MARK: Input and Output
@@ -133,7 +132,7 @@ extension TodoWorkflow {
 
         }
 
-        func run() -> SignalProducer<Output, NoError> {
+        func run() -> SignalProducer<Output, Never> {
             fatalError()
         }
 
