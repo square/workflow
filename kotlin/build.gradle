@@ -90,7 +90,8 @@ buildscript {
           'core': "org.openjdk.jmh:jmh-core:${versions.jmh}",
           'generator': "org.openjdk.jmh:jmh-generator-annprocess:${versions.jmh}",
       ],
-      // Source of "API 'variant.getJavaCompile()' is obsolete" warning, because of course it is.
+      // Source of "API 'variant.getJavaCompile()' is obsolete" warning, fixed in upcoming 0.9.0.
+      // See https://github.com/vanniktech/gradle-maven-publish-plugin/issues/67.
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:0.8.0",
       'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:5.1.0",
       'lanterna': "com.googlecode.lanterna:lanterna:3.0.1",
