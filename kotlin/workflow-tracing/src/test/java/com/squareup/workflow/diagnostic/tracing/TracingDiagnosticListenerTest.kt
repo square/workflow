@@ -38,6 +38,7 @@ import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import okio.buffer
 import okio.source
+import org.junit.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.ClockMark
@@ -47,6 +48,7 @@ import kotlin.time.ExperimentalTime
 @UseExperimental(ExperimentalCoroutinesApi::class)
 class TracingDiagnosticListenerTest {
 
+  @Ignore("https://github.com/square/workflow/issues/664")
   @Test fun `golden value`() {
     val buffer = Buffer()
     val memoryStats = object : MemoryStats {
