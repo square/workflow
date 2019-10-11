@@ -182,3 +182,18 @@ matrix:
         - swift build --verbose
       script:
         - swift test
+
+    - language: swift
+      name: "Swift - Tutorial - Cocoapods (Xcode 10.2)"
+      os: osx
+      osx_image: xcode10.2
+      xcode_workspace: Tutorial.xcworkspace
+      xcode_scheme: Tutorial
+      xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
+      before_install:
+        - gem update --system
+        - gem install bundler
+        - bundle install
+        - cd swift/Samples/Tutorial
+        - bundle exec pod repo update
+        - bundle exec pod install
