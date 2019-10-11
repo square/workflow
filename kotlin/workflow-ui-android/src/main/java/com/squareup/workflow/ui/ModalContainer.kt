@@ -24,6 +24,8 @@ import android.os.Parcelable
 import android.os.Parcelable.Creator
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
@@ -49,19 +51,21 @@ abstract class ModalContainer<ModalRenderingT : Any>
   context: Context,
   attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet) {
-  init {
-    // Stub base view will be replaced by registry.
-    this.addView(View(context))
-  }
+  private val baseView: WorkflowViewStub = WorkflowViewStub(context).also {
+    it.layoutParams = (ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.MATCH_PARENT
+    ))
 
-  private val baseView: View get() = getChildAt(0)
+    addView(it)
+  }
 
   private var dialogs: List<DialogRef<ModalRenderingT>> = emptyList()
 
   protected lateinit var registry: ViewRegistry
 
   protected fun update(newScreen: HasModals<*, ModalRenderingT>) {
-    registry.updateView(baseView, newScreen.baseScreen)
+    baseView.update(newScreen.baseScreen, registry)
 
     val newDialogs = mutableListOf<DialogRef<ModalRenderingT>>()
     for ((i, modal) in newScreen.modals.withIndex()) {

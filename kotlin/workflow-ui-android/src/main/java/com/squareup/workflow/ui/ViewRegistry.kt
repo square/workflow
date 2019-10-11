@@ -84,36 +84,6 @@ class ViewRegistry private constructor(
   )
 
   /**
-   * Updates the given view if it [can show][View.canShowRendering] the given [rendering].
-   * If not, replaces it with one that can.
-   *
-   * Returns the view that is now showing the rendering. If the original view was in a parent
-   * and a new view was required for [rendering], the new view replaces the original in
-   * its parent.
-   */
-  fun <RenderingT : Any> updateView(
-    view: View,
-    rendering: RenderingT
-  ): View {
-    if (view.canShowRendering(rendering)) {
-      view.showRendering(rendering)
-      return view
-    }
-
-    return when (val parent = view.parent) {
-      is ViewGroup -> buildView(rendering, parent).also { newView ->
-        val index = parent.indexOfChild(view)
-        parent.removeView(view)
-
-        view.layoutParams
-            ?.let { parent.addView(newView, index, it) }
-            ?: run { parent.addView(newView, index) }
-      }
-      else -> buildView(rendering, view.context)
-    }
-  }
-
-  /**
    * Creates a [View] to display [initialRendering], which can be updated via calls
    * to [View.showRendering].
    */
@@ -127,7 +97,8 @@ class ViewRegistry private constructor(
         ?.buildView(this, initialRendering, contextForNewView, container)
         ?.apply {
           checkNotNull(showRenderingTag?.initialRendering) {
-            "View.bindShowRendering must be called for $this."
+            "View.bindShowRendering should have been called for $this, typically when its " +
+                "${ViewBinding::class.java.name} is invoked."
           }
         }
         ?: throw IllegalArgumentException(

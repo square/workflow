@@ -19,7 +19,6 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_MASK
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
-import android.view.ViewGroup
 import com.squareup.sample.dungeon.Direction.DOWN
 import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
@@ -30,13 +29,14 @@ import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
+import com.squareup.workflow.ui.WorkflowViewStub
 
 class GameLayoutRunner(
   view: View,
   private val viewRegistry: ViewRegistry
 ) : LayoutRunner<GameRendering> {
 
-  private var boardView: View = view.findViewById(R.id.board_stub)
+  private val boardView: WorkflowViewStub = view.findViewById(R.id.board_stub)
   private val moveLeft: View = view.findViewById(R.id.move_left)
   private val moveRight: View = view.findViewById(R.id.move_right)
   private val moveUp: View = view.findViewById(R.id.move_up)
@@ -52,7 +52,7 @@ class GameLayoutRunner(
   }
 
   override fun showRendering(rendering: GameRendering) {
-    boardView = viewRegistry.updateView(boardView, rendering.board)
+    boardView.update(rendering.board, viewRegistry)
     this.rendering = rendering
 
     // Disable the views if we don't have an event handler, e.g. when the game has finished.

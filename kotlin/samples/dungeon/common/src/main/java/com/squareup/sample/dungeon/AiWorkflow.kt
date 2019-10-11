@@ -84,7 +84,7 @@ class AiWorkflow(
       DOWN -> LEFT
       LEFT -> UP
     }
-//    println("AI changing direction from ${state.direction} to $newDirection")
+
     state = state.copy(direction = newDirection)
 
     null
