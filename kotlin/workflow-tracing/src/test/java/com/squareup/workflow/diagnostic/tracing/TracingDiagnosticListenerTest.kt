@@ -15,9 +15,8 @@
  */
 package com.squareup.workflow.diagnostic.tracing
 
+import com.nhaarman.mockito_kotlin.mock
 import com.squareup.tracing.TraceEncoder
-import com.squareup.tracing.TraceEvent
-import com.squareup.tracing.TraceLogger
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -38,7 +37,6 @@ import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import okio.buffer
 import okio.source
-import org.junit.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.ClockMark
@@ -48,13 +46,15 @@ import kotlin.time.ExperimentalTime
 @UseExperimental(ExperimentalCoroutinesApi::class)
 class TracingDiagnosticListenerTest {
 
-  @Ignore("https://github.com/square/workflow/issues/664")
+  private lateinit var onGcDetected: () -> Unit
+
   @Test fun `golden value`() {
     val buffer = Buffer()
     val memoryStats = object : MemoryStats {
       override fun freeMemory(): Long = 42
       override fun totalMemory(): Long = 43
     }
+    val gcDetector = mock<GcDetector>()
     val scope = CoroutineScope(Unconfined)
     val encoder = TraceEncoder(
         scope = scope,
@@ -62,9 +62,17 @@ class TracingDiagnosticListenerTest {
         ioDispatcher = Unconfined,
         sinkProvider = { buffer }
     )
-    val listener = TracingDiagnosticListener(memoryStats = memoryStats) { _ -> encoder }
+    val listener = TracingDiagnosticListener(
+        memoryStats = memoryStats,
+        gcDetectorConstructor = {
+          onGcDetected = it
+          gcDetector
+        }
+    ) { workflowScope, type ->
+      provideLogger("", workflowScope, type) { encoder }
+    }
     val props = (0..100).asFlow()
-    val renderings = launchWorkflowIn(scope, TestWorkflow, props) { session ->
+    val renderings = launchWorkflowIn(scope, TestWorkflow(), props) { session ->
       session.diagnosticListener = listener
       session.renderingsAndSnapshots.map { it.rendering }
     }
@@ -81,58 +89,50 @@ class TracingDiagnosticListenerTest {
         .buffer()
     assertEquals(expected.readUtf8(), buffer.readUtf8())
   }
-}
 
-private class RecordingTraceLogger : TraceLogger {
+  private inner class TestWorkflow : StatefulWorkflow<Int, String, String, String>() {
 
-  private val _events = mutableListOf<List<TraceEvent>>()
-  val events: List<List<TraceEvent>> get() = _events
+    private val channel = Channel<String>(UNLIMITED)
 
-  override fun log(event: TraceEvent) = log(listOf(event))
+    fun triggerWorker(value: String) {
+      channel.offer(value)
+    }
 
-  override fun log(eventBatch: List<TraceEvent>) {
-    _events += eventBatch
+    override fun initialState(
+      props: Int,
+      snapshot: Snapshot?
+    ): String {
+      // Pretend to detect a garbage collection whenever a workflow starts.
+      onGcDetected()
+      return "initial"
+    }
+
+    override fun onPropsChanged(
+      old: Int,
+      new: Int,
+      state: String
+    ): String {
+      if (old == 2 && new == 3) triggerWorker("fired!")
+      return if (old == 0 && new == 1) "changed state" else state
+    }
+
+    override fun render(
+      props: Int,
+      state: String,
+      context: RenderContext<String, String>
+    ): String {
+      if (props == 0) return "initial"
+      if (props in 1..6) context.renderChild(this, 0) { bubbleUp(it) }
+      if (props in 4..5) context.renderChild(this, props = 1, key = "second") { bubbleUp(it) }
+      if (props in 2..3) context.runningWorker(channel.asWorker(false)) { bubbleUp(it) }
+
+      return if (props > 10) "final" else "rendering"
+    }
+
+    override fun snapshotState(state: String): Snapshot = Snapshot.EMPTY
+
+    private fun bubbleUp(output: String) = WorkflowAction<String, String>({ "action" }) { output }
   }
-}
-
-private object TestWorkflow : StatefulWorkflow<Int, String, String, String>() {
-
-  private val channel = Channel<String>(UNLIMITED)
-
-  fun triggerWorker(value: String) {
-    channel.offer(value)
-  }
-
-  override fun initialState(
-    props: Int,
-    snapshot: Snapshot?
-  ): String = "initial"
-
-  override fun onPropsChanged(
-    old: Int,
-    new: Int,
-    state: String
-  ): String {
-    if (old == 2 && new == 3) triggerWorker("fired!")
-    return if (old == 0 && new == 1) "changed state" else state
-  }
-
-  override fun render(
-    props: Int,
-    state: String,
-    context: RenderContext<String, String>
-  ): String {
-    if (props == 0) return "initial"
-    if (props in 1..6) context.renderChild(TestWorkflow, 0) { bubbleUp(it) }
-    if (props in 4..5) context.renderChild(TestWorkflow, props = 1, key = "second") { bubbleUp(it) }
-    if (props in 2..3) context.runningWorker(channel.asWorker(false)) { bubbleUp(it) }
-
-    return if (props > 10) "final" else "rendering"
-  }
-
-  override fun snapshotState(state: String): Snapshot = Snapshot.EMPTY
-
-  private fun bubbleUp(output: String) = WorkflowAction<String, String>({ "action" }) { output }
 }
 
 @UseExperimental(ExperimentalTime::class)
