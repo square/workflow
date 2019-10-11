@@ -25,7 +25,7 @@ import android.os.Parcelable.Creator
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
@@ -52,12 +52,7 @@ abstract class ModalContainer<ModalRenderingT : Any>
   attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet) {
   private val baseView: WorkflowViewStub = WorkflowViewStub(context).also {
-    it.layoutParams = (ViewGroup.LayoutParams(
-        ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT
-    ))
-
-    addView(it)
+    addView(it, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
   }
 
   private var dialogs: List<DialogRef<ModalRenderingT>> = emptyList()

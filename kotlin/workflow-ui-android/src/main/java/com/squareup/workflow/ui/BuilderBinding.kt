@@ -21,7 +21,7 @@ import android.view.ViewGroup
 import kotlin.reflect.KClass
 
 /**
- * A [ViewBinding] that allows [ViewRegistry.buildView] to dispense [View]s that need
+ * A [ViewBinding] that allows a [ViewRegistry] to create [View]s that need
  * to be generated from code. (Use [LayoutRunner] to work with XML layout resources.)
  *
  * Typical usage is to have a custom builder or view's `companion object` implement
@@ -52,7 +52,11 @@ import kotlin.reflect.KClass
  *    )
  *
  * Note in particular the [ViewRegistry] argument to the [viewConstructor] lambda. This allows
- * nested renderings to be displayed via nested calls to [ViewRegistry.buildView].
+ * nested renderings to be displayed.
+ *
+ * It's simplest, and most typical, to pass the [ViewRegistry] to [WorkflowViewStub.update] to
+ * show nested renderings. When that's too constraining, more complex containers can
+ * call [ViewRegistry.buildView], [View.canShowRendering] and [View.showRendering] directly.
  */
 class BuilderBinding<RenderingT : Any>(
   override val type: KClass<RenderingT>,
