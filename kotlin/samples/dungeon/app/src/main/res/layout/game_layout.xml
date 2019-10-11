@@ -20,9 +20,8 @@
     android:layout_height="match_parent"
     >
 
-
-  <FrameLayout
-      android:id="@+id/board_container"
+  <com.squareup.workflow.ui.WorkflowViewStub
+      android:id="@+id/board_stub"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_margin="@dimen/default_gap"
@@ -31,9 +30,8 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      >
+      />
 
-  </FrameLayout>
   <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guideline"
       android:layout_width="wrap_content"

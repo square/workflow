@@ -97,7 +97,8 @@ class ViewRegistry private constructor(
         ?.buildView(this, initialRendering, contextForNewView, container)
         ?.apply {
           checkNotNull(showRenderingTag?.initialRendering) {
-            "View.bindShowRendering must be called for $this."
+            "View.bindShowRendering should have been called for $this, typically when its " +
+                "${ViewBinding::class.java.name} is invoked."
           }
         }
         ?: throw IllegalArgumentException(

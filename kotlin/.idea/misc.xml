@@ -6,10 +6,11 @@
     </configurations>
   </component>
   <component name="EntryPointsManager">
-    <list size="3">
-      <item index="0" class="java.lang.String" itemvalue="com.squareup.moshi.ToJson" />
-      <item index="1" class="java.lang.String" itemvalue="org.openjdk.jmh.annotations.Benchmark" />
-      <item index="2" class="java.lang.String" itemvalue="org.openjdk.jmh.annotations.BenchmarkMode" />
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="androidx.lifecycle.OnLifecycleEvent" />
+      <item index="1" class="java.lang.String" itemvalue="com.squareup.moshi.ToJson" />
+      <item index="2" class="java.lang.String" itemvalue="org.openjdk.jmh.annotations.Benchmark" />
+      <item index="3" class="java.lang.String" itemvalue="org.openjdk.jmh.annotations.BenchmarkMode" />
     </list>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
