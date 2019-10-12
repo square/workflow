@@ -22,6 +22,8 @@ import android.os.Parcelable.Creator
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import io.reactivex.Observable
 import io.reactivex.disposables.SerialDisposable
@@ -35,8 +37,11 @@ class WorkflowLayout(
   context: Context,
   attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet) {
+  private val showing: WorkflowViewStub = WorkflowViewStub(context).also {
+    addView(it, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+  }
+
   private var restoredChildState: SparseArray<Parcelable>? = null
-  private val showing: View? get() = if (childCount > 0) getChildAt(0) else null
 
   /**
    * Subscribes to [renderings], and uses [registry] to
@@ -57,25 +62,17 @@ class WorkflowLayout(
     newRendering: Any,
     registry: ViewRegistry
   ) {
-    showing?.takeIf { it.canShowRendering(newRendering) }
-        ?.let { it ->
-          it.showRendering(newRendering)
-          return
-        }
-
-    removeAllViews()
-    val newView = registry.buildView(newRendering, this)
+    showing.update(newRendering, registry)
     restoredChildState?.let { restoredState ->
       restoredChildState = null
-      newView.restoreHierarchyState(restoredState)
+      showing.actual!!.restoreHierarchyState(restoredState)
     }
-    addView(newView)
   }
 
   override fun onSaveInstanceState(): Parcelable? {
     return SavedState(
         super.onSaveInstanceState()!!,
-        SparseArray<Parcelable>().also { array -> showing?.saveHierarchyState(array) }
+        SparseArray<Parcelable>().also { array -> showing.actual?.saveHierarchyState(array) }
     )
   }
 
@@ -97,7 +94,7 @@ class WorkflowLayout(
     }
 
     constructor(source: Parcel) : super(source) {
-      this.childState = source.readSparseArray<Parcelable>(SavedState::class.java.classLoader)!!
+      this.childState = source.readSparseArray(SavedState::class.java.classLoader)!!
     }
 
     val childState: SparseArray<Parcelable>

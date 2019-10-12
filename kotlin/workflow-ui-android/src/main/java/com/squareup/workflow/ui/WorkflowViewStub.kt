@@ -64,8 +64,11 @@ class WorkflowViewStub(
    * If the current replacement can't handle [rendering], a new view is put in place.
    *
    * @return the view that showed [rendering]
-   * @throws RuntimeException if [rendering] cannot be displayed, typically indicating
-   * a misconfigured [registry]
+   *
+   * @throws IllegalArgumentException if no binding can be find for the type of [rendering]
+   *
+   * @throws IllegalStateException if the matching [ViewBinding] fails to call
+   * [View.bindShowRendering] when constructing the view
    */
   fun update(
     rendering: Any,

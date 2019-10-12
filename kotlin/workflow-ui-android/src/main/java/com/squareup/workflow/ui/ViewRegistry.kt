@@ -84,8 +84,15 @@ class ViewRegistry private constructor(
   )
 
   /**
+   * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.
+   *
    * Creates a [View] to display [initialRendering], which can be updated via calls
    * to [View.showRendering].
+   *
+   * @throws IllegalArgumentException if no binding can be find for type [RenderingT]
+   *
+   * @throws IllegalStateException if the matching [ViewBinding] fails to call
+   * [View.bindShowRendering] when constructing the view
    */
   fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
@@ -96,20 +103,27 @@ class ViewRegistry private constructor(
     return (allBindings[initialRendering::class] as? ViewBinding<RenderingT>)
         ?.buildView(this, initialRendering, contextForNewView, container)
         ?.apply {
-          checkNotNull(showRenderingTag?.initialRendering) {
-            "View.bindShowRendering should have been called for $this, typically when its " +
-                "${ViewBinding::class.java.name} is invoked."
+          checkNotNull(getRendering<RenderingT>()) {
+            "View.bindShowRendering should have been called for $this, typically by the " +
+                "${ViewBinding::class.java.name} that created it."
           }
         }
         ?: throw IllegalArgumentException(
-            "A binding for ${initialRendering::class.java.name} must be registered " +
+            "A ${ViewBinding::class.java.name} should have been registered " +
                 "to display $initialRendering."
         )
   }
 
   /**
-   * Creates a [View] to display [initialRendering], and which can handle calls
+   * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.
+   *
+   * Creates a [View] to display [initialRendering], which can be updated via calls
    * to [View.showRendering].
+   *
+   * @throws IllegalArgumentException if no binding can be find for type [RenderingT]
+   *
+   * @throws IllegalStateException if the matching [ViewBinding] fails to call
+   * [View.bindShowRendering] when constructing the view
    */
   fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
@@ -140,7 +154,8 @@ by BuilderBinding(
     viewConstructor = { viewRegistry, initialRendering, contextForNewView, container ->
       val view = viewRegistry.buildView(initialRendering.wrapped, contextForNewView, container)
       view.apply {
-        val wrappedUpdater = showRenderingTag!!.showRendering
+        @Suppress("RemoveExplicitTypeArguments") // The IDE is wrong.
+        val wrappedUpdater = getShowRendering<Any>()!!
         bindShowRendering(initialRendering) {
           wrappedUpdater.invoke(it.wrapped)
         }

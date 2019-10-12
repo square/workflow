@@ -23,7 +23,7 @@ import android.view.View
 import android.view.View.BaseSavedState
 import com.squareup.workflow.ui.Named
 import com.squareup.workflow.ui.backstack.ViewStateCache.SavedState
-import com.squareup.workflow.ui.showRenderingTag
+import com.squareup.workflow.ui.getRendering
 
 /**
  * Handles persistence chores for container views that manage a set of [Named] renderings,
@@ -174,6 +174,10 @@ class ViewStateCache private constructor(
 }
 
 private val View.namedKey: String
-  get() = checkNotNull((showRenderingTag?.initialRendering as? Named<*>)?.compatibilityKey) {
-    "Expected $this to be showing a Named rendering, found ${showRenderingTag?.initialRendering}"
+  get() {
+    val rendering = getRendering<Named<*>>()
+    return checkNotNull(rendering?.compatibilityKey) {
+      "Expected $this to be showing a ${Named::class.java.simpleName}<*> rendering, " +
+          "found $rendering"
+    }
   }

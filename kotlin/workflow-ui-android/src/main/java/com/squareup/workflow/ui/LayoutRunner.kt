@@ -24,10 +24,10 @@ import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import kotlin.reflect.KClass
 
 /**
- * An object that handles [View.showRendering] calls for a view inflated
- * from a layout resource in response to [ViewRegistry.buildView].
- * (Use [BuilderBinding] if you want to build views from code rather than
- * layouts.)
+ * A delegate that implements a [showRendering] method to be called when a workflow rendering
+ * of type [RenderingT] is ready to be displayed in a view inflated from a layout resource
+ * by a [ViewRegistry]. (Use [BuilderBinding] if you want to build views from code rather
+ * than layouts.)
  *
  * Typical usage is to have a [LayoutRunner]'s `companion object` implement
  * [ViewBinding] by delegating to [LayoutRunner.bind], specifying the layout resource
@@ -53,10 +53,13 @@ import kotlin.reflect.KClass
  *        NewGameLayoutRunner, GamePlayLayoutRunner, GameOverLayoutRunner
  *    )
  *
- * Also note that two flavors of [contructor][LayoutRunner.Binding.runnerConstructor]
- * are accepted by [bind]. Every [LayoutRunner] constructor must accept an [View].
- * Optionally, they can also have a second [ViewRegistry] argument, to allow
- * nested renderings to be displayed via nested calls to [ViewRegistry.buildView].
+ * Every [LayoutRunner] must have a constructor that accepts a [View] as its first argument.
+ * The constructor may also have a second [ViewRegistry] argument, to allow
+ * nested renderings to be displayed in nested views.
+ *
+ * It's simplest, and most typical, to pass the [ViewRegistry] to [WorkflowViewStub.update] to
+ * show nested renderings. When that's too constraining, more complex containers can
+ * call [ViewRegistry.buildView], [View.canShowRendering] and [View.showRendering] directly.
  */
 interface LayoutRunner<RenderingT : Any> {
   fun showRendering(rendering: RenderingT)

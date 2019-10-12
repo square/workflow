@@ -2,6 +2,7 @@ package com.squareup.sample
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import android.view.View
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
@@ -12,12 +13,18 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import com.squareup.sample.gameworkflow.GamePlayScreen
+import com.squareup.sample.gameworkflow.Player
+import com.squareup.sample.gameworkflow.symbol
 import com.squareup.sample.mainactivity.MainActivity
 import com.squareup.sample.tictactoe.R
+import com.squareup.workflow.ui.getRendering
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -32,19 +39,57 @@ class TicTacToeEspressoTest {
   fun setUp() {
     scenario = launch(MainActivity::class.java)
         .apply {
-          onActivity {
+          onActivity { activity ->
             IdlingRegistry.getInstance()
-                .register(it.idlingResource)
-            it.requestedOrientation = SCREEN_ORIENTATION_PORTRAIT
+                .register(activity.idlingResource)
+            activity.requestedOrientation = SCREEN_ORIENTATION_PORTRAIT
           }
         }
   }
 
   @After
   fun tearDown() {
-    scenario.onActivity {
+    scenario.onActivity { activity ->
       IdlingRegistry.getInstance()
-          .unregister(it.idlingResource)
+          .unregister(activity.idlingResource)
+    }
+  }
+
+  @Test fun showRenderingTagStaysFresh() {
+    // Start a game so that there's something interesting in the Activity window.
+    // (Prior screens are all in a dialog window.)
+
+    onView(withId(R.id.login_email)).type("foo@bar")
+    onView(withId(R.id.login_password)).type("password")
+    onView(withId(R.id.login_button)).perform(click())
+
+    onView(withId(R.id.start_game)).perform(click())
+
+    // Why should I learn how to write a matcher when I can just grab the activity
+    // and work with it directly?
+    scenario.onActivity { activity ->
+      val button = activity.findViewById<View>(R.id.game_play_board)
+      val rendering = (button.parent as View).getRendering<GamePlayScreen>()!!
+      assertThat(rendering.gameState.playing).isSameInstanceAs(Player.X)
+
+      // Make a move.
+      rendering.onClick(0, 0)
+    }
+
+    // I'm not an animal, though. Pop back out to the test to check that the update
+    // has happened, to make sure the idle check is allowed to do its thing. (Didn't
+    // actually seem to be necessary, originally did everything synchronously in the
+    // lambda above and it all worked just fine. But that seems like a land mine.)
+
+    onView(withId(R.id.game_play_toolbar))
+        .check(matches(hasDescendant(withText("O, place your ${Player.O.symbol}"))))
+
+    // Now that we're confident the views have updated, back to the activity
+    // to mess with what should be the updated rendering.
+    scenario.onActivity { activity ->
+      val button = activity.findViewById<View>(R.id.game_play_board)
+      val rendering = (button.parent as View).getRendering<GamePlayScreen>()!!
+      assertThat(rendering.gameState.playing).isSameInstanceAs(Player.O)
     }
   }
 
