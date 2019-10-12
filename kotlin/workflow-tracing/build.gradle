@@ -37,4 +37,5 @@ dependencies {
   implementation deps.moshi
 
   testImplementation deps.kotlin.test.jdk
+  testImplementation deps.kotlin.test.mockito
 }

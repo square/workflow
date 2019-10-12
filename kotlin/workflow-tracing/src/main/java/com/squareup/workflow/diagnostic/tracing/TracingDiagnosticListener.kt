@@ -72,30 +72,54 @@ fun TracingDiagnosticListener(
   encoderProvider: (workflowScope: CoroutineScope) -> TraceEncoder
 ): TracingDiagnosticListener =
   TracingDiagnosticListener(memoryStats = memoryStats) { workflowScope, type ->
-    val encoder = encoderProvider(workflowScope)
-    val processName = name.ifEmpty { type }
-    encoder.createLogger(
-        processName = processName,
-        threadName = "Profiling"
-    )
+    provideLogger(name, workflowScope, type, encoderProvider)
   }
+
+internal fun provideLogger(
+  name: String,
+  workflowScope: CoroutineScope,
+  workflowType: String,
+  encoderProvider: (workflowScope: CoroutineScope) -> TraceEncoder
+): TraceLogger {
+  val encoder = encoderProvider(workflowScope)
+  val processName = name.ifEmpty { workflowType }
+  return encoder.createLogger(
+      processName = processName,
+      threadName = "Profiling"
+  )
+}
 
 /**
  * A [WorkflowDiagnosticListener] that generates a trace file that can be viewed in Chrome by
  * visiting `chrome://tracing`.
  *
- * @param loggerProvider A function that returns a [TraceLogger] that will be used to write trace
- * events. The function gets the [CoroutineScope] that the workflow runtime is running in, as well
- * as the same workflow type description passed to [WorkflowDiagnosticListener.onWorkflowStarted].
+ * @constructor The primary constructor is internal so that it can inject [GcDetector] for tests.
  */
 @UseExperimental(VeryExperimentalWorkflow::class)
-class TracingDiagnosticListener(
-  private val memoryStats: MemoryStats = RuntimeMemoryStats,
+class TracingDiagnosticListener internal constructor(
+  private val memoryStats: MemoryStats,
+  private val gcDetectorConstructor: GcDetectorConstructor,
   private val loggerProvider: (
     workflowScope: CoroutineScope,
     workflowType: String
   ) -> TraceLogger
 ) : WorkflowDiagnosticListener {
+
+  /**
+   * A [WorkflowDiagnosticListener] that generates a trace file that can be viewed in Chrome by
+   * visiting `chrome://tracing`.
+   *
+   * @param loggerProvider A function that returns a [TraceLogger] that will be used to write trace
+   * events. The function gets the [CoroutineScope] that the workflow runtime is running in, as well
+   * as the same workflow type description passed to [WorkflowDiagnosticListener.onWorkflowStarted].
+   */
+  constructor(
+    memoryStats: MemoryStats = RuntimeMemoryStats,
+    loggerProvider: (
+      workflowScope: CoroutineScope,
+      workflowType: String
+    ) -> TraceLogger
+  ) : this(memoryStats, ::GcDetector, loggerProvider)
 
   /**
    * [NONE] is fine here because it will get initialized by [onRuntimeStarted] and there's no
@@ -114,7 +138,7 @@ class TracingDiagnosticListener(
     logger = loggerProvider(workflowScope, rootWorkflowType)
 
     // Log garbage collections in case they correlate with unusually long render times.
-    gcDetector = GcDetector {
+    gcDetector = gcDetectorConstructor {
       logger?.log(
           listOf(
               Instant(
