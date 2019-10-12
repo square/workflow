@@ -16,7 +16,6 @@
 import Workflow
 import WorkflowUI
 import ReactiveSwift
-import Result
 
 
 // MARK: Input and Output
@@ -90,7 +89,7 @@ extension WelcomeWorkflow {
 
         }
 
-        func run() -> SignalProducer<Output, NoError> {
+        func run() -> SignalProducer<Output, Never> {
             fatalError()
         }
 
