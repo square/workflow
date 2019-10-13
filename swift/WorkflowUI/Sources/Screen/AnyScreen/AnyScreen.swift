@@ -1,22 +1,34 @@
 import UIKit
 
 public struct AnyScreen: Screen {
-    internal let wrappedScreen: Screen
-    private let viewControllerBuilder: (ViewRegistry) -> AnyScreenViewController.WrappedViewController
+
+    public typealias ViewController = AnyScreenViewController
+    private let _makeViewController: () -> AnyScreenViewController
+    private let _updateViewController: (AnyScreenViewController) -> Void
+
+    public func makeViewController() -> AnyScreenViewController {
+        return _makeViewController()
+    }
+
+    public func update(viewController: AnyScreenViewController) {
+        _updateViewController(viewController)
+    }
 
     public init<T: Screen>(_ screen: T) {
-        if let anyScreen = screen as? AnyScreen {
-            self = anyScreen
+
+        if let screen = screen as? AnyScreen {
+            self = screen
             return
         }
-        self.wrappedScreen = screen
-        self.viewControllerBuilder = { viewRegistry in
-            return viewRegistry.provideView(for: screen)
+
+        _makeViewController = {
+            return AnyScreenViewController(wrappedScreen: screen)
         }
+
+        _updateViewController = { viewController in
+            viewController.update(from: screen)
+        }
+
     }
 
-    // Internal method to inflate the wrapped screen from a view registry
-    func makeViewController(from viewRegistry: ViewRegistry) -> AnyScreenViewController.WrappedViewController {
-        return viewControllerBuilder(viewRegistry)
-    }
 }

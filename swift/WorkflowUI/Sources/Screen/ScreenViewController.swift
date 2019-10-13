@@ -3,9 +3,7 @@ import UIKit
 
 /// Generic base class that should be subclassed in order to to define a UI implementation that is powered by the
 /// given screen type.
-open class ScreenViewController<ScreenType: Screen>: UIViewController {
-
-    public final let viewRegistry: ViewRegistry
+open class ScreenViewController<ScreenType>: UIViewController {
 
     private var currentScreen: ScreenType
 
@@ -13,13 +11,8 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
         return currentScreen
     }
 
-    public final var screenType: Screen.Type {
-        return ScreenType.self
-    }
-
-    public required init(screen: ScreenType, viewRegistry: ViewRegistry) {
+    public required init(screen: ScreenType) {
         self.currentScreen = screen
-        self.viewRegistry = viewRegistry
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -37,6 +30,18 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
     /// Subclasses should override this method in order to update any relevant UI bits when the screen model changes.
     open func screenDidChange(from previousScreen: ScreenType) {
 
+    }
+
+}
+
+public extension Screen where ViewController: ScreenViewController<Self> {
+
+    func makeViewController() -> ViewController {
+        return ViewController(screen: self)
+    }
+
+    func update(viewController: ViewController) {
+        viewController.update(screen: self)
     }
 
 }
