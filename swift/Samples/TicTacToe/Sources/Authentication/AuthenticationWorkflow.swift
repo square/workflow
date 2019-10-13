@@ -17,7 +17,6 @@ import BackStackContainer
 import Workflow
 import WorkflowUI
 import ReactiveSwift
-import Result
 
 
 // MARK: Input and Output
@@ -122,7 +121,7 @@ extension AuthenticationWorkflow {
         var email: String
         var password: String
 
-        func run() -> SignalProducer<Output, NoError> {
+        func run() -> SignalProducer<Output, Never> {
             return authenticationService
                 .login(email: email, password: password)
                 .map({ response -> Action in
@@ -148,7 +147,7 @@ extension AuthenticationWorkflow {
         var intermediateToken: String
         var twoFactorCode: String
 
-        func run() -> SignalProducer<Output, NoError> {
+        func run() -> SignalProducer<Output, Never> {
             return authenticationService
                 .secondFactor(
                     token: intermediateToken,

@@ -20,7 +20,7 @@ You can enter a name, but the login button won't do anything.
 
 Let's start by making a workflow and screen to back the welcome view.
 
-Start by creating a new workflow and screen by creating a new file with the xcode templates, adding it to the `TutorialBase` target:
+Start by creating a new workflow and screen by creating a new file with the [Xcode templates](../../Tooling/Templates/install-xcode-templates.sh), adding it to the `TutorialBase` target:
 
 ![New Workflow](images/new-workflow.png)
 ![Workflow Name](images/workflow-name.png)
