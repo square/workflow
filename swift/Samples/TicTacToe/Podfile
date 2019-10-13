@@ -7,3 +7,7 @@ target 'TicTacToe' do
     pod 'WorkflowUI', path: '../../../WorkflowUI.podspec', :testspecs => ['Tests']
     pod 'BackStackContainer', path: '../BackStackContainer/BackStackContainer.podspec'
 end
+
+target 'TicTacToeTests' do
+    pod 'WorkflowTesting', path: '../../../WorkflowTesting.podspec', :testspecs => ['Tests']
+end
