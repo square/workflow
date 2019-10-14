@@ -29,8 +29,11 @@ import com.squareup.workflow.Workflow
  *
  * ## Mocking Child Workflows and Workers
  *
- * All child [Workflow]s must be instances of [MockChildWorkflow], as they are not given a working
- * [RenderContext]. This function only allows you to test a single workflow's render method.
+ * Child [Workflow]s should be stateless and not try to do anything with their [RenderContext] in
+ * their render method. The [RenderContext] they get is not a real one, and will throw an exception
+ * if it is used. In other words, the only thing child workflows can do is return a rendering. The
+ * [MockChildWorkflow] abstract class makes it easy to write fake workflows that meet these
+ * requirements, however you may use the normal ways of creating workflows too.
  *
  * Child [Worker]s should be instances of [MockWorker].
  */
@@ -46,8 +49,11 @@ fun <O : Any, R> StatelessWorkflow<Unit, O, R>.testRender(
  *
  * ## Mocking Child Workflows and Workers
  *
- * All child [Workflow]s must be instances of [MockChildWorkflow], as they are not given a working
- * [RenderContext]. This function only allows you to test a single workflow's render method.
+ * Child [Workflow]s should be stateless and not try to do anything with their [RenderContext] in
+ * their render method. The [RenderContext] they get is not a real one, and will throw an exception
+ * if it is used. In other words, the only thing child workflows can do is return a rendering. The
+ * [MockChildWorkflow] abstract class makes it easy to write fake workflows that meet these
+ * requirements, however you may use the normal ways of creating workflows too.
  *
  * Child [Worker]s should be instances of [MockWorker].
  */
@@ -67,8 +73,11 @@ fun <I, O : Any, R> StatelessWorkflow<I, O, R>.testRender(
  *
  * ## Mocking Child Workflows and Workers
  *
- * All child [Workflow]s must be instances of [MockChildWorkflow], as they are not given a working
- * [RenderContext]. This function only allows you to test a single workflow's render method.
+ * Child [Workflow]s should be stateless and not try to do anything with their [RenderContext] in
+ * their render method. The [RenderContext] they get is not a real one, and will throw an exception
+ * if it is used. In other words, the only thing child workflows can do is return a rendering. The
+ * [MockChildWorkflow] abstract class makes it easy to write fake workflows that meet these
+ * requirements, however you may use the normal ways of creating workflows too.
  *
  * Child [Worker]s should be instances of [MockWorker].
  *
@@ -87,8 +96,11 @@ fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRender(
  *
  * ## Mocking Child Workflows and Workers
  *
- * All child [Workflow]s must be instances of [MockChildWorkflow], as they are not given a working
- * [RenderContext]. This function only allows you to test a single workflow's render method.
+ * Child [Workflow]s should be stateless and not try to do anything with their [RenderContext] in
+ * their render method. The [RenderContext] they get is not a real one, and will throw an exception
+ * if it is used. In other words, the only thing child workflows can do is return a rendering. The
+ * [MockChildWorkflow] abstract class makes it easy to write fake workflows that meet these
+ * requirements, however you may use the normal ways of creating workflows too.
  *
  * Child [Worker]s should be instances of [MockWorker].
  *
