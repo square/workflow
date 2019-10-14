@@ -36,7 +36,7 @@ import com.squareup.workflow.WorkflowAction.Mutator
  *
  * See [renderChild].
  */
-interface RenderContext<StateT, in OutputT : Any> {
+interface RenderContext<StateT, in OutputT> {
 
   @Deprecated("Use makeActionSink.")
   fun <EventT : Any> onEvent(

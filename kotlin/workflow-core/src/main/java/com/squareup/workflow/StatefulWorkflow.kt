@@ -66,7 +66,7 @@ import com.squareup.workflow.WorkflowAction.Mutator
 abstract class StatefulWorkflow<
     in PropsT,
     StateT,
-    out OutputT : Any,
+    out OutputT,
     out RenderingT
     > : Workflow<PropsT, OutputT, RenderingT> {
 

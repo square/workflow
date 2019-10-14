@@ -24,7 +24,7 @@ import com.squareup.workflow.WorkflowAction.Mutator
  * A function that can change the current state of a [Workflow] by returning a new one, and
  * also optionally emit an output.
  */
-interface WorkflowAction<StateT, out OutputT : Any> {
+interface WorkflowAction<StateT, out OutputT> {
   class Mutator<S>(var state: S)
 
   /**
