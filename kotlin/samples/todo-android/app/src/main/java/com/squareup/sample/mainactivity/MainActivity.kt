@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
   override fun onRetainCustomNonConfigurationInstance(): Any = rootWorkflow
 
   private companion object {
-    val viewRegistry = ViewRegistry(TodoEditorLayoutRunner) + TodoListsLayoutRunner
+    val viewRegistry =
+      ViewRegistry(TodoEditorLayoutRunner, TodoListsLayoutRunner, MasterDetailContainer)
   }
 }

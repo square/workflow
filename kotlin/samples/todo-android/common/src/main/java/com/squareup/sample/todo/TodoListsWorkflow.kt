@@ -20,19 +20,14 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.makeEventSink
 
-data class TodoListsRendering(
-  val lists: List<TodoList>,
-  val onRowClicked: (Int) -> Unit
-)
-
-class TodoListsWorkflow : StatelessWorkflow<List<TodoList>, Int, TodoListsRendering>() {
+class TodoListsWorkflow : StatelessWorkflow<List<TodoList>, Int, TodoListsScreen>() {
   override fun render(
     props: List<TodoList>,
     context: RenderContext<Nothing, Int>
-  ): TodoListsRendering {
+  ): TodoListsScreen {
     // A sink that emits the given index as the result of this workflow.
     val sink: Sink<Int> = context.makeEventSink { index: Int -> index }
 
-    return TodoListsRendering(lists = props, onRowClicked = sink::send)
+    return TodoListsScreen(lists = props, onRowClicked = sink::send)
   }
 }

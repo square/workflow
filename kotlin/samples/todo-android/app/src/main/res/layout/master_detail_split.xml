@@ -14,19 +14,30 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white"
+    android:orientation="horizontal"
     >
 
-    <LinearLayout
-        android:id="@+id/todo_lists_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        />
+  <com.squareup.workflow.ui.WorkflowViewStub
+      android:id="@+id/master_stub"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="30"
+      />
 
-</ScrollView>
+  <View
+      android:layout_width="1dp"
+      android:layout_height="match_parent"
+      android:background="@color/colorAccent"
+      />
+
+  <com.squareup.workflow.ui.WorkflowViewStub
+      android:id="@+id/detail_stub"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="70"
+      />
+
+</LinearLayout>

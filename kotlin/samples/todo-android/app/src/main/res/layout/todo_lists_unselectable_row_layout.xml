@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2019 Square Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +13,15 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<vector
-    android:height="36dp"
-    android:width="36dp"
-    android:viewportHeight="24.0"
-    android:viewportWidth="24.0"
-    android:tint="#FF0000"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-  <path
-      android:fillColor="#FF000000"
-      android:pathData="M12,2C6.47,2 2,6.47 2,12s4.47,10 10,10 10,-4.47 10,-10S17.53,2 12,2zM17,15.59L15.59,17 12,13.41 8.41,17 7,15.59 10.59,12 7,8.41 8.41,7 12,10.59 15.59,7 17,8.41 13.41,12 17,15.59z"/>
-</vector>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@android:style/Widget.Material.ListView"
+    android:background="?attr/listChoiceBackgroundIndicator"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/listPreferredItemHeightSmall"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    tools:text="Groceries"
+    />

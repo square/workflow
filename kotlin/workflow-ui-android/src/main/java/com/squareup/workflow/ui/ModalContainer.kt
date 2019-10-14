@@ -46,11 +46,13 @@ import com.squareup.workflow.ui.ModalContainer.Companion.forContainerScreen
  *
  * @param ModalRenderingT the type of the nested renderings to be shown in a dialog window.
  */
-abstract class ModalContainer<ModalRenderingT : Any>
-@JvmOverloads constructor(
+abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
   context: Context,
-  attributeSet: AttributeSet? = null
-) : FrameLayout(context, attributeSet) {
+  attributeSet: AttributeSet? = null,
+  defStyle: Int = 0,
+  defStyleRes: Int = 0
+) : FrameLayout(context, attributeSet, defStyle, defStyleRes) {
+
   private val baseView: WorkflowViewStub = WorkflowViewStub(context).also {
     addView(it, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
   }

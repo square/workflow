@@ -33,12 +33,13 @@ import com.squareup.workflow.ui.AlertScreen.Event.Canceled
 /**
  * Class returned by [ModalContainer.forAlertContainerScreen], qv for details.
  */
-internal class AlertContainer
-@JvmOverloads constructor(
+internal class AlertContainer @JvmOverloads constructor(
   context: Context,
   attributeSet: AttributeSet? = null,
+  defStyle: Int = 0,
+  defStyleRes: Int = 0,
   @StyleRes private val dialogThemeResId: Int = 0
-) : ModalContainer<AlertScreen>(context, attributeSet) {
+) : ModalContainer<AlertScreen>(context, attributeSet, defStyle, defStyleRes) {
 
   override fun buildDialog(
     initialModalRendering: AlertScreen,

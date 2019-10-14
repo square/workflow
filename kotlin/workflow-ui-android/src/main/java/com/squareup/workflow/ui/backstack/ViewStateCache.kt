@@ -72,7 +72,7 @@ class ViewStateCache private constructor(
     retainedRenderings: Collection<Named<*>>,
     oldViewMaybe: View?,
     newView: View
-  ): Boolean {
+  ) {
     val newKey = newView.namedKey
     val hiddenKeys = retainedRenderings.asSequence()
         .map { it.compatibilityKey }
@@ -83,12 +83,8 @@ class ViewStateCache private constructor(
           }
         }
 
-    val restored = viewStates.remove(newKey)
-        ?.let {
-          newView.restoreHierarchyState(it.viewState)
-          true
-        }
-        ?: false
+    viewStates.remove(newKey)
+        ?.let { newView.restoreHierarchyState(it.viewState) }
 
     if (oldViewMaybe != null) {
       oldViewMaybe.namedKey.takeIf { hiddenKeys.contains(it) }
@@ -99,8 +95,6 @@ class ViewStateCache private constructor(
     }
 
     pruneKeys(hiddenKeys)
-
-    return restored
   }
 
   /**

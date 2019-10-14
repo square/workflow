@@ -18,29 +18,13 @@ package com.squareup.workflow.ui
 /**
  * @param stack: screens that are being or have been displayed, ending in the current screen.
  * Guaranteed not to be empty.
- *
- * @param onGoBack: function to call for a "go back" gesture. Null indicates such gestures
- * should be disabled.
  */
-data class BackStackScreen<StackedT : Any>(
-  val stack: List<StackedT>,
-  val onGoBack: ((Unit) -> Unit)? = null
-) {
-  constructor(
-    only: StackedT,
-    onGoBack: ((Unit) -> Unit)? = null
-  ) : this(listOf(only), onGoBack)
-
-  constructor(
-    vararg stack: StackedT,
-    onGoBack: ((Unit) -> Unit)? = null
-  ) : this(stack.toList(), onGoBack)
+data class BackStackScreen<StackedT : Any>(val stack: List<StackedT>) {
+  constructor(only: StackedT) : this(listOf(only))
+  constructor(vararg stack: StackedT) : this(stack.toList())
 
   init {
     require(stack.isNotEmpty()) { "Empty stacks are not allowed." }
-    require(!stack.asSequence().any { it is BackStackScreen<*> }) {
-      "BackStackScreen in a BackStackScreen is nonsensical: $this"
-    }
   }
 
   val top: StackedT = stack.last()
