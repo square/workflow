@@ -164,7 +164,7 @@ class WorkflowNodeTest {
     assertEquals("tick:event", result)
   }
 
-  @Test fun `throws on subsequent events on same rendering`() {
+  @Test fun `onEvent throws on subsequent events on same rendering`() {
     lateinit var sink: Sink<String>
     val workflow = object : StringWorkflow() {
       override fun initialState(
@@ -193,7 +193,6 @@ class WorkflowNodeTest {
       sink.send("event2")
     }
     assertTrue(e.message!!.startsWith("Expected to successfully deliver "))
-    assertTrue(e.message!!.endsWith("Are you using an old rendering?"))
   }
 
   @Test fun `worker gets value`() {

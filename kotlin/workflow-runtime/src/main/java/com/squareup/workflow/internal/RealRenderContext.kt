@@ -26,6 +26,7 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * An implementation of [RenderContext] that builds a [Behavior] via [buildBehavior].
@@ -52,23 +53,27 @@ class RealRenderContext<StateT, OutputT : Any>(
   /** Used to prevent modifications to this object after [buildBehavior] is called. */
   private var frozen = false
 
+  @Suppress("OverridingDeprecatedMember")
+  @UseExperimental(ExperimentalCoroutinesApi::class)
   override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
       EventHandler<EventT> {
     checkNotFrozen()
     return EventHandler { event ->
       // Run the handler synchronously, so we only have to emit the resulting action and don't
       // need the update channel to be generic on each event type.
-      val update = handler(event)
+      val action = handler(event)
 
       // If this returns false, we lost the race with another event being sent.
-      check(nextUpdateFromEvent.complete(update)) {
+      check(nextUpdateFromEvent.complete(action)) {
         "Expected to successfully deliver event. Are you using an old rendering?\n" +
             "\tevent=$event\n" +
-            "\tupdate=$update"
+            "\tlate action=$action\n" +
+            "\tprocessed action=${nextUpdateFromEvent.getCompleted()}"
       }
     }
   }
 
+  @UseExperimental(ExperimentalCoroutinesApi::class)
   override fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> {
     checkNotFrozen()
 
@@ -76,7 +81,9 @@ class RealRenderContext<StateT, OutputT : Any>(
       override fun send(value: A) {
         // If this returns false, we lost the race with another event being sent.
         check(nextUpdateFromEvent.complete(value)) {
-          "Expected to successfully deliver $value. Are you using an old rendering?"
+          "Expected to successfully deliver action. Are you using an old rendering?\n" +
+              "\tlate action=$value\n" +
+              "\tprocessed action=${nextUpdateFromEvent.getCompleted()}"
         }
       }
     }
