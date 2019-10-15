@@ -113,6 +113,10 @@ fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRender(
 ) {
   val testRenderContext = TestOnlyRenderContext<S, O>()
   val rendering = render(props, state, testRenderContext)
+
+  // Run the render pass one more time to catch render methods that try to do side effects.
+  render(props, state, TestOnlyRenderContext())
+
   val result = TestRenderResult(rendering, state, testRenderContext.buildBehavior())
   result.block()
 }

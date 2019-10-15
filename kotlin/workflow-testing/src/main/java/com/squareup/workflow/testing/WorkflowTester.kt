@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+@file:Suppress("EXPERIMENTAL_API_USAGE", "DeprecatedCallableAddReplaceWith")
 
 package com.squareup.workflow.testing
 
@@ -21,8 +21,6 @@ import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.launchWorkflowForTestFromStateIn
-import com.squareup.workflow.launchWorkflowIn
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Unconfined
@@ -214,31 +212,13 @@ class WorkflowTester<PropsT, OutputT : Any, RenderingT> @TestOnly internal const
  *
  * All workflow-related coroutines are cancelled when the block exits.
  */
-// @formatter:off
 @TestOnly
-fun <T, PropsT, OutputT : Any, RenderingT>
-    Workflow<PropsT, OutputT, RenderingT>.testFromStart(
-      props: PropsT,
-      snapshot: Snapshot? = null,
-      context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
-    ): T
-// @formatter:on
-{
-  val inputs = ConflatedBroadcastChannel(props)
-
-  val tester = launchWorkflowIn(
-      CoroutineScope(Unconfined + context),
-      this@testFromStart,
-      inputs.asFlow(),
-      snapshot
-  ) { session ->
-    WorkflowTester(this, inputs, session.renderingsAndSnapshots, session.outputs)
-        .apply { collectFromWorkflow() }
-  }
-
-  return tester.runTest(block)
-}
+fun <T, PropsT, OutputT : Any, RenderingT> Workflow<PropsT, OutputT, RenderingT>.testFromStart(
+  props: PropsT,
+  testParams: WorkflowTestParams<Nothing> = WorkflowTestParams(),
+  context: CoroutineContext = EmptyCoroutineContext,
+  block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
+): T = asStatefulWorkflow().test(props, testParams, context, block)
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
@@ -247,58 +227,38 @@ fun <T, PropsT, OutputT : Any, RenderingT>
  */
 @TestOnly
 fun <T, OutputT : Any, RenderingT> Workflow<Unit, OutputT, RenderingT>.testFromStart(
-  snapshot: Snapshot? = null,
+  testParams: WorkflowTestParams<Nothing> = WorkflowTestParams(),
   context: CoroutineContext = EmptyCoroutineContext,
   block: WorkflowTester<Unit, OutputT, RenderingT>.() -> T
-): T = testFromStart(Unit, snapshot, context, block)
+): T = testFromStart(Unit, testParams, context, block)
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
- * If the workflow is [stateful][StatefulWorkflow], [initialState][StatefulWorkflow.initialState]
- * is not called. Instead, the workflow is started from the given [initialState].
  *
  * All workflow-related coroutines are cancelled when the block exits.
  */
-// @formatter:off
 @TestOnly
+// @formatter:off
 fun <T, PropsT, StateT, OutputT : Any, RenderingT>
-    StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.testFromState(
+    StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.test(
       props: PropsT,
-      initialState: StateT,
+      testParams: WorkflowTestParams<StateT> = WorkflowTestParams(),
       context: CoroutineContext = EmptyCoroutineContext,
       block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
     ): T
 // @formatter:on
 {
-  val inputs = ConflatedBroadcastChannel(props)
-  val scope = CoroutineScope(Unconfined + context)
+  val propsChannel = ConflatedBroadcastChannel(props)
 
   val tester = launchWorkflowForTestFromStateIn(
-      scope,
-      this@testFromState,
-      inputs.asFlow(),
-      initialState
+      scope = CoroutineScope(Unconfined + context),
+      workflow = this@test,
+      props = propsChannel.asFlow(),
+      testParams = testParams
   ) { session ->
-    WorkflowTester(this, inputs, session.renderingsAndSnapshots, session.outputs)
+    WorkflowTester(this, propsChannel, session.renderingsAndSnapshots, session.outputs)
         .apply { collectFromWorkflow() }
   }
 
   return tester.runTest(block)
 }
-
-/**
- * Creates a [WorkflowTester] to run this workflow for unit testing.
- * If the workflow is [stateful][StatefulWorkflow], [initialState][StatefulWorkflow.initialState]
- * is not called. Instead, the workflow is started from the given [initialState].
- *
- * All workflow-related coroutines are cancelled when the block exits.
- */
-// @formatter:off
-@TestOnly
-fun <StateT, OutputT : Any, RenderingT>
-    StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.testFromState(
-      initialState: StateT,
-      context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<Unit, OutputT, RenderingT>.() -> Unit
-    ) = testFromState(Unit, initialState, context, block)
-// @formatter:on

@@ -20,9 +20,9 @@ package com.squareup.workflow.testing
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromSnapshot
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
@@ -146,7 +146,7 @@ class WorkflowTesterTest {
       awaitNextSnapshot()
     }
 
-    workflow.testFromStart(snapshot) {
+    workflow.testFromStart(WorkflowTestParams(startFrom = StartFromSnapshot(snapshot))) {
       awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }
@@ -192,9 +192,11 @@ class WorkflowTesterTest {
   @Test fun `sendProps duplicate values all trigger render passes`() {
     var renders = 0
     val props = "props"
-    val workflow = Workflow.stateless<String, Nothing, Unit> { renders++ }
+    val workflow = Workflow.stateless<String, Nothing, Unit> {
+      renders++
+    }
 
-    workflow.testFromStart(props) {
+    workflow.testFromStart(props, testParams = WorkflowTestParams(checkRenderIdempotence = false)) {
       assertEquals(1, renders)
 
       sendProps(props)
@@ -202,6 +204,28 @@ class WorkflowTesterTest {
 
       sendProps(props)
       assertEquals(3, renders)
+    }
+  }
+
+  @Test fun `detects render side effects`() {
+    var renderCount = 0
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      renderCount++
+    }
+
+    workflow.testFromStart {
+      assertEquals(2, renderCount)
+    }
+  }
+
+  @Test fun `detects render side effects disabled`() {
+    var renderCount = 0
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      renderCount++
+    }
+
+    workflow.testFromStart(testParams = WorkflowTestParams(checkRenderIdempotence = false)) {
+      assertEquals(1, renderCount)
     }
   }
 }

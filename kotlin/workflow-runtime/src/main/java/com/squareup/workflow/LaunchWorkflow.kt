@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import org.jetbrains.annotations.TestOnly
 
 /**
  * Don't use this typealias for the public API, better to just use the function directly so it's
@@ -103,37 +102,11 @@ fun <PropsT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
   beforeStart: CoroutineScope.(session: WorkflowSession<OutputT, RenderingT>) -> RunnerT
 ): RunnerT = launchWorkflowImpl(
     scope,
-    RealWorkflowLoop,
+    RealWorkflowLoop(),
     workflow.asStatefulWorkflow(),
     props,
     initialSnapshot = initialSnapshot,
     initialState = null,
-    beforeStart = beforeStart
-)
-
-/**
- * Launches the [workflow] in a new coroutine in [scope]. The workflow tree is seeded with
- * [initialState] and the first value emitted by [props].  Subsequent values emitted from
- * [props] will be used to re-render the workflow.
- *
- * See [launchWorkflowIn] for documentation about most of the parameters and behavior.
- *
- * @param initialState The [StateT] in which to start the root workflow.
- */
-@TestOnly
-fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFromStateIn(
-  scope: CoroutineScope,
-  workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
-  props: Flow<PropsT>,
-  initialState: StateT,
-  beforeStart: CoroutineScope.(session: WorkflowSession<OutputT, RenderingT>) -> RunnerT
-): RunnerT = launchWorkflowImpl(
-    scope,
-    RealWorkflowLoop,
-    workflow,
-    props,
-    initialState = initialState,
-    initialSnapshot = null,
     beforeStart = beforeStart
 )
 

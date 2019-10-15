@@ -29,6 +29,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.select
+import org.jetbrains.annotations.TestOnly
 
 internal interface WorkflowLoop {
 
@@ -52,7 +53,7 @@ internal interface WorkflowLoop {
 }
 
 @UseExperimental(VeryExperimentalWorkflow::class)
-internal object RealWorkflowLoop : WorkflowLoop {
+internal open class RealWorkflowLoop : WorkflowLoop {
 
   @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
   @Suppress("LongMethod")
@@ -89,7 +90,7 @@ internal object RealWorkflowLoop : WorkflowLoop {
           coroutineContext.ensureActive()
 
           diagnosticListener?.onBeforeRenderPass(input)
-          val rendering = rootNode.render(workflow, input)
+          val rendering = doRender(rootNode, workflow, input)
           diagnosticListener?.apply {
             onAfterRenderPass(rendering)
             onBeforeSnapshotPass()
@@ -136,5 +137,28 @@ internal object RealWorkflowLoop : WorkflowLoop {
         rootNode.cancel()
       }
     }
+  }
+
+  protected open fun <PropsT, StateT, OutputT : Any, RenderingT> doRender(
+    rootNode: WorkflowNode<PropsT, StateT, OutputT, RenderingT>,
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+    props: PropsT
+  ): RenderingT = rootNode.render(workflow, props)
+}
+
+/**
+ * A [WorkflowLoop] that is identical to [RealWorkflowLoop] but runs every render pass twice to
+ * suss out render methods that try to perform side effects.
+ */
+@TestOnly
+internal class DoubleCheckingWorkflowLoop : RealWorkflowLoop() {
+  override fun <PropsT, StateT, OutputT : Any, RenderingT> doRender(
+    rootNode: WorkflowNode<PropsT, StateT, OutputT, RenderingT>,
+    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
+    props: PropsT
+  ): RenderingT {
+    // Dummy render pass that ignores its result.
+    super.doRender(rootNode, workflow, props)
+    return super.doRender(rootNode, workflow, props)
   }
 }
