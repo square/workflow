@@ -27,33 +27,20 @@ import com.squareup.workflow.ui.setContentWorkflow
 
 class MainActivity : AppCompatActivity() {
 
-  private lateinit var rootWorkflow: TodoListsAppWorkflow
-  private lateinit var workflowRunner: WorkflowRunner<*>
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    // TODO: https://github.com/square/workflow/issues/603 Remove use of deprecated property.
-    @Suppress("DEPRECATION")
-    rootWorkflow = lastCustomNonConfigurationInstance as? TodoListsAppWorkflow
-        ?: TodoListsAppWorkflow()
-
     val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-todo.json")!!
-    workflowRunner = setContentWorkflow(savedInstanceState) {
+
+    setContentWorkflow {
       WorkflowRunner.Config(
-          rootWorkflow, viewRegistry,
+          TodoListsAppWorkflow,
+          viewRegistry,
           diagnosticListener = SimpleLoggingDiagnosticListener()
               .andThen(TracingDiagnosticListener(traceFile))
       )
     }
   }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    workflowRunner.onSaveInstanceState(outState)
-  }
-
-  override fun onRetainCustomNonConfigurationInstance(): Any = rootWorkflow
 
   private companion object {
     val viewRegistry =

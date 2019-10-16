@@ -17,13 +17,11 @@
 
 package com.squareup.workflow.ui
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.toLiveData
-import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner.Config
@@ -31,7 +29,6 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -42,11 +39,6 @@ import kotlinx.coroutines.flow.flowOf
  * or subclass [WorkflowFragment] rather than instantiate a [WorkflowRunner] directly.
  */
 interface WorkflowRunner<out OutputT : Any> {
-  /**
-   * To be called from [FragmentActivity.onSaveInstanceState] or [Fragment.onSaveInstanceState].
-   */
-  fun onSaveInstanceState(outState: Bundle)
-
   /**
    * Provides the first (and only) [OutputT] value emitted by the workflow, or
    * nothing if it is canceled before emitting.
@@ -69,7 +61,6 @@ interface WorkflowRunner<out OutputT : Any> {
    * @param diagnosticListener If non-null, will receive all diagnostic events from the workflow
    * runtime. See [com.squareup.workflow.WorkflowSession.diagnosticListener].
    */
-  @UseExperimental(VeryExperimentalWorkflow::class)
   class Config<PropsT, OutputT : Any>(
     val workflow: Workflow<PropsT, OutputT, Any>,
     val viewRegistry: ViewRegistry,
@@ -95,7 +86,6 @@ interface WorkflowRunner<out OutputT : Any> {
      * @param diagnosticListener If non-null, will receive all diagnostic events from the workflow
      * runtime. See [com.squareup.workflow.WorkflowSession.diagnosticListener].
      */
-    @UseExperimental(VeryExperimentalWorkflow::class)
     @Suppress("FunctionName")
     fun <OutputT : Any> Config(
       workflow: Workflow<Unit, OutputT, Any>,
@@ -116,13 +106,11 @@ interface WorkflowRunner<out OutputT : Any> {
      * @param configure function defining the root workflow and its environment. Called only
      * once per [lifecycle][FragmentActivity.getLifecycle], and always called from the UI thread.
      */
-    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <PropsT, OutputT : Any> startWorkflow(
       activity: FragmentActivity,
-      savedInstanceState: Bundle?,
       configure: () -> Config<PropsT, OutputT>
     ): WorkflowRunner<OutputT> {
-      val factory = WorkflowRunnerViewModel.Factory(savedInstanceState, configure)
+      val factory = WorkflowRunnerViewModel.Factory(activity.savedStateRegistry, configure)
 
       @Suppress("UNCHECKED_CAST")
       return ViewModelProviders.of(activity, factory)[WorkflowRunnerViewModel::class.java]
@@ -139,13 +127,11 @@ interface WorkflowRunner<out OutputT : Any> {
      * @param configure function defining the root workflow and its environment. Called only
      * once per [lifecycle][Fragment.getLifecycle], and always called from the UI thread.
      */
-    @UseExperimental(ExperimentalCoroutinesApi::class)
     fun <PropsT, OutputT : Any> startWorkflow(
       fragment: Fragment,
-      savedInstanceState: Bundle?,
       configure: () -> Config<PropsT, OutputT>
     ): WorkflowRunner<OutputT> {
-      val factory = WorkflowRunnerViewModel.Factory(savedInstanceState, configure)
+      val factory = WorkflowRunnerViewModel.Factory(fragment.savedStateRegistry, configure)
 
       @Suppress("UNCHECKED_CAST")
       return ViewModelProviders.of(fragment, factory)[WorkflowRunnerViewModel::class.java]
@@ -167,13 +153,11 @@ interface WorkflowRunner<out OutputT : Any> {
  * values, so this is also a good place from which to call [FragmentActivity.finish]. Called
  * only while the activity is active, and always called from the UI thread.
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
 fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
-  savedInstanceState: Bundle?,
   configure: () -> Config<PropsT, OutputT>,
-  onResult: ((OutputT) -> Unit)
+  onResult: (OutputT) -> Unit
 ): WorkflowRunner<OutputT> {
-  val runner = WorkflowRunner.startWorkflow(this, savedInstanceState, configure)
+  val runner = WorkflowRunner.startWorkflow(this, configure)
   val layout = WorkflowLayout(this@setContentWorkflow).apply {
     id = R.id.workflow_layout
     start(runner.renderings, runner.viewRegistry)
@@ -188,8 +172,6 @@ fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
   return runner
 }
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
 fun <PropsT> FragmentActivity.setContentWorkflow(
-  savedInstanceState: Bundle?,
   configure: () -> Config<PropsT, Nothing>
-): WorkflowRunner<Nothing> = setContentWorkflow(savedInstanceState, configure) {}
+): WorkflowRunner<Nothing> = setContentWorkflow(configure) {}

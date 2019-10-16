@@ -18,9 +18,12 @@ package com.squareup.workflow.ui
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistry.SavedStateProvider
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.WorkflowSession
 import com.squareup.workflow.launchWorkflowIn
+import com.squareup.workflow.ui.WorkflowRunner.Config
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
@@ -38,26 +41,27 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   private val scope: CoroutineScope,
   session: WorkflowSession<OutputT, Any>,
   override val viewRegistry: ViewRegistry
-) : ViewModel(), WorkflowRunner<OutputT> {
+) : ViewModel(), WorkflowRunner<OutputT>, SavedStateProvider {
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   internal class Factory<PropsT, OutputT : Any>(
-    savedInstanceState: Bundle?,
-    private val configure: () -> WorkflowRunner.Config<PropsT, OutputT>
+    private val savedStateRegistry: SavedStateRegistry,
+    private val configure: () -> Config<PropsT, OutputT>
   ) : ViewModelProvider.Factory {
-    private val snapshot = savedInstanceState
+    private val snapshot = savedStateRegistry
+        .consumeRestoredStateForKey(BUNDLE_KEY)
         ?.getParcelable<PickledWorkflow>(BUNDLE_KEY)
         ?.snapshot
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return with(configure()) {
-        launchWorkflowIn(
-            CoroutineScope(dispatcher), workflow, props, snapshot
-        ) { session ->
-          session.diagnosticListener = diagnosticListener
-          @Suppress("UNCHECKED_CAST")
-          WorkflowRunnerViewModel(this, session, viewRegistry) as T
-        }
+      val config = configure()
+      return launchWorkflowIn(
+          CoroutineScope(config.dispatcher), config.workflow, config.props, snapshot
+      ) { session ->
+        session.diagnosticListener = config.diagnosticListener
+        @Suppress("UNCHECKED_CAST")
+        WorkflowRunnerViewModel(this, session, config.viewRegistry).apply {
+          savedStateRegistry.registerSavedStateProvider(BUNDLE_KEY, this)
+        } as T
       }
     }
   }
@@ -78,7 +82,6 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
 
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   override val renderings: Observable<out Any> = session.renderingsAndSnapshots
       .map { it.rendering }
       .asObservable()
@@ -87,8 +90,8 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
     scope.cancel(CancellationException("WorkflowRunnerViewModel cleared."))
   }
 
-  override fun onSaveInstanceState(outState: Bundle) {
-    outState.putParcelable(BUNDLE_KEY, PickledWorkflow(lastSnapshot))
+  override fun saveState() = Bundle().apply {
+    putParcelable(BUNDLE_KEY, PickledWorkflow(lastSnapshot))
   }
 
   @TestOnly
@@ -98,6 +101,11 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
   internal fun getLastSnapshotForTest() = lastSnapshot
 
   private companion object {
+    /**
+     * Namespace key, used in two namespaces:
+     *  - associates the [WorkflowRunnerViewModel] with the [SavedStateRegistry]
+     *  - and is also the key for the [PickledWorkflow] in the bundle created by [saveState].
+     */
     val BUNDLE_KEY = WorkflowRunner::class.java.name + "-workflow"
   }
 }

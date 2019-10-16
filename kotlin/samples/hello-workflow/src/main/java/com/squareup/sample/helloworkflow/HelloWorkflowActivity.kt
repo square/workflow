@@ -25,20 +25,14 @@ import com.squareup.workflow.ui.setContentWorkflow
 private val viewRegistry = ViewRegistry(HelloLayoutRunner)
 
 class HelloWorkflowActivity : AppCompatActivity() {
-  private lateinit var runner: WorkflowRunner<Unit>
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    runner = setContentWorkflow(savedInstanceState) {
+    setContentWorkflow {
       WorkflowRunner.Config(
-          HelloWorkflow, viewRegistry,
+          HelloWorkflow,
+          viewRegistry,
           diagnosticListener = SimpleLoggingDiagnosticListener()
       )
     }
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    runner.onSaveInstanceState(outState)
   }
 }

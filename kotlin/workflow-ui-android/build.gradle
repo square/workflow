@@ -40,8 +40,9 @@ dependencies {
 
   implementation project(':workflow-runtime')
   implementation deps.androidx.appcompat
-  implementation deps.androidx.lifecycle
-  implementation deps.androidx.lifecycleReactivestreams
+  implementation deps.androidx.lifecycle.extensions
+  implementation deps.androidx.lifecycle.reactivestreams
+  implementation deps.androidx.savedstate
   implementation deps.kotlin.coroutines.android
   implementation deps.kotlin.coroutines.core
   implementation deps.kotlin.coroutines.rx2
