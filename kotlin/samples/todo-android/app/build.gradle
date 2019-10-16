@@ -44,7 +44,7 @@ dependencies {
   implementation deps.androidx.appcompat
   implementation deps.androidx.constraint_layout
   implementation deps.androidx.material
-  implementation deps.androidx.lifecycle
+  implementation deps.androidx.lifecycle.extensions
   implementation deps.kotlin.coroutines.rx2
   implementation deps.okio
   implementation deps.rxandroid2
