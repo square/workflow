@@ -18,7 +18,6 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.launchWorkflowImpl
@@ -470,9 +469,7 @@ class LaunchWorkflowTest {
           emptyFlow(),
           initialSnapshot = null,
           initialState = null
-      ) { _ ->
-        throw ExpectedException()
-      }
+      ) { throw ExpectedException() }
     }
 
     assertTrue(parentJob.isActive)
@@ -537,7 +534,6 @@ class LaunchWorkflowTest {
 private suspend fun hang(): Nothing = suspendCancellableCoroutine { }
 
 @Suppress("UNCHECKED_CAST")
-@UseExperimental(ExperimentalCoroutinesApi::class, VeryExperimentalWorkflow::class)
 private fun simpleLoop(
   block: suspend (
     onRendering: suspend (RenderingAndSnapshot<Any?>) -> Unit,
@@ -560,7 +556,6 @@ private fun simpleLoop(
   }
 }
 
-@UseExperimental(ExperimentalCoroutinesApi::class, VeryExperimentalWorkflow::class)
 private object HangingLoop : WorkflowLoop {
   override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,

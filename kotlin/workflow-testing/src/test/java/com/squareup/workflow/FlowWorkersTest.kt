@@ -35,7 +35,6 @@ class FlowWorkersTest {
   private val subject = Channel<String>(capacity = 1)
   private var source = flow { subject.consumeEach { emit(it) } }
 
-  @UseExperimental(VeryExperimentalWorkflow::class)
   private val worker by lazy { source.asWorker() }
 
   @Test fun `flow emits`() {

@@ -17,7 +17,6 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.diagnostic.IdCounter
@@ -34,7 +33,6 @@ import kotlin.coroutines.CoroutineContext
  * Responsible for tracking child workflows, starting them and tearing them down when necessary.
  * Also manages restoring children from snapshots.
  */
-@UseExperimental(VeryExperimentalWorkflow::class)
 internal class SubtreeManager<StateT, OutputT : Any>(
   private val contextForChildren: CoroutineContext,
   private val parentDiagnosticId: Long,

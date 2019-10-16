@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.select
 
-@UseExperimental(ExperimentalCoroutinesApi::class, VeryExperimentalWorkflow::class)
 internal interface WorkflowLoop {
 
   /**
