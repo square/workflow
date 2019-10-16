@@ -173,7 +173,7 @@ class SubtreeManagerTest {
     assertEquals(0, workflow.snapshots)
 
     manager.track(listOf(case))
-    manager.createChildrenSnapshot()
+    manager.createChildSnapshots()
     assertEquals(1, workflow.snapshots)
   }
 
@@ -186,10 +186,10 @@ class SubtreeManagerTest {
     assertEquals(0, workflow.serializes)
 
     manager.track(listOf(case))
-    val snapshot = manager.createChildrenSnapshot()
+    val snapshots = manager.createChildSnapshots()
     assertEquals(0, workflow.serializes)
 
-    snapshot.bytes
+    snapshots.forEach { (_, snapshot) -> snapshot.bytes }
     assertEquals(1, workflow.serializes)
   }
 }

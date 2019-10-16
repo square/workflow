@@ -25,9 +25,6 @@ import com.squareup.workflow.diagnostic.IdCounter
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.diagnostic.createId
 import com.squareup.workflow.internal.Behavior.WorkerCase
-import com.squareup.workflow.parse
-import com.squareup.workflow.readByteStringWithLength
-import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -146,10 +143,12 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    * automatically.
    */
   fun snapshot(workflow: StatefulWorkflow<*, *, *, *>): Snapshot {
-    val childrenSnapshot = subtreeManager.createChildrenSnapshot()
     @Suppress("UNCHECKED_CAST")
-    return childrenSnapshot.withState(
-        workflow as StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
+    val typedWorkflow = workflow as StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
+    val childSnapshots = subtreeManager.createChildSnapshots()
+    return createTreeSnapshot(
+        rootSnapshot = typedWorkflow.snapshotState(state),
+        childSnapshots = childSnapshots
     )
   }
 
@@ -254,30 +253,9 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     lastProps = newProps
   }
 
-  /** @see ByteString.parsePartialSnapshot */
-  private fun Snapshot.withState(
-    workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>
-  ): Snapshot {
-    val stateSnapshot = workflow.snapshotState(state)
-    return Snapshot.write { sink ->
-      sink.writeByteStringWithLength(stateSnapshot.bytes)
-      sink.write(bytes)
-    }
-  }
-
   private fun ByteString.restoreState(): Snapshot? {
-    val (snapshotToRestoreFrom, childrenSnapshot) = parsePartialSnapshot()
-    subtreeManager.restoreChildrenFromSnapshot(childrenSnapshot)
-    return snapshotToRestoreFrom
-  }
-
-  /** @see Snapshot.withState */
-  private fun ByteString.parsePartialSnapshot(): Pair<Snapshot?, ByteString> = parse { source ->
-    val stateSnapshot = source.readByteStringWithLength()
-    val childrenSnapshot = source.readByteString()
-    // Never pass an empty snapshot to initialState.
-    val nonEmptySnapshot = stateSnapshot.takeIf { it.size > 0 }
-        ?.let { Snapshot.of(it) }
-    return Pair(nonEmptySnapshot, childrenSnapshot)
+    val (snapshotToRestoreFrom, childSnapshots) = parseTreeSnapshot(this)
+    subtreeManager.restoreChildrenFromSnapshots(childSnapshots)
+    return snapshotToRestoreFrom?.let { Snapshot.of(it) }
   }
 }

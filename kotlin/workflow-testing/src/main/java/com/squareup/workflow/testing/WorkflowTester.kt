@@ -144,6 +144,9 @@ class WorkflowTester<PropsT, OutputT : Any, RenderingT> @TestOnly internal const
   /**
    * Blocks until the workflow emits a snapshot, then returns it.
    *
+   * The returned snapshot will be the snapshot only of the root workflow. It will be null if
+   * `snapshotState` returned an empty [Snapshot].
+   *
    * @param timeoutMs The maximum amount of time to wait for a snapshot to be emitted. If null,
    * [DEFAULT_TIMEOUT_MS] will be used instead.
    * @param skipIntermediate If true, and the workflow has emitted multiple snapshots, all but the

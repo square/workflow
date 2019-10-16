@@ -19,10 +19,12 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowSession
 import com.squareup.workflow.internal.DoubleCheckingWorkflowLoop
 import com.squareup.workflow.internal.RealWorkflowLoop
+import com.squareup.workflow.internal.createTreeSnapshot
 import com.squareup.workflow.launchWorkflowImpl
 import com.squareup.workflow.launchWorkflowIn
-import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromSnapshot
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromCompleteSnapshot
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromState
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromWorkflowSnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.annotations.TestOnly
@@ -43,7 +45,15 @@ fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFr
   beforeStart: CoroutineScope.(session: WorkflowSession<OutputT, RenderingT>) -> RunnerT
 ): RunnerT {
   val initialState = (testParams.startFrom as? StartFromState)?.state
-  val initialSnapshot = (testParams.startFrom as? StartFromSnapshot)?.snapshot
+  val initialSnapshot = when (val startMode = testParams.startFrom) {
+    is StartFromWorkflowSnapshot -> {
+      // We need to wrap it in the rest of the envelope that the runtime expects so it looks like it
+      // came out of the runtime.
+      createTreeSnapshot(startMode.snapshot, emptyList())
+    }
+    is StartFromCompleteSnapshot -> startMode.snapshot
+    else -> null
+  }
 
   return launchWorkflowImpl(
       scope,

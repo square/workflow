@@ -16,7 +16,7 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.testing.WorkflowTestParams
-import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromSnapshot
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromCompleteSnapshot
 import com.squareup.workflow.testing.testFromStart
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,7 +43,7 @@ class SnapshottingIntegrationTest {
 
     root.testFromStart(
         props = "unused props",
-        testParams = WorkflowTestParams(startFrom = StartFromSnapshot(snapshot!!))
+        testParams = WorkflowTestParams(startFrom = StartFromCompleteSnapshot(snapshot!!))
     ) {
       assertEquals("root:new data", awaitNextRendering().data)
     }
@@ -74,7 +74,7 @@ class SnapshottingIntegrationTest {
 
     root.testFromStart(
         props = "unused props",
-        testParams = WorkflowTestParams(startFrom = StartFromSnapshot(snapshot!!))
+        testParams = WorkflowTestParams(startFrom = StartFromCompleteSnapshot(snapshot!!))
     ) {
       awaitNextRendering()
           .let {
@@ -130,7 +130,7 @@ class SnapshottingIntegrationTest {
 
     root.testFromStart(
         props = "unused props",
-        testParams = WorkflowTestParams(startFrom = StartFromSnapshot(snapshot!!))
+        testParams = WorkflowTestParams(startFrom = StartFromCompleteSnapshot(snapshot!!))
     ) {
       awaitNextRendering()
           .let {
@@ -172,8 +172,8 @@ class SnapshottingIntegrationTest {
       sendProps("props2")
       val snapshot3 = awaitNextSnapshot()
 
-      assertNotEquals(snapshot1.bytes, snapshot2.bytes)
-      assertEquals(snapshot2.bytes, snapshot3.bytes)
+      assertNotEquals(snapshot1, snapshot2)
+      assertEquals(snapshot2, snapshot3)
     }
   }
 }

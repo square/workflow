@@ -22,9 +22,6 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.diagnostic.IdCounter
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
-import com.squareup.workflow.parse
-import com.squareup.workflow.readByteStringWithLength
-import com.squareup.workflow.writeByteStringWithLength
 import kotlinx.coroutines.selects.SelectBuilder
 import okio.ByteString
 import kotlin.coroutines.CoroutineContext
@@ -98,38 +95,17 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     }
   }
 
-  /**
-   * Returns a [Snapshot] that contains snapshots of all children, associated with their IDs.
-   */
-  fun createChildrenSnapshot(): Snapshot {
-    val childSnapshots = hostLifetimeTracker.lifetimes
+  fun createChildSnapshots(): List<Pair<AnyId, Snapshot>> {
+    return hostLifetimeTracker.lifetimes
         .map { (case, host) -> host.id to host.snapshot(case.workflow.asStatefulWorkflow()) }
-
-    return Snapshot.write { sink ->
-      sink.writeInt(childSnapshots.size)
-      for ((id, snapshot) in childSnapshots) {
-        sink.writeByteStringWithLength(id.toByteString())
-        sink.writeByteStringWithLength(snapshot.bytes)
-      }
-    }
   }
 
   /**
-   * Extracts child snapshots and IDs from [snapshot] and caches them, so the next time those state
-   * machines are asked to be started, they are restored from their snapshots.
+   * Caches snapshots and IDs from a tree snapshot so the next time those workflows are asked to be
+   * started, they are restored from their snapshots.
    */
-  fun restoreChildrenFromSnapshot(snapshot: ByteString) {
-    snapshot.parse { source ->
-      val childCount = source.readInt()
-      val snapshots = List(childCount) {
-        val id = restoreId(source.readByteStringWithLength())
-        val childSnapshot = source.readByteStringWithLength()
-        Pair(id, childSnapshot)
-      }
-      // Populate the snapshot cache so when we are asked to create hosts for the snapshotted IDs,
-      // they will be restored from their snapshots.
-      snapshotCache.putAll(snapshots.toMap())
-    }
+  fun restoreChildrenFromSnapshots(childSnapshots: List<Pair<AnyId, ByteString>>) {
+    snapshotCache.putAll(childSnapshots.toMap())
   }
 
   @Suppress("UNCHECKED_CAST")

@@ -22,7 +22,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
-import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromSnapshot
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromWorkflowSnapshot
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
@@ -137,16 +137,11 @@ class WorkflowTesterTest {
           }
         },
         render = {},
-        snapshot = { Snapshot.of("dummy snapshot") }
+        snapshot = { Snapshot.EMPTY }
     )
+    val snapshot = Snapshot.of("dummy snapshot")
 
-    // Get a valid snapshot (can't use the raw snapshot directly,
-    // see https://github.com/square/workflow/issues/538).
-    val snapshot = workflow.testFromStart {
-      awaitNextSnapshot()
-    }
-
-    workflow.testFromStart(WorkflowTestParams(startFrom = StartFromSnapshot(snapshot))) {
+    workflow.testFromStart(WorkflowTestParams(startFrom = StartFromWorkflowSnapshot(snapshot))) {
       awaitFailure()
           .let { error ->
             val causeChain = generateSequence(error) { it.cause }
