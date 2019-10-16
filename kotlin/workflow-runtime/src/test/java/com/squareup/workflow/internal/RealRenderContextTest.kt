@@ -25,6 +25,7 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
@@ -89,7 +90,7 @@ class RealRenderContextTest {
     ): RC = fail()
   }
 
-  @Test fun `make sink completes update`() {
+  @Test fun `onEvent completes update`() {
     val context = RealRenderContext<String, String>(PoisonRenderer())
     val expectedUpdate = noAction<String, String>()
     val handler = context.onEvent<String> { expectedUpdate }
@@ -103,7 +104,71 @@ class RealRenderContextTest {
     assertSame(expectedUpdate, actualUpdate)
   }
 
-  @Test fun `make sink gets event`() {
+  @Test fun `onEvent throws on multiple invocations`() {
+    val context = RealRenderContext<String, String>(PoisonRenderer())
+    fun expectedUpdate(msg: String) = object : WorkflowAction<String, String> {
+      override fun Mutator<String>.apply(): String? = null
+      override fun toString(): String = "action($msg)"
+    }
+
+    val handler = context.onEvent<String> { expectedUpdate(it) }
+    handler("one")
+
+    val error = assertFailsWith<IllegalStateException> { handler("two") }
+
+    // Note that the indent after the first line, relative to the first line, is tab characters not
+    // spaces.
+    assertEquals(
+        """
+          Expected to successfully deliver event. Are you using an old rendering?
+          	event=two
+          	late action=action(two)
+          	processed action=action(one)
+         """.trimIndent(), error.message
+    )
+  }
+
+  @Test fun `makeActionSink completes update`() {
+    val context = RealRenderContext<String, String>(PoisonRenderer())
+    val stringAction = WorkflowAction<String, String>({ "stringAction" }) { null }
+    val sink = context.makeActionSink<WorkflowAction<String, String>>()
+    val behavior = context.buildBehavior()
+    assertFalse(behavior.nextActionFromEvent.isCompleted)
+
+    sink.send(stringAction)
+
+    assertTrue(behavior.nextActionFromEvent.isCompleted)
+    val actualAction = behavior.nextActionFromEvent.getCompleted()
+    assertSame(stringAction, actualAction)
+  }
+
+  @Test fun `makeActionSink throws on multiple sends`() {
+    val context = RealRenderContext<String, String>(PoisonRenderer())
+    val firstAction = object : WorkflowAction<String, String> {
+      override fun Mutator<String>.apply(): String? = null
+      override fun toString(): String = "firstAction"
+    }
+    val secondAction = object : WorkflowAction<String, String> {
+      override fun Mutator<String>.apply(): String? = null
+      override fun toString(): String = "secondAction"
+    }
+    val sink = context.makeActionSink<WorkflowAction<String, String>>()
+    sink.send(firstAction)
+
+    val error = assertFailsWith<IllegalStateException> { sink.send(secondAction) }
+
+    // Note that the indent after the first line, relative to the first line, is tab characters not
+    // spaces.
+    assertEquals(
+        """
+          Expected to successfully deliver action. Are you using an old rendering?
+          	late action=secondAction
+          	processed action=firstAction
+        """.trimIndent(), error.message
+    )
+  }
+
+  @Test fun `makeEventSink gets event`() {
     val context = RealRenderContext<String, String>(PoisonRenderer())
     val sink: Sink<String> = context.makeEventSink { it }
     sink.send("foo")
@@ -115,7 +180,7 @@ class RealRenderContextTest {
     assertEquals("foo", output)
   }
 
-  @Test fun `make sink works with OutputT of Nothing`() {
+  @Test fun `makeEventSink works with OutputT of Nothing`() {
     val context = RealRenderContext<String, Nothing>(PoisonRenderer())
     val sink: Sink<String> = context.makeEventSink { null }
     sink.send("foo")
