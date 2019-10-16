@@ -24,6 +24,7 @@ import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.backPressedHandler
+import com.squareup.workflow.ui.isInBackStack
 
 internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<TodoRendering> {
 
@@ -49,8 +50,12 @@ internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<Tod
     titleText.text.replace(0, titleText.text.length, rendering.list.title)
     itemContainer.setRows(rendering.list.rows.map { Pair(it.done, it.text) })
 
-    toolbar.setNavigationOnClickListener { rendering.onGoBackClicked() }
-    view.backPressedHandler = { rendering.onGoBackClicked() }
+    if (rendering.isInBackStack) {
+      toolbar.setNavigationOnClickListener { rendering.onGoBackClicked() }
+      view.backPressedHandler = { rendering.onGoBackClicked() }
+    } else {
+      toolbar.navigationIcon = null
+    }
 
     titleText.setTextChangedListener { rendering.onTitleChanged(it) }
 

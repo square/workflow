@@ -27,6 +27,8 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.ui.BackStackAware
+import com.squareup.workflow.ui.BackStackConfig
 
 data class TodoList(
   val title: String,
@@ -77,14 +79,19 @@ sealed class TodoAction : WorkflowAction<Nothing, TodoEditorOutput> {
   }
 }
 
-class TodoRendering(
+data class TodoRendering(
   val list: TodoList,
+  override val backStackConfig: BackStackConfig? = null,
   val onTitleChanged: (title: String) -> Unit,
   val onDoneClicked: (index: Int) -> Unit,
   val onTextChanged: (index: Int, text: String) -> Unit,
   val onDeleteClicked: (index: Int) -> Unit,
   val onGoBackClicked: () -> Unit
-)
+) : BackStackAware<TodoRendering> {
+  override fun withBackStackConfig(config: BackStackConfig): TodoRendering {
+    return copy(backStackConfig = config)
+  }
+}
 
 sealed class TodoEditorOutput {
   data class ListUpdated(val newList: TodoList) : TodoEditorOutput()

@@ -23,7 +23,6 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.ui.BackStackScreen
 
 private typealias TodoListsAction = WorkflowAction<TodoListsAppState, Nothing>
 
@@ -39,7 +38,7 @@ sealed class TodoListsAppState {
 }
 
 class TodoListsAppWorkflow :
-    StatefulWorkflow<Unit, TodoListsAppState, Nothing, BackStackScreen<*>>() {
+    StatefulWorkflow<Unit, TodoListsAppState, Nothing, MasterDetailScreen>() {
   override fun initialState(
     props: Unit,
     snapshot: Snapshot?
@@ -76,18 +75,26 @@ class TodoListsAppWorkflow :
     props: Unit,
     state: TodoListsAppState,
     context: RenderContext<TodoListsAppState, Nothing>
-  ): BackStackScreen<*> {
-    val listOfLists = context.renderChild(
+  ): MasterDetailScreen {
+    val listOfLists: TodoListsScreen = context.renderChild(
         listsWorkflow,
         state.lists
     ) { index -> onListSelected(index) }
 
+    val sink = context.makeActionSink<WorkflowAction<TodoListsAppState, Nothing>>()
+
     return when (state) {
-      is ShowingLists -> BackStackScreen(listOfLists)
+      is ShowingLists -> MasterDetailScreen(
+          masterRendering = listOfLists,
+          selectDefault = { sink.send(onListSelected(0)) }
+      )
       is EditingList -> context.renderChild(
           editorWorkflow, state.lists[state.editingIndex], handler = this::onEditOutput
       ).let { editScreen ->
-        BackStackScreen(listOfLists, editScreen)
+        MasterDetailScreen(
+            masterRendering = listOfLists.copy(selection = state.editingIndex),
+            detailRendering = editScreen
+        )
       }
     }
   }

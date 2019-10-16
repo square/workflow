@@ -161,8 +161,7 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
                 state.errorMessage,
                 onLogin = { email, password -> sink.send(SubmitLogin(email, password)) },
                 onCancel = { sink.send(CancelLogin) }
-            ),
-            onGoBack = { sink.send(CancelLogin) }
+            )
         )
       }
 

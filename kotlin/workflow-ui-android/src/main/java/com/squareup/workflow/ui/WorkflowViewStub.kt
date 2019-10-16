@@ -39,10 +39,12 @@ import android.view.ViewGroup
  *     }
  * ```
  */
-class WorkflowViewStub(
+class WorkflowViewStub @JvmOverloads constructor(
   context: Context,
-  attributeSet: AttributeSet? = null
-) : View(context, attributeSet) {
+  attributeSet: AttributeSet? = null,
+  defStyle: Int = 0,
+  defStyleRes: Int = 0
+) : View(context, attributeSet, defStyle, defStyleRes) {
   init {
     setWillNotDraw(true)
   }

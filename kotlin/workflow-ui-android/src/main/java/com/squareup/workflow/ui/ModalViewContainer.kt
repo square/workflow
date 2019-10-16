@@ -32,13 +32,14 @@ import kotlin.reflect.KClass
  * Class returned by [ModalContainer.forContainerScreen], qv for details.
  */
 @PublishedApi
-internal class ModalViewContainer
-@JvmOverloads constructor(
+internal class ModalViewContainer @JvmOverloads constructor(
   context: Context,
   attributeSet: AttributeSet? = null,
+  defStyle: Int = 0,
+  defStyleRes: Int = 0,
   @StyleRes private val dialogThemeResId: Int = 0,
   private val modalDecorator: (View) -> View = { it }
-) : ModalContainer<Any>(context, attributeSet) {
+) : ModalContainer<Any>(context, attributeSet, defStyle, defStyleRes) {
   override fun buildDialog(
     initialModalRendering: Any,
     viewRegistry: ViewRegistry
