@@ -20,8 +20,6 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.runningWorker
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 
 /**
@@ -35,7 +33,6 @@ class BlinkingCursorWorkflow(
 
   private val cursorString = cursor.toString()
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   private val intervalWorker = Worker.create {
     var on = true
     while (true) {

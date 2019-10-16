@@ -21,7 +21,6 @@ import androidx.test.espresso.IdlingResource
 import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
 import com.squareup.sample.panel.PanelContainer
-import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.diagnostic.andThen
 import com.squareup.workflow.diagnostic.tracing.TracingDiagnosticListener
@@ -35,11 +34,10 @@ class MainActivity : AppCompatActivity() {
   private var loggingSub = Disposables.disposed()
 
   private lateinit var component: MainComponent
-  private lateinit var workflowRunner: WorkflowRunner<Unit>
 
+  /** Exposed for use by espresso tests. */
   lateinit var idlingResource: IdlingResource
 
-  @UseExperimental(VeryExperimentalWorkflow::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
@@ -51,25 +49,22 @@ class MainActivity : AppCompatActivity() {
     idlingResource = component.idlingResource
 
     val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-tictactoe.json")!!
-    workflowRunner = setContentWorkflow(
-        savedInstanceState,
-        {
+
+    val workflowRunner = setContentWorkflow(
+        configure = {
           WorkflowRunner.Config(
-              component.mainWorkflow, viewRegistry,
+              component.mainWorkflow,
+              viewRegistry,
               diagnosticListener = SimpleLoggingDiagnosticListener()
                   .andThen(TracingDiagnosticListener(traceFile))
           )
-        }
-    ) {
-      finish()
-    }
+        },
+        // The sample MainWorkflow emits a Unit output when it is done, which means it's
+        // time to end the activity.
+        onResult = { finish() }
+    )
 
     loggingSub = workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) }
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    workflowRunner.onSaveInstanceState(outState)
   }
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component

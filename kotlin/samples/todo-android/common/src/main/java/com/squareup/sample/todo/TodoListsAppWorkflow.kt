@@ -37,7 +37,7 @@ sealed class TodoListsAppState {
   ) : TodoListsAppState()
 }
 
-class TodoListsAppWorkflow :
+object TodoListsAppWorkflow :
     StatefulWorkflow<Unit, TodoListsAppState, Nothing, MasterDetailScreen>() {
   override fun initialState(
     props: Unit,

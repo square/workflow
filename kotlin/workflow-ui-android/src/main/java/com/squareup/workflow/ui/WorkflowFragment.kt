@@ -83,13 +83,8 @@ abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
 
-    _runner = WorkflowRunner.startWorkflow(this, savedInstanceState, ::onCreateWorkflow)
+    _runner = WorkflowRunner.startWorkflow(this, ::onCreateWorkflow)
 
     (view as WorkflowLayout).start(runner.renderings, runner.viewRegistry)
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    runner.onSaveInstanceState(outState)
   }
 }

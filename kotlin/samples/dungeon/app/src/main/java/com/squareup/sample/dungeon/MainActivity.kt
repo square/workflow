@@ -23,8 +23,6 @@ import com.squareup.workflow.ui.setContentWorkflow
 
 class MainActivity : AppCompatActivity() {
 
-  private lateinit var workflowRunner: WorkflowRunner<*>
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
@@ -32,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     val component = Component(applicationContext)
 
     val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-dungeon.json")!!
-    workflowRunner = setContentWorkflow(savedInstanceState) {
+    setContentWorkflow {
       WorkflowRunner.Config(
           workflow = component.appWorkflow,
           viewRegistry = component.viewRegistry,
@@ -40,10 +38,5 @@ class MainActivity : AppCompatActivity() {
           diagnosticListener = TracingDiagnosticListener(traceFile)
       )
     }
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    workflowRunner.onSaveInstanceState(outState)
   }
 }

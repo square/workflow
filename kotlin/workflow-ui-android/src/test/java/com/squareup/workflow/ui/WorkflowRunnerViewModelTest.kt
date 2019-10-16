@@ -1,5 +1,10 @@
 package com.squareup.workflow.ui
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
 import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
@@ -132,9 +137,28 @@ class WorkflowRunnerViewModelTest {
   }
 
   private fun <O : Any, R : Any> Workflow<Unit, O, R>.run(): WorkflowRunnerViewModel<O> {
+    val registryOwner = object : SavedStateRegistryOwner {
+      lateinit var controller: SavedStateRegistryController
+
+      override fun getLifecycle(): Lifecycle {
+        return object : Lifecycle() {
+          override fun addObserver(observer: LifecycleObserver) = Unit
+          override fun removeObserver(observer: LifecycleObserver) = Unit
+          override fun getCurrentState() = State.INITIALIZED
+        }
+      }
+
+      override fun getSavedStateRegistry(): SavedStateRegistry {
+        return controller.savedStateRegistry
+      }
+    }
+
+    registryOwner.controller = SavedStateRegistryController.create(registryOwner)
+        .apply { performRestore(null) }
+
     @Suppress("UNCHECKED_CAST")
     return WorkflowRunnerViewModel
-        .Factory(savedInstanceState = null) {
+        .Factory(registryOwner.savedStateRegistry) {
           Config(this, viewRegistry, Unit, Unconfined)
         }
         .create(WorkflowRunnerViewModel::class.java) as WorkflowRunnerViewModel<O>

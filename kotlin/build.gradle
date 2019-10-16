@@ -56,6 +56,10 @@ buildscript {
           ],
           // Note that we're not using the actual androidx material dep yet, it's still alpha.
           'material': "com.google.android.material:material:1.0.0",
+          // Note that we are *not* using lifecycle-viewmodel-savedstate, which at this
+          // writing is still in beta and still fixing bad bugs. Probably we'll never bother to,
+          // it doesn't really add value for us.
+          'savedstate': "androidx.savedstate:savedstate:1.0.0",
           'transition': "androidx.transition:transition:1.2.0",
       ],
 
