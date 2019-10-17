@@ -122,7 +122,7 @@ buildscript {
               'runner': "androidx.test:runner:1.2.0",
               'truthExt': "androidx.test.ext:truth:1.2.0",
           ],
-          'hamcrestCore': "org.hamcrest:hamcrest-core:2.1",
+          'hamcrestCore': "org.hamcrest:hamcrest-core:2.2",
           'junit': "junit:junit:4.12",
           'mockito': "org.mockito:mockito-core:3.1.0",
           'truth': "com.google.truth:truth:1.0",
