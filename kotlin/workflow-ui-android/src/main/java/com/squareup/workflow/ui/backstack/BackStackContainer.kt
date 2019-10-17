@@ -23,7 +23,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import androidx.transition.Fade
 import androidx.transition.Scene
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
@@ -109,22 +108,29 @@ open class BackStackContainer @JvmOverloads constructor(
     // Showing something already, transition with push or pop effect.
     oldViewMaybe
         ?.let { oldView ->
-          val newScene = Scene(this, newView)
+          val oldBody: View? = oldView.findViewById(R.id.back_stack_body)
+          val newBody: View? = newView.findViewById(R.id.back_stack_body)
+
+          val oldTarget: View
+          val newTarget: View
+          if (oldBody != null && newBody != null) {
+            oldTarget = oldBody
+            newTarget = newBody
+          } else {
+            oldTarget = oldView
+            newTarget = newView
+          }
 
           val (outEdge, inEdge) = when (popped) {
             false -> Gravity.START to Gravity.END
             true -> Gravity.END to Gravity.START
           }
 
-          val outSet = TransitionSet()
-              .addTransition(Slide(outEdge).addTarget(oldView))
-              .addTransition(Fade(Fade.OUT))
+          val transition = TransitionSet()
+              .addTransition(Slide(outEdge).addTarget(oldTarget))
+              .addTransition(Slide(inEdge).addTarget(newTarget))
 
-          val fullSet = TransitionSet()
-              .addTransition(outSet)
-              .addTransition(Slide(inEdge).excludeTarget(oldView, true))
-
-          TransitionManager.go(newScene, fullSet)
+          TransitionManager.go(Scene(this, newView), transition)
           return
         }
 

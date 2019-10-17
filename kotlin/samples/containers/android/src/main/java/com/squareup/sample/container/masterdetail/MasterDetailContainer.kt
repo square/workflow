@@ -87,7 +87,7 @@ class MasterDetailContainer(
     containerHints: ContainerHints,
     stub: WorkflowViewStub
   ) {
-    val combined: BackStackScreen<Any> = rendering.detailRendering
+    val combined: BackStackScreen<*> = rendering.detailRendering
         ?.let { rendering.masterRendering + it }
         ?: rendering.masterRendering
 
