@@ -153,4 +153,15 @@ class RenderTesterTest {
       assertEquals("event: foo", output)
     }
   }
+
+  @Test fun `detects render side effects`() {
+    var renderCount = 0
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      renderCount++
+    } as StatelessWorkflow
+
+    workflow.testRender {
+      assertEquals(2, renderCount)
+    }
+  }
 }

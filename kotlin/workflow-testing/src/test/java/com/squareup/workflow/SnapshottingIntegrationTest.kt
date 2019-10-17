@@ -15,6 +15,8 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.testing.WorkflowTestParams
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromSnapshot
 import com.squareup.workflow.testing.testFromStart
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -39,7 +41,10 @@ class SnapshottingIntegrationTest {
       snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused props", snapshot!!) {
+    root.testFromStart(
+        props = "unused props",
+        testParams = WorkflowTestParams(startFrom = StartFromSnapshot(snapshot!!))
+    ) {
       assertEquals("root:new data", awaitNextRendering().data)
     }
   }
@@ -67,7 +72,10 @@ class SnapshottingIntegrationTest {
       snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused props", snapshot!!) {
+    root.testFromStart(
+        props = "unused props",
+        testParams = WorkflowTestParams(startFrom = StartFromSnapshot(snapshot!!))
+    ) {
       awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
@@ -120,7 +128,10 @@ class SnapshottingIntegrationTest {
       snapshot = awaitNextSnapshot()
     }
 
-    root.testFromStart("unused props", snapshot!!) {
+    root.testFromStart(
+        props = "unused props",
+        testParams = WorkflowTestParams(startFrom = StartFromSnapshot(snapshot!!))
+    ) {
       awaitNextRendering()
           .let {
             assertEquals("root:new root data", it.data)
