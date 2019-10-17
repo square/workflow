@@ -1,0 +1,13 @@
+# See https://github.com/phstc/probot-merge-when-green for documentation of configuration options.
+
+# requiredChecks:
+#   - circleci
+#   - travis-ci
+# requiredStatuses:
+#   - jenkins
+
+requireApprovalFromRequestedReviewers: true
+
+# You can change method that Merge when green uses to merge pull requests with the
+# mergeMethod option. Valid values are merge, squash and rebase, the default is merge.
+#mergeMethod: squash
