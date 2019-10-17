@@ -327,7 +327,6 @@ fun <T, R> Worker<T>.transform(
  * [type]s. This is used by all the [Worker] builder functions.
  */
 @PublishedApi
-@UseExperimental(ExperimentalCoroutinesApi::class)
 internal class TypedWorker<OutputT>(
   /** Can't be `KClass<OutputT>` because `OutputT` doesn't have upper bound `Any`. */
   private val type: KClass<*>,
@@ -347,7 +346,6 @@ private class TimerWorker(
   private val key: String
 ) : Worker<Unit> {
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   override fun run() = flow {
     delay(delayMs)
     emit(Unit)

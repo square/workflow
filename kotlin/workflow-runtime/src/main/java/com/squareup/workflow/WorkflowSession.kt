@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.Flow
  * returns, that [WorkflowDiagnosticListener] will receive all diagnostic events from the runtime.
  * Setting this property after `beforeStart` returns will have no effect.
  */
-@UseExperimental(VeryExperimentalWorkflow::class)
 class WorkflowSession<out OutputT : Any, out RenderingT>(
   val renderingsAndSnapshots: Flow<RenderingAndSnapshot<RenderingT>>,
   val outputs: Flow<OutputT>,

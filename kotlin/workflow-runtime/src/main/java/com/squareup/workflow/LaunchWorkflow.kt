@@ -36,7 +36,6 @@ import org.jetbrains.annotations.TestOnly
  * Don't use this typealias for the public API, better to just use the function directly so it's
  * more obvious how to use it.
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
 internal typealias Configurator <O, R, T> = CoroutineScope.(
   session: WorkflowSession<O, R>
 ) -> T
@@ -96,7 +95,6 @@ internal typealias Configurator <O, R, T> = CoroutineScope.(
  *
  * @return The value returned by [beforeStart].
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
 fun <PropsT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
   scope: CoroutineScope,
   workflow: Workflow<PropsT, OutputT, RenderingT>,
@@ -123,7 +121,6 @@ fun <PropsT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
  * @param initialState The [StateT] in which to start the root workflow.
  */
 @TestOnly
-@UseExperimental(ExperimentalCoroutinesApi::class)
 fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFromStateIn(
   scope: CoroutineScope,
   workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,

@@ -103,7 +103,6 @@ class WorkerSinkTest {
     }
   }
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   @Test fun `can be consumed multiple times sequentially`() {
     val worker = WorkerSink<String>("foo")
     worker.send("foo")

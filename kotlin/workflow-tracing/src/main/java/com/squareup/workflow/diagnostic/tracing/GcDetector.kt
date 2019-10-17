@@ -15,8 +15,6 @@
  */
 package com.squareup.workflow.diagnostic.tracing
 
-import com.squareup.workflow.VeryExperimentalWorkflow
-
 internal typealias GcDetectorConstructor = (onGcDetected: () -> Unit) -> GcDetector
 
 /**
@@ -25,7 +23,6 @@ internal typealias GcDetectorConstructor = (onGcDetected: () -> Unit) -> GcDetec
  *
  * Internal and open for testing.
  */
-@UseExperimental(VeryExperimentalWorkflow::class)
 internal open class GcDetector(private val onGcDetected: () -> Unit) {
 
   @Volatile private var running = true
