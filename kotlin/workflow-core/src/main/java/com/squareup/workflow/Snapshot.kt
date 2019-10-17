@@ -152,7 +152,7 @@ fun <T : Enum<T>> BufferedSink.writeEnumByOrdinal(enumVal: T): BufferedSink {
   return writeInt(enumVal.ordinal)
 }
 
-fun <T> BufferedSink.writeList(
+inline fun <T> BufferedSink.writeList(
   values: List<T>,
   writer: BufferedSink.(T) -> Unit
 ): BufferedSink = apply {
@@ -160,7 +160,7 @@ fun <T> BufferedSink.writeList(
   values.forEach { writer(it) }
 }
 
-fun <T> BufferedSource.readList(
+inline fun <T> BufferedSource.readList(
   reader: BufferedSource.() -> T
 ): List<T> = List(readInt()) { reader() }
 

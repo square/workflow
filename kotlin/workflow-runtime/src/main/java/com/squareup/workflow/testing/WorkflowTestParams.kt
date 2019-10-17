@@ -18,17 +18,16 @@ package com.squareup.workflow.testing
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFresh
-import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromSnapshot
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromCompleteSnapshot
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromState
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromWorkflowSnapshot
 import org.jetbrains.annotations.TestOnly
 
 /**
  * Defines configuration for workflow testing infrastructure such as `testRender`, `testFromStart`.
  * and `test`.
  *
- * @param startFrom How to start the workflow – either [as a new workflow][StartFresh],
- * [from a snapshot][StartMode.StartFromSnapshot], or
- * [from a specific state][StartMode.StartFromState]. Defaults to [StartFresh].
+ * @param startFrom How to start the workflow – see [StartMode].
  * @param checkRenderIdempotence If true, every render method will be called multiple times, to help
  * suss out any side effects that a render method is trying to perform. This parameter defaults to
  * `true` since the workflow contract is that `render` will be called an arbitrary number of times
@@ -46,7 +45,8 @@ data class WorkflowTestParams<out StateT>(
    *
    * See the documentation on individual cases for more information:
    *  - [StartFresh]
-   *  - [StartFromSnapshot]
+   *  - [StartFromWorkflowSnapshot]
+   *  - [StartFromCompleteSnapshot]
    *  - [StartFromState]
    */
   sealed class StartMode<out StateT> {
@@ -59,9 +59,33 @@ data class WorkflowTestParams<out StateT>(
     /**
      * Starts the workflow from its initial state (as specified by
      * [initial state][com.squareup.workflow.StatefulWorkflow.initialState]), with a non-null
-     * snapshot.
+     * snapshot.  Only applies to [StatefulWorkflow][com.squareup.workflow.StatelessWorkflow]s.
+     *
+     * This differs from [StartFromCompleteSnapshot] because it represents only the snapshot for
+     * the root workflow, without any of the snapshots of its children or other bookkeeping data
+     * added by the workflow runtime.
+     *
+     * @param snapshot A [Snapshot] that can be directly parsed by a workflow's `initialState`
+     * method. For workflow trees, this is only the snapshot of the _root_ workflow, as returned by
+     * [snapshotState][com.squareup.workflow.StatefulWorkflow.snapshotState]. To test with a
+     * complete snapshot of the entire workflow tree, use [StartFromCompleteSnapshot].
      */
-    data class StartFromSnapshot(val snapshot: Snapshot) : StartMode<Nothing>()
+    data class StartFromWorkflowSnapshot(val snapshot: Snapshot) : StartMode<Nothing>()
+
+    /**
+     * Starts the workflow from its initial state (as specified by
+     * [initial state][com.squareup.workflow.StatefulWorkflow.initialState]), with a non-null
+     * snapshot. Only applies to [StatefulWorkflow][com.squareup.workflow.StatelessWorkflow]s.
+     *
+     * This differs from [StartFromWorkflowSnapshot] because it represents a complete snapshot of
+     * the entire tree, not just the individual snapshot for the root workflow.
+     *
+     * @param snapshot A [Snapshot] that is the entire snapshot from the workflow tree, as returned
+     * by `WorkflowTester.awaitNextSnapshot`. To test with only the snapshot returned by
+     * [snapshotState][com.squareup.workflow.StatefulWorkflow.snapshotState], use
+     * [StartFromWorkflowSnapshot].
+     */
+    data class StartFromCompleteSnapshot(val snapshot: Snapshot) : StartMode<Nothing>()
 
     /**
      * Starts the workflow from an exact state. Only applies to
