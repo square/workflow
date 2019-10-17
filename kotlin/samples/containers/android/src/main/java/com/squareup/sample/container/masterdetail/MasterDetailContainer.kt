@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.mainactivity
+package com.squareup.sample.container.masterdetail
 
 import android.view.View
-import com.squareup.sample.todo.MasterDetailAware.Companion.makeAware
-import com.squareup.sample.todo.MasterDetailConfig.Detail
-import com.squareup.sample.todo.MasterDetailConfig.Master
-import com.squareup.sample.todo.MasterDetailConfig.Only
-import com.squareup.sample.todo.MasterDetailScreen
-import com.squareup.sample.todo.R
+import com.squareup.sample.container.R
+import com.squareup.sample.container.masterdetail.MasterDetailAware.Companion.makeAware
+import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
+import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
+import com.squareup.sample.container.masterdetail.MasterDetailConfig.Only
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding

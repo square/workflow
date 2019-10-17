@@ -38,8 +38,8 @@ import com.squareup.sample.gameworkflow.RunGameState.Playing
 import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
-import com.squareup.sample.panel.PanelContainerScreen
-import com.squareup.sample.panel.firstInPanelOver
+import com.squareup.sample.container.panel.PanelContainerScreen
+import com.squareup.sample.container.panel.firstInPanelOver
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
@@ -288,7 +288,9 @@ class RealRunGameWorkflow(
   }
 
   private fun simpleScreen(screen: Any): RunGameScreen {
-    return AlertContainerScreen(PanelContainerScreen(screen))
+    return AlertContainerScreen(
+        PanelContainerScreen(screen)
+    )
   }
 
   private fun maybeQuitScreen(

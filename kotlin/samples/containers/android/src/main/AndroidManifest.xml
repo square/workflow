@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2017 Square Inc.
+  ~ Copyright 2019 Square Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,11 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="game_background">#efe0f9</color>
-    <color name="game_dark_cell">#CCCCCC</color>
-    <color name="game_light_cell">#EEEEEE</color>
-</resources>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.squareup.sample.container"
+    />

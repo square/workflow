@@ -15,6 +15,9 @@
  */
 package com.squareup.sample.todo
 
+import com.squareup.sample.container.masterdetail.MasterDetailAware
+import com.squareup.sample.container.masterdetail.MasterDetailConfig
+
 /**
  * Rendering of the list of [TodoList]s.
  *

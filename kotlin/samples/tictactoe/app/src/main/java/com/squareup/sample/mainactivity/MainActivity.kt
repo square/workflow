@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.espresso.IdlingResource
 import com.squareup.sample.authworkflow.AuthViewBindings
 import com.squareup.sample.gameworkflow.TicTacToeViewBindings
-import com.squareup.sample.panel.PanelContainer
+import com.squareup.sample.container.panel.PanelContainer
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.diagnostic.andThen
 import com.squareup.workflow.diagnostic.tracing.TracingDiagnosticListener
@@ -76,6 +76,8 @@ class MainActivity : AppCompatActivity() {
   }
 
   private companion object {
-    val viewRegistry = ViewRegistry(PanelContainer) + AuthViewBindings + TicTacToeViewBindings
+    val viewRegistry = ViewRegistry(
+        PanelContainer
+    ) + AuthViewBindings + TicTacToeViewBindings
   }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.todo
+package com.squareup.sample.container.masterdetail
 
 /**
  * Rendering type for master / detail containers. Containers may choose to display

@@ -110,6 +110,7 @@ fun <RenderingT : Any> View.getRendering(): RenderingT? {
  */
 fun <RenderingT : Any> View.getShowRendering(): ViewShowRendering<RenderingT>? {
   // IDE is lying, casting here is unnecessary and causes a compiler warning.
+  // https://youtrack.jetbrains.com/issue/KT-34433
   return showRenderingTag?.showRendering
 }
 

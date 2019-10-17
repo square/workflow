@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.panel
+package com.squareup.sample.container.panel
 
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.HasModals
@@ -40,7 +40,9 @@ data class PanelContainerScreen<B : Any, T : Any>(
  * Shows the receiving [BackStackScreen] in the only panel over [baseScreen].
  */
 fun <B : Any, T : Any> BackStackScreen<T>.inPanelOver(baseScreen: B): PanelContainerScreen<B, T> {
-  return PanelContainerScreen(baseScreen, listOf(this))
+  return PanelContainerScreen(
+      baseScreen, listOf(this)
+  )
 }
 
 /**

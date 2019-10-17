@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-
-android rootProject.ext.defaultAndroidConfig
-
-android {
-  defaultConfig {
-    applicationId "com.squareup.sample.helloworkflowfragment"
-    minSdkVersion 26
-    targetSdkVersion versions.targetSdk
-    versionCode 1
-    versionName "1.0.0"
-  }
-
-  // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
-  packagingOptions {
-    exclude 'META-INF/atomicfu.kotlin_module'
-    exclude 'META-INF/common.kotlin_module'
-  }
-}
+apply plugin: 'java'
+apply plugin: 'kotlin'
 
 dependencies {
-  implementation project(':workflow-ui-android')
+  implementation project(':workflow-ui-core')
   implementation project(':workflow-core')
-  implementation project(':workflow-runtime')
+  implementation project(':workflow-rx2')
 
-  implementation deps.androidx.appcompat
+  implementation deps.kotlin.stdLib.jdk6
   implementation deps.rxjava2.rxjava2
+
+  testImplementation deps.test.hamcrestCore
+  testImplementation deps.test.junit
+  testImplementation deps.test.truth
+  testImplementation deps.rxjava2.extensions
+  testImplementation project(':workflow-testing')
 }

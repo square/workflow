@@ -19,7 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.squareup.sample.todo.MasterDetailConfig.Master
+import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoList
 import com.squareup.sample.todo.TodoListsScreen

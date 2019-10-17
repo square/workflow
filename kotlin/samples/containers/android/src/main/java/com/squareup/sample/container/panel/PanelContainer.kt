@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.panel
+package com.squareup.sample.container.panel
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
@@ -22,9 +22,7 @@ import android.util.DisplayMetrics
 import android.view.View.MeasureSpec.EXACTLY
 import android.view.View.MeasureSpec.makeMeasureSpec
 import android.widget.FrameLayout
-import com.squareup.sample.mainworkflow.display
-import com.squareup.sample.mainworkflow.isTablet
-import com.squareup.sample.tictactoe.R
+import com.squareup.sample.container.R
 import com.squareup.workflow.ui.ModalContainer
 import com.squareup.workflow.ui.ViewBinding
 import kotlin.math.min
@@ -39,9 +37,10 @@ import kotlin.math.min
  */
 object PanelContainer : ViewBinding<PanelContainerScreen<*, *>>
 by ModalContainer.forContainerScreen(
-    R.id.tic_tac_workflow_panel_container,
+    R.id.panel_container,
     modalDecorator = { panelBody ->
-      PanelBodyWrapper(panelBody.context).apply { addView(panelBody) }
+      PanelBodyWrapper(panelBody.context)
+          .apply { addView(panelBody) }
     })
 
 /**

@@ -15,6 +15,7 @@
  */
 package com.squareup.sample.todo
 
+import com.squareup.sample.container.masterdetail.MasterDetailScreen
 import com.squareup.sample.todo.TodoEditorOutput.Done
 import com.squareup.sample.todo.TodoEditorOutput.ListUpdated
 import com.squareup.sample.todo.TodoListsAppState.EditingList
