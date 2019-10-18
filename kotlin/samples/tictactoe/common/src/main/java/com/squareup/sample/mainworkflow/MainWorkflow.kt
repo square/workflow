@@ -19,7 +19,6 @@ import com.squareup.sample.authworkflow.AuthResult
 import com.squareup.sample.authworkflow.AuthResult.Authorized
 import com.squareup.sample.authworkflow.AuthResult.Canceled
 import com.squareup.sample.authworkflow.AuthWorkflow
-import com.squareup.sample.authworkflow.LoginScreen
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RealRunGameWorkflow
 import com.squareup.sample.gameworkflow.RunGameScreen
@@ -32,6 +31,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.AlertContainerScreen
 
@@ -71,6 +71,9 @@ class MainWorkflow(
       val authScreen = context.renderChild(authWorkflow) { handleAuthResult(it) }
       val emptyGameScreen = GamePlayScreen()
 
+      // IDE is wrong, removing them breaks the compile.
+      // Probably due to https://youtrack.jetbrains.com/issue/KT-32869
+      @Suppress("RemoveExplicitTypeArguments")
       AlertContainerScreen(authScreen.inPanelOver<Any, Any>(emptyGameScreen))
     }
 
@@ -82,14 +85,18 @@ class MainWorkflow(
       if (panels.isEmpty()) {
         childRendering
       } else {
-        // The child may be showing a panel (that is, a modal subflow) to prompt for player names.
-        // If so, put a login screen behind it, so that we'll pop from the player name prompt
-        // to the login prompt if they cancel.
+        // To prompt for player names, the child puts up a panel — that is, a modal view
+        // hosting a BackStackScreen. If they cancel that, we'd like a visual effect of
+        // popping back to the auth flow in that same panel. To get this effect we run
+        // an authWorkflow and put its BackStackScreen behind this one.
+        //
+        // We use the "fake" uniquing name to make sure authWorkflow session from the
+        // Authenticating state was allowed to die, so that this one will start fresh
+        // in its logged out state.
+        val stubAuthBackStack = context.renderChild(authWorkflow, "fake") { noAction() }
 
-        val backstackMod = listOf(LoginScreen()) + panels[0].stack
-        val panelMod = panels[0].copy(stack = backstackMod)
         val panelsMod = panels.toMutableList()
-        panelsMod[0] = panelMod
+        panelsMod[0] = stubAuthBackStack + panels[0]
         childRendering.copy(baseScreen = childRendering.baseScreen.copy(modals = panelsMod))
       }
     }

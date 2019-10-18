@@ -55,8 +55,9 @@ class MainActivity : AppCompatActivity() {
           WorkflowRunner.Config(
               component.mainWorkflow,
               viewRegistry,
-              diagnosticListener = SimpleLoggingDiagnosticListener()
-                  .andThen(TracingDiagnosticListener(traceFile))
+              diagnosticListener = object : SimpleLoggingDiagnosticListener() {
+                override fun println(text: String) = Timber.v(text)
+              }.andThen(TracingDiagnosticListener(traceFile))
           )
         },
         // The sample MainWorkflow emits a Unit output when it is done, which means it's

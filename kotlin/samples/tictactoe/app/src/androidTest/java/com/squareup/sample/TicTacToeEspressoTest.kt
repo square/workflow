@@ -107,7 +107,8 @@ class TicTacToeEspressoTest {
     onView(withId(R.id.login_password)).type("password")
     rotate()
     onView(withId(R.id.login_email)).check(matches(withText("foo@bar")))
-    onView(withId(R.id.login_password)).check(matches(withText("password")))
+    // Don't save fields that shouldn't be.
+    onView(withId(R.id.login_password)).check(matches(withText("")))
   }
 
   @Test fun backStackPopRestoresViewState() {

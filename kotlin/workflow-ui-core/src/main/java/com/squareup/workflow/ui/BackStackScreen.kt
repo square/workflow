@@ -16,17 +16,59 @@
 package com.squareup.workflow.ui
 
 /**
- * @param stack: screens that are being or have been displayed, ending in the current screen.
- * Guaranteed not to be empty.
+ * Represents an active screen ([top]), and a set of previously visited
+ * screens to which we may return ([backStack]). By rendering the entire
+ * history we allow the UI to do things like maintain cached view state,
+ * implement drag-back gestures without waiting for the workflow, etc.
+ *
+ * Effectively a list that can never be empty.
  */
-data class BackStackScreen<StackedT : Any>(val stack: List<StackedT>) {
-  constructor(only: StackedT) : this(listOf(only))
-  constructor(vararg stack: StackedT) : this(stack.toList())
+class BackStackScreen<StackedT : Any>(
+  bottom: StackedT,
+  rest: List<StackedT>
+) {
+  constructor(
+    bottom: StackedT,
+    vararg rest: StackedT
+  ) : this(bottom, rest.toList())
 
-  init {
-    require(stack.isNotEmpty()) { "Empty stacks are not allowed." }
+  val frames: List<StackedT> = listOf(bottom) + rest
+
+  /**
+   * The active screen.
+   */
+  val top: StackedT = frames.last()
+
+  /**
+   * Screens to which we may return.
+   */
+  val backStack: List<StackedT> = frames.subList(0, frames.size - 1)
+
+  operator fun get(index: Int): StackedT = frames[index]
+
+  operator fun plus(other: BackStackScreen<StackedT>): BackStackScreen<StackedT> {
+    return BackStackScreen(frames[0], frames.rest() + other.frames)
   }
 
-  val top: StackedT = stack.last()
-  val backStack: List<StackedT> = stack.subList(0, stack.size - 1)
+  fun <R : Any> map(transform: (StackedT) -> R): BackStackScreen<R> {
+    return frames.map(transform)
+        .toStack()
+  }
+
+  fun <R : Any> mapIndexed(transform: (index: Int, StackedT) -> R): BackStackScreen<R> {
+    return frames.mapIndexed(transform)
+        .toStack()
+  }
+
+  override fun equals(other: Any?): Boolean {
+    return (other as? BackStackScreen<*>)?.frames == frames
+  }
+
+  override fun hashCode(): Int {
+    return frames.hashCode()
+  }
 }
+
+private fun <T> List<T>.rest() = subList(1, size)
+
+private fun <T : Any> List<T>.toStack(): BackStackScreen<T> = BackStackScreen(this[0], rest())

@@ -59,7 +59,7 @@ open class BackStackContainer @JvmOverloads constructor(
   private var currentRendering: BackStackScreen<Named<*>>? = null
 
   private fun update(newRendering: BackStackScreen<*>) {
-    val named: BackStackScreen<Named<*>> = newRendering.stack.asSequence()
+    val named: BackStackScreen<Named<*>> = newRendering
         // Let interested children know that they're in a stack.
         .mapIndexed { index, frame ->
           val config = if (index == 0) First else Other
@@ -68,8 +68,6 @@ open class BackStackContainer @JvmOverloads constructor(
         // ViewStateCache requires that everything be Named.
         // It's fine if client code is already using Named for its own purposes, recursion works.
         .map { Named(it, "backstack") }
-        .toList()
-        .let { BackStackScreen(it) }
 
     val oldViewMaybe = currentView
 
@@ -77,7 +75,7 @@ open class BackStackContainer @JvmOverloads constructor(
     oldViewMaybe
         ?.takeIf { it.canShowRendering(named.top) }
         ?.let {
-          viewStateCache.prune(named.stack)
+          viewStateCache.prune(named.frames)
           it.showRendering(named.top)
           return
         }
