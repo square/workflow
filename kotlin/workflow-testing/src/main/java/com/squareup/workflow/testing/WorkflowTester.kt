@@ -21,7 +21,9 @@ import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
+import com.squareup.workflow.internal.util.UncaughtExceptionGuard
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.NonCancellable
@@ -167,26 +169,6 @@ class WorkflowTester<PropsT, OutputT : Any, RenderingT> @TestOnly internal const
     outputs.receiveBlocking(timeoutMs, drain = false)
 
   /**
-   * Blocks until the workflow fails by throwing an exception, then returns that exception.
-   *
-   * @param timeoutMs The maximum amount of time to wait for an output to be emitted. If null,
-   * [DEFAULT_TIMEOUT_MS] will be used instead.
-   */
-  fun awaitFailure(timeoutMs: Long? = null): Throwable {
-    var error: Throwable? = null
-    runBlocking {
-      withTimeout(timeoutMs ?: DEFAULT_TIMEOUT_MS) {
-        try {
-          while (true) renderings.receive()
-        } catch (e: Throwable) {
-          error = e
-        }
-      }
-    }
-    return error!!
-  }
-
-  /**
    * @param drain If true, this function will consume all the values currently in the channel, and
    * return the last one.
    */
@@ -253,8 +235,17 @@ fun <T, PropsT, StateT, OutputT : Any, RenderingT>
 {
   val propsChannel = ConflatedBroadcastChannel(props)
 
+  // Any exceptions that are thrown from a launch will be reported to the coroutine's uncaught
+  // exception handler, which will, by default, report them to the thread. We don't want to do that,
+  // we want to throw them from the test directly so they'll fail the test and/or let the test code
+  // assert on them.
+  val exceptionGuard = UncaughtExceptionGuard()
+  val uncaughtExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+    exceptionGuard.reportUncaught(throwable)
+  }
+
   val tester = launchWorkflowForTestFromStateIn(
-      scope = CoroutineScope(Unconfined + context),
+      scope = CoroutineScope(Unconfined + context + uncaughtExceptionHandler),
       workflow = this@test,
       props = propsChannel.asFlow(),
       testParams = testParams
@@ -263,5 +254,7 @@ fun <T, PropsT, StateT, OutputT : Any, RenderingT>
         .apply { collectFromWorkflow() }
   }
 
-  return tester.runTest(block)
+  return exceptionGuard.runRethrowingUncaught {
+    tester.runTest(block)
+  }
 }
