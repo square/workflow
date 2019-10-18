@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.Sink
@@ -27,7 +29,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-class RenderTesterTest {
+class DeprecatedRenderTesterTest {
 
   @Test fun `stateless props and rendering`() {
     val workflow = Workflow.stateless<String, String, String> { props ->

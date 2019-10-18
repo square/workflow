@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.RenderContext
@@ -37,6 +39,7 @@ import com.squareup.workflow.Workflow
  *
  * Child [Worker]s should be instances of [MockWorker].
  */
+@Deprecated("Use renderTester().")
 fun <O : Any, R> StatelessWorkflow<Unit, O, R>.testRender(
   block: TestRenderResult<Unit, O, R>.() -> Unit
 ) = testRender(Unit, block)
@@ -57,6 +60,7 @@ fun <O : Any, R> StatelessWorkflow<Unit, O, R>.testRender(
  *
  * Child [Worker]s should be instances of [MockWorker].
  */
+@Deprecated("Use renderTester().")
 fun <I, O : Any, R> StatelessWorkflow<I, O, R>.testRender(
   input: I,
   block: TestRenderResult<Unit, O, R>.() -> Unit
@@ -83,6 +87,7 @@ fun <I, O : Any, R> StatelessWorkflow<I, O, R>.testRender(
  *
  * Use [testRenderInitialState] to automatically calculate the initial state from the input.
  */
+@Deprecated("Use renderTester().")
 fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRender(
   state: S,
   block: TestRenderResult<S, O, R>.() -> Unit
@@ -106,6 +111,7 @@ fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRender(
  *
  * Use [testRenderInitialState] to automatically calculate the initial state from the input.
  */
+@Deprecated("Use renderTester().")
 fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRender(
   props: I,
   state: S,
@@ -126,6 +132,7 @@ fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRender(
  * [testRender] with that state and passes through the [TestRenderResult] to [block] along with
  * the initial state.
  */
+@Deprecated("Use renderTester().")
 fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRenderInitialState(
   input: I,
   block: TestRenderResult<S, O, R>.(initialState: S) -> Unit
@@ -139,6 +146,7 @@ fun <I, S, O : Any, R> StatefulWorkflow<I, S, O, R>.testRenderInitialState(
  * [testRender] with that state and passes through the [TestRenderResult] to [block] along with
  * the initial state.
  */
+@Deprecated("Use renderTester().")
 fun <S, O : Any, R> StatefulWorkflow<Unit, S, O, R>.testRenderInitialState(
   block: TestRenderResult<S, O, R>.(initialState: S) -> Unit
 ) {

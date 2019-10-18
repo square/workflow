@@ -32,6 +32,7 @@ dependencies {
   api deps.kotlin.stdLib.jdk7
 
   implementation project(':internal-testing-utils')
+  implementation deps.kotlin.reflect
 
   testImplementation deps.kotlin.test.jdk
 }
