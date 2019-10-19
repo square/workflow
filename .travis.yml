@@ -169,19 +169,11 @@ matrix:
         - bundle exec pod install
 
     - language: swift
-      name: "Swift - SPM (Xcode 10.2)"
+      name: "Swift - SPM (Xcode 11.1)"
       os: osx
-      osx_image: xcode10.2
-      cache:
-        directories:
-          - .build
-      before_install:
-        - gem update --system
-        - gem install bundler
-        - swift --version
-        - swift build --verbose
-      script:
-        - swift test
+      osx_image: xcode11.1
+      xcode_scheme: Workflow
+      xcode_destination: platform=iOS Simulator,OS=13.1,name=iPhone 11
 
     - language: swift
       name: "Swift - Tutorial - Cocoapods (Xcode 10.2)"
