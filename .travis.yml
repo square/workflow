@@ -172,8 +172,8 @@ matrix:
       name: "Swift - SPM (Xcode 11.1)"
       os: osx
       osx_image: xcode11.1
-      xcode_scheme: Workflow
-      xcode_destination: platform=iOS Simulator,OS=13.1,name=iPhone 11
+      script:
+        - xcodebuild -scheme "Workflow" test -destination "name=iPhone 11" 
 
     - language: swift
       name: "Swift - Tutorial - Cocoapods (Xcode 10.2)"
