@@ -22,6 +22,14 @@ let package = Package(
             name: "WorkflowTests",
             dependencies: ["Workflow"],
             path: "swift/Workflow/Tests"),
+        .target(
+            name: "WorkflowUI",
+            dependencies: ["Workflow"],
+            path: "swift/WorkflowUI/Sources"),
+        .testTarget(
+            name: "WorkflowUITests",
+            dependencies: ["WorkflowUI"],
+            path: "swift/WorkflowUI/Tests"),
     ],
     swiftLanguageVersions: [.v5]
 )
