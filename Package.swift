@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "Workflow",
+    platforms: [
+        .iOS("9.3"),
+    ],
     products: [
         .library(
             name: "Workflow",
