@@ -173,7 +173,7 @@ matrix:
       os: osx
       osx_image: xcode11.1
       script:
-        - xcodebuild -scheme "Workflow" test -destination "name=iPhone 11" 
+        - xcodebuild -scheme "Workflow-Package" test -destination "name=iPhone 11"
 
     - language: swift
       name: "Swift - Tutorial - Cocoapods (Xcode 10.2)"

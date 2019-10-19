@@ -9,6 +9,9 @@ let package = Package(
         .library(
             name: "Workflow",
             targets: ["Workflow"]),
+        .library(
+            name: "WorkflowUI",
+            targets: ["WorkflowUI"]),
     ],
     dependencies: [
         .package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", from: "6.0.0")
