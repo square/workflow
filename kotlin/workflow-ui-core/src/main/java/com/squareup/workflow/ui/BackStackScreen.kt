@@ -27,10 +27,27 @@ class BackStackScreen<StackedT : Any>(
   bottom: StackedT,
   rest: List<StackedT>
 ) {
+  /**
+   * Creates a screen with elements listed from the [bottom] to the top.
+   */
   constructor(
     bottom: StackedT,
     vararg rest: StackedT
   ) : this(bottom, rest.toList())
+
+  /**
+   * Creates a screen with the frames of the given [backStack], capped with [top].
+   * [backStack] may be empty.
+   */
+  constructor(
+    backStack: List<StackedT>,
+    top: StackedT
+  ) : this(
+      bottom = backStack.firstOrNull() ?: top,
+      rest = backStack.takeIf { it.isNotEmpty() }
+          ?.let { it.subList(1, it.size) + top }
+          ?: emptyList()
+  )
 
   val frames: List<StackedT> = listOf(bottom) + rest
 
@@ -66,6 +83,10 @@ class BackStackScreen<StackedT : Any>(
 
   override fun hashCode(): Int {
     return frames.hashCode()
+  }
+
+  override fun toString(): String {
+    return "${this::class.java.simpleName}($frames)"
   }
 }
 

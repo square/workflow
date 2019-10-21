@@ -47,4 +47,25 @@ class BackStackScreenTest {
   @Test fun `unequal have mismatching hash`() {
     assertThat(BackStackScreen(1, 2).hashCode()).isNotEqualTo(BackStackScreen(1, 2, 3).hashCode())
   }
+
+  @Test fun `empty back and top`() {
+    assertThat(BackStackScreen(
+        backStack = emptyList(),
+        top = 1
+    )).isEqualTo(BackStackScreen(1))
+  }
+
+  @Test fun `one item back and top`() {
+    assertThat(BackStackScreen(
+        backStack = listOf(1),
+        top = 2
+    )).isEqualTo(BackStackScreen(1, 2))
+  }
+
+  @Test fun `multi item back and top`() {
+    assertThat(BackStackScreen(
+        backStack = listOf(1, 2, 3),
+        top = 4
+    )).isEqualTo(BackStackScreen(1, 2, 3, 4))
+  }
 }
