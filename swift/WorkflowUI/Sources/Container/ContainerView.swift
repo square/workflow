@@ -104,6 +104,7 @@ fileprivate struct IntermediateView<T: Workflow, Content: View>: UIViewControlle
     func updateUIViewController(_ uiViewController: WorkflowHostingViewController<T, Content>, context: UIViewControllerRepresentableContext<IntermediateView<T, Content>>) {
         uiViewController.content = content
         uiViewController.onOutput = onOutput
+        uiViewController.update(to: workflow)
     }
     
 }
