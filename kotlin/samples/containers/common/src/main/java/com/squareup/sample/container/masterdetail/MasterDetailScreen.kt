@@ -15,23 +15,19 @@
  */
 package com.squareup.sample.container.masterdetail
 
+import com.squareup.workflow.ui.BackStackScreen
+
 /**
- * Rendering type for master / detail containers. Containers may choose to display
- * both children side by side, or repackage them in a [com.squareup.workflow.ui.BackStackScreen]
- * in a single pane.
+ * Rendering type for master / detail containers, with [BackStackScreen] in both roles.
  *
- * @param masterRendering typically a selection list
+ * Containers may choose to display both children side by side in a split view, or concatenate them
+ * (master + detail) in a single pane.
  *
- * @param detailRendering typically the details of an item selected in the [masterRendering],
- * or null if none has been selected. Common for this to be a
- * [com.squareup.workflow.ui.BackStackScreen].
- *
- * @param selectDefault optional function that requests a selection be made to fill a
- * null [detailRendering]. Split view containers may call this immediately to ensure
- * that a detail rendering is always visible.
+ * @param selectDefault optional function that a split view container make call to request
+ * that a selection be made to fill a null [detailRendering].
  */
 data class MasterDetailScreen(
-  val masterRendering: Any,
-  val detailRendering: Any? = null,
+  val masterRendering: BackStackScreen<Any>,
+  val detailRendering: BackStackScreen<Any>? = null,
   val selectDefault: (() -> Unit)? = null
 )

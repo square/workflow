@@ -15,6 +15,8 @@
  */
 package com.squareup.sample.container.masterdetail
 
+import com.squareup.workflow.ui.BackStackScreen
+
 /**
  * Informs [MasterDetailAware] renderings whether they're children of a [MasterDetailScreen],
  * and if so in what configuration.
@@ -33,15 +35,16 @@ enum class MasterDetailConfig {
   Detail,
 
   /**
-   * Rendering is the only visible child in a [MasterDetailScreen] running in
-   * single screen configuration.
+   * Rendering is in a [MasterDetailScreen] running in single screen configuration.
    */
-  Only
+  Single
 }
 
 /**
  * Implemented by rendering types to allow them to customize appearance / behavior
  * based on a [MasterDetailScreen] parent's [configuration][MasterDetailConfig].
+ *
+ * @see com.squareup.workflow.ui.BackStackAware
  */
 interface MasterDetailAware<T : MasterDetailAware<T>> {
   /**
@@ -63,12 +66,15 @@ interface MasterDetailAware<T : MasterDetailAware<T>> {
      * [withMasterDetailConfig] on conforming children before displaying them.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T> makeAware(
-      maybeAware: T,
+    fun <T : Any> BackStackScreen<T>.makeAware(
       config: MasterDetailConfig
-    ): T = when (maybeAware) {
-      is MasterDetailAware<*> -> maybeAware.withMasterDetailConfig(config) as T
-      else -> maybeAware
+    ): BackStackScreen<T> {
+      return map { maybeAware ->
+        when (maybeAware) {
+          is MasterDetailAware<*> -> maybeAware.withMasterDetailConfig(config) as T
+          else -> maybeAware
+        }
+      }
     }
   }
 }

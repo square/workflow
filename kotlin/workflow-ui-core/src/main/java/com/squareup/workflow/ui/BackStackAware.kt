@@ -69,6 +69,3 @@ interface BackStackAware<T : BackStackAware<T>> {
     }
   }
 }
-
-val BackStackAware<*>.isInBackStack: Boolean
-  get() = backStackConfig != null

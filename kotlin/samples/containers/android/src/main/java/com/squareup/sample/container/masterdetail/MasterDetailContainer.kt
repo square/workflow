@@ -20,7 +20,7 @@ import com.squareup.sample.container.R
 import com.squareup.sample.container.masterdetail.MasterDetailAware.Companion.makeAware
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
-import com.squareup.sample.container.masterdetail.MasterDetailConfig.Only
+import com.squareup.sample.container.masterdetail.MasterDetailConfig.Single
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding
@@ -62,8 +62,8 @@ class MasterDetailContainer(
       rendering.selectDefault!!.invoke()
     } else {
       val aware = rendering.copy(
-          masterRendering = makeAware(rendering.masterRendering, Master),
-          detailRendering = makeAware(rendering.detailRendering, Detail)
+          masterRendering = rendering.masterRendering.makeAware(Master),
+          detailRendering = rendering.detailRendering?.makeAware(Detail)
       )
 
       masterStub!!.update(aware.masterRendering, registry)
@@ -75,11 +75,11 @@ class MasterDetailContainer(
     rendering: MasterDetailScreen,
     stub: WorkflowViewStub
   ) {
-    val asBackStack: BackStackScreen<Any> = rendering.detailRendering
-        ?.let { BackStackScreen(rendering.masterRendering, makeAware(it, Only)) }
-        ?: run { BackStackScreen(makeAware(rendering.masterRendering, Only)) }
+    val combined: BackStackScreen<Any> = rendering.detailRendering
+        ?.let { (rendering.masterRendering + it) }
+        ?: rendering.masterRendering
 
-    stub.update(asBackStack, registry)
+    stub.update(combined.makeAware(Single), registry)
   }
 
   companion object : ViewBinding<MasterDetailScreen> by LayoutRunner.Binding(
