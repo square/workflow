@@ -77,8 +77,8 @@ class MasterDetailContainer(
     stub: WorkflowViewStub
   ) {
     val asBackStack: BackStackScreen<Any> = rendering.detailRendering
-        ?.let { BackStackScreen(stack = listOf(rendering.masterRendering, makeAware(it, Only))) }
-        ?: run { BackStackScreen(only = makeAware(rendering.masterRendering, Only)) }
+        ?.let { BackStackScreen(rendering.masterRendering, makeAware(it, Only)) }
+        ?: run { BackStackScreen(makeAware(rendering.masterRendering, Only)) }
 
     stub.update(asBackStack, registry)
   }

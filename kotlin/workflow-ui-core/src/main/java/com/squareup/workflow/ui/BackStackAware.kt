@@ -50,7 +50,7 @@ interface BackStackAware<T : BackStackAware<T>> {
   /**
    * Creates a copy of the receiver with [backStackConfig] set to the [config].
    * A container view that displays a [BackStackScreen] should use this method
-   * to transform each visible member of a [BackStackScreen.stack] before rendering it.
+   * to transform each visible frame before rendering it.
    */
   fun withBackStackConfig(config: BackStackConfig): T
 
