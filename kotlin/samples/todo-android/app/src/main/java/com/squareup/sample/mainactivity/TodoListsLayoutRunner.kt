@@ -23,6 +23,7 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoList
 import com.squareup.sample.todo.TodoListsScreen
+import com.squareup.workflow.ui.Hints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
@@ -31,7 +32,10 @@ internal class TodoListsLayoutRunner(view: View) : LayoutRunner<TodoListsScreen>
   private val inflater = LayoutInflater.from(view.context)
   private val listsContainer = view.findViewById<ViewGroup>(R.id.todo_lists_container)
 
-  override fun showRendering(rendering: TodoListsScreen) {
+  override fun showRendering(
+    rendering: TodoListsScreen,
+    hints: Hints
+  ) {
     for ((index, list) in rendering.lists.withIndex()) {
       addRow(
           index,

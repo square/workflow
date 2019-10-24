@@ -2,6 +2,11 @@ package com.squareup.workflow.ui
 
 import kotlin.reflect.KClass
 
+/**
+ * Immutable, append-only map of values that are passed down the view tree
+ * via [android.view.View.showRendering] et al. Can be used by container views
+ * to give descendants information about the context in which they're drawing.
+ */
 @Suppress("UNCHECKED_CAST")
 class Hints private constructor(
   private val map: Map<HintKey<*>, Any>
@@ -25,6 +30,10 @@ class Hints private constructor(
   override fun hashCode() = map.hashCode()
 }
 
+/**
+ * Defines a value that can be provided by a [Hints] map, specifying its [type]
+ * and [default] value.
+ */
 abstract class HintKey<T : Any>(
   private val type: KClass<T>
 ) {

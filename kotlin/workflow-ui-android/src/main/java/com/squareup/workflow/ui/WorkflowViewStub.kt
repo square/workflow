@@ -74,18 +74,19 @@ class WorkflowViewStub @JvmOverloads constructor(
    */
   fun update(
     rendering: Any,
+    hints: Hints,
     registry: ViewRegistry
   ): View {
     _actual.takeIf { it.canShowRendering(rendering) }
         ?.let {
-          it.showRendering(rendering)
+          it.showRendering(rendering, hints)
           return it
         }
 
     return when (val parent = _actual.parent) {
-      is ViewGroup -> registry.buildView(rendering, parent)
+      is ViewGroup -> registry.buildView(rendering, hints, parent)
           .also { buildNewViewAndReplaceOldView(parent, it) }
-      else -> registry.buildView(rendering, _actual.context)
+      else -> registry.buildView(rendering, hints, _actual.context)
     }.also { _actual = it }
   }
 

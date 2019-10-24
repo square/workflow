@@ -96,12 +96,13 @@ class ViewRegistry private constructor(
    */
   fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
+    initialHints: Hints,
     contextForNewView: Context,
     container: ViewGroup? = null
   ): View {
     @Suppress("UNCHECKED_CAST")
     return (allBindings[initialRendering::class] as? ViewBinding<RenderingT>)
-        ?.buildView(this, initialRendering, contextForNewView, container)
+        ?.buildView(this, initialRendering, initialHints, contextForNewView, container)
         ?.apply {
           checkNotNull(getRendering<RenderingT>()) {
             "View.bindShowRendering should have been called for $this, typically by the " +
@@ -127,10 +128,9 @@ class ViewRegistry private constructor(
    */
   fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
+    initialHints: Hints,
     container: ViewGroup
-  ): View {
-    return buildView(initialRendering, container.context, container)
-  }
+  ): View = buildView(initialRendering, initialHints, container.context, container)
 
   operator fun <RenderingT : Any> plus(binding: ViewBinding<RenderingT>): ViewRegistry {
     check(binding.type !in bindings.keys) {
@@ -151,13 +151,14 @@ class ViewRegistry private constructor(
 private object NamedBinding : ViewBinding<Named<*>>
 by BuilderBinding(
     type = Named::class,
-    viewConstructor = { viewRegistry, initialRendering, contextForNewView, container ->
-      val view = viewRegistry.buildView(initialRendering.wrapped, contextForNewView, container)
+    viewConstructor = { viewRegistry, initialRendering, initialHints, contextForNewView, container ->
+      val view =
+        viewRegistry.buildView(initialRendering.wrapped, initialHints, contextForNewView, container)
       view.apply {
         @Suppress("RemoveExplicitTypeArguments") // The IDE is wrong.
         val wrappedUpdater = getShowRendering<Any>()!!
-        bindShowRendering(initialRendering) {
-          wrappedUpdater.invoke(it.wrapped)
+        bindShowRendering(initialRendering, initialHints) { r, h ->
+          wrappedUpdater.invoke(r.wrapped, h)
         }
       }
     }

@@ -22,6 +22,7 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Single
 import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.Hints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
@@ -52,12 +53,18 @@ class MasterDetailContainer(
     }
   }
 
-  override fun showRendering(rendering: MasterDetailScreen) {
-    if (singleStub == null) renderSplitView(rendering)
-    else renderSingleView(rendering, singleStub)
+  override fun showRendering(
+    rendering: MasterDetailScreen,
+    hints: Hints
+  ) {
+    if (singleStub == null) renderSplitView(rendering, hints)
+    else renderSingleView(rendering, hints, singleStub)
   }
 
-  private fun renderSplitView(rendering: MasterDetailScreen) {
+  private fun renderSplitView(
+    rendering: MasterDetailScreen,
+    hints: Hints
+  ) {
     if (rendering.detailRendering == null && rendering.selectDefault != null) {
       rendering.selectDefault!!.invoke()
     } else {
@@ -66,20 +73,21 @@ class MasterDetailContainer(
           detailRendering = rendering.detailRendering?.makeAware(Detail)
       )
 
-      masterStub!!.update(aware.masterRendering, registry)
-      aware.detailRendering?.let { detailStub!!.update(it, registry) }
+      masterStub!!.update(aware.masterRendering, hints, registry)
+      aware.detailRendering?.let { detailStub!!.update(it, hints, registry) }
     }
   }
 
   private fun renderSingleView(
     rendering: MasterDetailScreen,
+    hints: Hints,
     stub: WorkflowViewStub
   ) {
     val combined: BackStackScreen<Any> = rendering.detailRendering
         ?.let { (rendering.masterRendering + it) }
         ?: rendering.masterRendering
 
-    stub.update(combined.makeAware(Single), registry)
+    stub.update(combined.makeAware(Single), hints, registry)
   }
 
   companion object : ViewBinding<MasterDetailScreen> by LayoutRunner.Binding(

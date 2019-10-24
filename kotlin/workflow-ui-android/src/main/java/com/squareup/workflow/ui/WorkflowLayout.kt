@@ -62,7 +62,7 @@ class WorkflowLayout(
     newRendering: Any,
     registry: ViewRegistry
   ) {
-    showing.update(newRendering, registry)
+    showing.update(newRendering, Hints(), registry)
     restoredChildState?.let { restoredState ->
       restoredChildState = null
       showing.actual!!.restoreHierarchyState(restoredState)

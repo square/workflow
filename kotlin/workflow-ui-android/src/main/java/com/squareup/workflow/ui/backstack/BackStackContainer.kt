@@ -33,6 +33,7 @@ import com.squareup.workflow.ui.BackStackConfig.First
 import com.squareup.workflow.ui.BackStackConfig.Other
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BuilderBinding
+import com.squareup.workflow.ui.Hints
 import com.squareup.workflow.ui.Named
 import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
@@ -58,7 +59,10 @@ open class BackStackContainer @JvmOverloads constructor(
   private val currentView: View? get() = if (childCount > 0) getChildAt(0) else null
   private var currentRendering: BackStackScreen<Named<*>>? = null
 
-  private fun update(newRendering: BackStackScreen<*>) {
+  private fun update(
+    newRendering: BackStackScreen<*>,
+    newHints: Hints
+  ) {
     val named: BackStackScreen<Named<*>> = newRendering
         // Let interested children know that they're in a stack.
         .mapIndexed { index, frame ->
@@ -76,11 +80,11 @@ open class BackStackContainer @JvmOverloads constructor(
         ?.takeIf { it.canShowRendering(named.top) }
         ?.let {
           viewStateCache.prune(named.frames)
-          it.showRendering(named.top)
+          it.showRendering(named.top, newHints)
           return
         }
 
-    val newView = registry.buildView(named.top, this)
+    val newView = registry.buildView(named.top, newHints, this)
     viewStateCache.update(named.backStack, oldViewMaybe, newView)
 
     val popped = currentRendering?.backStack?.any { compatible(it, named.top) } == true
@@ -147,13 +151,13 @@ open class BackStackContainer @JvmOverloads constructor(
   companion object : ViewBinding<BackStackScreen<*>>
   by BuilderBinding(
       type = BackStackScreen::class,
-      viewConstructor = { viewRegistry, initialRendering, context, _ ->
+      viewConstructor = { viewRegistry, initialRendering, initialHints, context, _ ->
         BackStackContainer(context)
             .apply {
               id = R.id.workflow_back_stack_container
               layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
               registry = viewRegistry
-              bindShowRendering(initialRendering, ::update)
+              bindShowRendering(initialRendering, initialHints, ::update)
             }
       }
   )

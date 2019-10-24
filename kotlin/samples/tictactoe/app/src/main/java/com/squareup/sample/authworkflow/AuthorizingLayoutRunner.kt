@@ -18,6 +18,7 @@ package com.squareup.sample.authworkflow
 import android.view.View
 import android.widget.TextView
 import com.squareup.sample.tictactoe.R
+import com.squareup.workflow.ui.Hints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
@@ -25,7 +26,10 @@ import com.squareup.workflow.ui.ViewBinding
 internal class AuthorizingLayoutRunner(view: View) : LayoutRunner<AuthorizingScreen> {
   private val messageView: TextView = view.findViewById(R.id.authorizing_message)
 
-  override fun showRendering(rendering: AuthorizingScreen) {
+  override fun showRendering(
+    rendering: AuthorizingScreen,
+    hints: Hints
+  ) {
     messageView.text = rendering.message
   }
 

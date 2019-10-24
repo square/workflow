@@ -43,11 +43,12 @@ internal class AlertContainer @JvmOverloads constructor(
 
   override fun buildDialog(
     initialModalRendering: AlertScreen,
+    initialHints: Hints,
     viewRegistry: ViewRegistry
   ): DialogRef<AlertScreen> {
     val dialog = AlertDialog.Builder(context, dialogThemeResId)
         .create()
-    val ref = DialogRef(initialModalRendering, dialog)
+    val ref = DialogRef(initialModalRendering, initialHints, dialog)
     updateDialog(ref)
     return ref
   }
@@ -91,13 +92,13 @@ internal class AlertContainer @JvmOverloads constructor(
   ) : ViewBinding<AlertContainerScreen<*>>
   by BuilderBinding(
       type = AlertContainerScreen::class,
-      viewConstructor = { viewRegistry, initialRendering, context, _ ->
+      viewConstructor = { viewRegistry, initialRendering, initialHints, context, _ ->
         AlertContainer(context, dialogThemeResId = dialogThemeResId)
             .apply {
               id = R.id.workflow_alert_container
               layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
               registry = viewRegistry
-              bindShowRendering(initialRendering, ::update)
+              bindShowRendering(initialRendering, initialHints, ::update)
             }
       }
   )
