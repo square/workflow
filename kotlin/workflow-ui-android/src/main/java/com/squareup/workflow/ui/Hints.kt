@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.squareup.workflow.ui
 
 import kotlin.reflect.KClass
@@ -7,12 +22,12 @@ import kotlin.reflect.KClass
  * via [android.view.View.showRendering] et al. Can be used by container views
  * to give descendants information about the context in which they're drawing.
  */
-@Suppress("UNCHECKED_CAST")
 class Hints private constructor(
   private val map: Map<HintKey<*>, Any>
 ) {
   constructor() : this(emptyMap())
 
+  @Suppress("UNCHECKED_CAST")
   operator fun <T : Any> get(key: HintKey<T>): T = map[key] as? T ?: key.default
 
   operator fun <T : Any> plus(pair: Pair<HintKey<T>, T>): Hints {

@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.squareup.sample.container.masterdetail.MasterDetailConfig
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoList
@@ -40,8 +41,8 @@ internal class TodoListsLayoutRunner(view: View) : LayoutRunner<TodoListsScreen>
       addRow(
           index,
           list,
-          selectable = rendering.masterDetailConfig == Master,
-          selected = index == rendering.selection && rendering.masterDetailConfig == Master
+          selectable = hints[MasterDetailConfig] == Master,
+          selected = index == rendering.selection && hints[MasterDetailConfig] == Master
       ) { rendering.onRowClicked(index) }
     }
     pruneDeadRowsFrom(rendering.lists.size)

@@ -28,9 +28,6 @@ import androidx.transition.Scene
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
-import com.squareup.workflow.ui.BackStackAware.Companion.makeAware
-import com.squareup.workflow.ui.BackStackConfig.First
-import com.squareup.workflow.ui.BackStackConfig.Other
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BuilderBinding
 import com.squareup.workflow.ui.Hints
@@ -38,6 +35,8 @@ import com.squareup.workflow.ui.Named
 import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
+import com.squareup.workflow.ui.backstack.BackStackConfig.First
+import com.squareup.workflow.ui.backstack.BackStackConfig.Other
 import com.squareup.workflow.ui.bindShowRendering
 import com.squareup.workflow.ui.canShowRendering
 import com.squareup.workflow.ui.compatible
@@ -63,12 +62,10 @@ open class BackStackContainer @JvmOverloads constructor(
     newRendering: BackStackScreen<*>,
     newHints: Hints
   ) {
+    val config = if (newRendering.backStack.isEmpty()) First else Other
+    val hints = newHints + (BackStackConfig to config)
+
     val named: BackStackScreen<Named<*>> = newRendering
-        // Let interested children know that they're in a stack.
-        .mapIndexed { index, frame ->
-          val config = if (index == 0) First else Other
-          makeAware(frame, config)
-        }
         // ViewStateCache requires that everything be Named.
         // It's fine if client code is already using Named for its own purposes, recursion works.
         .map { Named(it, "backstack") }
@@ -80,11 +77,11 @@ open class BackStackContainer @JvmOverloads constructor(
         ?.takeIf { it.canShowRendering(named.top) }
         ?.let {
           viewStateCache.prune(named.frames)
-          it.showRendering(named.top, newHints)
+          it.showRendering(named.top, hints)
           return
         }
 
-    val newView = registry.buildView(named.top, newHints, this)
+    val newView = registry.buildView(named.top, hints, this)
     viewStateCache.update(named.backStack, oldViewMaybe, newView)
 
     val popped = currentRendering?.backStack?.any { compatible(it, named.top) } == true

@@ -17,7 +17,6 @@ package com.squareup.sample.container.masterdetail
 
 import android.view.View
 import com.squareup.sample.container.R
-import com.squareup.sample.container.masterdetail.MasterDetailAware.Companion.makeAware
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Single
@@ -68,13 +67,18 @@ class MasterDetailContainer(
     if (rendering.detailRendering == null && rendering.selectDefault != null) {
       rendering.selectDefault!!.invoke()
     } else {
-      val aware = rendering.copy(
-          masterRendering = rendering.masterRendering.makeAware(Master),
-          detailRendering = rendering.detailRendering?.makeAware(Detail)
+      masterStub!!.update(
+          rendering.masterRendering,
+          hints + (MasterDetailConfig to Master),
+          registry
       )
-
-      masterStub!!.update(aware.masterRendering, hints, registry)
-      aware.detailRendering?.let { detailStub!!.update(it, hints, registry) }
+      rendering.detailRendering?.let { detail ->
+        detailStub!!.update(
+            detail,
+            hints + (MasterDetailConfig to Detail),
+            registry
+        )
+      }
     }
   }
 
@@ -87,7 +91,7 @@ class MasterDetailContainer(
         ?.let { (rendering.masterRendering + it) }
         ?: rendering.masterRendering
 
-    stub.update(combined.makeAware(Single), hints, registry)
+    stub.update(combined, hints + (MasterDetailConfig to Single), registry)
   }
 
   companion object : ViewBinding<MasterDetailScreen> by LayoutRunner.Binding(

@@ -15,9 +15,6 @@
  */
 package com.squareup.sample.todo
 
-import com.squareup.sample.container.masterdetail.MasterDetailAware
-import com.squareup.sample.container.masterdetail.MasterDetailConfig
-
 /**
  * Rendering of the list of [TodoList]s.
  *
@@ -25,16 +22,10 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig
  * [selection], always leaving that field set to the default `-1` value.
  *
  * The entire concept of selection is owned by the parent [TodoListsAppWorkflow],
- * which adds that info to a copy of the child workflow's rendering as it assembles
- * its own composite [MasterDetailScreen] rendering.
+ * which may add that info to a copy of the child workflow's rendering.
  */
 data class TodoListsScreen(
   val lists: List<TodoList>,
   val onRowClicked: (Int) -> Unit,
-  val selection: Int = -1,
-  override val masterDetailConfig: MasterDetailConfig? = null
-) : MasterDetailAware<TodoListsScreen> {
-  override fun withMasterDetailConfig(config: MasterDetailConfig): TodoListsScreen {
-    return copy(masterDetailConfig = config)
-  }
-}
+  val selection: Int = -1
+)
