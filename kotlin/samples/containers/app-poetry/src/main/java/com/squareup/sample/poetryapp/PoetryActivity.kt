@@ -13,36 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.ravenapp
+package com.squareup.sample.poetryapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.sample.container.SampleContainers
-import com.squareup.sample.poetry.PoemWorkflow
 import com.squareup.sample.poetry.PoetryViews
-import com.squareup.sample.poetry.model.Raven
+import com.squareup.sample.poetry.model.Poem
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 import timber.log.Timber
 
-private val viewRegistry = SampleContainers + PoetryViews
+private val viewRegistry = SampleContainers + PoetryViews + PoemListLayoutRunner
 
-class RavenActivity : AppCompatActivity() {
+class PoetryActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentWorkflow(
         configure = {
           WorkflowRunner.Config(
-              PoemWorkflow,
+              PoemsBrowserWorkflow,
               viewRegistry,
-              Raven,
+              Poem.allPoems,
               diagnosticListener = object : SimpleLoggingDiagnosticListener() {
                 override fun println(text: String) = Timber.v(text)
               }
           )
-        },
-        onResult = { finish() }
+        }
     )
   }
 

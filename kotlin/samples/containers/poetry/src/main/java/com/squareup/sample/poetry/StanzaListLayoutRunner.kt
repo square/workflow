@@ -25,21 +25,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.sample.container.masterdetail.MasterDetailConfig
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.poetry.R
-import com.squareup.sample.poetry.StanzasWorkflow.Rendering
 import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.backPressedHandler
+import com.squareup.workflow.ui.backstack.BackStackConfig
+import com.squareup.workflow.ui.backstack.BackStackConfig.Other
 
-class StanzasLayoutRunner(view: View) : LayoutRunner<Rendering> {
-  private val toolbar = view.findViewById<Toolbar>(R.id.stanza_list_toolbar)
-  private val recyclerView = view.findViewById<RecyclerView>(R.id.stanza_list)
+class StanzaListLayoutRunner(view: View) : LayoutRunner<StanzaListRendering> {
+  private val toolbar = view.findViewById<Toolbar>(R.id.list_toolbar)
+  private val recyclerView = view.findViewById<RecyclerView>(R.id.list_body)
       .apply { layoutManager = LinearLayoutManager(context) }
 
   private val adapter = Adapter()
 
   override fun showRendering(
-    rendering: Rendering,
+    rendering: StanzaListRendering,
     containerHints: ContainerHints
   ) {
     adapter.rendering = rendering
@@ -49,13 +51,21 @@ class StanzasLayoutRunner(view: View) : LayoutRunner<Rendering> {
     toolbar.title = rendering.title
     toolbar.subtitle = rendering.subtitle
 
+    if (containerHints[BackStackConfig] == Other) {
+      toolbar.setNavigationOnClickListener { rendering.onExit() }
+      toolbar.backPressedHandler = rendering.onExit
+    } else {
+      toolbar.navigationIcon = null
+      toolbar.backPressedHandler = null
+    }
+
     if (rendering.selection >= 0) recyclerView.scrollToPosition(rendering.selection)
   }
 
   private class ViewHolder(val view: TextView) : RecyclerView.ViewHolder(view)
 
   private class Adapter : RecyclerView.Adapter<ViewHolder>() {
-    lateinit var rendering: Rendering
+    lateinit var rendering: StanzaListRendering
     lateinit var hints: ContainerHints
 
     override fun onCreateViewHolder(
@@ -64,9 +74,9 @@ class StanzasLayoutRunner(view: View) : LayoutRunner<Rendering> {
     ): ViewHolder {
       val selectable = hints[MasterDetailConfig] == Master
       val layoutId = if (selectable) {
-        R.layout.stanza_list_row_selectable
+        R.layout.list_row_selectable
       } else {
-        R.layout.stanza_list_row_unselectable
+        R.layout.list_row_unselectable
       }
 
       return ViewHolder(
@@ -90,9 +100,9 @@ class StanzasLayoutRunner(view: View) : LayoutRunner<Rendering> {
     }
   }
 
-  companion object : ViewBinding<Rendering>
+  companion object : ViewBinding<StanzaListRendering>
   by bind(
-      R.layout.stanza_list,
-      ::StanzasLayoutRunner
+      R.layout.list,
+      ::StanzaListLayoutRunner
   )
 }

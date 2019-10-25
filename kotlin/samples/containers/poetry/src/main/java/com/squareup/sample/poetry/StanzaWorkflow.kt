@@ -16,11 +16,10 @@
 package com.squareup.sample.poetry
 
 import com.squareup.sample.poetry.StanzaWorkflow.Output
-import com.squareup.sample.poetry.StanzaWorkflow.Output.Exit
-import com.squareup.sample.poetry.StanzaWorkflow.Output.GoBack
-import com.squareup.sample.poetry.StanzaWorkflow.Output.GoForth
+import com.squareup.sample.poetry.StanzaWorkflow.Output.CloseStanzas
+import com.squareup.sample.poetry.StanzaWorkflow.Output.ShowPreviousStanza
+import com.squareup.sample.poetry.StanzaWorkflow.Output.ShowNextStanza
 import com.squareup.sample.poetry.StanzaWorkflow.Props
-import com.squareup.sample.poetry.StanzaWorkflow.Rendering
 import com.squareup.sample.poetry.model.Poem
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
@@ -28,52 +27,41 @@ import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.ui.Compatible
 
-object StanzaWorkflow : StatelessWorkflow<Props, Output, Rendering>() {
+object StanzaWorkflow : StatelessWorkflow<Props, Output, StanzaRendering>() {
   data class Props(
     val poem: Poem,
     val index: Int
   )
 
   enum class Output {
-    Exit,
-    GoBack,
-    GoForth
-  }
-
-  data class Rendering(
-    val title: String,
-    val stanzaNumber: Int,
-    val lines: List<String>,
-    val onGoUp: () -> Unit,
-    val onGoBack: (() -> Unit)? = null,
-    val onGoForth: (() -> Unit)? = null
-  ) : Compatible {
-    override val compatibilityKey = "$title: $stanzaNumber"
+    CloseStanzas,
+    ShowPreviousStanza,
+    ShowNextStanza
   }
 
   override fun render(
     props: Props,
     context: RenderContext<Nothing, Output>
-  ): Rendering {
+  ): StanzaRendering {
     with(props) {
       val sink: Sink<Output> = context.makeEventSink { it }
 
       val onGoBack: (() -> Unit)? = when (index) {
         0 -> null
         else -> {
-          { sink.send(GoBack) }
+          { sink.send(ShowPreviousStanza) }
         }
       }
 
       val onGoForth: (() -> Unit)? = when (index) {
         poem.stanzas.size - 1 -> null
         else -> {
-          { sink.send(GoForth) }
+          { sink.send(ShowNextStanza) }
         }
       }
 
-      return Rendering(
-          onGoUp = { sink.send(Exit) },
+      return StanzaRendering(
+          onGoUp = { sink.send(CloseStanzas) },
           title = poem.title,
           stanzaNumber = index + 1,
           lines = poem.stanzas[index],
@@ -82,4 +70,15 @@ object StanzaWorkflow : StatelessWorkflow<Props, Output, Rendering>() {
       )
     }
   }
+}
+
+data class StanzaRendering(
+  val title: String,
+  val stanzaNumber: Int,
+  val lines: List<String>,
+  val onGoUp: () -> Unit,
+  val onGoBack: (() -> Unit)? = null,
+  val onGoForth: (() -> Unit)? = null
+) : Compatible {
+  override val compatibilityKey = "$title: $stanzaNumber"
 }

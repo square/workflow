@@ -26,8 +26,59 @@ import com.squareup.workflow.ui.BackStackScreen
  * @param selectDefault optional function that a split view container may call to request
  * that a selection be made to fill a null [detailRendering].
  */
-data class MasterDetailScreen(
+class MasterDetailScreen private constructor(
   val masterRendering: BackStackScreen<Any>,
   val detailRendering: BackStackScreen<Any>? = null,
   val selectDefault: (() -> Unit)? = null
-)
+) {
+  constructor(
+    masterRendering: BackStackScreen<Any>,
+    detailRendering: BackStackScreen<Any>
+  ) : this(masterRendering, detailRendering, null)
+
+  /**
+   * @param selectDefault optional function that a split view container may call to request
+   * that a selection be made to fill a null [detailRendering].
+   */
+  constructor(
+    masterRendering: BackStackScreen<Any>,
+    selectDefault: (() -> Unit)? = null
+  ) : this(masterRendering, null, selectDefault)
+
+  operator fun component1(): BackStackScreen<Any> = masterRendering
+  operator fun component2(): BackStackScreen<Any>? = detailRendering
+
+  operator fun plus(other: MasterDetailScreen): MasterDetailScreen {
+    val newMaster = masterRendering + other.masterRendering
+    val newDetail = detailRendering
+        ?.let { it + other.detailRendering }
+        ?: other.detailRendering
+
+    return if (newDetail == null) MasterDetailScreen(newMaster, other.selectDefault)
+    else MasterDetailScreen(newMaster, newDetail)
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as MasterDetailScreen
+
+    return masterRendering == other.masterRendering &&
+        detailRendering == other.detailRendering &&
+        selectDefault == other.selectDefault
+  }
+
+  override fun hashCode(): Int {
+    var result = masterRendering.hashCode()
+    result = 31 * result + (detailRendering?.hashCode() ?: 0)
+    result = 31 * result + (selectDefault?.hashCode() ?: 0)
+    return result
+  }
+
+  override fun toString(): String {
+    return "MasterDetailScreen(masterRendering=$masterRendering, " +
+        "detailRendering=$detailRendering, " +
+        "selectDefault=$selectDefault)"
+  }
+}

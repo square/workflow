@@ -50,15 +50,10 @@ class WorkflowViewStub @JvmOverloads constructor(
   }
 
   /**
-   * By starting as our own delegate, we make the parent checking code in [update] simpler.
-   */
-  private var _actual: View = this
-
-  /**
    * On-demand access to the delegate established by the last call to [update],
-   * or null if none has been set yet.
+   * or this [WorkflowViewStub] instance if  none has yet been set.
    */
-  val actual: View? get() = _actual.takeIf { it !is WorkflowViewStub }
+  var actual: View = this
 
   /**
    * Replaces this view with one that can display [rendering]. If the receiver
@@ -77,27 +72,27 @@ class WorkflowViewStub @JvmOverloads constructor(
     containerHints: ContainerHints,
     registry: ViewRegistry
   ): View {
-    _actual.takeIf { it.canShowRendering(rendering) }
+    actual.takeIf { it.canShowRendering(rendering) }
         ?.let {
           it.showRendering(rendering, containerHints)
           return it
         }
 
-    return when (val parent = _actual.parent) {
+    return when (val parent = actual.parent) {
       is ViewGroup -> registry.buildView(rendering, containerHints, parent)
           .also { buildNewViewAndReplaceOldView(parent, it) }
-      else -> registry.buildView(rendering, containerHints, _actual.context)
-    }.also { _actual = it }
+      else -> registry.buildView(rendering, containerHints, actual.context)
+    }.also { actual = it }
   }
 
   private fun buildNewViewAndReplaceOldView(
     parent: ViewGroup,
     newView: View
   ) {
-    val index = parent.indexOfChild(_actual)
-    parent.removeView(_actual)
+    val index = parent.indexOfChild(actual)
+    parent.removeView(actual)
 
-    _actual.layoutParams
+    actual.layoutParams
         ?.let { parent.addView(newView, index, it) }
         ?: run { parent.addView(newView, index) }
   }

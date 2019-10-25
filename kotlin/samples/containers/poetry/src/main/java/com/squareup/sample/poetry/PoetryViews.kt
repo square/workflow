@@ -17,4 +17,4 @@ package com.squareup.sample.poetry
 
 import com.squareup.workflow.ui.ViewRegistry
 
-val PoetryViews = ViewRegistry(StanzasLayoutRunner, StanzaLayoutRunner)
+val PoetryViews = ViewRegistry(StanzaListLayoutRunner, StanzaLayoutRunner)

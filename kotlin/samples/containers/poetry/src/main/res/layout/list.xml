@@ -8,14 +8,15 @@
     >
 
   <androidx.appcompat.widget.Toolbar
-      android:id="@+id/stanza_list_toolbar"
+      android:id="@+id/list_toolbar"
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:layout_weight="0"
+      app:navigationIcon="?attr/homeAsUpIndicator"
       />
 
   <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/stanza_list"
+      android:id="@+id/list_body"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="1"

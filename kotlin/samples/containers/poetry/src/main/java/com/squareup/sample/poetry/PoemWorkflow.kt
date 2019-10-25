@@ -16,22 +16,32 @@
 package com.squareup.sample.poetry
 
 import com.squareup.sample.container.masterdetail.MasterDetailScreen
-import com.squareup.sample.poetry.StanzaWorkflow.Output.Exit
-import com.squareup.sample.poetry.StanzaWorkflow.Output.GoBack
-import com.squareup.sample.poetry.StanzaWorkflow.Output.GoForth
+import com.squareup.sample.poetry.PoemWorkflow.Action.ClearSelection
+import com.squareup.sample.poetry.PoemWorkflow.Action.HandleStanzaListOutput
+import com.squareup.sample.poetry.PoemWorkflow.Action.SelectNext
+import com.squareup.sample.poetry.PoemWorkflow.Action.SelectPrevious
+import com.squareup.sample.poetry.PoemWorkflow.ClosePoem
+import com.squareup.sample.poetry.StanzaWorkflow.Output.CloseStanzas
+import com.squareup.sample.poetry.StanzaWorkflow.Output.ShowNextStanza
+import com.squareup.sample.poetry.StanzaWorkflow.Output.ShowPreviousStanza
 import com.squareup.sample.poetry.StanzaWorkflow.Props
-import com.squareup.sample.poetry.StanzaWorkflow.Rendering
 import com.squareup.sample.poetry.model.Poem
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.parse
 import com.squareup.workflow.ui.BackStackScreen
-import com.squareup.workflow.workflowAction
 
-object PoemWorkflow : StatefulWorkflow<Poem, Int, Nothing, MasterDetailScreen>() {
+/**
+ * Renders a [Poem] as a [MasterDetailScreen], whose master is a [StanzaListRendering]
+ * for the poem, and whose detail traverses through [StanzaRendering]s.
+ */
+object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>() {
+  object ClosePoem
+
   override fun initialState(
     props: Poem,
     snapshot: Snapshot?
@@ -43,9 +53,9 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, Nothing, MasterDetailScreen>()
   override fun render(
     props: Poem,
     state: Int,
-    context: RenderContext<Int, Nothing>
+    context: RenderContext<Int, ClosePoem>
   ): MasterDetailScreen {
-    val previousStanzas: List<Rendering> =
+    val previousStanzas: List<StanzaRendering> =
       if (state == -1) emptyList()
       else props.stanzas.subList(0, state)
           .mapIndexed { index, _ ->
@@ -62,9 +72,9 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, Nothing, MasterDetailScreen>()
             StanzaWorkflow, Props(props, state), "$state"
         ) {
           when (it) {
-            Exit -> closePoem
-            GoBack -> goBack
-            GoForth -> goForth
+            CloseStanzas -> ClearSelection
+            ShowPreviousStanza -> SelectPrevious
+            ShowNextStanza -> SelectNext
           }
         }
       }
@@ -76,40 +86,47 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, Nothing, MasterDetailScreen>()
       )
     }
 
-    val index =
-      context.renderChild(StanzasWorkflow, props) { selected -> goTo(selected) }
+    val stanzaIndex =
+      context.renderChild(StanzaListWorkflow, props) { selected ->
+        HandleStanzaListOutput(selected)
+      }
           .copy(selection = state)
+          .let { BackStackScreen<Any>(it) }
 
-    val sink = context.makeActionSink<WorkflowAction<Int, Nothing>>()
+    val sink = context.makeActionSink<WorkflowAction<Int, ClosePoem>>()
 
-    return MasterDetailScreen(
-        masterRendering = BackStackScreen(index),
-        detailRendering = stackedStanzas,
-        selectDefault = { sink.send(goForth) }
-    )
+    return if (stackedStanzas == null) {
+      MasterDetailScreen(
+          masterRendering = stanzaIndex, selectDefault = { sink.send(HandleStanzaListOutput(0)) })
+    } else {
+      MasterDetailScreen(masterRendering = stanzaIndex, detailRendering = stackedStanzas)
+    }
   }
 
   override fun snapshotState(state: Int): Snapshot = Snapshot.write { sink ->
     sink.writeInt(state)
   }
 
-  private val closePoem: WorkflowAction<Int, Nothing> = workflowAction {
-    state = -1
-    null
-  }
+  private sealed class Action : WorkflowAction<Int, ClosePoem> {
+    object ClearSelection : Action()
+    object SelectPrevious : Action()
+    object SelectNext : Action()
+    class HandleStanzaListOutput(val selection: Int) : Action()
+    object ExitPoem : Action()
 
-  private val goBack: WorkflowAction<Int, Nothing> = workflowAction {
-    state -= 1
-    null
-  }
+    override fun Mutator<Int>.apply(): ClosePoem? {
+      when (this@Action) {
+        ClearSelection -> state = -1
+        SelectPrevious -> state -= 1
+        SelectNext -> state += 1
+        is HandleStanzaListOutput -> {
+          if (selection == -1) return ClosePoem
+          state = selection
+        }
+        ExitPoem -> return ClosePoem
+      }
 
-  private val goForth: WorkflowAction<Int, Nothing> = workflowAction {
-    state += 1
-    null
-  }
-
-  private fun goTo(index: Int): WorkflowAction<Int, Nothing> = workflowAction {
-    state = index
-    null
+      return null
+    }
   }
 }
