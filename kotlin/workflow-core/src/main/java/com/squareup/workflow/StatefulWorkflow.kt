@@ -218,7 +218,7 @@ inline fun <PropsT, StateT, OutputT : Any, RenderingT> Workflow.Companion.statef
 /**
  * Returns a stateful [Workflow], with no props, implemented via the given function.
  *
- * This overload does not support snapshotting, but there are other overloads that do.
+ * This overload does not support snapshots, but there are others that do.
  */
 inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
   initialState: StateT,
@@ -235,12 +235,28 @@ inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
  *
  * The returned object will include the string returned from [name] in its [toString].
  *
+ * @param name A string describing the update for debugging.
+ * @param block Function that defines the workflow update.
+ */
+fun <PropsT, StateT, OutputT : Any, RenderingT>
+    StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.workflowAction(
+      name: String = "",
+      block: Mutator<StateT>.() -> OutputT?
+    ) = workflowAction({ name }, block)
+
+/**
+ * Convenience to create a [WorkflowAction] with parameter types matching those
+ * of the receiving [StatefulWorkflow]. The action will invoke the given [lambda][block]
+ * when it is [applied][WorkflowAction.apply].
+ *
+ * The returned object will include the string returned from [name] in its [toString].
+ *
  * @param name Function that returns a string describing the update for debugging.
  * @param block Function that defines the workflow update.
  */
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.workflowAction(
-      name: () -> String = { "" },
+      name: () -> String,
       block: Mutator<StateT>.() -> OutputT?
     ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
   override fun Mutator<StateT>.apply() = block.invoke(this)

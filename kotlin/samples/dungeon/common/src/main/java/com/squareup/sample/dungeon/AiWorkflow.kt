@@ -76,7 +76,7 @@ class AiWorkflow(
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
-  private val updateDirection = workflowAction {
+  private val updateDirection = workflowAction("updateDirection") {
     // Rotate 90 degrees.
     val newDirection = when (state.direction) {
       UP -> RIGHT

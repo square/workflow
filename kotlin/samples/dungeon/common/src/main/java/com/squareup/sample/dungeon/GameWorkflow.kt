@@ -152,7 +152,7 @@ class GameWorkflow(
     playerRendering: Rendering,
     board: Board,
     aiRenderings: List<Pair<Location, ActorRendering>>
-  ) = workflowAction {
+  ) = workflowAction("updateGame") {
     // Calculate if this tick should result in movement based on the movement's speed.
     fun Movement.isTimeToMove(): Boolean {
       val ticksPerCell = (ticksPerSecond / cellsPerSecond).roundToLong()
