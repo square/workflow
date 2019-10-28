@@ -43,11 +43,26 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * If defining actions within a [StatefulWorkflow], use the [StatefulWorkflow.workflowAction]
      * extension instead, to do this without being forced to repeat its parameter types.
      *
+     * @param name A string describing the update for debugging.
+     * @param apply Function that defines the workflow update.
+     */
+    inline operator fun <StateT, OutputT : Any> invoke(
+      name: String = "",
+      crossinline apply: Mutator<StateT>.() -> OutputT?
+    ) = WorkflowAction({ name }, apply)
+
+    /**
+     * Creates a [WorkflowAction] from the [apply] lambda.
+     * The returned object will include the string returned from [name] in its [toString].
+     *
+     * If defining actions within a [StatefulWorkflow], use the [StatefulWorkflow.workflowAction]
+     * extension instead, to do this without being forced to repeat its parameter types.
+     *
      * @param name Function that returns a string describing the update for debugging.
      * @param apply Function that defines the workflow update.
      */
     inline operator fun <StateT, OutputT : Any> invoke(
-      crossinline name: () -> String = { "" },
+      crossinline name: () -> String,
       crossinline apply: Mutator<StateT>.() -> OutputT?
     ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
       override fun Mutator<StateT>.apply() = apply.invoke(this)

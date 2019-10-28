@@ -90,7 +90,7 @@ class DungeonAppWorkflow(
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
-  private fun startRunning(board: Board) = workflowAction {
+  private fun startRunning(board: Board) = workflowAction("startRunning") {
     state = Running(board)
     return@workflowAction null
   }
@@ -98,7 +98,7 @@ class DungeonAppWorkflow(
   private fun handleGameOutput(
     output: GameWorkflow.Output,
     board: Board
-  ) = workflowAction {
+  ) = workflowAction("handleGameOutput") {
     when (output) {
       Vibrate -> vibrate(50)
       PlayerWasEaten -> {
@@ -113,7 +113,7 @@ class DungeonAppWorkflow(
     return@workflowAction null
   }
 
-  private fun restartGame() = workflowAction {
+  private fun restartGame() = workflowAction("restartGame") {
     state = Loading
     return@workflowAction null
   }
