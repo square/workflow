@@ -45,8 +45,6 @@ class MainActivity : AppCompatActivity() {
 
   private companion object {
     val viewRegistry =
-      ViewRegistry(TodoEditorLayoutRunner, TodoListsLayoutRunner,
-          MasterDetailContainer
-      )
+      ViewRegistry(TodoEditorLayoutRunner, TodoListsLayoutRunner, MasterDetailContainer)
   }
 }

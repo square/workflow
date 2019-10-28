@@ -19,7 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.Hints
+import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
@@ -31,7 +31,7 @@ internal class GamePlayLayoutRunner(private val view: View) : LayoutRunner<GameP
 
   override fun showRendering(
     rendering: GamePlayScreen,
-    hints: Hints
+    containerHints: ContainerHints
   ) {
     renderBanner(rendering.gameState, rendering.playerInfo)
     rendering.gameState.board.render(boardView)

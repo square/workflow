@@ -15,11 +15,12 @@
  */
 package com.squareup.sample.container.masterdetail
 
-import com.squareup.workflow.ui.HintKey
+import com.squareup.workflow.ui.ContainerHintKey
 
 /**
- * Informs views whether they're children of a [MasterDetailContainer],
- * and if so in what configuration.
+ * [com.squareup.workflow.ui.ContainerHints] value that informs views
+ * whether they're children of a [MasterDetailContainer], and if so
+ * in what configuration.
  */
 enum class MasterDetailConfig {
   /**
@@ -42,7 +43,7 @@ enum class MasterDetailConfig {
    */
   Single;
 
-  companion object : HintKey<MasterDetailConfig>(MasterDetailConfig::class) {
+  companion object : ContainerHintKey<MasterDetailConfig>(MasterDetailConfig::class) {
     override val default = None
   }
 }

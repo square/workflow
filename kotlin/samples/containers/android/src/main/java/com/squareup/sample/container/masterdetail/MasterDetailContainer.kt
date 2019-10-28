@@ -21,7 +21,7 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Single
 import com.squareup.workflow.ui.BackStackScreen
-import com.squareup.workflow.ui.Hints
+import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
@@ -54,28 +54,28 @@ class MasterDetailContainer(
 
   override fun showRendering(
     rendering: MasterDetailScreen,
-    hints: Hints
+    containerHints: ContainerHints
   ) {
-    if (singleStub == null) renderSplitView(rendering, hints)
-    else renderSingleView(rendering, hints, singleStub)
+    if (singleStub == null) renderSplitView(rendering, containerHints)
+    else renderSingleView(rendering, containerHints, singleStub)
   }
 
   private fun renderSplitView(
     rendering: MasterDetailScreen,
-    hints: Hints
+    containerHints: ContainerHints
   ) {
     if (rendering.detailRendering == null && rendering.selectDefault != null) {
       rendering.selectDefault!!.invoke()
     } else {
       masterStub!!.update(
           rendering.masterRendering,
-          hints + (MasterDetailConfig to Master),
+          containerHints + (MasterDetailConfig to Master),
           registry
       )
       rendering.detailRendering?.let { detail ->
         detailStub!!.update(
             detail,
-            hints + (MasterDetailConfig to Detail),
+            containerHints + (MasterDetailConfig to Detail),
             registry
         )
       }
@@ -84,14 +84,14 @@ class MasterDetailContainer(
 
   private fun renderSingleView(
     rendering: MasterDetailScreen,
-    hints: Hints,
+    containerHints: ContainerHints,
     stub: WorkflowViewStub
   ) {
     val combined: BackStackScreen<Any> = rendering.detailRendering
-        ?.let { (rendering.masterRendering + it) }
+        ?.let { rendering.masterRendering + it }
         ?: rendering.masterRendering
 
-    stub.update(combined, hints + (MasterDetailConfig to Single), registry)
+    stub.update(combined, containerHints + (MasterDetailConfig to Single), registry)
   }
 
   companion object : ViewBinding<MasterDetailScreen> by LayoutRunner.Binding(

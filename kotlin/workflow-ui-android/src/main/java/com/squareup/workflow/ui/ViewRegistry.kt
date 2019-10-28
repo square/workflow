@@ -96,13 +96,13 @@ class ViewRegistry private constructor(
    */
   fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
-    initialHints: Hints,
+    initialContainerHints: ContainerHints,
     contextForNewView: Context,
     container: ViewGroup? = null
   ): View {
     @Suppress("UNCHECKED_CAST")
     return (allBindings[initialRendering::class] as? ViewBinding<RenderingT>)
-        ?.buildView(this, initialRendering, initialHints, contextForNewView, container)
+        ?.buildView(this, initialRendering, initialContainerHints, contextForNewView, container)
         ?.apply {
           checkNotNull(getRendering<RenderingT>()) {
             "View.bindShowRendering should have been called for $this, typically by the " +
@@ -128,9 +128,9 @@ class ViewRegistry private constructor(
    */
   fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
-    initialHints: Hints,
+    initialContainerHints: ContainerHints,
     container: ViewGroup
-  ): View = buildView(initialRendering, initialHints, container.context, container)
+  ): View = buildView(initialRendering, initialContainerHints, container.context, container)
 
   operator fun <RenderingT : Any> plus(binding: ViewBinding<RenderingT>): ViewRegistry {
     check(binding.type !in bindings.keys) {

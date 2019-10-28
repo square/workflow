@@ -53,9 +53,7 @@ class MainWorkflowTest {
 
   private fun runGameScreen(
     body: String = DEFAULT_RUN_GAME
-  ) = RunGameScreen(
-      PanelContainerScreen(body)
-  )
+  ) = RunGameScreen(PanelContainerScreen(body))
 
   private fun authScreen(wrapped: String = DEFAULT_AUTH) =
     BackStackScreen<Any>(wrapped)

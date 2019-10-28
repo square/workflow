@@ -20,7 +20,7 @@ import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoRendering
-import com.squareup.workflow.ui.Hints
+import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
@@ -49,13 +49,13 @@ internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<Tod
 
   override fun showRendering(
     rendering: TodoRendering,
-    hints: Hints
+    containerHints: ContainerHints
   ) {
     toolbar.title = rendering.list.title
     titleText.text.replace(0, titleText.text.length, rendering.list.title)
     itemContainer.setRows(rendering.list.rows.map { Pair(it.done, it.text) })
 
-    if (hints[BackStackConfig] == Other) {
+    if (containerHints[BackStackConfig] == Other) {
       toolbar.setNavigationOnClickListener { rendering.onGoBackClicked() }
       view.backPressedHandler = { rendering.onGoBackClicked() }
     } else {

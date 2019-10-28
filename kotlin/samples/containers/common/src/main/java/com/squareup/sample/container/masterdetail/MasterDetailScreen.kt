@@ -23,7 +23,7 @@ import com.squareup.workflow.ui.BackStackScreen
  * Containers may choose to display both children side by side in a split view, or concatenate them
  * (master + detail) in a single pane.
  *
- * @param selectDefault optional function that a split view container make call to request
+ * @param selectDefault optional function that a split view container may call to request
  * that a selection be made to fill a null [detailRendering].
  */
 data class MasterDetailScreen(

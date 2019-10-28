@@ -30,7 +30,7 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.Hints
+import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.Named
 import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
@@ -60,10 +60,10 @@ open class BackStackContainer @JvmOverloads constructor(
 
   private fun update(
     newRendering: BackStackScreen<*>,
-    newHints: Hints
+    newContainerHints: ContainerHints
   ) {
     val config = if (newRendering.backStack.isEmpty()) First else Other
-    val hints = newHints + (BackStackConfig to config)
+    val hints = newContainerHints + (BackStackConfig to config)
 
     val named: BackStackScreen<Named<*>> = newRendering
         // ViewStateCache requires that everything be Named.

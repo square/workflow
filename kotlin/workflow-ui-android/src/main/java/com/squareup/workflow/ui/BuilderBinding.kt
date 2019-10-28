@@ -63,7 +63,7 @@ class BuilderBinding<RenderingT : Any>(
   private val viewConstructor: (
     viewRegistry: ViewRegistry,
     initialRendering: RenderingT,
-    initialHints: Hints,
+    initialContainerHints: ContainerHints,
     contextForNewView: Context,
     container: ViewGroup?
   ) -> View
@@ -71,8 +71,8 @@ class BuilderBinding<RenderingT : Any>(
   override fun buildView(
     registry: ViewRegistry,
     initialRendering: RenderingT,
-    initialHints: Hints,
+    initialContainerHints: ContainerHints,
     contextForNewView: Context,
     container: ViewGroup?
-  ): View = viewConstructor(registry, initialRendering, initialHints, contextForNewView, container)
+  ): View = viewConstructor(registry, initialRendering, initialContainerHints, contextForNewView, container)
 }

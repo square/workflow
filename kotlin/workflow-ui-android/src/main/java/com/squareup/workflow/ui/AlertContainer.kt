@@ -43,12 +43,12 @@ internal class AlertContainer @JvmOverloads constructor(
 
   override fun buildDialog(
     initialModalRendering: AlertScreen,
-    initialHints: Hints,
+    initialContainerHints: ContainerHints,
     viewRegistry: ViewRegistry
   ): DialogRef<AlertScreen> {
     val dialog = AlertDialog.Builder(context, dialogThemeResId)
         .create()
-    val ref = DialogRef(initialModalRendering, initialHints, dialog)
+    val ref = DialogRef(initialModalRendering, initialContainerHints, dialog)
     updateDialog(ref)
     return ref
   }

@@ -21,7 +21,7 @@ import android.view.View
  * Function attached to a view created by [ViewRegistry], to allow it
  * to respond to [View.showRendering].
  */
-typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT, Hints) -> Unit
+typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT, ContainerHints) -> Unit
 
 /**
 ` * View tag that holds the function to make the view show instances of [RenderingT], and
@@ -46,11 +46,11 @@ data class ShowRenderingTag<out RenderingT : Any>(
  */
 fun <RenderingT : Any> View.bindShowRendering(
   initialRendering: RenderingT,
-  initialHints: Hints,
+  initialContainerHints: ContainerHints,
   showRendering: ViewShowRendering<RenderingT>
 ) {
   setTag(R.id.view_show_rendering_function, ShowRenderingTag(initialRendering, showRendering))
-  showRendering.invoke(initialRendering, initialHints)
+  showRendering.invoke(initialRendering, initialContainerHints)
 }
 
 /**
@@ -76,7 +76,7 @@ fun View.canShowRendering(rendering: Any): Boolean {
  */
 fun <RenderingT : Any> View.showRendering(
   rendering: RenderingT,
-  hints: Hints
+  containerHints: ContainerHints
 ) {
   showRenderingTag
       ?.let { tag ->
@@ -86,7 +86,7 @@ fun <RenderingT : Any> View.showRendering(
               "Consider using ${WorkflowViewStub::class.java.simpleName} to display arbitrary types."
         }
 
-        bindShowRendering(rendering, hints, tag.showRendering)
+        bindShowRendering(rendering, containerHints, tag.showRendering)
       }
       ?: error(
           "Expected $this to have a showRendering function to show $rendering. " +

@@ -40,9 +40,7 @@ data class PanelContainerScreen<B : Any, T : Any>(
  * Shows the receiving [BackStackScreen] in the only panel over [baseScreen].
  */
 fun <B : Any, T : Any> BackStackScreen<T>.inPanelOver(baseScreen: B): PanelContainerScreen<B, T> {
-  return PanelContainerScreen(
-      baseScreen, listOf(this)
-  )
+  return PanelContainerScreen(baseScreen, listOf(this))
 }
 
 /**

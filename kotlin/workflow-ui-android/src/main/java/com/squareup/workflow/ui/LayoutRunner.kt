@@ -63,7 +63,7 @@ import kotlin.reflect.KClass
 interface LayoutRunner<RenderingT : Any> {
   fun showRendering(
     rendering: RenderingT,
-    hints: Hints
+    containerHints: ContainerHints
   )
 
   class Binding<RenderingT : Any>(
@@ -74,7 +74,7 @@ interface LayoutRunner<RenderingT : Any> {
     override fun buildView(
       registry: ViewRegistry,
       initialRendering: RenderingT,
-      initialHints: Hints,
+      initialContainerHints: ContainerHints,
       contextForNewView: Context,
       container: ViewGroup?
     ): View {
@@ -84,7 +84,7 @@ interface LayoutRunner<RenderingT : Any> {
           .apply {
             bindShowRendering(
                 initialRendering,
-                initialHints,
+                initialContainerHints,
                 runnerConstructor.invoke(this, registry)::showRendering
             )
           }
@@ -120,7 +120,7 @@ interface LayoutRunner<RenderingT : Any> {
       object : LayoutRunner<RenderingT> {
         override fun showRendering(
           rendering: RenderingT,
-          hints: Hints
+          containerHints: ContainerHints
         ) = Unit
       }
     }

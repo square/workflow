@@ -42,10 +42,10 @@ internal class ModalViewContainer @JvmOverloads constructor(
 ) : ModalContainer<Any>(context, attributeSet, defStyle, defStyleRes) {
   override fun buildDialog(
     initialModalRendering: Any,
-    initialHints: Hints,
+    initialContainerHints: ContainerHints,
     viewRegistry: ViewRegistry
   ): DialogRef<Any> {
-    val view = viewRegistry.buildView(initialModalRendering, initialHints, this)
+    val view = viewRegistry.buildView(initialModalRendering, initialContainerHints, this)
 
     return Dialog(context, dialogThemeResId)
         .apply {
@@ -87,12 +87,12 @@ internal class ModalViewContainer @JvmOverloads constructor(
           }
         }
         .run {
-          DialogRef(initialModalRendering, initialHints, this, view)
+          DialogRef(initialModalRendering, initialContainerHints, this, view)
         }
   }
 
   override fun updateDialog(dialogRef: DialogRef<Any>) {
-    with(dialogRef) { (extra as View).showRendering(modalRendering, hints) }
+    with(dialogRef) { (extra as View).showRendering(modalRendering, containerHints) }
   }
 
   class Binding<H : HasModals<*, *>>(

@@ -21,7 +21,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.Hints
+import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
@@ -37,7 +37,7 @@ internal class SecondFactorLayoutRunner(
 
   override fun showRendering(
     rendering: SecondFactorScreen,
-    hints: Hints
+    containerHints: ContainerHints
   ) {
     view.backPressedHandler = { rendering.onCancel() }
     toolbar.setNavigationOnClickListener { rendering.onCancel() }

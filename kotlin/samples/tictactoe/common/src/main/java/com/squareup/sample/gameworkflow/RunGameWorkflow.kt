@@ -288,9 +288,7 @@ class RealRunGameWorkflow(
   }
 
   private fun simpleScreen(screen: Any): RunGameScreen {
-    return AlertContainerScreen(
-        PanelContainerScreen(screen)
-    )
+    return AlertContainerScreen(PanelContainerScreen(screen))
   }
 
   private fun maybeQuitScreen(

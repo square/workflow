@@ -76,8 +76,6 @@ class MainActivity : AppCompatActivity() {
   }
 
   private companion object {
-    val viewRegistry = ViewRegistry(
-        PanelContainer
-    ) + AuthViewBindings + TicTacToeViewBindings
+    val viewRegistry = ViewRegistry(PanelContainer) + AuthViewBindings + TicTacToeViewBindings
   }
 }

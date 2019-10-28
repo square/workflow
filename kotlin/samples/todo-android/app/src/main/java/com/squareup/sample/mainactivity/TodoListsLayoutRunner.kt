@@ -24,7 +24,7 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoList
 import com.squareup.sample.todo.TodoListsScreen
-import com.squareup.workflow.ui.Hints
+import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
@@ -35,14 +35,14 @@ internal class TodoListsLayoutRunner(view: View) : LayoutRunner<TodoListsScreen>
 
   override fun showRendering(
     rendering: TodoListsScreen,
-    hints: Hints
+    containerHints: ContainerHints
   ) {
     for ((index, list) in rendering.lists.withIndex()) {
       addRow(
           index,
           list,
-          selectable = hints[MasterDetailConfig] == Master,
-          selected = index == rendering.selection && hints[MasterDetailConfig] == Master
+          selectable = containerHints[MasterDetailConfig] == Master,
+          selected = index == rendering.selection && containerHints[MasterDetailConfig] == Master
       ) { rendering.onRowClicked(index) }
     }
     pruneDeadRowsFrom(rendering.lists.size)

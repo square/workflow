@@ -19,6 +19,7 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.View.MeasureSpec.EXACTLY
 import android.view.View.MeasureSpec.makeMeasureSpec
 import android.widget.FrameLayout
@@ -55,8 +56,12 @@ internal class PanelBodyWrapper
   attributeSet: AttributeSet? = null
 ) : FrameLayout(context, attributeSet) {
   init {
-    @Suppress("DEPRECATION")
-    background = ColorDrawable(resources.getColor(R.color.panelBody))
+    val typedValue = TypedValue()
+    context.theme.resolveAttribute(android.R.attr.windowBackground, typedValue, true)
+    if (typedValue.type in TypedValue.TYPE_FIRST_COLOR_INT..TypedValue.TYPE_LAST_COLOR_INT) {
+      @Suppress("DEPRECATION")
+      background = ColorDrawable(typedValue.data)
+    }
   }
 
   /** For use only by [onMeasure]. Instantiated here to avoid allocation during measure. */

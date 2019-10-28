@@ -30,7 +30,7 @@
   <View
       android:layout_width="1dp"
       android:layout_height="match_parent"
-      android:background="@color/colorAccent"
+      android:background="@android:drawable/divider_horizontal_bright"
       />
 
   <com.squareup.workflow.ui.WorkflowViewStub

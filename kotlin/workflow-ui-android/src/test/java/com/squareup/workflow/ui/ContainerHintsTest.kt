@@ -18,12 +18,12 @@ package com.squareup.workflow.ui
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class HintsTest {
-  private object StringHint : HintKey<String>(String::class) {
+class ContainerHintsTest {
+  private object StringHint : ContainerHintKey<String>(String::class) {
     override val default = ""
   }
 
-  private object OtherStringHint : HintKey<String>(String::class) {
+  private object OtherStringHint : ContainerHintKey<String>(String::class) {
     override val default = ""
   }
 
@@ -31,17 +31,17 @@ class HintsTest {
     val int: Int = -1,
     val string: String = ""
   ) {
-    companion object : HintKey<DataHint>(DataHint::class) {
+    companion object : ContainerHintKey<DataHint>(DataHint::class) {
       override val default = DataHint()
     }
   }
 
   @Test fun defaults() {
-    assertThat(Hints()[DataHint]).isEqualTo(DataHint())
+    assertThat(ContainerHints()[DataHint]).isEqualTo(DataHint())
   }
 
   @Test fun put() {
-    val hints = Hints() +
+    val hints = ContainerHints() +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
@@ -50,11 +50,11 @@ class HintsTest {
   }
 
   @Test fun `map equality`() {
-    val hints1 = Hints() +
+    val hints1 = ContainerHints() +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
-    val hints2 = Hints() +
+    val hints2 = ContainerHints() +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
@@ -62,11 +62,11 @@ class HintsTest {
   }
 
   @Test fun `map inequality`() {
-    val hints1 = Hints() +
+    val hints1 = ContainerHints() +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
-    val hints2 = Hints() +
+    val hints2 = ContainerHints() +
         (StringHint to "fnord") +
         (DataHint to DataHint(43, "foo"))
 
@@ -82,7 +82,7 @@ class HintsTest {
   }
 
   @Test fun override() {
-    val hints = Hints() +
+    val hints = ContainerHints() +
         (StringHint to "able") +
         (StringHint to "baker")
 
@@ -90,7 +90,7 @@ class HintsTest {
   }
 
   @Test fun `keys of the same type`() {
-    val hints = Hints() +
+    val hints = ContainerHints() +
         (StringHint to "able") +
         (OtherStringHint to "baker")
 
