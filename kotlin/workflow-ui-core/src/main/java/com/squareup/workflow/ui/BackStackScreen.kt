@@ -22,6 +22,9 @@ package com.squareup.workflow.ui
  * implement drag-back gestures without waiting for the workflow, etc.
  *
  * Effectively a list that can never be empty.
+ *
+ * @param bottom the bottom-most entry in the stack
+ * @param rest the rest of the stack, empty by default
  */
 class BackStackScreen<StackedT : Any>(
   bottom: StackedT,
@@ -34,20 +37,6 @@ class BackStackScreen<StackedT : Any>(
     bottom: StackedT,
     vararg rest: StackedT
   ) : this(bottom, rest.toList())
-
-  /**
-   * Creates a screen with the frames of the given [backStack], capped with [top].
-   * [backStack] may be empty.
-   */
-  constructor(
-    backStack: List<StackedT>,
-    top: StackedT
-  ) : this(
-      bottom = backStack.firstOrNull() ?: top,
-      rest = backStack.takeIf { it.isNotEmpty() }
-          ?.let { it.subList(1, it.size) + top }
-          ?: emptyList()
-  )
 
   val frames: List<StackedT> = listOf(bottom) + rest
 
@@ -65,17 +54,17 @@ class BackStackScreen<StackedT : Any>(
 
   operator fun plus(other: BackStackScreen<StackedT>?): BackStackScreen<StackedT> {
     return if (other == null) this
-    else BackStackScreen(frames[0], frames.rest() + other.frames)
+    else BackStackScreen(frames[0], frames.subList(1, frames.size) + other.frames)
   }
 
   fun <R : Any> map(transform: (StackedT) -> R): BackStackScreen<R> {
     return frames.map(transform)
-        .toStack()
+        .toBackStackScreen()
   }
 
   fun <R : Any> mapIndexed(transform: (index: Int, StackedT) -> R): BackStackScreen<R> {
     return frames.mapIndexed(transform)
-        .toStack()
+        .toBackStackScreen()
   }
 
   override fun equals(other: Any?): Boolean {
@@ -91,6 +80,12 @@ class BackStackScreen<StackedT : Any>(
   }
 }
 
-private fun <T> List<T>.rest() = subList(1, size)
+fun <T : Any> List<T>.toBackStackScreenOrNull(): BackStackScreen<T>? = when {
+  isEmpty() -> null
+  else -> toBackStackScreen()
+}
 
-private fun <T : Any> List<T>.toStack(): BackStackScreen<T> = BackStackScreen(this[0], rest())
+fun <T : Any> List<T>.toBackStackScreen(): BackStackScreen<T> {
+  require(isNotEmpty())
+  return BackStackScreen(first(), subList(1, size))
+}

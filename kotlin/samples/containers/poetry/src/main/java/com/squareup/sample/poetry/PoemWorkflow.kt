@@ -34,6 +34,7 @@ import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.parse
 import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.toBackStackScreen
 
 /**
  * Renders a [Poem] as a [MasterDetailScreen], whose master is a [StanzaListRendering]
@@ -80,10 +81,7 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>
       }
 
     val stackedStanzas = visibleStanza?.let {
-      BackStackScreen<Any>(
-          backStack = previousStanzas,
-          top = visibleStanza
-      )
+      (previousStanzas + visibleStanza).toBackStackScreen<Any>()
     }
 
     val stanzaIndex =
@@ -95,12 +93,12 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>
 
     val sink = context.makeActionSink<WorkflowAction<Int, ClosePoem>>()
 
-    return if (stackedStanzas == null) {
-      MasterDetailScreen(
-          masterRendering = stanzaIndex, selectDefault = { sink.send(HandleStanzaListOutput(0)) })
-    } else {
-      MasterDetailScreen(masterRendering = stanzaIndex, detailRendering = stackedStanzas)
-    }
+    return stackedStanzas
+        ?.let { MasterDetailScreen(masterRendering = stanzaIndex, detailRendering = it) }
+        ?: MasterDetailScreen(
+            masterRendering = stanzaIndex,
+            selectDefault = { sink.send(HandleStanzaListOutput(0)) }
+        )
   }
 
   override fun snapshotState(state: Int): Snapshot = Snapshot.write { sink ->
