@@ -47,5 +47,5 @@ fun <B : Any, T : Any> BackStackScreen<T>.inPanelOver(baseScreen: B): PanelConta
  * Shows the receiver as the only panel over [baseScreen], with no back stack.
  */
 fun <B : Any, T : Any> T.firstInPanelOver(baseScreen: B): PanelContainerScreen<B, T> {
-  return BackStackScreen(this).inPanelOver(baseScreen)
+  return BackStackScreen(this, emptyList()).inPanelOver(baseScreen)
 }

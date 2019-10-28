@@ -28,12 +28,11 @@ class BackStackScreen<StackedT : Any>(
   rest: List<StackedT>
 ) {
   /**
-   * Creates a screen with elements listed from the [bottom] to the top.
+   * Creates a screen with elements listed from the bottom to the top.
    */
   constructor(
-    bottom: StackedT,
-    vararg rest: StackedT
-  ) : this(bottom, rest.toList())
+    frames: List<StackedT>
+  ) : this(frames.first(), frames.subList(1, frames.size))
 
   /**
    * Creates a screen with the frames of the given [backStack], capped with [top].
