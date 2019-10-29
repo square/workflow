@@ -15,6 +15,11 @@
   ~ limitations under the License.
   -->
 <resources>
+  <!--
+  BackStackContainer restricts animation to child with this id, if there is one.
+  Otherwise animates its entire body.
+   -->
+  <item type="id" name="back_stack_body"/>
   <!-- View Tag that holds the function to update a view created via ViewRegistry. -->
   <item type="id" name="view_show_rendering_function"/>
   <!-- View Tag used for back button handlers. -->

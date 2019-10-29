@@ -13,26 +13,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.squareup.sample.helloworkflow"
-    >
 
-  <application
-      android:allowBackup="false"
-      android:label="@string/app_name"
-      android:theme="@style/AppTheme"
-      tools:ignore="GoogleAppIndexingWarning,MissingApplicationIcon"
-      >
-
-    <activity android:name="com.squareup.sample.helloworkflow.HelloWorkflowActivity">
-
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-
-    </activity>
-
-  </application>
-</manifest>
+    style="@android:style/Widget.Material.ListView"
+    android:background="?attr/listChoiceBackgroundIndicator"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/listPreferredItemHeightSmall"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:ellipsize="end"
+    android:singleLine="true"
+    tools:text="Once upon a midnight weary"
+    />

@@ -19,23 +19,21 @@ import com.squareup.sample.authworkflow.AuthResult
 import com.squareup.sample.authworkflow.AuthResult.Authorized
 import com.squareup.sample.authworkflow.AuthResult.Canceled
 import com.squareup.sample.authworkflow.AuthWorkflow
+import com.squareup.sample.container.panel.inPanelOver
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RealRunGameWorkflow
 import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.sample.mainworkflow.MainState.Authenticating
 import com.squareup.sample.mainworkflow.MainState.RunningGame
-import com.squareup.sample.container.panel.inPanelOver
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.AlertContainerScreen
-
-private typealias MainWorkflowAction = WorkflowAction<MainState, Unit>
+import com.squareup.workflow.workflowAction
 
 /**
  * Application specific root [Workflow], and demonstration of workflow composition.
@@ -104,17 +102,16 @@ class MainWorkflow(
 
   override fun snapshotState(state: MainState): Snapshot = state.toSnapshot()
 
-  private val startAuth: MainWorkflowAction = WorkflowAction {
+  private val startAuth = workflowAction {
     state = Authenticating
     null
   }
 
-  private fun handleAuthResult(result: AuthResult): MainWorkflowAction = WorkflowAction {
+  private fun handleAuthResult(result: AuthResult) = workflowAction {
     when (result) {
-      is Canceled -> return@WorkflowAction Unit
+      is Canceled -> return@workflowAction Unit
       is Authorized -> state = RunningGame
     }
-
     null
   }
 }

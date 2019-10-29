@@ -39,6 +39,10 @@ sealed class TodoListsAppState {
   ) : TodoListsAppState()
 }
 
+/**
+ * Renders a [TodoListsWorkflow] and a [TodoEditorWorkflow] in a master / detail
+ * relationship. See details in the body of the [render] method.
+ */
 object TodoListsAppWorkflow :
     StatefulWorkflow<Unit, TodoListsAppState, Nothing, MasterDetailScreen>() {
   override fun initialState(
@@ -86,10 +90,22 @@ object TodoListsAppWorkflow :
     val sink = context.makeActionSink<WorkflowAction<TodoListsAppState, Nothing>>()
 
     return when (state) {
+      // Nothing is selected. We rest in this state on a phone in portrait orientation.
+      // In a master detail layout, selectDefault can be called immediately, so that
+      // the detail panel is never seen to be empty.
       is ShowingLists -> MasterDetailScreen(
           masterRendering = BackStackScreen(listOfLists),
           selectDefault = { sink.send(onListSelected(0)) }
       )
+
+      // We are editing a list. Notice that we always render the master pane -- the 
+      // workflow has no knowledge of whether the view side is running in a single
+      // pane config or as a master / detail split view.
+      //
+      // Also notice that we update the TodoListsScreen rendering that we got from the
+      // TodoListsWorkflow child to reflect the current selection. The child workflow has no
+      // notion of selection, and leaves that field set to the default value of -1.
+
       is EditingList -> context.renderChild(
           editorWorkflow, state.lists[state.editingIndex], handler = this::onEditOutput
       ).let { editScreen ->

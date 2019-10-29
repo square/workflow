@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2019 Square Inc.
   ~
@@ -14,8 +13,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:state_activated="true" android:color="?attr/colorAccent"/>
-  <item android:state_pressed="true" android:color="?attr/colorControlHighlight"/>
-  <item android:color="@android:color/background_light"/>
-</selector>
+<resources>
+  <string name="app_name">Raven Workflow</string>
+</resources>
