@@ -16,6 +16,8 @@
 package com.squareup.sample.container.masterdetail
 
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import com.squareup.sample.container.R
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
@@ -72,13 +74,18 @@ class MasterDetailContainer(
           containerHints + (MasterDetailConfig to Master),
           registry
       )
-      rendering.detailRendering?.let { detail ->
-        detailStub!!.update(
-            detail,
-            containerHints + (MasterDetailConfig to Detail),
-            registry
-        )
-      }
+      rendering.detailRendering
+          ?.let { detail ->
+            detailStub!!.actual.visibility = VISIBLE
+            detailStub.update(
+                detail,
+                containerHints + (MasterDetailConfig to Detail),
+                registry
+            )
+          }
+          ?: run {
+            detailStub!!.actual.visibility = INVISIBLE
+          }
     }
   }
 

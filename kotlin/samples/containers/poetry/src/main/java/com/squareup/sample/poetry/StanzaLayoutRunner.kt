@@ -26,7 +26,6 @@ import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.container.masterdetail.MasterDetailConfig
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.poetry.R
-import com.squareup.sample.poetry.StanzaWorkflow.Rendering
 import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding
@@ -34,7 +33,7 @@ import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.backstack.BackStackConfig
 import com.squareup.workflow.ui.backstack.BackStackConfig.None
 
-class StanzaLayoutRunner(private val view: View) : LayoutRunner<Rendering> {
+class StanzaLayoutRunner(private val view: View) : LayoutRunner<StanzaRendering> {
   private val tabSize = TypedValue
       .applyDimension(TypedValue.COMPLEX_UNIT_SP, 24f, view.resources.displayMetrics)
       .toInt()
@@ -47,7 +46,7 @@ class StanzaLayoutRunner(private val view: View) : LayoutRunner<Rendering> {
   private val goBack = view.findViewById<TextView>(R.id.stanza_back)
 
   override fun showRendering(
-    rendering: Rendering,
+    rendering: StanzaRendering,
     containerHints: ContainerHints
   ) {
     if (containerHints[MasterDetailConfig] == Detail) {
@@ -107,7 +106,7 @@ class StanzaLayoutRunner(private val view: View) : LayoutRunner<Rendering> {
     setText(spans, SPANNABLE)
   }
 
-  companion object : ViewBinding<Rendering> by LayoutRunner.bind(
+  companion object : ViewBinding<StanzaRendering> by LayoutRunner.bind(
       R.layout.stanza_layout,
       ::StanzaLayoutRunner
   )

@@ -14,5 +14,6 @@
   ~ limitations under the License.
   -->
 <resources>
-  <string name="app_name">The Raven</string>
+  <string name="app_name">Poetry</string>
+  <string name="poems">Poems</string>
 </resources>

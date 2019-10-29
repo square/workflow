@@ -65,14 +65,14 @@ class WorkflowLayout(
     showing.update(newRendering, ContainerHints(), registry)
     restoredChildState?.let { restoredState ->
       restoredChildState = null
-      showing.actual!!.restoreHierarchyState(restoredState)
+      showing.actual.restoreHierarchyState(restoredState)
     }
   }
 
   override fun onSaveInstanceState(): Parcelable? {
     return SavedState(
         super.onSaveInstanceState()!!,
-        SparseArray<Parcelable>().also { array -> showing.actual?.saveHierarchyState(array) }
+        SparseArray<Parcelable>().also { array -> showing.actual.saveHierarchyState(array) }
     )
   }
 

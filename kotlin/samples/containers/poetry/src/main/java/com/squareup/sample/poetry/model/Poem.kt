@@ -22,6 +22,10 @@ class Poem(
 ) {
   val initialStanzas = stanzas.map { lines -> lines[0].trim() }
 
+  override fun toString(): String {
+    return "Poem($title)"
+  }
+
   companion object {
     val allPoems: List<Poem> = listOf(
         TheConquerorWorm,
