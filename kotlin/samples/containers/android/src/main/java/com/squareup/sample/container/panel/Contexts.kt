@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.mainworkflow
+package com.squareup.sample.container.panel
 
 import android.content.Context
 import android.view.Display
 import android.view.WindowManager
-import com.squareup.sample.tictactoe.R
+import com.squareup.sample.container.R
 
 val Context.isTablet: Boolean get() = resources.getBoolean(R.bool.is_tablet)
 

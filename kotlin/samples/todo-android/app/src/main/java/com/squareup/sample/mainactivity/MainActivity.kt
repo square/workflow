@@ -17,6 +17,7 @@ package com.squareup.sample.mainactivity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.squareup.sample.container.masterdetail.MasterDetailContainer
 import com.squareup.sample.todo.TodoListsAppWorkflow
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.diagnostic.andThen

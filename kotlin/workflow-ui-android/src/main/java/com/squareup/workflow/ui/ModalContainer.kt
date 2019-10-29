@@ -61,16 +61,19 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
 
   protected lateinit var registry: ViewRegistry
 
-  protected fun update(newScreen: HasModals<*, ModalRenderingT>) {
-    baseView.update(newScreen.baseScreen, registry)
+  protected fun update(
+    newScreen: HasModals<*, ModalRenderingT>,
+    containerHints: ContainerHints
+  ) {
+    baseView.update(newScreen.baseScreen, containerHints, registry)
 
     val newDialogs = mutableListOf<DialogRef<ModalRenderingT>>()
     for ((i, modal) in newScreen.modals.withIndex()) {
       newDialogs += if (i < dialogs.size && compatible(dialogs[i].modalRendering, modal)) {
-        dialogs[i].copy(modalRendering = modal)
+        dialogs[i].copy(modalRendering = modal, containerHints = containerHints)
             .also { updateDialog(it) }
       } else {
-        buildDialog(modal, registry).apply {
+        buildDialog(modal, containerHints, registry).apply {
           dialog.show()
           // Android makes a lot of logcat noise if it has to close the window for us. :/
           // https://github.com/square/workflow/issues/51
@@ -89,6 +92,7 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
    */
   protected abstract fun buildDialog(
     initialModalRendering: ModalRenderingT,
+    initialContainerHints: ContainerHints,
     viewRegistry: ViewRegistry
   ): DialogRef<ModalRenderingT>
 
@@ -143,6 +147,7 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
    */
   protected data class DialogRef<ModalRenderingT : Any>(
     val modalRendering: ModalRenderingT,
+    val containerHints: ContainerHints,
     val dialog: Dialog,
     val extra: Any? = null
   ) {

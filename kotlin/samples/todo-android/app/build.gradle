@@ -31,10 +31,12 @@ android {
   // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
   packagingOptions {
     exclude 'META-INF/atomicfu.kotlin_module'
+    exclude 'META-INF/common.kotlin_module'
   }
 }
 
 dependencies {
+  implementation project(':samples:containers:android')
   implementation project(':samples:todo-android:common')
   implementation project(':workflow-ui-android')
   implementation project(':workflow-core')

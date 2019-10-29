@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import kotlin.reflect.KClass
 
 /**
@@ -62,10 +61,12 @@ import kotlin.reflect.KClass
  * call [ViewRegistry.buildView], [View.canShowRendering] and [View.showRendering] directly.
  */
 interface LayoutRunner<RenderingT : Any> {
-  fun showRendering(rendering: RenderingT)
+  fun showRendering(
+    rendering: RenderingT,
+    containerHints: ContainerHints
+  )
 
-  class Binding<RenderingT : Any>
-  constructor(
+  class Binding<RenderingT : Any>(
     override val type: KClass<RenderingT>,
     @LayoutRes private val layoutId: Int,
     private val runnerConstructor: (View, ViewRegistry) -> LayoutRunner<RenderingT>
@@ -73,6 +74,7 @@ interface LayoutRunner<RenderingT : Any> {
     override fun buildView(
       registry: ViewRegistry,
       initialRendering: RenderingT,
+      initialContainerHints: ContainerHints,
       contextForNewView: Context,
       container: ViewGroup?
     ): View {
@@ -82,6 +84,7 @@ interface LayoutRunner<RenderingT : Any> {
           .apply {
             bindShowRendering(
                 initialRendering,
+                initialContainerHints,
                 runnerConstructor.invoke(this, registry)::showRendering
             )
           }
@@ -115,7 +118,10 @@ interface LayoutRunner<RenderingT : Any> {
       @LayoutRes layoutId: Int
     ): ViewBinding<RenderingT> = bind(layoutId) { _ ->
       object : LayoutRunner<RenderingT> {
-        override fun showRendering(rendering: RenderingT) = Unit
+        override fun showRendering(
+          rendering: RenderingT,
+          containerHints: ContainerHints
+        ) = Unit
       }
     }
   }

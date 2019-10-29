@@ -21,23 +21,23 @@
     >
 
   <com.squareup.workflow.ui.WorkflowViewStub
-      android:id="@+id/detail_stub"
+      android:id="@+id/master_stub"
       android:layout_width="0dp"
       android:layout_height="match_parent"
-      android:layout_weight="70"
+      android:layout_weight="30"
       />
 
   <View
       android:layout_width="1dp"
       android:layout_height="match_parent"
-      android:background="@color/colorAccent"
+      android:background="@android:drawable/divider_horizontal_bright"
       />
 
   <com.squareup.workflow.ui.WorkflowViewStub
-      android:id="@+id/master_stub"
+      android:id="@+id/detail_stub"
       android:layout_width="0dp"
       android:layout_height="match_parent"
-      android:layout_weight="30"
+      android:layout_weight="70"
       />
 
 </LinearLayout>

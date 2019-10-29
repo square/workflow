@@ -20,6 +20,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.squareup.sample.tictactoe.R
+import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
@@ -31,7 +32,10 @@ internal class LoginLayoutRunner(val view: View) : LayoutRunner<LoginScreen> {
   private val password: EditText = view.findViewById(R.id.login_password)
   private val loginButton: Button = view.findViewById(R.id.login_button)
 
-  override fun showRendering(rendering: LoginScreen) {
+  override fun showRendering(
+    rendering: LoginScreen,
+    containerHints: ContainerHints
+  ) {
     error.text = rendering.errorMessage
 
     loginButton.setOnClickListener {

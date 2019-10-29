@@ -21,7 +21,7 @@ import android.view.View
  * Function attached to a view created by [ViewRegistry], to allow it
  * to respond to [View.showRendering].
  */
-typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT) -> Unit
+typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT, ContainerHints) -> Unit
 
 /**
 ` * View tag that holds the function to make the view show instances of [RenderingT], and
@@ -46,10 +46,11 @@ data class ShowRenderingTag<out RenderingT : Any>(
  */
 fun <RenderingT : Any> View.bindShowRendering(
   initialRendering: RenderingT,
+  initialContainerHints: ContainerHints,
   showRendering: ViewShowRendering<RenderingT>
 ) {
   setTag(R.id.view_show_rendering_function, ShowRenderingTag(initialRendering, showRendering))
-  showRendering.invoke(initialRendering)
+  showRendering.invoke(initialRendering, initialContainerHints)
 }
 
 /**
@@ -73,7 +74,10 @@ fun View.canShowRendering(rendering: Any): Boolean {
  *
  * @throws IllegalStateException if [bindShowRendering] has not been called.
  */
-fun <RenderingT : Any> View.showRendering(rendering: RenderingT) {
+fun <RenderingT : Any> View.showRendering(
+  rendering: RenderingT,
+  containerHints: ContainerHints
+) {
   showRenderingTag
       ?.let { tag ->
         check(tag.showing.matches(rendering)) {
@@ -82,7 +86,7 @@ fun <RenderingT : Any> View.showRendering(rendering: RenderingT) {
               "Consider using ${WorkflowViewStub::class.java.simpleName} to display arbitrary types."
         }
 
-        bindShowRendering(rendering, tag.showRendering)
+        bindShowRendering(rendering, containerHints, tag.showRendering)
       }
       ?: error(
           "Expected $this to have a showRendering function to show $rendering. " +
@@ -110,6 +114,7 @@ fun <RenderingT : Any> View.getRendering(): RenderingT? {
  */
 fun <RenderingT : Any> View.getShowRendering(): ViewShowRendering<RenderingT>? {
   // IDE is lying, casting here is unnecessary and causes a compiler warning.
+  // https://youtrack.jetbrains.com/issue/KT-34433
   return showRenderingTag?.showRendering
 }
 

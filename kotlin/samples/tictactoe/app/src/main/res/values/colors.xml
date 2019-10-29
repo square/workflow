@@ -21,5 +21,4 @@
     <color name="game_background">#efe0f9</color>
     <color name="game_dark_cell">#CCCCCC</color>
     <color name="game_light_cell">#EEEEEE</color>
-    <color name="panelBody">#FFFFFF</color>
 </resources>

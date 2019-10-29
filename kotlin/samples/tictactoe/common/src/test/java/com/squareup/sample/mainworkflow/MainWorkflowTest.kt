@@ -6,7 +6,7 @@ import com.squareup.sample.authworkflow.AuthWorkflow
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
-import com.squareup.sample.panel.PanelContainerScreen
+import com.squareup.sample.container.panel.PanelContainerScreen
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction

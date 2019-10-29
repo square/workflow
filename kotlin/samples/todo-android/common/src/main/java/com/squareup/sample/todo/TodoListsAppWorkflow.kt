@@ -15,6 +15,7 @@
  */
 package com.squareup.sample.todo
 
+import com.squareup.sample.container.masterdetail.MasterDetailScreen
 import com.squareup.sample.todo.TodoEditorOutput.Done
 import com.squareup.sample.todo.TodoEditorOutput.ListUpdated
 import com.squareup.sample.todo.TodoListsAppState.EditingList
@@ -23,6 +24,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.ui.BackStackScreen
 
 private typealias TodoListsAction = WorkflowAction<TodoListsAppState, Nothing>
 
@@ -85,15 +87,15 @@ object TodoListsAppWorkflow :
 
     return when (state) {
       is ShowingLists -> MasterDetailScreen(
-          masterRendering = listOfLists,
+          masterRendering = BackStackScreen(listOfLists),
           selectDefault = { sink.send(onListSelected(0)) }
       )
       is EditingList -> context.renderChild(
           editorWorkflow, state.lists[state.editingIndex], handler = this::onEditOutput
       ).let { editScreen ->
         MasterDetailScreen(
-            masterRendering = listOfLists.copy(selection = state.editingIndex),
-            detailRendering = editScreen
+            masterRendering = BackStackScreen(listOfLists.copy(selection = state.editingIndex)),
+            detailRendering = BackStackScreen(editScreen)
         )
       }
     }

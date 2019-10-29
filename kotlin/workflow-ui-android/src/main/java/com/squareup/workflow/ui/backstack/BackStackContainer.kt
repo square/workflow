@@ -28,15 +28,15 @@ import androidx.transition.Scene
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
-import com.squareup.workflow.ui.BackStackAware.Companion.makeAware
-import com.squareup.workflow.ui.BackStackConfig.First
-import com.squareup.workflow.ui.BackStackConfig.Other
 import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.BuilderBinding
+import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.Named
 import com.squareup.workflow.ui.R
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.ViewRegistry
+import com.squareup.workflow.ui.backstack.BackStackConfig.First
+import com.squareup.workflow.ui.backstack.BackStackConfig.Other
 import com.squareup.workflow.ui.bindShowRendering
 import com.squareup.workflow.ui.canShowRendering
 import com.squareup.workflow.ui.compatible
@@ -58,13 +58,14 @@ open class BackStackContainer @JvmOverloads constructor(
   private val currentView: View? get() = if (childCount > 0) getChildAt(0) else null
   private var currentRendering: BackStackScreen<Named<*>>? = null
 
-  private fun update(newRendering: BackStackScreen<*>) {
+  private fun update(
+    newRendering: BackStackScreen<*>,
+    newContainerHints: ContainerHints
+  ) {
+    val config = if (newRendering.backStack.isEmpty()) First else Other
+    val hints = newContainerHints + (BackStackConfig to config)
+
     val named: BackStackScreen<Named<*>> = newRendering
-        // Let interested children know that they're in a stack.
-        .mapIndexed { index, frame ->
-          val config = if (index == 0) First else Other
-          makeAware(frame, config)
-        }
         // ViewStateCache requires that everything be Named.
         // It's fine if client code is already using Named for its own purposes, recursion works.
         .map { Named(it, "backstack") }
@@ -76,11 +77,11 @@ open class BackStackContainer @JvmOverloads constructor(
         ?.takeIf { it.canShowRendering(named.top) }
         ?.let {
           viewStateCache.prune(named.frames)
-          it.showRendering(named.top)
+          it.showRendering(named.top, hints)
           return
         }
 
-    val newView = registry.buildView(named.top, this)
+    val newView = registry.buildView(named.top, hints, this)
     viewStateCache.update(named.backStack, oldViewMaybe, newView)
 
     val popped = currentRendering?.backStack?.any { compatible(it, named.top) } == true
@@ -147,13 +148,13 @@ open class BackStackContainer @JvmOverloads constructor(
   companion object : ViewBinding<BackStackScreen<*>>
   by BuilderBinding(
       type = BackStackScreen::class,
-      viewConstructor = { viewRegistry, initialRendering, context, _ ->
+      viewConstructor = { viewRegistry, initialRendering, initialHints, context, _ ->
         BackStackContainer(context)
             .apply {
               id = R.id.workflow_back_stack_container
               layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
               registry = viewRegistry
-              bindShowRendering(initialRendering, ::update)
+              bindShowRendering(initialRendering, initialHints, ::update)
             }
       }
   )
