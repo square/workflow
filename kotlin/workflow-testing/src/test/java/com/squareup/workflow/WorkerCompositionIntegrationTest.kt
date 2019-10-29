@@ -149,12 +149,12 @@ class WorkerCompositionIntegrationTest {
       runningWorker(channel.asWorker()) { WorkflowAction { it } }
     }
 
-    workflow.testFromStart {
-      assertFalse(this.hasOutput)
+    assertFailsWith<ExpectedException> {
+      workflow.testFromStart {
+        assertFalse(this.hasOutput)
 
-      channel.cancel(CancellationException(null, ExpectedException()))
+        channel.cancel(CancellationException(null, ExpectedException()))
 
-      assertFailsWith<ExpectedException> {
         awaitNextOutput()
       }
     }
@@ -220,8 +220,10 @@ class WorkerCompositionIntegrationTest {
       runningWorker(worker)
     }
 
-    workflow.testFromStart {
-      assertTrue(awaitFailure() is AssertionError)
+    assertFailsWith<AssertionError> {
+      workflow.testFromStart {
+        // Nothing to do.
+      }
     }
   }
 

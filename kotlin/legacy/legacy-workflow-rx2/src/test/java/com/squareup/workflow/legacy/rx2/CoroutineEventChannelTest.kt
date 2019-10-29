@@ -19,6 +19,7 @@
 package com.squareup.workflow.legacy.rx2
 
 import com.google.common.truth.Truth.assertThat
+import com.squareup.workflow.internal.util.rethrowingUncaughtExceptions
 import com.squareup.workflow.legacy.Finished
 import com.squareup.workflow.legacy.Running
 import com.squareup.workflow.legacy.Workflow

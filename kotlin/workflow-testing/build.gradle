@@ -29,7 +29,9 @@ dependencies {
   api project(':workflow-core')
   api project(':workflow-runtime')
   api deps.kotlin.coroutines.test
-  api deps.kotlin.stdLib.jdk6
+  api deps.kotlin.stdLib.jdk7
+
+  implementation project(':internal-testing-utils')
 
   testImplementation deps.kotlin.test.jdk
 }

@@ -20,6 +20,7 @@ package com.squareup.workflow.testing
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
+import com.squareup.workflow.internal.util.rethrowingUncaughtExceptions
 import com.squareup.workflow.stateful
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromWorkflowSnapshot
@@ -36,14 +37,16 @@ import kotlin.test.fail
 
 class WorkflowTesterTest {
 
-  private class ExpectedException : RuntimeException()
+  private class ExpectedException(message: String? = null) : RuntimeException(message)
 
   @Test fun `propagates exception when block throws`() {
     val workflow = Workflow.stateless<Unit, Unit, Unit> { }
 
-    assertFailsWith<ExpectedException> {
-      workflow.testFromStart {
-        throw ExpectedException()
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ExpectedException> {
+        workflow.testFromStart {
+          throw ExpectedException()
+        }
       }
     }
   }
@@ -53,12 +56,12 @@ class WorkflowTesterTest {
       throw ExpectedException()
     }
 
-    workflow.testFromStart {
-      awaitFailure()
-          .let { error ->
-            val causeChain = generateSequence(error) { it.cause }
-            assertEquals(1, causeChain.count { it is ExpectedException })
-          }
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ExpectedException>() {
+        workflow.testFromStart {
+          // Nothing to do.
+        }
+      }
     }
   }
 
@@ -66,13 +69,12 @@ class WorkflowTesterTest {
     val job = Job()
     val workflow = Workflow.stateless<Unit, Unit, Unit> { }
 
-    workflow.testFromStart(context = job) {
-      job.cancel(CancellationException(null, ExpectedException()))
-      awaitFailure()
-          .let { error ->
-            val causeChain = generateSequence(error) { it.cause }
-            assertEquals(1, causeChain.count { it is ExpectedException })
-          }
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ExpectedException> {
+        workflow.testFromStart(context = job) {
+          job.cancel(CancellationException(null, ExpectedException()))
+        }
+      }
     }
   }
 
@@ -80,17 +82,25 @@ class WorkflowTesterTest {
     val job = Job().apply { cancel() }
     val workflow = Workflow.stateless<Unit, Unit, Unit> { }
 
-    workflow.testFromStart(context = job) {
-      assertTrue(awaitFailure() is ClosedReceiveChannelException)
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ClosedReceiveChannelException> {
+        workflow.testFromStart(context = job) {
+          awaitNextRendering()
+        }
+      }
     }
   }
 
-  @Test fun `propagates cancellation when Job failes before starting`() {
+  @Test fun `propagates cancellation when Job fails before starting`() {
     val job = Job().apply { cancel(CancellationException(null, ExpectedException())) }
     val workflow = Workflow.stateless<Unit, Unit, Unit> { }
 
-    workflow.testFromStart(context = job) {
-      assertTrue(awaitFailure() is ExpectedException)
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ExpectedException> {
+        workflow.testFromStart(context = job) {
+          // Nothing to do.
+        }
+      }
     }
   }
 
@@ -104,12 +114,12 @@ class WorkflowTesterTest {
         snapshot = { fail() }
     )
 
-    workflow.testFromStart {
-      awaitFailure()
-          .let { error ->
-            val causeChain = generateSequence(error) { it.cause }
-            assertEquals(1, causeChain.count { it is ExpectedException })
-          }
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ExpectedException> {
+        workflow.testFromStart {
+          // Nothing to do.
+        }
+      }
     }
   }
 
@@ -120,12 +130,12 @@ class WorkflowTesterTest {
         snapshot = { throw ExpectedException() }
     )
 
-    workflow.testFromStart {
-      awaitFailure()
-          .let { error ->
-            val causeChain = generateSequence(error) { it.cause }
-            assertEquals(1, causeChain.count { it is ExpectedException })
-          }
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ExpectedException> {
+        workflow.testFromStart {
+          // Nothing to do.
+        }
+      }
     }
   }
 
@@ -141,12 +151,14 @@ class WorkflowTesterTest {
     )
     val snapshot = Snapshot.of("dummy snapshot")
 
-    workflow.testFromStart(WorkflowTestParams(startFrom = StartFromWorkflowSnapshot(snapshot))) {
-      awaitFailure()
-          .let { error ->
-            val causeChain = generateSequence(error) { it.cause }
-            assertEquals(1, causeChain.count { it is ExpectedException })
-          }
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ExpectedException> {
+        workflow.testFromStart(
+            WorkflowTestParams(startFrom = StartFromWorkflowSnapshot(snapshot))
+        ) {
+          // Nothing to do.
+        }
+      }
     }
   }
 
@@ -157,30 +169,34 @@ class WorkflowTesterTest {
       runningWorker(deferred.asWorker()) { fail("Shouldn't get here.") }
     }
 
-    workflow.testFromStart {
-      awaitFailure()
-          .let { error ->
-            val causeChain = generateSequence(error) { it.cause }
-            assertEquals(1, causeChain.count { it is ExpectedException })
-          }
+    rethrowingUncaughtExceptions {
+      assertFailsWith<ExpectedException> {
+        workflow.testFromStart {
+          // Nothing to do.
+        }
+      }
     }
   }
 
   @Test fun `does nothing when no outputs observed`() {
     val workflow = Workflow.stateless<Unit, Unit, Unit> {}
 
-    workflow.testFromStart {
-      // The workflow should never start.
+    rethrowingUncaughtExceptions {
+      workflow.testFromStart {
+        // The workflow should never start.
+      }
     }
   }
 
   @Test fun `workflow gets props from sendProps`() {
     val workflow = Workflow.stateless<String, Nothing, String> { props -> props }
 
-    workflow.testFromStart("one") {
-      assertEquals("one", awaitNextRendering())
-      sendProps("two")
-      assertEquals("two", awaitNextRendering())
+    rethrowingUncaughtExceptions {
+      workflow.testFromStart("one") {
+        assertEquals("one", awaitNextRendering())
+        sendProps("two")
+        assertEquals("two", awaitNextRendering())
+      }
     }
   }
 
@@ -191,14 +207,19 @@ class WorkflowTesterTest {
       renders++
     }
 
-    workflow.testFromStart(props, testParams = WorkflowTestParams(checkRenderIdempotence = false)) {
-      assertEquals(1, renders)
+    rethrowingUncaughtExceptions {
+      workflow.testFromStart(
+          props,
+          testParams = WorkflowTestParams(checkRenderIdempotence = false)
+      ) {
+        assertEquals(1, renders)
 
-      sendProps(props)
-      assertEquals(2, renders)
+        sendProps(props)
+        assertEquals(2, renders)
 
-      sendProps(props)
-      assertEquals(3, renders)
+        sendProps(props)
+        assertEquals(3, renders)
+      }
     }
   }
 
@@ -208,8 +229,10 @@ class WorkflowTesterTest {
       renderCount++
     }
 
-    workflow.testFromStart {
-      assertEquals(2, renderCount)
+    rethrowingUncaughtExceptions {
+      workflow.testFromStart {
+        assertEquals(2, renderCount)
+      }
     }
   }
 
@@ -219,8 +242,28 @@ class WorkflowTesterTest {
       renderCount++
     }
 
-    workflow.testFromStart(testParams = WorkflowTestParams(checkRenderIdempotence = false)) {
-      assertEquals(1, renderCount)
+    rethrowingUncaughtExceptions {
+      workflow.testFromStart(testParams = WorkflowTestParams(checkRenderIdempotence = false)) {
+        assertEquals(1, renderCount)
+      }
+    }
+  }
+
+  @Test fun `uncaught exceptions are suppressed when test body throws`() {
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      throw ExpectedException("render")
+    }
+
+    rethrowingUncaughtExceptions {
+      val firstError = assertFailsWith<ExpectedException> {
+        workflow.testFromStart {
+          throw ExpectedException("test body")
+        }
+      }
+      assertEquals("test body", firstError.message)
+      val secondError = firstError.suppressed.single()
+      assertTrue(secondError is ExpectedException)
+      assertEquals("render", secondError.message)
     }
   }
 }

@@ -13,23 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.legacy.rx2
+package com.squareup.workflow.internal.util
 
 import com.google.common.truth.Truth.assertThat
 import junit.framework.TestCase.fail
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
+import kotlin.test.assertFailsWith
 
-class UncaughtExceptionsTest {
-  @Test fun `rethrowingUncaughtExceptions rethrows Exception from block`() {
-    try {
-      rethrowingUncaughtExceptions {
-        throw RuntimeException("fail")
+class UncaughtExceptionGuardTest {
+
+  private val guard = UncaughtExceptionGuard()
+
+  @Test fun `UncaughtExceptionGuard rethrows Exception from block`() {
+    val error = assertFailsWith<ExpectedException> {
+      guard.runRethrowingUncaught {
+        throw ExpectedException("fail")
       }
-      fail("Expected exception.")
-    } catch (e: RuntimeException) {
-      assertThat(e.message).isEqualTo("fail")
     }
+    assertThat(error.message).isEqualTo("fail")
+  }
+
+  @Test fun `UncaughtExceptionGuard suppresses Uncaught when block throws`() {
+    guard.reportUncaught(ExpectedException("fail2"))
+    val error = assertFailsWith<ExpectedException> {
+      guard.runRethrowingUncaught {
+        // Immediately-thrown exception is always given priority.
+        throw ExpectedException("fail1")
+      }
+    }
+    assertThat(error.message).isEqualTo("fail1")
+    assertThat(error.suppressed.single().message).isEqualTo("fail2")
+  }
+
+  @Test fun `UncaughtExceptionGuard suppresses Uncaught when multiple Uncaught`() {
+    guard.reportUncaught(ExpectedException("fail1"))
+    guard.reportUncaught(ExpectedException("fail2"))
+    guard.reportUncaught(ExpectedException("fail3"))
+    val error = assertFailsWith<ExpectedException> {
+      guard.runRethrowingUncaught { }
+    }
+    assertThat(error.message).isEqualTo("fail1")
+    assertThat(error.suppressed!![0].message).isEqualTo("fail2")
+    assertThat(error.suppressed!![1].message).isEqualTo("fail3")
   }
 
   @Test fun `rethrowingUncaughtExceptions rethrows Uncaught from same thread`() {
@@ -44,42 +70,9 @@ class UncaughtExceptionsTest {
     }
   }
 
-  @Test fun `rethrowingUncaughtException suppresses Uncaught when block throws`() {
-    try {
-      rethrowingUncaughtExceptions {
-        Thread.getDefaultUncaughtExceptionHandler()
-            .uncaughtException(Thread.currentThread(), RuntimeException("fail2"))
-        // Immediately-thrown exception is always given priority.
-        throw RuntimeException("fail1")
-      }
-      fail("Expected exception.")
-    } catch (e: RuntimeException) {
-      assertThat(e.message).isEqualTo("fail1")
-      assertThat(e.suppressed.single().message).isEqualTo("fail2")
-    }
-  }
-
-  @Test fun `rethrowingUncaughtException suppresses Uncaught when multiple Uncaught`() {
-    try {
-      rethrowingUncaughtExceptions {
-        Thread.getDefaultUncaughtExceptionHandler()
-            .apply {
-              uncaughtException(Thread.currentThread(), RuntimeException("fail1"))
-              uncaughtException(Thread.currentThread(), RuntimeException("fail2"))
-              uncaughtException(Thread.currentThread(), RuntimeException("fail3"))
-            }
-      }
-      fail("Expected exception.")
-    } catch (e: RuntimeException) {
-      assertThat(e.message).isEqualTo("fail1")
-      assertThat(e.suppressed!![0].message).isEqualTo("fail2")
-      assertThat(e.suppressed!![1].message).isEqualTo("fail3")
-    }
-  }
-
   @Test fun `rethrowingUncaughtException suppresses Uncaught when multiple threads`() {
     // This number should be high enough to give some contention.
-    val threadCount = 10
+    val threadCount = 50
     val readyToStartLatch = CountDownLatch(threadCount)
     val startLatch = CountDownLatch(1)
     val finishedLatch = CountDownLatch(threadCount)
@@ -112,4 +105,6 @@ class UncaughtExceptionsTest {
       assertThat(allMessages.distinct()).hasSize(allMessages.size)
     }
   }
+
+  private class ExpectedException(message: String? = null) : RuntimeException(message)
 }
