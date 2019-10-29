@@ -28,6 +28,8 @@ import com.squareup.workflow.workflowAction
 
 typealias SelectedPoem = Int
 
+private typealias Action = WorkflowAction<SelectedPoem, Nothing>
+
 object PoemsBrowserWorkflow :
     StatefulWorkflow<List<Poem>, SelectedPoem, Nothing, MasterDetailScreen>() {
   override fun initialState(
@@ -43,14 +45,17 @@ object PoemsBrowserWorkflow :
     state: SelectedPoem,
     context: RenderContext<SelectedPoem, Nothing>
   ): MasterDetailScreen {
-    val poems = context.renderChild(PoemListWorkflow, props) { selected -> choosePoem(selected) }
-        .copy(selection = state)
-        .let { BackStackScreen<Any>(it) }
+    val poems: MasterDetailScreen =
+      context.renderChild(PoemListWorkflow, props) { selected -> choosePoem(selected) }
+          .copy(selection = state)
+          .let { MasterDetailScreen(BackStackScreen(it)) }
 
     return if (state == -1) {
-      MasterDetailScreen(poems)
+      poems
     } else {
-      MasterDetailScreen(poems) + context.renderChild(PoemWorkflow, props[state]) { choosePoem(-1) }
+      val poem: MasterDetailScreen =
+        context.renderChild(PoemWorkflow, props[state]) { clearSelection }
+      poems + poem
     }
   }
 
@@ -58,9 +63,10 @@ object PoemsBrowserWorkflow :
     sink.writeInt(state)
   }
 
-  private fun choosePoem(index: SelectedPoem): WorkflowAction<SelectedPoem, Nothing> =
-    workflowAction("goToPoem") {
-      state = index
-      null
-    }
+  private fun choosePoem(index: SelectedPoem): Action = workflowAction("goToPoem") {
+    state = index
+    null
+  }
+
+  private val clearSelection = choosePoem(-1)
 }

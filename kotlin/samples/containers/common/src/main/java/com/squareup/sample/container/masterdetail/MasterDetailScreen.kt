@@ -48,6 +48,11 @@ class MasterDetailScreen private constructor(
   operator fun component1(): BackStackScreen<Any> = masterRendering
   operator fun component2(): BackStackScreen<Any>? = detailRendering
 
+  /**
+   * Returns a new [MasterDetailScreen] appending the [masterRendering] and
+   * [detailRendering] of [other] to those of the receiver. If the new screen's
+   * [detailRendering] is `null`, it will have the [selectDefault] function of [other].
+   */
   operator fun plus(other: MasterDetailScreen): MasterDetailScreen {
     val newMaster = masterRendering + other.masterRendering
     val newDetail = detailRendering
