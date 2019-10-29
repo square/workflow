@@ -16,6 +16,7 @@
 buildscript {
   ext.versions = [
       'targetSdk': 29,
+      'compose': '0.1.0-dev04',
   ]
 
   rootProject.ext.defaultAndroidConfig = {
@@ -64,6 +65,14 @@ buildscript {
           // it doesn't really add value for us.
           'savedstate': "androidx.savedstate:savedstate:1.0.0",
           'transition': "androidx.transition:transition:1.3.0",
+      ],
+
+      'compose': [
+          'foundation': "androidx.ui:ui-foundation:${versions.compose}",
+          'layout': "androidx.ui:ui-layout:${versions.compose}",
+          'material': "androidx.ui:ui-material:${versions.compose}",
+          'test': "androidx.ui:ui-test:${versions.compose}",
+          'tooling': "androidx.ui:ui-tooling:${versions.compose}",
       ],
 
       'cycler': "com.squareup.cycler:cycler:0.1.1",
