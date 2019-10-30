@@ -99,6 +99,8 @@ nav:
     - 'workflow-ui-android': 'kotlin/api/workflow-ui-android/com.squareup.workflow.ui/index.md'
     - 'workflow-testing': 'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md'
     - 'workflow-rx2': 'kotlin/api/workflow-rx2/com.squareup.workflow.rx2/index.md'
+    - 'trace-encoder': 'kotlin/api/trace-encoder/com.squareup.tracing/index.md'
+    - 'workflow-tracing': 'kotlin/api/workflow-tracing/com.squareup.workflow.diagnostic.tracing/index.md'
   - 'Swift API':
     - 'Workflow ': 'swift/api/Workflow/README.md'
     - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
