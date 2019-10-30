@@ -8,7 +8,7 @@
 [`pod trunk`](https://guides.cocoapods.org/making/getting-setup-with-trunk.html) and your CocoaPods
 account is a contributor to both the Workflow and WorkflowUI pods. If you need to be added as a
 contributor, please [open a ticket requesting access](https://github.com/square/workflow/issues/new),
-and assign it to @apgar or @timdonnelly.*
+and assign it to @bencochran or @aquageek.*
 
 ---
 1. Merge an update of [the change log](CHANGELOG.md) with the changes since the last release.
@@ -36,6 +36,8 @@ and assign it to @apgar or @timdonnelly.*
 
    Disabling parallelism and daemon sharing is required by the vanniktech maven publish plugin.
    Without those, the artifacts will be split across multiple (invalid) staging repositories.
+
+1. Close and release the staging repository at https://oss.sonatype.org.
 
 1. Publish to CocoaPods:
     ```bash
