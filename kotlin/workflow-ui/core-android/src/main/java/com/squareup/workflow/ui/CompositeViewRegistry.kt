@@ -18,6 +18,7 @@ package com.squareup.workflow.ui
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import kotlin.reflect.KClass
 
 /**
  * A [ViewRegistry] that contains only other registries and delegates to their [buildView] methods.
@@ -47,12 +48,20 @@ internal class CompositeViewRegistry private constructor(
     contextForNewView: Context,
     container: ViewGroup?
   ): View {
-    val registry = registriesByKey[initialRendering::class]
+    val registry = getRegistryFor(initialRendering::class)
+    return registry.buildView(initialRendering, initialContainerHints, contextForNewView, container)
+  }
+
+  override fun <RenderingT : Any> getBindingFor(
+    renderingType: KClass<out RenderingT>
+  ): ViewBinding<RenderingT> = getRegistryFor(renderingType).getBindingFor(renderingType)
+
+  private fun getRegistryFor(renderingType: KClass<out Any>): ViewRegistry {
+    return registriesByKey[renderingType]
         ?: throw IllegalArgumentException(
             "A ${ViewBinding::class.java.name} should have been registered " +
-                "to display $initialRendering."
+                "to display a $renderingType."
         )
-    return registry.buildView(initialRendering, initialContainerHints, contextForNewView, container)
   }
 
   companion object {

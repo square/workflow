@@ -20,6 +20,7 @@ package com.squareup.workflow.ui
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import kotlin.reflect.KClass
 
 /**
  * [ViewBinding]s that are always available.
@@ -82,6 +83,13 @@ interface ViewRegistry {
     contextForNewView: Context,
     container: ViewGroup? = null
   ): View
+
+  /**
+   * TODO kdoc
+   */
+  fun <RenderingT : Any> getBindingFor(
+    renderingType: KClass<out RenderingT>
+  ): ViewBinding<RenderingT>
 
   companion object : ContainerHintKey<ViewRegistry>(ViewRegistry::class) {
     override val default: ViewRegistry
