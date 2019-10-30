@@ -141,6 +141,9 @@ sourcedocs generate -- -scheme WorkflowUI -workspace SampleApp.xcworkspace
 sourcedocs generate -- -scheme WorkflowTesting -workspace SampleApp.xcworkspace
 ```
 
+Note that currently sourcedocs only supports Xcode 10, if you run it with Xcode 11 you might see
+an error about Catalyst and only empty READMEs will get generated.
+
 #### mkdocs
 
 Mkdocs is written in Python, so you'll need Python and pip in order to run it. Assuming those are
