@@ -1,6 +1,68 @@
 Change Log
 ==========
 
+## Version 0.21.0
+
+_2019-10-29_
+
+### Kotlin
+
+#### Core API changes:
+
+ * Add `StatefulWorkflow.workflowAction`. (#576)
+ * Remove `runningWorkerUntilFinished`. (#589)
+ * Remove key from `TypedWorker` and helpers that use it. (#606, #619)
+ * Never pass an empty snapshot to `initialState`. (#556)
+ * Change the return type of `Worker.finished` from `T` to `Nothing`. (#637)
+ * Add an `RxWorker` class so Workers can be implemented without using experimental Flow APIs. (#650)
+ * Make `RxWorker` and `Flowable.asWorker` use `Publisher` instead of `Flowable`. (#654)
+ * Make it simpler to provide debugging names for workflow actions. (#696)
+
+#### Runtime changes:
+
+ * `launchWorkflowIn` block now takes a `WorkflowSession` instead of individual parameters. (#612)
+ * Introduce `WorkflowDiagnosticListener` to support various debugging and logging tools. (#628, #634)
+ * Implement chrome trace file generation. (#617)
+
+#### Testing changes:
+
+ * Introduce `WorkerSink` for writing integration tests that involve worker outputs. (#588)
+ * Fix a race in `WorkerTester`. (#638)
+ * Make testing infra run double render passes to suss out side effect code in render methods. (#678)
+ * Make it possible to pass just the snapshot for the root workflow into the test methods. (#681)
+ * Throw workflow exceptions from `test`/`testFromStart` instead of leaking to uncaught exception handler. (#686)
+
+#### Android changes:
+
+ * Eliminate `HandlesBack`, introduce `View.backPressedHandler`. (#614)
+ * Introduce `WorkflowViewStub`. (#657)
+ * Adds `getRendering`, `getShowRendering` `View` extensions. (#666)
+ * Eliminate `WorkflowRunner.onSaveInstanceState`. (#679)
+ * Compile time assurance that `BackStackScreen` is not empty. (#688)
+ * Introduce `ContainerHints` for passing view-only hints around `LayoutRunner`s. (#693)
+
+#### Version changes:
+
+ * Upgrade Kotlin to 1.3.50. (#560)
+ * Upgrade coroutines to 1.3.1 stable. (#561, #590)
+ * Upgrade a bunch of other dependencies, see the commit history for details.
+
+#### Other changes:
+
+ * Eliminate `ExperimentalWorkflowUi`. (#565)
+ * Rename `Worker<T>` to `Worker<OutputT>`. (#570)
+ * Fix "java" being printed instead of class name in Rx2 Reactors. (#607)
+ * Fix a worker crash introduced by `onReceiveOrClosed`. (#630)
+ * Make `onEvent`, `makeActionSink`, and `makeEventSink` include what action was lost to when they receive more than one event. (#673)
+
+### Swift
+
+ * Update ReactiveSwift to 6.0.0. (#574 – thanks @lechristian!)
+   * This also moves everything over to the standard library’s `Result` with `Never` (rather than
+     `NoError`). As of this change, consumers must use Swift 5.
+ * Apply child workflow output as an action in `RenderTester`. (#595)
+ * Add `WorkflowUI` to `Package.swift`. (#690)
+
 ## Version 0.20.0
 
 _2019-8-21_
