@@ -67,22 +67,23 @@ interface ViewRegistry {
   val keys: Set<KClass<*>>
 
   /**
-   * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.
+   * This method is not for general use, use [WorkflowViewStub] instead.
    *
-   * Creates a [View] to display [initialRendering], which can be updated via calls
-   * to [View.showRendering].
+   * Returns the [ViewFactory] that was registered for the given [renderingType].
    *
-   * @throws IllegalArgumentException if no binding can be find for type [RenderingT]
-   *
-   * @throws IllegalStateException if the matching [ViewFactory] fails to call
-   * [View.bindShowRendering] when constructing the view
+   * @throws IllegalArgumentException if no factory can be found for type [RenderingT]
    */
-  fun <RenderingT : Any> buildView(
-    initialRendering: RenderingT,
-    initialViewEnvironment: ViewEnvironment,
-    contextForNewView: Context,
-    container: ViewGroup? = null
-  ): View
+  fun <RenderingT : Any> getFactoryFor(
+    renderingType: KClass<out RenderingT>
+  ): ViewFactory<RenderingT>
+
+  /**
+   * This method is not for general use, it's called by [buildView] to validate views returned by
+   * [ViewFactory]s.
+   *
+   * Returns true iff [view] has been bound to a [ShowRenderingTag] by calling [bindShowRendering].
+   */
+  fun hasViewBeenBound(view: View): Boolean = view.getRendering<Any>() != null
 
   companion object : ViewEnvironmentKey<ViewRegistry>(ViewRegistry::class) {
     override val default: ViewRegistry
@@ -103,6 +104,38 @@ fun ViewRegistry(vararg registries: ViewRegistry): ViewRegistry = CompositeViewR
  * Exists as a separate overload from the other two functions to disambiguate between them.
  */
 fun ViewRegistry(): ViewRegistry = BindingViewRegistry()
+
+/**
+ * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.
+ *
+ * Creates a [View] to display [initialRendering], which can be updated via calls
+ * to [View.showRendering].
+ *
+ * @throws IllegalArgumentException if no factory can be find for type [RenderingT]
+ *
+ * @throws IllegalStateException if [ViewRegistry.hasViewBeenBound] returns false (i.e. if the
+ * matching [ViewFactory] fails to call [View.bindShowRendering] when constructing the view)
+ */
+fun <RenderingT : Any> ViewRegistry.buildView(
+  initialRendering: RenderingT,
+  initialViewEnvironment: ViewEnvironment,
+  contextForNewView: Context,
+  container: ViewGroup? = null
+): View {
+  return getFactoryFor(initialRendering::class)
+      .buildView(
+          initialRendering,
+          initialViewEnvironment,
+          contextForNewView,
+          container
+      )
+      .apply {
+        check(hasViewBeenBound(this)) {
+          "View.bindShowRendering should have been called for $this, typically by the " +
+              "${ViewFactory::class.java.name} that created it."
+        }
+      }
+}
 
 /**
  * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.

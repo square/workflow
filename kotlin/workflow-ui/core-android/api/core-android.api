@@ -87,8 +87,9 @@ public final class com/squareup/workflow/ui/ViewFactory$DefaultImpls {
 
 public abstract interface class com/squareup/workflow/ui/ViewRegistry {
 	public static final field Companion Lcom/squareup/workflow/ui/ViewRegistry$Companion;
-	public abstract fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
+	public abstract fun getFactoryFor (Lkotlin/reflect/KClass;)Lcom/squareup/workflow/ui/ViewFactory;
 	public abstract fun getKeys ()Ljava/util/Set;
+	public abstract fun hasViewBeenBound (Landroid/view/View;)Z
 }
 
 public final class com/squareup/workflow/ui/ViewRegistry$Companion : com/squareup/workflow/ui/ViewEnvironmentKey {
@@ -97,14 +98,16 @@ public final class com/squareup/workflow/ui/ViewRegistry$Companion : com/squareu
 }
 
 public final class com/squareup/workflow/ui/ViewRegistry$DefaultImpls {
-	public static synthetic fun buildView$default (Lcom/squareup/workflow/ui/ViewRegistry;Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;ILjava/lang/Object;)Landroid/view/View;
+	public static fun hasViewBeenBound (Lcom/squareup/workflow/ui/ViewRegistry;Landroid/view/View;)Z
 }
 
 public final class com/squareup/workflow/ui/ViewRegistryKt {
 	public static final fun ViewRegistry ()Lcom/squareup/workflow/ui/ViewRegistry;
 	public static final fun ViewRegistry ([Lcom/squareup/workflow/ui/ViewFactory;)Lcom/squareup/workflow/ui/ViewRegistry;
 	public static final fun ViewRegistry ([Lcom/squareup/workflow/ui/ViewRegistry;)Lcom/squareup/workflow/ui/ViewRegistry;
+	public static final fun buildView (Lcom/squareup/workflow/ui/ViewRegistry;Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public static final fun buildView (Lcom/squareup/workflow/ui/ViewRegistry;Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/view/ViewGroup;)Landroid/view/View;
+	public static synthetic fun buildView$default (Lcom/squareup/workflow/ui/ViewRegistry;Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;ILjava/lang/Object;)Landroid/view/View;
 	public static final fun plus (Lcom/squareup/workflow/ui/ViewRegistry;Lcom/squareup/workflow/ui/ViewFactory;)Lcom/squareup/workflow/ui/ViewRegistry;
 	public static final fun plus (Lcom/squareup/workflow/ui/ViewRegistry;Lcom/squareup/workflow/ui/ViewRegistry;)Lcom/squareup/workflow/ui/ViewRegistry;
 }

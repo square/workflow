@@ -15,30 +15,16 @@
  */
 package com.squareup.workflow.ui
 
-import android.content.Context
-import android.view.View
-import android.view.ViewGroup
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockito_kotlin.mock
 import org.junit.Test
 import kotlin.reflect.KClass
 import kotlin.test.assertFailsWith
 
 class CompositeViewRegistryTest {
 
-  @Test fun `throws on duplicates`() {
-    val fooBarRegistry = TestRegistry(
-        mapOf(
-            FooRendering::class to mock(),
-            BarRendering::class to mock()
-        )
-    )
-    val barBazRegistry = TestRegistry(
-        mapOf(
-            BarRendering::class to mock(),
-            BazRendering::class to mock()
-        )
-    )
+  @Test fun `constructor throws on duplicates`() {
+    val fooBarRegistry = TestRegistry(setOf(FooRendering::class, BarRendering::class))
+    val barBazRegistry = TestRegistry(setOf(BarRendering::class, BazRendering::class))
 
     val error = assertFailsWith<IllegalStateException> {
       CompositeViewRegistry(fooBarRegistry, barBazRegistry)
@@ -49,32 +35,43 @@ class CompositeViewRegistryTest {
         .contains(BarRendering::class.java.name)
   }
 
-  @Test fun `buildView delegates to composite registries`() {
-    val fooView = mock<View>()
-    val barView = mock<View>()
-    val bazView = mock<View>()
+  @Test fun `getFactoryFor delegates to composite registries`() {
+    val fooFactory = TestViewFactory(FooRendering::class)
+    val barFactory = TestViewFactory(BarRendering::class)
+    val bazFactory = TestViewFactory(BazRendering::class)
     val fooBarRegistry = TestRegistry(
         mapOf(
-            FooRendering::class to fooView,
-            BarRendering::class to barView
+            FooRendering::class to fooFactory,
+            BarRendering::class to barFactory
         )
     )
-    val bazRegistry = TestRegistry(mapOf(BazRendering::class to bazView))
+    val bazRegistry = TestRegistry(factories = mapOf(BazRendering::class to bazFactory))
     val registry = CompositeViewRegistry(fooBarRegistry, bazRegistry)
 
-    assertThat(registry.buildView(FooRendering)).isSameInstanceAs(fooView)
-    assertThat(registry.buildView(BarRendering)).isSameInstanceAs(barView)
-    assertThat(registry.buildView(BazRendering)).isSameInstanceAs(bazView)
+    assertThat(registry.getFactoryFor(FooRendering::class))
+        .isSameInstanceAs(fooFactory)
+    assertThat(registry.getFactoryFor(BarRendering::class))
+        .isSameInstanceAs(barFactory)
+    assertThat(registry.getFactoryFor(BazRendering::class))
+        .isSameInstanceAs(bazFactory)
+  }
+
+  @Test fun `getFactoryFor throws on missing registry`() {
+    val fooRegistry = TestRegistry(setOf(FooRendering::class))
+    val registry = CompositeViewRegistry(fooRegistry)
+
+    val error = assertFailsWith<IllegalArgumentException> {
+      registry.getFactoryFor(BarRendering::class)
+    }
+    assertThat(error).hasMessageThat()
+        .isEqualTo(
+            "A ${ViewFactory::class.java.name} should have been registered to display a ${BarRendering::class}."
+        )
   }
 
   @Test fun `keys includes all composite registries' keys`() {
-    val fooBarRegistry = TestRegistry(
-        mapOf(
-            FooRendering::class to mock(),
-            BarRendering::class to mock()
-        )
-    )
-    val bazRegistry = TestRegistry(mapOf(BazRendering::class to mock()))
+    val fooBarRegistry = TestRegistry(setOf(FooRendering::class, BarRendering::class))
+    val bazRegistry = TestRegistry(setOf(BazRendering::class))
     val registry = CompositeViewRegistry(fooBarRegistry, bazRegistry)
 
     assertThat(registry.keys).containsExactly(
@@ -84,31 +81,18 @@ class CompositeViewRegistryTest {
     )
   }
 
-  @Test fun `throws on missing binding`() {
-    val fooRegistry = TestRegistry(mapOf(FooRendering::class to mock()))
-    val registry = CompositeViewRegistry(fooRegistry)
-
-    val error = assertFailsWith<IllegalArgumentException> {
-      registry.buildView(BarRendering)
-    }
-    assertThat(error).hasMessageThat()
-        .isEqualTo(
-            "A ${ViewFactory::class.java.name} should have been registered to display $BarRendering."
-        )
-  }
-
   private object FooRendering
   private object BarRendering
   private object BazRendering
 
-  private class TestRegistry(private val bindings: Map<KClass<*>, View>) : ViewRegistry {
-    override val keys: Set<KClass<*>> get() = bindings.keys
+  private class TestRegistry(private val factories: Map<KClass<*>, ViewFactory<*>>) : ViewRegistry {
+    constructor(keys: Set<KClass<*>>) : this(keys.associateWith { TestViewFactory(it) })
 
-    override fun <RenderingT : Any> buildView(
-      initialRendering: RenderingT,
-      initialViewEnvironment: ViewEnvironment,
-      contextForNewView: Context,
-      container: ViewGroup?
-    ): View = bindings.getValue(initialRendering::class)
+    override val keys: Set<KClass<*>> get() = factories.keys
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <RenderingT : Any> getFactoryFor(
+      renderingType: KClass<out RenderingT>
+    ): ViewFactory<RenderingT> = factories.getValue(renderingType) as ViewFactory<RenderingT>
   }
 }

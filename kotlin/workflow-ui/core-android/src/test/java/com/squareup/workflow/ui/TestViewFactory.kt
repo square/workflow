@@ -23,10 +23,9 @@ import kotlin.reflect.KClass
 import kotlin.test.fail
 
 fun <R : Any> ViewRegistry.buildView(rendering: R): View =
-  buildView(rendering, ViewEnvironment(this), mock())
+  buildView(rendering, ViewEnvironment(this), mock<Context>())
 
-class TestBinding<R : Any>(override val type: KClass<R>) :
-    ViewFactory<R> {
+class TestViewFactory<R : Any>(override val type: KClass<R>) : ViewFactory<R> {
   override fun buildView(
     initialRendering: R,
     initialViewEnvironment: ViewEnvironment,

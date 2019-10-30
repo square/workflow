@@ -23,19 +23,19 @@ import kotlin.test.assertTrue
 class BindingViewRegistryTest {
 
   @Test fun `keys from bindings`() {
-    val binding1 = TestBinding(FooRendering::class)
-    val binding2 = TestBinding(BarRendering::class)
-    val registry = BindingViewRegistry(binding1, binding2)
+    val factory1 = TestViewFactory(FooRendering::class)
+    val factory2 = TestViewFactory(BarRendering::class)
+    val registry = BindingViewRegistry(factory1, factory2)
 
-    assertThat(registry.keys).containsExactly(binding1.type, binding2.type)
+    assertThat(registry.keys).containsExactly(factory1.type, factory2.type)
   }
 
-  @Test fun `throws on duplicates`() {
-    val binding1 = TestBinding(FooRendering::class)
-    val binding2 = TestBinding(FooRendering::class)
+  @Test fun `constructor throws on duplicates`() {
+    val factory1 = TestViewFactory(FooRendering::class)
+    val factory2 = TestViewFactory(FooRendering::class)
 
     val error = assertFailsWith<IllegalStateException> {
-      BindingViewRegistry(binding1, binding2)
+      BindingViewRegistry(factory1, factory2)
     }
     assertThat(error).hasMessageThat()
         .endsWith("must not have duplicate entries.")
@@ -43,16 +43,24 @@ class BindingViewRegistryTest {
         .contains(FooRendering::class.java.name)
   }
 
-  @Test fun `throws on missing binding`() {
-    val fooBinding = TestBinding(FooRendering::class)
-    val registry = BindingViewRegistry(fooBinding)
+  @Test fun `getFactoryFor works`() {
+    val fooFactory = TestViewFactory(FooRendering::class)
+    val registry = BindingViewRegistry(fooFactory)
+
+    val factory = registry.getFactoryFor(FooRendering::class)
+    assertThat(factory).isSameInstanceAs(fooFactory)
+  }
+
+  @Test fun `getFactoryFor throws on missing binding`() {
+    val fooFactory = TestViewFactory(FooRendering::class)
+    val registry = BindingViewRegistry(fooFactory)
 
     val error = assertFailsWith<IllegalArgumentException> {
-      registry.buildView(BarRendering)
+      registry.getFactoryFor(BarRendering::class)
     }
     assertThat(error).hasMessageThat()
         .isEqualTo(
-            "A ${ViewFactory::class.java.name} should have been registered to display $BarRendering."
+            "A ${ViewFactory::class.java.name} should have been registered to display a ${BarRendering::class}."
         )
   }
 
