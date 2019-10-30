@@ -16,7 +16,9 @@
 package com.squareup.tracing
 
 /**
- * TODO write documentation
+ * [Logs][log] [TraceEvent]s to a [TraceEncoder] under a given process and thread name.
+ *
+ * Create with [TraceEncoder.createLogger].
  */
 interface TraceLogger {
 
