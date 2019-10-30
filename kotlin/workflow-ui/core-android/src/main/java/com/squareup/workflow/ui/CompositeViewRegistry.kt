@@ -48,12 +48,22 @@ internal class CompositeViewRegistry private constructor(
     contextForNewView: Context,
     container: ViewGroup?
   ): View {
-    val registry = registriesByKey[initialRendering::class]
+    val registry = getRegistryFor(initialRendering::class)
+    return registry.buildView(
+        initialRendering, initialViewEnvironment, contextForNewView, container
+    )
+  }
+
+  override fun <RenderingT : Any> getBindingFor(
+    renderingType: KClass<out RenderingT>
+  ): ViewFactory<RenderingT> = getRegistryFor(renderingType).getBindingFor(renderingType)
+
+  private fun getRegistryFor(renderingType: KClass<out Any>): ViewRegistry {
+    return registriesByKey[renderingType]
         ?: throw IllegalArgumentException(
             "A ${ViewFactory::class.java.name} should have been registered " +
-                "to display $initialRendering."
+                "to display a $renderingType."
         )
-    return registry.buildView(initialRendering, initialViewEnvironment, contextForNewView, container)
   }
 
   companion object {

@@ -55,6 +55,13 @@ import kotlin.reflect.KClass
  *
  * val viewRegistry = ViewRegistry(FooBinding, …)
  * ```
+ *
+ * ## Implementing Containers
+ *
+ * Views that act as containers (i.e. they delegate to the
+ * [ViewRegistry][com.squareup.workflow.ui.ViewRegistry] to render other rendering types) may use
+ * [ViewEnvironment.showRendering] to compose child renderings. See the kdoc on that function for
+ * more information.
  */
 inline fun <reified RenderingT : Any> bindCompose(
   noinline showRendering: @Composable() (RenderingT, ViewEnvironment) -> Unit
@@ -65,7 +72,7 @@ inline fun <reified RenderingT : Any> bindCompose(
 @PublishedApi
 internal class ComposeViewFactory<RenderingT : Any>(
   override val type: KClass<RenderingT>,
-  private val showRendering: @Composable() (RenderingT, ViewEnvironment) -> Unit
+  val showRendering: @Composable() (RenderingT, ViewEnvironment) -> Unit
 ) : ViewFactory<RenderingT> {
 
   override fun buildView(

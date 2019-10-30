@@ -46,6 +46,7 @@ object Dependencies {
     const val tooling = "androidx.ui:ui-tooling:${Versions.compose}"
   }
 
+  const val coil = "io.coil-kt:coil:0.9.2"
   const val cycler = "com.squareup.cycler:cycler:0.1.3"
 
   // Required for Dungeon Crawler sample.
