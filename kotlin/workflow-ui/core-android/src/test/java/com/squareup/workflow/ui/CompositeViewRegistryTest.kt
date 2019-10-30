@@ -93,7 +93,7 @@ class CompositeViewRegistryTest {
     }
     assertThat(error).hasMessageThat()
         .isEqualTo(
-            "A ${ViewBinding::class.java.name} should have been registered to display $BarRendering."
+            "A ${ViewBinding::class.java.name} should have been registered to display a ${BarRendering::class}."
         )
   }
 
@@ -110,5 +110,9 @@ class CompositeViewRegistryTest {
       contextForNewView: Context,
       container: ViewGroup?
     ): View = bindings.getValue(initialRendering::class)
+
+    override fun <RenderingT : Any> getBindingFor(
+      renderingType: KClass<out RenderingT>
+    ): ViewBinding<RenderingT> = throw UnsupportedOperationException()
   }
 }

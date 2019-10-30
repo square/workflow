@@ -75,6 +75,7 @@ buildscript {
           'tooling': "androidx.ui:ui-tooling:${versions.compose}",
       ],
 
+      'coil': 'io.coil-kt:coil:0.9.2',
       'cycler': "com.squareup.cycler:cycler:0.1.2",
       'moshi': "com.squareup.moshi:moshi:1.9.2",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:2.1.1",

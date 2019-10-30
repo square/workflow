@@ -84,6 +84,13 @@ interface ViewRegistry {
     container: ViewGroup? = null
   ): View
 
+  /**
+   * TODO kdoc
+   */
+  fun <RenderingT : Any> getBindingFor(
+    renderingType: KClass<out RenderingT>
+  ): ViewBinding<RenderingT>
+
   companion object : ContainerHintKey<ViewRegistry>(ViewRegistry::class) {
     override val default: ViewRegistry
       get() = error("There should always be a ViewRegistry hint, this is bug in Workflow.")
