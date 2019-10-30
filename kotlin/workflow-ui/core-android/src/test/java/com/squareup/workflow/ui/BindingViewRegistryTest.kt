@@ -52,7 +52,7 @@ class BindingViewRegistryTest {
     }
     assertThat(error).hasMessageThat()
         .isEqualTo(
-            "A ${ViewFactory::class.java.name} should have been registered to display $BarRendering."
+            "A ${ViewFactory::class.java.name} should have been registered to display a ${BarRendering::class}."
         )
   }
 

@@ -35,7 +35,7 @@ internal class BindingViewRegistry private constructor(
             check(keys.size == bindings.size) {
               "${bindings.map { it.type }} must not have duplicate entries."
             }
-          }
+          } as Map<KClass<*>, ViewFactory<*>>
   )
 
   override val keys: Set<KClass<*>> get() = bindings.keys
@@ -47,22 +47,29 @@ internal class BindingViewRegistry private constructor(
     container: ViewGroup?
   ): View {
     @Suppress("UNCHECKED_CAST")
-    return (bindings[initialRendering::class] as? ViewFactory<RenderingT>)
-        ?.buildView(
+    return getBindingFor(initialRendering::class)
+        .buildView(
             initialRendering,
             initialViewEnvironment,
             contextForNewView,
             container
         )
-        ?.apply {
+        .apply {
           checkNotNull(getRendering<RenderingT>()) {
             "View.bindShowRendering should have been called for $this, typically by the " +
                 "${ViewFactory::class.java.name} that created it."
           }
         }
+  }
+
+  override fun <RenderingT : Any> getBindingFor(
+    renderingType: KClass<out RenderingT>
+  ): ViewFactory<RenderingT> {
+    @Suppress("UNCHECKED_CAST")
+    return bindings[renderingType] as? ViewFactory<RenderingT>
         ?: throw IllegalArgumentException(
             "A ${ViewFactory::class.java.name} should have been registered " +
-                "to display $initialRendering."
+                "to display a $renderingType."
         )
   }
 }

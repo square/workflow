@@ -80,6 +80,7 @@ buildscript {
           'tooling': "androidx.ui:ui-tooling:${versions.compose}",
       ],
 
+      'coil': 'io.coil-kt:coil:0.9.2',
       'cycler': "com.squareup.cycler:cycler:0.1.2",
       // Required for Dungeon Crawler sample.
       'desugar_jdk_libs': "com.android.tools:desugar_jdk_libs:1.0.5",
