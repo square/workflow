@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+## Version 0.21.1
+
+_2019-10-30_
+
+### Kotlin
+
+ * Publish `internal-testing-utils` artifact that is required by two of the other modules. (#708)
+ * Add missing kdoc for `TraceLogger` (#705)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.21.0
 
 _2019-10-29_
