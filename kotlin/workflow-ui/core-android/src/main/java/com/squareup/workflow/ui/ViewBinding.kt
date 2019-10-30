@@ -27,8 +27,8 @@ import kotlin.reflect.KClass
  *
  * Sets of bindings are gathered in [ViewRegistry] instances.
  */
-interface ViewBinding<RenderingT : Any> {
-  val type: KClass<RenderingT>
+interface ViewBinding<in RenderingT : Any> {
+  val type: KClass<in RenderingT>
 
   /**
    * Returns a View ready to display [initialRendering] (and any succeeding values)

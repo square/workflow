@@ -110,5 +110,9 @@ class CompositeViewRegistryTest {
       contextForNewView: Context,
       container: ViewGroup?
     ): View = bindings.getValue(initialRendering::class)
+
+    override fun <RenderingT : Any> getBindingFor(
+      renderingType: KClass<out RenderingT>
+    ): ViewBinding<RenderingT> = throw UnsupportedOperationException()
   }
 }
