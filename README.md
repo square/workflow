@@ -28,7 +28,7 @@ frameborder="0" allowfullscreen></iframe>
 
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-orange.svg)](#swift-package-manager)
 
-If you are developing your own package, be sure that Workflow is included in `dependencies` 
+If you are developing your own package, be sure that Workflow is included in `dependencies`
 in `Package.swift`:
 
 ```swift
@@ -37,7 +37,7 @@ dependencies: [
 ]
 ```
 
-In Xcode 11+, add Workflow directly as a dependency to your project with 
+In Xcode 11+, add Workflow directly as a dependency to your project with
 `File` > `Swift Packages` > `Add Package Dependency...`. Provide the git URL when prompted: `git@github.com:square/workflow.git`.
 
 #### Cocoapods
