@@ -224,6 +224,24 @@ fun <T, OutputT : Any, RenderingT> Workflow<Unit, OutputT, RenderingT>.testFromS
  */
 @TestOnly
 // @formatter:off
+fun <T, StateT, OutputT : Any, RenderingT>
+    StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.test(
+      testParams: WorkflowTestParams<StateT> = WorkflowTestParams(),
+      context: CoroutineContext = EmptyCoroutineContext,
+      block: WorkflowTester<Unit, OutputT, RenderingT>.() -> T
+    ): T
+// @formatter:on
+{
+  return test(Unit, testParams, context, block)
+}
+
+/**
+ * Creates a [WorkflowTester] to run this workflow for unit testing.
+ *
+ * All workflow-related coroutines are cancelled when the block exits.
+ */
+@TestOnly
+// @formatter:off
 fun <T, PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.test(
       props: PropsT,
