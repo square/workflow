@@ -22,6 +22,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.internal.util.UncaughtExceptionGuard
+import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -216,6 +217,41 @@ fun <T, OutputT : Any, RenderingT> Workflow<Unit, OutputT, RenderingT>.testFromS
   context: CoroutineContext = EmptyCoroutineContext,
   block: WorkflowTester<Unit, OutputT, RenderingT>.() -> T
 ): T = testFromStart(Unit, testParams, context, block)
+
+/**
+ * Creates a [WorkflowTester] to run this workflow for unit testing.
+ * If the workflow is [stateful][StatefulWorkflow], [initialState][StatefulWorkflow.initialState]
+ * is not called. Instead, the workflow is started from the given [initialState].
+ *
+ * All workflow-related coroutines are cancelled when the block exits.
+ */
+// @formatter:off
+@TestOnly
+fun <T, PropsT, StateT, OutputT : Any, RenderingT>
+    StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.testFromState(
+      props: PropsT,
+      initialState: StateT,
+      context: CoroutineContext = EmptyCoroutineContext,
+      block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
+    ): T = test(props, WorkflowTestParams(StartFromState(initialState)), context, block)
+// @formatter:on
+
+/**
+ * Creates a [WorkflowTester] to run this workflow for unit testing.
+ * If the workflow is [stateful][StatefulWorkflow], [initialState][StatefulWorkflow.initialState]
+ * is not called. Instead, the workflow is started from the given [initialState].
+ *
+ * All workflow-related coroutines are cancelled when the block exits.
+ */
+// @formatter:off
+@TestOnly
+fun <StateT, OutputT : Any, RenderingT>
+    StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.testFromState(
+      initialState: StateT,
+      context: CoroutineContext = EmptyCoroutineContext,
+      block: WorkflowTester<Unit, OutputT, RenderingT>.() -> Unit
+    ) = testFromState(Unit, initialState, context, block)
+// @formatter:on
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
