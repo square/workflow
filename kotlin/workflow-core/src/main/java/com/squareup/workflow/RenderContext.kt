@@ -120,9 +120,9 @@ fun <PropsT, StateT, OutputT : Any, ChildRenderingT>
 // and detekt will complain about it.
 // @formatter:off
       child: Workflow<PropsT, Nothing, ChildRenderingT>,
-      input: PropsT,
+      props: PropsT,
       key: String = ""
-    ): ChildRenderingT = renderChild(child, input, key) { noAction() }
+    ): ChildRenderingT = renderChild(child, props, key) { noAction() }
 // @formatter:on
 
 /**
