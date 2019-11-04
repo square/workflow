@@ -163,7 +163,7 @@ subprojects {
     project.configurations.configureEach {
       // There could be transitive dependencies in tests with a lower version. This could cause
       // problems with a newer Kotlin version that we use.
-      resolutionStrategy.force "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
+      resolutionStrategy.force deps.kotlin.reflect
     }
   }
 
