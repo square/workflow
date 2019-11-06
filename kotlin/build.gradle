@@ -75,7 +75,7 @@ buildscript {
               'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.3.1",
               'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.1"
           ],
-          'moshi': "com.squareup.moshi:moshi-kotlin:1.8.0",
+          'moshi': "com.squareup.moshi:moshi-kotlin:1.9.1",
           'reflect': "org.jetbrains.kotlin:kotlin-reflect:1.3.50",
           'test': [
               'common': "org.jetbrains.kotlin:kotlin-test-common",
