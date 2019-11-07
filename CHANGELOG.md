@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+## Version 0.21.2
+
+_2019-11-7_
+
+### Kotlin
+
+ * Restore `testFromState`. (#716)
+ * New render testing API for kotlin. (#687)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.21.1
 
 _2019-10-30_
