@@ -31,6 +31,7 @@ include(
     ":samples:dungeon:common",
     ":samples:dungeon:timemachine",
     ":samples:dungeon:timemachine-shakeable",
+    ":samples:hello-compose",
     ":samples:hello-compose-binding",
     ":samples:hello-terminal:hello-terminal-app",
     ":samples:hello-terminal:terminal-workflow",
