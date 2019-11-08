@@ -103,7 +103,7 @@ buildscript {
           'extensions': "com.github.akarnokd:rxjava2-extensions:0.20.10"
       ],
       'annotations': [
-          'intellij': "org.jetbrains:annotations:17.0.0",
+          'intellij': "org.jetbrains:annotations:18.0.0",
       ],
       'test': [
           'androidx': [
