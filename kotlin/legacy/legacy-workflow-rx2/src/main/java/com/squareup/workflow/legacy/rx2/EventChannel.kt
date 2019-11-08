@@ -20,7 +20,6 @@ package com.squareup.workflow.legacy.rx2
 import io.reactivex.Single
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers.Unconfined
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.rx2.await
@@ -89,7 +88,7 @@ fun <E : Any> ReceiveChannel<E>.asEventChannel() = object : EventChannel<E> {
     // and any threading requirements of the calling code can be enforced using Rx mechanisms and
     // ensuring events are sent from the correct threads. See the README in workflow-core for more
     // information.
-    return GlobalScope.rxSingle<R>(Unconfined) {
+    return rxSingle(Unconfined) {
       try {
         // We pass this job to the EventSelectBuilder so it can use it as the parent for any coroutines
         // it starts. We cancel the job after a selection is made so we don't leak, e.g., rx

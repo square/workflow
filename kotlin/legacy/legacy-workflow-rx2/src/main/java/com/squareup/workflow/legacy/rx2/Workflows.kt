@@ -22,7 +22,6 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers.Unconfined
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.rx2.rxMaybe
 import kotlinx.coroutines.rx2.rxObservable
@@ -32,15 +31,14 @@ import kotlinx.coroutines.rx2.rxObservable
  */
 @Deprecated("Use com.squareup.workflow.Workflow")
 val <S : Any> Workflow<S, *, *>.state: Observable<out S>
-  get() = GlobalScope
-      .rxObservable(Unconfined) {
-        val stateChannel = openSubscriptionToState()
-        // This will cancel the channel on error or successful completion, which is necessary
-        // to unsubscribe from the workflow.
-        stateChannel.consumeEach { state ->
-          send(state)
-        }
-      }
+  get() = rxObservable(Unconfined) {
+    val stateChannel = openSubscriptionToState()
+    // This will cancel the channel on error or successful completion, which is necessary
+    // to unsubscribe from the workflow.
+    stateChannel.consumeEach { state ->
+      send(state)
+    }
+  }
       .onErrorResumeNext { error: Throwable ->
         // When a coroutine throws a CancellationException, it's not actually an error, just a
         // a signal that the coroutine was cancelled. For workflows, it means the workflow was
@@ -63,8 +61,7 @@ val <S : Any> Workflow<S, *, *>.state: Observable<out S>
  */
 @Deprecated("Use com.squareup.workflow.Workflow")
 val <O : Any> Workflow<*, *, O>.result: Maybe<out O>
-  get() = GlobalScope
-      .rxMaybe(Unconfined) { await() }
+  get() = rxMaybe(Unconfined) { await() }
       .onErrorResumeNext { error: Throwable ->
         if (error is CancellationException) {
           Maybe.empty()
