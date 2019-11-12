@@ -33,6 +33,8 @@ import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Renderi
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.stateless
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -90,22 +92,23 @@ class RealRenderContextTest {
     ): RC = fail()
   }
 
+  private val eventActionsChannel = Channel<WorkflowAction<String, String>>(capacity = UNLIMITED)
+
   @Test fun `onEvent completes update`() {
-    val context = RealRenderContext<String, String>(PoisonRenderer())
+    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val expectedUpdate = noAction<String, String>()
     val handler = context.onEvent<String> { expectedUpdate }
-    val behavior = context.buildBehavior()
-    assertFalse(behavior.nextActionFromEvent.isCompleted)
+    assertTrue(eventActionsChannel.isEmpty)
 
     handler("")
 
-    assertTrue(behavior.nextActionFromEvent.isCompleted)
-    val actualUpdate = behavior.nextActionFromEvent.getCompleted()
+    assertFalse(eventActionsChannel.isEmpty)
+    val actualUpdate = eventActionsChannel.poll()
     assertSame(expectedUpdate, actualUpdate)
   }
 
-  @Test fun `onEvent throws on multiple invocations`() {
-    val context = RealRenderContext<String, String>(PoisonRenderer())
+  @Test fun `onEvent allows multiple invocations`() {
+    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     fun expectedUpdate(msg: String) = object : WorkflowAction<String, String> {
       override fun Mutator<String>.apply(): String? = null
       override fun toString(): String = "action($msg)"
@@ -114,36 +117,25 @@ class RealRenderContextTest {
     val handler = context.onEvent<String> { expectedUpdate(it) }
     handler("one")
 
-    val error = assertFailsWith<IllegalStateException> { handler("two") }
-
-    // Note that the indent after the first line, relative to the first line, is tab characters not
-    // spaces.
-    assertEquals(
-        """
-          Expected to successfully deliver event. Are you using an old rendering?
-          	event=two
-          	late action=action(two)
-          	processed action=action(one)
-         """.trimIndent(), error.message
-    )
+    // Shouldn't throw.
+    handler("two")
   }
 
   @Test fun `makeActionSink completes update`() {
-    val context = RealRenderContext<String, String>(PoisonRenderer())
+    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val stringAction = WorkflowAction<String, String>({ "stringAction" }) { null }
     val sink = context.makeActionSink<WorkflowAction<String, String>>()
-    val behavior = context.buildBehavior()
-    assertFalse(behavior.nextActionFromEvent.isCompleted)
+    assertTrue(eventActionsChannel.isEmpty)
 
     sink.send(stringAction)
 
-    assertTrue(behavior.nextActionFromEvent.isCompleted)
-    val actualAction = behavior.nextActionFromEvent.getCompleted()
+    assertFalse(eventActionsChannel.isEmpty)
+    val actualAction = eventActionsChannel.poll()
     assertSame(stringAction, actualAction)
   }
 
-  @Test fun `makeActionSink throws on multiple sends`() {
-    val context = RealRenderContext<String, String>(PoisonRenderer())
+  @Test fun `makeActionSink allows multiple sends`() {
+    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val firstAction = object : WorkflowAction<String, String> {
       override fun Mutator<String>.apply(): String? = null
       override fun toString(): String = "firstAction"
@@ -155,45 +147,34 @@ class RealRenderContextTest {
     val sink = context.makeActionSink<WorkflowAction<String, String>>()
     sink.send(firstAction)
 
-    val error = assertFailsWith<IllegalStateException> { sink.send(secondAction) }
-
-    // Note that the indent after the first line, relative to the first line, is tab characters not
-    // spaces.
-    assertEquals(
-        """
-          Expected to successfully deliver action. Are you using an old rendering?
-          	late action=secondAction
-          	processed action=firstAction
-        """.trimIndent(), error.message
-    )
+    // Shouldn't throw.
+    sink.send(secondAction)
   }
 
   @Test fun `makeEventSink gets event`() {
-    val context = RealRenderContext<String, String>(PoisonRenderer())
+    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val sink: Sink<String> = context.makeEventSink { it }
     sink.send("foo")
 
-    val behavior = context.buildBehavior()
-    val update = behavior.nextActionFromEvent.getCompleted()
+    val update = eventActionsChannel.poll()!!
     val (state, output) = update.applyTo("state")
     assertEquals("state", state)
     assertEquals("foo", output)
   }
 
   @Test fun `makeEventSink works with OutputT of Nothing`() {
-    val context = RealRenderContext<String, Nothing>(PoisonRenderer())
+    val context = RealRenderContext<String, Nothing>(PoisonRenderer(), eventActionsChannel)
     val sink: Sink<String> = context.makeEventSink { null }
     sink.send("foo")
 
-    val behavior = context.buildBehavior()
-    val update = behavior.nextActionFromEvent.getCompleted()
+    val update = eventActionsChannel.poll()!!
     val (state, output) = update.applyTo("state")
     assertEquals("state", state)
     assertNull(output)
   }
 
   @Test fun `renderChild works`() {
-    val context = RealRenderContext(TestRenderer())
+    val context = RealRenderContext(TestRenderer(), eventActionsChannel)
     val workflow = TestWorkflow()
 
     val (case, child, id, props) = context.renderChild(workflow, "props", "key") { output ->
@@ -220,7 +201,7 @@ class RealRenderContextTest {
   }
 
   @Test fun `all methods throw after buildBehavior`() {
-    val context = RealRenderContext(TestRenderer())
+    val context = RealRenderContext(TestRenderer(), eventActionsChannel)
     context.buildBehavior()
 
     assertFailsWith<IllegalStateException> { context.onEvent<Unit> { fail() } }

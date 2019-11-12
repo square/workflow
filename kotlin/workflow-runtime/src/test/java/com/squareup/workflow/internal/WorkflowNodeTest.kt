@@ -23,6 +23,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.makeEventSink
@@ -47,7 +48,6 @@ import okio.ByteString.Companion.encodeUtf8
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
@@ -151,9 +151,10 @@ class WorkflowNodeTest {
       }
     }
     val node = WorkflowNode(workflow.id(), workflow, "", null, context)
-
     node.render(workflow, "")
+
     sink.send("event")
+
     val result = runBlocking {
       withTimeout(10) {
         select<String?> {
@@ -164,7 +165,7 @@ class WorkflowNodeTest {
     assertEquals("tick:event", result)
   }
 
-  @Test fun `onEvent throws on subsequent events on same rendering`() {
+  @Test fun `accepts events sent to stale renderings`() {
     lateinit var sink: Sink<String>
     val workflow = object : StringWorkflow() {
       override fun initialState(
@@ -185,14 +186,79 @@ class WorkflowNodeTest {
       }
     }
     val node = WorkflowNode(workflow.id(), workflow, "", null, context)
+    node.render(workflow, "")
+
+    sink.send("event")
+    sink.send("event2")
+
+    val result = runBlocking {
+      withTimeout(10) {
+        List(2) { i ->
+          select<String?> {
+            node.tick(this) { "tick$i:$it" }
+          }
+        }
+      }
+    }
+    assertEquals(listOf("tick0:event", "tick1:event2"), result)
+  }
+
+  @Test fun `makeActionSink allows subsequent events on same rendering`() {
+    lateinit var sink: Sink<WorkflowAction<String, String>>
+    val workflow = object : StringWorkflow() {
+      override fun initialState(
+        props: String,
+        snapshot: Snapshot?
+      ): String {
+        assertNull(snapshot)
+        return props
+      }
+
+      override fun render(
+        props: String,
+        state: String,
+        context: RenderContext<String, String>
+      ): String {
+        sink = context.makeActionSink()
+        return ""
+      }
+    }
+    val node = WorkflowNode(workflow.id(), workflow, "", null, context)
 
     node.render(workflow, "")
-    sink.send("event")
+    sink.send(emitOutput("event"))
 
-    val e = assertFailsWith<IllegalStateException> {
-      sink.send("event2")
+    // Should not throw.
+    sink.send(emitOutput("event2"))
+  }
+
+  @Test fun `onEvent allows subsequent events on same rendering`() {
+    lateinit var sink: (WorkflowAction<String, String>) -> Unit
+    val workflow = object : StringWorkflow() {
+      override fun initialState(
+        props: String,
+        snapshot: Snapshot?
+      ): String {
+        assertNull(snapshot)
+        return props
+      }
+
+      override fun render(
+        props: String,
+        state: String,
+        context: RenderContext<String, String>
+      ): String {
+        sink = context.onEvent { it }
+        return ""
+      }
     }
-    assertTrue(e.message!!.startsWith("Expected to successfully deliver "))
+    val node = WorkflowNode(workflow.id(), workflow, "", null, context)
+
+    node.render(workflow, "")
+    sink(emitOutput("event"))
+
+    // Should not throw.
+    sink(emitOutput("event2"))
   }
 
   @Test fun `worker gets value`() {
