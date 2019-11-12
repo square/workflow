@@ -37,7 +37,8 @@ package com.squareup.workflow.internal
 internal class LifetimeTracker<FactoryT, KeyT : Any, DisposableT>(
   private val getKey: (FactoryT) -> KeyT,
   private val start: (FactoryT) -> DisposableT,
-  private val dispose: (FactoryT, DisposableT) -> Unit
+  private val dispose: (FactoryT, DisposableT) -> Unit,
+  private val onDuplicateDetected: (duplicates: Map<KeyT, List<FactoryT>>) -> Nothing
 ) {
 
   private val factoriesByKey = mutableMapOf<KeyT, FactoryT>()
@@ -65,6 +66,10 @@ internal class LifetimeTracker<FactoryT, KeyT : Any, DisposableT>(
     val latestKeys = factories.associateBy(getKey)
 
     // If these sizes don't match, there was at least one duplicate key.
+    if (factories.size != latestKeys.size) {
+      onDuplicateDetected.invoke(factories.groupBy(getKey)
+          .filterValues { it.size > 1 })
+    }
     require(factories.size == latestKeys.size) {
       val duplicates = factories.groupBy(getKey)
           .filterValues { it.size > 1 }

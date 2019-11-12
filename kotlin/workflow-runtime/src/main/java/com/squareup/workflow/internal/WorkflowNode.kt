@@ -94,7 +94,15 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
           val workerChannel = launchWorker(case.worker, workerId, diagnosticId, diagnosticListener)
           WorkerSession(workerChannel)
         },
-        dispose = { _, session -> session.channel.cancel() }
+        dispose = { _, session -> session.channel.cancel() },
+        onDuplicateDetected = { duplicates ->
+          val duplicatesString = duplicates.entries
+              .joinToString(separator = "\n") { (key, values) -> "\t${values.size}×$key" }
+          throw IllegalArgumentException(
+              "Expected all worker keys to be unique for $id \n" +
+                  "Duplicates: $duplicatesString"
+          )
+        }
     )
 
   private var state: StateT

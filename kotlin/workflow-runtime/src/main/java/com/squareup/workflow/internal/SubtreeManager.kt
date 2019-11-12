@@ -51,6 +51,9 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         dispose = { case, host ->
           host.cancel()
           snapshotCache -= case.id
+        },
+        onDuplicateDetected = { duplicates ->
+          TODO()
         }
     )
 
