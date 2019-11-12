@@ -25,8 +25,8 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.SendChannel
 
 /**
  * An implementation of [RenderContext] that builds a [Behavior] via [buildBehavior].
@@ -34,7 +34,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * Not for general application use.
  */
 class RealRenderContext<StateT, OutputT : Any>(
-  private val renderer: Renderer<StateT, OutputT>
+  private val renderer: Renderer<StateT, OutputT>,
+  private val eventActionsChannel: SendChannel<WorkflowAction<StateT, OutputT>>
 ) : RenderContext<StateT, OutputT> {
 
   interface Renderer<StateT, in OutputT : Any> {
@@ -46,7 +47,6 @@ class RealRenderContext<StateT, OutputT : Any>(
     ): ChildRenderingT
   }
 
-  private val nextUpdateFromEvent = CompletableDeferred<WorkflowAction<StateT, OutputT>>()
   private val workerCases = mutableListOf<WorkerCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
 
@@ -62,14 +62,7 @@ class RealRenderContext<StateT, OutputT : Any>(
       // Run the handler synchronously, so we only have to emit the resulting action and don't
       // need the update channel to be generic on each event type.
       val action = handler(event)
-
-      // If this returns false, we lost the race with another event being sent.
-      check(nextUpdateFromEvent.complete(action)) {
-        "Expected to successfully deliver event. Are you using an old rendering?\n" +
-            "\tevent=$event\n" +
-            "\tlate action=$action\n" +
-            "\tprocessed action=${nextUpdateFromEvent.getCompleted()}"
-      }
+      eventActionsChannel.offer(action)
     }
   }
 
@@ -79,12 +72,7 @@ class RealRenderContext<StateT, OutputT : Any>(
 
     return object : Sink<A> {
       override fun send(value: A) {
-        // If this returns false, we lost the race with another event being sent.
-        check(nextUpdateFromEvent.complete(value)) {
-          "Expected to successfully deliver action. Are you using an old rendering?\n" +
-              "\tlate action=$value\n" +
-              "\tprocessed action=${nextUpdateFromEvent.getCompleted()}"
-        }
+        eventActionsChannel.offer(value)
       }
     }
   }
@@ -120,8 +108,7 @@ class RealRenderContext<StateT, OutputT : Any>(
     frozen = true
     return Behavior(
         childCases = childCases.toList(),
-        workerCases = workerCases.toList(),
-        nextActionFromEvent = nextUpdateFromEvent
+        workerCases = workerCases.toList()
     )
   }
 

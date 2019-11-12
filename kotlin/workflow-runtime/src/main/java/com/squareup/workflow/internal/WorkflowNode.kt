@@ -30,6 +30,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.selects.SelectBuilder
 import okio.ByteString
@@ -100,6 +102,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   private var state: StateT
 
   private var lastProps: PropsT = initialProps
+
+  private val eventActionsChannel = Channel<WorkflowAction<StateT, OutputT>>(capacity = UNLIMITED)
 
   private var behavior: Behavior<StateT, OutputT>? = null
 
@@ -197,7 +201,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
 
     // Listen for any events.
     with(selector) {
-      behavior!!.nextActionFromEvent.onAwait { action ->
+      eventActionsChannel.onReceive { action ->
         diagnosticListener?.onSinkReceived(diagnosticId, action)
         acceptUpdate(action)
       }
@@ -228,7 +232,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   ): RenderingT {
     updatePropsAndState(workflow, input)
 
-    val context = RealRenderContext(subtreeManager)
+    val context = RealRenderContext(subtreeManager, eventActionsChannel)
     diagnosticListener?.onBeforeWorkflowRendered(diagnosticId, input, state)
     val rendering = workflow.render(input, state, context)
     diagnosticListener?.onAfterWorkflowRendered(diagnosticId, rendering)
