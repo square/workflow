@@ -145,7 +145,7 @@ interface Worker<out OutputT> {
    * }
    * ```
    */
-  fun doesSameWorkAs(otherWorker: Worker<*>): Boolean
+  fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = otherWorker::class == this::class
 
   companion object {
 
