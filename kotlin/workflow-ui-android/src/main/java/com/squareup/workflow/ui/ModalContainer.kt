@@ -17,7 +17,6 @@ package com.squareup.workflow.ui
 
 import android.app.Dialog
 import android.content.Context
-import android.content.ContextWrapper
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
@@ -32,7 +31,6 @@ import androidx.annotation.StyleRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.squareup.workflow.ui.ModalContainer.Companion.forAlertContainerScreen
 import com.squareup.workflow.ui.ModalContainer.Companion.forContainerScreen
@@ -261,15 +259,3 @@ private fun Dialog.lifecycleOrNull(): Lifecycle? = decorView?.context?.lifecycle
 
 private val Dialog.decorView: View?
   get() = window?.decorView
-
-/**
- * The [Lifecycle] for this context, or null if one can't be found.
- *
- * We keep all this very forgiving because we're just using it to keep some logging
- * noise out of logcat. If someone manages to run this under a strange context whose
- * [Lifecycle] we can't find, just return null and let the caller no-op.
- */
-private tailrec fun Context.lifecycleOrNull(): Lifecycle? = when (this) {
-  is LifecycleOwner -> this.lifecycle
-  else -> (this as? ContextWrapper)?.baseContext?.lifecycleOrNull()
-}
