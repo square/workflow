@@ -12,7 +12,7 @@ import Combine
 ///
 /// ```
 /// var body: some View {
-///     ContainerView(workflow: MyWorkflow(), onOutput: { self.handleOutput($0) }) { rendering in
+///     WorkflowView(workflow: MyWorkflow(), onOutput: { self.handleOutput($0) }) { rendering in
 ///         VStack {
 ///
 ///             Text("The value is \(rendering.value)")
@@ -30,15 +30,15 @@ import Combine
 /// }
 /// ```
 @available(iOS 13.0, *)
-public struct ContainerView<T: Workflow, Content: View>: View {
+public struct WorkflowView<T: Workflow, Content: View>: View {
     
-    // The workflow implementation to use
+    /// The workflow implementation to use
     public var workflow: T
     
-    // A handler for any output events emitted by the workflow
+    /// A handler for any output events emitted by the workflow
     public var onOutput: (T.Output) -> Void
     
-    // A closure that maps the workflow's rendering type into a view of type `Content`.
+    /// A closure that maps the workflow's rendering type into a view of type `Content`.
     public var content: (T.Rendering) -> Content
     
     public init(workflow: T, onOutput: @escaping (T.Output) -> Void, content: @escaping (T.Rendering) -> Content) {
@@ -57,9 +57,9 @@ public struct ContainerView<T: Workflow, Content: View>: View {
 }
 
 @available(iOS 13.0, *)
-extension ContainerView where T.Output == Never {
+extension WorkflowView where T.Output == Never {
     
-    // Convenience initializer for workflows with no output.
+    /// Convenience initializer for workflows with no output.
     public init(workflow: T, content: @escaping (T.Rendering) -> Content) {
         self.init(workflow: workflow, onOutput: { _ in }, content: content)
     }
@@ -67,9 +67,9 @@ extension ContainerView where T.Output == Never {
 }
 
 @available(iOS 13.0, *)
-extension ContainerView where T.Rendering == Content {
+extension WorkflowView where T.Rendering == Content {
     
-    // Convenience initializer for workflows whose rendering type conforms to `View`.
+    /// Convenience initializer for workflows whose rendering type conforms to `View`.
     public init(workflow: T, onOutput: @escaping (T.Output) -> Void) {
         self.init(workflow: workflow, onOutput: onOutput, content: { $0 })
     }
@@ -77,9 +77,9 @@ extension ContainerView where T.Rendering == Content {
 }
 
 @available(iOS 13.0, *)
-extension ContainerView where T.Output == Never, T.Rendering == Content {
+extension WorkflowView where T.Output == Never, T.Rendering == Content {
     
-    // Convenience initializer for workflows with no output whose rendering type conforms to `View`.
+    /// Convenience initializer for workflows with no output whose rendering type conforms to `View`.
     public init(workflow: T) {
         self.init(workflow: workflow, onOutput: { _ in }, content: { $0 })
     }
