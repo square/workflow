@@ -29,7 +29,7 @@ import Combine
 ///     }
 /// }
 /// ```
-@available(iOS 13.0, *)
+@available(iOS 13.0, macOS 10.15, *)
 public struct WorkflowView<T: Workflow, Content: View>: View {
     
     /// The workflow implementation to use
@@ -56,7 +56,7 @@ public struct WorkflowView<T: Workflow, Content: View>: View {
     
 }
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, macOS 10.15, *)
 extension WorkflowView where T.Output == Never {
     
     /// Convenience initializer for workflows with no output.
@@ -66,7 +66,7 @@ extension WorkflowView where T.Output == Never {
     
 }
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, macOS 10.15, *)
 extension WorkflowView where T.Rendering == Content {
     
     /// Convenience initializer for workflows whose rendering type conforms to `View`.
@@ -76,7 +76,7 @@ extension WorkflowView where T.Rendering == Content {
     
 }
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, macOS 10.15, *)
 extension WorkflowView where T.Output == Never, T.Rendering == Content {
     
     /// Convenience initializer for workflows with no output whose rendering type conforms to `View`.
@@ -90,12 +90,21 @@ extension WorkflowView where T.Output == Never, T.Rendering == Content {
 // update mechanism via `updateUIViewController(_:context:)`. If we were to manage a `WorkflowHost` instance directly
 // within a SwiftUI view we would need to update the host with the updated workflow from our implementation of `body`.
 // Performing work within the body accessor is strongly discouraged, so we jump back into UIKit for a second here.
-@available(iOS 13.0, *)
-fileprivate struct IntermediateView<T: Workflow, Content: View>: UIViewControllerRepresentable {
+@available(iOS 13.0, macOS 10.15, *)
+fileprivate struct IntermediateView<T: Workflow, Content: View> {
     
     var workflow: T
     var onOutput: (T.Output) -> Void
     var content: (T.Rendering) -> Content
+    
+}
+
+#if canImport(UIKit)
+
+import UIKit
+
+@available(iOS 13.0, *)
+extension IntermediateView: UIViewControllerRepresentable {
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<IntermediateView<T, Content>>) -> WorkflowHostingViewController<T, Content> {
         WorkflowHostingViewController(workflow: workflow, content: content)
@@ -175,10 +184,106 @@ fileprivate final class WorkflowHostingViewController<T: Workflow, Content: View
     
 }
 
+#elseif canImport(AppKit)
+
+import AppKit
+
+@available(OSX 10.15, *)
+extension IntermediateView: NSViewControllerRepresentable {
+    
+    func makeNSViewController(context: NSViewControllerRepresentableContext<IntermediateView<T, Content>>) -> WorkflowHostingViewController<T, Content> {
+        WorkflowHostingViewController(workflow: workflow, content: content)
+    }
+    
+    func updateNSViewController(_ nsViewController: WorkflowHostingViewController<T, Content>, context: NSViewControllerRepresentableContext<IntermediateView<T, Content>>) {
+        nsViewController.content = content
+        nsViewController.onOutput = onOutput
+        nsViewController.update(to: workflow)
+    }
+    
+}
+
+@available(macOS 10.15, *)
+fileprivate final class WorkflowHostingViewController<T: Workflow, Content: View>: NSViewController {
+    
+    private let workflowHost: WorkflowHost<T>
+    private let hostingController: NSHostingController<RootView<Content>>
+    private let rootViewProvider: RootViewProvider<Content>
+    
+    var content: (T.Rendering) -> Content
+    var onOutput: (T.Output) -> Void
+    
+    private let (lifetime, token) = Lifetime.make()
+    
+    init(workflow: T, content: @escaping (T.Rendering) -> Content) {
+        
+        self.content = content
+        self.onOutput = { _ in }
+        
+        workflowHost = WorkflowHost(workflow: workflow)
+        rootViewProvider = RootViewProvider(view: content(workflowHost.rendering.value))
+        hostingController = NSHostingController(rootView: RootView(provider: rootViewProvider))
+        
+        super.init(nibName: nil, bundle: nil)
+        
+        addChild(hostingController)
+        
+        workflowHost
+            .rendering
+            .signal
+            .take(during: lifetime)
+            .observeValues { [weak self] rendering in
+                self?.didEmit(rendering: rendering)
+            }
+        
+        workflowHost
+            .output
+            .take(during: lifetime)
+            .observeValues { [weak self] output in
+                self?.didEmit(output: output)
+            }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        self.view = NSView()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(hostingController.view)
+    }
+    
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        hostingController.view.frame = view.bounds
+    }
+
+    private func didEmit(rendering: T.Rendering) {
+        rootViewProvider.view = content(rendering)
+    }
+    
+    private func didEmit(output: T.Output) {
+        onOutput(output)
+    }
+    
+    func update(to workflow: T) {
+        workflowHost.update(workflow: workflow)
+    }
+    
+}
+
+#endif
+
+
+
 // Assigning `rootView` on a `UIHostingController` causes unwanted animated transitions.
 // To avoid this, we never change the root view, but we pass down an `ObservableObject`
 // so that we can still update the hierarchy as the workflow emits new renderings.
-@available(iOS 13.0, *)
+@available(iOS 13.0, macOS 10.15, *)
 fileprivate final class RootViewProvider<T: View>: ObservableObject {
 
     @Published var view: T
@@ -189,7 +294,7 @@ fileprivate final class RootViewProvider<T: View>: ObservableObject {
 
 }
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, macOS 10.15, *)
 fileprivate struct RootView<T: View>: View {
 
     @ObservedObject var provider: RootViewProvider<T>
