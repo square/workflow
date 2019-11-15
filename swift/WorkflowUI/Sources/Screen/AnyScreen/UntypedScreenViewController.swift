@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#if os(iOS)
 
 // Internal API for working with a screen view controller when the specific screen type is unknown.
 protocol UntypedScreenViewController {
@@ -33,3 +34,5 @@ extension ScreenViewController: UntypedScreenViewController {
     }
 
 }
+
+#endif

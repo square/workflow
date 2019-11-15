@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#if os(iOS)
+
 import UIKit
 
 public struct AnyScreen: Screen {
@@ -35,3 +38,5 @@ public struct AnyScreen: Screen {
         return viewControllerBuilder(viewRegistry)
     }
 }
+
+#endif
