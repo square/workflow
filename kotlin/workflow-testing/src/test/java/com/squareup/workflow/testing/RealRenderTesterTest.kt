@@ -38,7 +38,26 @@ class RealRenderTesterTest {
 
   private interface ChildWorkflow : Workflow<Unit, Nothing, Unit>
 
-  @Test fun `expectWorkflow without output throws when already expecting output`() {
+  @Test fun `expectWorkflow with output throws when already expecting workflow output`() {
+    // Don't need an implementation, the test should fail before even calling render.
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
+    val tester = workflow.renderTester(Unit)
+        .expectWorkflow(ChildWorkflow::class, rendering = Unit, output = EmittedOutput(Unit))
+
+    val failure = assertFailsWith<IllegalStateException> {
+      tester.expectWorkflow(Workflow::class, rendering = Unit, output = EmittedOutput(Unit))
+    }
+
+    val failureMessage = failure.message!!
+    assertTrue(failureMessage.startsWith("Expected only one child to emit an output:"))
+    assertEquals(
+        3, failureMessage.lines().size,
+        "Expected error message to have 3 lines, but was ${failureMessage.lines().size}"
+    )
+    assertEquals(2, failureMessage.lines().count { "ExpectedWorkflow" in it })
+  }
+
+  @Test fun `expectWorkflow with output throws when already expecting worker output`() {
     // Don't need an implementation, the test should fail before even calling render.
     val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
     val tester = workflow.renderTester(Unit)
@@ -48,10 +67,46 @@ class RealRenderTesterTest {
       tester.expectWorkflow(Workflow::class, rendering = Unit, output = EmittedOutput(Unit))
     }
 
-    assertTrue(failure.message!!.startsWith("Expected only one child to emit an output:"))
+    val failureMessage = failure.message!!
+    assertTrue(failureMessage.startsWith("Expected only one child to emit an output:"))
+    assertEquals(
+        3, failureMessage.lines().size,
+        "Expected error message to have 3 lines, but was ${failureMessage.lines().size}"
+    )
+    assertEquals(1, failureMessage.lines().count { "ExpectedWorker" in it })
+    assertEquals(1, failureMessage.lines().count { "ExpectedWorkflow" in it })
   }
 
-  @Test fun `expectWorker without output throws when already expecting output`() {
+  @Test fun `expectWorkflow without output doesn't throw when already expecting output`() {
+    // Don't need an implementation, the test should fail before even calling render.
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
+    val tester = workflow.renderTester(Unit)
+        .expectWorkflow(ChildWorkflow::class, rendering = Unit, output = EmittedOutput(Unit))
+
+    // Doesn't throw.
+    tester.expectWorkflow(Workflow::class, rendering = Unit)
+  }
+
+  @Test fun `expectWorker with output throws when already expecting worker output`() {
+    // Don't need an implementation, the test should fail before even calling render.
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
+    val tester = workflow.renderTester(Unit)
+        .expectWorker(matchesWhen = { true }, output = EmittedOutput(Unit))
+
+    val failure = assertFailsWith<IllegalStateException> {
+      tester.expectWorker(matchesWhen = { true }, output = EmittedOutput(Unit))
+    }
+
+    val failureMessage = failure.message!!
+    assertTrue(failureMessage.startsWith("Expected only one child to emit an output:"))
+    assertEquals(
+        3, failureMessage.lines().size,
+        "Expected error message to have 3 lines, but was ${failureMessage.lines().size}"
+    )
+    assertEquals(2, failureMessage.lines().count { "ExpectedWorker" in it })
+  }
+
+  @Test fun `expectWorker with output throws when already expecting workflow output`() {
     // Don't need an implementation, the test should fail before even calling render.
     val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
     val tester = workflow.renderTester(Unit)
@@ -61,7 +116,24 @@ class RealRenderTesterTest {
       tester.expectWorker(matchesWhen = { true }, output = EmittedOutput(Unit))
     }
 
-    assertTrue(failure.message!!.startsWith("Expected only one child to emit an output:"))
+    val failureMessage = failure.message!!
+    assertTrue(failureMessage.startsWith("Expected only one child to emit an output:"))
+    assertEquals(
+        3, failureMessage.lines().size,
+        "Expected error message to have 3 lines, but was ${failureMessage.lines().size}"
+    )
+    assertEquals(1, failureMessage.lines().count { "ExpectedWorker" in it })
+    assertEquals(1, failureMessage.lines().count { "ExpectedWorkflow" in it })
+  }
+
+  @Test fun `expectWorker without output doesn't throw when already expecting output`() {
+    // Don't need an implementation, the test should fail before even calling render.
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
+    val tester = workflow.renderTester(Unit)
+        .expectWorker(matchesWhen = { true }, output = EmittedOutput(Unit))
+
+    // Doesn't throw.
+    tester.expectWorker(matchesWhen = { true })
   }
 
   @Test fun `sending to sink throws when called multiple times`() {
