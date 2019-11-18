@@ -219,16 +219,16 @@ matrix:
         - bundle exec pod install
 
     - language: swift
-      name: "Swift - SPM - iOS (Xcode 11.2)"
+      name: "Swift - SPM - iOS (Xcode 11.1)"
       os: osx
-      osx_image: xcode11.2
+      osx_image: xcode11.1
       script:
         - xcodebuild -scheme "Workflow-Package" test -destination "name=iPhone 11"
 
     - language: swift
-      name: "Swift - SPM - macOS (Xcode 11.2)"
+      name: "Swift - SPM - macOS (Xcode 11.1)"
       os: osx
-      osx_image: xcode11.2
+      osx_image: xcode11.1
       script:
         - xcodebuild -scheme "Workflow-Package" test
 
