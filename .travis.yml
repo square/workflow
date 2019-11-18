@@ -94,7 +94,8 @@ matrix:
         - ./gradlew jmhJar
 
       before_script:
-        - android-wait-for-emulator
+        # Temporary attempt to see if the emulator issue is just slowness.
+        - travis_wait 30 android-wait-for-emulator
         # 82 is KEYCODE_MENU. Everyone seems to send this. Does anyone know why?
         - adb shell input keyevent 82
 
