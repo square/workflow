@@ -129,7 +129,7 @@ class RealRenderTesterTest {
     assertEquals("expected failure", error.message)
   }
 
-  @Test fun `renderChild throws when no expectation matches`() {
+  @Test fun `renderChild throws when none expected`() {
     val child = Workflow.stateless<Unit, Nothing, Unit> { }
     val workflow = Workflow.stateless<Unit, Nothing, Unit> {
       renderChild(child)
@@ -145,12 +145,65 @@ class RealRenderTesterTest {
     )
   }
 
-  @Test fun `renderChild with key throws when no expectation matches`() {
+  @Test fun `renderChild throws when no expectations match`() {
+    val child = Workflow.stateless<Unit, Nothing, Unit> { }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      renderChild(child)
+    }
+    val tester = workflow.renderTester(Unit)
+        .expectWorkflow(ChildWorkflow::class, rendering = Unit)
+
+    val error = assertFailsWith<AssertionError> {
+      tester.render {}
+    }
+    assertEquals(
+        "Tried to render unexpected child workflow ${child::class.java.name}.",
+        error.message
+    )
+  }
+
+  @Test fun `renderChild with key throws when none expected`() {
     val child = Workflow.stateless<Unit, Nothing, Unit> { }
     val workflow = Workflow.stateless<Unit, Nothing, Unit> {
       renderChild(child, key = "key")
     }
     val tester = workflow.renderTester(Unit)
+
+    val error = assertFailsWith<AssertionError> {
+      tester.render {}
+    }
+    assertEquals(
+        "Tried to render unexpected child workflow ${child::class.java.name} " +
+            "with key \"key\".",
+        error.message
+    )
+  }
+
+  @Test fun `renderChild with key throws when no expectations match`() {
+    val child = Workflow.stateless<Unit, Nothing, Unit> { }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      renderChild(child, key = "key")
+    }
+    val tester = workflow.renderTester(Unit)
+        .expectWorkflow(ChildWorkflow::class, rendering = Unit)
+
+    val error = assertFailsWith<AssertionError> {
+      tester.render {}
+    }
+    assertEquals(
+        "Tried to render unexpected child workflow ${child::class.java.name} " +
+            "with key \"key\".",
+        error.message
+    )
+  }
+
+  @Test fun `renderChild with key throws when key doesn't match`() {
+    val child = Workflow.stateless<Unit, Nothing, Unit> { }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      renderChild(child, key = "key")
+    }
+    val tester = workflow.renderTester(Unit)
+        .expectWorkflow(ChildWorkflow::class, rendering = Unit, key = "wrong key")
 
     val error = assertFailsWith<AssertionError> {
       tester.render {}
@@ -190,7 +243,7 @@ class RealRenderTesterTest {
     )
   }
 
-  @Test fun `runningWorker throws when no expectation matches`() {
+  @Test fun `runningWorker throws when none expected`() {
     val worker = object : Worker<Nothing> {
       override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = true
       override fun run(): Flow<Nothing> = emptyFlow()
@@ -211,7 +264,29 @@ class RealRenderTesterTest {
     )
   }
 
-  @Test fun `runningWorker with key throws when no expectation matches`() {
+  @Test fun `runningWorker throws when expectation doesn't match`() {
+    val worker = object : Worker<Nothing> {
+      override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = true
+      override fun run(): Flow<Nothing> = emptyFlow()
+      override fun toString(): String = "TestWorker"
+    }
+
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      runningWorker(worker)
+    }
+    val tester = workflow.renderTester(Unit)
+        .expectWorker(matchesWhen = { false })
+
+    val error = assertFailsWith<AssertionError> {
+      tester.render {}
+    }
+    assertEquals(
+        "Tried to render unexpected worker TestWorker.",
+        error.message
+    )
+  }
+
+  @Test fun `runningWorker with key throws when none expected`() {
     val worker = object : Worker<Nothing> {
       override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = true
       override fun run(): Flow<Nothing> = emptyFlow()
@@ -222,6 +297,53 @@ class RealRenderTesterTest {
       runningWorker(worker, key = "key")
     }
     val tester = workflow.renderTester(Unit)
+
+    val error = assertFailsWith<AssertionError> {
+      tester.render {}
+    }
+    assertEquals(
+        "Tried to render unexpected worker TestWorker with key \"key\".",
+        error.message
+    )
+  }
+
+  @Test fun `runningWorker with key throws when no key expected`() {
+    val worker = object : Worker<Nothing> {
+      override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = true
+      override fun run(): Flow<Nothing> = emptyFlow()
+      override fun toString(): String = "TestWorker"
+    }
+
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      runningWorker(worker, key = "key")
+    }
+    val tester = workflow.renderTester(Unit)
+        .expectWorker(matchesWhen = { true })
+
+    val error = assertFailsWith<AssertionError> {
+      tester.render {}
+    }
+    assertEquals(
+        "Tried to render unexpected worker TestWorker with key \"key\".",
+        error.message
+    )
+  }
+
+  @Test fun `runningWorker with key throws when wrong key expected`() {
+    val worker = object : Worker<Nothing> {
+      override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = true
+      override fun run(): Flow<Nothing> = emptyFlow()
+      override fun toString(): String = "TestWorker"
+    }
+
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      runningWorker(worker, key = "key")
+    }
+    val tester = workflow.renderTester(Unit)
+        .expectWorker(
+            matchesWhen = { true },
+            key = "wrong key"
+        )
 
     val error = assertFailsWith<AssertionError> {
       tester.render {}
