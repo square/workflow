@@ -63,11 +63,14 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     assertProps: (props: ChildPropsT) -> Unit,
     output: EmittedOutput<ChildOutputT>?
   ): RenderTester<PropsT, StateT, OutputT, RenderingT> {
-    checkNoOutputs()
-    if (output != null) childWillEmitOutput = true
     @Suppress("UNCHECKED_CAST")
     val assertAnyProps = { props: Any? -> assertProps(props as ChildPropsT) }
-    expectations += ExpectedWorkflow(workflowType, key, assertAnyProps, rendering, output)
+    val expectedWorkflow = ExpectedWorkflow(workflowType, key, assertAnyProps, rendering, output)
+    if (output != null) {
+      checkNoOutputs(expectedWorkflow)
+      childWillEmitOutput = true
+    }
+    expectations += expectedWorkflow
     return this
   }
 
@@ -76,9 +79,12 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     key: String,
     output: EmittedOutput<Any?>?
   ): RenderTester<PropsT, StateT, OutputT, RenderingT> {
-    checkNoOutputs()
-    if (output != null) childWillEmitOutput = true
-    expectations += ExpectedWorker(matchesWhen, key, output)
+    val expectedWorker = ExpectedWorker(matchesWhen, key, output)
+    if (output != null) {
+      checkNoOutputs(expectedWorker)
+      childWillEmitOutput = true
+    }
+    expectations += expectedWorker
     return this
   }
 
@@ -217,9 +223,10 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
       processedAction = processedAction
   )
 
-  private fun checkNoOutputs() {
+  private fun checkNoOutputs(newExpectation: Expectation<*>? = null) {
     check(!childWillEmitOutput) {
-      val expectationsWithOutputs = expectations.filter { it.output != null }
+      val expectationsWithOutputs = (expectations + listOfNotNull(newExpectation))
+          .filter { it.output != null }
       "Expected only one child to emit an output:\n" +
           expectationsWithOutputs.joinToString(separator = "\n") { "  $it" }
     }
