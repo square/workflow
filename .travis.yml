@@ -98,9 +98,6 @@ matrix:
         # 82 is KEYCODE_MENU. Everyone seems to send this. Does anyone know why?
         - adb shell input keyevent 82
 
-      after_success:
-        - ../.buildscript/deploy_snapshot.sh
-
       cache:
         directories:
           - $HOME/.gradle/caches/
