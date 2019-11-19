@@ -51,6 +51,57 @@ matrix:
         - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
         - secure: "gFmZ18DktyZonExeAYGT4HtCodvAbRcH94AImWG6DrJZFzGkRSN//s1AjrgkAL/jZ4lLuoxyCs1nBoX2U83LmpJ8KxLIhU/45JlJgmD1tnE2zdFim6dHN+J6Yj7MCWqD5KO6E0dJickTJG2XzFu0oN3vBn7sETliQHzlw2lw8ME="
 
+        - ABI=x86_64
+        - API=21
+        # PATH order is incredibly important. e.g. the 'emulator' script exists in more than one place!
+        - ANDROID_HOME=/usr/local/android-sdk
+        - TOOLS=${ANDROID_HOME}/tools
+        - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
+
+      android:
+        components:
+          # installing tools to start, then use `sdkmanager` below to get the rest
+          - tools
+
+      before_install:
+        - cd kotlin
+        # Install SDK license so Android Gradle plugin can install deps.
+        - mkdir "$ANDROID_HOME/licenses" || true
+        - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+        - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" >> "$ANDROID_HOME/licenses/android-sdk-license"
+
+        # Emulator Management: Create, Start and Wait
+        # Do it in before_install to race with install.
+        - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid harmless sdkmanager warning
+        - echo y | sdkmanager "platform-tools" >/dev/null
+        - echo y | sdkmanager "tools" >/dev/null # A second time per Travis docs, gets latest versions
+        - echo y | sdkmanager "build-tools;28.0.3" >/dev/null # Implicit gradle dependency - gradle drives changes
+        - echo y | sdkmanager "platforms;android-$API" >/dev/null # We need the API of the emulator we will run
+        - echo y | sdkmanager "platforms;android-28" >/dev/null # We need the API of the current compileSdkVersion from gradle.properties
+        - echo y | sdkmanager "extras;android;m2repository" >/dev/null
+
+      script:
+        - ./gradlew clean
+        - ./gradlew build --stacktrace
+        # Don't need to run the benchmarks but build them to ensure they don't get broken.
+        - ./gradlew jmhJar
+
+      cache:
+        directories:
+          - $HOME/.gradle/caches/
+          - $HOME/.gradle/wrapper/
+          - $HOME/.m2
+
+    # AVD config copied from leakcanary and informed by
+    # https://github.com/mikehardy/Anki-Android/blob/177c63d4eb969548ad7dc5243f0fac33522f3fe7/.travis.yml
+    - language: android
+      name: "Android Instrumentation Tests"
+      jdk: oraclejdk8
+
+      env:
+        - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
+        - secure: "gFmZ18DktyZonExeAYGT4HtCodvAbRcH94AImWG6DrJZFzGkRSN//s1AjrgkAL/jZ4lLuoxyCs1nBoX2U83LmpJ8KxLIhU/45JlJgmD1tnE2zdFim6dHN+J6Yj7MCWqD5KO6E0dJickTJG2XzFu0oN3vBn7sETliQHzlw2lw8ME="
+
         - ADB_INSTALL_TIMEOUT=8
         - ABI=x86_64
         - API=21
@@ -88,18 +139,16 @@ matrix:
 
       install:
         - ./gradlew clean
-        - ./gradlew build  --stacktrace
         - ./gradlew assembleAndroidTest --stacktrace
-        # Don't need to run the benchmarks but build them to ensure they don't get broken.
-        - ./gradlew jmhJar
 
       before_script:
         - android-wait-for-emulator
         # 82 is KEYCODE_MENU. Everyone seems to send this. Does anyone know why?
         - adb shell input keyevent 82
 
-      after_success:
-        - ../.buildscript/deploy_snapshot.sh
+      script:
+        # Don't run build task again, since we don't want to do linting.
+        - ./gradlew connectedCheck
 
       cache:
         directories:
