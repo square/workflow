@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+## Version 0.21.3
+
+_2019-11-18_
+
+### Kotlin
+
+ * Fix RenderTester not allowing output-less expectations to be specified after one with output. (#756)
+ * Fix RenderTester not checking worker keys. (#755)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.21.2
 
 _2019-11-7_
