@@ -141,7 +141,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     handler: (T) -> WorkflowAction<StateT, OutputT>
   ) {
     val expected = consumeExpectation<ExpectedWorker<*>>(
-        predicate = { it.matchesWhen(worker) },
+        predicate = { it.matchesWhen(worker) && it.key == key },
         description = {
           "worker $worker" +
               key.takeUnless { it.isEmpty() }
