@@ -98,6 +98,7 @@ matrix:
       name: "Android Instrumentation Tests"
       jdk: oraclejdk8
       sudo: true
+      dist: trusty
 
       env:
         - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
