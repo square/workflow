@@ -42,10 +42,11 @@ internal class ModalViewContainer @JvmOverloads constructor(
 ) : ModalContainer<Any>(context, attributeSet, defStyle, defStyleRes) {
   override fun buildDialog(
     initialModalRendering: Any,
-    initialContainerHints: ContainerHints,
-    viewRegistry: ViewRegistry
+    initialContainerHints: ContainerHints
   ): DialogRef<Any> {
-    val view = viewRegistry.buildView(initialModalRendering, initialContainerHints, this)
+    val view = initialContainerHints[ViewRegistry].buildView(
+        initialModalRendering, initialContainerHints, this
+    )
 
     return Dialog(context, dialogThemeResId)
         .apply {
@@ -103,18 +104,16 @@ internal class ModalViewContainer @JvmOverloads constructor(
   ) : ViewBinding<H>
   by BuilderBinding(
       type = type,
-      viewConstructor = { viewRegistry, initialRendering, initialHints, context, _ ->
+      viewConstructor = { initialRendering, initialHints, context, _ ->
         ModalViewContainer(
             context,
             modalDecorator = modalDecorator,
             dialogThemeResId = dialogThemeResId
-        )
-            .apply {
-              this.id = id
-              layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-              registry = viewRegistry
-              bindShowRendering(initialRendering, initialHints, ::update)
-            }
+        ).apply {
+          this.id = id
+          layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+          bindShowRendering(initialRendering, initialHints, ::update)
+        }
       }
   )
 }

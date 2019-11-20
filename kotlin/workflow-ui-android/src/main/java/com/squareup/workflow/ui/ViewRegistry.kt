@@ -102,7 +102,12 @@ class ViewRegistry private constructor(
   ): View {
     @Suppress("UNCHECKED_CAST")
     return (allBindings[initialRendering::class] as? ViewBinding<RenderingT>)
-        ?.buildView(this, initialRendering, initialContainerHints, contextForNewView, container)
+        ?.buildView(
+            initialRendering,
+            initialContainerHints,
+            contextForNewView,
+            container
+        )
         ?.apply {
           checkNotNull(getRendering<RenderingT>()) {
             "View.bindShowRendering should have been called for $this, typically by the " +
@@ -143,17 +148,25 @@ class ViewRegistry private constructor(
     return ViewRegistry(this, registry)
   }
 
-  private companion object {
-    val defaultAlertBinding = ModalContainer.forAlertContainerScreen()
+  companion object : ContainerHintKey<ViewRegistry>(ViewRegistry::class) {
+    private val defaultAlertBinding = ModalContainer.forAlertContainerScreen()
+
+    override val default: ViewRegistry
+      get() = error("There should always be a ViewRegistry hint, this is bug in Workflow.")
   }
 }
 
 private object NamedBinding : ViewBinding<Named<*>>
 by BuilderBinding(
     type = Named::class,
-    viewConstructor = { viewRegistry, initialRendering, initialHints, contextForNewView, container ->
+    viewConstructor = { initialRendering, initialHints, contextForNewView, container ->
       val view =
-        viewRegistry.buildView(initialRendering.wrapped, initialHints, contextForNewView, container)
+        initialHints[ViewRegistry].buildView(
+            initialRendering.wrapped,
+            initialHints,
+            contextForNewView,
+            container
+        )
       view.apply {
         @Suppress("RemoveExplicitTypeArguments") // The IDE is wrong.
         val wrappedUpdater = getShowRendering<Any>()!!

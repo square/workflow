@@ -25,7 +25,6 @@ import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowViewStub
 
 /**
@@ -34,10 +33,7 @@ import com.squareup.workflow.ui.WorkflowViewStub
  *
  * Each of the `RecyclerView`s uses a different [ListDiffMode] for updating its adapter.
  */
-class BaseScreenLayoutRunner(
-  view: View,
-  private val viewRegistry: ViewRegistry
-) : LayoutRunner<BaseScreen> {
+class BaseScreenLayoutRunner(view: View) : LayoutRunner<BaseScreen> {
 
   private val noDiffListStub = view.findViewById<WorkflowViewStub>(R.id.list_stub)
   private val syncListStub = view.findViewById<WorkflowViewStub>(R.id.sync_list_stub)
@@ -50,9 +46,9 @@ class BaseScreenLayoutRunner(
   ) {
     val syncHints = containerHints + (ListDiffMode to Synchronous)
     val asyncHints = containerHints + (ListDiffMode to Asynchronous)
-    noDiffListStub.update(rendering.listRendering, containerHints, viewRegistry)
-    syncListStub.update(rendering.listRendering, syncHints, viewRegistry)
-    asyncListStub.update(rendering.listRendering, asyncHints, viewRegistry)
+    noDiffListStub.update(rendering.listRendering, containerHints)
+    syncListStub.update(rendering.listRendering, syncHints)
+    asyncListStub.update(rendering.listRendering, asyncHints)
     addRowButton.setOnClickListener { rendering.onAddRowTapped() }
   }
 

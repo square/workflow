@@ -19,13 +19,20 @@ import kotlin.reflect.KClass
 
 /**
  * Immutable, append-only map of values that a parent view can pass down to
- * its children via [android.view.View.showRendering] et al. Allows container views
- * to give descendants information about the context in which they're drawing.
+ * its children via [View.showRendering][android.view.View.showRendering] et al.
+ * Allows container views to give descendants information about the context in which
+ * they're drawing.
+ *
+ * Every [View.showRendering][android.view.View.showRendering] call initiated via
+ * [ViewRegistry.buildView] or [WorkflowLayout.start] includes an appropriate [ViewRegistry]
+ * hint. This allows container views to make recursive [ViewRegistry.buildView]
+ * calls to build child views to show nested renderings.
  */
 class ContainerHints private constructor(
   private val map: Map<ContainerHintKey<*>, Any>
 ) {
-  constructor() : this(emptyMap())
+  constructor(registry: ViewRegistry) :
+      this(mapOf<ContainerHintKey<*>, Any>(ViewRegistry to registry))
 
   @Suppress("UNCHECKED_CAST")
   operator fun <T : Any> get(key: ContainerHintKey<T>): T = map[key] as? T ?: key.default

@@ -50,18 +50,10 @@ import kotlin.reflect.KClass
  *    val TicTacToeViewBuilders = ViewRegistry(
  *        MyView, GamePlayLayoutRunner, GameOverLayoutRunner
  *    )
- *
- * Note in particular the [ViewRegistry] argument to the [viewConstructor] lambda. This allows
- * nested renderings to be displayed.
- *
- * It's simplest, and most typical, to pass the [ViewRegistry] to [WorkflowViewStub.update] to
- * show nested renderings. When that's too constraining, more complex containers can
- * call [ViewRegistry.buildView], [View.canShowRendering] and [View.showRendering] directly.
  */
 class BuilderBinding<RenderingT : Any>(
   override val type: KClass<RenderingT>,
   private val viewConstructor: (
-    viewRegistry: ViewRegistry,
     initialRendering: RenderingT,
     initialContainerHints: ContainerHints,
     contextForNewView: Context,
@@ -69,10 +61,9 @@ class BuilderBinding<RenderingT : Any>(
   ) -> View
 ) : ViewBinding<RenderingT> {
   override fun buildView(
-    registry: ViewRegistry,
     initialRendering: RenderingT,
     initialContainerHints: ContainerHints,
     contextForNewView: Context,
     container: ViewGroup?
-  ): View = viewConstructor(registry, initialRendering, initialContainerHints, contextForNewView, container)
+  ): View = viewConstructor(initialRendering, initialContainerHints, contextForNewView, container)
 }

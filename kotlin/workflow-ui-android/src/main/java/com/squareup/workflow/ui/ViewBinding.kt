@@ -35,7 +35,6 @@ interface ViewBinding<RenderingT : Any> {
    * via [View.showRendering].
    */
   fun buildView(
-    registry: ViewRegistry,
     initialRendering: RenderingT,
     initialContainerHints: ContainerHints,
     contextForNewView: Context,

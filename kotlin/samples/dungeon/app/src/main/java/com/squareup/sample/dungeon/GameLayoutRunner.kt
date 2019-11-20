@@ -29,13 +29,9 @@ import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowViewStub
 
-class GameLayoutRunner(
-  view: View,
-  private val viewRegistry: ViewRegistry
-) : LayoutRunner<GameRendering> {
+class GameLayoutRunner(view: View) : LayoutRunner<GameRendering> {
 
   private val boardView: WorkflowViewStub = view.findViewById(R.id.board_stub)
   private val moveLeft: View = view.findViewById(R.id.move_left)
@@ -56,7 +52,7 @@ class GameLayoutRunner(
     rendering: GameRendering,
     containerHints: ContainerHints
   ) {
-    boardView.update(rendering.board, containerHints, viewRegistry)
+    boardView.update(rendering.board, containerHints)
     this.rendering = rendering
 
     // Disable the views if we don't have an event handler, e.g. when the game has finished.
