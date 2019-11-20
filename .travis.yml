@@ -134,7 +134,7 @@ matrix:
         - echo y | sdkmanager --channel=4 "emulator" # Experiment with canary, specifying 28.0.3 (prior version) did not work
         - echo y | sdkmanager "extras;android;m2repository" >/dev/null
         - echo y | sdkmanager "system-images;android-$API;$EMU_FLAVOR;$ABI" #>/dev/null # install our emulator
-        - echo no | avdmanager create avd --force -n test -k "system-images;android-$API;$EMU_FLAVOR;$ABI" -c 5M
+        - echo no | avdmanager create avd --force -n test -k "system-images;android-$API;$EMU_FLAVOR;$ABI" -c 10M
         - emulator -verbose -avd test -no-accel -no-snapshot -no-window -no-audio -camera-back none -camera-front none -selinux permissive -qemu -m 1024
 
       install:
