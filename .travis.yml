@@ -1,255 +1,47 @@
-sudo: false
 
-branches:
-  except:
-    - gh-pages
+language: android
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - cd kotlin
+  # Install SDK license so Android Gradle plugin can install deps.
+  - mkdir "$ANDROID_HOME/licenses" || true
+  - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+  - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" >> "$ANDROID_HOME/licenses/android-sdk-license"
+  # Install the rest of tools (e.g., avdmanager)
+  - sdkmanager tools
+  # Install the system image
+  - sdkmanager "system-images;android-16;default;armeabi-v7a"
+  # Create and start emulator for the script. Meant to race the install task.
+  - echo no | avdmanager create avd --force -n test -k "system-images;android-16;default;armeabi-v7a"
+  - $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-window &
+
+install:
+  #Run tasks in sequence so that Gradle doesn't run 'clean' in parallel with 'build'
+  - ./gradlew clean
+  - ./gradlew build --stacktrace
+  - ./gradlew assembleAndroidTest --stacktrace
+
+before_script:
+  - android-wait-for-emulator
+  # 82 is KEYCODE_MENU
+  - adb shell input keyevent 82
+
+script:
+  - ./gradlew connectedCheck --stacktrace
+
+env:
+  global:
+    - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
+    - secure: "gFmZ18DktyZonExeAYGT4HtCodvAbRcH94AImWG6DrJZFzGkRSN//s1AjrgkAL/jZ4lLuoxyCs1nBoX2U83LmpJ8KxLIhU/45JlJgmD1tnE2zdFim6dHN+J6Yj7MCWqD5KO6E0dJickTJG2XzFu0oN3vBn7sETliQHzlw2lw8ME="
 
 notifications:
   email: false
 
-matrix:
-  include:
-    # Verify the documentation site builds successfully, but don't deploy it.
-    - language: python
-      name: "Documentation: Static site"
-      python:
-        - "2.7"
-      install:
-        - pip install mkdocs-material
-      script:
-        - mkdocs build
+sudo: false
 
-    # Verify the Swift documentation builds successfully.
-    - language: swift
-      name: "Documentation: Swift API"
-      os: osx
-      osx_image: xcode10.2
-      install:
-        - gem update --system
-        - bundle install
-        - brew install sourcedocs
-        - cd swift/Samples/SampleApp
-        - bundle exec pod repo update
-      script:
-        - ../../../.buildscript/build_swift_docs.sh /tmp/swiftdocs
-
-    # Ensure docs are formatted correctly.
-    - language: ruby
-      name: "Documentation: Markdown lint"
-      install:
-        - gem install mdl
-      script:
-        - ./lint_docs.sh
-
-    # AVD config copied from leakcanary and informed by
-    # https://github.com/mikehardy/Anki-Android/blob/177c63d4eb969548ad7dc5243f0fac33522f3fe7/.travis.yml
-    - language: android
-      name: "Kotlin & Android"
-      jdk: oraclejdk8
-
-      env:
-        - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
-        - secure: "gFmZ18DktyZonExeAYGT4HtCodvAbRcH94AImWG6DrJZFzGkRSN//s1AjrgkAL/jZ4lLuoxyCs1nBoX2U83LmpJ8KxLIhU/45JlJgmD1tnE2zdFim6dHN+J6Yj7MCWqD5KO6E0dJickTJG2XzFu0oN3vBn7sETliQHzlw2lw8ME="
-
-        - ABI=x86_64
-        - API=21
-        # PATH order is incredibly important. e.g. the 'emulator' script exists in more than one place!
-        - ANDROID_HOME=/usr/local/android-sdk
-        - TOOLS=${ANDROID_HOME}/tools
-        - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
-
-      android:
-        components:
-          # installing tools to start, then use `sdkmanager` below to get the rest
-          - tools
-
-      before_install:
-        - cd kotlin
-        # Install SDK license so Android Gradle plugin can install deps.
-        - mkdir "$ANDROID_HOME/licenses" || true
-        - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
-        - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" >> "$ANDROID_HOME/licenses/android-sdk-license"
-
-        # Emulator Management: Create, Start and Wait
-        # Do it in before_install to race with install.
-        - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid harmless sdkmanager warning
-        - echo y | sdkmanager "platform-tools" >/dev/null
-        - echo y | sdkmanager "tools" >/dev/null # A second time per Travis docs, gets latest versions
-        - echo y | sdkmanager "build-tools;28.0.3" >/dev/null # Implicit gradle dependency - gradle drives changes
-        - echo y | sdkmanager "platforms;android-$API" >/dev/null # We need the API of the emulator we will run
-        - echo y | sdkmanager "platforms;android-28" >/dev/null # We need the API of the current compileSdkVersion from gradle.properties
-        - echo y | sdkmanager "extras;android;m2repository" >/dev/null
-
-      script:
-        - ./gradlew clean
-        - ./gradlew build --stacktrace
-        # Don't need to run the benchmarks but build them to ensure they don't get broken.
-        - ./gradlew jmhJar
-
-      cache:
-        directories:
-          - $HOME/.gradle/caches/
-          - $HOME/.gradle/wrapper/
-          - $HOME/.m2
-
-    # AVD config copied from leakcanary and informed by
-    # https://github.com/mikehardy/Anki-Android/blob/177c63d4eb969548ad7dc5243f0fac33522f3fe7/.travis.yml
-    - language: android
-      name: "Android Instrumentation Tests"
-      jdk: oraclejdk8
-
-      env:
-        - secure: "SWQBLsaI5fOfiM+48/oAOcynsnpa1hHADxs8Vsmt7gsqVrtL369znwsX+PkNOXTdAROPKHzfCw1PkMSKiWHwSB+Gc8fMqFoVjxPnpi0NAhm2b4q4pq6GLOed2xF93eLoQZ7x4UwcUie58Qlwif9ZSGyp+7V6fEy7/AexGLPAuD0="
-        - secure: "gFmZ18DktyZonExeAYGT4HtCodvAbRcH94AImWG6DrJZFzGkRSN//s1AjrgkAL/jZ4lLuoxyCs1nBoX2U83LmpJ8KxLIhU/45JlJgmD1tnE2zdFim6dHN+J6Yj7MCWqD5KO6E0dJickTJG2XzFu0oN3vBn7sETliQHzlw2lw8ME="
-
-        - ADB_INSTALL_TIMEOUT=8
-        - ABI=armeabi-v7a
-        - API=21
-        - EMU_FLAVOR=default # use google_apis flavor if no default flavor emulator
-        # PATH order is incredibly important. e.g. the 'emulator' script exists in more than one place!
-        - ANDROID_HOME=/usr/local/android-sdk
-        - TOOLS=${ANDROID_HOME}/tools
-        - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
-
-      # android:
-      #   components:
-      #     # installing tools to start, then use `sdkmanager` below to get the rest
-      #     - tools
-
-      before_install:
-        - cd kotlin
-        # Install SDK license so Android Gradle plugin can install deps.
-        - mkdir "$ANDROID_HOME/licenses" || true
-        - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
-        - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" >> "$ANDROID_HOME/licenses/android-sdk-license"
-
-        # Emulator Management: Create, Start and Wait
-        # Do it in before_install to race with install.
-        - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid harmless sdkmanager warning
-        # - echo y | sdkmanager "platform-tools" >/dev/null
-        - sdkmanager "tools" # A second time per Travis docs, gets latest versions
-        # - echo y | sdkmanager "build-tools;28.0.3" >/dev/null # Implicit gradle dependency - gradle drives changes
-        # - echo y | sdkmanager "platforms;android-$API" >/dev/null # We need the API of the emulator we will run
-        # - echo y | sdkmanager "platforms;android-28" >/dev/null # We need the API of the current compileSdkVersion from gradle.properties
-        # - echo y | sdkmanager --channel=4 "emulator" # Experiment with canary, specifying 28.0.3 (prior version) did not work
-        # - echo y | sdkmanager "extras;android;m2repository" >/dev/null
-        - sdkmanager "system-images;android-$API;$EMU_FLAVOR;$ABI" # install our emulator
-        - echo no | avdmanager create avd --force -n test -k "system-images;android-$API;$EMU_FLAVOR;$ABI" -c 10M
-        - emulator -verbose -avd test -no-accel -no-snapshot -no-window -no-audio -camera-back none -camera-front none -selinux permissive -qemu -m 2048
-
-      install:
-        - ./gradlew clean
-        - ./gradlew assembleAndroidTest --stacktrace
-
-      before_script:
-        - android-wait-for-emulator
-        # 82 is KEYCODE_MENU. Everyone seems to send this. Does anyone know why?
-        - adb shell input keyevent 82
-
-      script:
-        # Don't run build task again, since we don't want to do linting.
-        - ./gradlew connectedCheck
-
-      cache:
-        directories:
-          - $HOME/.gradle/caches/
-          - $HOME/.gradle/wrapper/
-          - $HOME/.m2
-
-    # Disabled due to https://github.com/square/workflow/issues/223
-    # - language: swift
-    #   name: "Swift - Workflow - Cocoapods (Xcode 10.1)"
-    #   os: osx
-    #   osx_image: xcode10.1
-    #   xcode_workspace: SampleApp.xcworkspace
-    #   xcode_scheme: Workflow-Unit-Tests
-    #   xcode_destination: platform=iOS Simulator,OS=10.1,name=iPad Pro (9.7-inch)
-    #   before_install:
-    #     - gem update --system
-    #     - gem install bundler
-    #     - bundle install
-    #     - cd swift/Samples/SampleApp
-    #     - bundle exec pod repo update
-    #     - bundle exec pod install
-    # Disabled due to https://github.com/square/workflow/issues/201
-    # - language: swift
-    #   name: "Swift - WorkflowUI - Cocoapods (Xcode 10.1)"
-    #   os: osx
-    #   osx_image: xcode10.1
-    #   xcode_workspace: SampleApp.xcworkspace
-    #   xcode_scheme: WorkflowUI-Unit-Tests
-    #   xcode_destination: platform=iOS Simulator,OS=10.1,name=iPad Pro (9.7-inch)
-    #   before_install:
-    #     - gem update --system
-    #     - gem install bundler
-    #     - bundle install
-    #     - cd swift/Samples/SampleApp
-    #     - bundle exec pod repo update
-    #     - bundle exec pod install
-
-    - language: swift
-      name: "Swift - Workflow - Cocoapods (Xcode 10.2)"
-      os: osx
-      osx_image: xcode10.2
-      xcode_workspace: SampleApp.xcworkspace
-      xcode_scheme: Workflow-Unit-Tests
-      xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
-      before_install:
-        - gem update --system
-        - gem install bundler
-        - bundle install
-        - cd swift/Samples/SampleApp
-        - bundle exec pod repo update
-        - bundle exec pod install
-
-    - language: swift
-      name: "Swift - WorkflowUI - Cocoapods (Xcode 10.2)"
-      os: osx
-      osx_image: xcode10.2
-      xcode_workspace: SampleApp.xcworkspace
-      xcode_scheme: WorkflowUI-Unit-Tests
-      xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
-      before_install:
-        - gem update --system
-        - gem install bundler
-        - bundle install
-        - cd swift/Samples/SampleApp
-        - bundle exec pod repo update
-        - bundle exec pod install
-
-    - language: swift
-      name: "Swift - SPM (Xcode 11.1)"
-      os: osx
-      osx_image: xcode11.1
-      script:
-        - xcodebuild -scheme "Workflow-Package" test -destination "name=iPhone 11"
-
-    - language: swift
-      name: "Swift - Tutorial - Cocoapods (Xcode 10.2)"
-      os: osx
-      osx_image: xcode10.2
-      xcode_workspace: Tutorial.xcworkspace
-      xcode_scheme: Tutorial
-      xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
-      before_install:
-        - gem update --system
-        - gem install bundler
-        - bundle install
-        - cd swift/Samples/Tutorial
-        - bundle exec pod repo update
-        - bundle exec pod install
-
-    - language: swift
-      name: "Swift - TicTacToe - Cocoapods (Xcode 10.2)"
-      os: osx
-      osx_image: xcode10.2
-      xcode_workspace: TicTacToe.xcworkspace
-      xcode_scheme: TicTacToe
-      xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
-      before_install:
-        - gem update --system
-        - gem install bundler
-        - bundle install
-        - cd swift/Samples/TicTacToe
-        - bundle exec pod repo update
-        - bundle exec pod install
+cache:
+  directories:
+    - $HOME/.gradle
