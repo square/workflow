@@ -103,7 +103,7 @@ matrix:
         - secure: "gFmZ18DktyZonExeAYGT4HtCodvAbRcH94AImWG6DrJZFzGkRSN//s1AjrgkAL/jZ4lLuoxyCs1nBoX2U83LmpJ8KxLIhU/45JlJgmD1tnE2zdFim6dHN+J6Yj7MCWqD5KO6E0dJickTJG2XzFu0oN3vBn7sETliQHzlw2lw8ME="
 
         - ADB_INSTALL_TIMEOUT=8
-        - ABI=x86_64
+        - ABI=armeabi-v7a
         - API=21
         - EMU_FLAVOR=default # use google_apis flavor if no default flavor emulator
         # PATH order is incredibly important. e.g. the 'emulator' script exists in more than one place!
@@ -135,7 +135,7 @@ matrix:
         - echo y | sdkmanager "extras;android;m2repository" >/dev/null
         - echo y | sdkmanager "system-images;android-$API;$EMU_FLAVOR;$ABI" #>/dev/null # install our emulator
         - echo no | avdmanager create avd --force -n test -k "system-images;android-$API;$EMU_FLAVOR;$ABI" -c 10M
-        - emulator -verbose -avd test -no-accel -no-snapshot -no-window -no-audio -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
+        - emulator -verbose -avd test -no-accel -no-snapshot -no-window -no-audio -camera-back none -camera-front none -selinux permissive -qemu -m 2048
 
       install:
         - ./gradlew clean
