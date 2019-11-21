@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 
 branches:
   except:
@@ -97,7 +97,6 @@ matrix:
     - language: android
       name: "Android Instrumentation Tests"
       jdk: oraclejdk8
-      sudo: true
       dist: trusty
 
       env:
