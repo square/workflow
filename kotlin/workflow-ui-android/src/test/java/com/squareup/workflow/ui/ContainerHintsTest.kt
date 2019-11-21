@@ -16,6 +16,7 @@
 package com.squareup.workflow.ui
 
 import com.google.common.truth.Truth.assertThat
+import com.squareup.workflow.ui.backstack.BackStackContainer
 import org.junit.Test
 
 class ContainerHintsTest {
@@ -36,12 +37,14 @@ class ContainerHintsTest {
     }
   }
 
+  private val emptyHints = ContainerHints(ViewRegistry(BackStackContainer))
+
   @Test fun defaults() {
-    assertThat(ContainerHints()[DataHint]).isEqualTo(DataHint())
+    assertThat(emptyHints[DataHint]).isEqualTo(DataHint())
   }
 
   @Test fun put() {
-    val hints = ContainerHints() +
+    val hints = emptyHints +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
@@ -50,11 +53,11 @@ class ContainerHintsTest {
   }
 
   @Test fun `map equality`() {
-    val hints1 = ContainerHints() +
+    val hints1 = emptyHints +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
-    val hints2 = ContainerHints() +
+    val hints2 = emptyHints +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
@@ -62,11 +65,11 @@ class ContainerHintsTest {
   }
 
   @Test fun `map inequality`() {
-    val hints1 = ContainerHints() +
+    val hints1 = emptyHints +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
-    val hints2 = ContainerHints() +
+    val hints2 = emptyHints +
         (StringHint to "fnord") +
         (DataHint to DataHint(43, "foo"))
 
@@ -82,7 +85,7 @@ class ContainerHintsTest {
   }
 
   @Test fun override() {
-    val hints = ContainerHints() +
+    val hints = emptyHints +
         (StringHint to "able") +
         (StringHint to "baker")
 
@@ -90,7 +93,7 @@ class ContainerHintsTest {
   }
 
   @Test fun `keys of the same type`() {
-    val hints = ContainerHints() +
+    val hints = emptyHints +
         (StringHint to "able") +
         (OtherStringHint to "baker")
 

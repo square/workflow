@@ -26,7 +26,6 @@ import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowViewStub
 
 /**
@@ -38,10 +37,7 @@ import com.squareup.workflow.ui.WorkflowViewStub
  * For single pane layouts, [MasterDetailScreen] is repackaged as a [BackStackScreen]
  * with [MasterDetailScreen.masterRendering] as the base of the stack.
  */
-class MasterDetailContainer(
-  view: View,
-  private val registry: ViewRegistry
-) : LayoutRunner<MasterDetailScreen> {
+class MasterDetailContainer(view: View) : LayoutRunner<MasterDetailScreen> {
 
   private val masterStub: WorkflowViewStub? = view.findViewById(R.id.master_stub)
   private val detailStub: WorkflowViewStub? = view.findViewById(R.id.detail_stub)
@@ -71,16 +67,14 @@ class MasterDetailContainer(
     } else {
       masterStub!!.update(
           rendering.masterRendering,
-          containerHints + (MasterDetailConfig to Master),
-          registry
+          containerHints + (MasterDetailConfig to Master)
       )
       rendering.detailRendering
           ?.let { detail ->
             detailStub!!.actual.visibility = VISIBLE
             detailStub.update(
                 detail,
-                containerHints + (MasterDetailConfig to Detail),
-                registry
+                containerHints + (MasterDetailConfig to Detail)
             )
           }
           ?: run {
@@ -98,7 +92,7 @@ class MasterDetailContainer(
         ?.let { rendering.masterRendering + it }
         ?: rendering.masterRendering
 
-    stub.update(combined, containerHints + (MasterDetailConfig to Single), registry)
+    stub.update(combined, containerHints + (MasterDetailConfig to Single))
   }
 
   companion object : ViewBinding<MasterDetailScreen> by LayoutRunner.Binding(

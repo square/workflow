@@ -45,20 +45,12 @@ import kotlin.reflect.KClass
  *     )
  *   }
  *
- * This pattern allows us to assemble a [ViewRegistry] out of the
- * [LayoutRunner] classes themselves.
+ * This pattern allows us to assemble a [ViewRegistry] out of the [LayoutRunner] classes
+ * themselves.
  *
  *    val TicTacToeViewBuilders = ViewRegistry(
  *        NewGameLayoutRunner, GamePlayLayoutRunner, GameOverLayoutRunner
  *    )
- *
- * Every [LayoutRunner] must have a constructor that accepts a [View] as its first argument.
- * The constructor may also have a second [ViewRegistry] argument, to allow
- * nested renderings to be displayed in nested views.
- *
- * It's simplest, and most typical, to pass the [ViewRegistry] to [WorkflowViewStub.update] to
- * show nested renderings. When that's too constraining, more complex containers can
- * call [ViewRegistry.buildView], [View.canShowRendering] and [View.showRendering] directly.
  */
 interface LayoutRunner<RenderingT : Any> {
   fun showRendering(
@@ -69,10 +61,9 @@ interface LayoutRunner<RenderingT : Any> {
   class Binding<RenderingT : Any>(
     override val type: KClass<RenderingT>,
     @LayoutRes private val layoutId: Int,
-    private val runnerConstructor: (View, ViewRegistry) -> LayoutRunner<RenderingT>
+    private val runnerConstructor: (View) -> LayoutRunner<RenderingT>
   ) : ViewBinding<RenderingT> {
     override fun buildView(
-      registry: ViewRegistry,
       initialRendering: RenderingT,
       initialContainerHints: ContainerHints,
       contextForNewView: Context,
@@ -85,7 +76,7 @@ interface LayoutRunner<RenderingT : Any> {
             bindShowRendering(
                 initialRendering,
                 initialContainerHints,
-                runnerConstructor.invoke(this, registry)::showRendering
+                runnerConstructor.invoke(this)::showRendering
             )
           }
     }
@@ -98,17 +89,8 @@ interface LayoutRunner<RenderingT : Any> {
      */
     inline fun <reified RenderingT : Any> bind(
       @LayoutRes layoutId: Int,
-      noinline constructor: (View, ViewRegistry) -> LayoutRunner<RenderingT>
-    ): ViewBinding<RenderingT> = Binding(RenderingT::class, layoutId, constructor)
-
-    /**
-     * Creates a [ViewBinding] that inflates [layoutId] to show renderings of type [RenderingT],
-     * using a [LayoutRunner] created by [constructor].
-     */
-    inline fun <reified RenderingT : Any> bind(
-      @LayoutRes layoutId: Int,
       noinline constructor: (View) -> LayoutRunner<RenderingT>
-    ): ViewBinding<RenderingT> = bind(layoutId) { view, _ -> constructor.invoke(view) }
+    ): ViewBinding<RenderingT> = Binding(RenderingT::class, layoutId, constructor)
 
     /**
      * Creates a [ViewBinding] that inflates [layoutId] to "show" renderings of type [RenderingT],
@@ -116,7 +98,7 @@ interface LayoutRunner<RenderingT : Any> {
      */
     inline fun <reified RenderingT : Any> bindNoRunner(
       @LayoutRes layoutId: Int
-    ): ViewBinding<RenderingT> = bind(layoutId) { _ ->
+    ): ViewBinding<RenderingT> = bind(layoutId) {
       object : LayoutRunner<RenderingT> {
         override fun showRendering(
           rendering: RenderingT,

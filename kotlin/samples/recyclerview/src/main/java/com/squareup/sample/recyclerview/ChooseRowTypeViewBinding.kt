@@ -27,7 +27,6 @@ import android.widget.LinearLayout
 import com.squareup.sample.recyclerview.AppWorkflow.ChooseRowTypeScreen
 import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.ViewBinding
-import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.bindShowRendering
 import kotlin.reflect.KClass
 
@@ -38,7 +37,6 @@ object ChooseRowTypeViewBinding : ViewBinding<ChooseRowTypeScreen> {
   override val type: KClass<ChooseRowTypeScreen> get() = ChooseRowTypeScreen::class
 
   override fun buildView(
-    registry: ViewRegistry,
     initialRendering: ChooseRowTypeScreen,
     initialContainerHints: ContainerHints,
     contextForNewView: Context,
@@ -48,12 +46,12 @@ object ChooseRowTypeViewBinding : ViewBinding<ChooseRowTypeScreen> {
     list.orientation = LinearLayout.VERTICAL
     list.setBackgroundColor(Color.WHITE)
 
-    val inflator = LayoutInflater.from(contextForNewView)
+    val inflater = LayoutInflater.from(contextForNewView)
 
     list.bindShowRendering(initialRendering, initialContainerHints) { rendering, _ ->
       list.removeAllViews()
       rendering.options.forEachIndexed { index, option ->
-        val row = inflator.inflate(R.layout.new_row_type_item, list, false) as Button
+        val row = inflater.inflate(R.layout.new_row_type_item, list, false) as Button
         row.text = option
         row.setOnClickListener { rendering.onSelectionTapped(index) }
         list.addView(row, LayoutParams(WRAP_CONTENT, WRAP_CONTENT))

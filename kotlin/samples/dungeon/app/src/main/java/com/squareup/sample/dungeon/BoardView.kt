@@ -99,7 +99,7 @@ class BoardView(context: Context) : View(context) {
 
   companion object : ViewBinding<Board> by BuilderBinding(
       type = Board::class,
-      viewConstructor = { _, initialRendering, initialHints, contextForNewView, _ ->
+      viewConstructor = { initialRendering, initialHints, contextForNewView, _ ->
         BoardView(contextForNewView)
             .apply { bindShowRendering(initialRendering, initialHints) { r, _ -> update(r) } }
       })

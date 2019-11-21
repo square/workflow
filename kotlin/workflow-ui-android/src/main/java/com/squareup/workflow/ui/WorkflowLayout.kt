@@ -55,14 +55,15 @@ class WorkflowLayout(
     renderings: Observable<out Any>,
     registry: ViewRegistry
   ) {
-    takeWhileAttached(renderings) { show(it, registry) }
+    val hints = ContainerHints(registry)
+    takeWhileAttached(renderings) { show(it, hints) }
   }
 
   private fun show(
     newRendering: Any,
-    registry: ViewRegistry
+    hints: ContainerHints
   ) {
-    showing.update(newRendering, ContainerHints(), registry)
+    showing.update(newRendering, hints)
     restoredChildState?.let { restoredState ->
       restoredChildState = null
       showing.actual.restoreHierarchyState(restoredState)

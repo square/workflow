@@ -11,7 +11,7 @@ import android.view.ViewGroup
  *
  * ## Usage
  *
- * In the XML layout for your container view, place a [WorkflowViewStub] where
+ * In the XML layout for a container view, place a [WorkflowViewStub] where
  * you want child renderings to be displayed. E.g.:
  *
  *    <LinearLayout…>
@@ -22,19 +22,18 @@ import android.view.ViewGroup
  *       …
  *
  * Then in your [LayoutRunner],
- *   - get the `ViewRegistry` in your constructor
  *   - pull the view out with `findViewById` like any other view
  *   - and update it in your `showRendering` method:
  *
  * ```
- *     class YourLayoutRunner(
- *       view: View, private
- *       val viewRegistry: ViewRegistry
- *     ) {
+ *     class YourLayoutRunner(view: View) {
  *       private val child = view.findViewById<WorkflowViewStub>(R.id.child_stub)
  *
- *       override fun showRendering(rendering: YourRendering) {
- *         child.update(rendering.childRendering, viewRegistry)
+ *       override fun showRendering(
+ *          rendering: YourRendering,
+ *          containerHints: ContainerHints
+ *       ) {
+ *         child.update(rendering.childRendering, containerHints)
  *       }
  *     }
  * ```
@@ -69,8 +68,7 @@ class WorkflowViewStub @JvmOverloads constructor(
    */
   fun update(
     rendering: Any,
-    containerHints: ContainerHints,
-    registry: ViewRegistry
+    containerHints: ContainerHints
   ): View {
     actual.takeIf { it.canShowRendering(rendering) }
         ?.let {
@@ -79,9 +77,9 @@ class WorkflowViewStub @JvmOverloads constructor(
         }
 
     return when (val parent = actual.parent) {
-      is ViewGroup -> registry.buildView(rendering, containerHints, parent)
+      is ViewGroup -> containerHints[ViewRegistry].buildView(rendering, containerHints, parent)
           .also { buildNewViewAndReplaceOldView(parent, it) }
-      else -> registry.buildView(rendering, containerHints, actual.context)
+      else -> containerHints[ViewRegistry].buildView(rendering, containerHints, actual.context)
     }.also { actual = it }
   }
 

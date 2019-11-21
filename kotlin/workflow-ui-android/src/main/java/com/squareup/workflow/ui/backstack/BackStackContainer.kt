@@ -52,7 +52,6 @@ open class BackStackContainer @JvmOverloads constructor(
 ) : FrameLayout(context, attributeSet, defStyle, defStyleRes) {
 
   private val viewStateCache = ViewStateCache()
-  private lateinit var registry: ViewRegistry
 
   private val currentView: View? get() = if (childCount > 0) getChildAt(0) else null
   private var currentRendering: BackStackScreen<Named<*>>? = null
@@ -80,7 +79,7 @@ open class BackStackContainer @JvmOverloads constructor(
           return
         }
 
-    val newView = registry.buildView(named.top, hints, this)
+    val newView = hints[ViewRegistry].buildView(named.top, hints, this)
     viewStateCache.update(named.backStack, oldViewMaybe, newView)
 
     val popped = currentRendering?.backStack?.any { compatible(it, named.top) } == true
@@ -154,12 +153,11 @@ open class BackStackContainer @JvmOverloads constructor(
   companion object : ViewBinding<BackStackScreen<*>>
   by BuilderBinding(
       type = BackStackScreen::class,
-      viewConstructor = { viewRegistry, initialRendering, initialHints, context, _ ->
+      viewConstructor = { initialRendering, initialHints, context, _ ->
         BackStackContainer(context)
             .apply {
               id = R.id.workflow_back_stack_container
               layoutParams = (ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-              registry = viewRegistry
               bindShowRendering(initialRendering, initialHints, ::update)
             }
       }
