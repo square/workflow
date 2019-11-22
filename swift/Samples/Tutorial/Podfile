@@ -1,4 +1,3 @@
-source 'https://github.com/CocoaPods/Specs.git'
 project 'Tutorial.xcodeproj'
 platform :ios, '11.0'
 
