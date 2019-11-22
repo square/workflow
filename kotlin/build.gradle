@@ -62,7 +62,7 @@ buildscript {
       'timber': "com.jakewharton.timber:timber:4.7.1",
 
       'kotlin': [
-          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50",
+          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60",
           'stdLib': [
               'common': "org.jetbrains.kotlin:kotlin-stdlib-common",
               'jdk8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
@@ -76,7 +76,7 @@ buildscript {
               'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.2"
           ],
           'moshi': "com.squareup.moshi:moshi-kotlin:1.9.1",
-          'reflect': "org.jetbrains.kotlin:kotlin-reflect:1.3.50",
+          'reflect': "org.jetbrains.kotlin:kotlin-reflect:1.3.60",
           'test': [
               'common': "org.jetbrains.kotlin:kotlin-test-common",
               'annotations': "org.jetbrains.kotlin:kotlin-test-annotations-common",
