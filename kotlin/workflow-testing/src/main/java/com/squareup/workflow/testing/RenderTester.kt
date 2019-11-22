@@ -101,9 +101,7 @@ fun <PropsT, StateT, OutputT : Any, RenderingT>
  *     assertThat(rendering.text).isEqualTo("foo")
  *   }
  *   .verifyAction { action ->
- *     // Action expected to handle the LoginResponse output emitted by SubmitLoginWorker.
- *     val expectedAction = Action.CompleteLogin(success = true)
- *     assertThat(action).isEqualTo(expectedAction)
+ *     assertThat(action).isEqualTo(Action.CompleteLogin(success = true))
  *   }
  * ```
  *
@@ -132,9 +130,7 @@ fun <PropsT, StateT, OutputT : Any, RenderingT>
  *     assertThat(rendering.text).isEqualTo("foo")
  *   }
  *   .verifyAction { action ->
- *     // Action expected to handle the onCancelClicked rendering event.
- *     val expectedAction = Action.CancelLogin
- *     assertThat(action).isEqualTo(expectedAction)
+ *     assertThat(action).isEqualTo(Action.CancelLogin)
  *   }
  * ```
  *
@@ -208,7 +204,7 @@ interface RenderTester<PropsT, StateT, OutputT : Any, RenderingT> {
    * [renderChild][com.squareup.workflow.RenderContext.renderChild].
    * @param output If non-null, [EmittedOutput.output] will be "emitted" when this workflow is
    * rendered. The [WorkflowAction] used to handle this output can be verified using methods on
-   * [TestRenderResult].
+   * [RenderTestResult].
    */
   fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> expectWorkflow(
     workflowType: KClass<out Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>>,
@@ -226,7 +222,7 @@ interface RenderTester<PropsT, StateT, OutputT : Any, RenderingT> {
    * when rendering this workflow.
    * @param output If non-null, [EmittedOutput.output] will be emitted when this worker is ran.
    * The [WorkflowAction] used to handle this output can be verified using methods on
-   * [TestRenderResult].
+   * [RenderTestResult].
    */
   fun expectWorker(
     matchesWhen: (otherWorker: Worker<*>) -> Boolean,
