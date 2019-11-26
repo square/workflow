@@ -48,6 +48,7 @@ import okio.ByteString.Companion.encodeUtf8
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
@@ -807,6 +808,58 @@ class WorkflowNodeTest {
             "onWorkflowAction(${node.diagnosticId}, TestAction, (props:props:(props:))," +
                 " state: foo, output: foo)"
         ), listener.consumeEvents()
+    )
+  }
+
+  @Test fun `eventSink send fails before render pass completed`() {
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      val sink: Sink<String> = makeEventSink { fail("Expected sink send to fail.") }
+      sink.send("Foo")
+    }
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = Unit,
+        snapshot = null,
+        baseContext = Unconfined
+    )
+
+    val error = assertFailsWith<UnsupportedOperationException> {
+      node.render(workflow.asStatefulWorkflow(), Unit)
+    }
+    assertTrue(
+        error.message!!.startsWith(
+            "Expected sink to not be sent to until after the render pass. " +
+                "Received action: WorkflowAction(eventSink(Foo))@"
+        )
+    )
+  }
+
+  @Test fun `actionSink send fails before render pass completed`() {
+    class TestAction : WorkflowAction<Nothing, Nothing> {
+      override fun Mutator<Nothing>.apply(): Nothing? = fail("Expected sink send to fail.")
+      override fun toString(): String = "TestAction()"
+    }
+
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      val sink = makeActionSink<TestAction>()
+      sink.send(TestAction())
+    }
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = Unit,
+        snapshot = null,
+        baseContext = Unconfined
+    )
+
+    val error = assertFailsWith<UnsupportedOperationException> {
+      node.render(workflow.asStatefulWorkflow(), Unit)
+    }
+    assertEquals(
+        "Expected sink to not be sent to until after the render pass. " +
+            "Received action: TestAction()",
+        error.message
     )
   }
 }
