@@ -7,6 +7,7 @@ let package = Package(
     name: "Workflow",
     platforms: [
         .iOS("9.3"),
+        .macOS("10.12")
     ],
     products: [
         .library(
