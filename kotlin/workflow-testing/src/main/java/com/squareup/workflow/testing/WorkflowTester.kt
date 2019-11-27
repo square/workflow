@@ -268,7 +268,7 @@ fun <T, PropsT, StateT, OutputT : Any, RenderingT>
       block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
     ): T
 // @formatter:on
-{
+{ // ktlint-disable curly-spacing
   val propsChannel = ConflatedBroadcastChannel(props)
 
   // Any exceptions that are thrown from a launch will be reported to the coroutine's uncaught

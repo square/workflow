@@ -94,7 +94,7 @@ buildscript {
       // Source of "API 'variant.getJavaCompile()' is obsolete" warning, fixed in upcoming 0.9.0.
       // See https://github.com/vanniktech/gradle-maven-publish-plugin/issues/67.
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:0.8.0",
-      'ktlint': "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:5.1.0",
+      'ktlint': "org.jlleitschuh.gradle:ktlint-gradle:9.1.1",
       'lanterna': "com.googlecode.lanterna:lanterna:3.0.1",
       'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.1",
       'okio': "com.squareup.okio:okio:2.4.1",
@@ -168,5 +168,21 @@ subprojects {
       // to define our own experiments.
       freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
     }
+  }
+
+  // Configuration documentation: https://github.com/JLLeitschuh/ktlint-gradle#configuration
+  ktlint {
+    // Prints the name of failed rules.
+    verbose = true
+    reporters {
+      // Default "plain" reporter is actually harder to read.
+      reporter "json"
+    }
+
+    disabledRules = [
+        // IntelliJ refuses to sort imports correctly.
+        // This is a known issue: https://github.com/pinterest/ktlint/issues/527
+        "import-ordering",
+    ]
   }
 }
