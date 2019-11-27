@@ -62,7 +62,7 @@ buildscript {
       'timber': "com.jakewharton.timber:timber:4.7.1",
 
       'kotlin': [
-          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60",
+          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61",
           'stdLib': [
               'common': "org.jetbrains.kotlin:kotlin-stdlib-common",
               'jdk8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
