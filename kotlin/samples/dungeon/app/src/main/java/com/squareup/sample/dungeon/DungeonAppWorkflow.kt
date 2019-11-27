@@ -28,10 +28,10 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
+import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
 import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
-import com.squareup.workflow.workflowAction
 
 private typealias BoardPath = String
 
@@ -59,14 +59,14 @@ class DungeonAppWorkflow(
   ): AlertContainerScreen<Any> {
     return when (state) {
       Loading -> {
-        context.runningWorker(boardLoader.load(props)) { startRunning(it) }
+        context.runningWorker(boardLoader.load(props)) { StartRunning(it) }
         AlertContainerScreen(Loading)
       }
 
       is Running -> {
         val gameInput = GameWorkflow.Props(state.board)
         val gameScreen = context.renderChild(gameWorkflow, gameInput) {
-          handleGameOutput(it, state.board)
+          HandleGameOutput(it, state.board)
         }
         AlertContainerScreen(gameScreen)
       }
@@ -80,7 +80,7 @@ class DungeonAppWorkflow(
             buttons = mapOf(POSITIVE to "Restart"),
             message = "You've been eaten, try again.",
             cancelable = false,
-            onEvent = { sink.send(restartGame()) }
+            onEvent = { sink.send(RestartGame) }
         )
 
         AlertContainerScreen(gameScreen, gameOverDialog)
@@ -90,32 +90,38 @@ class DungeonAppWorkflow(
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
-  private fun startRunning(board: Board) = workflowAction("startRunning") {
-    state = Running(board)
-    return@workflowAction null
-  }
-
-  private fun handleGameOutput(
-    output: GameWorkflow.Output,
-    board: Board
-  ) = workflowAction("handleGameOutput") {
-    when (output) {
-      Vibrate -> vibrate(50)
-      PlayerWasEaten -> {
-        state = GameOver(board)
-        vibrate(20)
-        vibrate(20)
-        vibrate(20)
-        vibrate(20)
-        vibrate(1000)
-      }
+  private class StartRunning(val board: Board) : WorkflowAction<State, Nothing> {
+    override fun Mutator<State>.apply(): Nothing? {
+      state = Running(board)
+      return null
     }
-    return@workflowAction null
   }
 
-  private fun restartGame() = workflowAction("restartGame") {
-    state = Loading
-    return@workflowAction null
+  private inner class HandleGameOutput(
+    val output: GameWorkflow.Output,
+    val board: Board
+  ) : WorkflowAction<State, Nothing> {
+    override fun Mutator<State>.apply(): Nothing? {
+      when (output) {
+        Vibrate -> vibrate(50)
+        PlayerWasEaten -> {
+          state = GameOver(board)
+          vibrate(20)
+          vibrate(20)
+          vibrate(20)
+          vibrate(20)
+          vibrate(1000)
+        }
+      }
+      return null
+    }
+  }
+
+  private object RestartGame : WorkflowAction<State, Nothing> {
+    override fun Mutator<State>.apply(): Nothing? {
+      state = Loading
+      return null
+    }
   }
 
   private fun vibrate(durationMs: Long) {
