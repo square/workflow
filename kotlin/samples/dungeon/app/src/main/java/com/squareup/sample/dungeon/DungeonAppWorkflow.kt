@@ -33,7 +33,7 @@ import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
 import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
 
-private typealias BoardPath = String
+typealias BoardPath = String
 
 class DungeonAppWorkflow(
   private val gameWorkflow: GameWorkflow,

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2019 Square Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/time_travel_gap"
+    >
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/time_travel_title"
+      android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
+
+  <com.squareup.sample.timemachine.shakeable.internal.GlassFrameLayout
+      android:id="@+id/glass_view"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_marginTop="@dimen/time_travel_gap"
+      android:layout_marginBottom="@dimen/time_travel_gap"
+      app:layout_constraintBottom_toTopOf="@+id/time_travel_seek"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/title"
+      >
+
+    <com.squareup.workflow.ui.WorkflowViewStub
+        android:id="@+id/child_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+  </com.squareup.sample.timemachine.shakeable.internal.GlassFrameLayout>
+
+  <SeekBar
+      android:id="@+id/time_travel_seek"
+      style="@style/Widget.AppCompat.SeekBar"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/time_travel_gap"
+      android:max="10"
+      android:progress="3"
+      app:layout_constraintBottom_toTopOf="@+id/barrier3"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      />
+
+  <TextView
+      android:id="@+id/start_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      />
+
+  <TextView
+      android:id="@+id/end_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      />
+
+  <androidx.constraintlayout.widget.Barrier
+      android:id="@+id/barrier3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:barrierDirection="top"
+      app:constraint_referenced_ids="start_label,end_label"
+      tools:layout_editor_absoluteX="8dp"
+      tools:layout_editor_absoluteY="650dp"
+      />
+
+  <androidx.constraintlayout.widget.Group
+      android:id="@+id/group"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:constraint_referenced_ids="title,end_label,start_label,time_travel_seek"
+      tools:layout_editor_absoluteX="8dp"
+      tools:layout_editor_absoluteY="8dp"
+      />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

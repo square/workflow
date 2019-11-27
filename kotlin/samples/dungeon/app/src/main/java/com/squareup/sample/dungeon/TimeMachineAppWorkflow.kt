@@ -1,0 +1,52 @@
+/*
+ * Copyright 2019 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.squareup.sample.dungeon
+
+import android.content.Context
+import com.squareup.sample.timemachine.TimeMachineWorkflow
+import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineRendering
+import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow
+import com.squareup.workflow.RenderContext
+import com.squareup.workflow.StatelessWorkflow
+import com.squareup.workflow.renderChild
+import com.squareup.workflow.ui.AlertContainerScreen
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+
+/**
+ * A workflow that wraps [DungeonAppWorkflow] with a [ShakeableTimeMachineWorkflow] to enable
+ * time travel debugging.
+ */
+@UseExperimental(ExperimentalTime::class)
+class TimeMachineAppWorkflow(
+  appWorkflow: DungeonAppWorkflow,
+  clock: Clock,
+  context: Context
+) : StatelessWorkflow<BoardPath, Nothing, ShakeableTimeMachineRendering>() {
+
+  private val timeMachineWorkflow =
+    ShakeableTimeMachineWorkflow<BoardPath, Nothing, AlertContainerScreen<Any>>(
+        TimeMachineWorkflow(appWorkflow, clock),
+        context
+    )
+
+  override fun render(
+    props: BoardPath,
+    context: RenderContext<Nothing, Nothing>
+  ): ShakeableTimeMachineRendering {
+    return context.renderChild(timeMachineWorkflow, props)
+  }
+}
