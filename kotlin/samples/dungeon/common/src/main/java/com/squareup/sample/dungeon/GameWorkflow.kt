@@ -42,6 +42,8 @@ import kotlinx.coroutines.flow.flow
 import kotlin.math.roundToLong
 import kotlin.random.Random
 
+private val ignoreInput: (Direction) -> Unit = {}
+
 class GameWorkflow(
   private val playerWorkflow: PlayerWorkflow,
   private val aiWorkflows: List<ActorWorkflow>,
@@ -50,10 +52,14 @@ class GameWorkflow(
 
   /**
    * @param board Should not change while the game is running.
+   * @param paused If true, the game will still be rendered but none of the AI will tick and no
+   * input events will be accepted. After the game is finished, this flag has no effect (this
+   * workflow will effectively operate as "paused" until it's torn down).
    */
   data class Props(
     val board: Board,
-    val ticksPerSecond: Int = 15
+    val ticksPerSecond: Int = 15,
+    val paused: Boolean = false
   )
 
   data class State(
@@ -101,7 +107,7 @@ class GameWorkflow(
     state: State,
     context: RenderContext<State, Output>
   ): GameRendering {
-    val running = !state.game.isPlayerEaten
+    val running = !props.paused && !state.game.isPlayerEaten
     // Stop actors from ticking if the game is paused or finished.
     val ticker: Worker<Long> =
       if (running) TickerWorker(props.ticksPerSecond) else Worker.finished()
@@ -135,8 +141,8 @@ class GameWorkflow(
     )
     return GameRendering(
         board = renderedBoard,
-        onStartMoving = playerRendering.onStartMoving,
-        onStopMoving = playerRendering.onStopMoving
+        onStartMoving = if (running) playerRendering.onStartMoving else ignoreInput,
+        onStopMoving = if (running) playerRendering.onStopMoving else ignoreInput
     )
   }
 

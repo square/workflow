@@ -16,9 +16,11 @@
 package com.squareup.sample.dungeon
 
 import android.content.Context
+import com.squareup.sample.dungeon.DungeonAppWorkflow.Props
 import com.squareup.sample.timemachine.TimeMachineWorkflow
 import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineRendering
 import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow
+import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow.PropsFactory
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.renderChild
@@ -38,7 +40,7 @@ class TimeMachineAppWorkflow(
 ) : StatelessWorkflow<BoardPath, Nothing, ShakeableTimeMachineRendering>() {
 
   private val timeMachineWorkflow =
-    ShakeableTimeMachineWorkflow<BoardPath, Nothing, AlertContainerScreen<Any>>(
+    ShakeableTimeMachineWorkflow<Props, Nothing, AlertContainerScreen<Any>>(
         TimeMachineWorkflow(appWorkflow, clock),
         context
     )
@@ -47,6 +49,9 @@ class TimeMachineAppWorkflow(
     props: BoardPath,
     context: RenderContext<Nothing, Nothing>
   ): ShakeableTimeMachineRendering {
-    return context.renderChild(timeMachineWorkflow, props)
+    val propsFactory = PropsFactory { recording ->
+      Props(boardPath = props, paused = !recording)
+    }
+    return context.renderChild(timeMachineWorkflow, propsFactory)
   }
 }

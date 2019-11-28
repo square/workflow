@@ -18,6 +18,7 @@ package com.squareup.sample.timemachine.shakeable
 import android.content.Context
 import com.squareup.sample.timemachine.TimeMachineWorkflow
 import com.squareup.sample.timemachine.TimeMachineWorkflow.TimeMachineProps
+import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow.PropsFactory
 import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow.State
 import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow.State.PlayingBack
 import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow.State.Recording
@@ -41,7 +42,15 @@ import kotlin.time.ExperimentalTime
 class ShakeableTimeMachineWorkflow<in P, out O : Any, out R : Any>(
   private val timeMachineWorkflow: TimeMachineWorkflow<P, O, R>,
   context: Context
-) : StatefulWorkflow<P, State, O, ShakeableTimeMachineRendering>() {
+) : StatefulWorkflow<PropsFactory<P>, State, O, ShakeableTimeMachineRendering>() {
+
+  /**
+   * A factory that knows how to create the props for a [TimeMachineWorkflow.delegateWorkflow],
+   * given a flag indicating whether the workflow is in recording mode or not.
+   */
+  class PropsFactory<out P>(
+    val createDelegateProps: (recording: Boolean) -> P
+  )
 
   sealed class State {
     object Recording : State()
@@ -51,23 +60,25 @@ class ShakeableTimeMachineWorkflow<in P, out O : Any, out R : Any>(
   private val shakeWorker = ShakeWorker(context)
 
   override fun initialState(
-    props: P,
+    props: PropsFactory<P>,
     snapshot: Snapshot?
   ): State = Recording
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
   override fun render(
-    props: P,
+    props: PropsFactory<P>,
     state: State,
     context: RenderContext<State, O>
   ): ShakeableTimeMachineRendering {
     // Only listen to shakes when recording.
     if (state === Recording) context.runningWorker(shakeWorker) { onShake }
 
+    val delegateProps = props.createDelegateProps(state === Recording)
+
     val timeMachineProps = when (state) {
-      Recording -> TimeMachineProps.Recording(props)
-      is PlayingBack -> TimeMachineProps.PlayingBackAt(props, state.timestamp)
+      Recording -> TimeMachineProps.Recording(delegateProps)
+      is PlayingBack -> TimeMachineProps.PlayingBackAt(delegateProps, state.timestamp)
     }
 
     val timeMachineRendering =
