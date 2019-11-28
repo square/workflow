@@ -32,7 +32,7 @@ package com.squareup.workflow
  *
  * @see StatefulWorkflow
  */
-abstract class StatelessWorkflow<PropsT, OutputT : Any, RenderingT> :
+abstract class StatelessWorkflow<in PropsT, out OutputT : Any, out RenderingT> :
     Workflow<PropsT, OutputT, RenderingT> {
 
   @Suppress("UNCHECKED_CAST")
