@@ -88,11 +88,20 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     return this
   }
 
+  override fun changeProps(
+    newProps: PropsT,
+    block: (newState: StateT) -> Unit
+  ) {
+    val newState = workflow.onPropsChanged(props, newProps, state)
+    block(newState)
+  }
+
   override fun render(block: (RenderingT) -> Unit): RenderTestResult<StateT, OutputT> {
     // Clone the expectations to run a "dry" render pass.
     val noopContext = deepCloneForRender()
     workflow.render(props, state, noopContext)
 
+    // Do the real render pass.
     workflow.render(props, state, this)
         .also(block)
 

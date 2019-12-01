@@ -231,6 +231,14 @@ interface RenderTester<PropsT, StateT, OutputT : Any, RenderingT> {
   ): RenderTester<PropsT, StateT, OutputT, RenderingT>
 
   /**
+   * TODO kdoc
+   */
+  fun changeProps(
+    newProps: PropsT,
+    block: (newState: StateT) -> Unit
+  )
+
+  /**
    * Execute the workflow's `render` method and run [block] to perform assertions on and send events
    * to the resulting rendering.
    *
