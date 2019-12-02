@@ -118,7 +118,7 @@ buildscript {
           ],
           'hamcrestCore': "org.hamcrest:hamcrest-core:2.2",
           'junit': "junit:junit:4.12",
-          'mockito': "org.mockito:mockito-core:3.1.0",
+          'mockito': "org.mockito:mockito-core:3.2.0",
           'truth': "com.google.truth:truth:1.0",
       ]
   ]
