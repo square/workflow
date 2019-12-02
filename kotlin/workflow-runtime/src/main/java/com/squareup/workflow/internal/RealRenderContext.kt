@@ -50,7 +50,13 @@ class RealRenderContext<StateT, OutputT : Any>(
   private val workerCases = mutableListOf<WorkerCase<*, StateT, OutputT>>()
   private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
 
-  /** Used to prevent modifications to this object after [buildBehavior] is called. */
+  /**
+   * False during the current render call, set to true once this node is finished rendering.
+   *
+   * Used to:
+   *  - prevent modifications to this object after [buildBehavior] is called.
+   *  - prevent sending to sinks before render returns.
+   */
   private var frozen = false
 
   @Suppress("OverridingDeprecatedMember")
@@ -72,6 +78,11 @@ class RealRenderContext<StateT, OutputT : Any>(
 
     return object : Sink<A> {
       override fun send(value: A) {
+        if (!frozen) {
+          throw UnsupportedOperationException(
+              "Expected sink to not be sent to until after the render pass. Received action: $value"
+          )
+        }
         eventActionsChannel.offer(value)
       }
     }

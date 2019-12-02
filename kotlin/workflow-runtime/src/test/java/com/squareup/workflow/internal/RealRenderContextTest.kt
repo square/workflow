@@ -125,6 +125,9 @@ class RealRenderContextTest {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val stringAction = WorkflowAction<String, String>({ "stringAction" }) { null }
     val sink = context.makeActionSink<WorkflowAction<String, String>>()
+    // Enable sink sends.
+    context.buildBehavior()
+
     assertTrue(eventActionsChannel.isEmpty)
 
     sink.send(stringAction)
@@ -145,6 +148,9 @@ class RealRenderContextTest {
       override fun toString(): String = "secondAction"
     }
     val sink = context.makeActionSink<WorkflowAction<String, String>>()
+    // Enable sink sends.
+    context.buildBehavior()
+
     sink.send(firstAction)
 
     // Shouldn't throw.
@@ -154,6 +160,9 @@ class RealRenderContextTest {
   @Test fun `makeEventSink gets event`() {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val sink: Sink<String> = context.makeEventSink { it }
+    // Enable sink sends.
+    context.buildBehavior()
+
     sink.send("foo")
 
     val update = eventActionsChannel.poll()!!
@@ -165,6 +174,9 @@ class RealRenderContextTest {
   @Test fun `makeEventSink works with OutputT of Nothing`() {
     val context = RealRenderContext<String, Nothing>(PoisonRenderer(), eventActionsChannel)
     val sink: Sink<String> = context.makeEventSink { null }
+    // Enable sink sends.
+    context.buildBehavior()
+
     sink.send("foo")
 
     val update = eventActionsChannel.poll()!!
