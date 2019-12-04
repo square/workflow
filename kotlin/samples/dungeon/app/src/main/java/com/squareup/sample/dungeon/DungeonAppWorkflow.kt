@@ -16,6 +16,7 @@
 package com.squareup.sample.dungeon
 
 import android.os.Vibrator
+import com.squareup.sample.dungeon.DungeonAppWorkflow.Props
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State.GameOver
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State.Loading
@@ -33,13 +34,18 @@ import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
 import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
 
-private typealias BoardPath = String
+typealias BoardPath = String
 
 class DungeonAppWorkflow(
   private val gameWorkflow: GameWorkflow,
   private val vibrator: Vibrator,
   private val boardLoader: BoardLoader
-) : StatefulWorkflow<BoardPath, State, Nothing, AlertContainerScreen<Any>>() {
+) : StatefulWorkflow<Props, State, Nothing, AlertContainerScreen<Any>>() {
+
+  data class Props(
+    val boardPath: BoardPath,
+    val paused: Boolean = false
+  )
 
   sealed class State {
     object Loading : State()
@@ -48,23 +54,23 @@ class DungeonAppWorkflow(
   }
 
   override fun initialState(
-    props: BoardPath,
+    props: Props,
     snapshot: Snapshot?
   ): State = Loading
 
   override fun render(
-    props: BoardPath,
+    props: Props,
     state: State,
     context: RenderContext<State, Nothing>
   ): AlertContainerScreen<Any> {
     return when (state) {
       Loading -> {
-        context.runningWorker(boardLoader.load(props)) { StartRunning(it) }
+        context.runningWorker(boardLoader.load(props.boardPath)) { StartRunning(it) }
         AlertContainerScreen(Loading)
       }
 
       is Running -> {
-        val gameInput = GameWorkflow.Props(state.board)
+        val gameInput = GameWorkflow.Props(state.board, paused = props.paused)
         val gameScreen = context.renderChild(gameWorkflow, gameInput) {
           HandleGameOutput(it, state.board)
         }
