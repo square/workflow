@@ -45,3 +45,5 @@ include ':workflow-testing'
 include ':workflow-tracing'
 include ':workflow-ui-core'
 include ':workflow-ui-android'
+
+enableFeaturePreview("GRADLE_METADATA")

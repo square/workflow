@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+}
 apply plugin: 'java-library'
-apply plugin: 'kotlin'
 apply plugin: 'org.jetbrains.dokka'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -23,13 +25,35 @@ targetCompatibility = JavaVersion.VERSION_1_8
 apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
 apply from: rootProject.file('.buildscript/configure-dokka.gradle')
 
-dependencies {
-  compileOnly deps.annotations.intellij
+kotlin {
+    jvm()
+    sourceSets {
+        commonMain {
+            dependencies {
+                compileOnly deps.annotations.intellij
 
-  api deps.kotlin.stdLib.jdk6
-  api deps.kotlin.coroutines.core
-  // For Snapshot.
-  api deps.okio
+                implementation deps.kotlin.stdLib.common
+                api deps.kotlin.coroutines.coreCommon
+                // For Snapshot.
+                api deps.okio
+                implementation kotlin('test-common')
+                implementation kotlin('test-annotations-common')
 
-  testImplementation deps.kotlin.test.jdk
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin('test-common')
+                implementation kotlin('test-annotations-common')
+                api deps.kotlin.coroutines.coreCommon
+                implementation deps.kotlin.stdLib.common
+                implementation deps.kotlin.test.jdk
+            }
+        }
+        jvmMain {
+            dependencies {
+                api deps.kotlin.coroutines.core
+            }
+        }
+    }
 }

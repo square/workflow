@@ -25,6 +25,7 @@ android rootProject.ext.defaultAndroidConfig
 android.packagingOptions {
   exclude 'META-INF/atomicfu.kotlin_module'
   exclude 'META-INF/common.kotlin_module'
+  pickFirst 'META-INF/kotlinx-coroutines-core.kotlin_module'
 }
 
 dependencies {
