@@ -27,27 +27,8 @@ import com.squareup.workflow.WorkflowAction
  * @see RealRenderContext
  */
 data class Behavior<StateT, OutputT : Any> internal constructor(
-  val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,
   val workerCases: List<WorkerCase<*, StateT, OutputT>>
 ) {
-
-  /* ktlint-disable parameter-list-wrapping */
-  data class WorkflowOutputCase<
-      ChildPropsT,
-      ChildOutputT : Any,
-      ParentStateT,
-      ParentOutputT : Any
-      > internal constructor(
-    val workflow: Workflow<*, ChildOutputT, *>,
-    val id: WorkflowId<ChildPropsT, ChildOutputT, *>,
-    val props: ChildPropsT,
-    val handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
-  ) {
-    @Suppress("UNCHECKED_CAST")
-    fun acceptChildOutput(output: Any): WorkflowAction<ParentStateT, ParentOutputT> =
-      handler(output as ChildOutputT)
-  }
-  /* ktlint-enable parameter-list-wrapping */
 
   data class WorkerCase<T, StateT, OutputT : Any> internal constructor(
     val worker: Worker<T>,
