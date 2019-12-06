@@ -15,7 +15,6 @@
  */
 rootProject.name = "workflow"
 
-include ':benchmarks'
 include ':internal-testing-utils'
 include ':legacy:legacy-workflow-core'
 include ':legacy:legacy-workflow-rx2'

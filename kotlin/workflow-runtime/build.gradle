@@ -17,11 +17,34 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 apply plugin: 'org.jetbrains.dokka'
 
+// Benchmark plugins.
+apply plugin: 'me.champeau.gradle.jmh'
+// If this plugin is not applied, IntelliJ won't see the JMH definitions for some reason.
+apply plugin: 'idea'
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
 apply from: rootProject.file('.buildscript/configure-dokka.gradle')
+
+// Benchmark configuration.
+jmh {
+  include = ['.*']
+  duplicateClassesStrategy = 'warn'
+}
+configurations {
+  jmh.with {
+    attributes.attribute(Usage.USAGE_ATTRIBUTE, getObjects().named(Usage, Usage.JAVA_RUNTIME))
+  }
+}
+compileJmhKotlin {
+  kotlinOptions {
+    // Give the benchmark code access to internal definitions.
+    // Can't use sourceSets.main.runtimeClasspath since it would have to be evaluated eagerly.
+    freeCompilerArgs += "-Xfriend-paths=${compileKotlin.destinationDir}"
+  }
+}
 
 dependencies {
   compileOnly deps.annotations.intellij
@@ -32,4 +55,9 @@ dependencies {
 
   testImplementation deps.kotlin.test.jdk
   testImplementation deps.kotlin.reflect
+
+  // These dependencies will be available on the classpath for source inside src/jmh.
+  jmh deps.kotlin.stdLib.jdk6
+  jmh deps.jmh.core
+  jmh deps.jmh.generator
 }
