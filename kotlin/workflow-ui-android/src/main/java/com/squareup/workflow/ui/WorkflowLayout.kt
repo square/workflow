@@ -47,15 +47,23 @@ class WorkflowLayout(
    * Subscribes to [renderings], and uses [registry] to
    * [build a new view][ViewRegistry.buildView] each time a new type of rendering is received,
    * making that view the only child of this one.
-   *
-   * Views created this way may make recursive calls to [ViewRegistry.buildView] to make
-   * children of their own to handle nested renderings.
    */
   fun start(
     renderings: Observable<out Any>,
     registry: ViewRegistry
   ) {
-    val hints = ContainerHints(registry)
+    start(renderings, ContainerHints(registry))
+  }
+
+  /**
+   * Subscribes to [renderings], and uses the [ViewRegistry] in the given [hints] to
+   * [build a new view][ViewRegistry.buildView] each time a new type of rendering is received,
+   * making that view the only child of this one.
+   */
+  fun start(
+    renderings: Observable<out Any>,
+    hints: ContainerHints
+  ) {
     takeWhileAttached(renderings) { show(it, hints) }
   }
 
