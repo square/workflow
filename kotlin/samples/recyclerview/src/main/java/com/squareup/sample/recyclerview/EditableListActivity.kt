@@ -35,10 +35,9 @@ private val viewRegistry = ViewRegistry(
 class EditableListActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentWorkflow {
+    setContentWorkflow(viewRegistry) {
       WorkflowRunner.Config(
           AppWorkflow,
-          viewRegistry,
           diagnosticListener = object : SimpleLoggingDiagnosticListener() {
             override fun println(text: String) = Timber.v(text)
           }

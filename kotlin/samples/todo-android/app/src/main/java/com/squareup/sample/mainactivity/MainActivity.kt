@@ -33,10 +33,9 @@ class MainActivity : AppCompatActivity() {
 
     val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-todo.json")!!
 
-    setContentWorkflow {
+    setContentWorkflow(viewRegistry) {
       WorkflowRunner.Config(
           TodoListsAppWorkflow,
-          viewRegistry,
           diagnosticListener = SimpleLoggingDiagnosticListener()
               .andThen(TracingDiagnosticListener(traceFile))
       )

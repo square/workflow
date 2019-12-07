@@ -55,15 +55,12 @@ interface WorkflowRunner<out OutputT : Any> {
    */
   val renderings: Observable<out Any>
 
-  val viewRegistry: ViewRegistry
-
   /**
    * @param diagnosticListener If non-null, will receive all diagnostic events from the workflow
    * runtime. See [com.squareup.workflow.WorkflowSession.diagnosticListener].
    */
   class Config<PropsT, OutputT : Any>(
     val workflow: Workflow<PropsT, OutputT, Any>,
-    val viewRegistry: ViewRegistry,
     val props: Flow<PropsT>,
     val dispatcher: CoroutineDispatcher,
     val diagnosticListener: WorkflowDiagnosticListener?
@@ -74,11 +71,10 @@ interface WorkflowRunner<out OutputT : Any> {
      */
     constructor(
       workflow: Workflow<PropsT, OutputT, Any>,
-      viewRegistry: ViewRegistry,
       props: PropsT,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
       diagnosticListener: WorkflowDiagnosticListener? = null
-    ) : this(workflow, viewRegistry, flowOf(props), dispatcher, diagnosticListener)
+    ) : this(workflow, flowOf(props), dispatcher, diagnosticListener)
   }
 
   companion object {
@@ -89,11 +85,10 @@ interface WorkflowRunner<out OutputT : Any> {
     @Suppress("FunctionName")
     fun <OutputT : Any> Config(
       workflow: Workflow<Unit, OutputT, Any>,
-      viewRegistry: ViewRegistry,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
       diagnosticListener: WorkflowDiagnosticListener? = null
     ): Config<Unit, OutputT> {
-      return Config(workflow, viewRegistry, Unit, dispatcher, diagnosticListener)
+      return Config(workflow, Unit, dispatcher, diagnosticListener)
     }
 
     /**
@@ -145,6 +140,8 @@ interface WorkflowRunner<out OutputT : Any> {
  * It creates a [WorkflowRunner] for this activity, if one doesn't already exist, and
  * sets a view driven by that model as the content view.
  *
+ * @param containerHints provides the [ViewRegistry] used to display workflow renderings.
+ *
  * @param configure function defining the root workflow and its environment. Called only
  * once per [lifecycle][FragmentActivity.getLifecycle], and always called from the UI thread.
  *
@@ -154,13 +151,14 @@ interface WorkflowRunner<out OutputT : Any> {
  * only while the activity is active, and always called from the UI thread.
  */
 fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
+  containerHints: ContainerHints,
   configure: () -> Config<PropsT, OutputT>,
   onResult: (OutputT) -> Unit
 ): WorkflowRunner<OutputT> {
   val runner = WorkflowRunner.startWorkflow(this, configure)
   val layout = WorkflowLayout(this@setContentWorkflow).apply {
     id = R.id.workflow_layout
-    start(runner.renderings, runner.viewRegistry)
+    start(runner.renderings, containerHints)
   }
 
   runner.result.toFlowable()
@@ -172,6 +170,55 @@ fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
   return runner
 }
 
+/**
+ * Call this method from [FragmentActivity.onCreate], instead of [FragmentActivity.setContentView].
+ * It creates a [WorkflowRunner] for this activity, if one doesn't already exist, and
+ * sets a view driven by that model as the content view.
+ *
+ * @param registry used to display workflow renderings.
+ *
+ * @param configure function defining the root workflow and its environment. Called only
+ * once per [lifecycle][FragmentActivity.getLifecycle], and always called from the UI thread.
+ *
+ * @param onResult function called with the first (and only) output emitted by the root workflow,
+ * handy for passing to [FragmentActivity.setResult]. The workflow is ended once it emits any
+ * values, so this is also a good place from which to call [FragmentActivity.finish]. Called
+ * only while the activity is active, and always called from the UI thread.
+ */
+fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
+  registry: ViewRegistry,
+  configure: () -> Config<PropsT, OutputT>,
+  onResult: (OutputT) -> Unit
+): WorkflowRunner<OutputT> = setContentWorkflow(ContainerHints(registry), configure, onResult)
+
+/**
+ * For workflows that produce no output, call this method from [FragmentActivity.onCreate]
+ * instead of [FragmentActivity.setContentView].
+ * It creates a [WorkflowRunner] for this activity, if one doesn't already exist, and
+ * sets a view driven by that model as the content view.
+ *
+ * @param containerHints provides the [ViewRegistry] used to display workflow renderings.
+ *
+ * @param configure function defining the root workflow and its environment. Called only
+ * once per [lifecycle][FragmentActivity.getLifecycle], and always called from the UI thread.
+ */
 fun <PropsT> FragmentActivity.setContentWorkflow(
+  containerHints: ContainerHints,
   configure: () -> Config<PropsT, Nothing>
-): WorkflowRunner<Nothing> = setContentWorkflow(configure) {}
+): WorkflowRunner<Nothing> = setContentWorkflow(containerHints, configure) {}
+
+/**
+ * For workflows that produce no output, call this method from [FragmentActivity.onCreate]
+ * instead of [FragmentActivity.setContentView].
+ * It creates a [WorkflowRunner] for this activity, if one doesn't already exist, and
+ * sets a view driven by that model as the content view.
+ *
+ * @param registry used to display workflow renderings.
+ *
+ * @param configure function defining the root workflow and its environment. Called only
+ * once per [lifecycle][FragmentActivity.getLifecycle], and always called from the UI thread.
+ */
+fun <PropsT> FragmentActivity.setContentWorkflow(
+  registry: ViewRegistry,
+  configure: () -> Config<PropsT, Nothing>
+): WorkflowRunner<Nothing> = setContentWorkflow(ContainerHints(registry), configure) {}

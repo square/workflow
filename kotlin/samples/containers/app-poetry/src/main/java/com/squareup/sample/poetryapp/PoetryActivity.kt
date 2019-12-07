@@ -30,18 +30,15 @@ private val viewRegistry = SampleContainers + PoetryViews + PoemListLayoutRunner
 class PoetryActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentWorkflow(
-        configure = {
-          WorkflowRunner.Config(
-              PoemsBrowserWorkflow,
-              viewRegistry,
-              Poem.allPoems,
-              diagnosticListener = object : SimpleLoggingDiagnosticListener() {
-                override fun println(text: String) = Timber.v(text)
-              }
-          )
-        }
-    )
+    setContentWorkflow(viewRegistry) {
+      WorkflowRunner.Config(
+          PoemsBrowserWorkflow,
+          Poem.allPoems,
+          diagnosticListener = object : SimpleLoggingDiagnosticListener() {
+            override fun println(text: String) = Timber.v(text)
+          }
+      )
+    }
   }
 
   companion object {
