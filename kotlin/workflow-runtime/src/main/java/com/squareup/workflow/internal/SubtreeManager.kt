@@ -38,18 +38,18 @@ internal class SubtreeManager<StateT, OutputT : Any>(
 ) : RealRenderContext.Renderer<StateT, OutputT> {
 
   /**
-   * When this manager's host is restored from a snapshot, its children snapshots are extracted into
+   * When this manager's node is restored from a snapshot, its children snapshots are extracted into
    * this cache. Then, when those children are started for the first time, they are also restored
    * from their snapshots.
    */
   private val snapshotCache = mutableMapOf<AnyId, ByteString>()
 
-  private val hostLifetimeTracker =
+  private val nodeLifetimeTracker =
     LifetimeTracker<WorkflowOutputCase<*, *, StateT, OutputT>, AnyId, WorkflowNode<*, *, *, *>>(
         getKey = { it.id },
         start = { it.createNode() },
-        dispose = { case, host ->
-          host.cancel()
+        dispose = { case, node ->
+          node.cancel()
           snapshotCache -= case.id
         }
     )
@@ -65,7 +65,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
   // @formatter:on
     // Start tracking this case so we can be ready to render it.
     @Suppress("UNCHECKED_CAST")
-    val childNode = hostLifetimeTracker.ensure(case) as
+    val childNode = nodeLifetimeTracker.ensure(case) as
         WorkflowNode<ChildPropsT, *, ChildOutputT, ChildRenderingT>
     return childNode.render(child.asStatefulWorkflow(), props)
   }
@@ -76,7 +76,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
    */
   fun track(cases: List<WorkflowOutputCase<*, *, StateT, OutputT>>) {
     // Add new children and remove old ones.
-    hostLifetimeTracker.track(cases)
+    nodeLifetimeTracker.track(cases)
   }
 
   /**
@@ -87,8 +87,8 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     selector: SelectBuilder<T?>,
     handler: (WorkflowAction<StateT, OutputT>) -> T?
   ) {
-    for ((case, host) in hostLifetimeTracker.lifetimes) {
-      host.tick(selector) { output ->
+    for ((case, node) in nodeLifetimeTracker.lifetimes) {
+      node.tick(selector) { output ->
         val componentUpdate = case.acceptChildOutput(output)
         return@tick handler(componentUpdate)
       }
@@ -96,8 +96,8 @@ internal class SubtreeManager<StateT, OutputT : Any>(
   }
 
   fun createChildSnapshots(): List<Pair<AnyId, Snapshot>> {
-    return hostLifetimeTracker.lifetimes
-        .map { (case, host) -> host.id to host.snapshot(case.workflow.asStatefulWorkflow()) }
+    return nodeLifetimeTracker.lifetimes
+        .map { (case, node) -> node.id to node.snapshot(case.workflow.asStatefulWorkflow()) }
   }
 
   /**

@@ -228,13 +228,13 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    */
   private fun renderWithStateType(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
-    input: PropsT
+    props: PropsT
   ): RenderingT {
-    updatePropsAndState(workflow, input)
+    updatePropsAndState(workflow, props)
 
     val context = RealRenderContext(subtreeManager, eventActionsChannel)
-    diagnosticListener?.onBeforeWorkflowRendered(diagnosticId, input, state)
-    val rendering = workflow.render(input, state, context)
+    diagnosticListener?.onBeforeWorkflowRendered(diagnosticId, props, state)
+    val rendering = workflow.render(props, state, context)
     diagnosticListener?.onAfterWorkflowRendered(diagnosticId, rendering)
 
     behavior = context.buildBehavior()
