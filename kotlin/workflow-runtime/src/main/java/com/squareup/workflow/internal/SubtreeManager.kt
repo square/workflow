@@ -85,12 +85,14 @@ internal class SubtreeManager<StateT, OutputT : Any>(
    */
   fun <T : Any> tickChildren(
     selector: SelectBuilder<T?>,
-    handler: (WorkflowAction<StateT, OutputT>) -> T?
+    handler: (WorkflowAction<StateT, OutputT>?) -> T?
   ) {
     for ((case, node) in nodeLifetimeTracker.lifetimes) {
       node.tick(selector) { output ->
-        val componentUpdate = case.acceptChildOutput(output)
-        return@tick handler(componentUpdate)
+        if (output != null) {
+          val componentUpdate = case.acceptChildOutput(output)
+          return@tick handler(componentUpdate)
+        } else return@tick handler(null)
       }
     }
   }

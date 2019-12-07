@@ -32,7 +32,17 @@ interface ActorWorkflow : Workflow<ActorProps, Nothing, ActorRendering> {
     val board: Board,
     val myLocation: Location,
     val ticks: Worker<Long>
-  )
+  ) {
+    override fun equals(other: Any?): Boolean {
+      return when {
+        other === this -> true
+        other !is ActorProps -> false
+        else -> board == other.board &&
+            myLocation == other.myLocation &&
+            ticks.doesSameWorkAs(other.ticks)
+      }
+    }
+  }
 
   data class ActorRendering(
     val avatar: BoardCell,

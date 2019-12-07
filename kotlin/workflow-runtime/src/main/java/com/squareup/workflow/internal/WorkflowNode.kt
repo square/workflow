@@ -168,13 +168,19 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   @UseExperimental(InternalCoroutinesApi::class)
   fun <T : Any> tick(
     selector: SelectBuilder<T?>,
-    handler: (OutputT) -> T?
+    handler: (OutputT?) -> T?
   ) {
-    fun acceptUpdate(action: WorkflowAction<StateT, OutputT>): T? {
+    fun acceptUpdate(action: WorkflowAction<StateT, OutputT>?): T? {
+      // Always invalidate our rendering, even if we didn't actually change state, since a child
+      // may have changed state and need to be re-rendered.
+      isRenderingCacheValid = false
+      // Bubble up no-ops.
+      if (action == null) return handler(null)
+
       val (newState, output) = action.applyTo(state)
       diagnosticListener?.onWorkflowAction(diagnosticId, action, state, newState, output)
       state = newState
-      return output?.let(handler)
+      return handler(output)
     }
 
     // Listen for any child workflow updates.
@@ -222,6 +228,9 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     coroutineContext.cancel()
   }
 
+  private var lastRendering: RenderingT? = null
+  private var isRenderingCacheValid = false
+
   /**
    * Contains the actual logic for [render], after we've casted the passed-in [Workflow]'s
    * state type to our `StateT`.
@@ -230,6 +239,12 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
     props: PropsT
   ): RenderingT {
+    if (isRenderingCacheValid && input == lastProps) {
+      // Nothing has changed, we can just return the cached rendering.
+      @Suppress("UNCHECKED_CAST")
+      return lastRendering as RenderingT
+    }
+
     updatePropsAndState(workflow, props)
 
     val context = RealRenderContext(subtreeManager, eventActionsChannel)
@@ -243,6 +258,9 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
           subtreeManager.track(childCases)
           workerTracker.track(workerCases)
         }
+
+    lastRendering = rendering
+    isRenderingCacheValid = true
 
     return rendering
   }
