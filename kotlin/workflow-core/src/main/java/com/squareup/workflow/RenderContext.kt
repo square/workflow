@@ -97,7 +97,7 @@ interface RenderContext<StateT, in OutputT : Any> {
 }
 
 /**
- * Convenience alias of [RenderContext.renderChild] for workflows that don't take input.
+ * Convenience alias of [RenderContext.renderChild] for workflows that don't take props.
  */
 fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
@@ -111,7 +111,7 @@ fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
 // @formatter:on
 
 /**
- * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
+ * Convenience alias of [RenderContext.renderChild] for workflows that don't take props or emit
  * output.
  */
 fun <PropsT, StateT, OutputT : Any, ChildRenderingT>
@@ -126,7 +126,7 @@ fun <PropsT, StateT, OutputT : Any, ChildRenderingT>
 // @formatter:on
 
 /**
- * Convenience alias of [RenderContext.renderChild] for workflows that don't take input or emit
+ * Convenience alias of [RenderContext.renderChild] for workflows that don't take props or emit
  * output.
  */
 fun <StateT, OutputT : Any, ChildRenderingT>
