@@ -19,6 +19,7 @@ import com.squareup.workflow.FractalWorkflow.Props
 import com.squareup.workflow.FractalWorkflow.Props.DO_NOT_RENDER_LEAVES
 import com.squareup.workflow.FractalWorkflow.Props.RENDER_LEAVES
 import com.squareup.workflow.FractalWorkflow.Props.RUN_WORKERS
+import com.squareup.workflow.FractalWorkflow.Props.SKIP_FIRST_LEAF
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.internal.WorkflowNode
 import com.squareup.workflow.internal.id
@@ -87,6 +88,8 @@ open class WorkflowNodeBenchmark {
    */
   @Benchmark open fun renderPassAlwaysLeaves() {
     node.render(workflow, RENDER_LEAVES)
+    // Second render to be consistent with other benchmarks that need two render passes.
+    node.render(workflow, RENDER_LEAVES)
   }
 
   /**
@@ -106,6 +109,14 @@ open class WorkflowNodeBenchmark {
   @Benchmark open fun renderPassAlternateWorkers() {
     node.render(workflow, RENDER_LEAVES)
     node.render(workflow, RUN_WORKERS)
+  }
+
+  /**
+   * This benchmark is equivalent to [renderPassAlternateLeaves] for the [TreeShape.DEEP] case.
+   */
+  @Benchmark open fun renderPassAlternateOneLeaf() {
+    node.render(workflow, RENDER_LEAVES)
+    node.render(workflow, SKIP_FIRST_LEAF)
   }
 
   private fun FractalWorkflow.createNode() = WorkflowNode(
@@ -130,11 +141,13 @@ private class FractalWorkflow(
 
   enum class Props(
     val renderLeaves: Boolean,
-    val runWorkers: Boolean
+    val runWorkers: Boolean = false,
+    val skipFirstLeaf: Boolean = false
   ) {
-    RENDER_LEAVES(renderLeaves = true, runWorkers = false),
-    DO_NOT_RENDER_LEAVES(false, runWorkers = false),
-    RUN_WORKERS(renderLeaves = false, runWorkers = true)
+    RENDER_LEAVES(renderLeaves = true),
+    DO_NOT_RENDER_LEAVES(renderLeaves = false),
+    RUN_WORKERS(renderLeaves = false, runWorkers = true),
+    SKIP_FIRST_LEAF(renderLeaves = true, skipFirstLeaf = true),
   }
 
   private val childWorkflow =
@@ -155,7 +168,16 @@ private class FractalWorkflow(
   ) {
     if (childWorkflow != null && (props.renderLeaves || !areChildrenLeaves)) {
       for (i in 0 until childCount) {
-        context.renderChild(childWorkflow, props, key = i.toString())
+        if (props.skipFirstLeaf) {
+          // Don't render the first child if it's a leaf, otherwise render children using props that
+          // will fractally result in the first leaf being skipped.
+          if (!areChildrenLeaves || i > 0) {
+            val childProps = if (i == 0) props else RENDER_LEAVES
+            context.renderChild(childWorkflow, childProps, key = i.toString())
+          }
+        } else {
+          context.renderChild(childWorkflow, props, key = i.toString())
+        }
       }
     }
 
