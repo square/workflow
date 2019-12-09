@@ -32,10 +32,10 @@ class RavenActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentWorkflow(
+        registry = viewRegistry,
         configure = {
           WorkflowRunner.Config(
               PoemWorkflow,
-              viewRegistry,
               Raven,
               diagnosticListener = object : SimpleLoggingDiagnosticListener() {
                 override fun println(text: String) = Timber.v(text)

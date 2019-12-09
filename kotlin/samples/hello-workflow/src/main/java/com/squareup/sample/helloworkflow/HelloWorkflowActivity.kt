@@ -27,10 +27,9 @@ private val viewRegistry = ViewRegistry(HelloLayoutRunner)
 class HelloWorkflowActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentWorkflow {
+    setContentWorkflow(viewRegistry) {
       WorkflowRunner.Config(
           HelloWorkflow,
-          viewRegistry,
           diagnosticListener = SimpleLoggingDiagnosticListener()
       )
     }

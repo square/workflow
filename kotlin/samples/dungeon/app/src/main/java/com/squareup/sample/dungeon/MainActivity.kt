@@ -30,10 +30,9 @@ class MainActivity : AppCompatActivity() {
     val component = Component(applicationContext)
 
     val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-dungeon.json")!!
-    setContentWorkflow {
+    setContentWorkflow(component.viewRegistry) {
       WorkflowRunner.Config(
           workflow = component.timeMachineWorkflow,
-          viewRegistry = component.viewRegistry,
           props = "simple_maze.txt",
           diagnosticListener = TracingDiagnosticListener(traceFile)
       )

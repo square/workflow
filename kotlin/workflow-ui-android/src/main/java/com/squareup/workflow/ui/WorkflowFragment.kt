@@ -17,7 +17,6 @@ package com.squareup.workflow.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.squareup.workflow.Workflow
@@ -34,7 +33,6 @@ import io.reactivex.Flowable
  *      override fun onCreateWorkflow(): Config<Unit, Unit> {
  *        return Config(
  *            workflow = HelloWorkflow,
- *            viewRegistry = ViewRegistry(HelloFragmentLayoutRunner),
  *            input = Unit
  *        )
  *      }
@@ -51,7 +49,6 @@ import io.reactivex.Flowable
  *     override fun onCreateWorkflow(): Config<HelloInput, Unit> {
  *       return Config(
  *           workflow = HelloWorkflow,
- *           viewRegistry = ViewRegistry(HelloFragmentLayoutRunner),
  *           inputs = inputs
  *       )
  *     }
@@ -61,10 +58,9 @@ abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
   private lateinit var _runner: WorkflowRunner<OutputT>
 
   /**
-   * Provides subclasses with access to the products of the running [Workflow].
-   * Safe to call after [onActivityCreated].
+   * Provides the [ViewRegistry] used to display workflow renderings.
    */
-  protected val runner: WorkflowRunner<OutputT> get() = _runner
+  protected abstract val containerHints: ContainerHints
 
   /**
    * Called from [onActivityCreated], so it should be safe for implementations
@@ -72,11 +68,17 @@ abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
    */
   protected abstract fun onCreateWorkflow(): Config<PropsT, OutputT>
 
+  /**
+   * Provides subclasses with access to the products of the running [Workflow].
+   * Safe to call after [onActivityCreated].
+   */
+  protected val runner: WorkflowRunner<OutputT> get() = _runner
+
   final override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): WorkflowLayout {
     return WorkflowLayout(inflater.context)
   }
 
@@ -85,6 +87,6 @@ abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
 
     _runner = WorkflowRunner.startWorkflow(this, ::onCreateWorkflow)
 
-    (view as WorkflowLayout).start(runner.renderings, runner.viewRegistry)
+    (view as WorkflowLayout).start(runner.renderings, containerHints)
   }
 }

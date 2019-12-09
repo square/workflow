@@ -51,10 +51,10 @@ class MainActivity : AppCompatActivity() {
     val traceFile = getExternalFilesDir(null)?.resolve("workflow-trace-tictactoe.json")!!
 
     val workflowRunner = setContentWorkflow(
+        registry = viewRegistry,
         configure = {
           WorkflowRunner.Config(
               component.mainWorkflow,
-              viewRegistry,
               diagnosticListener = object : SimpleLoggingDiagnosticListener() {
                 override fun println(text: String) = Timber.v(text)
               }.andThen(TracingDiagnosticListener(traceFile))

@@ -23,10 +23,8 @@ import kotlin.reflect.KClass
  * Allows container views to give descendants information about the context in which
  * they're drawing.
  *
- * Every [View.showRendering][android.view.View.showRendering] call initiated via
- * [ViewRegistry.buildView] or [WorkflowLayout.start] includes an appropriate [ViewRegistry]
- * hint. This allows container views to make recursive [ViewRegistry.buildView]
- * calls to build child views to show nested renderings.
+ * Every [ContainerHints] includes a [ViewRegistry]. This allows container views to
+ * make recursive [ViewRegistry.buildView] calls to build child views to show nested renderings.
  */
 class ContainerHints private constructor(
   private val map: Map<ContainerHintKey<*>, Any>

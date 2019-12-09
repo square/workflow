@@ -48,7 +48,7 @@ class WorkflowRunnerViewModelTest {
         outputs = emptyFlow()
     )
 
-    val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
+    val runner = WorkflowRunnerViewModel(scope, session)
 
     assertThat(runner.getLastSnapshotForTest()).isEqualTo(Snapshot.EMPTY)
 
@@ -72,7 +72,7 @@ class WorkflowRunnerViewModelTest {
         renderingsAndSnapshots = emptyFlow(),
         outputs = flowOf("fnord")
     )
-    val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
+    val runner = WorkflowRunnerViewModel(scope, session)
 
     assertThat(cancelled).isFalse()
     val tester = runner.result.test()
@@ -94,7 +94,7 @@ class WorkflowRunnerViewModelTest {
         renderingsAndSnapshots = emptyFlow(),
         outputs = emptyFlow()
     )
-    val runner = WorkflowRunnerViewModel(scope, session, viewRegistry)
+    val runner = WorkflowRunnerViewModel(scope, session)
 
     assertThat(cancelled).isFalse()
     val tester = runner.result.test()
@@ -159,7 +159,7 @@ class WorkflowRunnerViewModelTest {
     @Suppress("UNCHECKED_CAST")
     return WorkflowRunnerViewModel
         .Factory(registryOwner.savedStateRegistry) {
-          Config(this, viewRegistry, Unit, Unconfined)
+          Config(this, Unit, Unconfined)
         }
         .create(WorkflowRunnerViewModel::class.java) as WorkflowRunnerViewModel<O>
   }
