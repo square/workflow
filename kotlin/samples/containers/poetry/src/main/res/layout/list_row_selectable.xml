@@ -18,7 +18,7 @@
     xmlns:tools="http://schemas.android.com/tools"
 
     style="@android:style/Widget.Material.ListView"
-    android:background="@color/list_selector"
+    android:background="@drawable/list_selector"
     android:layout_width="match_parent"
     android:layout_height="?attr/listPreferredItemHeightSmall"
     android:gravity="center_vertical"

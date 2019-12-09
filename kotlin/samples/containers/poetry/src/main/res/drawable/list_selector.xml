@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2019 Square Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +14,19 @@
   ~ limitations under the License.
   -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:state_activated="true" android:color="?attr/colorAccent"/>
-  <item android:state_pressed="true" android:color="?attr/colorControlHighlight"/>
-  <item android:color="@android:color/background_light"/>
+  <item android:state_activated="true">
+    <shape android:shape="rectangle">
+      <solid android:color="?attr/colorAccent" />
+    </shape>
+  </item>
+  <item android:state_pressed="true">
+    <shape android:shape="rectangle">
+      <solid android:color="?attr/colorControlHighlight" />
+    </shape>
+  </item>
+  <item>
+    <shape android:shape="rectangle">
+      <solid android:color="@android:color/background_light" />
+    </shape>
+  </item>
 </selector>
