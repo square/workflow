@@ -24,6 +24,7 @@ dependencies {
   implementation deps.kotlin.stdLib.jdk6
   implementation deps.rxjava2.rxjava2
 
+  testImplementation deps.kotlin.test.jdk
   testImplementation deps.test.hamcrestCore
   testImplementation deps.test.junit
   testImplementation deps.test.truth
