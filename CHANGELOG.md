@@ -1,6 +1,40 @@
 Change Log
 ==========
 
+## Version 0.22
+
+_2019-12-18_
+
+### Kotlin
+
+#### Breaking changes:
+
+ * Safer `BackStackScreen` construction. (#809)
+ * Pass `ContainerHints` via `setContentWorkflow`. (#808)
+ * `ViewRegistry` is now a `ContainerHint`. (#770)
+ * Remove deprecated `testRender` API. (#743)
+
+#### Non-breaking API changes:
+
+ * Make `lifecyclOrNull` public. (#747)
+ * Give `Worker.doesSameWorkAs` a default implementation that just compares by concrete type. (#746)
+ * Replace `WorkflowAction.Mutator` API with more ergonomic `.Updater` (#812, #813)
+ * Give `RenderTester.render` function argument a default no-op value. (#828)
+ * Add overload to `RenderTester.expectWorker` for simple worker comparisons. (#828)
+ * Make `RenderContext` itself a Sink. (#835)
+ * Convert `ViewRegistry` to an interface. (#832)
+
+#### Other changes:
+
+ * Add variance to StatelessWorkflow type parameters. (#790)
+ * Make event sinks queued and reusable instead of throw after going stale. (#742)
+ * Optimize re-rendering child workflows. (#800)
+
+### Swift
+
+ * Add macOS support (#750)
+ * Add `ContainerView` to enable SwiftUI integration. (#691)
+
 ## Version 0.21.3
 
 _2019-11-18_
