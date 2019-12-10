@@ -92,7 +92,6 @@ matrix:
           - $HOME/.gradle/wrapper/
           - $HOME/.m2
 
-    # Disabled due to https://github.com/square/workflow/issues/759
     # AVD config copied from leakcanary and informed by
     # https://github.com/mikehardy/Anki-Android/blob/177c63d4eb969548ad7dc5243f0fac33522f3fe7/.travis.yml
     - language: android
@@ -136,7 +135,7 @@ matrix:
         - echo y | sdkmanager "extras;android;m2repository" >/dev/null
         - echo y | sdkmanager "system-images;android-$API;$EMU_FLAVOR;$ABI" #>/dev/null # install our emulator
         - echo no | avdmanager create avd --force -n test -k "system-images;android-$API;$EMU_FLAVOR;$ABI" -c 10M
-        - emulator -verbose -avd test -no-accel -no-snapshot -no-window -no-audio -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
+        - emulator -verbose -avd test -no-accel -no-snapshot -no-window -no-audio -gpu swiftshader_indirect &
 
       install:
         - ./gradlew clean
