@@ -28,7 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         var viewRegistry = ViewRegistry()
         viewRegistry.registerDemoScreen()
-        viewRegistry.registerWelcomeScreen()
         viewRegistry.registerCrossFadeContainer()
         window?.rootViewController = ContainerViewController(
             workflow: RootWorkflow(),

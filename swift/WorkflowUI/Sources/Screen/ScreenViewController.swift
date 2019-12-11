@@ -23,7 +23,7 @@ import UIKit
 /// given screen type.
 open class ScreenViewController<ScreenType: Screen>: UIViewController {
 
-    public final let viewRegistry: ViewRegistry
+    public final var viewRegistry: ViewRegistry
 
     private var currentScreen: ScreenType
 
@@ -35,7 +35,7 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
         return ScreenType.self
     }
 
-    public required init(screen: ScreenType, viewRegistry: ViewRegistry) {
+    public required init(screen: ScreenType, viewRegistry: ViewRegistry = ViewRegistry()) {
         self.currentScreen = screen
         self.viewRegistry = viewRegistry
         super.init(nibName: nil, bundle: nil)
@@ -57,6 +57,15 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
 
     }
 
+}
+
+public extension Screen {
+    func screenViewControllerDescription<VC: ScreenViewController<Self>>(for type: VC.Type) -> ViewControllerDescription {
+        ViewControllerDescription(
+            builder: { VC(screen: self) },
+            updater: { $0.update(screen: self) }
+        )
+    }
 }
 
 #endif

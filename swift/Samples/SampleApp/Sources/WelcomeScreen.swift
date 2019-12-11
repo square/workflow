@@ -23,15 +23,11 @@ struct WelcomeScreen: Screen {
     var onLoginTapped: () -> Void
 }
 
-
-extension ViewRegistry {
-
-    public mutating func registerWelcomeScreen() {
-        self.register(screenViewControllerType: WelcomeViewController.self)
+extension WelcomeScreen {
+    var viewControllerDescription: ViewControllerDescription {
+        screenViewControllerDescription(for: WelcomeViewController.self)
     }
-
 }
-
 
 fileprivate final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
     let welcomeLabel: UILabel

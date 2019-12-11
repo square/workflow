@@ -35,7 +35,7 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
 
     private let (lifetime, token) = Lifetime.make()
 
-    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, viewRegistry: ViewRegistry) {
+    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, viewRegistry: ViewRegistry = ViewRegistry()) {
         self.workflowHost = workflowHost
         self.rootViewController = viewRegistry.provideView(for: rendering.value)
         self.rendering = rendering
