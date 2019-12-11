@@ -3,10 +3,10 @@ package com.squareup.sample.mainworkflow
 import com.google.common.truth.Truth.assertThat
 import com.squareup.sample.authworkflow.AuthResult.Authorized
 import com.squareup.sample.authworkflow.AuthWorkflow
+import com.squareup.sample.container.panel.PanelContainerScreen
 import com.squareup.sample.gameworkflow.GamePlayScreen
 import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
-import com.squareup.sample.container.panel.PanelContainerScreen
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
@@ -37,7 +37,7 @@ class MainWorkflowTest {
   @Test fun `starts game on auth`() {
     val authWorkflow: AuthWorkflow = Workflow.stateless {
       runningWorker(Worker.from { Unit }) {
-        WorkflowAction<Nothing, Authorized> { Authorized("auth") }
+        WorkflowAction { setOutput(Authorized("auth")) }
       }
       authScreen()
     }

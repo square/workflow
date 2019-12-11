@@ -18,7 +18,7 @@
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 
 /**
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
@@ -36,7 +36,7 @@ import com.squareup.workflow.WorkflowAction.Mutator
  *
  * See [renderChild].
  */
-interface RenderContext<StateT, in OutputT : Any> {
+interface RenderContext<StateT, OutputT : Any> {
 
   @Deprecated("Use makeActionSink.")
   fun <EventT : Any> onEvent(
@@ -162,12 +162,12 @@ fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
  * event types to be mapped to anonymous [WorkflowAction]s.
  */
 fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink(
-  block: Mutator<StateT>.(EventT) -> OutputT?
+  update: Updater<StateT, OutputT>.(EventT) -> Unit
 ): Sink<EventT> {
   val actionSink = makeActionSink<WorkflowAction<StateT, OutputT>>()
 
   return actionSink.contraMap { event ->
-    WorkflowAction({ "eventSink($event)" }) { block(event) }
+    WorkflowAction({ "eventSink($event)" }) { update(event) }
   }
 }
 

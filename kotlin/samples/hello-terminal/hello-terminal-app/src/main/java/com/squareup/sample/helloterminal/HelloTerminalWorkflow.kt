@@ -27,8 +27,8 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.renderChild
-import com.squareup.workflow.runningWorker
 
 private typealias HelloTerminalAction = WorkflowAction<State, ExitCode>
 
@@ -76,13 +76,11 @@ class HelloTerminalWorkflow : TerminalWorkflow,
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
-  private fun onKeystroke(key: KeyStroke): HelloTerminalAction = WorkflowAction {
+  private fun onKeystroke(key: KeyStroke): HelloTerminalAction = action {
     when {
-      key.character == 'Q' -> return@WorkflowAction 0
-      key.keyType == Backspace -> state = state.backspace()
-      key.character != null -> state = state.append(key.character!!)
+      key.character == 'Q' -> setOutput(0)
+      key.keyType == Backspace -> nextState = nextState.backspace()
+      key.character != null -> nextState = nextState.append(key.character!!)
     }
-
-    null
   }
 }

@@ -21,7 +21,7 @@ class PublisherWorkerTest {
       override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = otherWorker === this
     }
 
-    fun action(value: String) = WorkflowAction<Nothing, String> { value }
+    fun action(value: String) = WorkflowAction<Nothing, String> { setOutput(value) }
     val workflow = Workflow.stateless<Unit, String, Unit> {
       runningWorker(worker) { action(it) }
     }

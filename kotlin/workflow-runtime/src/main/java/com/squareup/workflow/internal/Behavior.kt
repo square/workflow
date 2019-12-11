@@ -26,7 +26,7 @@ import com.squareup.workflow.WorkflowAction
  *
  * @see RealRenderContext
  */
-data class Behavior<StateT, out OutputT : Any> internal constructor(
+data class Behavior<StateT, OutputT : Any> internal constructor(
   val childCases: List<WorkflowOutputCase<*, *, StateT, OutputT>>,
   val workerCases: List<WorkerCase<*, StateT, OutputT>>
 ) {
@@ -36,7 +36,7 @@ data class Behavior<StateT, out OutputT : Any> internal constructor(
       ChildPropsT,
       ChildOutputT : Any,
       ParentStateT,
-      out ParentOutputT : Any
+      ParentOutputT : Any
       > internal constructor(
         val workflow: Workflow<*, ChildOutputT, *>,
         val id: WorkflowId<ChildPropsT, ChildOutputT, *>,
@@ -49,7 +49,7 @@ data class Behavior<StateT, out OutputT : Any> internal constructor(
       }
       // @formatter:on
 
-  data class WorkerCase<T, StateT, out OutputT : Any> internal constructor(
+  data class WorkerCase<T, StateT, OutputT : Any> internal constructor(
     val worker: Worker<T>,
     val key: String,
     val handler: (T) -> WorkflowAction<StateT, OutputT>

@@ -123,7 +123,7 @@ class RealRenderContextTest {
 
   @Test fun `makeActionSink completes update`() {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
-    val stringAction = WorkflowAction<String, String>({ "stringAction" }) { null }
+    val stringAction = WorkflowAction<String, String>({ "stringAction" }) { }
     val sink = context.makeActionSink<WorkflowAction<String, String>>()
     // Enable sink sends.
     context.buildBehavior()
@@ -159,7 +159,7 @@ class RealRenderContextTest {
 
   @Test fun `makeEventSink gets event`() {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
-    val sink: Sink<String> = context.makeEventSink { it }
+    val sink: Sink<String> = context.makeEventSink { setOutput(it) }
     // Enable sink sends.
     context.buildBehavior()
 
@@ -172,14 +172,19 @@ class RealRenderContextTest {
   }
 
   @Test fun `makeEventSink works with OutputT of Nothing`() {
-    val context = RealRenderContext<String, Nothing>(PoisonRenderer(), eventActionsChannel)
-    val sink: Sink<String> = context.makeEventSink { null }
+    val nothingChannel = Channel<WorkflowAction<String, Nothing>>(capacity = UNLIMITED)
+
+    val context = RealRenderContext(
+        PoisonRenderer(),
+        nothingChannel
+    )
+    val sink: Sink<String> = context.makeEventSink { }
     // Enable sink sends.
     context.buildBehavior()
 
     sink.send("foo")
 
-    val update = eventActionsChannel.poll()!!
+    val update = nothingChannel.poll()!!
     val (state, output) = update.applyTo("state")
     assertEquals("state", state)
     assertNull(output)
@@ -190,7 +195,7 @@ class RealRenderContextTest {
     val workflow = TestWorkflow()
 
     val (case, child, id, props) = context.renderChild(workflow, "props", "key") { output ->
-      WorkflowAction { "output:$output" }
+      WorkflowAction { setOutput("output:$output") }
     }
 
     assertSame(workflow, child)
@@ -209,6 +214,7 @@ class RealRenderContextTest {
     val childCases = context.buildBehavior()
         .childCases
     assertEquals(1, childCases.size)
+    // IDE is lying, this is fine.
     assertSame(case, childCases.single())
   }
 

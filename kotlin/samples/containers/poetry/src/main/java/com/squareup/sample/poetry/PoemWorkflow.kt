@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION", "OverridingDeprecatedMember")
+
 package com.squareup.sample.poetry
 
 import com.squareup.sample.container.masterdetail.MasterDetailScreen
@@ -112,6 +114,8 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>
     class HandleStanzaListOutput(val selection: Int) : Action()
     object ExitPoem : Action()
 
+    // We continue to use the deprecated method here for one more release, to demonstrate
+    // that the migration mechanism works.
     override fun Mutator<Int>.apply(): ClosePoem? {
       when (this@Action) {
         ClearSelection -> state = -1

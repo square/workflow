@@ -22,7 +22,7 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateful
@@ -36,16 +36,22 @@ import kotlin.test.assertTrue
 
 class RealRenderTesterTest {
 
-  private interface ChildWorkflow : Workflow<Unit, Nothing, Unit>
+  private interface OutputWhateverChild : Workflow<Unit, Unit, Unit>
+  private interface OutputNothingChild : Workflow<Unit, Nothing, Unit>
 
   @Test fun `expectWorkflow with output throws when already expecting workflow output`() {
     // Don't need an implementation, the test should fail before even calling render.
-    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {}
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(ChildWorkflow::class, rendering = Unit, output = EmittedOutput(Unit))
+        .expectWorkflow(
+            OutputWhateverChild::class, rendering = Unit,
+            output = EmittedOutput(Unit)
+        )
 
     val failure = assertFailsWith<IllegalStateException> {
-      tester.expectWorkflow(Workflow::class, rendering = Unit, output = EmittedOutput(Unit))
+      tester.expectWorkflow(
+          workflow::class, rendering = Unit, output = EmittedOutput(Unit)
+      )
     }
 
     val failureMessage = failure.message!!
@@ -59,12 +65,14 @@ class RealRenderTesterTest {
 
   @Test fun `expectWorkflow with output throws when already expecting worker output`() {
     // Don't need an implementation, the test should fail before even calling render.
-    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {}
     val tester = workflow.renderTester(Unit)
         .expectWorker(matchesWhen = { true }, output = EmittedOutput(Unit))
 
     val failure = assertFailsWith<IllegalStateException> {
-      tester.expectWorkflow(Workflow::class, rendering = Unit, output = EmittedOutput(Unit))
+      tester.expectWorkflow(
+          workflow::class, rendering = Unit, output = EmittedOutput(Unit)
+      )
     }
 
     val failureMessage = failure.message!!
@@ -79,12 +87,15 @@ class RealRenderTesterTest {
 
   @Test fun `expectWorkflow without output doesn't throw when already expecting output`() {
     // Don't need an implementation, the test should fail before even calling render.
-    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {}
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(ChildWorkflow::class, rendering = Unit, output = EmittedOutput(Unit))
+        .expectWorkflow(
+            OutputWhateverChild::class, rendering = Unit,
+            output = EmittedOutput(Unit)
+        )
 
     // Doesn't throw.
-    tester.expectWorkflow(Workflow::class, rendering = Unit)
+    tester.expectWorkflow(workflow::class, rendering = Unit)
   }
 
   @Test fun `expectWorker with output throws when already expecting worker output`() {
@@ -108,9 +119,12 @@ class RealRenderTesterTest {
 
   @Test fun `expectWorker with output throws when already expecting workflow output`() {
     // Don't need an implementation, the test should fail before even calling render.
-    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
+    val workflow = Workflow.stateless<Unit, Unit, Unit> {}
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(Workflow::class, rendering = Unit, output = EmittedOutput(Unit))
+        .expectWorkflow(
+            workflow::class, rendering = Unit,
+            output = EmittedOutput(Unit)
+        )
 
     val failure = assertFailsWith<IllegalStateException> {
       tester.expectWorker(matchesWhen = { true }, output = EmittedOutput(Unit))
@@ -138,7 +152,7 @@ class RealRenderTesterTest {
 
   @Test fun `sending to sink throws when called multiple times`() {
     class TestAction(private val name: String) : WorkflowAction<Unit, Nothing> {
-      override fun Mutator<Unit>.apply(): Nothing? = null
+      override fun Updater<Unit, Nothing>.apply() { }
       override fun toString(): String = "TestAction($name)"
     }
 
@@ -167,7 +181,7 @@ class RealRenderTesterTest {
 
   @Test fun `sending to sink throws when child output expected`() {
     class TestAction : WorkflowAction<Unit, Nothing> {
-      override fun Mutator<Unit>.apply(): Nothing? = null
+      override fun Updater<Unit, Nothing>.apply() { }
     }
 
     val workflow = Workflow.stateful<Unit, Nothing, Sink<TestAction>>(
@@ -223,7 +237,7 @@ class RealRenderTesterTest {
       renderChild(child)
     }
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(ChildWorkflow::class, rendering = Unit)
+        .expectWorkflow(OutputNothingChild::class, rendering = Unit)
 
     val error = assertFailsWith<AssertionError> {
       tester.render {}
@@ -257,7 +271,7 @@ class RealRenderTesterTest {
       renderChild(child, key = "key")
     }
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(ChildWorkflow::class, rendering = Unit)
+        .expectWorkflow(OutputNothingChild::class, rendering = Unit)
 
     val error = assertFailsWith<AssertionError> {
       tester.render {}
@@ -275,7 +289,7 @@ class RealRenderTesterTest {
       renderChild(child, key = "key")
     }
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(ChildWorkflow::class, rendering = Unit, key = "wrong key")
+        .expectWorkflow(OutputNothingChild::class, rendering = Unit, key = "wrong key")
 
     val error = assertFailsWith<AssertionError> {
       tester.render {}
@@ -288,7 +302,7 @@ class RealRenderTesterTest {
   }
 
   @Test fun `renderChild throws when multiple expectations match`() {
-    class Child : ChildWorkflow, StatelessWorkflow<Unit, Nothing, Unit>() {
+    class Child : OutputNothingChild, StatelessWorkflow<Unit, Nothing, Unit>() {
       override fun render(
         props: Unit,
         context: RenderContext<Nothing, Nothing>
@@ -301,7 +315,7 @@ class RealRenderTesterTest {
       renderChild(Child())
     }
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(ChildWorkflow::class, rendering = Unit)
+        .expectWorkflow(OutputNothingChild::class, rendering = Unit)
         .expectWorkflow(Child::class, rendering = Unit)
 
     val error = assertFailsWith<AssertionError> {
@@ -450,7 +464,7 @@ class RealRenderTesterTest {
       // Do nothing.
     }
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(ChildWorkflow::class, rendering = Unit)
+        .expectWorkflow(OutputNothingChild::class, rendering = Unit)
 
     val error = assertFailsWith<AssertionError> {
       tester.render {}
@@ -472,7 +486,7 @@ class RealRenderTesterTest {
   }
 
   @Test fun `expectWorkflow matches on workflow supertype`() {
-    val child = object : ChildWorkflow, StatelessWorkflow<Unit, Nothing, Unit>() {
+    val child = object : OutputNothingChild, StatelessWorkflow<Unit, Nothing, Unit>() {
       override fun render(
         props: Unit,
         context: RenderContext<Nothing, Nothing>
@@ -484,7 +498,7 @@ class RealRenderTesterTest {
       renderChild(child)
     }
     val tester = workflow.renderTester(Unit)
-        .expectWorkflow(ChildWorkflow::class, rendering = Unit)
+        .expectWorkflow(OutputNothingChild::class, rendering = Unit)
 
     tester.render {}
   }
@@ -508,7 +522,7 @@ class RealRenderTesterTest {
   }
 
   private class TestAction(val name: String) : WorkflowAction<Nothing, Nothing> {
-    override fun Mutator<Nothing>.apply(): Nothing? = null
+    override fun Updater<Nothing, Nothing>.apply() { }
     override fun toString(): String = "TestAction($name)"
   }
 
@@ -590,9 +604,9 @@ class RealRenderTesterTest {
 
   @Test fun `verifyActionResult works`() {
     class TestAction : WorkflowAction<String, String> {
-      override fun Mutator<String>.apply(): String? {
-        state = "new state"
-        return "output"
+      override fun Updater<String, String>.apply() {
+        nextState = "new state"
+        setOutput("output")
       }
     }
 

@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Companion.toString
 import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 
 /**
  * A composable, stateful object that can [handle events][RenderContext.makeActionSink],
@@ -66,7 +69,7 @@ import com.squareup.workflow.WorkflowAction.Mutator
 abstract class StatefulWorkflow<
     in PropsT,
     StateT,
-    out OutputT : Any,
+    OutputT : Any,
     out RenderingT
     > : Workflow<PropsT, OutputT, RenderingT> {
 
@@ -230,35 +233,62 @@ inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
 
 /**
  * Convenience to create a [WorkflowAction] with parameter types matching those
- * of the receiving [StatefulWorkflow]. The action will invoke the given [lambda][block]
+ * of the receiving [StatefulWorkflow]. The action will invoke the given [lambda][update]
  * when it is [applied][WorkflowAction.apply].
  *
- * The returned object will include the string returned from [name] in its [toString].
- *
- * @param name A string describing the update for debugging.
- * @param block Function that defines the workflow update.
+ * @param name A string describing the update for debugging, included in [toString].
+ * @param update Function that defines the workflow update.
  */
+fun <PropsT, StateT, OutputT : Any, RenderingT>
+    StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.action(
+      name: String = "",
+      update: Updater<StateT, OutputT>.() -> Unit
+    ) = action({ name }, update)
+
+/**
+ * Convenience to create a [WorkflowAction] with parameter types matching those
+ * of the receiving [StatefulWorkflow]. The action will invoke the given [lambda][update]
+ * when it is [applied][WorkflowAction.apply].
+ *
+ * @param name Function that returns a string describing the update for debugging, included
+ * in [toString].
+ * @param update Function that defines the workflow update.
+ */
+fun <PropsT, StateT, OutputT : Any, RenderingT>
+    StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.action(
+      name: () -> String,
+      update: Updater<StateT, OutputT>.() -> Unit
+    ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
+  override fun Updater<StateT, OutputT>.apply() = update.invoke(this)
+  override fun toString(): String = "action(${name()})-${this@action}"
+}
+
+@Deprecated(
+    message = "Use action",
+    replaceWith = ReplaceWith(
+        expression = "action(name) { nextState = state }",
+        imports = arrayOf("com.squareup.workflow.action")
+    )
+)
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.workflowAction(
       name: String = "",
       block: Mutator<StateT>.() -> OutputT?
     ) = workflowAction({ name }, block)
 
-/**
- * Convenience to create a [WorkflowAction] with parameter types matching those
- * of the receiving [StatefulWorkflow]. The action will invoke the given [lambda][block]
- * when it is [applied][WorkflowAction.apply].
- *
- * The returned object will include the string returned from [name] in its [toString].
- *
- * @param name Function that returns a string describing the update for debugging.
- * @param block Function that defines the workflow update.
- */
+@Suppress("OverridingDeprecatedMember")
+@Deprecated(
+    message = "Use action",
+    replaceWith = ReplaceWith(
+        expression = "action(name) { nextState = state }",
+        imports = arrayOf("com.squareup.workflow.action")
+    )
+)
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.workflowAction(
       name: () -> String,
       block: Mutator<StateT>.() -> OutputT?
     ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
   override fun Mutator<StateT>.apply() = block.invoke(this)
-  override fun toString(): String = "Action(${name()})-${this@workflowAction}"
+  override fun toString(): String = "workflowAction(${name()})-${this@workflowAction}"
 }

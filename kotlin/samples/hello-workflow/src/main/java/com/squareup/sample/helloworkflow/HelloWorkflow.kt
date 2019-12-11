@@ -23,6 +23,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.parse
 
 object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
@@ -41,9 +42,8 @@ object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
     val onClick: () -> Unit
   )
 
-  private val helloAction = WorkflowAction<State, Nothing> {
-    state = state.theOtherState()
-    null
+  private val helloAction = action {
+    nextState = nextState.theOtherState()
   }
 
   override fun initialState(

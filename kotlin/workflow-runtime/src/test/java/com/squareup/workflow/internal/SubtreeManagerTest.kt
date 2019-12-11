@@ -21,6 +21,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
@@ -60,7 +61,7 @@ class SubtreeManagerTest {
       state: String,
       context: RenderContext<String, String>
     ): Rendering {
-      val sink: Sink<String> = context.makeEventSink { it }
+      val sink: Sink<String> = context.makeEventSink { setOutput(it) }
       return Rendering(props, state) { sink.send("workflow output:$it") }
     }
 
@@ -140,7 +141,7 @@ class SubtreeManagerTest {
     val id = workflow.id()
     val props = "props"
     val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { output ->
-      WorkflowAction { "case output:$output" }
+      WorkflowAction { setOutput("case output:$output") }
     }
 
     // Initialize the child so tickChildren has something to work with, and so that we can send
@@ -169,7 +170,12 @@ class SubtreeManagerTest {
     val manager = SubtreeManager<Unit, Nothing>(Unconfined, parentDiagnosticId = 0)
     val workflow = SnapshotTestWorkflow()
     val id = workflow.id("1")
-    val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(workflow, id, Unit) { fail() }
+    @Suppress("UNCHECKED_CAST")
+    val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(
+        workflow as Workflow<*, Unit, *>,
+        id as WorkflowId<Unit, Unit, *>,
+        Unit
+    ) { fail() }
     assertEquals(0, workflow.snapshots)
 
     manager.track(listOf(case))
@@ -182,7 +188,11 @@ class SubtreeManagerTest {
     val manager = SubtreeManager<Unit, Nothing>(Unconfined, parentDiagnosticId = 0)
     val workflow = SnapshotTestWorkflow()
     val id = workflow.id("1")
-    val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(workflow, id, Unit) { fail() }
+    @Suppress("UNCHECKED_CAST")
+    val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(
+        workflow as Workflow<*, Unit, *>,
+        id as WorkflowId<Unit, Unit, *>,
+        Unit) { fail() }
     assertEquals(0, workflow.serializes)
 
     manager.track(listOf(case))

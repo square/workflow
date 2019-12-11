@@ -15,6 +15,8 @@
  */
 package com.squareup.sample.gameworkflow
 
+import com.squareup.sample.container.panel.PanelContainerScreen
+import com.squareup.sample.container.panel.firstInPanelOver
 import com.squareup.sample.gameworkflow.Action.CancelNewGame
 import com.squareup.sample.gameworkflow.Action.ConfirmQuit
 import com.squareup.sample.gameworkflow.Action.ConfirmQuitAgain
@@ -38,14 +40,12 @@ import com.squareup.sample.gameworkflow.RunGameState.Playing
 import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
-import com.squareup.sample.container.panel.PanelContainerScreen
-import com.squareup.sample.container.panel.firstInPanelOver
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
@@ -99,61 +99,59 @@ sealed class Action : WorkflowAction<RunGameState, RunGameResult> {
   // signal that this workflow is too big, and should be refactored into something
   // like one workflow per screen.
 
-  override fun Mutator<RunGameState>.apply(): RunGameResult? {
+  override fun Updater<RunGameState, RunGameResult>.apply() {
 
     when (this@Action) {
-      CancelNewGame -> return CanceledStart
+      CancelNewGame -> setOutput(CanceledStart)
 
-      is StartGame -> state = Playing(PlayerInfo(x, o))
+      is StartGame -> nextState = Playing(PlayerInfo(x, o))
 
       is StopPlaying -> {
-        val oldState = state as Playing
-        state = when (game.ending) {
+        val oldState = nextState as Playing
+        nextState = when (game.ending) {
           Quitted -> MaybeQuitting(oldState.playerInfo, game)
           else -> GameOver(oldState.playerInfo, game)
         }
       }
 
       ConfirmQuit -> {
-        val oldState = state as MaybeQuitting
-        state = MaybeQuittingForSure(oldState.playerInfo, oldState.completedGame)
+        val oldState = nextState as MaybeQuitting
+        nextState = MaybeQuittingForSure(oldState.playerInfo, oldState.completedGame)
       }
 
       is ContinuePlaying -> {
-        state = Playing(playerInfo, turn)
+        nextState = Playing(playerInfo, turn)
       }
 
       ConfirmQuitAgain -> {
-        val oldState = state as MaybeQuittingForSure
-        state = GameOver(oldState.playerInfo, oldState.completedGame)
+        val oldState = nextState as MaybeQuittingForSure
+        nextState = GameOver(oldState.playerInfo, oldState.completedGame)
       }
 
       is HandleLogGame -> {
-        val oldState = state as GameOver
-        state = when (result) {
+        val oldState = nextState as GameOver
+        nextState = when (result) {
           TRY_LATER -> oldState.copy(syncState = SAVE_FAILED)
           LOGGED -> oldState.copy(syncState = SAVED)
         }
       }
 
       TrySaveAgain -> {
-        val oldState = state as GameOver
+        val oldState = nextState as GameOver
         check(oldState.syncState == SAVE_FAILED) {
           "Should only receive $TrySaveAgain in syncState $SAVE_FAILED, " +
               "was ${oldState.syncState}"
         }
-        state = oldState.copy(syncState = SAVING)
+        nextState = oldState.copy(syncState = SAVING)
       }
 
       PlayAgain -> {
-        val (x, o) = (state as GameOver).playerInfo
-        state = NewGame(x, o)
+        val (x, o) = (nextState as GameOver).playerInfo
+        nextState = NewGame(x, o)
       }
 
-      Exit -> return FinishedPlaying
+      Exit -> setOutput(FinishedPlaying)
     }
-
-    return null
   }
 }
 

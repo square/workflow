@@ -20,7 +20,7 @@ import com.squareup.tracing.TraceEncoder
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.launchWorkflowIn
 import kotlinx.coroutines.CoroutineScope
@@ -131,7 +131,7 @@ class TracingDiagnosticListenerTest {
 
     override fun snapshotState(state: String): Snapshot = Snapshot.EMPTY
 
-    private fun bubbleUp(output: String) = WorkflowAction<String, String>({ "action" }) { output }
+    private fun bubbleUp(output: String) = action { setOutput(output) }
   }
 }
 

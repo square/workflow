@@ -30,7 +30,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.runningWorker
+import com.squareup.workflow.action
 
 private typealias TodoAction = WorkflowAction<TodoList, Nothing>
 
@@ -81,46 +81,43 @@ class TodoWorkflow : TerminalWorkflow,
     context.runningWorker(props.keyStrokes) { onKeystroke(it) }
 
     return TerminalRendering(buildString {
-      appendln(state.renderTitle(props, context))
+      @Suppress("UNCHECKED_CAST")
+      appendln(state.renderTitle(props, context as RenderContext<TodoList, Nothing>))
       appendln(renderSelection(state.titleSeparator, false))
       appendln(state.renderItems(props, context))
     })
   }
 
   override fun snapshotState(state: TodoList): Snapshot = Snapshot.EMPTY
-}
 
-private fun onKeystroke(key: KeyStroke): TodoAction = WorkflowAction {
-  @Suppress("NON_EXHAUSTIVE_WHEN")
-  when (key.keyType) {
-    ArrowUp -> state = state.moveFocusUp()
-    ArrowDown -> state = state.moveFocusDown()
-    Enter -> if (state.focusedField > TITLE_FIELD_INDEX) {
-      state = state.toggleChecked(state.focusedField)
+  private fun onKeystroke(key: KeyStroke) = action {
+    @Suppress("NON_EXHAUSTIVE_WHEN")
+    when (key.keyType) {
+      ArrowUp -> nextState = nextState.moveFocusUp()
+      ArrowDown -> nextState = nextState.moveFocusDown()
+      Enter -> if (nextState.focusedField > TITLE_FIELD_INDEX) {
+        nextState = nextState.toggleChecked(nextState.focusedField)
+      }
     }
   }
-
-  null
 }
 
 private fun updateTitle(newTitle: String): TodoAction = WorkflowAction {
-  state = state.copy(title = newTitle)
-  null
+  nextState = nextState.copy(title = newTitle)
 }
 
 private fun setLabel(
   index: Int,
   text: String
 ): TodoAction = WorkflowAction {
-  state = state.copy(items = state.items.mapIndexed { i, item ->
+  nextState = nextState.copy(items = nextState.items.mapIndexed { i, item ->
     if (index == i) item.copy(label = text) else item
   })
-  null
 }
 
 private fun TodoList.renderTitle(
   props: TerminalProps,
-  context: RenderContext<TodoList, *>
+  context: RenderContext<TodoList, Nothing>
 ): String {
   val isSelected = focusedField == TITLE_FIELD_INDEX
   val titleString = if (isSelected) {
@@ -139,7 +136,7 @@ private val TodoList.titleSeparator get() = "–".repeat(title.length + 1)
 
 private fun TodoList.renderItems(
   props: TerminalProps,
-  context: RenderContext<TodoList, *>
+  context: RenderContext<TodoList, Nothing>
 ): String =
   items
       .mapIndexed { index, item ->

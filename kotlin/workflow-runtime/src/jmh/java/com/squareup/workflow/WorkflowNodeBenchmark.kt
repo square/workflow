@@ -74,7 +74,7 @@ open class WorkflowNodeBenchmark {
   @JvmField var treeShape = TreeShape.SQUARE
 
   private lateinit var workflow: FractalWorkflow
-  private lateinit var node: WorkflowNode<Props, Unit, *, Unit>
+  private lateinit var node: WorkflowNode<Props, Unit, Nothing, Unit>
 
   @Setup open fun setUp() {
     println("Tree shape: $treeShape")

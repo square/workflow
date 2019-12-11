@@ -26,7 +26,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 
 data class TodoList(
   val title: String,
@@ -66,14 +66,14 @@ sealed class TodoAction : WorkflowAction<Nothing, TodoEditorOutput> {
     ) : ListAction()
   }
 
-  override fun Mutator<Nothing>.apply(): TodoEditorOutput {
-    return when (this@TodoAction) {
+  override fun Updater<Nothing, TodoEditorOutput>.apply() {
+    when (this@TodoAction) {
       is GoBackClicked -> Done
       is TitleChanged -> ListUpdated(list.copy(title = newTitle))
       is DoneClicked -> ListUpdated(list.updateRow(index) { copy(done = !done) })
       is TextChanged -> ListUpdated(list.updateRow(index) { copy(text = newText) })
       is DeleteClicked -> ListUpdated(list.removeRow(index))
-    }
+    }.let { setOutput(it) }
   }
 }
 

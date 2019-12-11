@@ -11,8 +11,7 @@ import com.squareup.sample.hellotodo.EditTextWorkflow.EditTextState
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.runningWorker
+import com.squareup.workflow.action
 
 class EditTextWorkflow : StatefulWorkflow<EditTextProps, EditTextState, String, String>() {
 
@@ -61,35 +60,29 @@ class EditTextWorkflow : StatefulWorkflow<EditTextProps, EditTextState, String, 
   }
 
   override fun snapshotState(state: EditTextState): Snapshot = Snapshot.EMPTY
-}
 
-private fun onKeystroke(
-  props: EditTextProps,
-  key: KeyStroke
-) = WorkflowAction<EditTextState, String> {
-  when (key.keyType) {
-    Character -> {
-      state = moveCursor(props, state, 1)
-      props.text.insertCharAt(state.cursorPosition, key.character!!)
-    }
+  private fun onKeystroke(
+    props: EditTextProps,
+    key: KeyStroke
+  ) = action {
+    when (key.keyType) {
+      Character -> {
+        nextState = moveCursor(props, nextState, 1)
+        props.text.insertCharAt(nextState.cursorPosition, key.character!!)
+      }
 
-    Backspace -> {
-      if (props.text.isEmpty()) {
-        null
-      } else {
-        state = moveCursor(props, state, -1)
-        props.text.removeRange(state.cursorPosition - 1, state.cursorPosition)
+      Backspace -> {
+        if (props.text.isNotEmpty()) {
+          nextState = moveCursor(props, nextState, -1)
+          props.text.removeRange(nextState.cursorPosition - 1, nextState.cursorPosition)
+        }
+      }
+      ArrowLeft -> nextState = moveCursor(props, nextState, -1)
+      ArrowRight -> nextState = moveCursor(props, nextState, 1)
+      else -> {
+        // Nothing to do.
       }
     }
-    ArrowLeft -> {
-      state = moveCursor(props, state, -1)
-      null
-    }
-    ArrowRight -> {
-      state = moveCursor(props, state, 1)
-      null
-    }
-    else -> null
   }
 }
 

@@ -25,7 +25,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 
 /**
  * Workflow that represents the actual player of the game in the [GameWorkflow].
@@ -38,16 +38,14 @@ class PlayerWorkflow(
   sealed class Action : WorkflowAction<Movement, Nothing> {
 
     class StartMoving(private val direction: Direction) : Action() {
-      override fun Mutator<Movement>.apply(): Nothing? {
-        state += direction
-        return null
+      override fun Updater<Movement, Nothing>.apply() {
+        nextState += direction
       }
     }
 
     class StopMoving(private val direction: Direction) : Action() {
-      override fun Mutator<Movement>.apply(): Nothing? {
-        state -= direction
-        return null
+      override fun Updater<Movement, Nothing>.apply() {
+        nextState -= direction
       }
     }
   }

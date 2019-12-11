@@ -25,8 +25,8 @@ class TodoListsWorkflow : StatelessWorkflow<List<TodoList>, Int, TodoListsScreen
     props: List<TodoList>,
     context: RenderContext<Nothing, Int>
   ): TodoListsScreen {
-    // A sink that emits the given index as the result of this workflow.
-    val sink: Sink<Int> = context.makeEventSink { index: Int -> index }
+    // A sink that emits the given index as the output of this workflow.
+    val sink: Sink<Int> = context.makeEventSink { index: Int -> setOutput(index) }
 
     return TodoListsScreen(lists = props, onRowClicked = sink::send)
   }

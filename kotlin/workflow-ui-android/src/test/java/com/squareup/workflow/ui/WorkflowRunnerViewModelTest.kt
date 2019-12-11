@@ -35,8 +35,6 @@ import org.junit.Test
 class WorkflowRunnerViewModelTest {
 
   private val scope = CoroutineScope(Unconfined)
-  @Suppress("RemoveRedundantSpreadOperator")
-  private val viewRegistry = ViewRegistry(*emptyArray<ViewBinding<*>>())
 
   @Test fun snapshotUpdatedOnHostEmission() {
     val snapshot1 = Snapshot.of("one")
@@ -108,7 +106,7 @@ class WorkflowRunnerViewModelTest {
     val outputs = BroadcastChannel<String>(1)
     val runner = Workflow
         .stateless<Unit, String, Unit> {
-          runningWorker(outputs.asWorker()) { WorkflowAction { it } }
+          runningWorker(outputs.asWorker()) { WorkflowAction { setOutput(it) } }
           Unit
         }
         .run()
@@ -124,7 +122,7 @@ class WorkflowRunnerViewModelTest {
   @Test fun resultEmptyOnCleared() {
     val runner = Workflow
         .stateless<Unit, String, Unit> {
-          runningWorker(flowNever<String>().asWorker()) { WorkflowAction { it } }
+          runningWorker(flowNever<String>().asWorker()) { WorkflowAction { setOutput(it) } }
         }
         .run()
 

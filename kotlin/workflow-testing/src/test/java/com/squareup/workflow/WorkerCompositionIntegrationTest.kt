@@ -131,7 +131,7 @@ class WorkerCompositionIntegrationTest {
   @Test fun `runningWorker gets output`() {
     val worker = WorkerSink<String>("")
     val workflow = Workflow.stateless<Unit, String, Unit> {
-      runningWorker(worker) { WorkflowAction { it } }
+      runningWorker(worker) { WorkflowAction { setOutput(it) } }
     }
 
     workflow.testFromStart {
@@ -146,7 +146,7 @@ class WorkerCompositionIntegrationTest {
   @Test fun `runningWorker gets error`() {
     val channel = Channel<String>()
     val workflow = Workflow.stateless<Unit, String, Unit> {
-      runningWorker(channel.asWorker()) { WorkflowAction { it } }
+      runningWorker(channel.asWorker()) { WorkflowAction { setOutput(it) } }
     }
 
     assertFailsWith<ExpectedException> {
@@ -181,14 +181,13 @@ class WorkerCompositionIntegrationTest {
     val triggerOutput = WorkerSink<Unit>("")
 
     val incrementState = WorkflowAction<Int, Int> {
-      state += 1
-      null
+      nextState += 1
     }
 
     val workflow = Workflow.stateful<Int, Int, () -> Unit>(
         initialState = 0,
         render = { state ->
-          runningWorker(triggerOutput) { WorkflowAction { state } }
+          runningWorker(triggerOutput) { WorkflowAction { setOutput(state) } }
 
           val sink = makeActionSink<WorkflowAction<Int, Int>>()
           return@stateful { sink.send(incrementState) }

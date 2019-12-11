@@ -29,7 +29,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
 import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
@@ -97,9 +97,8 @@ class DungeonAppWorkflow(
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
   private class StartRunning(val board: Board) : WorkflowAction<State, Nothing> {
-    override fun Mutator<State>.apply(): Nothing? {
-      state = Running(board)
-      return null
+    override fun Updater<State, Nothing>.apply() {
+      nextState = Running(board)
     }
   }
 
@@ -107,11 +106,11 @@ class DungeonAppWorkflow(
     val output: GameWorkflow.Output,
     val board: Board
   ) : WorkflowAction<State, Nothing> {
-    override fun Mutator<State>.apply(): Nothing? {
+    override fun Updater<State, Nothing>.apply() {
       when (output) {
         Vibrate -> vibrate(50)
         PlayerWasEaten -> {
-          state = GameOver(board)
+          nextState = GameOver(board)
           vibrate(20)
           vibrate(20)
           vibrate(20)
@@ -119,14 +118,12 @@ class DungeonAppWorkflow(
           vibrate(1000)
         }
       }
-      return null
     }
   }
 
   private object RestartGame : WorkflowAction<State, Nothing> {
-    override fun Mutator<State>.apply(): Nothing? {
-      state = Loading
-      return null
+    override fun Updater<State, Nothing>.apply() {
+      nextState = Loading
     }
   }
 

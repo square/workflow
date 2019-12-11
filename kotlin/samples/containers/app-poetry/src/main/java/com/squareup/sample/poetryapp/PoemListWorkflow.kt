@@ -30,7 +30,7 @@ object PoemListWorkflow : StatelessWorkflow<List<Poem>, Int, PoemListRendering>(
     context: RenderContext<Nothing, Int>
   ): PoemListRendering {
     // A sink that emits the given index as the result of this workflow.
-    val sink = context.makeEventSink { index: Int -> index }
+    val sink = context.makeEventSink { index: Int -> setOutput(index) }
 
     return PoemListRendering(
         poems = props,

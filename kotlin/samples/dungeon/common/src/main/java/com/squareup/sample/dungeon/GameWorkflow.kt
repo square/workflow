@@ -34,8 +34,8 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
+import com.squareup.workflow.action
 import com.squareup.workflow.renderChild
-import com.squareup.workflow.workflowAction
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -158,7 +158,7 @@ class GameWorkflow(
     playerRendering: Rendering,
     board: Board,
     aiRenderings: List<Pair<Location, ActorRendering>>
-  ) = workflowAction("updateGame") {
+  ) = action("updateGame") {
     // Calculate if this tick should result in movement based on the movement's speed.
     fun Movement.isTimeToMove(): Boolean {
       val ticksPerCell = (ticksPerSecond / cellsPerSecond).roundToLong()
@@ -191,12 +191,12 @@ class GameWorkflow(
     )
 
     // Check if AI captured player.
-    return@workflowAction if (newGame.isPlayerEaten) {
-      state = state.copy(game = newGame)
-      PlayerWasEaten
+    if (newGame.isPlayerEaten) {
+      nextState = nextState.copy(game = newGame)
+      setOutput(PlayerWasEaten)
     } else {
-      state = state.copy(game = newGame)
-      output
+      nextState = nextState.copy(game = newGame)
+      output?.let { setOutput(it) }
     }
   }
 }

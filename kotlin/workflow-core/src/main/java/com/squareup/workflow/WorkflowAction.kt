@@ -13,29 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DeprecatedCallableAddReplaceWith")
-
 package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Companion.toString
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 
 /**
- * A function that can change the current state of a [Workflow] by returning a new one, and
- * also optionally emit an output.
+ * An atomic operation that updates the state of a [Workflow], and also optionally emits an output.
  */
-interface WorkflowAction<StateT, out OutputT : Any> {
+interface WorkflowAction<StateT, OutputT : Any> {
+  @Deprecated("Use Updater")
   class Mutator<S>(var state: S)
 
   /**
-   * Called with the current state of a workflow, allowing the state to be updated.
+   * The context for calls to [WorkflowAction.apply]. Allows the action to set the
+   * [nextState], and to emit the [setOutput].
    *
-   * @return an output value for the workflow to emit, or null to emit nothing.
+   * @param nextState the state that the workflow should move to. Default is the current state.
    */
-  fun Mutator<StateT>.apply(): OutputT?
+  class Updater<S, O : Any>(var nextState: S) {
+    internal var output: O? = null
+
+    /**
+     * Sets the value the workflow will emit as output when this action is applied.
+     * If this method is not called, there will be no output.
+     */
+    fun setOutput(output: O) {
+      this.output = output
+    }
+  }
+
+  @Suppress("DEPRECATION")
+  @Deprecated("Implement Updater.apply")
+  fun Mutator<StateT>.apply(): OutputT? {
+    throw UnsupportedOperationException()
+  }
+
+  @Suppress("DEPRECATION")
+  fun Updater<StateT, OutputT>.apply() {
+    val mutator = Mutator(nextState)
+    mutator.apply()
+        ?.let { setOutput(it) }
+    nextState = mutator.state
+  }
 
   companion object {
-
     /**
      * Creates a [WorkflowAction] from the [apply] lambda.
      * The returned object will include the string returned from [name] in its [toString].
@@ -48,7 +70,7 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      */
     inline operator fun <StateT, OutputT : Any> invoke(
       name: String = "",
-      crossinline apply: Mutator<StateT>.() -> OutputT?
+      crossinline apply: Updater<StateT, OutputT>.() -> Unit
     ) = WorkflowAction({ name }, apply)
 
     /**
@@ -63,9 +85,9 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      */
     inline operator fun <StateT, OutputT : Any> invoke(
       crossinline name: () -> String,
-      crossinline apply: Mutator<StateT>.() -> OutputT?
+      crossinline apply: Updater<StateT, OutputT>.() -> Unit
     ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
-      override fun Mutator<StateT>.apply() = apply.invoke(this)
+      override fun Updater<StateT, OutputT>.apply() = apply.invoke(this)
       override fun toString(): String = "WorkflowAction(${name()})@${hashCode()}"
     }
 
@@ -83,70 +105,105 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * Convenience function that returns a [WorkflowAction] that will just set the state to [newState]
      * (without considering the current state) and optionally emit an output.
      */
-    @Deprecated("Implement WorkflowAction directly, or use `WorkflowAction.invoke`")
+    @Deprecated(
+        message = "Implement WorkflowAction directly, " +
+            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        replaceWith = ReplaceWith(
+            expression = "action { nextState = newState }",
+            imports = arrayOf("com.squareup.workflow.action")
+        )
+    )
     fun <StateT, OutputT : Any> enterState(
       newState: StateT,
       emittingOutput: OutputT? = null
     ): WorkflowAction<StateT, OutputT> =
       WorkflowAction({ "enterState($newState, $emittingOutput)" }) {
-        state = newState
-        return@WorkflowAction emittingOutput
+        nextState = newState
+        emittingOutput?.let { setOutput(it) }
       }
 
     /**
      * Convenience function that returns a [WorkflowAction] that will just set the state to [newState]
      * (without considering the current state) and optionally emit an output.
      */
-    @Deprecated("Implement WorkflowAction directly, or use `WorkflowAction.invoke`")
+    @Deprecated(
+        message = "Implement WorkflowAction directly, " +
+            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        replaceWith = ReplaceWith(
+            expression = "action { nextState = newState }",
+            imports = arrayOf("com.squareup.workflow.action")
+        )
+    )
     fun <StateT, OutputT : Any> enterState(
       name: String,
       newState: StateT,
       emittingOutput: OutputT? = null
     ): WorkflowAction<StateT, OutputT> =
       WorkflowAction({ "enterState($name, $newState, $emittingOutput)" }) {
-        state = newState
-        return@WorkflowAction emittingOutput
+        nextState = newState
+        emittingOutput?.let { setOutput(it) }
       }
 
     /**
      * Convenience function to implement [WorkflowAction] without returning the output.
      */
-    @Deprecated("Implement WorkflowAction directly, or use `WorkflowAction.invoke`")
+    @Deprecated(
+        message = "Implement WorkflowAction directly, " +
+            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        replaceWith = ReplaceWith(
+            expression = "action(name) { nextState = state }",
+            imports = arrayOf("com.squareup.workflow.action")
+        )
+    )
     fun <StateT, OutputT : Any> modifyState(
       name: () -> String,
       emittingOutput: OutputT? = null,
       modify: (StateT) -> StateT
     ): WorkflowAction<StateT, OutputT> =
       WorkflowAction({ "modifyState(${name()}, $emittingOutput)" }) {
-        state = modify(state)
-        return@WorkflowAction emittingOutput
+        nextState = modify(nextState)
+        emittingOutput?.let { setOutput(it) }
       }
 
     /**
      * Convenience function to implement [WorkflowAction] without changing the state.
      */
-    @Deprecated("Use `WorkflowAction { output }`")
+    @Deprecated(
+        message = "Implement WorkflowAction directly, " +
+            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        replaceWith = ReplaceWith(
+            expression = "action { setOutput(output) }",
+            imports = arrayOf("com.squareup.workflow.action")
+        )
+    )
     fun <StateT, OutputT : Any> emitOutput(output: OutputT): WorkflowAction<StateT, OutputT> =
-      WorkflowAction({ "emitOutput($output)" }) { output }
+      WorkflowAction({ "emitOutput($output)" }) { setOutput(output) }
 
     /**
      * Convenience function to implement [WorkflowAction] without changing the state.
      */
-    @Deprecated("Implement WorkflowAction directly, or use `WorkflowAction.invoke`")
+    @Deprecated(
+        message = "Implement WorkflowAction directly, " +
+            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        replaceWith = ReplaceWith(
+            expression = "action { setOutput(output) }",
+            imports = arrayOf("com.squareup.workflow.action")
+        )
+    )
     fun <StateT, OutputT : Any> emitOutput(
       name: String,
       output: OutputT
     ): WorkflowAction<StateT, OutputT> =
-      WorkflowAction({ "emitOutput($name, $output)" }) { output }
+      WorkflowAction({ "emitOutput($name, $output)" }) { setOutput(output) }
 
-    private val NO_ACTION = WorkflowAction<Any, Any>({ "noAction" }) { null }
+    private val NO_ACTION = WorkflowAction<Any, Any>({ "noAction" }) { }
   }
 }
 
 fun <StateT, OutputT : Any> WorkflowAction<StateT, OutputT>.applyTo(
   state: StateT
 ): Pair<StateT, OutputT?> {
-  val box = Mutator(state)
-  val output = box.apply()
-  return Pair(box.state, output)
+  val updater = Updater<StateT, OutputT>(state)
+  updater.apply()
+  return Pair(updater.nextState, updater.output)
 }

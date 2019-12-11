@@ -26,8 +26,8 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Mutator
-import com.squareup.workflow.workflowAction
+import com.squareup.workflow.WorkflowAction.Updater
+import com.squareup.workflow.action
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -39,7 +39,7 @@ import kotlin.time.ExperimentalTime
  * This workflow takes a [PropsFactory] as its props. See that class for more documentation.
  */
 @ExperimentalTime
-class ShakeableTimeMachineWorkflow<in P, out O : Any, out R : Any>(
+class ShakeableTimeMachineWorkflow<in P, O : Any, out R : Any>(
   private val timeMachineWorkflow: TimeMachineWorkflow<P, O, R>,
   context: Context
 ) : StatefulWorkflow<PropsFactory<P>, State, O, ShakeableTimeMachineRendering>() {
@@ -119,26 +119,23 @@ class ShakeableTimeMachineWorkflow<in P, out O : Any, out R : Any>(
     )
   }
 
-  private val onShake = workflowAction {
-    state = PlayingBack(Duration.INFINITE)
-    return@workflowAction null
+  private val onShake = action {
+    nextState = PlayingBack(Duration.INFINITE)
   }
 
   private inner class SeekAction(
     private val newPosition: Duration
   ) : WorkflowAction<State, O> {
-    override fun Mutator<State>.apply(): O? {
-      state = PlayingBack(newPosition)
-      return null
+    override fun Updater<State, O>.apply() {
+      nextState = PlayingBack(newPosition)
     }
   }
 
   private inner class ResumeRecordingAction : WorkflowAction<State, O> {
-    override fun Mutator<State>.apply(): O? {
-      state = Recording
-      return null
+    override fun Updater<State, O>.apply() {
+      nextState = Recording
     }
   }
 
-  private fun forwardOutput(output: O) = workflowAction { output }
+  private fun forwardOutput(output: O) = action { setOutput(output) }
 }

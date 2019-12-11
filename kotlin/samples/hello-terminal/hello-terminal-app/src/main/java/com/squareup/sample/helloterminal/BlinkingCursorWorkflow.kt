@@ -19,7 +19,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
-import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import kotlinx.coroutines.delay
 
 /**
@@ -58,8 +58,7 @@ class BlinkingCursorWorkflow(
 
   override fun snapshotState(state: Boolean): Snapshot = Snapshot.EMPTY
 
-  private fun setCursorShowing(showing: Boolean) = WorkflowAction<Boolean, Nothing> {
-    state = showing
-    null
+  private fun setCursorShowing(showing: Boolean) = action {
+    nextState = showing
   }
 }
