@@ -111,62 +111,7 @@ extension AuthenticationWorkflow {
 
 // MARK: Workers
 
-extension AuthenticationWorkflow {
-
-    struct AuthorizingEmailPasswordWorker: Worker {
-
-        typealias Output = Action
-
-        var authenticationService: AuthenticationService
-        var email: String
-        var password: String
-
-        func run() -> SignalProducer<Output, Never> {
-            return authenticationService
-                .login(email: email, password: password)
-                .map({ response -> Action in
-                    return .authenticationSucceeded(response: response)
-                })
-                .flatMapError {
-                    SignalProducer(value: .authenticationError($0))
-                }
-        }
-
-        func isEquivalent(to otherWorker: AuthorizingEmailPasswordWorker) -> Bool {
-            return email == otherWorker.email
-            && password == otherWorker.password
-        }
-
-    }
-
-    struct AuthorizingTwoFactorWorker: Worker {
-
-        typealias Output = Action
-
-        var authenticationService: AuthenticationService
-        var intermediateToken: String
-        var twoFactorCode: String
-
-        func run() -> SignalProducer<Output, Never> {
-            return authenticationService
-                .secondFactor(
-                    token: intermediateToken,
-                    secondFactor: twoFactorCode)
-                .map {
-                    .authenticationSucceeded(response: $0)
-                }
-                .flatMapError {
-                    SignalProducer(value: .authenticationError($0))
-            }
-        }
-
-        func isEquivalent(to otherWorker: AuthenticationWorkflow.AuthorizingTwoFactorWorker) -> Bool {
-            return intermediateToken == otherWorker.intermediateToken
-            && twoFactorCode == otherWorker.twoFactorCode
-        }
-    }
-
-}
+extension AuthenticationWorkflow {}
 
 // MARK: Rendering
 
@@ -200,10 +145,14 @@ extension AuthenticationWorkflow {
             break
 
         case .authorizingEmailPassword(email: let email, password: let password):
-            context.awaitResult(for: AuthorizingEmailPasswordWorker(
-                authenticationService: authenticationService,
-                email: email,
-                password: password))
+            let worker = authenticationService
+                .login(email: email, password: password)
+                .map({ response -> Action in
+                    return .authenticationSucceeded(response: response)
+                })
+                .asWorker(errorTransform: { .authenticationError($0) })
+
+            context.awaitResult(for: worker)
 
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))
 
@@ -214,12 +163,14 @@ extension AuthenticationWorkflow {
                 sink: sink))
 
         case .authorizingTwoFactor(twoFactorCode: let twoFactorCode, intermediateSession: let intermediateSession):
+            let worker = authenticationService
+                .secondFactor(token: intermediateSession, secondFactor: twoFactorCode)
+                .map { response -> Action in
+                    return .authenticationSucceeded(response: response)
+                }
+                .asWorker(errorTransform: { .authenticationError($0) })
 
-            context.awaitResult(
-                for: AuthorizingTwoFactorWorker(
-                    authenticationService: authenticationService,
-                    intermediateToken: intermediateSession,
-                    twoFactorCode: twoFactorCode))
+            context.awaitResult(for: worker)
 
             backStackItems.append(twoFactorScreen(error: nil, intermediateSession: intermediateSession, sink: sink))
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))
