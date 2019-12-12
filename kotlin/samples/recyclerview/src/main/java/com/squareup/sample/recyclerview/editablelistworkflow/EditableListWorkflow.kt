@@ -23,7 +23,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.workflowAction
+import com.squareup.workflow.action
 
 object EditableListWorkflow : StatefulWorkflow<Props, State, Nothing, Rendering>() {
 
@@ -78,10 +78,9 @@ object EditableListWorkflow : StatefulWorkflow<Props, State, Nothing, Rendering>
   private fun valueChangedAction(
     position: Int,
     newValue: Any?
-  ) = workflowAction {
-    state = state.copy(rowValues = state.rowValues.mapIndexed { index, value ->
+  ) = action {
+    nextState = nextState.copy(rowValues = nextState.rowValues.mapIndexed { index, value ->
       if (index == position) value.withValue(newValue) else value
     })
-    return@workflowAction null
   }
 }

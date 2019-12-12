@@ -25,7 +25,7 @@ class WorkerStressTest {
       channel.asWorker()
           .transform { it.onCompletion { emit(Unit) } }
     }
-    val action = WorkflowAction<Nothing, Unit> { Unit }
+    val action = WorkflowAction<Nothing, Unit> { setOutput(Unit) }
     val workflow = Workflow.stateless<Unit, Unit, Unit> {
       // Run lots of workers that will all see the same close event.
       workers.forEachIndexed { i, worker ->
@@ -57,7 +57,7 @@ class WorkerStressTest {
   @Test fun `multiple subscriptions to single channel when emits`() {
     val channel = ConflatedBroadcastChannel(Unit)
     val workers = List(100) { channel.asWorker() }
-    val action = WorkflowAction<Nothing, Int> { 1 }
+    val action = WorkflowAction<Nothing, Int> { setOutput(1) }
     val workflow = Workflow.stateless<Unit, Int, Unit> {
       // Run lots of workers that will all see the same conflated channel value.
       workers.forEachIndexed { i, worker ->

@@ -32,7 +32,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.HasModals
 
@@ -78,12 +78,11 @@ object AppWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
     object ShowAddRowAction : Action()
     data class CommitNewRowAction(val index: Int) : Action()
 
-    override fun Mutator<State>.apply(): Nothing? {
-      state = when (this@Action) {
-        ShowAddRowAction -> ChooseNewRow(state.rows)
-        is CommitNewRowAction -> ShowList(state.rows + allRowTypes[index])
+    override fun Updater<State, Nothing>.apply() {
+      nextState = when (this@Action) {
+        ShowAddRowAction -> ChooseNewRow(nextState.rows)
+        is CommitNewRowAction -> ShowList(nextState.rows + allRowTypes[index])
       }
-      return null
     }
   }
 

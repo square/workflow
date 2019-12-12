@@ -24,7 +24,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.renderChild
 import kotlin.time.Clock
 import kotlin.time.Duration
@@ -42,7 +42,7 @@ import kotlin.time.ExperimentalTime
  * @param clock The [Clock] to use to assign timestamps to recorded values.
  */
 @ExperimentalTime
-class TimeMachineWorkflow<P, out O : Any, out R>(
+class TimeMachineWorkflow<P, O : Any, out R>(
   private val delegateWorkflow: Workflow<P, O, R>,
   clock: Clock
 ) : StatelessWorkflow<TimeMachineProps<P>, O, TimeMachineRendering<R>>() {
@@ -100,6 +100,8 @@ class TimeMachineWorkflow<P, out O : Any, out R>(
   }
 
   private fun forwardOutput(output: O) = object : WorkflowAction<Nothing, O> {
-    override fun Mutator<Nothing>.apply(): O? = output
+    override fun Updater<Nothing, O>.apply() {
+      setOutput(output)
+    }
   }
 }

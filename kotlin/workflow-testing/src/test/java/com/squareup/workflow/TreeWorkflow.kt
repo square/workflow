@@ -76,8 +76,7 @@ internal class TreeWorkflow(
       it.writeUtf8WithLength(state)
     }
 
-  private fun onEvent(newState: String) = workflowAction {
-    state = newState
-    null
+  private fun onEvent(newState: String) = action {
+    nextState = newState
   }
 }

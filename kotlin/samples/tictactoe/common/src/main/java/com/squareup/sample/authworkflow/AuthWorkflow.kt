@@ -35,7 +35,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.rx2.asWorker
 import com.squareup.workflow.ui.BackStackScreen
 
@@ -91,41 +91,37 @@ internal sealed class Action : WorkflowAction<AuthState, AuthResult> {
     val response: AuthResponse
   ) : Action()
 
-  final override fun Mutator<AuthState>.apply(): AuthResult? {
+  final override fun Updater<AuthState, AuthResult>.apply() {
     when (this@Action) {
       is SubmitLogin -> {
-        state = when {
+        nextState = when {
           email.isValidEmail -> Authorizing(email, password)
           else -> LoginPrompt(email.emailValidationErrorMessage)
         }
       }
 
-      CancelLogin -> return Canceled
+      CancelLogin -> setOutput(Canceled)
 
       is HandleAuthResponse -> {
-        state = when {
-          response.isLoginFailure -> LoginPrompt(response.errorMessage)
-          response.twoFactorRequired -> SecondFactorPrompt(response.token)
-          else -> return Authorized(response.token)
+        when {
+          response.isLoginFailure -> nextState = LoginPrompt(response.errorMessage)
+          response.twoFactorRequired -> nextState = SecondFactorPrompt(response.token)
+          else -> setOutput(Authorized(response.token))
         }
       }
 
-      is SubmitSecondFactor -> {
-        state = AuthorizingSecondFactor(tempToken, secondFactor)
-      }
+      is SubmitSecondFactor -> nextState = AuthorizingSecondFactor(tempToken, secondFactor)
 
-      CancelSecondFactor -> state = LoginPrompt()
+      CancelSecondFactor -> nextState = LoginPrompt()
 
       is HandleSecondFactorResponse -> {
-        if (response.isSecondFactorFailure) {
-          state = SecondFactorPrompt(tempToken, response.errorMessage)
-        } else {
-          return Authorized(response.token)
+        when {
+          response.isSecondFactorFailure ->
+            nextState = SecondFactorPrompt(tempToken, response.errorMessage)
+          else -> setOutput(Authorized(response.token))
         }
       }
     }
-
-    return null
   }
 }
 

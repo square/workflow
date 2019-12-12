@@ -44,7 +44,7 @@ object StanzaWorkflow : StatelessWorkflow<Props, Output, StanzaRendering>() {
     context: RenderContext<Nothing, Output>
   ): StanzaRendering {
     with(props) {
-      val sink: Sink<Output> = context.makeEventSink { it }
+      val sink: Sink<Output> = context.makeEventSink { setOutput(it) }
 
       val onGoBack: (() -> Unit)? = when (index) {
         0 -> null

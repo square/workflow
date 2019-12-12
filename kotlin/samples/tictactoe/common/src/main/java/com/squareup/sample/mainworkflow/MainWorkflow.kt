@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package com.squareup.sample.mainworkflow
 
 import com.squareup.sample.authworkflow.AuthResult
@@ -102,9 +104,12 @@ class MainWorkflow(
 
   override fun snapshotState(state: MainState): Snapshot = state.toSnapshot()
 
+  // We continue to use the deprecated method here for one more release, to demonstrate
+  // that the migration mechanism works.
+
   private val startAuth = workflowAction {
     state = Authenticating
-    null
+    return@workflowAction null
   }
 
   private fun handleAuthResult(result: AuthResult) = workflowAction {
@@ -112,6 +117,6 @@ class MainWorkflow(
       is Canceled -> return@workflowAction Unit
       is Authorized -> state = RunningGame
     }
-    null
+    return@workflowAction null
   }
 }

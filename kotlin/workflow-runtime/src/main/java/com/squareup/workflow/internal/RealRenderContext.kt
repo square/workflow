@@ -38,7 +38,7 @@ class RealRenderContext<StateT, OutputT : Any>(
   private val eventActionsChannel: SendChannel<WorkflowAction<StateT, OutputT>>
 ) : RenderContext<StateT, OutputT> {
 
-  interface Renderer<StateT, in OutputT : Any> {
+  interface Renderer<StateT, OutputT : Any> {
     fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
       case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT>,
       child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,

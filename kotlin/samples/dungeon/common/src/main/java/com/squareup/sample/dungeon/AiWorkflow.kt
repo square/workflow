@@ -27,8 +27,8 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
+import com.squareup.workflow.action
 import com.squareup.workflow.transform
-import com.squareup.workflow.workflowAction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.transform
 import kotlin.random.Random
@@ -76,18 +76,16 @@ class AiWorkflow(
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
-  private val updateDirection = workflowAction("updateDirection") {
+  private val updateDirection = action("updateDirection") {
     // Rotate 90 degrees.
-    val newDirection = when (state.direction) {
+    val newDirection = when (nextState.direction) {
       UP -> RIGHT
       RIGHT -> DOWN
       DOWN -> LEFT
       LEFT -> UP
     }
 
-    state = state.copy(direction = newDirection)
-
-    null
+    nextState = nextState.copy(direction = newDirection)
   }
 }
 

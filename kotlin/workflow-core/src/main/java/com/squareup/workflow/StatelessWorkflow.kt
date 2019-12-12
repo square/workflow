@@ -15,6 +15,8 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.WorkflowAction.Updater
+
 /**
  * Minimal implementation of [Workflow] that maintains no state of its own.
  *
@@ -32,7 +34,7 @@ package com.squareup.workflow
  *
  * @see StatefulWorkflow
  */
-abstract class StatelessWorkflow<in PropsT, out OutputT : Any, out RenderingT> :
+abstract class StatelessWorkflow<in PropsT, OutputT : Any, out RenderingT> :
     Workflow<PropsT, OutputT, RenderingT> {
 
   @Suppress("UNCHECKED_CAST")
@@ -108,6 +110,39 @@ fun <PropsT, OutputT : Any, FromRenderingT, ToRenderingT>
       transform: (FromRenderingT) -> ToRenderingT
     ): Workflow<PropsT, OutputT, ToRenderingT> = Workflow.stateless { props ->
   // @formatter:on
-  renderChild(this@mapRendering, props) { output -> WorkflowAction({ "mapRendering" }) { output } }
-      .let(transform)
+  renderChild(this@mapRendering, props) { output ->
+    WorkflowAction({ "mapRendering" }) { setOutput(output) }
+  }.let(transform)
+}
+
+/**
+ * Convenience to create a [WorkflowAction] with parameter types matching those
+ * of the receiving [StatefulWorkflow]. The action will invoke the given [lambda][update]
+ * when it is [applied][WorkflowAction.apply].
+ *
+ * @param name A string describing the update for debugging, included in [toString].
+ * @param update Function that defines the workflow update.
+ */
+fun <PropsT, OutputT : Any, RenderingT>
+    StatelessWorkflow<PropsT, OutputT, RenderingT>.action(
+      name: String = "",
+      update: Updater<Unit, OutputT>.() -> Unit
+    ) = action({ name }, update)
+
+/**
+ * Convenience to create a [WorkflowAction] with parameter types matching those
+ * of the receiving [StatefulWorkflow]. The action will invoke the given [lambda][update]
+ * when it is [applied][WorkflowAction.apply].
+ *
+ * @param name Function that returns a string describing the update for debugging, included in
+ * [toString].
+ * @param update Function that defines the workflow update.
+ */
+fun <PropsT, OutputT : Any, RenderingT>
+    StatelessWorkflow<PropsT, OutputT, RenderingT>.action(
+      name: () -> String,
+      update: Updater<Unit, OutputT>.() -> Unit
+    ): WorkflowAction<Unit, OutputT> = object : WorkflowAction<Unit, OutputT> {
+  override fun Updater<Unit, OutputT>.apply() = update.invoke(this)
+  override fun toString(): String = "action(${name()})-${this@action}"
 }

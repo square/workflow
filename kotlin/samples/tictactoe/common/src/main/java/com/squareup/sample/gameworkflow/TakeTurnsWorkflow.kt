@@ -25,7 +25,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 
 typealias TakeTurnsWorkflow = Workflow<TakeTurnsProps, CompletedGame, GamePlayScreen>
 
@@ -57,22 +57,24 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
       private val row: Int,
       private val col: Int
     ) : Action() {
-      override fun Mutator<Turn>.apply(): CompletedGame? {
-        val newBoard = state.board.takeSquare(row, col, state.playing)
+      override fun Updater<Turn, CompletedGame>.apply() {
+        val newBoard = nextState.board.takeSquare(row, col, nextState.playing)
 
-        return when {
-          newBoard.hasVictory() -> CompletedGame(Victory, state.copy(board = newBoard))
-          newBoard.isFull() -> CompletedGame(Draw, state.copy(board = newBoard))
-          else -> {
-            state = Turn(playing = state.playing.other, board = newBoard)
-            null
-          }
+        when {
+          newBoard.hasVictory() ->
+            setOutput(CompletedGame(Victory, nextState.copy(board = newBoard)))
+
+          newBoard.isFull() -> setOutput(CompletedGame(Draw, nextState.copy(board = newBoard)))
+
+          else -> nextState = Turn(playing = nextState.playing.other, board = newBoard)
         }
       }
     }
 
     object Quit : Action() {
-      override fun Mutator<Turn>.apply() = CompletedGame(Quitted, state)
+      override fun Updater<Turn, CompletedGame>.apply() {
+        setOutput(CompletedGame(Quitted, nextState))
+      }
     }
   }
 

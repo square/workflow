@@ -21,14 +21,11 @@ import com.squareup.sample.poetry.model.Poem
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.parse
 import com.squareup.workflow.ui.BackStackScreen
-import com.squareup.workflow.workflowAction
 
 typealias SelectedPoem = Int
-
-private typealias Action = WorkflowAction<SelectedPoem, Nothing>
 
 object PoemsBrowserWorkflow :
     StatefulWorkflow<List<Poem>, SelectedPoem, Nothing, MasterDetailScreen>() {
@@ -63,9 +60,8 @@ object PoemsBrowserWorkflow :
     sink.writeInt(state)
   }
 
-  private fun choosePoem(index: SelectedPoem): Action = workflowAction("goToPoem") {
-    state = index
-    null
+  private fun choosePoem(index: SelectedPoem) = action("goToPoem") {
+    nextState = index
   }
 
   private val clearSelection = choosePoem(-1)

@@ -189,7 +189,7 @@ class WorkflowDiagnosticListenerIntegrationTest {
   @Test fun `workflow updates emit events in order`() {
     val channel = Channel<String>()
     val worker = channel.asWorker()
-    fun action(value: String) = WorkflowAction<Nothing, String> { "output:$value" }
+    fun action(value: String) = WorkflowAction<Nothing, String> { setOutput("output:$value") }
     val workflow = Workflow.stateless<Unit, String, Unit> {
       runningWorker(worker, "key", ::action)
     }

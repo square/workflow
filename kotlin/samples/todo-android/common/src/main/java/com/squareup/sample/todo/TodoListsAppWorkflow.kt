@@ -24,6 +24,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.ui.BackStackScreen
 
 private typealias TodoListsAction = WorkflowAction<TodoListsAppState, Nothing>
@@ -59,22 +60,20 @@ object TodoListsAppWorkflow :
   private val listsWorkflow = TodoListsWorkflow()
   private val editorWorkflow = TodoEditorWorkflow()
 
-  private fun onListSelected(index: Int): TodoListsAction = WorkflowAction {
-    state = EditingList(state.lists, index)
-    null
+  private fun onListSelected(index: Int): TodoListsAction = action {
+    nextState = EditingList(nextState.lists, index)
   }
 
   private fun onEditOutput(output: TodoEditorOutput): TodoListsAction = WorkflowAction {
-    state = when (output) {
+    nextState = when (output) {
       is ListUpdated -> {
-        val oldState = state as EditingList
+        val oldState = nextState as EditingList
         oldState.copy(
-            lists = state.lists.updateRow(oldState.editingIndex, output.newList)
+            lists = nextState.lists.updateRow(oldState.editingIndex, output.newList)
         )
       }
-      Done -> ShowingLists(state.lists)
+      Done -> ShowingLists(nextState.lists)
     }
-    null
   }
 
   override fun render(

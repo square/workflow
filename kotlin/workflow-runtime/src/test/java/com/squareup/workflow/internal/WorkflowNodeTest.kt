@@ -24,7 +24,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.parse
@@ -147,7 +147,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        sink = context.makeEventSink { it }
+        sink = context.makeEventSink { setOutput(it) }
         return ""
       }
     }
@@ -182,7 +182,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        sink = context.makeEventSink { it }
+        sink = context.makeEventSink { setOutput(it) }
         return ""
       }
     }
@@ -282,7 +282,7 @@ class WorkflowNodeTest {
         context.runningWorker(channel.asWorker()) {
           check(update == null)
           update = it
-          WorkflowAction { "update:$it" }
+          WorkflowAction { setOutput("update:$it") }
         }
         return ""
       }
@@ -332,12 +332,11 @@ class WorkflowNodeTest {
       }
 
       fun update(value: String) = WorkflowAction<String, String> {
-        "update:$value"
+        setOutput("update:$value")
       }
 
       val finish = WorkflowAction<String, String> {
-        state = "finished"
-        null
+        nextState = "finished"
       }
 
       override fun render(
@@ -708,7 +707,9 @@ class WorkflowNodeTest {
     val channel = Channel<String>()
     val action = object : WorkflowAction<String, String> {
       override fun toString(): String = "TestAction"
-      override fun Mutator<String>.apply(): String? = "action output"
+      override fun Updater<String, String>.apply() {
+        setOutput("action output")
+      }
     }
     val workflow = Workflow.stateful<String, String, String, String>(
         initialState = { props, _ -> "($props:)" },
@@ -761,9 +762,9 @@ class WorkflowNodeTest {
     val listener = RecordingDiagnosticListener()
     fun action(value: String) = object : WorkflowAction<String, String> {
       override fun toString(): String = "TestAction"
-      override fun Mutator<String>.apply(): String? {
-        state = "state: $value"
-        return "output: $value"
+      override fun Updater<String, String>.apply() {
+        nextState = "state: $value"
+        setOutput("output: $value")
       }
     }
 
@@ -837,7 +838,7 @@ class WorkflowNodeTest {
 
   @Test fun `actionSink send fails before render pass completed`() {
     class TestAction : WorkflowAction<Nothing, Nothing> {
-      override fun Mutator<Nothing>.apply(): Nothing? = fail("Expected sink send to fail.")
+      override fun Updater<Nothing, Nothing>.apply() = fail("Expected sink send to fail.")
       override fun toString(): String = "TestAction()"
     }
 
