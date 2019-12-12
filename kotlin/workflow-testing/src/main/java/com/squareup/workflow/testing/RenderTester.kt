@@ -22,7 +22,8 @@ import com.squareup.workflow.WorkflowAction
 import kotlin.reflect.KClass
 
 /**
- * Create a [RenderTester] to unit test an individual render pass of this workflow.
+ * Create a [RenderTester] to unit test an individual render pass of this workflow, using the
+ * workflow's [initial state][StatefulWorkflow.initialState].
  *
  * See [RenderTester] for usage documentation.
  */
