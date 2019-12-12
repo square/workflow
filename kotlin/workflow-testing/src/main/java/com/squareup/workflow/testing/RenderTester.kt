@@ -248,6 +248,33 @@ interface RenderTester<PropsT, StateT, OutputT : Any, RenderingT> {
 }
 
 /**
+ * Specifies that this render pass is expected to run a particular worker.
+ *
+ * @param doesSameWorkAs Worker passed to the actual worker's
+ * [doesSameWorkAs][Worker.doesSameWorkAs] method to identify the worker. Note that the actual
+ * method is called on the worker instance given by the workflow-under-test, and the value of this
+ * argument is passed to that method – if you need custom comparison logic for some reason, use
+ * the overload of this method that takes a `matchesWhen` parameter.
+ * @param key The key passed to [runningWorker][com.squareup.workflow.RenderContext.runningWorker]
+ * when rendering this workflow.
+ * @param output If non-null, [EmittedOutput.output] will be emitted when this worker is ran.
+ * The [WorkflowAction] used to handle this output can be verified using methods on
+ * [RenderTestResult].
+ */
+/* ktlint-disable parameter-list-wrapping */
+fun <PropsT, StateT, OutputT : Any, RenderingT>
+    RenderTester<PropsT, StateT, OutputT, RenderingT>.expectWorker(
+  doesSameWorkAs: Worker<OutputT>,
+  key: String = "",
+  output: EmittedOutput<OutputT>? = null
+): RenderTester<PropsT, StateT, OutputT, RenderingT> = expectWorker(
+/* ktlint-enable parameter-list-wrapping */
+    matchesWhen = { it.doesSameWorkAs(doesSameWorkAs) },
+    key = key,
+    output = output
+)
+
+/**
  * Wrapper around a potentially-nullable [OutputT] value.
  */
 data class EmittedOutput<out OutputT>(val output: OutputT)
