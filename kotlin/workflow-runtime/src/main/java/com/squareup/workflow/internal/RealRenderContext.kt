@@ -25,7 +25,6 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.WorkerCase
 import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.SendChannel
 
 /**
@@ -60,7 +59,6 @@ class RealRenderContext<StateT, OutputT : Any>(
   private var frozen = false
 
   @Suppress("OverridingDeprecatedMember")
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
       EventHandler<EventT> {
     checkNotFrozen()
@@ -72,7 +70,6 @@ class RealRenderContext<StateT, OutputT : Any>(
     }
   }
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   override fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> {
     checkNotFrozen()
 

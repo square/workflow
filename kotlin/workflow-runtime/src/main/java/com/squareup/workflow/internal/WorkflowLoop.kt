@@ -21,8 +21,6 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.diagnostic.IdCounter
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
@@ -55,7 +53,6 @@ internal interface WorkflowLoop {
 @UseExperimental(VeryExperimentalWorkflow::class)
 internal open class RealWorkflowLoop : WorkflowLoop {
 
-  @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
   @Suppress("LongMethod")
   override suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
@@ -67,7 +64,9 @@ internal open class RealWorkflowLoop : WorkflowLoop {
     diagnosticListener: WorkflowDiagnosticListener?
   ): Nothing = coroutineScope {
 
+    @Suppress("EXPERIMENTAL_API_USAGE")
     val inputsChannel = props.produceIn(this)
+    @Suppress("EXPERIMENTAL_API_USAGE")
     inputsChannel.consume {
       var output: OutputT? = null
       var input: PropsT = inputsChannel.receive()

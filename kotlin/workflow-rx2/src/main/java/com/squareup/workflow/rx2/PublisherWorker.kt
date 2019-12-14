@@ -3,7 +3,6 @@ package com.squareup.workflow.rx2
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import io.reactivex.Flowable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
 import org.reactivestreams.Publisher
@@ -15,8 +14,7 @@ import org.reactivestreams.Publisher
  * If you're using RxJava, [Flowable] is a [Publisher].
  *
  * Subclassing this is equivalent to just implementing [Worker.run] directly and calling [asFlow]
- * on your [Publisher], but doesn't require you to add
- * `@UseExperimental(ExperimentalCoroutinesApi::class)` to your code.
+ * on your [Publisher].
  */
 abstract class PublisherWorker<out OutputT : Any> : Worker<OutputT> {
 
@@ -32,6 +30,5 @@ abstract class PublisherWorker<out OutputT : Any> : Worker<OutputT> {
    */
   abstract fun runPublisher(): Publisher<out OutputT>
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
   final override fun run(): Flow<OutputT> = runPublisher().asFlow()
 }

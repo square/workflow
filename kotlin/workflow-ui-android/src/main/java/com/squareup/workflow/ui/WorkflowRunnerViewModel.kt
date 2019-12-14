@@ -36,7 +36,6 @@ import kotlinx.coroutines.rx2.asObservable
 import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CancellationException
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   private val scope: CoroutineScope,
   session: WorkflowSession<OutputT, Any>
@@ -65,6 +64,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
     }
   }
 
+  @Suppress("EXPERIMENTAL_API_USAGE")
   override val result: Maybe<out OutputT> = session.outputs.asObservable()
       .firstElement()
       .doAfterTerminate {
@@ -73,6 +73,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
       .cache()
 
   init {
+    @Suppress("EXPERIMENTAL_API_USAGE")
     session.renderingsAndSnapshots
         .map { it.snapshot }
         .onEach { lastSnapshot = it }
@@ -81,6 +82,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
 
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
+  @UseExperimental(ExperimentalCoroutinesApi::class)
   override val renderings: Observable<out Any> = session.renderingsAndSnapshots
       .map { it.rendering }
       .asObservable()
