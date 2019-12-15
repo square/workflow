@@ -19,8 +19,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.channels.SendChannel
@@ -45,11 +43,7 @@ import kotlin.time.MonoClock
  * @param sinkProvider Returns the [BufferedSink] to use to write trace events to. Called on a
  * background thread.
  */
-@UseExperimental(
-    ExperimentalTime::class,
-    ExperimentalCoroutinesApi::class,
-    ObsoleteCoroutinesApi::class
-)
+@UseExperimental(ExperimentalTime::class)
 class TraceEncoder(
   scope: CoroutineScope,
   private val start: ClockMark = MonoClock.markNow(),
@@ -60,12 +54,14 @@ class TraceEncoder(
   private val processIdCounter = AtomicInteger(0)
   private val threadIdCounter = AtomicInteger(0)
 
+  @Suppress("EXPERIMENTAL_API_USAGE")
   private val events: SendChannel<List<ChromeTraceEvent>> =
     scope.actor(ioDispatcher, capacity = UNLIMITED) {
       sinkProvider().use { sink ->
         // Start the JSON array. Doesn't need to be closed.
         sink.writeUtf8("[\n")
 
+        @Suppress("EXPERIMENTAL_API_USAGE")
         consumeEach { eventBatch ->
           eventBatch.forEach { event ->
             event.writeTo(sink)

@@ -23,7 +23,6 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.rx2.await
 import org.reactivestreams.Publisher
@@ -51,7 +50,6 @@ inline fun <reified T : Any> Observable<out T?>.asWorker(): Worker<T> =
  * is nullable so that the resulting [Worker] is non-nullable instead of having
  * platform nullability.
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
 inline fun <reified T : Any> Publisher<out T?>.asWorker(): Worker<T> =
 // This cast works because RxJava types don't actually allow nulls, it's just that they can't
   // express that in their types because Java.

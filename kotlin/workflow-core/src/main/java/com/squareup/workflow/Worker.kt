@@ -247,8 +247,10 @@ inline fun <reified OutputT> Deferred<OutputT>.asWorker(): Worker<OutputT> =
 /**
  * Shorthand for `.asFlow().asWorker(key)`.
  */
-@ExperimentalCoroutinesApi
-@UseExperimental(FlowPreview::class)
+@UseExperimental(
+    FlowPreview::class,
+    ExperimentalCoroutinesApi::class
+)
 inline fun <reified OutputT> BroadcastChannel<OutputT>.asWorker(): Worker<OutputT> =
   asFlow().asWorker()
 

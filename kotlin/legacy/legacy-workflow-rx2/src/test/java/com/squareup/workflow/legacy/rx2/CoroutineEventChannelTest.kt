@@ -217,7 +217,9 @@ class CoroutineEventChannelTest {
     deferred.completeExceptionally(e)
 
     resultSub.assertNoValues()
-    resultSub.assertError(e)
+    // Can't use assertError since the exception is cloned by the coroutine runtime for stacktrace
+    // recovery.
+    resultSub.assertError { it is RuntimeException && it.message == "oops" }
   }
 
   @Test fun `onSuspending with onEvent when Single wins`() {
