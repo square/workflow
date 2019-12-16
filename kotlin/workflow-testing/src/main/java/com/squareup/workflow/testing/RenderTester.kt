@@ -42,13 +42,13 @@ fun <PropsT, OutputT : Any, RenderingT> Workflow<PropsT, OutputT, RenderingT>.re
  *
  * See [RenderTester] for usage documentation.
  */
-// @formatter:off
+/* ktlint-disable parameter-list-wrapping */
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.renderTester(
-      props: PropsT,
-      initialState: StateT
-    ): RenderTester<PropsT, StateT, OutputT, RenderingT> =
-// @formatter:on
+  props: PropsT,
+  initialState: StateT
+): RenderTester<PropsT, StateT, OutputT, RenderingT> =
+/* ktlint-enable parameter-list-wrapping */
   RealRenderTester(this, props, initialState)
 
 /**

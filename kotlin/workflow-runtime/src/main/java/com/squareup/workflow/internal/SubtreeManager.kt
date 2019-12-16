@@ -54,15 +54,15 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         }
     )
 
-  // @formatter:off
+  /* ktlint-disable parameter-list-wrapping */
   override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT>
       render(
-        case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT>,
-        child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
-        id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
-        props: ChildPropsT
-      ): ChildRenderingT {
-  // @formatter:on
+    case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT>,
+    child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    props: ChildPropsT
+  ): ChildRenderingT {
+    /* ktlint-enable parameter-list-wrapping */
     // Start tracking this case so we can be ready to render it.
     @Suppress("UNCHECKED_CAST")
     val childNode = nodeLifetimeTracker.ensure(case) as

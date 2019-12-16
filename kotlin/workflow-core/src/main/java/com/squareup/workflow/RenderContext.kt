@@ -99,45 +99,39 @@ interface RenderContext<StateT, OutputT : Any> {
 /**
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take props.
  */
+/* ktlint-disable parameter-list-wrapping */
 fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
-// Intellij refuses to format this parameter list correctly because of the weird line break,
-// and detekt will complain about it.
-// @formatter:off
-      child: Workflow<Unit, ChildOutputT, ChildRenderingT>,
-      key: String = "",
-      handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
-    ): ChildRenderingT = renderChild(child, Unit, key, handler)
-// @formatter:on
+  child: Workflow<Unit, ChildOutputT, ChildRenderingT>,
+  key: String = "",
+  handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+): ChildRenderingT = renderChild(child, Unit, key, handler)
+/* ktlint-enable parameter-list-wrapping */
 
 /**
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take props or emit
  * output.
  */
+/* ktlint-disable parameter-list-wrapping */
 fun <PropsT, StateT, OutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
-// Intellij refuses to format this parameter list correctly because of the weird line break,
-// and detekt will complain about it.
-// @formatter:off
-      child: Workflow<PropsT, Nothing, ChildRenderingT>,
-      props: PropsT,
-      key: String = ""
-    ): ChildRenderingT = renderChild(child, props, key) { noAction() }
-// @formatter:on
+  child: Workflow<PropsT, Nothing, ChildRenderingT>,
+  props: PropsT,
+  key: String = ""
+): ChildRenderingT = renderChild(child, props, key) { noAction() }
+/* ktlint-enable parameter-list-wrapping */
 
 /**
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take props or emit
  * output.
  */
+/* ktlint-disable parameter-list-wrapping */
 fun <StateT, OutputT : Any, ChildRenderingT>
     RenderContext<StateT, OutputT>.renderChild(
-// Intellij refuses to format this parameter list correctly because of the weird line break,
-// and detekt will complain about it.
-// @formatter:off
-      child: Workflow<Unit, Nothing, ChildRenderingT>,
-      key: String = ""
-    ): ChildRenderingT = renderChild(child, Unit, key) { noAction() }
-// @formatter:on
+  child: Workflow<Unit, Nothing, ChildRenderingT>,
+  key: String = ""
+): ChildRenderingT = renderChild(child, Unit, key) { noAction() }
+/* ktlint-enable parameter-list-wrapping */
 
 /**
  * Ensures a [Worker] that never emits anything is running. Since [worker] can't emit anything,

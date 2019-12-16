@@ -102,14 +102,12 @@ fun <OutputT : Any, RenderingT> Workflow.Companion.rendering(
  * Uses the given [function][transform] to transform a [Workflow] that
  * renders [FromRenderingT] to one renders [ToRenderingT],
  */
-// Intellij refuses to format this parameter list correctly because of the weird line break,
-// and detekt will complain about it.
-// @formatter:off
+/* ktlint-disable parameter-list-wrapping */
 fun <PropsT, OutputT : Any, FromRenderingT, ToRenderingT>
     Workflow<PropsT, OutputT, FromRenderingT>.mapRendering(
-      transform: (FromRenderingT) -> ToRenderingT
-    ): Workflow<PropsT, OutputT, ToRenderingT> = Workflow.stateless { props ->
-  // @formatter:on
+  transform: (FromRenderingT) -> ToRenderingT
+): Workflow<PropsT, OutputT, ToRenderingT> = Workflow.stateless { props ->
+  /* ktlint-disable parameter-list-wrapping */
   renderChild(this@mapRendering, props) { output ->
     WorkflowAction({ "mapRendering" }) { setOutput(output) }
   }.let(transform)
@@ -125,9 +123,9 @@ fun <PropsT, OutputT : Any, FromRenderingT, ToRenderingT>
  */
 fun <PropsT, OutputT : Any, RenderingT>
     StatelessWorkflow<PropsT, OutputT, RenderingT>.action(
-      name: String = "",
-      update: Updater<Unit, OutputT>.() -> Unit
-    ) = action({ name }, update)
+  name: String = "",
+  update: Updater<Unit, OutputT>.() -> Unit
+) = action({ name }, update)
 
 /**
  * Convenience to create a [WorkflowAction] with parameter types matching those
@@ -140,9 +138,9 @@ fun <PropsT, OutputT : Any, RenderingT>
  */
 fun <PropsT, OutputT : Any, RenderingT>
     StatelessWorkflow<PropsT, OutputT, RenderingT>.action(
-      name: () -> String,
-      update: Updater<Unit, OutputT>.() -> Unit
-    ): WorkflowAction<Unit, OutputT> = object : WorkflowAction<Unit, OutputT> {
+  name: () -> String,
+  update: Updater<Unit, OutputT>.() -> Unit
+): WorkflowAction<Unit, OutputT> = object : WorkflowAction<Unit, OutputT> {
   override fun Updater<Unit, OutputT>.apply() = update.invoke(this)
   override fun toString(): String = "action(${name()})-${this@action}"
 }
