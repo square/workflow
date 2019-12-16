@@ -25,7 +25,7 @@ matrix:
       os: osx
       osx_image: xcode10.2
       install:
-        - gem update --system
+        - yes | gem update --system
         - bundle install
         - brew install sourcedocs
         - cd swift/Samples/SampleApp
@@ -165,7 +165,7 @@ matrix:
     #   xcode_scheme: Workflow-Unit-Tests
     #   xcode_destination: platform=iOS Simulator,OS=10.1,name=iPad Pro (9.7-inch)
     #   before_install:
-    #     - gem update --system
+    #     - yes | gem update --system
     #     - gem install bundler
     #     - bundle install
     #     - cd swift/Samples/SampleApp
@@ -180,7 +180,7 @@ matrix:
     #   xcode_scheme: WorkflowUI-Unit-Tests
     #   xcode_destination: platform=iOS Simulator,OS=10.1,name=iPad Pro (9.7-inch)
     #   before_install:
-    #     - gem update --system
+    #     - yes | gem update --system
     #     - gem install bundler
     #     - bundle install
     #     - cd swift/Samples/SampleApp
@@ -195,7 +195,7 @@ matrix:
       xcode_scheme: Workflow-Unit-Tests
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
-        - gem update --system
+        - yes | gem update --system
         - gem install bundler
         - bundle install
         - cd swift/Samples/SampleApp
@@ -210,7 +210,7 @@ matrix:
       xcode_scheme: WorkflowUI-Unit-Tests
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
-        - gem update --system
+        - yes | gem update --system
         - gem install bundler
         - bundle install
         - cd swift/Samples/SampleApp
@@ -239,7 +239,7 @@ matrix:
       xcode_scheme: Tutorial
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
-        - gem update --system
+        - yes | gem update --system
         - gem install bundler
         - bundle install
         - cd swift/Samples/Tutorial
@@ -254,7 +254,7 @@ matrix:
       xcode_scheme: TicTacToe
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
-        - gem update --system
+        - yes | gem update --system
         - gem install bundler
         - bundle install
         - cd swift/Samples/TicTacToe
