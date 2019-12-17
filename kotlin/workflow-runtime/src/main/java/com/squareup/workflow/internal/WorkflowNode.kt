@@ -18,13 +18,14 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.VeryExperimentalWorkflow
+import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.diagnostic.IdCounter
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.diagnostic.createId
-import com.squareup.workflow.internal.Behavior.WorkerCase
+import com.squareup.workflow.internal.RealRenderContext.WorkerRunner
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -32,7 +33,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.selects.SelectBuilder
 import okio.ByteString
 import kotlin.coroutines.CoroutineContext
@@ -54,18 +54,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   private val diagnosticListener: WorkflowDiagnosticListener? = null,
   private val idCounter: IdCounter? = null,
   initialState: StateT? = null
-) : CoroutineScope {
-
-  /**
-   * Holds the channel representing the outputs of a worker, as well as a tombstone flag that is
-   * true after the worker has finished and we've reported that fact to the workflow. This is to
-   * prevent the workflow from entering an infinite loop of getting `Finished` events if it
-   * continues to listen to the worker after it finishes.
-   */
-  private class WorkerSession(
-    val channel: ReceiveChannel<ValueOrDone<*>>,
-    var tombstone: Boolean = false
-  )
+) : CoroutineScope, WorkerRunner<StateT, OutputT> {
 
   /**
    * Context that has a job that will live as long as this node.
@@ -83,30 +72,13 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   private val subtreeManager =
     SubtreeManager<StateT, OutputT>(coroutineContext, diagnosticId, diagnosticListener, idCounter)
 
-  private val workerTracker =
-    LifetimeTracker<WorkerCase<*, StateT, OutputT>, Any, WorkerSession>(
-        getKey = { case -> case },
-        start = { case ->
-          var workerId = 0L
-          if (diagnosticListener != null) {
-            workerId = idCounter.createId()
-            diagnosticListener
-                .onWorkerStarted(workerId, diagnosticId, case.key, case.worker.toString())
-          }
-          val workerChannel =
-            launchWorker(case.worker, case.key, workerId, diagnosticId, diagnosticListener)
-          WorkerSession(workerChannel)
-        },
-        dispose = { _, session -> session.channel.cancel() }
-    )
+  private val workers = ActiveStagingList<WorkerChildNode<*, *, *>>()
 
   private var state: StateT
 
   private var lastProps: PropsT = initialProps
 
   private val eventActionsChannel = Channel<WorkflowAction<StateT, OutputT>>(capacity = UNLIMITED)
-
-  private var behavior: Behavior<StateT, OutputT>? = null
 
   init {
     var restoredFromSnapshot = false
@@ -157,6 +129,26 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     )
   }
 
+  override fun <T> runningWorker(
+    worker: Worker<T>,
+    key: String,
+    handler: (T) -> WorkflowAction<StateT, OutputT>
+  ) {
+    // Prevent duplicate workflows with the same key.
+    workers.forEachStaging {
+      require(!(it.matches(worker, key))) {
+        "Expected keys to be unique for $worker: key=$key"
+      }
+    }
+
+    // Start tracking this case so we can be ready to render it.
+    val stagedWorker = workers.retainOrCreate(
+        predicate = { it.matches(worker, key) },
+        create = { createWorkerNode(worker, key, handler) }
+    )
+    stagedWorker.setHandler(handler)
+  }
+
   /**
    * Gets the next [output][OutputT] from the state machine.
    *
@@ -182,23 +174,25 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     subtreeManager.tickChildren(selector, ::acceptUpdate)
 
     // Listen for any subscription updates.
-    workerTracker.lifetimes
-        .filter { (_, session) -> !session.tombstone }
-        .forEach { (case, session) ->
-          with(selector) {
-            session.channel.onReceive { valueOrDone ->
-              if (valueOrDone.isDone) {
-                // Set the tombstone flag so we don't continue to listen to the subscription.
-                session.tombstone = true
-                // Nothing to do on close other than update the session, so don't emit any output.
-                return@onReceive null
-              } else {
-                val update = case.acceptUpdate(valueOrDone.value)
-                acceptUpdate(update)
-              }
-            }
+    workers.forEachActive { child ->
+      // Skip children that have finished but are still being run by the workflow.
+      if (child.tombstone) return@forEachActive
+
+      with(selector) {
+        child.channel.onReceive { valueOrDone ->
+          if (valueOrDone.isDone) {
+            // Set the tombstone flag so we don't continue to listen to the subscription.
+            child.tombstone = true
+            // Nothing to do on close other than update the session, so don't emit any output.
+            return@onReceive null
+          } else {
+            val update = child.acceptUpdate(valueOrDone.value)
+            @Suppress("UNCHECKED_CAST")
+            acceptUpdate(update as WorkflowAction<StateT, OutputT>)
           }
         }
+      }
+    }
 
     // Listen for any events.
     with(selector) {
@@ -233,17 +227,19 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   ): RenderingT {
     updatePropsAndState(workflow, props)
 
-    val context = RealRenderContext(subtreeManager, eventActionsChannel)
+    val context = RealRenderContext(
+        renderer = subtreeManager,
+        workerRunner = this,
+        eventActionsChannel = eventActionsChannel
+    )
     diagnosticListener?.onBeforeWorkflowRendered(diagnosticId, props, state)
     val rendering = workflow.render(props, state, context)
+    context.freeze()
     diagnosticListener?.onAfterWorkflowRendered(diagnosticId, rendering)
 
+    // Tear down workflows and workers that are obsolete.
     subtreeManager.commitRenderedChildren()
-    behavior = context.buildBehavior()
-        .apply {
-          // Start new workers and drop old ones.
-          workerTracker.track(workerCases)
-        }
+    workers.commitStaging { it.channel.cancel() }
 
     return rendering
   }
@@ -256,6 +252,20 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     diagnosticListener?.onPropsChanged(diagnosticId, lastProps, newProps, state, newState)
     state = newState
     lastProps = newProps
+  }
+
+  private fun <T> createWorkerNode(
+    worker: Worker<T>,
+    key: String,
+    handler: (T) -> WorkflowAction<StateT, OutputT>
+  ): WorkerChildNode<T, StateT, OutputT> {
+    var workerId = 0L
+    if (diagnosticListener != null) {
+      workerId = idCounter.createId()
+      diagnosticListener.onWorkerStarted(workerId, diagnosticId, key, worker.toString())
+    }
+    val workerChannel = launchWorker(worker, key, workerId, diagnosticId, diagnosticListener)
+    return WorkerChildNode(worker, key, workerChannel, handler = handler)
   }
 
   private fun ByteString.restoreState(): Snapshot? {

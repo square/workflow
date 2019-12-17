@@ -23,16 +23,16 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.internal.Behavior.WorkerCase
 import kotlinx.coroutines.channels.SendChannel
 
 /**
- * An implementation of [RenderContext] that builds a [Behavior] via [buildBehavior].
+ * An implementation of [RenderContext] that builds a [Behavior] via [freeze].
  *
  * Not for general application use.
  */
 class RealRenderContext<StateT, OutputT : Any>(
   private val renderer: Renderer<StateT, OutputT>,
+  private val workerRunner: WorkerRunner<StateT, OutputT>,
   private val eventActionsChannel: SendChannel<WorkflowAction<StateT, OutputT>>
 ) : RenderContext<StateT, OutputT>, Sink<WorkflowAction<StateT, OutputT>> {
 
@@ -45,13 +45,19 @@ class RealRenderContext<StateT, OutputT : Any>(
     ): ChildRenderingT
   }
 
-  private val workerCases = mutableListOf<WorkerCase<*, StateT, OutputT>>()
+  interface WorkerRunner<StateT, OutputT : Any> {
+    fun <T> runningWorker(
+      worker: Worker<T>,
+      key: String,
+      handler: (T) -> WorkflowAction<StateT, OutputT>
+    )
+  }
 
   /**
    * False during the current render call, set to true once this node is finished rendering.
    *
    * Used to:
-   *  - prevent modifications to this object after [buildBehavior] is called.
+   *  - prevent modifications to this object after [freeze] is called.
    *  - prevent sending to sinks before render returns.
    */
   private var frozen = false
@@ -95,16 +101,15 @@ class RealRenderContext<StateT, OutputT : Any>(
     handler: (T) -> WorkflowAction<StateT, OutputT>
   ) {
     checkNotFrozen()
-    workerCases += WorkerCase(worker, key, handler)
+    workerRunner.runningWorker(worker, key, handler)
   }
 
   /**
-   * Constructs an immutable [Behavior] from the context.
+   * Freezes this context so that any further calls to this context will throw.
    */
-  fun buildBehavior(): Behavior<StateT, OutputT> {
+  fun freeze() {
     checkNotFrozen()
     frozen = true
-    return Behavior(workerCases.toList())
   }
 
   private fun checkNotFrozen() = check(!frozen) {

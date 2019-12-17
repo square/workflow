@@ -104,24 +104,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
    */
   private val snapshotCache = mutableMapOf<AnyId, ByteString>()
 
-  /**
-   * When not in the middle of a render pass, this list represents the active child workflows.
-   * When in the middle of a render pass, this represents the list of children that may either
-   * be re-rendered, or destroyed after the render pass is finished if they weren't re-rendered.
-   *
-   * During rendering, when a child is rendered, if it exists in this list it is removed from here
-   * and added to [stagingChildren].
-   */
-  private var activeChildren = InlineLinkedList<WorkflowChildNode<*, *, *, *>>()
-
-  /**
-   * When not in the middle of a render pass, this list is empty.
-   * When rendering, every child that gets rendered is added to this list (possibly moved over from
-   * [activeChildren]).
-   * When [commitRenderedChildren] is called, this list is swapped with
-   * [activeChildren] and the old active list is cleared.
-   */
-  private var stagingChildren = InlineLinkedList<WorkflowChildNode<*, *, *, *>>()
+  private var children = ActiveStagingList<WorkflowChildNode<*, *, *, *>>()
 
   /**
    * Moves all the nodes that have been accumulated in the staging list to the active list, making
@@ -132,20 +115,14 @@ internal class SubtreeManager<StateT, OutputT : Any>(
   fun commitRenderedChildren() {
     // Any children left in the previous active list after the render finishes were not re-rendered
     // and must be torn down.
-    activeChildren.forEach { child ->
+    children.commitStaging { child ->
       child.workflowNode.cancel()
       snapshotCache -= child.id
     }
-
-    // Swap the lists and clear the staging one.
-    val newStaging = activeChildren
-    activeChildren = stagingChildren
-    stagingChildren = newStaging.apply { clear() }
   }
 
   /* ktlint-disable parameter-list-wrapping */
-  override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT>
-      render(
+  override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
     child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
     props: ChildPropsT,
     key: String,
@@ -154,16 +131,17 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     /* ktlint-enable parameter-list-wrapping */
 
     // Prevent duplicate workflows with the same key.
-    stagingChildren.forEach {
+    children.forEachStaging {
       require(!(it.matches(child, key))) {
         "Expected keys to be unique for ${child::class.java.name}: key=$key"
       }
     }
 
     // Start tracking this case so we can be ready to render it.
-    val stagedChild = activeChildren.removeFirst { it.matches(child, key) }
-        ?: createChildNode(child, props, key, handler)
-    stagingChildren += stagedChild
+    val stagedChild = children.retainOrCreate(
+        predicate = { it.matches(child, key) },
+        create = { createChildNode(child, props, key, handler) }
+    )
     stagedChild.setHandler(handler)
     return stagedChild.render(child.asStatefulWorkflow(), props)
   }
@@ -176,7 +154,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     selector: SelectBuilder<T?>,
     handler: (WorkflowAction<StateT, OutputT>) -> T?
   ) {
-    activeChildren.forEach { child ->
+    children.forEachActive { child ->
       child.workflowNode.tick(selector) { output ->
         val componentUpdate = child.acceptChildOutput(output)
         @Suppress("UNCHECKED_CAST")
@@ -187,7 +165,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
 
   fun createChildSnapshots(): List<Pair<AnyId, Snapshot>> {
     val snapshots = mutableListOf<Pair<AnyId, Snapshot>>()
-    activeChildren.forEach { child ->
+    children.forEachActive { child ->
       val snapshot = child.workflowNode.snapshot(child.workflow.asStatefulWorkflow())
       snapshots += child.id to snapshot
     }

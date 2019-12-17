@@ -26,17 +26,18 @@ import com.squareup.workflow.internal.InlineLinkedList.InlineListNode
  * Associates the child's [WorkflowNode] (which includes the key passed to `renderChild`) with the
  * output handler function that was passed to `renderChild`.
  */
+/* ktlint-disable parameter-list-wrapping */
 internal class WorkflowChildNode<
     ChildPropsT,
     ChildOutputT : Any,
     ParentStateT,
     ParentOutputT : Any
-    >
-internal constructor(
+    >(
   val workflow: Workflow<*, ChildOutputT, *>,
   private var handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>,
   val workflowNode: WorkflowNode<ChildPropsT, *, ChildOutputT, *>
 ) : InlineListNode<WorkflowChildNode<*, *, *, *>> {
+/* ktlint-enable parameter-list-wrapping */
 
   override var nextListNode: WorkflowChildNode<*, *, *, *>? = null
 
@@ -54,9 +55,9 @@ internal constructor(
   /**
    * Updates the handler function that will be invoked by [acceptChildOutput].
    */
-  fun <CO, S, O : Any> setHandler(handler: (CO) -> WorkflowAction<S, O>) {
+  fun <CO, S, O : Any> setHandler(newHandler: (CO) -> WorkflowAction<S, O>) {
     @Suppress("UNCHECKED_CAST")
-    this.handler = handler as (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
+    handler = newHandler as (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
   }
 
   /**
