@@ -149,19 +149,47 @@ class SubtreeManagerTest {
     val (_, _, eventHandler) = manager.render(case, workflow, id, "props")
 
     runBlocking {
-      val tickOutput = async {
-        select<WorkflowAction<String, String>?> {
-          manager.tickChildren(this) { update ->
-            return@tickChildren update
-          }
-        }
-      }
+      val tickOutput = async { manager.tickAction() }
       assertFalse(tickOutput.isCompleted)
 
       eventHandler("event!")
       val update = tickOutput.await()!!
       val (_, output) = update.applyTo("state")
       assertEquals("case output:workflow output:event!", output)
+    }
+  }
+
+  @Test fun `render updates child's output handler`() {
+    val manager =
+      SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
+    val workflow = TestWorkflow()
+    val id = workflow.id()
+    val props = "props"
+    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { output ->
+      WorkflowAction { setOutput("initial handler: $output") }
+    }
+
+    runBlocking {
+      // First render + tick pass – uninteresting.
+      manager.render(case, workflow, id, props)
+          .let { rendering ->
+            rendering.eventHandler("initial output")
+            val initialAction = manager.tickAction()!!
+            val (_, initialOutput) = initialAction.applyTo("")
+            assertEquals("initial handler: workflow output:initial output", initialOutput)
+          }
+
+      // Do a second render + tick, but with a different handler function.
+      val case2 = case.copy(handler = { output ->
+        WorkflowAction { setOutput("second handler: $output") }
+      })
+      manager.render(case2, workflow, id, props)
+          .let { rendering ->
+            rendering.eventHandler("second output")
+            val secondAction = manager.tickAction()!!
+            val (_, secondOutput) = secondAction.applyTo("")
+            assertEquals("second handler: workflow output:second output", secondOutput)
+          }
     }
   }
 
@@ -192,7 +220,8 @@ class SubtreeManagerTest {
     val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(
         workflow as Workflow<*, Unit, *>,
         id as WorkflowId<Unit, Unit, *>,
-        Unit) { fail() }
+        Unit
+    ) { fail() }
     assertEquals(0, workflow.serializes)
 
     manager.track(listOf(case))
@@ -201,5 +230,13 @@ class SubtreeManagerTest {
 
     snapshots.forEach { (_, snapshot) -> snapshot.bytes }
     assertEquals(1, workflow.serializes)
+  }
+
+  private suspend fun <S, O : Any> SubtreeManager<S, O>.tickAction(): WorkflowAction<S, O>? {
+    return select {
+      tickChildren(this) { update ->
+        return@tickChildren update
+      }
+    }
   }
 }
