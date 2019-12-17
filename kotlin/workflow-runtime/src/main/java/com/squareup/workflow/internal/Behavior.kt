@@ -31,23 +31,23 @@ data class Behavior<StateT, OutputT : Any> internal constructor(
   val workerCases: List<WorkerCase<*, StateT, OutputT>>
 ) {
 
-  // @formatter:off
+  /* ktlint-disable parameter-list-wrapping */
   data class WorkflowOutputCase<
       ChildPropsT,
       ChildOutputT : Any,
       ParentStateT,
       ParentOutputT : Any
       > internal constructor(
-        val workflow: Workflow<*, ChildOutputT, *>,
-        val id: WorkflowId<ChildPropsT, ChildOutputT, *>,
-        val props: ChildPropsT,
-        val handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
-      ) {
-        @Suppress("UNCHECKED_CAST")
-        fun acceptChildOutput(output: Any): WorkflowAction<ParentStateT, ParentOutputT> =
-          handler(output as ChildOutputT)
-      }
-      // @formatter:on
+    val workflow: Workflow<*, ChildOutputT, *>,
+    val id: WorkflowId<ChildPropsT, ChildOutputT, *>,
+    val props: ChildPropsT,
+    val handler: (ChildOutputT) -> WorkflowAction<ParentStateT, ParentOutputT>
+  ) {
+    @Suppress("UNCHECKED_CAST")
+    fun acceptChildOutput(output: Any): WorkflowAction<ParentStateT, ParentOutputT> =
+      handler(output as ChildOutputT)
+  }
+  /* ktlint-enable parameter-list-wrapping */
 
   data class WorkerCase<T, StateT, OutputT : Any> internal constructor(
     val worker: Worker<T>,

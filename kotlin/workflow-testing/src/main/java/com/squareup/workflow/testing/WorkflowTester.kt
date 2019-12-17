@@ -225,16 +225,16 @@ fun <T, OutputT : Any, RenderingT> Workflow<Unit, OutputT, RenderingT>.testFromS
  *
  * All workflow-related coroutines are cancelled when the block exits.
  */
-// @formatter:off
+/* ktlint-disable parameter-list-wrapping */
 @TestOnly
 fun <T, PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.testFromState(
-      props: PropsT,
-      initialState: StateT,
-      context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
-    ): T = test(props, WorkflowTestParams(StartFromState(initialState)), context, block)
-// @formatter:on
+  props: PropsT,
+  initialState: StateT,
+  context: CoroutineContext = EmptyCoroutineContext,
+  block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
+): T = test(props, WorkflowTestParams(StartFromState(initialState)), context, block)
+/* ktlint-enable parameter-list-wrapping */
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
@@ -243,15 +243,15 @@ fun <T, PropsT, StateT, OutputT : Any, RenderingT>
  *
  * All workflow-related coroutines are cancelled when the block exits.
  */
-// @formatter:off
+/* ktlint-disable parameter-list-wrapping */
 @TestOnly
 fun <StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<Unit, StateT, OutputT, RenderingT>.testFromState(
-      initialState: StateT,
-      context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<Unit, OutputT, RenderingT>.() -> Unit
-    ) = testFromState(Unit, initialState, context, block)
-// @formatter:on
+  initialState: StateT,
+  context: CoroutineContext = EmptyCoroutineContext,
+  block: WorkflowTester<Unit, OutputT, RenderingT>.() -> Unit
+) = testFromState(Unit, initialState, context, block)
+/* ktlint-enable parameter-list-wrapping */
 
 /**
  * Creates a [WorkflowTester] to run this workflow for unit testing.
@@ -259,16 +259,15 @@ fun <StateT, OutputT : Any, RenderingT>
  * All workflow-related coroutines are cancelled when the block exits.
  */
 @TestOnly
-// @formatter:off
+/* ktlint-disable parameter-list-wrapping */
 fun <T, PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.test(
-      props: PropsT,
-      testParams: WorkflowTestParams<StateT> = WorkflowTestParams(),
-      context: CoroutineContext = EmptyCoroutineContext,
-      block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
-    ): T
-// @formatter:on
-{ // ktlint-disable curly-spacing
+  props: PropsT,
+  testParams: WorkflowTestParams<StateT> = WorkflowTestParams(),
+  context: CoroutineContext = EmptyCoroutineContext,
+  block: WorkflowTester<PropsT, OutputT, RenderingT>.() -> T
+): T {
+  /* ktlint-enable parameter-list-wrapping */
   val propsChannel = ConflatedBroadcastChannel(props)
 
   // Any exceptions that are thrown from a launch will be reported to the coroutine's uncaught
