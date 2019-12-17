@@ -237,10 +237,10 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     val rendering = workflow.render(props, state, context)
     diagnosticListener?.onAfterWorkflowRendered(diagnosticId, rendering)
 
+    subtreeManager.commitRenderedChildren()
     behavior = context.buildBehavior()
         .apply {
-          // Start new children/workers, and drop old ones.
-          subtreeManager.track(childCases)
+          // Start new workers and drop old ones.
           workerTracker.track(workerCases)
         }
 

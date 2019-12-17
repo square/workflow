@@ -27,7 +27,6 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.applyTo
-import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
 import com.squareup.workflow.makeEventSink
@@ -49,21 +48,24 @@ class RealRenderContextTest {
   private class TestRenderer : Renderer<String, String> {
 
     data class Rendering(
-      val case: WorkflowOutputCase<*, *, *, *>,
       val child: Workflow<*, *, *>,
-      val id: WorkflowId<*, *, *>,
-      val props: Any?
+      val props: Any?,
+      val key: String,
+      val handler: (Any) -> WorkflowAction<String, String>
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <IC, OC : Any, RC> render(
-      case: WorkflowOutputCase<IC, OC, String, String>,
-      child: Workflow<IC, OC, RC>,
-      id: WorkflowId<IC, OC, RC>,
-      props: IC
-    ): RC {
-      return Rendering(case, child, id, props) as RC
-    }
+    override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
+      child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+      props: ChildPropsT,
+      key: String,
+      handler: (ChildOutputT) -> WorkflowAction<String, String>
+    ): ChildRenderingT = Rendering(
+        child,
+        props,
+        key,
+        handler as (Any) -> WorkflowAction<String, String>
+    ) as ChildRenderingT
   }
 
   private class TestWorkflow : StatefulWorkflow<String, String, String, Rendering>() {
@@ -84,12 +86,12 @@ class RealRenderContextTest {
   }
 
   private class PoisonRenderer<S, O : Any> : Renderer<S, O> {
-    override fun <IC, OC : Any, RC> render(
-      case: WorkflowOutputCase<IC, OC, S, O>,
-      child: Workflow<IC, OC, RC>,
-      id: WorkflowId<IC, OC, RC>,
-      props: IC
-    ): RC = fail()
+    override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
+      child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+      props: ChildPropsT,
+      key: String,
+      handler: (ChildOutputT) -> WorkflowAction<S, O>
+    ): ChildRenderingT = fail()
   }
 
   private val eventActionsChannel = Channel<WorkflowAction<String, String>>(capacity = UNLIMITED)
@@ -194,28 +196,17 @@ class RealRenderContextTest {
     val context = RealRenderContext(TestRenderer(), eventActionsChannel)
     val workflow = TestWorkflow()
 
-    val (case, child, id, props) = context.renderChild(workflow, "props", "key") { output ->
+    val (child, props, key, handler) = context.renderChild(workflow, "props", "key") { output ->
       WorkflowAction { setOutput("output:$output") }
     }
 
     assertSame(workflow, child)
-    assertEquals(workflow.id("key"), id)
     assertEquals("props", props)
-    assertEquals<Workflow<*, *, *>>(workflow, case.workflow)
-    assertEquals(workflow.id("key"), case.id)
-    assertEquals("props", case.props)
+    assertEquals("key", key)
 
-    @Suppress("UNCHECKED_CAST")
-    case as WorkflowOutputCase<String, String, String, String>
-    val (state, output) = case.handler.invoke("output").applyTo("state")
+    val (state, output) = handler.invoke("output").applyTo("state")
     assertEquals("state", state)
     assertEquals("output:output", output)
-
-    val childCases = context.buildBehavior()
-        .childCases
-    assertEquals(1, childCases.size)
-    // IDE is lying, this is fine.
-    assertSame(case, childCases.single())
   }
 
   @Test fun `all methods throw after buildBehavior`() {

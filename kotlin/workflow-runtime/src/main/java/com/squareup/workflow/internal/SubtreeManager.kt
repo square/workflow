@@ -16,12 +16,10 @@
 package com.squareup.workflow.internal
 
 import com.squareup.workflow.Snapshot
-import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.diagnostic.IdCounter
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
-import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import kotlinx.coroutines.selects.SelectBuilder
 import okio.ByteString
 import kotlin.coroutines.CoroutineContext
@@ -29,6 +27,68 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Responsible for tracking child workflows, starting them and tearing them down when necessary.
  * Also manages restoring children from snapshots.
+ *
+ * Child workflows are stored in [WorkflowChildNode]s, which associate the child's [WorkflowNode]
+ * with its output handler.
+ *
+ * ## Rendering
+ *
+ * This class implements [RealRenderContext.Renderer], and [WorkflowNode] will pass its instance
+ * of this class to the [RealRenderContext] on each render pass to render children. That means that
+ * when a workflow renders a child, this class does the actual work.
+ *
+ * This class keeps two lists:
+ *  1. Active list: All the children from the last render pass that have not yet been rendered in
+ *     the subsequent pass.
+ *  2. Staging list: Children that have been rendered in the current render pass, before the pass is
+ *     [committed][commitRenderedChildren].
+ *
+ * The render process is as follows:
+ *   1. When the render pass starts, the staging list is empty and the active list contains all the
+ *      children rendered in the last pass.
+ *      ```
+ *      active:  [foo, bar]
+ *      staging: []
+ *      ```
+ *   2. Every time a child is rendered, it is looked up in the list of children from the last render
+ *      pass. If found, it is removed from the active list and added to the staging list.
+ *      ```
+ *      render(foo)
+ *      active:  [bar]
+ *      staging: [foo]
+ *      ```
+ *   3. If not found, a new [WorkflowChildNode] is created and added to the staging list.
+ *      ```
+ *      render(baz)
+ *      active:  [bar]
+ *      staging: [foo, baz]
+ *      ```
+ *   4. When the workflow's render method returns, the [WorkflowNode] calls
+ *      [commitRenderedChildren], which:
+ *        1. Tears down all the children remaining in the active list
+ *           ```
+ *           bar.cancel()
+ *           active:  [bar]
+ *           staging: [foo, baz]
+ *           ```
+ *        2. Clears the old active list
+ *           ```
+ *           active:  []
+ *           staging: [foo, baz]
+ *           ```
+ *        3. And then swaps the active and staging lists.
+ *           ```
+ *           active:  [foo, baz]
+ *           staging: []
+ *           ```
+ *      This just updates a couple references, and since the lists are swapped, doesn't involve any
+ *      allocations.
+ *
+ * When looking up a child in the active list, a linear search is used. This is expected to perform
+ * adequately in practice because most workflows don't have a large number of children (even as few
+ * as ten is uncommon), and in the most common case, the structure of the workflow tree doesn't
+ * change (no workflows are added or removed), and children are re-rendered in the same order as
+ * before, so the first active child will usually match.
  */
 internal class SubtreeManager<StateT, OutputT : Any>(
   private val contextForChildren: CoroutineContext,
@@ -44,39 +104,68 @@ internal class SubtreeManager<StateT, OutputT : Any>(
    */
   private val snapshotCache = mutableMapOf<AnyId, ByteString>()
 
-  private val nodeLifetimeTracker =
-    LifetimeTracker<WorkflowOutputCase<*, *, StateT, OutputT>, AnyId, WorkflowNode<*, *, *, *>>(
-        getKey = { it.id },
-        start = { it.createNode() },
-        dispose = { case, node ->
-          node.cancel()
-          snapshotCache -= case.id
-        }
-    )
+  /**
+   * When not in the middle of a render pass, this list represents the active child workflows.
+   * When in the middle of a render pass, this represents the list of children that may either
+   * be re-rendered, or destroyed after the render pass is finished if they weren't re-rendered.
+   *
+   * During rendering, when a child is rendered, if it exists in this list it is removed from here
+   * and added to [stagingChildren].
+   */
+  private var activeChildren = InlineLinkedList<WorkflowChildNode<*, *, *, *>>()
+
+  /**
+   * When not in the middle of a render pass, this list is empty.
+   * When rendering, every child that gets rendered is added to this list (possibly moved over from
+   * [activeChildren]).
+   * When [commitRenderedChildren] is called, this list is swapped with
+   * [activeChildren] and the old active list is cleared.
+   */
+  private var stagingChildren = InlineLinkedList<WorkflowChildNode<*, *, *, *>>()
+
+  /**
+   * Moves all the nodes that have been accumulated in the staging list to the active list, making
+   * them the new active list, and tears down any inactive children.
+   *
+   * This should be called after this node's render method returns.
+   */
+  fun commitRenderedChildren() {
+    // Any children left in the previous active list after the render finishes were not re-rendered
+    // and must be torn down.
+    activeChildren.forEach { child ->
+      child.workflowNode.cancel()
+      snapshotCache -= child.id
+    }
+
+    // Swap the lists and clear the staging one.
+    val newStaging = activeChildren
+    activeChildren = stagingChildren
+    stagingChildren = newStaging.apply { clear() }
+  }
 
   /* ktlint-disable parameter-list-wrapping */
   override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT>
       render(
-    case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT>,
     child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
-    id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
-    props: ChildPropsT
+    props: ChildPropsT,
+    key: String,
+    handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT {
     /* ktlint-enable parameter-list-wrapping */
-    // Start tracking this case so we can be ready to render it.
-    @Suppress("UNCHECKED_CAST")
-    val childNode = nodeLifetimeTracker.ensure(case) as
-        WorkflowNode<ChildPropsT, *, ChildOutputT, ChildRenderingT>
-    return childNode.render(child.asStatefulWorkflow(), props)
-  }
 
-  /**
-   * Ensures that a [WorkflowNode] is running for every workflow in [cases], and cancels any
-   * running workflows that are not in the list.
-   */
-  fun track(cases: List<WorkflowOutputCase<*, *, StateT, OutputT>>) {
-    // Add new children and remove old ones.
-    nodeLifetimeTracker.track(cases)
+    // Prevent duplicate workflows with the same key.
+    stagingChildren.forEach {
+      require(!(it.matches(child, key))) {
+        "Expected keys to be unique for ${child::class.java.name}: key=$key"
+      }
+    }
+
+    // Start tracking this case so we can be ready to render it.
+    val stagedChild = activeChildren.removeFirst { it.matches(child, key) }
+        ?: createChildNode(child, props, key, handler)
+    stagingChildren += stagedChild
+    stagedChild.setHandler(handler)
+    return stagedChild.render(child.asStatefulWorkflow(), props)
   }
 
   /**
@@ -87,17 +176,22 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     selector: SelectBuilder<T?>,
     handler: (WorkflowAction<StateT, OutputT>) -> T?
   ) {
-    for ((case, node) in nodeLifetimeTracker.lifetimes) {
-      node.tick(selector) { output ->
-        val componentUpdate = case.acceptChildOutput(output)
-        return@tick handler(componentUpdate)
+    activeChildren.forEach { child ->
+      child.workflowNode.tick(selector) { output ->
+        val componentUpdate = child.acceptChildOutput(output)
+        @Suppress("UNCHECKED_CAST")
+        return@tick handler(componentUpdate as WorkflowAction<StateT, OutputT>)
       }
     }
   }
 
   fun createChildSnapshots(): List<Pair<AnyId, Snapshot>> {
-    return nodeLifetimeTracker.lifetimes
-        .map { (case, node) -> node.id to node.snapshot(case.workflow.asStatefulWorkflow()) }
+    val snapshots = mutableListOf<Pair<AnyId, Snapshot>>()
+    activeChildren.forEach { child ->
+      val snapshot = child.workflowNode.snapshot(child.workflow.asStatefulWorkflow())
+      snapshots += child.id to snapshot
+    }
+    return snapshots
   }
 
   /**
@@ -108,17 +202,23 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     snapshotCache.putAll(childSnapshots.toMap())
   }
 
-  @Suppress("UNCHECKED_CAST")
-  private fun <IC, OC : Any> WorkflowOutputCase<IC, OC, StateT, OutputT>.createNode():
-      WorkflowNode<IC, *, OC, *> =
-    WorkflowNode(
+  private fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> createChildNode(
+    child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
+    initialProps: ChildPropsT,
+    key: String,
+    handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+  ): WorkflowChildNode<ChildPropsT, ChildOutputT, StateT, OutputT> {
+    val id = child.id(key)
+    val workflowNode = WorkflowNode(
         id,
-        workflow.asStatefulWorkflow() as StatefulWorkflow<IC, *, OC, *>,
-        props,
+        child.asStatefulWorkflow(),
+        initialProps,
         snapshotCache[id],
         contextForChildren,
         parentDiagnosticId,
         diagnosticListener,
         idCounter
     )
+    return WorkflowChildNode(child, handler, workflowNode)
+  }
 }

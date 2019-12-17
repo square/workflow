@@ -21,10 +21,8 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
-import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
 import com.squareup.workflow.makeEventSink
 import kotlinx.coroutines.Dispatchers.Unconfined
@@ -33,8 +31,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.fail
+
+private typealias StringHandler = (String) -> WorkflowAction<String, String>
 
 class SubtreeManagerTest {
 
@@ -100,11 +101,8 @@ class SubtreeManagerTest {
     val manager =
       SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
-    val id = workflow.id()
-    val props = "props"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { fail() }
 
-    manager.render(case, workflow, id, props)
+    manager.render(workflow, "props", key = "", handler = { fail() })
     assertEquals(1, workflow.started)
   }
 
@@ -112,24 +110,55 @@ class SubtreeManagerTest {
     val manager =
       SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
-    val id = workflow.id()
-    val props = "props"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { fail() }
+    fun render() = manager.render(workflow, "props", key = "", handler = { fail() })
+        .also { manager.commitRenderedChildren() }
 
-    manager.render(case, workflow, id, props)
-    manager.render(case, workflow, id, props)
+    render()
+    render()
+
     assertEquals(1, workflow.started)
+  }
+
+  @Test fun `render restarts child after tearing down`() {
+    val manager =
+      SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
+    val workflow = TestWorkflow()
+    fun render() = manager.render(workflow, "props", key = "", handler = { fail() })
+        .also { manager.commitRenderedChildren() }
+    render()
+    assertEquals(1, workflow.started)
+
+    // Render without rendering child.
+    manager.commitRenderedChildren()
+    assertEquals(1, workflow.started)
+
+    render()
+    assertEquals(2, workflow.started)
+  }
+
+  @Test fun `render throws on duplicate key`() {
+    val manager =
+      SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
+    val workflow = TestWorkflow()
+    manager.render(workflow, "props", "foo", handler = { fail() })
+
+    val error = assertFailsWith<IllegalArgumentException> {
+      manager.render(workflow, "props", "foo", handler = { fail() })
+    }
+    assertEquals(
+        "Expected keys to be unique for ${TestWorkflow::class.java.name}: key=foo",
+        error.message
+    )
   }
 
   @Test fun `render returns child rendering`() {
     val manager =
       SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
-    val id = workflow.id()
-    val props = "props"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { fail() }
 
-    val (composeProps, composeState) = manager.render(case, workflow, id, props)
+    val (composeProps, composeState) = manager.render(
+        workflow, "props", key = "", handler = { fail() }
+    )
     assertEquals("props", composeProps)
     assertEquals("initialState:props", composeState)
   }
@@ -138,24 +167,17 @@ class SubtreeManagerTest {
     val manager =
       SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
-    val id = workflow.id()
-    val props = "props"
-    val case = WorkflowOutputCase<String, String, String, String>(workflow, id, props) { output ->
+    val handler: StringHandler = { output ->
       WorkflowAction { setOutput("case output:$output") }
     }
 
     // Initialize the child so tickChildren has something to work with, and so that we can send
     // an event to trigger an output.
-    val (_, _, eventHandler) = manager.render(case, workflow, id, "props")
+    val (_, _, eventHandler) = manager.render(workflow, "props", key = "", handler = handler)
+    manager.commitRenderedChildren()
 
     runBlocking {
-      val tickOutput = async {
-        select<WorkflowAction<String, String>?> {
-          manager.tickChildren(this) { update ->
-            return@tickChildren update
-          }
-        }
-      }
+      val tickOutput = async { manager.tickAction() }
       assertFalse(tickOutput.isCompleted)
 
       eventHandler("event!")
@@ -165,21 +187,45 @@ class SubtreeManagerTest {
     }
   }
 
+  @Test fun `render updates child's output handler`() {
+    val manager =
+      SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
+    val workflow = TestWorkflow()
+    fun render(handler: StringHandler) =
+      manager.render(workflow, "props", key = "", handler = handler)
+          .also { manager.commitRenderedChildren() }
+
+    runBlocking {
+      // First render + tick pass – uninteresting.
+      render { WorkflowAction { setOutput("initial handler: $it") } }
+          .let { rendering ->
+            rendering.eventHandler("initial output")
+            val initialAction = manager.tickAction()!!
+            val (_, initialOutput) = initialAction.applyTo("")
+            assertEquals("initial handler: workflow output:initial output", initialOutput)
+          }
+
+      // Do a second render + tick, but with a different handler function.
+      render { WorkflowAction { setOutput("second handler: $it") } }
+          .let { rendering ->
+            rendering.eventHandler("second output")
+            val secondAction = manager.tickAction()!!
+            val (_, secondOutput) = secondAction.applyTo("")
+            assertEquals("second handler: workflow output:second output", secondOutput)
+          }
+    }
+  }
+
   // See https://github.com/square/workflow/issues/404
   @Test fun `createChildSnapshot snapshots eagerly`() {
     val manager = SubtreeManager<Unit, Nothing>(Unconfined, parentDiagnosticId = 0)
     val workflow = SnapshotTestWorkflow()
-    val id = workflow.id("1")
-    @Suppress("UNCHECKED_CAST")
-    val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(
-        workflow as Workflow<*, Unit, *>,
-        id as WorkflowId<Unit, Unit, *>,
-        Unit
-    ) { fail() }
     assertEquals(0, workflow.snapshots)
 
-    manager.track(listOf(case))
+    manager.render(workflow, props = Unit, key = "1", handler = { fail() })
+    manager.commitRenderedChildren()
     manager.createChildSnapshots()
+
     assertEquals(1, workflow.snapshots)
   }
 
@@ -187,19 +233,23 @@ class SubtreeManagerTest {
   @Test fun `createChildSnapshot serializes lazily`() {
     val manager = SubtreeManager<Unit, Nothing>(Unconfined, parentDiagnosticId = 0)
     val workflow = SnapshotTestWorkflow()
-    val id = workflow.id("1")
-    @Suppress("UNCHECKED_CAST")
-    val case = WorkflowOutputCase<Unit, Unit, Unit, Nothing>(
-        workflow as Workflow<*, Unit, *>,
-        id as WorkflowId<Unit, Unit, *>,
-        Unit) { fail() }
     assertEquals(0, workflow.serializes)
 
-    manager.track(listOf(case))
+    manager.render(workflow, props = Unit, key = "1", handler = { fail() })
+    manager.commitRenderedChildren()
     val snapshots = manager.createChildSnapshots()
+
     assertEquals(0, workflow.serializes)
 
     snapshots.forEach { (_, snapshot) -> snapshot.bytes }
     assertEquals(1, workflow.serializes)
+  }
+
+  private suspend fun <S, O : Any> SubtreeManager<S, O>.tickAction(): WorkflowAction<S, O>? {
+    return select {
+      tickChildren(this) { update ->
+        return@tickChildren update
+      }
+    }
   }
 }

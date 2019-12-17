@@ -24,7 +24,6 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.internal.Behavior.WorkerCase
-import com.squareup.workflow.internal.Behavior.WorkflowOutputCase
 import kotlinx.coroutines.channels.SendChannel
 
 /**
@@ -39,15 +38,14 @@ class RealRenderContext<StateT, OutputT : Any>(
 
   interface Renderer<StateT, OutputT : Any> {
     fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
-      case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT>,
       child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
-      id: WorkflowId<ChildPropsT, ChildOutputT, ChildRenderingT>,
-      props: ChildPropsT
+      props: ChildPropsT,
+      key: String,
+      handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
     ): ChildRenderingT
   }
 
   private val workerCases = mutableListOf<WorkerCase<*, StateT, OutputT>>()
-  private val childCases = mutableListOf<WorkflowOutputCase<*, *, StateT, OutputT>>()
 
   /**
    * False during the current render call, set to true once this node is finished rendering.
@@ -92,11 +90,7 @@ class RealRenderContext<StateT, OutputT : Any>(
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT {
     checkNotFrozen()
-    val id = child.id(key)
-    val case: WorkflowOutputCase<ChildPropsT, ChildOutputT, StateT, OutputT> =
-      WorkflowOutputCase(child, id, props, handler)
-    childCases += case
-    return renderer.render(case, child, id, props)
+    return renderer.render(child, props, key, handler)
   }
 
   override fun <T> runningWorker(
@@ -114,10 +108,7 @@ class RealRenderContext<StateT, OutputT : Any>(
   fun buildBehavior(): Behavior<StateT, OutputT> {
     checkNotFrozen()
     frozen = true
-    return Behavior(
-        childCases = childCases.toList(),
-        workerCases = workerCases.toList()
-    )
+    return Behavior(workerCases.toList())
   }
 
   private fun checkNotFrozen() = check(!frozen) {
