@@ -64,8 +64,16 @@ class WorkflowLayout(
     renderings: Observable<out Any>,
     hints: ContainerHints
   ) {
-    takeWhileAttached(renderings) { show(it, hints) }
+    val hintsWithDefaults = hints.withDefaultViewBindings()
+    takeWhileAttached(renderings) { show(it, hintsWithDefaults) }
   }
+
+  /**
+   * [TODO](https://github.com/square/workflow/issues/833) Discuss a better way to provide defaults, and
+   * what those default should actually be.
+   */
+  private fun ContainerHints.withDefaultViewBindings(): ContainerHints =
+    this + (ViewRegistry to (this[ViewRegistry] + defaultViewBindings))
 
   private fun show(
     newRendering: Any,

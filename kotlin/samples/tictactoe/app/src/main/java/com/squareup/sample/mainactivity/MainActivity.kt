@@ -26,6 +26,7 @@ import com.squareup.workflow.diagnostic.andThen
 import com.squareup.workflow.diagnostic.tracing.TracingDiagnosticListener
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
+import com.squareup.workflow.ui.plus
 import com.squareup.workflow.ui.setContentWorkflow
 import io.reactivex.disposables.Disposables
 import timber.log.Timber

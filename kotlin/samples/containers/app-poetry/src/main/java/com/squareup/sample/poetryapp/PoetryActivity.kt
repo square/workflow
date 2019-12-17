@@ -22,6 +22,7 @@ import com.squareup.sample.poetry.PoetryViews
 import com.squareup.sample.poetry.model.Poem
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner
+import com.squareup.workflow.ui.plus
 import com.squareup.workflow.ui.setContentWorkflow
 import timber.log.Timber
 

@@ -50,4 +50,6 @@ dependencies {
   testImplementation deps.test.junit
   testImplementation deps.test.truth
   testImplementation deps.kotlin.coroutines.test
+  testImplementation deps.kotlin.test.jdk
+  testImplementation deps.kotlin.test.mockito
 }

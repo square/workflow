@@ -37,6 +37,7 @@ import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backstack.BackStackConfig.First
 import com.squareup.workflow.ui.backstack.BackStackConfig.Other
 import com.squareup.workflow.ui.bindShowRendering
+import com.squareup.workflow.ui.buildView
 import com.squareup.workflow.ui.canShowRendering
 import com.squareup.workflow.ui.compatible
 import com.squareup.workflow.ui.showRendering
