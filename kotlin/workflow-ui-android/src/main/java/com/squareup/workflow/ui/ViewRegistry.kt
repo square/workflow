@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("FunctionName")
+
 package com.squareup.workflow.ui
 
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.workflow.ui.backstack.BackStackContainer
-import kotlin.reflect.KClass
+
+/**
+ * [ViewBinding]s that are always available.
+ *
+ * [TODO](https://github.com/square/workflow/issues/833) Discuss a better way to provide defaults, and
+ * what those default should actually be.
+ */
+internal val defaultViewBindings = ViewRegistry(
+    NamedBinding,
+    BackStackContainer,
+    ModalContainer.forAlertContainerScreen()
+)
 
 /**
  * A collection of [ViewBinding]s that can be used to display the stream of renderings
@@ -57,31 +70,15 @@ import kotlin.reflect.KClass
  *  - [AlertContainerScreen]`<*>` (Use [ModalContainer.forAlertContainerScreen] to set
  *    a different dialog theme.)
  */
-class ViewRegistry private constructor(
-  private val bindings: Map<KClass<*>, ViewBinding<*>>
-) {
-  /** [bindings] plus any built-ins. Segregated to keep dup checking simple. */
-  private val allBindings = bindings +
-      (NamedBinding.type to NamedBinding) +
-      (BackStackContainer.type to BackStackContainer) +
-      (defaultAlertBinding.type to defaultAlertBinding)
+interface ViewRegistry {
 
-  constructor(vararg bindings: ViewBinding<*>) : this(
-      bindings.map { it.type to it }.toMap().apply {
-        check(keys.size == bindings.size) {
-          "${bindings.map { it.type }} must not have duplicate entries."
-        }
-      }
-  )
-
-  constructor(vararg registries: ViewRegistry) : this(
-      registries.map { it.bindings }
-          .reduce { left, right ->
-            val duplicateKeys = left.keys.intersect(right.keys)
-            check(duplicateKeys.isEmpty()) { "Must not have duplicate entries: $duplicateKeys." }
-            left + right
-          }
-  )
+  /**
+   * The set of unique keys which this registry can derive from the renderings passed to [buildView]
+   * and for which it knows how to create views.
+   *
+   * Used to ensure that duplicate bindings are never registered.
+   */
+  val keys: Set<Any>
 
   /**
    * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.
@@ -99,80 +96,38 @@ class ViewRegistry private constructor(
     initialContainerHints: ContainerHints,
     contextForNewView: Context,
     container: ViewGroup? = null
-  ): View {
-    @Suppress("UNCHECKED_CAST")
-    return (allBindings[initialRendering::class] as? ViewBinding<RenderingT>)
-        ?.buildView(
-            initialRendering,
-            initialContainerHints,
-            contextForNewView,
-            container
-        )
-        ?.apply {
-          checkNotNull(getRendering<RenderingT>()) {
-            "View.bindShowRendering should have been called for $this, typically by the " +
-                "${ViewBinding::class.java.name} that created it."
-          }
-        }
-        ?: throw IllegalArgumentException(
-            "A ${ViewBinding::class.java.name} should have been registered " +
-                "to display $initialRendering."
-        )
-  }
-
-  /**
-   * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.
-   *
-   * Creates a [View] to display [initialRendering], which can be updated via calls
-   * to [View.showRendering].
-   *
-   * @throws IllegalArgumentException if no binding can be find for type [RenderingT]
-   *
-   * @throws IllegalStateException if the matching [ViewBinding] fails to call
-   * [View.bindShowRendering] when constructing the view
-   */
-  fun <RenderingT : Any> buildView(
-    initialRendering: RenderingT,
-    initialContainerHints: ContainerHints,
-    container: ViewGroup
-  ): View = buildView(initialRendering, initialContainerHints, container.context, container)
-
-  operator fun <RenderingT : Any> plus(binding: ViewBinding<RenderingT>): ViewRegistry {
-    check(binding.type !in bindings.keys) {
-      "Already registered ${bindings[binding.type]} for ${binding.type}, cannot accept $binding."
-    }
-    return ViewRegistry(bindings + (binding.type to binding))
-  }
-
-  operator fun plus(registry: ViewRegistry): ViewRegistry {
-    return ViewRegistry(this, registry)
-  }
+  ): View
 
   companion object : ContainerHintKey<ViewRegistry>(ViewRegistry::class) {
-    private val defaultAlertBinding = ModalContainer.forAlertContainerScreen()
-
     override val default: ViewRegistry
       get() = error("There should always be a ViewRegistry hint, this is bug in Workflow.")
   }
 }
 
-private object NamedBinding : ViewBinding<Named<*>>
-by BuilderBinding(
-    type = Named::class,
-    viewConstructor = { initialRendering, initialHints, contextForNewView, container ->
-      val view =
-        initialHints[ViewRegistry].buildView(
-            initialRendering.wrapped,
-            initialHints,
-            contextForNewView,
-            container
-        )
-      view.apply {
-        @Suppress("RemoveExplicitTypeArguments") // The IDE is wrong.
-        val wrappedUpdater = getShowRendering<Any>()!!
-        bindShowRendering(initialRendering, initialHints) { r, h ->
-          wrappedUpdater.invoke(r.wrapped, h)
-        }
-      }
-    }
-)
+fun ViewRegistry(vararg bindings: ViewBinding<*>): ViewRegistry = BindingViewRegistry(*bindings)
+
+/**
+ * Returns a [ViewRegistry] that merges all the given [registries].
+ */
+fun ViewRegistry(vararg registries: ViewRegistry): ViewRegistry = CompositeViewRegistry(*registries)
+
+/**
+ * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.
+ *
+ * Creates a [View] to display [initialRendering], which can be updated via calls
+ * to [View.showRendering].
+ *
+ * @throws IllegalArgumentException if no binding can be find for type [RenderingT]
+ *
+ * @throws IllegalStateException if the matching [ViewBinding] fails to call
+ * [View.bindShowRendering] when constructing the view
+ */
+fun <RenderingT : Any> ViewRegistry.buildView(
+  initialRendering: RenderingT,
+  initialContainerHints: ContainerHints,
+  container: ViewGroup
+): View = buildView(initialRendering, initialContainerHints, container.context, container)
+
+operator fun ViewRegistry.plus(binding: ViewBinding<*>): ViewRegistry = this + ViewRegistry(binding)
+
+operator fun ViewRegistry.plus(other: ViewRegistry): ViewRegistry = ViewRegistry(this, other)
