@@ -87,16 +87,12 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
     props: TakeTurnsProps,
     state: Turn,
     context: RenderContext<Turn, CompletedGame>
-  ): GamePlayScreen {
-    val sink = context.makeActionSink<Action>()
-
-    return GamePlayScreen(
-        playerInfo = props.playerInfo,
-        gameState = state,
-        onQuit = { sink.send(Quit) },
-        onClick = { row, col -> sink.send(TakeSquare(row, col)) }
-    )
-  }
+  ): GamePlayScreen = GamePlayScreen(
+      playerInfo = props.playerInfo,
+      gameState = state,
+      onQuit = { context.send(Quit) },
+      onClick = { row, col -> context.send(TakeSquare(row, col)) }
+  )
 
   override fun snapshotState(state: Turn) = Snapshot.EMPTY
 }

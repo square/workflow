@@ -93,13 +93,11 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>
           .copy(selection = state)
           .let { BackStackScreen<Any>(it) }
 
-    val sink = context.makeActionSink<WorkflowAction<Int, ClosePoem>>()
-
     return stackedStanzas
         ?.let { MasterDetailScreen(masterRendering = stanzaIndex, detailRendering = it) }
         ?: MasterDetailScreen(
             masterRendering = stanzaIndex,
-            selectDefault = { sink.send(HandleStanzaListOutput(0)) }
+            selectDefault = { context.send(HandleStanzaListOutput(0)) }
         )
   }
 

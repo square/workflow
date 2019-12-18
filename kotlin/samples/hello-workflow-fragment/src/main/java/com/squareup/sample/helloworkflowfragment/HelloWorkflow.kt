@@ -22,7 +22,6 @@ import com.squareup.sample.helloworkflowfragment.HelloWorkflow.State.Hello
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.action
 import com.squareup.workflow.parse
 
@@ -57,10 +56,9 @@ object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
     state: State,
     context: RenderContext<State, Nothing>
   ): Rendering {
-    val sink = context.makeActionSink<WorkflowAction<State, Nothing>>()
     return Rendering(
         message = state.name,
-        onClick = { sink.send(helloAction) }
+        onClick = { context.send(helloAction) }
     )
   }
 

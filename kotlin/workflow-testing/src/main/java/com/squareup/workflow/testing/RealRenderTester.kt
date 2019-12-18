@@ -16,7 +16,6 @@
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.RenderContext
-import com.squareup.workflow.Sink
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
@@ -157,24 +156,19 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     }
   }
 
-  override fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> = object : Sink<A> {
-    override fun send(value: A) {
-      checkNoOutputs()
-      check(processedAction == null) {
-        "Tried to send action to sink after another action was already processed:\n" +
-            "  processed action=$processedAction\n" +
-            "  attempted action=$value"
-      }
-      processedAction = value
+  override fun send(value: WorkflowAction<StateT, OutputT>) {
+    checkNoOutputs()
+    check(processedAction == null) {
+      "Tried to send action to sink after another action was already processed:\n" +
+          "  processed action=$processedAction\n" +
+          "  attempted action=$value"
     }
+    processedAction = value
   }
 
   override fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<StateT, OutputT>
-  ): (EventT) -> Unit {
-    val sink = makeActionSink<WorkflowAction<StateT, OutputT>>()
-    return { event -> sink.send(handler(event)) }
-  }
+  ): (EventT) -> Unit = { event -> send(handler(event)) }
 
   override fun verifyAction(block: (WorkflowAction<StateT, OutputT>) -> Unit) {
     val action = processedAction ?: throw AssertionError("No actions were processed.")

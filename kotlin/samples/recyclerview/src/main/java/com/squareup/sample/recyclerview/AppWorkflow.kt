@@ -96,11 +96,10 @@ object AppWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
     state: State,
     context: RenderContext<State, Nothing>
   ): Rendering {
-    val sink = context.makeActionSink<Action>()
     val listRendering = context.renderChild(EditableListWorkflow, Props(state.rows))
     val baseScreen = BaseScreen(
         listRendering = listRendering,
-        onAddRowTapped = { sink.send(ShowAddRowAction) }
+        onAddRowTapped = { context.send(ShowAddRowAction) }
     )
 
     return when (state) {
@@ -109,7 +108,7 @@ object AppWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
           baseScreen = baseScreen,
           popup = ChooseRowTypeScreen(
               options = allRowTypes.map { it.description },
-              onSelectionTapped = { index -> sink.send(CommitNewRowAction(index)) }
+              onSelectionTapped = { index -> context.send(CommitNewRowAction(index)) }
           )
       )
     }

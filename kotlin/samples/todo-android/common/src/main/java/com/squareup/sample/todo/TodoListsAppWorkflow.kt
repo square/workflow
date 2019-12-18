@@ -86,15 +86,13 @@ object TodoListsAppWorkflow :
         state.lists
     ) { index -> onListSelected(index) }
 
-    val sink = context.makeActionSink<WorkflowAction<TodoListsAppState, Nothing>>()
-
     return when (state) {
       // Nothing is selected. We rest in this state on a phone in portrait orientation.
       // In a master detail layout, selectDefault can be called immediately, so that
       // the detail panel is never seen to be empty.
       is ShowingLists -> MasterDetailScreen(
           masterRendering = BackStackScreen(listOfLists),
-          selectDefault = { sink.send(onListSelected(0)) }
+          selectDefault = { context.send(onListSelected(0)) }
       )
 
       // We are editing a list. Notice that we always render the master pane -- the 
