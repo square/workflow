@@ -19,7 +19,6 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
-import com.squareup.workflow.Sink
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
@@ -68,19 +67,13 @@ class RealRenderContext<StateT, OutputT : Any>(
     }
   }
 
-  override fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> {
-    checkNotFrozen()
-
-    return object : Sink<A> {
-      override fun send(value: A) {
-        if (!frozen) {
-          throw UnsupportedOperationException(
-              "Expected sink to not be sent to until after the render pass. Received action: $value"
-          )
-        }
-        eventActionsChannel.offer(value)
-      }
+  override fun send(value: WorkflowAction<StateT, OutputT>) {
+    if (!frozen) {
+      throw UnsupportedOperationException(
+          "Expected sink to not be sent to until after the render pass. Received action: $value"
+      )
     }
+    eventActionsChannel.offer(value)
   }
 
   override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> renderChild(

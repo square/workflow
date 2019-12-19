@@ -23,6 +23,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.WorkflowAction.Updater
+import com.squareup.workflow.contraMap
 import com.squareup.workflow.renderChild
 import com.squareup.workflow.runningWorker
 import com.squareup.workflow.stateful
@@ -152,13 +153,13 @@ class RealRenderTesterTest {
 
   @Test fun `sending to sink throws when called multiple times`() {
     class TestAction(private val name: String) : WorkflowAction<Unit, Nothing> {
-      override fun Updater<Unit, Nothing>.apply() { }
+      override fun Updater<Unit, Nothing>.apply() {}
       override fun toString(): String = "TestAction($name)"
     }
 
     val workflow = Workflow.stateful<Unit, Nothing, Sink<TestAction>>(
         initialState = Unit,
-        render = { makeActionSink() }
+        render = { contraMap { it } }
     )
     val action1 = TestAction("1")
     val action2 = TestAction("2")
@@ -181,7 +182,7 @@ class RealRenderTesterTest {
 
   @Test fun `sending to sink throws when child output expected`() {
     class TestAction : WorkflowAction<Unit, Nothing> {
-      override fun Updater<Unit, Nothing>.apply() { }
+      override fun Updater<Unit, Nothing>.apply() {}
     }
 
     val workflow = Workflow.stateful<Unit, Nothing, Sink<TestAction>>(
@@ -189,7 +190,7 @@ class RealRenderTesterTest {
         render = {
           // Need to satisfy the expectation.
           runningWorker(Worker.finished() as Worker<Unit>) { noAction() }
-          makeActionSink()
+          return@stateful contraMap { it }
         }
     )
 
@@ -522,13 +523,13 @@ class RealRenderTesterTest {
   }
 
   private class TestAction(val name: String) : WorkflowAction<Nothing, Nothing> {
-    override fun Updater<Nothing, Nothing>.apply() { }
+    override fun Updater<Nothing, Nothing>.apply() {}
     override fun toString(): String = "TestAction($name)"
   }
 
   @Test fun `verifyAction failure fails test`() {
     val workflow = Workflow.stateless<Unit, Nothing, Sink<TestAction>> {
-      makeActionSink()
+      contraMap { it }
     }
     val testResult = workflow.renderTester(Unit)
         .render { it.send(TestAction("noop")) }
@@ -589,7 +590,7 @@ class RealRenderTesterTest {
 
   @Test fun `verifyAction verifies sink send`() {
     val workflow = Workflow.stateless<Unit, Nothing, Sink<TestAction>> {
-      makeActionSink()
+      contraMap { it }
     }
     val testResult = workflow.renderTester(Unit)
         .render { sink ->
@@ -612,7 +613,7 @@ class RealRenderTesterTest {
 
     val workflow = Workflow.stateful<Unit, String, String, Sink<TestAction>>(
         initialState = { "initial" },
-        render = { _, _ -> makeActionSink() }
+        render = { _, _ -> contraMap { it } }
     )
     val testResult = workflow.renderTester(Unit)
         .render { sink ->

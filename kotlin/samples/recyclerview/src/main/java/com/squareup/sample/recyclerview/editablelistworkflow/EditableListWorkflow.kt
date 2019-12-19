@@ -22,7 +22,6 @@ import com.squareup.sample.recyclerview.inputrows.InputRow
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.action
 
 object EditableListWorkflow : StatefulWorkflow<Props, State, Nothing, Rendering>() {
@@ -64,11 +63,10 @@ object EditableListWorkflow : StatefulWorkflow<Props, State, Nothing, Rendering>
     state: State,
     context: RenderContext<State, Nothing>
   ): Rendering {
-    val sink = context.makeActionSink<WorkflowAction<State, Nothing>>()
     return Rendering(
         rowValues = state.rowValues,
         onValueChanged = { position, newValue ->
-          sink.send(valueChangedAction(position, newValue))
+          context.send(valueChangedAction(position, newValue))
         }
     )
   }

@@ -102,8 +102,7 @@ class ShakeableTimeMachineWorkflow<in P, O : Any, out R : Any>(
             { _ -> }
           }
           is PlayingBack -> {
-            val sink = context.makeActionSink<SeekAction>();
-            { position -> sink.send(SeekAction(position)) }
+            { position -> context.send(SeekAction(position)) }
           }
         },
         onResumeRecording = when (state) {
@@ -112,8 +111,7 @@ class ShakeableTimeMachineWorkflow<in P, O : Any, out R : Any>(
             {}
           }
           is PlayingBack -> {
-            val sink = context.makeActionSink<ResumeRecordingAction>();
-            { sink.send(ResumeRecordingAction()) }
+            { context.send(ResumeRecordingAction()) }
           }
         }
     )

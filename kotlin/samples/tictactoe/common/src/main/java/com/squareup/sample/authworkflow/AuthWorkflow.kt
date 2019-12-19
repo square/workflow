@@ -147,55 +147,51 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
     props: Unit,
     state: AuthState,
     context: RenderContext<AuthState, AuthResult>
-  ): BackStackScreen<Any> {
-    val sink = context.makeActionSink<Action>()
+  ): BackStackScreen<Any> = when (state) {
+    is LoginPrompt -> {
+      BackStackScreen(
+          LoginScreen(
+              state.errorMessage,
+              onLogin = { email, password -> context.send(SubmitLogin(email, password)) },
+              onCancel = { context.send(CancelLogin) }
+          )
+      )
+    }
 
-    return when (state) {
-      is LoginPrompt -> {
-        BackStackScreen(
-            LoginScreen(
-                state.errorMessage,
-                onLogin = { email, password -> sink.send(SubmitLogin(email, password)) },
-                onCancel = { sink.send(CancelLogin) }
-            )
-        )
+    is Authorizing -> {
+      context.runningWorker(
+          authService.login(AuthRequest(state.email, state.password))
+              .asWorker()
+      ) { HandleAuthResponse(it) }
+
+      BackStackScreen(
+          LoginScreen(),
+          AuthorizingScreen("Logging in…")
+      )
+    }
+
+    is SecondFactorPrompt -> {
+      BackStackScreen(
+          LoginScreen(),
+          SecondFactorScreen(
+              state.errorMessage,
+              onSubmit = { context.send(SubmitSecondFactor(state.tempToken, it)) },
+              onCancel = { context.send(CancelSecondFactor) }
+          )
+      )
+    }
+
+    is AuthorizingSecondFactor -> {
+      val request = SecondFactorRequest(state.tempToken, state.secondFactor)
+      context.runningWorker(authService.secondFactor(request).asWorker()) {
+        HandleSecondFactorResponse(state.tempToken, it)
       }
 
-      is Authorizing -> {
-        context.runningWorker(
-            authService.login(AuthRequest(state.email, state.password))
-                .asWorker()
-        ) { HandleAuthResponse(it) }
-
-        BackStackScreen(
-            LoginScreen(),
-            AuthorizingScreen("Logging in…")
-        )
-      }
-
-      is SecondFactorPrompt -> {
-        BackStackScreen(
-            LoginScreen(),
-            SecondFactorScreen(
-                state.errorMessage,
-                onSubmit = { sink.send(SubmitSecondFactor(state.tempToken, it)) },
-                onCancel = { sink.send(CancelSecondFactor) }
-            )
-        )
-      }
-
-      is AuthorizingSecondFactor -> {
-        val request = SecondFactorRequest(state.tempToken, state.secondFactor)
-        context.runningWorker(authService.secondFactor(request).asWorker()) {
-          HandleSecondFactorResponse(state.tempToken, it)
-        }
-
-        BackStackScreen(
-            LoginScreen(),
-            SecondFactorScreen(),
-            AuthorizingScreen("Submitting one time token…")
-        )
-      }
+      BackStackScreen(
+          LoginScreen(),
+          SecondFactorScreen(),
+          AuthorizingScreen("Submitting one time token…")
+      )
     }
   }
 

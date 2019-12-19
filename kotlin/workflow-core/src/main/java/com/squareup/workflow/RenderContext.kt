@@ -24,35 +24,56 @@ import com.squareup.workflow.WorkflowAction.Updater
  * Facilities for a [Workflow] to interact with other [Workflow]s and the outside world from inside
  * a `render` function.
  *
- * ## Handling Events
+ * ## Handling events from the UI
  *
- * See [makeActionSink].
+ * While a workflow's rendering can represent whatever you need it to, it is common for the
+ * rendering to contain the data for some part of your UI. In addition to shuttling data to the UI,
+ * the rendering can also contain functions that the UI can call to send events to the workflow.
  *
- * ## Performing Asynchronous Work
+ * E.g.
+ * ```
+ * data class Rendering(
+ *   val radioButtonTexts: List<String>,
+ *   val onSelected: (index: Int) -> Unit
+ * )
+ * ```
+ *
+ * To create populate such functions from your `render` method, you first need to define a
+ * [WorkflowAction] to handle the event by changing state, emitting an output, or both. Then, just
+ * pass a lambda to your rendering that instantiates the action and passes it to [send].
+ *
+ * ## Performing asynchronous work
  *
  * See [runningWorker].
  *
- * ## Composing Children
+ * ## Composing children
  *
  * See [renderChild].
  */
-interface RenderContext<StateT, OutputT : Any> {
+interface RenderContext<StateT, OutputT : Any> : Sink<WorkflowAction<StateT, OutputT>> {
 
-  @Deprecated("Use makeActionSink.")
+  @Deprecated("Use RenderContext.send.")
   fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<StateT, OutputT>
   ): (EventT) -> Unit
 
   /**
+   * Accepts a single [WorkflowAction], and invokes that action by calling [WorkflowAction.apply]
+   * to update the current state, and optionally emits the returned output value if it is non-null.
+   *
+   * This method is defined by the [Sink] interface. Since [RenderContext] implements [Sink],
+   * operations like [contraMap] are available.
+   */
+  override fun send(value: WorkflowAction<StateT, OutputT>)
+
+  /**
    * Creates a sink that will accept a single [WorkflowAction] of the given type.
    * Invokes that action by calling [WorkflowAction.apply] to update the current
    * state, and optionally emits the returned output value if it is non-null.
-   *
-   * Note that only a single action can be processed by the sink (or sinks) created
-   * during a `render` call. Redundant calls to [Sink.send] will result in exceptions
-   * being thrown.
    */
-  fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A>
+  @Suppress("UNCHECKED_CAST", "DeprecatedCallableAddReplaceWith")
+  @Deprecated("Use the RenderContext's send method directly.")
+  fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> = this as Sink<A>
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
@@ -152,17 +173,13 @@ fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
 }
 
 /**
- * Alternative to [RenderContext.makeActionSink] that allows externally defined
+ * Alternative to [RenderContext.send] that allows externally defined
  * event types to be mapped to anonymous [WorkflowAction]s.
  */
 fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink(
   update: Updater<StateT, OutputT>.(EventT) -> Unit
-): Sink<EventT> {
-  val actionSink = makeActionSink<WorkflowAction<StateT, OutputT>>()
-
-  return actionSink.contraMap { event ->
-    WorkflowAction({ "eventSink($event)" }) { update(event) }
-  }
+): Sink<EventT> = contraMap { event ->
+  WorkflowAction({ "eventSink($event)" }) { update(event) }
 }
 
 /**

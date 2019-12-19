@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("EXPERIMENTAL_API_USAGE", "DEPRECATION")
+@file:Suppress("EXPERIMENTAL_API_USAGE")
 
 package com.squareup.workflow.internal
 
@@ -25,7 +25,7 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.WorkflowAction.Mutator
+import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
@@ -99,6 +99,7 @@ class RealRenderContextTest {
   @Test fun `onEvent completes update`() {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val expectedUpdate = noAction<String, String>()
+    @Suppress("DEPRECATION")
     val handler = context.onEvent<String> { expectedUpdate }
     assertTrue(eventActionsChannel.isEmpty)
 
@@ -112,10 +113,11 @@ class RealRenderContextTest {
   @Test fun `onEvent allows multiple invocations`() {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     fun expectedUpdate(msg: String) = object : WorkflowAction<String, String> {
-      override fun Mutator<String>.apply(): String? = null
+      override fun Updater<String, String>.apply() = Unit
       override fun toString(): String = "action($msg)"
     }
 
+    @Suppress("DEPRECATION")
     val handler = context.onEvent<String> { expectedUpdate(it) }
     handler("one")
 
@@ -123,40 +125,54 @@ class RealRenderContextTest {
     handler("two")
   }
 
-  @Test fun `makeActionSink completes update`() {
+  @Test fun `send completes update`() {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val stringAction = WorkflowAction<String, String>({ "stringAction" }) { }
-    val sink = context.makeActionSink<WorkflowAction<String, String>>()
     // Enable sink sends.
     context.buildBehavior()
 
     assertTrue(eventActionsChannel.isEmpty)
 
-    sink.send(stringAction)
+    context.send(stringAction)
 
     assertFalse(eventActionsChannel.isEmpty)
     val actualAction = eventActionsChannel.poll()
     assertSame(stringAction, actualAction)
   }
 
-  @Test fun `makeActionSink allows multiple sends`() {
+  @Test fun `send allows multiple sends`() {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
     val firstAction = object : WorkflowAction<String, String> {
-      override fun Mutator<String>.apply(): String? = null
+      override fun Updater<String, String>.apply() = Unit
       override fun toString(): String = "firstAction"
     }
     val secondAction = object : WorkflowAction<String, String> {
-      override fun Mutator<String>.apply(): String? = null
+      override fun Updater<String, String>.apply() = Unit
       override fun toString(): String = "secondAction"
     }
-    val sink = context.makeActionSink<WorkflowAction<String, String>>()
     // Enable sink sends.
     context.buildBehavior()
 
-    sink.send(firstAction)
+    context.send(firstAction)
 
     // Shouldn't throw.
-    sink.send(secondAction)
+    context.send(secondAction)
+  }
+
+  @Test fun `send throws before render returns`() {
+    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
+    val action = object : WorkflowAction<String, String> {
+      override fun Updater<String, String>.apply() = Unit
+      override fun toString(): String = "action"
+    }
+
+    val error = assertFailsWith<UnsupportedOperationException> {
+      context.send(action)
+    }
+    assertEquals(
+        "Expected sink to not be sent to until after the render pass. Received action: action",
+        error.message
+    )
   }
 
   @Test fun `makeEventSink gets event`() {
@@ -213,6 +229,7 @@ class RealRenderContextTest {
     val context = RealRenderContext(TestRenderer(), eventActionsChannel)
     context.buildBehavior()
 
+    @Suppress("DEPRECATION")
     assertFailsWith<IllegalStateException> { context.onEvent<Unit> { fail() } }
     val child = Workflow.stateless<Unit, Nothing, Unit> { fail() }
     assertFailsWith<IllegalStateException> { context.renderChild(child) }

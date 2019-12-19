@@ -204,7 +204,7 @@ class WorkflowNodeTest {
     assertEquals(listOf("tick0:event", "tick1:event2"), result)
   }
 
-  @Test fun `makeActionSink allows subsequent events on same rendering`() {
+  @Test fun `send allows subsequent events on same rendering`() {
     lateinit var sink: Sink<WorkflowAction<String, String>>
     val workflow = object : StringWorkflow() {
       override fun initialState(
@@ -220,7 +220,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        sink = context.makeActionSink()
+        sink = context
         return ""
       }
     }
@@ -344,14 +344,12 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        val sink = context.makeActionSink<WorkflowAction<String, String>>()
-
         when (state) {
           "listen" -> {
             context.runningWorker(channel.asWorker(closeOnCancel = true)) {
               update(it)
             }
-            doClose = { sink.send(finish) }
+            doClose = { context.send(finish) }
           }
         }
         return ""
@@ -771,8 +769,7 @@ class WorkflowNodeTest {
     val workflow = Workflow.stateful<String, String, String, (String) -> Unit>(
         initialState = { props, _ -> "($props:)" },
         render = { _, _ ->
-          val sink = makeActionSink<WorkflowAction<String, String>>()
-          return@stateful { sink.send(action(it)) }
+          return@stateful { send(action(it)) }
         },
         onPropsChanged = { old, new, state -> "($old:$new:$state)" },
         snapshot = { Snapshot.EMPTY }
@@ -836,15 +833,14 @@ class WorkflowNodeTest {
     )
   }
 
-  @Test fun `actionSink send fails before render pass completed`() {
+  @Test fun `send fails before render pass completed`() {
     class TestAction : WorkflowAction<Nothing, Nothing> {
       override fun Updater<Nothing, Nothing>.apply() = fail("Expected sink send to fail.")
       override fun toString(): String = "TestAction()"
     }
 
     val workflow = Workflow.stateless<Unit, Nothing, Unit> {
-      val sink = makeActionSink<TestAction>()
-      sink.send(TestAction())
+      send(TestAction())
     }
     val node = WorkflowNode(
         workflow.id(),

@@ -113,8 +113,7 @@ class WorkflowCompositionIntegrationTest {
         initialState = 0,
         render = { state ->
           renderChild(child) { WorkflowAction { setOutput(state) } }
-          val sink = makeActionSink<WorkflowAction<Int, Int>>()
-          return@stateful { sink.send(incrementState) }
+          return@stateful { send(incrementState) }
         }
     )
 

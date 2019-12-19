@@ -81,12 +81,11 @@ class DungeonAppWorkflow(
         val gameInput = GameWorkflow.Props(state.board)
         val gameScreen = context.renderChild(gameWorkflow, gameInput) { noAction() }
 
-        val sink = context.makeActionSink<WorkflowAction<State, Nothing>>()
         val gameOverDialog = AlertScreen(
             buttons = mapOf(POSITIVE to "Restart"),
             message = "You've been eaten, try again.",
             cancelable = false,
-            onEvent = { sink.send(RestartGame) }
+            onEvent = { context.send(RestartGame) }
         )
 
         AlertContainerScreen(gameScreen, gameOverDialog)

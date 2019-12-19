@@ -179,82 +179,76 @@ class RealRunGameWorkflow(
     props: Unit,
     state: RunGameState,
     context: RenderContext<RunGameState, RunGameResult>
-  ): RunGameScreen {
-    val sink = context.makeActionSink<Action>()
+  ): RunGameScreen = when (state) {
+    is NewGame -> {
+      val emptyGameScreen = GamePlayScreen()
 
-    return when (state) {
-      is NewGame -> {
-        val emptyGameScreen = GamePlayScreen()
+      subflowScreen(
+          base = emptyGameScreen,
+          subflow = NewGameScreen(
+              state.defaultXName,
+              state.defaultOName,
+              onCancel = { context.send(CancelNewGame) },
+              onStartGame = { x, o -> context.send(StartGame(x, o)) }
+          )
+      )
+    }
 
-        subflowScreen(
-            base = emptyGameScreen,
-            subflow = NewGameScreen(
-                state.defaultXName,
-                state.defaultOName,
-                onCancel = { sink.send(CancelNewGame) },
-                onStartGame = { x, o -> sink.send(StartGame(x, o)) }
-            )
-        )
-      }
+    is Playing -> {
+      // context.renderChild starts takeTurnsWorkflow, or keeps it running if it was
+      // already going. TakeTurnsWorkflow.render is immediately called,
+      // and the GamePlayScreen it renders is immediately returned.
+      val takeTurnsScreen = context.renderChild(
+          takeTurnsWorkflow,
+          props = state.resume
+              ?.let { TakeTurnsProps.resumeGame(state.playerInfo, it) }
+              ?: TakeTurnsProps.newGame(state.playerInfo)
+      ) { StopPlaying(it) }
 
-      is Playing -> {
-        // context.renderChild starts takeTurnsWorkflow, or keeps it running if it was
-        // already going. TakeTurnsWorkflow.render is immediately called,
-        // and the GamePlayScreen it renders is immediately returned.
-        val takeTurnsScreen = context.renderChild(
-            takeTurnsWorkflow,
-            props = state.resume
-                ?.let { TakeTurnsProps.resumeGame(state.playerInfo, it) }
-                ?: TakeTurnsProps.newGame(state.playerInfo)
-        ) { StopPlaying(it) }
+      simpleScreen(takeTurnsScreen)
+    }
 
-        simpleScreen(takeTurnsScreen)
-      }
+    is MaybeQuitting -> {
+      alertScreen(
+          base = GamePlayScreen(state.playerInfo, state.completedGame.lastTurn),
+          alert = maybeQuitScreen(
+              confirmQuit = { context.send(ConfirmQuit) },
+              continuePlaying = {
+                context.send(ContinuePlaying(state.playerInfo, state.completedGame.lastTurn))
+              }
+          )
+      )
+    }
 
-      is MaybeQuitting -> {
-        alertScreen(
-            base = GamePlayScreen(state.playerInfo, state.completedGame.lastTurn),
-            alert = maybeQuitScreen(
-                confirmQuit = { sink.send(ConfirmQuit) },
-                continuePlaying = {
-                  sink.send(
-                      ContinuePlaying(state.playerInfo, state.completedGame.lastTurn)
-                  )
-                }
-            )
-        )
-      }
+    is MaybeQuittingForSure -> {
+      nestedAlertsScreen(
+          GamePlayScreen(state.playerInfo, state.completedGame.lastTurn),
+          maybeQuitScreen(),
+          maybeQuitScreen(
+              message = "Really?",
+              positive = "Yes!!",
+              negative = "Sigh, no",
+              confirmQuit = { context.send(ConfirmQuitAgain) },
+              continuePlaying = {
+                context.send(ContinuePlaying(state.playerInfo, state.completedGame.lastTurn))
+              }
+          )
+      )
+    }
 
-      is MaybeQuittingForSure -> {
-        nestedAlertsScreen(
-            GamePlayScreen(state.playerInfo, state.completedGame.lastTurn),
-            maybeQuitScreen(),
-            maybeQuitScreen(
-                message = "Really?",
-                positive = "Yes!!",
-                negative = "Sigh, no",
-                confirmQuit = { sink.send(ConfirmQuitAgain) },
-                continuePlaying = {
-                  sink.send(ContinuePlaying(state.playerInfo, state.completedGame.lastTurn))
-                }
-            )
-        )
-      }
-
-      is GameOver -> {
-        if (state.syncState == SAVING) {
-          context.runningWorker(gameLog.logGame(state.completedGame).asWorker()) {
-            HandleLogGame(it)
-          }
+    is GameOver -> {
+      if (state.syncState == SAVING) {
+        context.runningWorker(gameLog.logGame(state.completedGame).asWorker()) {
+          HandleLogGame(it)
         }
-
-        GameOverScreen(
-            state,
-            onTrySaveAgain = { sink.send(TrySaveAgain) },
-            onPlayAgain = { sink.send(PlayAgain) },
-            onExit = { sink.send(Exit) }
-        ).let(::simpleScreen)
       }
+
+      GameOverScreen(
+          state,
+          onTrySaveAgain = { context.send(TrySaveAgain) },
+          onPlayAgain = { context.send(PlayAgain) },
+          onExit = { context.send(Exit) }
+      ).let(::simpleScreen)
     }
   }
 

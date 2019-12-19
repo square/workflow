@@ -65,15 +65,11 @@ class PlayerWorkflow(
     props: ActorProps,
     state: Movement,
     context: RenderContext<Movement, Nothing>
-  ): Rendering {
-    val sink = context.makeActionSink<Action>()
-
-    return Rendering(
-        actorRendering = ActorRendering(avatar = avatar, movement = state),
-        onStartMoving = { sink.send(StartMoving(it)) },
-        onStopMoving = { sink.send(StopMoving(it)) }
-    )
-  }
+  ): Rendering = Rendering(
+      actorRendering = ActorRendering(avatar = avatar, movement = state),
+      onStartMoving = { context.send(StartMoving(it)) },
+      onStopMoving = { context.send(StopMoving(it)) }
+  )
 
   override fun snapshotState(state: Movement): Snapshot = Snapshot.EMPTY
 }
