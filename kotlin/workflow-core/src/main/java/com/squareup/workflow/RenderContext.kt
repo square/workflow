@@ -50,7 +50,7 @@ import com.squareup.workflow.WorkflowAction.Updater
  *
  * See [renderChild].
  */
-interface RenderContext<StateT, OutputT : Any> : Sink<WorkflowAction<StateT, OutputT>> {
+interface RenderContext<StateT, in OutputT : Any> : Sink<WorkflowAction<StateT, OutputT>> {
 
   @Deprecated("Use RenderContext.send.")
   fun <EventT : Any> onEvent(
@@ -73,7 +73,7 @@ interface RenderContext<StateT, OutputT : Any> : Sink<WorkflowAction<StateT, Out
    */
   @Suppress("UNCHECKED_CAST", "DeprecatedCallableAddReplaceWith")
   @Deprecated("Use the RenderContext's send method directly.")
-  fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> = this as Sink<A>
+  fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> = this
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its

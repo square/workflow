@@ -21,7 +21,7 @@ import com.squareup.workflow.WorkflowAction.Updater
 /**
  * An atomic operation that updates the state of a [Workflow], and also optionally emits an output.
  */
-interface WorkflowAction<StateT, OutputT : Any> {
+interface WorkflowAction<StateT, out OutputT : Any> {
   @Deprecated("Use Updater")
   class Mutator<S>(var state: S)
 
@@ -31,8 +31,8 @@ interface WorkflowAction<StateT, OutputT : Any> {
    *
    * @param nextState the state that the workflow should move to. Default is the current state.
    */
-  class Updater<S, O : Any>(var nextState: S) {
-    internal var output: O? = null
+  class Updater<S, in O : Any>(var nextState: S) {
+    internal var output: @UnsafeVariance O? = null
 
     /**
      * Sets the value the workflow will emit as output when this action is applied.
