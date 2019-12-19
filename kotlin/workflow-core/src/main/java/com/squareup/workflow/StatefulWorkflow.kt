@@ -69,7 +69,7 @@ import com.squareup.workflow.WorkflowAction.Updater
 abstract class StatefulWorkflow<
     in PropsT,
     StateT,
-    OutputT : Any,
+    out OutputT : Any,
     out RenderingT
     > : Workflow<PropsT, OutputT, RenderingT> {
 
