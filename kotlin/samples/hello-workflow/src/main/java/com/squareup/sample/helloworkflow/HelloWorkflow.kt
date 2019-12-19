@@ -58,7 +58,7 @@ object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
   ): Rendering {
     return Rendering(
         message = state.name,
-        onClick = { context.send(helloAction) }
+        onClick = { context.actionSink.send(helloAction) }
     )
   }
 

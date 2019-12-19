@@ -64,7 +64,7 @@ internal class TreeWorkflow(
 
     return Rendering(
         data = "$name:$state",
-        setData = { context.send(onEvent(it)) },
+        setData = { context.actionSink.send(onEvent(it)) },
         children = childRenderings
     )
   }

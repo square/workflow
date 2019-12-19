@@ -103,7 +103,7 @@ class TodoEditorWorkflow : StatelessWorkflow<TodoList, TodoEditorOutput, TodoRen
       override fun send(value: TodoAction) {
         if (eventFired) return
         eventFired = true
-        context.send(value)
+        context.actionSink.send(value)
       }
     }
 

@@ -19,6 +19,7 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.EventHandler
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Sink
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
@@ -33,7 +34,7 @@ import kotlinx.coroutines.channels.SendChannel
 class RealRenderContext<StateT, OutputT : Any>(
   private val renderer: Renderer<StateT, OutputT>,
   private val eventActionsChannel: SendChannel<WorkflowAction<StateT, OutputT>>
-) : RenderContext<StateT, OutputT> {
+) : RenderContext<StateT, OutputT>, Sink<WorkflowAction<StateT, OutputT>> {
 
   interface Renderer<StateT, OutputT : Any> {
     fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
@@ -54,6 +55,8 @@ class RealRenderContext<StateT, OutputT : Any>(
    *  - prevent sending to sinks before render returns.
    */
   private var frozen = false
+
+  override val actionSink: Sink<WorkflowAction<StateT, OutputT>> get() = this
 
   @Suppress("OverridingDeprecatedMember")
   override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):

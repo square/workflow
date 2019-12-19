@@ -188,8 +188,8 @@ class RealRunGameWorkflow(
           subflow = NewGameScreen(
               state.defaultXName,
               state.defaultOName,
-              onCancel = { context.send(CancelNewGame) },
-              onStartGame = { x, o -> context.send(StartGame(x, o)) }
+              onCancel = { context.actionSink.send(CancelNewGame) },
+              onStartGame = { x, o -> context.actionSink.send(StartGame(x, o)) }
           )
       )
     }
@@ -212,9 +212,9 @@ class RealRunGameWorkflow(
       alertScreen(
           base = GamePlayScreen(state.playerInfo, state.completedGame.lastTurn),
           alert = maybeQuitScreen(
-              confirmQuit = { context.send(ConfirmQuit) },
+              confirmQuit = { context.actionSink.send(ConfirmQuit) },
               continuePlaying = {
-                context.send(ContinuePlaying(state.playerInfo, state.completedGame.lastTurn))
+                context.actionSink.send(ContinuePlaying(state.playerInfo, state.completedGame.lastTurn))
               }
           )
       )
@@ -228,9 +228,9 @@ class RealRunGameWorkflow(
               message = "Really?",
               positive = "Yes!!",
               negative = "Sigh, no",
-              confirmQuit = { context.send(ConfirmQuitAgain) },
+              confirmQuit = { context.actionSink.send(ConfirmQuitAgain) },
               continuePlaying = {
-                context.send(ContinuePlaying(state.playerInfo, state.completedGame.lastTurn))
+                context.actionSink.send(ContinuePlaying(state.playerInfo, state.completedGame.lastTurn))
               }
           )
       )
@@ -245,9 +245,9 @@ class RealRunGameWorkflow(
 
       GameOverScreen(
           state,
-          onTrySaveAgain = { context.send(TrySaveAgain) },
-          onPlayAgain = { context.send(PlayAgain) },
-          onExit = { context.send(Exit) }
+          onTrySaveAgain = { context.actionSink.send(TrySaveAgain) },
+          onPlayAgain = { context.actionSink.send(PlayAgain) },
+          onExit = { context.actionSink.send(Exit) }
       ).let(::simpleScreen)
     }
   }

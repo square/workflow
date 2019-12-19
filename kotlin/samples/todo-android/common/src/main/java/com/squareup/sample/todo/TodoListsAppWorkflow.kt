@@ -92,7 +92,7 @@ object TodoListsAppWorkflow :
       // the detail panel is never seen to be empty.
       is ShowingLists -> MasterDetailScreen(
           masterRendering = BackStackScreen(listOfLists),
-          selectDefault = { context.send(onListSelected(0)) }
+          selectDefault = { context.actionSink.send(onListSelected(0)) }
       )
 
       // We are editing a list. Notice that we always render the master pane -- the 

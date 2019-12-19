@@ -16,6 +16,7 @@
 package com.squareup.workflow.testing
 
 import com.squareup.workflow.RenderContext
+import com.squareup.workflow.Sink
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
@@ -35,7 +36,8 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
   private var processedAction: WorkflowAction<StateT, OutputT>? = null
 ) : RenderTester<PropsT, StateT, OutputT, RenderingT>,
     RenderContext<StateT, OutputT>,
-    RenderTestResult<StateT, OutputT> {
+    RenderTestResult<StateT, OutputT>,
+    Sink<WorkflowAction<StateT, OutputT>> {
 
   internal sealed class Expectation<out OutputT> {
     abstract val output: EmittedOutput<OutputT>?
@@ -54,6 +56,8 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
       override val output: EmittedOutput<OutputT>?
     ) : Expectation<OutputT>()
   }
+
+  override val actionSink: Sink<WorkflowAction<StateT, OutputT>> get() = this
 
   override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> expectWorkflow(
     workflowType: KClass<out Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>>,

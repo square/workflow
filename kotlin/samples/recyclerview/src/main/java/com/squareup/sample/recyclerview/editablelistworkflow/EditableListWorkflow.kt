@@ -66,7 +66,7 @@ object EditableListWorkflow : StatefulWorkflow<Props, State, Nothing, Rendering>
     return Rendering(
         rowValues = state.rowValues,
         onValueChanged = { position, newValue ->
-          context.send(valueChangedAction(position, newValue))
+          context.actionSink.send(valueChangedAction(position, newValue))
         }
     )
   }
