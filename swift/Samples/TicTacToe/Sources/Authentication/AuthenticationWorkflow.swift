@@ -147,12 +147,16 @@ extension AuthenticationWorkflow {
         case .authorizingEmailPassword(email: let email, password: let password):
             let worker = authenticationService
                 .login(email: email, password: password)
-                .map({ response -> Action in
+                .asWorker()
+            
+            context.awaitResult(for: worker) { (output) -> Action in
+                switch output {
+                case .success(let response):
                     return .authenticationSucceeded(response: response)
-                })
-                .asWorker(errorTransform: { .authenticationError($0) })
-
-            context.awaitResult(for: worker)
+                case .failure(let error):
+                    return .authenticationError(error)
+                }
+            }
 
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))
 
@@ -165,12 +169,16 @@ extension AuthenticationWorkflow {
         case .authorizingTwoFactor(twoFactorCode: let twoFactorCode, intermediateSession: let intermediateSession):
             let worker = authenticationService
                 .secondFactor(token: intermediateSession, secondFactor: twoFactorCode)
-                .map { response -> Action in
-                    return .authenticationSucceeded(response: response)
-                }
-                .asWorker(errorTransform: { .authenticationError($0) })
+                .asWorker()
 
-            context.awaitResult(for: worker)
+            context.awaitResult(for: worker) { (output) -> Action in
+                switch output {
+                case .success(let response):
+                    return .authenticationSucceeded(response: response)
+                case .failure(let error):
+                    return .authenticationError(error)
+                }
+            }
 
             backStackItems.append(twoFactorScreen(error: nil, intermediateSession: intermediateSession, sink: sink))
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))

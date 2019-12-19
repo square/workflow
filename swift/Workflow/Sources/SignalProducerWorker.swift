@@ -15,7 +15,7 @@
  */
 import ReactiveSwift
 
-/// Workers define a unit of asynchronous work.
+/// SignalProdcerWorker wraps a `SignalProducer` and adds conformance to the `Worker` protocol.
 ///
 /// During a render pass, a workflow can ask the context to await the result of a worker.
 ///
@@ -30,7 +30,7 @@ public struct SignalProducerWorker<Value>: Worker {
     /// The `SignalProducer<Value, Never>` wrapped by this worker.
     let signalProducer: SignalProducer<Value, Never>
 
-    init(signalProducer: SignalProducer<Value, Never>) {
+    internal init(signalProducer: SignalProducer<Value, Never>) {
         self.signalProducer = signalProducer
         self.valueType = Value.self
     }
@@ -49,12 +49,42 @@ public struct SignalProducerWorker<Value>: Worker {
 }
 
 public extension SignalProducer {
+    /// Convenience to transform a `SignalProducer` into a `Worker`.
+    ///
+    /// Treats all Results from the producer as plain values, allowing them
+    /// to be manipulated just like any other value.
+    ///
+    /// In other words, this brings Results “into the monad.”
+    ///
+    /// - note: When a Failed event is received, the resulting producer will
+    ///         send the `Result.failure` itself and then complete.
+    ///
+    /// - returns: A `SignalProducerWorker` that sends `Results` as its values.
+    func asWorker() -> SignalProducerWorker<Result<Value, Error>> {
+        return SignalProducerWorker(signalProducer: self.materializeResults())
+    }
+    
+    /// Convenience to transform a `SignalProducer` into a `Worker`.
+    ///
+    /// - parameters:
+    ///   - errorTransform: A closure that accepts emitted error and returns a signal
+    ///                producer with a different type of error.
+    ///
+    /// - returns: A `SignalProducerWorker` that catches any failure that may occur on
+    /// the input producer, mapping to a new producer that starts in its place.
     func asWorker(errorTransform: @escaping (Error) -> SignalProducer<Value, Never>) -> SignalProducerWorker<Value> {
         return self
             .flatMapError { errorTransform($0) }
             .asWorker()
     }
 
+    /// Convenience to transform a `SignalProducer` into a `Worker`.
+    ///
+    /// - parameters:
+    ///   - errorTransform: A closure that accepts emitted error and returns a value in its place.
+    ///
+    /// - returns: A `SignalProducerWorker` that catches any failure that may occur on
+    /// the input producer, mapping to a new producer that starts in its place.
     func asWorker(errorTransform: @escaping (Error) -> Value) -> SignalProducerWorker<Value> {
         return self
             .flatMapError({
@@ -65,6 +95,9 @@ public extension SignalProducer {
 }
 
 public extension SignalProducer where Error == Never {
+    /// Convenience to transform a `SignalProducer` into a `Worker`.
+    ///
+    /// - returns: A `SignalProducerWorker`
     func asWorker() -> SignalProducerWorker<Value> {
         return SignalProducerWorker(signalProducer: self)
     }
