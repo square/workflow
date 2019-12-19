@@ -113,7 +113,7 @@ class WorkflowCompositionIntegrationTest {
         initialState = 0,
         render = { state ->
           renderChild(child) { WorkflowAction { setOutput(state) } }
-          return@stateful { send(incrementState) }
+          return@stateful { actionSink.send(incrementState) }
         }
     )
 

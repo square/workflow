@@ -159,7 +159,7 @@ class RealRenderTesterTest {
 
     val workflow = Workflow.stateful<Unit, Nothing, Sink<TestAction>>(
         initialState = Unit,
-        render = { contraMap { it } }
+        render = { actionSink.contraMap { it } }
     )
     val action1 = TestAction("1")
     val action2 = TestAction("2")
@@ -190,7 +190,7 @@ class RealRenderTesterTest {
         render = {
           // Need to satisfy the expectation.
           runningWorker(Worker.finished() as Worker<Unit>) { noAction() }
-          return@stateful contraMap { it }
+          return@stateful actionSink.contraMap { it }
         }
     )
 
@@ -529,7 +529,7 @@ class RealRenderTesterTest {
 
   @Test fun `verifyAction failure fails test`() {
     val workflow = Workflow.stateless<Unit, Nothing, Sink<TestAction>> {
-      contraMap { it }
+      actionSink.contraMap { it }
     }
     val testResult = workflow.renderTester(Unit)
         .render { it.send(TestAction("noop")) }
@@ -590,7 +590,7 @@ class RealRenderTesterTest {
 
   @Test fun `verifyAction verifies sink send`() {
     val workflow = Workflow.stateless<Unit, Nothing, Sink<TestAction>> {
-      contraMap { it }
+      actionSink.contraMap { it }
     }
     val testResult = workflow.renderTester(Unit)
         .render { sink ->
@@ -613,7 +613,7 @@ class RealRenderTesterTest {
 
     val workflow = Workflow.stateful<Unit, String, String, Sink<TestAction>>(
         initialState = { "initial" },
-        render = { _, _ -> contraMap { it } }
+        render = { _, _ -> actionSink.contraMap { it } }
     )
     val testResult = workflow.renderTester(Unit)
         .render { sink ->

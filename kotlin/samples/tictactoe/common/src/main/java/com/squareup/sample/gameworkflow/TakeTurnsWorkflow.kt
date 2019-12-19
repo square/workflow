@@ -90,8 +90,8 @@ class RealTakeTurnsWorkflow : TakeTurnsWorkflow,
   ): GamePlayScreen = GamePlayScreen(
       playerInfo = props.playerInfo,
       gameState = state,
-      onQuit = { context.send(Quit) },
-      onClick = { row, col -> context.send(TakeSquare(row, col)) }
+      onQuit = { context.actionSink.send(Quit) },
+      onClick = { row, col -> context.actionSink.send(TakeSquare(row, col)) }
   )
 
   override fun snapshotState(state: Turn) = Snapshot.EMPTY

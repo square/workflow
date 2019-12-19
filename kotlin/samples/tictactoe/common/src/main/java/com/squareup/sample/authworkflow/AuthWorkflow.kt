@@ -152,8 +152,8 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
       BackStackScreen(
           LoginScreen(
               state.errorMessage,
-              onLogin = { email, password -> context.send(SubmitLogin(email, password)) },
-              onCancel = { context.send(CancelLogin) }
+              onLogin = { email, password -> context.actionSink.send(SubmitLogin(email, password)) },
+              onCancel = { context.actionSink.send(CancelLogin) }
           )
       )
     }
@@ -175,8 +175,8 @@ class RealAuthWorkflow(private val authService: AuthService) : AuthWorkflow,
           LoginScreen(),
           SecondFactorScreen(
               state.errorMessage,
-              onSubmit = { context.send(SubmitSecondFactor(state.tempToken, it)) },
-              onCancel = { context.send(CancelSecondFactor) }
+              onSubmit = { context.actionSink.send(SubmitSecondFactor(state.tempToken, it)) },
+              onCancel = { context.actionSink.send(CancelSecondFactor) }
           )
       )
     }

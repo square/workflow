@@ -189,7 +189,7 @@ class WorkerCompositionIntegrationTest {
         render = { state ->
           runningWorker(triggerOutput) { WorkflowAction { setOutput(state) } }
 
-          return@stateful { send(incrementState) }
+          return@stateful { actionSink.send(incrementState) }
         }
     )
 

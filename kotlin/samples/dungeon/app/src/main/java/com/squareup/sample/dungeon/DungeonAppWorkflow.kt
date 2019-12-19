@@ -85,7 +85,7 @@ class DungeonAppWorkflow(
             buttons = mapOf(POSITIVE to "Restart"),
             message = "You've been eaten, try again.",
             cancelable = false,
-            onEvent = { context.send(RestartGame) }
+            onEvent = { context.actionSink.send(RestartGame) }
         )
 
         AlertContainerScreen(gameScreen, gameOverDialog)

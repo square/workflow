@@ -133,7 +133,7 @@ class RealRenderContextTest {
 
     assertTrue(eventActionsChannel.isEmpty)
 
-    context.send(stringAction)
+    context.actionSink.send(stringAction)
 
     assertFalse(eventActionsChannel.isEmpty)
     val actualAction = eventActionsChannel.poll()
@@ -153,10 +153,10 @@ class RealRenderContextTest {
     // Enable sink sends.
     context.buildBehavior()
 
-    context.send(firstAction)
+    context.actionSink.send(firstAction)
 
     // Shouldn't throw.
-    context.send(secondAction)
+    context.actionSink.send(secondAction)
   }
 
   @Test fun `send throws before render returns`() {
@@ -167,7 +167,7 @@ class RealRenderContextTest {
     }
 
     val error = assertFailsWith<UnsupportedOperationException> {
-      context.send(action)
+      context.actionSink.send(action)
     }
     assertEquals(
         "Expected sink to not be sent to until after the render pass. Received action: action",

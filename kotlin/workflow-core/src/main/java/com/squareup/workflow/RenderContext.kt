@@ -50,21 +50,21 @@ import com.squareup.workflow.WorkflowAction.Updater
  *
  * See [renderChild].
  */
-interface RenderContext<StateT, in OutputT : Any> : Sink<WorkflowAction<StateT, OutputT>> {
-
-  @Deprecated("Use RenderContext.send.")
-  fun <EventT : Any> onEvent(
-    handler: (EventT) -> WorkflowAction<StateT, OutputT>
-  ): (EventT) -> Unit
+interface RenderContext<StateT, in OutputT : Any> {
 
   /**
-   * Accepts a single [WorkflowAction], and invokes that action by calling [WorkflowAction.apply]
+   * Accepts a single [WorkflowAction], invokes that action by calling [WorkflowAction.apply]
    * to update the current state, and optionally emits the returned output value if it is non-null.
    *
    * This method is defined by the [Sink] interface. Since [RenderContext] implements [Sink],
    * operations like [contraMap] are available.
    */
-  override fun send(value: WorkflowAction<StateT, OutputT>)
+  val actionSink: Sink<WorkflowAction<StateT, OutputT>>
+
+  @Deprecated("Use RenderContext.send.")
+  fun <EventT : Any> onEvent(
+    handler: (EventT) -> WorkflowAction<StateT, OutputT>
+  ): (EventT) -> Unit
 
   /**
    * Creates a sink that will accept a single [WorkflowAction] of the given type.
@@ -73,7 +73,7 @@ interface RenderContext<StateT, in OutputT : Any> : Sink<WorkflowAction<StateT, 
    */
   @Suppress("UNCHECKED_CAST", "DeprecatedCallableAddReplaceWith")
   @Deprecated("Use the RenderContext's send method directly.")
-  fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> = this
+  fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> = actionSink
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
@@ -178,7 +178,7 @@ fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
  */
 fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink(
   update: Updater<StateT, OutputT>.(EventT) -> Unit
-): Sink<EventT> = contraMap { event ->
+): Sink<EventT> = actionSink.contraMap { event ->
   WorkflowAction({ "eventSink($event)" }) { update(event) }
 }
 

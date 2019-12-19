@@ -220,7 +220,7 @@ class WorkflowNodeTest {
         state: String,
         context: RenderContext<String, String>
       ): String {
-        sink = context
+        sink = context.actionSink
         return ""
       }
     }
@@ -349,7 +349,7 @@ class WorkflowNodeTest {
             context.runningWorker(channel.asWorker(closeOnCancel = true)) {
               update(it)
             }
-            doClose = { context.send(finish) }
+            doClose = { context.actionSink.send(finish) }
           }
         }
         return ""
@@ -769,7 +769,7 @@ class WorkflowNodeTest {
     val workflow = Workflow.stateful<String, String, String, (String) -> Unit>(
         initialState = { props, _ -> "($props:)" },
         render = { _, _ ->
-          return@stateful { send(action(it)) }
+          return@stateful { actionSink.send(action(it)) }
         },
         onPropsChanged = { old, new, state -> "($old:$new:$state)" },
         snapshot = { Snapshot.EMPTY }
@@ -840,7 +840,7 @@ class WorkflowNodeTest {
     }
 
     val workflow = Workflow.stateless<Unit, Nothing, Unit> {
-      send(TestAction())
+      actionSink.send(TestAction())
     }
     val node = WorkflowNode(
         workflow.id(),

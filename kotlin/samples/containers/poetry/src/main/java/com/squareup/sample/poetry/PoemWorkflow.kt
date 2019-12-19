@@ -97,7 +97,7 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>
         ?.let { MasterDetailScreen(masterRendering = stanzaIndex, detailRendering = it) }
         ?: MasterDetailScreen(
             masterRendering = stanzaIndex,
-            selectDefault = { context.send(HandleStanzaListOutput(0)) }
+            selectDefault = { context.actionSink.send(HandleStanzaListOutput(0)) }
         )
   }
 
