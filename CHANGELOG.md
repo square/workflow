@@ -1,7 +1,20 @@
 Change Log
 ==========
 
-## Version 0.22
+## Version 0.22.1
+
+_2019-12-20_
+
+### Kotlin
+
+ * Make WorkflowAction covariant on OutputT again. (#837)
+ * Undo making RenderContext a sink, give it a sink property instead. (#839)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
+## Version 0.22.0
 
 _2019-12-18_
 
