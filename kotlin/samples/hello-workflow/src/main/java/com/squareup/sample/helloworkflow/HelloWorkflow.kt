@@ -28,22 +28,13 @@ import com.squareup.workflow.parse
 object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
   enum class State {
     Hello,
-    Goodbye;
-
-    fun theOtherState(): State = when (this) {
-      Hello -> Goodbye
-      Goodbye -> Hello
-    }
+    Goodbye
   }
 
   data class Rendering(
     val message: String,
     val onClick: () -> Unit
   )
-
-  private val helloAction = action {
-    nextState = nextState.theOtherState()
-  }
 
   override fun initialState(
     props: Unit,
@@ -63,4 +54,11 @@ object HelloWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.of(if (state == Hello) 1 else 0)
+
+  private val helloAction = action {
+    nextState = when (nextState) {
+      Hello -> Goodbye
+      Goodbye -> Hello
+    }
+  }
 }

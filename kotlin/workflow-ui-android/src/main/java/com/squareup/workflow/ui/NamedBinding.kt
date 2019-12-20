@@ -19,19 +19,25 @@ internal object NamedBinding : ViewBinding<Named<*>>
 by BuilderBinding(
     type = Named::class,
     viewConstructor = { initialRendering, initialHints, contextForNewView, container ->
-      val view =
-        initialHints[ViewRegistry].buildView(
-            initialRendering.wrapped,
-            initialHints,
-            contextForNewView,
-            container
-        )
-      view.apply {
-        @Suppress("RemoveExplicitTypeArguments") // The IDE is wrong.
-        val wrappedUpdater = getShowRendering<Any>()!!
-        bindShowRendering(initialRendering, initialHints) { r, h ->
-          wrappedUpdater.invoke(r.wrapped, h)
-        }
-      }
+      // Have the ViewRegistry build the view for wrapped.
+      initialHints[ViewRegistry]
+          .buildView(
+              initialRendering.wrapped,
+              initialHints,
+              contextForNewView,
+              container
+          )
+          .also { view ->
+            // Rendering updates will be instances of Named, but the view
+            // was built to accept updates matching the type of wrapped.
+            // So replace the view's update function with one of our
+            // own, which calls through to the original.
+
+            val wrappedUpdater = view.getShowRendering<Any>()!!
+
+            view.bindShowRendering(initialRendering, initialHints) { rendering, hints ->
+              wrappedUpdater.invoke(rendering.wrapped, hints)
+            }
+          }
     }
 )
