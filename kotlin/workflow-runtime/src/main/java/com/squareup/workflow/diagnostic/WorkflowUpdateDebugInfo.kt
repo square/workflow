@@ -79,7 +79,7 @@ data class WorkflowUpdateDebugInfo(
     /**
      * Indicates that the update was triggered by an event being received by a
      * [Sink][com.squareup.workflow.Sink] (see
-     * [RenderContext.send][com.squareup.workflow.RenderContext.send]).
+     * [RenderContext.actionSink][com.squareup.workflow.RenderContext.actionSink]).
      */
     object Sink : Source()
 

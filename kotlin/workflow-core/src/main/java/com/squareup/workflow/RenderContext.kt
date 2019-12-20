@@ -61,7 +61,7 @@ interface RenderContext<StateT, in OutputT : Any> {
    */
   val actionSink: Sink<WorkflowAction<StateT, OutputT>>
 
-  @Deprecated("Use RenderContext.send.")
+  @Deprecated("Use RenderContext.actionSink.")
   fun <EventT : Any> onEvent(
     handler: (EventT) -> WorkflowAction<StateT, OutputT>
   ): (EventT) -> Unit
@@ -173,7 +173,7 @@ fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
 }
 
 /**
- * Alternative to [RenderContext.send] that allows externally defined
+ * Alternative to [RenderContext.actionSink] that allows externally defined
  * event types to be mapped to anonymous [WorkflowAction]s.
  */
 fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink(

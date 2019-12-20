@@ -22,7 +22,7 @@ import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.WorkflowAction.Updater
 
 /**
- * A composable, stateful object that can [handle events][RenderContext.send],
+ * A composable, stateful object that can [handle events][RenderContext.actionSink],
  * [delegate to children][RenderContext.renderChild], [subscribe][RenderContext.runningWorker] to
  * arbitrary asynchronous events from the outside world, and be [saved][snapshotState] to a
  * serialized form to be restored later.
@@ -34,7 +34,7 @@ import com.squareup.workflow.WorkflowAction.Updater
  *
  * To that end, a workflow may keep track of internal [state][StateT],
  * recursively ask other workflows to render themselves, subscribe to data streams from the outside
- * world, and handle events both from its [renderings][RenderContext.send] and from
+ * world, and handle events both from its [renderings][RenderContext.actionSink] and from
  * workflows it's delegated to (its "children"). A `Workflow` may also emit
  * [output events][OutputT] up to its parent `Workflow`.
  *
