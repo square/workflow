@@ -41,7 +41,7 @@ internal fun <T> CoroutineScope.launchWorker(
   workerDiagnosticId: Long,
   workflowDiagnosticId: Long,
   diagnosticListener: WorkflowDiagnosticListener?
-): ReceiveChannel<ValueOrDone<T>> = worker.run()
+): ReceiveChannel<ValueOrDone<T>> = worker.runWithNullCheck()
     .wireUpDebugger(workerDiagnosticId, workflowDiagnosticId, diagnosticListener)
     .transformToValueOrDone()
     .catch { e ->
@@ -55,6 +55,23 @@ internal fun <T> CoroutineScope.launchWorker(
     // operator is required to override the default buffer size.
     .buffer(RENDEZVOUS)
     .produceIn(this)
+
+/**
+ * In unit tests, if you use a mocking library to create a Worker, the run method will return null
+ * even though the return type is non-nullable in Kotlin. Kotlin helps out with this by throwing an
+ * NPE before before any kotlin code gets the null, but the NPE that it throws includes an almost
+ * completely useless stacktrace and no other details.
+ *
+ * This method does an explicit null check and throws an exception with a more helpful message.
+ *
+ * See [#842](https://github.com/square/workflow/issues/842).
+ */
+@Suppress("USELESS_ELVIS")
+private fun <T> Worker<T>.runWithNullCheck(): Flow<T> =
+  run() ?: throw NullPointerException(
+      "Worker $this returned a null Flow. " +
+          "If this is a test mock, make sure you mock the run() method!"
+  )
 
 @UseExperimental(VeryExperimentalWorkflow::class)
 private fun <T> Flow<T>.wireUpDebugger(
