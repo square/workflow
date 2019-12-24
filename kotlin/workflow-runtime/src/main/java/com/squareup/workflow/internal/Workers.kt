@@ -18,6 +18,7 @@ package com.squareup.workflow.internal
 import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.plus
 
 /**
  * Launches a new coroutine that is a child of this node's scope, and calls
@@ -38,6 +40,7 @@ import kotlinx.coroutines.flow.produceIn
 @UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal fun <T> CoroutineScope.launchWorker(
   worker: Worker<T>,
+  key: String,
   workerDiagnosticId: Long,
   workflowDiagnosticId: Long,
   diagnosticListener: WorkflowDiagnosticListener?
@@ -54,7 +57,7 @@ internal fun <T> CoroutineScope.launchWorker(
     // produceIn implicitly creates a buffer (it uses a Channel to bridge between contexts). This
     // operator is required to override the default buffer size.
     .buffer(RENDEZVOUS)
-    .produceIn(this)
+    .produceIn(createWorkerScope(worker, key))
 
 /**
  * In unit tests, if you use a mocking library to create a Worker, the run method will return null
@@ -124,3 +127,11 @@ private fun <T> Flow<T>.transformToValueOrDone(): Flow<ValueOrDone<T>> = flow {
   }
   emit(ValueOrDone.done())
 }
+
+private fun CoroutineScope.createWorkerScope(
+  worker: Worker<*>,
+  key: String
+): CoroutineScope = this + CoroutineName(worker.debugName(key))
+
+private fun Worker<*>.debugName(key: String) =
+  toString().let { if (key.isBlank()) it else "$it:$key" }

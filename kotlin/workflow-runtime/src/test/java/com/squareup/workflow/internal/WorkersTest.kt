@@ -19,14 +19,20 @@ package com.squareup.workflow.internal
 
 import com.squareup.workflow.Worker
 import com.squareup.workflow.asWorker
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.yield
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.coroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -41,12 +47,7 @@ class WorkersTest {
     val counter = AtomicInteger(0)
 
     runBlocking {
-      val workerOutputs = launchWorker(
-          worker,
-          workerDiagnosticId = 0,
-          workflowDiagnosticId = 0,
-          diagnosticListener = null
-      )
+      val workerOutputs = launchWorker(worker)
 
       launch(start = UNDISPATCHED) {
         assertEquals(0, counter.getAndIncrement())
@@ -81,7 +82,7 @@ class WorkersTest {
     val listener = RecordingDiagnosticListener()
 
     runBlocking {
-      val outputs = launchWorker(worker, workerId, workflowId, listener)
+      val outputs = launchWorker(worker, "", workerId, workflowId, listener)
 
       // Start event is sent by WorkflowNode.
       yield()
@@ -105,7 +106,7 @@ class WorkersTest {
     val channel = Channel<String>(capacity = 1)
 
     runBlocking {
-      val workerOutputs = launchWorker(channel.asWorker(), 0, 0, null)
+      val workerOutputs = launchWorker(channel.asWorker())
       assertTrue(workerOutputs.isEmpty)
 
       channel.close()
@@ -117,7 +118,7 @@ class WorkersTest {
     val channel = Channel<String>(capacity = 1)
 
     runBlocking {
-      val workerOutputs = launchWorker(channel.asWorker(), 0, 0, null)
+      val workerOutputs = launchWorker(channel.asWorker())
       assertTrue(workerOutputs.isEmpty)
 
       channel.send("foo")
@@ -135,7 +136,7 @@ class WorkersTest {
       // Needed so that cancelling the channel doesn't cancel our job, which means receive will
       // throw the JobCancellationException instead of the actual channel failure.
       supervisorScope {
-        val workerOutputs = launchWorker(channel.asWorker(), 0, 0, null)
+        val workerOutputs = launchWorker(channel.asWorker())
         assertTrue(workerOutputs.isEmpty)
 
         channel.close(ExpectedException())
@@ -148,7 +149,7 @@ class WorkersTest {
     val channel = Channel<String>(capacity = 1)
 
     runBlocking {
-      val workerOutputs = launchWorker(channel.asWorker(), 0, 0, null)
+      val workerOutputs = launchWorker(channel.asWorker())
       channel.close()
       assertTrue(workerOutputs.receive().isDone)
 
@@ -165,7 +166,7 @@ class WorkersTest {
 
     val error = runBlocking {
       assertFailsWith<NullPointerException> {
-        launchWorker(nullFlowWorker, 0, 0, null)
+        launchWorker(nullFlowWorker)
       }
     }
 
@@ -176,5 +177,45 @@ class WorkersTest {
     )
   }
 
+  @Test fun `launchWorker coroutine is named without key`() {
+    val output = runBlocking {
+      launchWorker(CoroutineNameWorker)
+          .consume { receive() }
+          .value
+    }
+
+    assertEquals("CoroutineNameWorker.toString", output)
+  }
+
+  @Test fun `launchWorker coroutine is named with key`() {
+    val output = runBlocking {
+      launchWorker(CoroutineNameWorker, key = "foo")
+          .consume { receive() }
+          .value
+    }
+
+    assertEquals("CoroutineNameWorker.toString:foo", output)
+  }
+
+  private fun <T> CoroutineScope.launchWorker(
+    worker: Worker<T>,
+    key: String = ""
+  ) = launchWorker(
+      worker,
+      key = key,
+      workerDiagnosticId = 0,
+      workflowDiagnosticId = 0,
+      diagnosticListener = null
+  )
+
   private class ExpectedException : RuntimeException()
+
+  private object CoroutineNameWorker : Worker<String> {
+    override fun run(): Flow<String> = flow {
+      val nameElement = coroutineContext[CoroutineName] as CoroutineName
+      emit(nameElement.name)
+    }
+
+    override fun toString(): String = "CoroutineNameWorker.toString"
+  }
 }

@@ -93,7 +93,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
             diagnosticListener
                 .onWorkerStarted(workerId, diagnosticId, case.key, case.worker.toString())
           }
-          val workerChannel = launchWorker(case.worker, workerId, diagnosticId, diagnosticListener)
+          val workerChannel =
+            launchWorker(case.worker, case.key, workerId, diagnosticId, diagnosticListener)
           WorkerSession(workerChannel)
         },
         dispose = { _, session -> session.channel.cancel() }
