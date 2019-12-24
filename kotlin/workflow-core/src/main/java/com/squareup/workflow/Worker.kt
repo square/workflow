@@ -123,11 +123,17 @@ interface Worker<out OutputT> {
    *
    * ## Coroutine Context
    *
-   * When a worker is started, a coroutine is launched to [collect][Flow.collect] the flow. This
-   * coroutine is launched in the same scope as the workflow runtime, with the addition a
-   * [CoroutineName][kotlinx.coroutines.CoroutineName] that describes the `Worker` instance
-   * (via `toString`) and the key specified by the workflow running the worker. When the worker is
-   * torn down, the coroutine is cancelled.
+   * When a worker is started, a coroutine is launched to [collect][Flow.collect] the flow.
+   * When the worker is torn down, the coroutine is cancelled.
+   * This coroutine is launched in the same scope as the workflow runtime, with a few changes:
+   *
+   * - The dispatcher is always set to [Unconfined][kotlinx.coroutines.Dispatchers.Unconfined] to
+   *   minimize overhead for workers that don't care which thread they're executed on (e.g. logging
+   *   side effects, workers that wrap third-party reactive libraries, etc.). If your work cares
+   *   which thread it runs on, use [withContext][kotlinx.coroutines.withContext] or
+   *   [flowOn][kotlinx.coroutines.flow.flowOn] to specify a dispatcher.
+   * - A [CoroutineName][kotlinx.coroutines.CoroutineName] that describes the `Worker` instance
+   *   (via `toString`) and the key specified by the workflow running the worker.
    *
    * ## Exceptions
    *
