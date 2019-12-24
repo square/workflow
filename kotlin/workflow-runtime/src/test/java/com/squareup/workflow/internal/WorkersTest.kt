@@ -34,7 +34,7 @@ import kotlin.test.assertTrue
 
 class WorkersTest {
 
-  @Test fun `propagates backpressure`() {
+  @Test fun `launchWorker propagates backpressure`() {
     val channel = Channel<String>()
     val worker = channel.asWorker()
     // Used to assert ordering.
@@ -73,7 +73,7 @@ class WorkersTest {
     }
   }
 
-  @Test fun `emits diagnostic events`() {
+  @Test fun `launchWorker emits diagnostic events`() {
     val channel = Channel<String>()
     val worker = Worker.create<String> { emitAll(channel) }
     val workerId = 0L
@@ -101,7 +101,7 @@ class WorkersTest {
     }
   }
 
-  @Test fun `emits done when complete immediately`() {
+  @Test fun `launchWorker emits done when complete immediately`() {
     val channel = Channel<String>(capacity = 1)
 
     runBlocking {
@@ -113,7 +113,7 @@ class WorkersTest {
     }
   }
 
-  @Test fun `emits done when complete after sending`() {
+  @Test fun `launchWorker emits done when complete after sending`() {
     val channel = Channel<String>(capacity = 1)
 
     runBlocking {
@@ -128,7 +128,7 @@ class WorkersTest {
     }
   }
 
-  @Test fun `does not emit done when failed`() {
+  @Test fun `launchWorker does not emit done when failed`() {
     val channel = Channel<String>(capacity = 1)
 
     runBlocking {
@@ -144,7 +144,7 @@ class WorkersTest {
     }
   }
 
-  @Test fun `completes after emitting done`() {
+  @Test fun `launchWorker completes after emitting done`() {
     val channel = Channel<String>(capacity = 1)
 
     runBlocking {
@@ -154,6 +154,26 @@ class WorkersTest {
 
       assertTrue(channel.isClosedForReceive)
     }
+  }
+
+  /**
+   * This should be impossible, since the return type is non-nullable. However it is very easy to
+   * accidentally create a mock using libraries like Mockito in unit tests that return null Flows.
+   */
+  @Test fun `launchWorker throws when flow is null`() {
+    val nullFlowWorker = NullFlowWorker()
+
+    val error = runBlocking {
+      assertFailsWith<NullPointerException> {
+        launchWorker(nullFlowWorker, 0, 0, null)
+      }
+    }
+
+    assertEquals(
+        "Worker NullFlowWorker.toString returned a null Flow. " +
+            "If this is a test mock, make sure you mock the run() method!",
+        error.message
+    )
   }
 
   private class ExpectedException : RuntimeException()
