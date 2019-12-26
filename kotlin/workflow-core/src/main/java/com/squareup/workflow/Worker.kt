@@ -36,14 +36,17 @@ import kotlin.reflect.KClass
 /**
  * Represents a unit of asynchronous work that can have zero, one, or multiple outputs.
  *
- * [Worker]s are effectively [Flow]s that can be compared to determine equivalence.
+ * Workers allow you to execute arbitrary, possibly asynchronous tasks in a declarative manner. To
+ * perform their tasks, workers return a [Flow]. Workers are effectively [Flow]s that can be
+ * [compared][doesSameWorkAs] to determine equivalence between render passes. A [Workflow] uses
+ * Workers to perform asynchronous work during the render pass by calling
+ * [RenderContext.runningWorker].
  *
- * A [Workflow] uses [Worker]s to perform asynchronous work during the render pass by calling
- * [RenderContext.onWorkerOutput] or [RenderContext.runningWorker]. When equivalent [Worker]s are
- * passed in subsequent render passes, [doesSameWorkAs] is used to calculate which [Worker]s are
- * new and should be started, and which ones are continuations from the last render pass and
- * should be allowed to continue working. [Worker]s that are not included in a render pass are
- * cancelled.
+ * See the documentation on [run] for more information on the returned [Flow] is consumed and how
+ * to implement asynchronous work.
+ *
+ * See the documentation on [doesSameWorkAs] for more details on how and when workers are compared
+ * and the worker lifecycle.
  *
  * ## Example: Network request
  *
@@ -56,7 +59,7 @@ import kotlin.reflect.KClass
  * }
  * ```
  *
- * The first step is to define a [Worker] that can call this service, and maybe an extension
+ * The first step is to define a Worker that can call this service, and maybe an extension
  * function on your service class:
  * ```
  * fun TimeService.getTimeWorker(timezone: String): Worker<Long> = TimeWorker(timezone, this)
@@ -73,7 +76,7 @@ import kotlin.reflect.KClass
  * }
  * ```
  *
- * You also need to define how to determine if a previous [Worker] is already doing the same work.
+ * You also need to define how to determine if a previous Worker is already doing the same work.
  * This will ensure that if the same request is made by the same [Workflow] in adjacent render
  * passes, we'll keep the request alive from the first pass.
  * ```
@@ -91,7 +94,7 @@ import kotlin.reflect.KClass
  * ```
  *
  * Alternatively, if the response is a unique type, unlikely to be shared by any other workers,
- * you don't even need to create your own [Worker] class, you can use a builder, and the worker
+ * you don't even need to create your own Worker class, you can use a builder, and the worker
  * will automatically be distinguished by that response type:
  * ```
  * interface TimeService {
@@ -113,9 +116,30 @@ interface Worker<out OutputT> {
   /**
    * Returns a [Flow] to execute the work represented by this worker.
    *
-   * The [Flow] is collected in the context of the workflow runtime. When this [Worker], its parent
-   * [Workflow], or any ancestor [Workflow]s are torn down, the coroutine in which this [Flow] is
-   * being collected will be cancelled.
+   * [Flow] is "a cold asynchronous data stream that sequentially emits values and completes
+   * normally or with an exception", although it may not emit any values. It is common to use
+   * workers to perform some side effect that should only be executed when a state is entered – in
+   * this case, the worker never emits anything (and will have type `Worker<Nothing>`).
+   *
+   * ## Coroutine Context
+   *
+   * When a worker is started, a coroutine is launched to [collect][Flow.collect] the flow. This
+   * coroutine is launched in the same scope as the workflow runtime, with the addition a
+   * [CoroutineName][kotlinx.coroutines.CoroutineName] that describes the `Worker` instance
+   * (via `toString`) and the key specified by the workflow running the worker. When the worker is
+   * torn down, the coroutine is cancelled.
+   *
+   * ## Exceptions
+   *
+   * If a worker needs to report an error to the workflow running it, it *must not* throw it as an
+   * exception – any exceptions thrown by a worker's [Flow] will cancel the entire workflow runtime.
+   * Instead, the worker's [OutputT] type should be capable of expressing errors itself, and the
+   * worker's logic should wrap any relevant exceptions into an output value (e.g. using the
+   * [catch][kotlinx.coroutines.flow.catch] operator).
+   *
+   * While this might seem restrictive, this design decision keeps the [RenderContext.runningWorker]
+   * API simpler, since it does not need to handle exceptions itself. It also discourages the code
+   * smell of relying on exceptions to handle control flow.
    */
   fun run(): Flow<OutputT>
 
