@@ -61,7 +61,7 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
 
 public extension Screen {
     func screenViewControllerDescription<VC: ScreenViewController<Self>>(for type: VC.Type) -> ViewControllerDescription {
-        ViewControllerDescription(
+        return ViewControllerDescription(
             builder: { VC(screen: self) },
             updater: { $0.update(screen: self) }
         )
