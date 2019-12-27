@@ -24,7 +24,7 @@ public struct ViewControllerDescription {
     private let _build: () -> ViewController
     private let _update: (ViewController) -> Void
 
-    public init<VC: ViewController>(builder: @escaping () -> VC = { VC() }, updater: @escaping (VC) -> Void) {
+    public init<VC: ViewController>(builder: @escaping () -> VC = { VC.init() }, updater: @escaping (VC) -> Void) {
         _build = {
             builder()
         }
