@@ -95,7 +95,7 @@ buildscript {
       // See https://github.com/vanniktech/gradle-maven-publish-plugin/issues/67.
       'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:0.8.0",
       'ktlint': "org.jlleitschuh.gradle:ktlint-gradle:9.1.1",
-      'lanterna': "com.googlecode.lanterna:lanterna:3.0.1",
+      'lanterna': "com.googlecode.lanterna:lanterna:3.0.2",
       'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.1",
       'okio': "com.squareup.okio:okio:2.4.3",
       'rxjava2':[
