@@ -124,7 +124,7 @@ fun <PropsT, OutputT : Any, FromRenderingT, ToRenderingT>
 fun <PropsT, OutputT : Any, RenderingT>
     StatelessWorkflow<PropsT, OutputT, RenderingT>.action(
   name: String = "",
-  update: Updater<Unit, OutputT>.() -> Unit
+  update: Updater<Nothing, OutputT>.() -> Unit
 ) = action({ name }, update)
 
 /**
@@ -139,8 +139,8 @@ fun <PropsT, OutputT : Any, RenderingT>
 fun <PropsT, OutputT : Any, RenderingT>
     StatelessWorkflow<PropsT, OutputT, RenderingT>.action(
   name: () -> String,
-  update: Updater<Unit, OutputT>.() -> Unit
-): WorkflowAction<Unit, OutputT> = object : WorkflowAction<Unit, OutputT> {
-  override fun Updater<Unit, OutputT>.apply() = update.invoke(this)
+  update: Updater<Nothing, OutputT>.() -> Unit
+): WorkflowAction<Nothing, OutputT> = object : WorkflowAction<Nothing, OutputT> {
+  override fun Updater<Nothing, OutputT>.apply() = update.invoke(this)
   override fun toString(): String = "action(${name()})-${this@action}"
 }
