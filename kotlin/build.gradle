@@ -20,7 +20,7 @@ buildscript {
 
   rootProject.ext.defaultAndroidConfig = {
     compileSdkVersion versions.targetSdk
-    buildToolsVersion '29.0.0'
+    buildToolsVersion '29.0.2'
 
     compileOptions {
       sourceCompatibility JavaVersion.VERSION_1_8
