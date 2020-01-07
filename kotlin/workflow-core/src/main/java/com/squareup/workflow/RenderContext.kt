@@ -72,7 +72,7 @@ interface RenderContext<StateT, in OutputT : Any> {
    * state, and optionally emits the returned output value if it is non-null.
    */
   @Suppress("UNCHECKED_CAST", "DeprecatedCallableAddReplaceWith")
-  @Deprecated("Use the RenderContext's send method directly.")
+  @Deprecated("Use RenderContext.actionSink.")
   fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> = actionSink
 
   /**
