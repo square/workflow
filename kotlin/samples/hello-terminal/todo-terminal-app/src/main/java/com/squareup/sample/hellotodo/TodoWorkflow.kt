@@ -102,14 +102,14 @@ class TodoWorkflow : TerminalWorkflow,
   }
 }
 
-private fun updateTitle(newTitle: String): TodoAction = WorkflowAction {
+private fun updateTitle(newTitle: String): TodoAction = action {
   nextState = nextState.copy(title = newTitle)
 }
 
 private fun setLabel(
   index: Int,
   text: String
-): TodoAction = WorkflowAction {
+): TodoAction = action {
   nextState = nextState.copy(items = nextState.items.mapIndexed { i, item ->
     if (index == i) item.copy(label = text) else item
   })

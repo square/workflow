@@ -64,7 +64,7 @@ object TodoListsAppWorkflow :
     nextState = EditingList(nextState.lists, index)
   }
 
-  private fun onEditOutput(output: TodoEditorOutput): TodoListsAction = WorkflowAction {
+  private fun onEditOutput(output: TodoEditorOutput): TodoListsAction = action {
     nextState = when (output) {
       is ListUpdated -> {
         val oldState = nextState as EditingList

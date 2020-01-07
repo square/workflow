@@ -19,7 +19,7 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.diagnostic.andThen
@@ -189,7 +189,7 @@ class WorkflowDiagnosticListenerIntegrationTest {
   @Test fun `workflow updates emit events in order`() {
     val channel = Channel<String>()
     val worker = channel.asWorker()
-    fun action(value: String) = WorkflowAction<Nothing, String> { setOutput("output:$value") }
+    fun action(value: String) = action<Nothing, String> { setOutput("output:$value") }
     val workflow = Workflow.stateless<Unit, String, Unit> {
       runningWorker(worker, "key", ::action)
     }

@@ -9,7 +9,7 @@ import com.squareup.sample.gameworkflow.RunGameScreen
 import com.squareup.sample.gameworkflow.RunGameWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.rendering
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
@@ -37,7 +37,7 @@ class MainWorkflowTest {
   @Test fun `starts game on auth`() {
     val authWorkflow: AuthWorkflow = Workflow.stateless {
       runningWorker(Worker.from { Unit }) {
-        WorkflowAction { setOutput(Authorized("auth")) }
+        action { setOutput(Authorized("auth")) }
       }
       authScreen()
     }
