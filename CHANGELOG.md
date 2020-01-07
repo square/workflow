@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+## Version 0.22.2
+
+_2020-01-07_
+
+### Kotlin
+
+ * Breaking: WorkflowAction.invoke is now action. (#862)
+ * Fixes StatelessWorkflow.action. (#861)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.22.1
 
 _2019-12-20_
