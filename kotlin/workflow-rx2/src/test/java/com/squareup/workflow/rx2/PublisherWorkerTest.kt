@@ -17,7 +17,7 @@ package com.squareup.workflow.rx2
 
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
 import io.reactivex.BackpressureStrategy.BUFFER
@@ -36,7 +36,7 @@ class PublisherWorkerTest {
       override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = otherWorker === this
     }
 
-    fun action(value: String) = WorkflowAction<Nothing, String> { setOutput(value) }
+    fun action(value: String) = action<Nothing, String> { setOutput(value) }
     val workflow = Workflow.stateless<Unit, String, Unit> {
       runningWorker(worker) { action(it) }
     }

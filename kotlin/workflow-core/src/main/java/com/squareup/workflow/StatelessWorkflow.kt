@@ -109,7 +109,7 @@ fun <PropsT, OutputT : Any, FromRenderingT, ToRenderingT>
 ): Workflow<PropsT, OutputT, ToRenderingT> = Workflow.stateless { props ->
   /* ktlint-disable parameter-list-wrapping */
   renderChild(this@mapRendering, props) { output ->
-    WorkflowAction({ "mapRendering" }) { setOutput(output) }
+    action({ "mapRendering" }) { setOutput(output) }
   }.let(transform)
 }
 

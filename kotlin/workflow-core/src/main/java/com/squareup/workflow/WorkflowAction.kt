@@ -59,39 +59,6 @@ interface WorkflowAction<StateT, out OutputT : Any> {
 
   companion object {
     /**
-     * Creates a [WorkflowAction] from the [apply] lambda.
-     * The returned object will include the string returned from [name] in its [toString].
-     *
-     * If defining actions within a [StatefulWorkflow], use the [StatefulWorkflow.workflowAction]
-     * extension instead, to do this without being forced to repeat its parameter types.
-     *
-     * @param name A string describing the update for debugging.
-     * @param apply Function that defines the workflow update.
-     */
-    inline operator fun <StateT, OutputT : Any> invoke(
-      name: String = "",
-      crossinline apply: Updater<StateT, OutputT>.() -> Unit
-    ) = WorkflowAction({ name }, apply)
-
-    /**
-     * Creates a [WorkflowAction] from the [apply] lambda.
-     * The returned object will include the string returned from [name] in its [toString].
-     *
-     * If defining actions within a [StatefulWorkflow], use the [StatefulWorkflow.workflowAction]
-     * extension instead, to do this without being forced to repeat its parameter types.
-     *
-     * @param name Function that returns a string describing the update for debugging.
-     * @param apply Function that defines the workflow update.
-     */
-    inline operator fun <StateT, OutputT : Any> invoke(
-      crossinline name: () -> String,
-      crossinline apply: Updater<StateT, OutputT>.() -> Unit
-    ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
-      override fun Updater<StateT, OutputT>.apply() = apply.invoke(this)
-      override fun toString(): String = "WorkflowAction(${name()})@${hashCode()}"
-    }
-
-    /**
      * Returns a [WorkflowAction] that does nothing: no output will be emitted, and `render` will be
      * called again with the same `state` as last time.
      *
@@ -106,8 +73,7 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * (without considering the current state) and optionally emit an output.
      */
     @Deprecated(
-        message = "Implement WorkflowAction directly, " +
-            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        message = "Use action",
         replaceWith = ReplaceWith(
             expression = "action { nextState = newState }",
             imports = arrayOf("com.squareup.workflow.action")
@@ -117,7 +83,7 @@ interface WorkflowAction<StateT, out OutputT : Any> {
       newState: StateT,
       emittingOutput: OutputT? = null
     ): WorkflowAction<StateT, OutputT> =
-      WorkflowAction({ "enterState($newState, $emittingOutput)" }) {
+      action({ "enterState($newState, $emittingOutput)" }) {
         nextState = newState
         emittingOutput?.let { setOutput(it) }
       }
@@ -127,8 +93,7 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * (without considering the current state) and optionally emit an output.
      */
     @Deprecated(
-        message = "Implement WorkflowAction directly, " +
-            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        message = "Use action",
         replaceWith = ReplaceWith(
             expression = "action { nextState = newState }",
             imports = arrayOf("com.squareup.workflow.action")
@@ -139,7 +104,7 @@ interface WorkflowAction<StateT, out OutputT : Any> {
       newState: StateT,
       emittingOutput: OutputT? = null
     ): WorkflowAction<StateT, OutputT> =
-      WorkflowAction({ "enterState($name, $newState, $emittingOutput)" }) {
+      action({ "enterState($name, $newState, $emittingOutput)" }) {
         nextState = newState
         emittingOutput?.let { setOutput(it) }
       }
@@ -148,8 +113,7 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * Convenience function to implement [WorkflowAction] without returning the output.
      */
     @Deprecated(
-        message = "Implement WorkflowAction directly, " +
-            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        message = "Use action",
         replaceWith = ReplaceWith(
             expression = "action(name) { nextState = state }",
             imports = arrayOf("com.squareup.workflow.action")
@@ -160,7 +124,7 @@ interface WorkflowAction<StateT, out OutputT : Any> {
       emittingOutput: OutputT? = null,
       modify: (StateT) -> StateT
     ): WorkflowAction<StateT, OutputT> =
-      WorkflowAction({ "modifyState(${name()}, $emittingOutput)" }) {
+      action({ "modifyState(${name()}, $emittingOutput)" }) {
         nextState = modify(nextState)
         emittingOutput?.let { setOutput(it) }
       }
@@ -169,22 +133,20 @@ interface WorkflowAction<StateT, out OutputT : Any> {
      * Convenience function to implement [WorkflowAction] without changing the state.
      */
     @Deprecated(
-        message = "Implement WorkflowAction directly, " +
-            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        message = "Use action",
         replaceWith = ReplaceWith(
             expression = "action { setOutput(output) }",
             imports = arrayOf("com.squareup.workflow.action")
         )
     )
     fun <StateT, OutputT : Any> emitOutput(output: OutputT): WorkflowAction<StateT, OutputT> =
-      WorkflowAction({ "emitOutput($output)" }) { setOutput(output) }
+      action({ "emitOutput($output)" }) { setOutput(output) }
 
     /**
      * Convenience function to implement [WorkflowAction] without changing the state.
      */
     @Deprecated(
-        message = "Implement WorkflowAction directly, " +
-            "or use StatefulWorkflow.action or StatelessWorkflow.action",
+        message = "Use action",
         replaceWith = ReplaceWith(
             expression = "action { setOutput(output) }",
             imports = arrayOf("com.squareup.workflow.action")
@@ -194,10 +156,49 @@ interface WorkflowAction<StateT, out OutputT : Any> {
       name: String,
       output: OutputT
     ): WorkflowAction<StateT, OutputT> =
-      WorkflowAction({ "emitOutput($name, $output)" }) { setOutput(output) }
+      action({ "emitOutput($name, $output)" }) { setOutput(output) }
 
-    private val NO_ACTION = WorkflowAction<Any, Any>({ "noAction" }) { }
+    private val NO_ACTION = action<Any, Any>({ "noAction" }) { }
   }
+}
+
+/**
+ * Creates a [WorkflowAction] from the [apply] lambda.
+ * The returned object will include the string returned from [name] in its [toString].
+ *
+ * If defining actions within a [StatefulWorkflow], use the [StatefulWorkflow.workflowAction]
+ * extension instead, to do this without being forced to repeat its parameter types.
+ *
+ * @param name A string describing the update for debugging.
+ * @param apply Function that defines the workflow update.
+ *
+ * @see StatelessWorkflow.action
+ * @see StatefulWorkflow.action
+ */
+inline fun <StateT, OutputT : Any> action(
+  name: String = "",
+  crossinline apply: Updater<StateT, OutputT>.() -> Unit
+) = action({ name }, apply)
+
+/**
+ * Creates a [WorkflowAction] from the [apply] lambda.
+ * The returned object will include the string returned from [name] in its [toString].
+ *
+ * If defining actions within a [StatefulWorkflow], use the [StatefulWorkflow.workflowAction]
+ * extension instead, to do this without being forced to repeat its parameter types.
+ *
+ * @param name Function that returns a string describing the update for debugging.
+ * @param apply Function that defines the workflow update.
+ *
+ * @see StatelessWorkflow.action
+ * @see StatefulWorkflow.action
+ */
+inline fun <StateT, OutputT : Any> action(
+  crossinline name: () -> String,
+  crossinline apply: Updater<StateT, OutputT>.() -> Unit
+): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
+  override fun Updater<StateT, OutputT>.apply() = apply.invoke(this)
+  override fun toString(): String = "WorkflowAction(${name()})@${hashCode()}"
 }
 
 fun <StateT, OutputT : Any> WorkflowAction<StateT, OutputT>.applyTo(

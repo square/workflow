@@ -25,6 +25,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Updater
+import com.squareup.workflow.action
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.parse
@@ -282,7 +283,7 @@ class WorkflowNodeTest {
         context.runningWorker(channel.asWorker()) {
           check(update == null)
           update = it
-          WorkflowAction { setOutput("update:$it") }
+          action { setOutput("update:$it") }
         }
         return ""
       }
@@ -331,11 +332,11 @@ class WorkflowNodeTest {
         return props
       }
 
-      fun update(value: String) = WorkflowAction<String, String> {
+      fun update(value: String) = action<String, String> {
         setOutput("update:$value")
       }
 
-      val finish = WorkflowAction<String, String> {
+      val finish = action<String, String> {
         nextState = "finished"
       }
 

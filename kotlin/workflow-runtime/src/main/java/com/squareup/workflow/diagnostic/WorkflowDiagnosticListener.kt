@@ -283,7 +283,7 @@ interface WorkflowDiagnosticListener {
    *
    * Either [onWorkerOutput] or [onSinkReceived] will have been called before this.
    *
-   * @param workflowId The ID of the workflow that created this [action].
+   * @param workflowId The ID of the workflow that created [action].
    * @param action The [WorkflowAction] that was executed.
    * @param oldState The state of the workflow before executing [action].
    * @param newState The state of the workflow after executing [action]. If the action doesn't set
