@@ -33,10 +33,14 @@ buildscript {
       versionCode 1
       versionName "1.0"
     }
+
+    lintOptions {
+      abortOnError false
+    }
   }
 
   ext.deps = [
-      'android_gradle_plugin': "com.android.tools.build:gradle:3.5.3",
+      'android_gradle_plugin': "com.android.tools.build:gradle:4.0.0-alpha08",
 
       'androidx': [
           'activity': "androidx.activity:activity-ktx:1.0.0",
@@ -148,7 +152,7 @@ subprojects {
     jcenter()
   }
 
-  apply plugin: "org.jlleitschuh.gradle.ktlint"
+//  apply plugin: "org.jlleitschuh.gradle.ktlint"
   apply plugin: "io.gitlab.arturbosch.detekt"
   afterEvaluate { project ->
     project.tasks.findByName('check')?.dependsOn 'detekt'
@@ -171,18 +175,18 @@ subprojects {
   }
 
   // Configuration documentation: https://github.com/JLLeitschuh/ktlint-gradle#configuration
-  ktlint {
-    // Prints the name of failed rules.
-    verbose = true
-    reporters {
-      // Default "plain" reporter is actually harder to read.
-      reporter "json"
-    }
-
-    disabledRules = [
-        // IntelliJ refuses to sort imports correctly.
-        // This is a known issue: https://github.com/pinterest/ktlint/issues/527
-        "import-ordering",
-    ]
-  }
+//  ktlint {
+//    // Prints the name of failed rules.
+//    verbose = true
+//    reporters {
+//      // Default "plain" reporter is actually harder to read.
+//      reporter "json"
+//    }
+//
+//    disabledRules = [
+//        // IntelliJ refuses to sort imports correctly.
+//        // This is a known issue: https://github.com/pinterest/ktlint/issues/527
+//        "import-ordering",
+//    ]
+//  }
 }
