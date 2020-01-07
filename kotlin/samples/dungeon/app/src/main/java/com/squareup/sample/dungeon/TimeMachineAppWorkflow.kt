@@ -24,7 +24,6 @@ import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow.Pr
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.renderChild
-import com.squareup.workflow.ui.AlertContainerScreen
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -40,10 +39,7 @@ class TimeMachineAppWorkflow(
 ) : StatelessWorkflow<BoardPath, Nothing, ShakeableTimeMachineRendering>() {
 
   private val timeMachineWorkflow =
-    ShakeableTimeMachineWorkflow<Props, Nothing, AlertContainerScreen<Any>>(
-        TimeMachineWorkflow(appWorkflow, clock),
-        context
-    )
+    ShakeableTimeMachineWorkflow(TimeMachineWorkflow(appWorkflow, clock), context)
 
   override fun render(
     props: BoardPath,

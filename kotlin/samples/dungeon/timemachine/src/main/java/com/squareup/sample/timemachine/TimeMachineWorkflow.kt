@@ -23,8 +23,7 @@ import com.squareup.sample.timemachine.TimeMachineWorkflow.TimeMachineProps.Reco
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Updater
+import com.squareup.workflow.action
 import com.squareup.workflow.renderChild
 import kotlin.time.Clock
 import kotlin.time.Duration
@@ -99,9 +98,5 @@ class TimeMachineWorkflow<P, O : Any, out R>(
     return context.renderChild(recordingWorkflow, recorderProps)
   }
 
-  private fun forwardOutput(output: O) = object : WorkflowAction<Nothing, O> {
-    override fun Updater<Nothing, O>.apply() {
-      setOutput(output)
-    }
-  }
+  private fun forwardOutput(output: O) = action { setOutput(output) }
 }
