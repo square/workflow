@@ -22,6 +22,7 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.action
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
 import com.squareup.workflow.makeEventSink
@@ -168,7 +169,7 @@ class SubtreeManagerTest {
       SubtreeManager<String, String>(context, parentDiagnosticId = 0, diagnosticListener = null)
     val workflow = TestWorkflow()
     val handler: StringHandler = { output ->
-      WorkflowAction { setOutput("case output:$output") }
+      action { setOutput("case output:$output") }
     }
 
     // Initialize the child so tickChildren has something to work with, and so that we can send
@@ -197,7 +198,7 @@ class SubtreeManagerTest {
 
     runBlocking {
       // First render + tick pass – uninteresting.
-      render { WorkflowAction { setOutput("initial handler: $it") } }
+      render { action { setOutput("initial handler: $it") } }
           .let { rendering ->
             rendering.eventHandler("initial output")
             val initialAction = manager.tickAction()!!
@@ -206,7 +207,7 @@ class SubtreeManagerTest {
           }
 
       // Do a second render + tick, but with a different handler function.
-      render { WorkflowAction { setOutput("second handler: $it") } }
+      render { action { setOutput("second handler: $it") } }
           .let { rendering ->
             rendering.eventHandler("second output")
             val secondAction = manager.tickAction()!!

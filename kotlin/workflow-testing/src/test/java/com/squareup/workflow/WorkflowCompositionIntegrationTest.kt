@@ -104,15 +104,15 @@ class WorkflowCompositionIntegrationTest {
   @Test fun `renderChild closes over latest state`() {
     val triggerChildOutput = WorkerSink<Unit>("")
     val child = Workflow.stateless<Unit, Unit, Unit> {
-      runningWorker(triggerChildOutput) { WorkflowAction { setOutput(Unit) } }
+      runningWorker(triggerChildOutput) { action { setOutput(Unit) } }
     }
-    val incrementState = WorkflowAction<Int, Int> {
+    val incrementState = action<Int, Int> {
       nextState += 1
     }
     val workflow = Workflow.stateful<Int, Int, () -> Unit>(
         initialState = 0,
         render = { state ->
-          renderChild(child) { WorkflowAction { setOutput(state) } }
+          renderChild(child) { action { setOutput(state) } }
           return@stateful { actionSink.send(incrementState) }
         }
     )

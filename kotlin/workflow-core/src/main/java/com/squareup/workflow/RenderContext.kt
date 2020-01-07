@@ -40,7 +40,8 @@ import com.squareup.workflow.WorkflowAction.Updater
  *
  * To create populate such functions from your `render` method, you first need to define a
  * [WorkflowAction] to handle the event by changing state, emitting an output, or both. Then, just
- * pass a lambda to your rendering that instantiates the action and passes it to [send].
+ * pass a lambda to your rendering that instantiates the action and passes it to
+ * [actionSink.send][Sink.send].
  *
  * ## Performing asynchronous work
  *
@@ -179,7 +180,7 @@ fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
 fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink(
   update: Updater<StateT, OutputT>.(EventT) -> Unit
 ): Sink<EventT> = actionSink.contraMap { event ->
-  WorkflowAction({ "eventSink($event)" }) { update(event) }
+  action({ "eventSink($event)" }) { update(event) }
 }
 
 /**

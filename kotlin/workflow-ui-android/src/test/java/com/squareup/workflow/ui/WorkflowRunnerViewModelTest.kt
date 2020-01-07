@@ -9,8 +9,8 @@ import com.google.common.truth.Truth.assertThat
 import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.Workflow
-import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowSession
+import com.squareup.workflow.action
 import com.squareup.workflow.asWorker
 import com.squareup.workflow.stateless
 import com.squareup.workflow.ui.WorkflowRunner.Config
@@ -106,7 +106,7 @@ class WorkflowRunnerViewModelTest {
     val outputs = BroadcastChannel<String>(1)
     val runner = Workflow
         .stateless<Unit, String, Unit> {
-          runningWorker(outputs.asWorker()) { WorkflowAction { setOutput(it) } }
+          runningWorker(outputs.asWorker()) { action { setOutput(it) } }
           Unit
         }
         .run()
@@ -122,7 +122,7 @@ class WorkflowRunnerViewModelTest {
   @Test fun resultEmptyOnCleared() {
     val runner = Workflow
         .stateless<Unit, String, Unit> {
-          runningWorker(flowNever<String>().asWorker()) { WorkflowAction { setOutput(it) } }
+          runningWorker(flowNever<String>().asWorker()) { action { setOutput(it) } }
         }
         .run()
 

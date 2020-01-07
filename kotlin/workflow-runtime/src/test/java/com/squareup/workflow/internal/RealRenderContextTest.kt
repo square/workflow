@@ -26,6 +26,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.WorkflowAction.Updater
+import com.squareup.workflow.action
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.RealRenderContext.Renderer
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
@@ -127,7 +128,7 @@ class RealRenderContextTest {
 
   @Test fun `send completes update`() {
     val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
-    val stringAction = WorkflowAction<String, String>({ "stringAction" }) { }
+    val stringAction = action<String, String>({ "stringAction" }) { }
     // Enable sink sends.
     context.buildBehavior()
 
@@ -213,7 +214,7 @@ class RealRenderContextTest {
     val workflow = TestWorkflow()
 
     val (child, props, key, handler) = context.renderChild(workflow, "props", "key") { output ->
-      WorkflowAction { setOutput("output:$output") }
+      action { setOutput("output:$output") }
     }
 
     assertSame(workflow, child)
