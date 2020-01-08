@@ -22,6 +22,7 @@ import com.squareup.workflow.asWorker
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.flow.Flow
@@ -32,10 +33,12 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.yield
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.coroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class WorkersTest {
@@ -52,18 +55,18 @@ class WorkersTest {
       launch(start = UNDISPATCHED) {
         assertEquals(0, counter.getAndIncrement())
         channel.send("a")
-        assertEquals(2, counter.getAndIncrement())
+        assertEquals(1, counter.getAndIncrement())
         channel.send("b")
-        assertEquals(4, counter.getAndIncrement())
+        assertEquals(3, counter.getAndIncrement())
         channel.close()
-        assertEquals(5, counter.getAndIncrement())
+        assertEquals(4, counter.getAndIncrement())
       }
       yield()
-      assertEquals(1, counter.getAndIncrement())
+      assertEquals(2, counter.getAndIncrement())
 
       assertEquals("a", workerOutputs.poll()!!.value)
       yield()
-      assertEquals(3, counter.getAndIncrement())
+      assertEquals(5, counter.getAndIncrement())
 
       assertEquals("b", workerOutputs.poll()!!.value)
       yield()
@@ -195,6 +198,18 @@ class WorkersTest {
     }
 
     assertEquals("CoroutineNameWorker.toString:foo", output)
+  }
+
+  @Test fun `launchWorker dispatcher is unconfined`() {
+    val worker = Worker.from { coroutineContext[ContinuationInterceptor] }
+
+    runBlocking {
+      val interceptor = launchWorker(worker)
+          .consume { receive() }
+          .value
+
+      assertSame(Dispatchers.Unconfined, interceptor)
+    }
   }
 
   private fun <T> CoroutineScope.launchWorker(

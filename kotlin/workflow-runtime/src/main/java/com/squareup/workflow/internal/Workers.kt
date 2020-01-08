@@ -20,6 +20,7 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
@@ -131,7 +132,7 @@ private fun <T> Flow<T>.transformToValueOrDone(): Flow<ValueOrDone<T>> = flow {
 private fun CoroutineScope.createWorkerScope(
   worker: Worker<*>,
   key: String
-): CoroutineScope = this + CoroutineName(worker.debugName(key))
+): CoroutineScope = this + CoroutineName(worker.debugName(key)) + Unconfined
 
 private fun Worker<*>.debugName(key: String) =
   toString().let { if (key.isBlank()) it else "$it:$key" }
