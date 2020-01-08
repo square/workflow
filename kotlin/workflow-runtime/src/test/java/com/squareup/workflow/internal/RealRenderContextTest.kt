@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+@file:Suppress("EXPERIMENTAL_API_USAGE", "OverridingDeprecatedMember")
 
 package com.squareup.workflow.internal
 
@@ -29,6 +29,7 @@ import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.action
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.internal.RealRenderContext.Renderer
+import com.squareup.workflow.internal.RealRenderContext.WorkerRunner
 import com.squareup.workflow.internal.RealRenderContextTest.TestRenderer.Rendering
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.renderChild
@@ -69,6 +70,16 @@ class RealRenderContextTest {
     ) as ChildRenderingT
   }
 
+  private class TestRunner : WorkerRunner<String, String> {
+    override fun <T> runningWorker(
+      worker: Worker<T>,
+      key: String,
+      handler: (T) -> WorkflowAction<String, String>
+    ) {
+      // No-op
+    }
+  }
+
   private class TestWorkflow : StatefulWorkflow<String, String, String, Rendering>() {
     override fun initialState(
       props: String,
@@ -95,10 +106,20 @@ class RealRenderContextTest {
     ): ChildRenderingT = fail()
   }
 
+  private class PoisonRunner<S, O : Any> : WorkerRunner<S, O> {
+    override fun <T> runningWorker(
+      worker: Worker<T>,
+      key: String,
+      handler: (T) -> WorkflowAction<S, O>
+    ) {
+      fail()
+    }
+  }
+
   private val eventActionsChannel = Channel<WorkflowAction<String, String>>(capacity = UNLIMITED)
 
   @Test fun `onEvent completes update`() {
-    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
+    val context = RealRenderContext(PoisonRenderer(), PoisonRunner(), eventActionsChannel)
     val expectedUpdate = noAction<String, String>()
     @Suppress("DEPRECATION")
     val handler = context.onEvent<String> { expectedUpdate }
@@ -112,7 +133,7 @@ class RealRenderContextTest {
   }
 
   @Test fun `onEvent allows multiple invocations`() {
-    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
+    val context = RealRenderContext(PoisonRenderer(), PoisonRunner(), eventActionsChannel)
     fun expectedUpdate(msg: String) = object : WorkflowAction<String, String> {
       override fun Updater<String, String>.apply() = Unit
       override fun toString(): String = "action($msg)"
@@ -127,10 +148,10 @@ class RealRenderContextTest {
   }
 
   @Test fun `send completes update`() {
-    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
+    val context = RealRenderContext(PoisonRenderer(), PoisonRunner(), eventActionsChannel)
     val stringAction = action<String, String>({ "stringAction" }) { }
     // Enable sink sends.
-    context.buildBehavior()
+    context.freeze()
 
     assertTrue(eventActionsChannel.isEmpty)
 
@@ -142,7 +163,7 @@ class RealRenderContextTest {
   }
 
   @Test fun `send allows multiple sends`() {
-    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
+    val context = RealRenderContext(PoisonRenderer(), PoisonRunner(), eventActionsChannel)
     val firstAction = object : WorkflowAction<String, String> {
       override fun Updater<String, String>.apply() = Unit
       override fun toString(): String = "firstAction"
@@ -152,7 +173,7 @@ class RealRenderContextTest {
       override fun toString(): String = "secondAction"
     }
     // Enable sink sends.
-    context.buildBehavior()
+    context.freeze()
 
     context.actionSink.send(firstAction)
 
@@ -161,7 +182,7 @@ class RealRenderContextTest {
   }
 
   @Test fun `send throws before render returns`() {
-    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
+    val context = RealRenderContext(PoisonRenderer(), PoisonRunner(), eventActionsChannel)
     val action = object : WorkflowAction<String, String> {
       override fun Updater<String, String>.apply() = Unit
       override fun toString(): String = "action"
@@ -177,10 +198,10 @@ class RealRenderContextTest {
   }
 
   @Test fun `makeEventSink gets event`() {
-    val context = RealRenderContext(PoisonRenderer(), eventActionsChannel)
+    val context = RealRenderContext(PoisonRenderer(), PoisonRunner(), eventActionsChannel)
     val sink: Sink<String> = context.makeEventSink { setOutput(it) }
     // Enable sink sends.
-    context.buildBehavior()
+    context.freeze()
 
     sink.send("foo")
 
@@ -193,13 +214,10 @@ class RealRenderContextTest {
   @Test fun `makeEventSink works with OutputT of Nothing`() {
     val nothingChannel = Channel<WorkflowAction<String, Nothing>>(capacity = UNLIMITED)
 
-    val context = RealRenderContext(
-        PoisonRenderer(),
-        nothingChannel
-    )
+    val context = RealRenderContext(PoisonRenderer(), PoisonRunner(), nothingChannel)
     val sink: Sink<String> = context.makeEventSink { }
     // Enable sink sends.
-    context.buildBehavior()
+    context.freeze()
 
     sink.send("foo")
 
@@ -210,7 +228,7 @@ class RealRenderContextTest {
   }
 
   @Test fun `renderChild works`() {
-    val context = RealRenderContext(TestRenderer(), eventActionsChannel)
+    val context = RealRenderContext(TestRenderer(), TestRunner(), eventActionsChannel)
     val workflow = TestWorkflow()
 
     val (child, props, key, handler) = context.renderChild(workflow, "props", "key") { output ->
@@ -226,9 +244,9 @@ class RealRenderContextTest {
     assertEquals("output:output", output)
   }
 
-  @Test fun `all methods throw after buildBehavior`() {
-    val context = RealRenderContext(TestRenderer(), eventActionsChannel)
-    context.buildBehavior()
+  @Test fun `all methods throw after freeze`() {
+    val context = RealRenderContext(TestRenderer(), TestRunner(), eventActionsChannel)
+    context.freeze()
 
     @Suppress("DEPRECATION")
     assertFailsWith<IllegalStateException> { context.onEvent<Unit> { fail() } }
@@ -236,6 +254,6 @@ class RealRenderContextTest {
     assertFailsWith<IllegalStateException> { context.renderChild(child) }
     val worker = Worker.from { Unit }
     assertFailsWith<IllegalStateException> { context.runningWorker(worker) { fail() } }
-    assertFailsWith<IllegalStateException> { context.buildBehavior() }
+    assertFailsWith<IllegalStateException> { context.freeze() }
   }
 }
