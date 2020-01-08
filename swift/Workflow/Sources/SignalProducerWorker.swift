@@ -23,20 +23,16 @@ import ReactiveSwift
 /// If there is, and if the workers are 'equivalent', the context leaves the existing worker running.
 ///
 /// If there is not an existing worker of this type, the context will kick off the new worker (via `run`).
-public struct SignalProducerWorker<Value, Key>: Worker where Key : Equatable {
+public struct SignalProducerWorker<Value>: Worker {
     /// The type of output events returned by this worker.
     let valueType: Value.Type
-    
-    /// A unique identifier for this `SignalProducerWorker` instance.
-    let key: Key
 
     /// The `SignalProducer<Value, Never>` wrapped by this worker.
     let signalProducer: SignalProducer<Value, Never>
 
-    internal init(signalProducer: SignalProducer<Value, Never>, key: Key) {
+    internal init(signalProducer: SignalProducer<Value, Never>) {
         self.signalProducer = signalProducer
         self.valueType = Value.self
-        self.key = key
     }
 
     /// Returns a signal producer to execute the work represented by this worker.
@@ -47,8 +43,8 @@ public struct SignalProducerWorker<Value, Key>: Worker where Key : Equatable {
     /// Returns `true` if the other worker should be considered equivalent to `self`. Equivalence should take into
     /// account whatever data is meaninful to the task. For example, a worker that loads a user account from a server
     /// would not be equivalent to another worker with a different user ID.
-    public func isEquivalent(to otherWorker: SignalProducerWorker<Value, Key>) -> Bool {
-        return valueType == otherWorker.valueType && key == otherWorker.key
+    public func isEquivalent(to otherWorker: SignalProducerWorker<Value>) -> Bool {
+        return valueType == otherWorker.valueType
     }
 }
 
@@ -63,50 +59,46 @@ public extension SignalProducer {
     /// - note: When a Failed event is received, the resulting producer will
     ///         send the `Result.failure` itself and then complete.
     ///
-    /// - Parameter key: A value that uniquely identifies this `Worker`.
     /// - returns: A `SignalProducerWorker` that sends `Results` as its values.
-    func asWorker<Key>(key: Key) -> SignalProducerWorker<Result<Value, Error>, Key> where Key: Equatable {
-        return SignalProducerWorker(signalProducer: self.materializeResults(), key: key)
+    func asWorker() -> SignalProducerWorker<Result<Value, Error>> {
+        return SignalProducerWorker(signalProducer: self.materializeResults())
     }
     
     /// Convenience to transform a `SignalProducer` into a `Worker`.
     ///
     /// - parameters:
-    ///   - key: A value that uniquely identifies this `Worker`.
     ///   - errorTransform: A closure that accepts emitted error and returns a signal
     ///                producer with a different type of error.
     ///
     /// - returns: A `SignalProducerWorker` that catches any failure that may occur on
     /// the input producer, mapping to a new producer that starts in its place.
-    func asWorker<Key>(key: Key, errorTransform: @escaping (Error) -> SignalProducer<Value, Never>) -> SignalProducerWorker<Value, Key> where Key: Equatable {
+    func asWorker(errorTransform: @escaping (Error) -> SignalProducer<Value, Never>) -> SignalProducerWorker<Value> {
         return self
             .flatMapError { errorTransform($0) }
-            .asWorker(key: key)
+            .asWorker()
     }
 
     /// Convenience to transform a `SignalProducer` into a `Worker`.
     ///
     /// - parameters:
-    ///   - key: A value that uniquely identifies this `SignalProdcuerWorker`.
     ///   - errorTransform: A closure that accepts emitted error and returns a value in its place.
     ///
     /// - returns: A `SignalProducerWorker` that catches any failure that may occur on
     /// the input producer, mapping to a new producer that starts in its place.
-    func asWorker<Key>(key: Key, errorTransform: @escaping (Error) -> Value) -> SignalProducerWorker<Value, Key> where Key: Equatable {
+    func asWorker(errorTransform: @escaping (Error) -> Value) -> SignalProducerWorker<Value> {
         return self
             .flatMapError({
                 return SignalProducer<Value, Never>(value: errorTransform($0))
             })
-            .asWorker(key: key)
+            .asWorker()
     }
 }
 
 public extension SignalProducer where Error == Never {
     /// Convenience to transform a `SignalProducer` into a `Worker`.
     ///
-    /// - Parameter key: A value that uniquely identifies this `Worker`.
     /// - returns: A `SignalProducerWorker`
-    func asWorker<Key>(key: Key) -> SignalProducerWorker<Value, Key> where Key : Equatable {
-        return SignalProducerWorker(signalProducer: self, key: key)
+    func asWorker() -> SignalProducerWorker<Value> {
+        return SignalProducerWorker(signalProducer: self)
     }
 }

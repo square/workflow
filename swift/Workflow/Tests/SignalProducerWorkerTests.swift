@@ -23,29 +23,19 @@ import ReactiveSwift
 final class SignalProducerWorkerTests: XCTestCase {
     fileprivate struct MyError: Error {}
     
-    func test_signalProducersOfSameValueTypeAndKeyAreEquivalent() {
+    func test_signalProducersOfSameValueTypeAreEquivalent() {
         let signalProducer1 = SignalProducer(value: "Hello")
-        let worker1 = signalProducer1.asWorker(key: "hello-worker")
+        let worker1 = signalProducer1.asWorker()
         
         let signalProducer2 = SignalProducer(value: "World")
-        let worker2 = signalProducer2.asWorker(key: "hello-worker")
+        let worker2 = signalProducer2.asWorker()
         
         XCTAssertTrue(worker1.isEquivalent(to: worker2))
     }
     
-    func test_signalProducersOfSameValueTypeDifferentKeyAreNotEquivalent() {
-        let signalProducer1 = SignalProducer(value: "Hello")
-        let worker1 = signalProducer1.asWorker(key: "hello-worker")
-        
-        let signalProducer2 = SignalProducer(value: "World")
-        let worker2 = signalProducer2.asWorker(key: "world-worker")
-        
-        XCTAssertFalse(worker1.isEquivalent(to: worker2))
-    }
-    
     func test_singalProducerAsWorkerNeverError() {
         let signalProducer = SignalProducer(value: "Hello")
-        let worker = signalProducer.asWorker(key: "hello-worker")
+        let worker = signalProducer.asWorker()
         
         XCTAssertNotNil(worker)
         XCTAssertEqual(worker.run().first()?.value, "Hello")
@@ -53,19 +43,19 @@ final class SignalProducerWorkerTests: XCTestCase {
     
     func test_signalProducerAsWorkerErrorTransformersValueEmission() {
         let signalProducer1 = SignalProducer<String, Error>(value: "Hello")
-        let worker1 = signalProducer1.asWorker(key: "hello-worker") { _ in "Ooops 1" }
+        let worker1 = signalProducer1.asWorker { _ in "Ooops 1" }
         
         XCTAssertNotNil(worker1)
         XCTAssertEqual(worker1.run().first()?.value, "Hello")
         
         let signalProducer2 = SignalProducer<String, Error>(value: "World")
-        let worker2 = signalProducer2.asWorker(key: "world-worker") { _ in SignalProducer(value: "Ooops 2") }
+        let worker2 = signalProducer2.asWorker { _ in SignalProducer(value: "Ooops 2") }
         
         XCTAssertNotNil(worker2)
         XCTAssertEqual(worker2.run().first()?.value, "World")
         
         let signalProducer3 = SignalProducer<String, Error>(value: "Foo")
-        let worker3 = signalProducer3.asWorker(key: "foo-worker")
+        let worker3 = signalProducer3.asWorker()
         
         XCTAssertNotNil(worker3)
         XCTAssertEqual(worker3.run().first()?.value?.value, "Foo")
@@ -74,19 +64,19 @@ final class SignalProducerWorkerTests: XCTestCase {
     
     func test_signalProducerAsWorkerErrorTransformersErrorEmission() {
         let signalProducer1 = SignalProducer<String, Error>(error: MyError())
-        let worker1 = signalProducer1.asWorker(key: "error-worker-1") { _ in "Ooops 1" }
+        let worker1 = signalProducer1.asWorker { _ in "Ooops 1" }
         
         XCTAssertNotNil(worker1)
         XCTAssertEqual(worker1.run().first()?.value, "Ooops 1")
         
         let signalProducer2 = SignalProducer<String, Error>(error: MyError())
-        let worker2 = signalProducer2.asWorker(key: "error-worker-2") { _ in SignalProducer(value: "Ooops 2") }
+        let worker2 = signalProducer2.asWorker { _ in SignalProducer(value: "Ooops 2") }
 
         XCTAssertNotNil(worker2)
         XCTAssertEqual(worker2.run().first()?.value, "Ooops 2")
         
         let signalProducer3 = SignalProducer<String, Error>(error: MyError())
-        let worker3 = signalProducer3.asWorker(key: "error-worker-3")
+        let worker3 = signalProducer3.asWorker()
         
         XCTAssertNotNil(worker3)
         XCTAssertNil(worker3.run().first()?.value?.value)

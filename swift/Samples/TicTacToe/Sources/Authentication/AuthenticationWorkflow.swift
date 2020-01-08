@@ -147,7 +147,7 @@ extension AuthenticationWorkflow {
         case .authorizingEmailPassword(email: let email, password: let password):
             let worker = authenticationService
                 .login(email: email, password: password)
-                .asWorker(key: "login-\(email)-\(password)")
+                .asWorker()
             
             context.awaitResult(for: worker) { (output) -> Action in
                 switch output {
@@ -169,7 +169,7 @@ extension AuthenticationWorkflow {
         case .authorizingTwoFactor(twoFactorCode: let twoFactorCode, intermediateSession: let intermediateSession):
             let worker = authenticationService
                 .secondFactor(token: intermediateSession, secondFactor: twoFactorCode)
-                .asWorker(key: "secondFactor-\(intermediateSession)-\(twoFactorCode)")
+                .asWorker()
 
             context.awaitResult(for: worker) { (output) -> Action in
                 switch output {
