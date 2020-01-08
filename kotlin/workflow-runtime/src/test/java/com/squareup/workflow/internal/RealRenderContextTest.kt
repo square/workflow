@@ -150,6 +150,7 @@ class RealRenderContextTest {
   @Test fun `send completes update`() {
     val context = RealRenderContext(PoisonRenderer(), PoisonRunner(), eventActionsChannel)
     val stringAction = action<String, String>({ "stringAction" }) { }
+
     // Enable sink sends.
     context.freeze()
 
