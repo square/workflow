@@ -174,7 +174,7 @@ interface Worker<out OutputT> {
   companion object {
 
     /**
-     * Shorthand for `flow { block() }.asWorker(key)`.
+     * Shorthand for `flow { block() }.asWorker()`.
      *
      * Note: If your worker just needs to perform side effects and doesn't need to emit anything,
      * use [createSideEffect] instead (since `Nothing` can't be used as a reified type parameter).
@@ -188,15 +188,16 @@ interface Worker<out OutputT> {
      * Creates a [Worker] that just performs some side effects and doesn't emit anything. Run the
      * worker from your `render` method using [RenderContext.runningWorker].
      *
-     * The returned [Worker] will equate to any other workers created with this function that have
-     * the same key. The key is required for this builder because there is no type information
-     * available to distinguish workers.
-     *
      * E.g.:
      * ```
      * fun logOnEntered(message: String) = Worker.createSideEffect() {
      *   println("Entered state: $message")
      * }
+     *
+     * Note that all workers created with this method are equivalent from the point of view of
+     * their [Worker.doesSameWorkAs] methods. A workflow that needs multiple simultaneous
+     * side effects can either bundle them all together into a single `createSideEffect`
+     * call, or can use the `key` parameter to [RenderContext.runningWorker] to prevent conflicts.
      * ```
      */
     fun createSideEffect(
@@ -211,7 +212,7 @@ interface Worker<out OutputT> {
     /**
      * Creates a [Worker] from a function that returns a single value.
      *
-     * Shorthand for `flow { emit(block()) }.asWorker(key)`.
+     * Shorthand for `flow { emit(block()) }.asWorker()`.
      *
      * The returned [Worker] will equate to any other workers created with any of the [Worker]
      * builder functions that have the same output type.
@@ -269,7 +270,7 @@ inline fun <reified OutputT> Deferred<OutputT>.asWorker(): Worker<OutputT> =
   from { await() }
 
 /**
- * Shorthand for `.asFlow().asWorker(key)`.
+ * Shorthand for `.asFlow().asWorker()`.
  */
 @UseExperimental(
     FlowPreview::class,
@@ -315,7 +316,7 @@ inline fun <reified OutputT> ReceiveChannel<OutputT>.asWorker(
  *
  * ## Examples
  *
- * ### Same source and key are equivalent
+ * ### Workers from the same source are equivalent
  *
  * ```
  * val secondsWorker = millisWorker.transform {
@@ -329,7 +330,7 @@ inline fun <reified OutputT> ReceiveChannel<OutputT>.asWorker(
  * assert(secondsWorker.doesSameWorkAs(otherSecondsWorker))
  * ```
  *
- * ### Different sources are not equivalent
+ * ### Workers from different sources are not equivalent
  *
  * ```
  * val secondsWorker = millisWorker.transform {
