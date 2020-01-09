@@ -16,4 +16,6 @@
 <resources>
   <string name="app_name">Dungeon Crawler</string>
   <string name="loading_board">Loading board…</string>
+  <string name="loading_boards_list">Loading boards…</string>
+  <string name="boards_list_label">Select a board:</string>
 </resources>

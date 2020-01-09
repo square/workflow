@@ -15,12 +15,43 @@
  */
 package com.squareup.sample.dungeon.board
 
+import com.charleskorn.kaml.Yaml
 import com.squareup.sample.dungeon.board.BoardCell.Companion.EMPTY_FLOOR
-import okio.Source
-import okio.buffer
+import okio.BufferedSource
 
-fun Source.parseBoard(): Board {
-  var lines = buffer().let { generateSequence { it.readUtf8Line() }.toList() }
+private const val YAML_DELIMITER = "---"
+
+/**
+ * Parses the [BoardMetadata] from this source.
+ *
+ * @throws IllegalArgumentException If no metadata is found.
+ * @see parseBoardMetadataOrNull
+ */
+fun BufferedSource.parseBoardMetadata(): BoardMetadata =
+  parseBoardMetadataOrNull() ?: throw IllegalArgumentException(
+      "No board metadata found in stream, expected \"$YAML_DELIMITER\" but found \"${peekLine()}\""
+  )
+
+/**
+ * Parses the [BoardMetadata] from this source.
+ *
+ * @return The [BoardMetadata], or null if the source does not start with "`---\n`".
+ * @see parseBoardMetadata
+ */
+fun BufferedSource.parseBoardMetadataOrNull(): BoardMetadata? = readHeader()?.let { header ->
+  Yaml.default.parse(BoardMetadata.serializer(), header)
+}
+
+/**
+ * Parses a [Board] from this source.
+ *
+ * @param metadata The [BoardMetadata] that describes this board. If not explicitly passed, the
+ * metadata will be read from the source.
+ * @throws IllegalArgumentException If no metadata is passed and the stream does not start with
+ * metadata.
+ */
+fun BufferedSource.parseBoard(metadata: BoardMetadata = parseBoardMetadata()): Board {
+  var lines = generateSequence { readUtf8Line() }.toList()
 
   // Trim leading and trailing empty lines.
   lines = lines.dropWhile { it.isBlank() }
@@ -57,5 +88,25 @@ fun Source.parseBoard(): Board {
   }
 
   // Concatenate rows to one giant list.
-  return Board.fromRows(rows)
+  return Board.fromRows(metadata, rows)
 }
+
+private fun BufferedSource.readHeader(): String? = buildString {
+  if (!discardLineMatching { it == YAML_DELIMITER }) return null
+
+  while (true) {
+    val line = readUtf8Line()
+    if (line == null || line == YAML_DELIMITER) return@buildString
+    appendln(line)
+  }
+}
+
+private inline fun BufferedSource.discardLineMatching(predicate: (String) -> Boolean): Boolean {
+  if (peekLine()?.let(predicate) == true) {
+    readUtf8Line()
+    return true
+  }
+  return false
+}
+
+private fun BufferedSource.peekLine(): String? = peek().readUtf8Line()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,119 +15,78 @@
  */
 package com.squareup.sample.dungeon
 
-import android.os.Vibrator
 import com.squareup.sample.dungeon.DungeonAppWorkflow.Props
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State
-import com.squareup.sample.dungeon.DungeonAppWorkflow.State.GameOver
-import com.squareup.sample.dungeon.DungeonAppWorkflow.State.Loading
-import com.squareup.sample.dungeon.DungeonAppWorkflow.State.Running
-import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
-import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
+import com.squareup.sample.dungeon.DungeonAppWorkflow.State.ChoosingBoard
+import com.squareup.sample.dungeon.DungeonAppWorkflow.State.LoadingBoardList
+import com.squareup.sample.dungeon.DungeonAppWorkflow.State.PlayingGame
 import com.squareup.sample.dungeon.board.Board
+import com.squareup.sample.dungeon.board.BoardMetadata
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import com.squareup.workflow.WorkflowAction
-import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.WorkflowAction.Updater
+import com.squareup.workflow.action
+import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.AlertContainerScreen
-import com.squareup.workflow.ui.AlertScreen
-import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
-
-typealias BoardPath = String
 
 class DungeonAppWorkflow(
-  private val gameWorkflow: GameWorkflow,
-  private val vibrator: Vibrator,
+  private val gameSessionWorkflow: GameSessionWorkflow,
   private val boardLoader: BoardLoader
 ) : StatefulWorkflow<Props, State, Nothing, AlertContainerScreen<Any>>() {
 
-  data class Props(
-    val boardPath: BoardPath,
-    val paused: Boolean = false
-  )
+  data class Props(val paused: Boolean = false)
 
   sealed class State {
-    object Loading : State()
-    data class Running(val board: Board) : State()
-    data class GameOver(val board: Board) : State()
+    object LoadingBoardList : State()
+    data class ChoosingBoard(val boards: List<Pair<String, Board>>) : State()
+    data class PlayingGame(val boardPath: BoardPath) : State()
   }
+
+  data class DisplayBoardsListScreen(
+    val boards: List<Board>,
+    val onBoardSelected: (index: Int) -> Unit
+  )
 
   override fun initialState(
     props: Props,
     snapshot: Snapshot?
-  ): State = Loading
+  ): State = LoadingBoardList
 
   override fun render(
     props: Props,
     state: State,
     context: RenderContext<State, Nothing>
-  ): AlertContainerScreen<Any> {
-    return when (state) {
-      Loading -> {
-        context.runningWorker(boardLoader.load(props.boardPath)) { StartRunning(it) }
-        AlertContainerScreen(Loading)
-      }
+  ): AlertContainerScreen<Any> = when (state) {
 
-      is Running -> {
-        val gameInput = GameWorkflow.Props(state.board, paused = props.paused)
-        val gameScreen = context.renderChild(gameWorkflow, gameInput) {
-          HandleGameOutput(it, state.board)
-        }
-        AlertContainerScreen(gameScreen)
-      }
+    LoadingBoardList -> {
+      context.runningWorker(boardLoader.loadAvailableBoards()) { displayBoards(it) }
+      AlertContainerScreen(state)
+    }
 
-      is GameOver -> {
-        val gameInput = GameWorkflow.Props(state.board)
-        val gameScreen = context.renderChild(gameWorkflow, gameInput) { noAction() }
+    is ChoosingBoard -> {
+      val screen = DisplayBoardsListScreen(
+          boards = state.boards.map { it.second },
+          onBoardSelected = { index -> context.actionSink.send(selectBoard(index)) }
+      )
+      AlertContainerScreen(screen)
+    }
 
-        val gameOverDialog = AlertScreen(
-            buttons = mapOf(POSITIVE to "Restart"),
-            message = "You've been eaten, try again.",
-            cancelable = false,
-            onEvent = { context.actionSink.send(RestartGame) }
-        )
-
-        AlertContainerScreen(gameScreen, gameOverDialog)
-      }
+    is PlayingGame -> {
+      val sessionProps = GameSessionWorkflow.Props(state.boardPath, props.paused)
+      val gameScreen = context.renderChild(gameSessionWorkflow, sessionProps)
+      gameScreen
     }
   }
 
   override fun snapshotState(state: State): Snapshot = Snapshot.EMPTY
 
-  private class StartRunning(val board: Board) : WorkflowAction<State, Nothing> {
-    override fun Updater<State, Nothing>.apply() {
-      nextState = Running(board)
-    }
+  private fun displayBoards(boards: Map<String, Board>) = action {
+    nextState = ChoosingBoard(boards.toList())
   }
 
-  private inner class HandleGameOutput(
-    val output: GameWorkflow.Output,
-    val board: Board
-  ) : WorkflowAction<State, Nothing> {
-    override fun Updater<State, Nothing>.apply() {
-      when (output) {
-        Vibrate -> vibrate(50)
-        PlayerWasEaten -> {
-          nextState = GameOver(board)
-          vibrate(20)
-          vibrate(20)
-          vibrate(20)
-          vibrate(20)
-          vibrate(1000)
-        }
-      }
-    }
-  }
-
-  private object RestartGame : WorkflowAction<State, Nothing> {
-    override fun Updater<State, Nothing>.apply() {
-      nextState = Loading
-    }
-  }
-
-  private fun vibrate(durationMs: Long) {
-    @Suppress("DEPRECATION")
-    vibrator.vibrate(durationMs)
+  private fun selectBoard(index: Int) = action {
+    // No-op if we're not in the ChoosingBoard state.
+    val boards = (nextState as? ChoosingBoard)?.boards ?: return@action
+    nextState = PlayingGame(boards[index].first)
   }
 }

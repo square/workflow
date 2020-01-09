@@ -26,46 +26,85 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.buffer
 import okio.source
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 /**
- * Service class that creates [Worker]s to [load][load] [Board]s.
+ * Service class that creates [Worker]s to [load][loadBoard] [Board]s.
  */
+@UseExperimental(ExperimentalTime::class)
 class BoardLoader(
   private val ioDispatcher: CoroutineDispatcher,
-  private val assets: AssetManager
+  private val assets: AssetManager,
+  private val boardsAssetPath: String
 ) {
 
-  /**
-   * Returns a [Worker] that will read and parse the [Board] located at [path].
-   *
-   * Workers created for the same path will be considered [equivalent][Worker.doesSameWorkAs].
-   */
-  fun load(path: String): Worker<Board> = BoardLoaderWorker(path)
+  private inner class BoardListLoaderWorker : Worker<Map<String, Board>> {
+    override fun run(): Flow<Map<String, Board>> = flow {
+      val boards = withMinimumDelay(1.seconds) {
+        withContext(ioDispatcher) {
+          loadBoardsBlocking()
+        }
+      }
+      emit(boards)
+    }
+  }
 
-  private inner class BoardLoaderWorker(private val path: String) : Worker<Board> {
+  private inner class BoardLoaderWorker(private val filename: String) : Worker<Board> {
+    override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean =
+      otherWorker is BoardLoaderWorker && filename == otherWorker.filename
 
     override fun run(): Flow<Board> = flow {
-      val board = coroutineScope {
-        // Wait at least a second before emitting to make it look like we're doing real work.
-        // Structured concurrency means this coroutineScope block won't return until this delay
-        // finishes.
-        launch { delay(1000) }
-
+      val board = withMinimumDelay(1.seconds) {
         withContext(ioDispatcher) {
-          @Suppress("BlockingMethodInNonBlockingContext")
-          assets.open(path)
-              .use {
-                it.source()
-                    .parseBoard()
-              }
+          loadBoardBlocking(filename)
         }
       }
       emit(board)
     }
-
-    override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean {
-      return otherWorker is BoardLoaderWorker && path == otherWorker.path
-    }
   }
+
+  fun loadAvailableBoards(): Worker<Map<String, Board>> = BoardListLoaderWorker()
+
+  /**
+   * Returns a [Worker] that will read and parse the [Board] located at [filename].
+   *
+   * Workers created for the same path will be considered [equivalent][Worker.doesSameWorkAs].
+   */
+  fun loadBoard(filename: String): Worker<Board> = BoardLoaderWorker(filename)
+
+  /**
+   * Runs [block] and returns the value it returned, but will not return (by suspending) for at
+   * least [delay] period of time. Used to add fake delays to demonstrate loading states.
+   */
+  private suspend inline fun <T> withMinimumDelay(
+    delay: Duration,
+    crossinline block: suspend () -> T
+  ): T = coroutineScope {
+    // Wait at least a second before emitting to make it look like we're doing real work.
+    // Structured concurrency means this coroutineScope block won't return until this delay
+    // finishes.
+    launch { delay(delay.toLongMilliseconds()) }
+
+    block()
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  private fun loadBoardsBlocking(): Map<String, Board> {
+    val boardFiles = assets.list(boardsAssetPath)!!.asList()
+    return boardFiles.associateWith { filename -> loadBoardBlocking(filename) }
+  }
+
+  private fun loadBoardBlocking(filename: String): Board =
+    assets.open(absoluteBoardPath(filename))
+        .use {
+          it.source()
+              .buffer()
+              .parseBoard()
+        }
+
+  private fun absoluteBoardPath(filename: String) = "$boardsAssetPath/$filename"
 }
