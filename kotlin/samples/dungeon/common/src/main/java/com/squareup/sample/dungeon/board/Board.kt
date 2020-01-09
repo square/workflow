@@ -15,7 +15,25 @@
  */
 package com.squareup.sample.dungeon.board
 
+import kotlinx.serialization.Serializable
+
+/**
+ * Information about the board, encoded as YAML at the start of a board file.
+ *
+ * The metadata must be surrounded by lines containing only "`---`".
+ *
+ * @see parseBoardMetadata
+ */
+@Serializable
+data class BoardMetadata(val name: String)
+
+/**
+ * Describes the "physical" layout of a board.
+ *
+ * @see parseBoard
+ */
 data class Board(
+  val metadata: BoardMetadata,
   val width: Int,
   val height: Int,
   val cells: List<BoardCell>
@@ -62,7 +80,10 @@ data class Board(
     /**
      * Builds a board from a square list of [BoardCell] lists.
      */
-    fun fromRows(rows: List<List<BoardCell>>): Board {
+    fun fromRows(
+      metadata: BoardMetadata,
+      rows: List<List<BoardCell>>
+    ): Board {
       val width = rows.map { it.size }
           .distinct()
           .singleOrNull()
@@ -70,7 +91,7 @@ data class Board(
       val height = rows.size
       require(width == height) { "Expected board to be square, but was $width × $height" }
       val cells = rows.reduce { acc, row -> acc + row }
-      return Board(width, height, cells)
+      return Board(metadata, width, height, cells)
     }
   }
 }

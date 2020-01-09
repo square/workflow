@@ -17,7 +17,10 @@ package com.squareup.sample.dungeon
 
 import android.content.Context
 import android.os.Vibrator
+import com.squareup.sample.dungeon.DungeonAppWorkflow.State.LoadingBoardList
+import com.squareup.sample.dungeon.GameSessionWorkflow.State.Loading
 import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineLayoutRunner
+import com.squareup.sample.todo.R
 import com.squareup.workflow.ui.ViewRegistry
 import kotlinx.coroutines.Dispatchers
 import kotlin.random.Random
@@ -31,10 +34,12 @@ private const val AI_COUNT = 4
 class Component(context: Context) {
 
   val viewRegistry = ViewRegistry(
-      BoardView,
+      ShakeableTimeMachineLayoutRunner,
+      LoadingBinding<LoadingBoardList>(R.string.loading_boards_list),
+      BoardsListLayoutRunner,
+      LoadingBinding<Loading>(R.string.loading_board),
       GameLayoutRunner,
-      LoadingBoardBinding,
-      ShakeableTimeMachineLayoutRunner
+      BoardView
   )
 
   val random = Random(System.currentTimeMillis())
@@ -44,7 +49,7 @@ class Component(context: Context) {
 
   val vibrator = context.getSystemService(Vibrator::class.java)!!
 
-  val boardLoader = BoardLoader(Dispatchers.IO, context.assets)
+  val boardLoader = BoardLoader(Dispatchers.IO, context.assets, boardsAssetPath = "boards")
 
   val playerWorkflow = PlayerWorkflow()
 
@@ -52,7 +57,9 @@ class Component(context: Context) {
 
   val gameWorkflow = GameWorkflow(playerWorkflow, aiWorkflows, random)
 
-  val appWorkflow = DungeonAppWorkflow(gameWorkflow, vibrator, boardLoader)
+  val gameSessionWorkflow = GameSessionWorkflow(gameWorkflow, vibrator, boardLoader)
+
+  val appWorkflow = DungeonAppWorkflow(gameSessionWorkflow, boardLoader)
 
   val timeMachineWorkflow = TimeMachineAppWorkflow(appWorkflow, clock, context)
 }

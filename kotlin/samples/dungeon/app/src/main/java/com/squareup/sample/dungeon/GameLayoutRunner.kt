@@ -31,6 +31,10 @@ import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.WorkflowViewStub
 
+/**
+ * Renders a live game, including the board with player and actors, and the buttons to control
+ * the player.
+ */
 class GameLayoutRunner(view: View) : LayoutRunner<GameRendering> {
 
   private val boardView: WorkflowViewStub = view.findViewById(R.id.board_stub)

@@ -16,11 +16,114 @@
 package com.squareup.sample.dungeon.board
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import org.junit.Test
+import kotlin.test.assertFailsWith
 
 class ParserTest {
+
+  @Test fun `parseBoardMetadata throws when empty`() {
+    val board = ""
+
+    val error = assertFailsWith<IllegalArgumentException> {
+      board.toBufferedSource()
+          .parseBoardMetadata()
+    }
+    assertThat(error).hasMessageThat()
+        .contains("No board metadata found in stream")
+  }
+
+  @Test fun `parseBoardMetadata throws when missing`() {
+    val board = """
+      🌳🌳
+      🌳🌳
+    """.trimIndent()
+
+    val error = assertFailsWith<IllegalArgumentException> {
+      board.toBufferedSource()
+          .parseBoardMetadata()
+    }
+    assertThat(error).hasMessageThat()
+        .contains("No board metadata found in stream")
+  }
+
+  @Test fun `parseBoardMetadata throws when header not closed`() {
+    val board = """
+      ---
+      🌳🌳
+      🌳🌳
+    """.trimIndent()
+
+    val error = assertFailsWith<IllegalArgumentException> {
+      board.toBufferedSource()
+          .parseBoardMetadata()
+    }
+    assertThat(error).hasMessageThat()
+        .isEqualTo("Expected --- but found EOF.")
+  }
+
+  @Test fun `parseBoardMetadata throws when document is empty`() {
+    val board = """
+      ---
+      ---
+    """.trimIndent()
+
+    val error = assertFailsWith<IllegalArgumentException> {
+      board.toBufferedSource()
+          .parseBoardMetadata()
+    }
+    assertThat(error).hasMessageThat()
+        .isEqualTo("Error parsing board metadata.")
+    assertThat(error).hasCauseThat()
+        .hasMessageThat()
+        .isEqualTo("The YAML document is empty.")
+  }
+
+  @Test fun `parseBoardMetadata throws when document has unknown fields`() {
+    val board = """
+      ---
+      foobarbaz: false
+      ---
+    """.trimIndent()
+
+    val error = assertFailsWith<IllegalArgumentException> {
+      board.toBufferedSource()
+          .parseBoardMetadata()
+    }
+    assertThat(error).hasMessageThat()
+        .isEqualTo("Error parsing board metadata.")
+    assertThat(error).hasCauseThat()
+        .hasMessageThat()
+        .contains("foobarbaz")
+  }
+
+  @Test fun `parseBoardMetadata parses valid header`() {
+    val board = """
+      ---
+      name: Såm ✅
+      ---
+    """.trimIndent()
+
+    val metadata = board.toBufferedSource()
+        .parseBoardMetadata()
+    assertThat(metadata).isEqualTo(BoardMetadata(name = "Såm ✅"))
+  }
+
+  @Test fun `parse parses metadata and board`() {
+    val board = """
+      ---
+      name: Foo
+      ---
+      🌳🌳
+      🌳🌳
+    """.trimIndent()
+        // Don't call parseBoard on the string directly, since that fakes the metadata.
+        .toBufferedSource()
+        .parseBoard()
+
+    assertThat(board.cells).isNotEmpty()
+    assertThat(board.metadata).isEqualTo(BoardMetadata(name = "Foo"))
+  }
 
   @Test fun square() {
     val board = """
@@ -110,8 +213,9 @@ class ParserTest {
     )
   }
 
-  private fun String.parseBoard(): Board = runBlocking {
-    Buffer().writeUtf8(this@parseBoard)
-        .parseBoard()
-  }
+  @Suppress("BlockingMethodInNonBlockingContext")
+  private fun String.parseBoard(): Board =
+    toBufferedSource().parseBoard(metadata = BoardMetadata("test"))
+
+  private fun String.toBufferedSource() = Buffer().writeUtf8(this)
 }
