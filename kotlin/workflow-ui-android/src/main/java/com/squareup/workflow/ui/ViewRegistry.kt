@@ -112,6 +112,13 @@ fun ViewRegistry(vararg bindings: ViewBinding<*>): ViewRegistry = BindingViewReg
 fun ViewRegistry(vararg registries: ViewRegistry): ViewRegistry = CompositeViewRegistry(*registries)
 
 /**
+ * Returns a [ViewRegistry] that contains no bindings.
+ *
+ * Exists as a separate overload from the other two functions to disambiguate between them.
+ */
+fun ViewRegistry(): ViewRegistry = BindingViewRegistry()
+
+/**
  * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.
  *
  * Creates a [View] to display [initialRendering], which can be updated via calls

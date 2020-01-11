@@ -39,16 +39,19 @@ import com.squareup.sample.gameworkflow.Player
 import com.squareup.sample.gameworkflow.symbol
 import com.squareup.sample.mainactivity.MainActivity
 import com.squareup.sample.tictactoe.R
+import com.squareup.workflow.ui.ContainerHints
+import com.squareup.workflow.ui.hints
 import com.squareup.workflow.ui.getRendering
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.atomic.AtomicReference
 
 @RunWith(AndroidJUnit4::class)
 class TicTacToeEspressoTest {
 
-  lateinit var scenario: ActivityScenario<MainActivity>
+  private lateinit var scenario: ActivityScenario<MainActivity>
 
   @Before
   fun setUp() {
@@ -80,12 +83,18 @@ class TicTacToeEspressoTest {
 
     onView(withId(R.id.start_game)).perform(click())
 
+    val hints = AtomicReference<ContainerHints>()
+
     // Why should I learn how to write a matcher when I can just grab the activity
     // and work with it directly?
     scenario.onActivity { activity ->
       val button = activity.findViewById<View>(R.id.game_play_board)
-      val rendering = (button.parent as View).getRendering<GamePlayScreen>()!!
+      val parent = button.parent as View
+      val rendering = parent.getRendering<GamePlayScreen>()!!
       assertThat(rendering.gameState.playing).isSameInstanceAs(Player.X)
+      val firstHints = parent.hints
+      assertThat(firstHints).isNotNull()
+      hints.set(firstHints)
 
       // Make a move.
       rendering.onClick(0, 0)
@@ -103,8 +112,10 @@ class TicTacToeEspressoTest {
     // to mess with what should be the updated rendering.
     scenario.onActivity { activity ->
       val button = activity.findViewById<View>(R.id.game_play_board)
-      val rendering = (button.parent as View).getRendering<GamePlayScreen>()!!
+      val parent = button.parent as View
+      val rendering = parent.getRendering<GamePlayScreen>()!!
       assertThat(rendering.gameState.playing).isSameInstanceAs(Player.O)
+      assertThat(parent.hints).isEqualTo(hints.get())
     }
   }
 
