@@ -32,6 +32,7 @@ typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT, Container
  */
 data class ShowRenderingTag<out RenderingT : Any>(
   val showing: RenderingT,
+  val hints: ContainerHints,
   val showRendering: ViewShowRendering<RenderingT>
 )
 
@@ -49,7 +50,10 @@ fun <RenderingT : Any> View.bindShowRendering(
   initialContainerHints: ContainerHints,
   showRendering: ViewShowRendering<RenderingT>
 ) {
-  setTag(R.id.view_show_rendering_function, ShowRenderingTag(initialRendering, showRendering))
+  setTag(
+      R.id.view_show_rendering_function,
+      ShowRenderingTag(initialRendering, initialContainerHints, showRendering)
+  )
   showRendering.invoke(initialRendering, initialContainerHints)
 }
 
@@ -101,6 +105,7 @@ fun <RenderingT : Any> View.showRendering(
  * has never been called.
  */
 fun <RenderingT : Any> View.getRendering(): RenderingT? {
+  // Can't use a val because of the parameter type.
   @Suppress("UNCHECKED_CAST")
   return when (val showing = showRenderingTag?.showing) {
     null -> null
@@ -109,12 +114,16 @@ fun <RenderingT : Any> View.getRendering(): RenderingT? {
 }
 
 /**
+ * Returns the most recent [ContainerHints] that apply to this view, or null if [bindShowRendering]
+ * has never been called.
+ */
+val View.hints: ContainerHints? get() = showRenderingTag?.hints
+
+/**
  * Returns the function set by the most recent call to [bindShowRendering], or null
  * if that method has never been called.
  */
 fun <RenderingT : Any> View.getShowRendering(): ViewShowRendering<RenderingT>? {
-  // IDE is lying, casting here is unnecessary and causes a compiler warning.
-  // https://youtrack.jetbrains.com/issue/KT-34433
   return showRenderingTag?.showRendering
 }
 
