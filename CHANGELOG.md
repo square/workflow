@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+## Version 0.22.3
+
+_2020-01-10_
+
+### Kotlin
+
+ * Adds `ContainerHints` to `ShowRenderingTag`. (#868)
+ * Add an empty `ViewRegistry` factory function. (#870)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.22.2
 
 _2020-01-07_
@@ -579,4 +592,3 @@ _2018-11-22_
 ### Kotlin
 
  * Organize everything into `com.squareup.workflow*` packages.
-
