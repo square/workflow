@@ -18,6 +18,7 @@ package com.squareup.workflow.ui
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class BindingViewRegistryTest {
 
@@ -53,6 +54,11 @@ class BindingViewRegistryTest {
         .isEqualTo(
             "A ${ViewBinding::class.java.name} should have been registered to display $BarRendering."
         )
+  }
+
+  @Test fun `ViewRegistry with no arguments infers type`() {
+    val registry = ViewRegistry()
+    assertTrue(registry.keys.isEmpty())
   }
 
   private object FooRendering
