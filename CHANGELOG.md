@@ -8,6 +8,7 @@ _2020-01-10_
 ### Kotlin
 
  * Adds `ContainerHints` to `ShowRenderingTag`. (#868)
+ * Add an empty `ViewRegistry` factory function. (#870)
 
 ### Swift
 
