@@ -7,7 +7,7 @@ _2020-01-10_
 
 ### Kotlin
 
- * Adds ContainerHints to ShowRenderingTag. (#868)
+ * Adds `ContainerHints` to `ShowRenderingTag`. (#868)
 
 ### Swift
 
@@ -591,4 +591,3 @@ _2018-11-22_
 ### Kotlin
 
  * Organize everything into `com.squareup.workflow*` packages.
-
