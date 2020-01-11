@@ -42,6 +42,7 @@ and assign it to @bencochran or @aquageek.*
 1. Publish to CocoaPods:
     ```bash
     bundle exec pod trunk push Workflow.podspec
+    bundle exec pod trunk push WorkflowTesting.podspec
     bundle exec pod trunk push WorkflowUI.podspec
     ```
 
