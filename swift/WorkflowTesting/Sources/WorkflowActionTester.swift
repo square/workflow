@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// WorkflowTesting only available in Debug mode.
+//
+// `@testable import Workflow` will fail compilation in Release mode.
+#if DEBUG
+
 @testable import Workflow
 
 
@@ -82,3 +88,5 @@ public struct WorkflowActionTester<WorkflowType, Action> where Action: WorkflowA
     }
 
 }
+
+#endif
