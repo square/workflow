@@ -13,9 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#if DEBUG
+
+// WorkflowTesting only available in Debug mode.
+//
+// `@testable import Workflow` will fail compilation in Release mode.
+@testable import Workflow
+
 import XCTest
 import ReactiveSwift
-@testable import Workflow
 
 
 extension Workflow {
@@ -332,3 +339,5 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
         }
     }
 }
+
+#endif
