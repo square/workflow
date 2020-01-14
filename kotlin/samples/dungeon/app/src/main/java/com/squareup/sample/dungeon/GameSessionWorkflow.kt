@@ -30,6 +30,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.WorkflowAction.Updater
+import com.squareup.workflow.action
 import com.squareup.workflow.ui.AlertContainerScreen
 import com.squareup.workflow.ui.AlertScreen
 import com.squareup.workflow.ui.AlertScreen.Button.POSITIVE
@@ -75,7 +76,7 @@ class GameSessionWorkflow(
     is Running -> {
       val gameInput = GameWorkflow.Props(state.board, paused = props.paused)
       val gameScreen = context.renderChild(gameWorkflow, gameInput) {
-        HandleGameOutput(it, state.board)
+        handleGameOutput(it, state.board)
       }
       AlertContainerScreen(gameScreen)
     }
@@ -88,7 +89,7 @@ class GameSessionWorkflow(
           buttons = mapOf(POSITIVE to "Restart"),
           message = "You've been eaten, try again.",
           cancelable = false,
-          onEvent = { context.actionSink.send(RestartGame) }
+          onEvent = { context.actionSink.send(restartGame()) }
       )
 
       AlertContainerScreen(gameScreen, gameOverDialog)
@@ -103,29 +104,25 @@ class GameSessionWorkflow(
     }
   }
 
-  private inner class HandleGameOutput(
-    val output: GameWorkflow.Output,
-    val board: Board
-  ) : WorkflowAction<State, Nothing> {
-    override fun Updater<State, Nothing>.apply() {
-      when (output) {
-        Vibrate -> vibrate(50)
-        PlayerWasEaten -> {
-          nextState = GameOver(board)
-          vibrate(20)
-          vibrate(20)
-          vibrate(20)
-          vibrate(20)
-          vibrate(1000)
-        }
+  private fun handleGameOutput(
+    output: GameWorkflow.Output,
+    board: Board
+  ) = action("handleGameOutput") {
+    when (output) {
+      Vibrate -> vibrate(50)
+      PlayerWasEaten -> {
+        nextState = GameOver(board)
+        vibrate(20)
+        vibrate(20)
+        vibrate(20)
+        vibrate(20)
+        vibrate(1000)
       }
     }
   }
 
-  private object RestartGame : WorkflowAction<State, Nothing> {
-    override fun Updater<State, Nothing>.apply() {
-      nextState = Loading
-    }
+  private fun restartGame() = action("restartGame") {
+    nextState = Loading
   }
 
   private fun vibrate(durationMs: Long) {
