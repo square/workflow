@@ -21,6 +21,7 @@ import com.squareup.sample.dungeon.GameSessionWorkflow.State
 import com.squareup.sample.dungeon.GameSessionWorkflow.State.GameOver
 import com.squareup.sample.dungeon.GameSessionWorkflow.State.Loading
 import com.squareup.sample.dungeon.GameSessionWorkflow.State.Running
+import com.squareup.sample.dungeon.GameWorkflow.Output.ExitGame
 import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
 import com.squareup.sample.dungeon.board.Board
@@ -44,7 +45,7 @@ class GameSessionWorkflow(
   private val gameWorkflow: GameWorkflow,
   private val vibrator: Vibrator,
   private val boardLoader: BoardLoader
-) : StatefulWorkflow<Props, State, Nothing, AlertContainerScreen<Any>>() {
+) : StatefulWorkflow<Props, State, ExitGame, AlertContainerScreen<Any>>() {
 
   data class Props(
     val boardPath: BoardPath,
@@ -65,7 +66,7 @@ class GameSessionWorkflow(
   override fun render(
     props: Props,
     state: State,
-    context: RenderContext<State, Nothing>
+    context: RenderContext<State, ExitGame>
   ): AlertContainerScreen<Any> = when (state) {
 
     Loading -> {
@@ -118,6 +119,7 @@ class GameSessionWorkflow(
         vibrate(20)
         vibrate(1000)
       }
+      ExitGame -> setOutput(ExitGame)
     }
   }
 

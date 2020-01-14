@@ -30,8 +30,9 @@ import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.WorkflowViewStub
+import com.squareup.workflow.ui.backPressedHandler
 
-class GameLayoutRunner(view: View) : LayoutRunner<GameRendering> {
+class GameLayoutRunner(private val view: View) : LayoutRunner<GameRendering> {
 
   private val boardView: WorkflowViewStub = view.findViewById(R.id.board_stub)
   private val moveLeft: View = view.findViewById(R.id.move_left)
@@ -52,6 +53,8 @@ class GameLayoutRunner(view: View) : LayoutRunner<GameRendering> {
     rendering: GameRendering,
     containerHints: ContainerHints
   ) {
+    view.backPressedHandler = rendering.onBackPressed
+
     boardView.update(rendering.board, containerHints)
     this.rendering = rendering
 

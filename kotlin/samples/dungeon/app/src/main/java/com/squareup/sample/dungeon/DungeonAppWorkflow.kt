@@ -21,25 +21,27 @@ import com.squareup.sample.dungeon.DungeonAppWorkflow.State.ChoosingBoard
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State.LoadingBoardList
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State.PlayingGame
 import com.squareup.sample.dungeon.board.Board
-import com.squareup.sample.dungeon.board.BoardMetadata
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.action
-import com.squareup.workflow.renderChild
 import com.squareup.workflow.ui.AlertContainerScreen
+import com.squareup.workflow.ui.BackStackScreen
 
 class DungeonAppWorkflow(
   private val gameSessionWorkflow: GameSessionWorkflow,
   private val boardLoader: BoardLoader
-) : StatefulWorkflow<Props, State, Nothing, AlertContainerScreen<Any>>() {
+) : StatefulWorkflow<Props, State, Nothing, AlertContainerScreen<BackStackScreen<Any>>>() {
 
   data class Props(val paused: Boolean = false)
 
   sealed class State {
     object LoadingBoardList : State()
     data class ChoosingBoard(val boards: List<Pair<String, Board>>) : State()
-    data class PlayingGame(val boardPath: BoardPath) : State()
+    data class PlayingGame(
+      val previousState: ChoosingBoard,
+      val boardPath: BoardPath
+    ) : State()
   }
 
   data class DisplayBoardsListScreen(
@@ -56,25 +58,31 @@ class DungeonAppWorkflow(
     props: Props,
     state: State,
     context: RenderContext<State, Nothing>
-  ): AlertContainerScreen<Any> = when (state) {
+  ): AlertContainerScreen<BackStackScreen<Any>> {
+    fun createListScreen(state: ChoosingBoard) = DisplayBoardsListScreen(
+        boards = state.boards.map { it.second },
+        onBoardSelected = { index -> context.actionSink.send(selectBoard(index)) }
+    )
 
-    LoadingBoardList -> {
-      context.runningWorker(boardLoader.loadAvailableBoards()) { displayBoards(it) }
-      AlertContainerScreen(state)
-    }
+    return when (state) {
+      LoadingBoardList -> {
+        context.runningWorker(boardLoader.loadAvailableBoards()) { displayBoards(it) }
+        AlertContainerScreen(BackStackScreen(state))
+      }
 
-    is ChoosingBoard -> {
-      val screen = DisplayBoardsListScreen(
-          boards = state.boards.map { it.second },
-          onBoardSelected = { index -> context.actionSink.send(selectBoard(index)) }
-      )
-      AlertContainerScreen(screen)
-    }
+      is ChoosingBoard -> {
+        val listScreen = createListScreen(state)
+        AlertContainerScreen(BackStackScreen(listScreen))
+      }
 
-    is PlayingGame -> {
-      val sessionProps = GameSessionWorkflow.Props(state.boardPath, props.paused)
-      val gameScreen = context.renderChild(gameSessionWorkflow, sessionProps)
-      gameScreen
+      is PlayingGame -> {
+        val listScreen = createListScreen(state.previousState)
+        val sessionProps = GameSessionWorkflow.Props(state.boardPath, props.paused)
+        val gameScreen = context.renderChild(gameSessionWorkflow, sessionProps) {
+          displayBoards(state.previousState.boards.toMap())
+        }
+        AlertContainerScreen(BackStackScreen(listScreen, gameScreen.baseScreen), gameScreen.modals)
+      }
     }
   }
 
@@ -86,7 +94,8 @@ class DungeonAppWorkflow(
 
   private fun selectBoard(index: Int) = action {
     // No-op if we're not in the ChoosingBoard state.
-    val boards = (nextState as? ChoosingBoard)?.boards ?: return@action
-    nextState = PlayingGame(boards[index].first)
+    (nextState as? ChoosingBoard)?.let { choosingBoard ->
+      nextState = PlayingGame(choosingBoard, choosingBoard.boards[index].first)
+    }
   }
 }

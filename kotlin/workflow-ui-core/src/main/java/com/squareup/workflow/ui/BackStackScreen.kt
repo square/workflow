@@ -26,7 +26,7 @@ package com.squareup.workflow.ui
  * @param bottom the bottom-most entry in the stack
  * @param rest the rest of the stack, empty by default
  */
-class BackStackScreen<StackedT : Any>(
+class BackStackScreen<out StackedT : Any>(
   bottom: StackedT,
   rest: List<StackedT>
 ) {
@@ -52,7 +52,7 @@ class BackStackScreen<StackedT : Any>(
 
   operator fun get(index: Int): StackedT = frames[index]
 
-  operator fun plus(other: BackStackScreen<StackedT>?): BackStackScreen<StackedT> {
+  operator fun plus(other: BackStackScreen<@UnsafeVariance StackedT>?): BackStackScreen<StackedT> {
     return if (other == null) this
     else BackStackScreen(frames[0], frames.subList(1, frames.size) + other.frames)
   }

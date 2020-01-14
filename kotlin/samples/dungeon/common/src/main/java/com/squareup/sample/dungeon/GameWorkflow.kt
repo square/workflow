@@ -23,6 +23,7 @@ import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
 import com.squareup.sample.dungeon.GameWorkflow.GameRendering
 import com.squareup.sample.dungeon.GameWorkflow.Output
+import com.squareup.sample.dungeon.GameWorkflow.Output.ExitGame
 import com.squareup.sample.dungeon.GameWorkflow.Output.PlayerWasEaten
 import com.squareup.sample.dungeon.GameWorkflow.Output.Vibrate
 import com.squareup.sample.dungeon.GameWorkflow.Props
@@ -73,13 +74,19 @@ class GameWorkflow(
     object Vibrate : Output()
 
     object PlayerWasEaten : Output()
+
+    /**
+     * Emitted by [GameWorkflow] to finish the game and go back to the list.
+     */
+    object ExitGame : Output()
   }
 
   data class GameRendering(
     val board: Board,
     val gameOver: Boolean = false,
     val onStartMoving: (Direction) -> Unit,
-    val onStopMoving: (Direction) -> Unit
+    val onStopMoving: (Direction) -> Unit,
+    val onBackPressed: () -> Unit
   )
 
   override fun initialState(
@@ -142,7 +149,8 @@ class GameWorkflow(
     return GameRendering(
         board = renderedBoard,
         onStartMoving = if (running) playerRendering.onStartMoving else ignoreInput,
-        onStopMoving = if (running) playerRendering.onStopMoving else ignoreInput
+        onStopMoving = if (running) playerRendering.onStopMoving else ignoreInput,
+        onBackPressed = { context.actionSink.send(exitGame()) }
     )
   }
 
@@ -199,6 +207,8 @@ class GameWorkflow(
       output?.let { setOutput(it) }
     }
   }
+
+  private fun exitGame() = action { setOutput(ExitGame) }
 }
 
 private fun Random.nextEmptyLocation(board: Board): Location =
