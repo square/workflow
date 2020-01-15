@@ -17,8 +17,9 @@ package com.squareup.workflow.diagnostic
 
 import com.squareup.workflow.VeryExperimentalWorkflow
 import com.squareup.workflow.WorkflowAction.Companion.noAction
-import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorker
-import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorkflow
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.ChildWorker
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.ChildWorkflow
 import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Kind
 import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source
 import kotlin.test.Test

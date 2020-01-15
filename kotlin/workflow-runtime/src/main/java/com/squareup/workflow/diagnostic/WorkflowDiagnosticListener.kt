@@ -148,23 +148,8 @@ interface WorkflowDiagnosticListener {
   // region Lifetime Events
 
   /**
-   * Called when the runtime has started executing.
-   *
-   * No other methods will be called on this interface before this returns.
-   *
-   * Corresponds to [onRuntimeStopped].
-   */
-  @VeryExperimentalWorkflow
-  fun onRuntimeStarted(
-    workflowScope: CoroutineScope,
-    rootWorkflowType: String
-  ) = Unit
-
-  /**
    * Called after the runtime has been cancelled or failed, after all workflow-related coroutines
    * have completed.
-   *
-   * Corresponds to [onRuntimeStarted].
    */
   @VeryExperimentalWorkflow
   fun onRuntimeStopped() = Unit

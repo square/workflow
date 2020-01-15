@@ -19,6 +19,8 @@ import com.squareup.workflow.RenderingAndSnapshot
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.VeryExperimentalWorkflow
+import com.squareup.workflow.debugging.RealWorkflowDebugger
+import com.squareup.workflow.debugging.WorkflowDebugger
 import com.squareup.workflow.diagnostic.IdCounter
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import kotlinx.coroutines.channels.consume
@@ -46,7 +48,7 @@ internal interface WorkflowLoop {
     initialState: StateT? = null,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
-    diagnosticListener: WorkflowDiagnosticListener? = null
+    debugger: RealWorkflowDebugger? = null
   ): Nothing
 }
 
@@ -61,9 +63,10 @@ internal open class RealWorkflowLoop : WorkflowLoop {
     initialState: StateT?,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
-    diagnosticListener: WorkflowDiagnosticListener?
+    debugger: RealWorkflowDebugger?
   ): Nothing = coroutineScope {
 
+    val diagnosticListener = debugger?.diagnosticListener
     @Suppress("EXPERIMENTAL_API_USAGE")
     val inputsChannel = props.produceIn(this)
     @Suppress("EXPERIMENTAL_API_USAGE")
@@ -98,6 +101,7 @@ internal open class RealWorkflowLoop : WorkflowLoop {
           diagnosticListener?.onAfterSnapshotPass()
 
           onRendering(RenderingAndSnapshot(rendering, snapshot))
+          debugger?.maybeEmitOrBreak(rootNode)
           output?.let { onOutput(it) }
 
           // Tick _might_ return an output, but if it returns null, it means the state or a child

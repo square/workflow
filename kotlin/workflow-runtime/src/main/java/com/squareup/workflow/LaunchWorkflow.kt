@@ -15,6 +15,7 @@
  */
 package com.squareup.workflow
 
+import com.squareup.workflow.debugging.createDebugger
 import com.squareup.workflow.internal.RealWorkflowLoop
 import com.squareup.workflow.internal.WorkflowLoop
 import com.squareup.workflow.internal.id
@@ -132,10 +133,10 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
   // Give the caller a chance to start collecting outputs.
   val session = WorkflowSession(renderingsAndSnapshots.asFlow(), outputs.asFlow())
   val result = beforeStart(workflowScope, session)
-  val diagnosticListener = session.diagnosticListener
 
   val workflowJob = workflowScope.launch {
-    diagnosticListener?.onRuntimeStarted(this, workflow.id().typeDebugString)
+    val debugger = session.debugInitializer?.createDebugger(this, workflow.id().typeDebugString)
+    val diagnosticListener = debugger?.diagnosticListener
     try {
       // Run the workflow processing loop forever, or until it fails or is cancelled.
       workflowLoop.runWorkflowLoop(

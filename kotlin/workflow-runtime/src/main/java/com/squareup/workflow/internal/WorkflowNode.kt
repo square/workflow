@@ -22,6 +22,7 @@ import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.applyTo
+import com.squareup.workflow.debugging.WorkflowTreeFactory
 import com.squareup.workflow.diagnostic.IdCounter
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.diagnostic.createId
@@ -54,7 +55,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   private val diagnosticListener: WorkflowDiagnosticListener? = null,
   private val idCounter: IdCounter? = null,
   initialState: StateT? = null
-) : CoroutineScope, WorkerRunner<StateT, OutputT> {
+) : CoroutineScope, WorkerRunner<StateT, OutputT>, WorkflowTreeFactory {
 
   /**
    * Context that has a job that will live as long as this node.

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.workflow.diagnostic
+package com.squareup.workflow.debugging
 
-import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorkflow
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.ChildWorkflow
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 /**

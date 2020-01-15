@@ -15,60 +15,62 @@
  */
 package com.squareup.workflow.diagnostic
 
-import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorker
-import com.squareup.workflow.diagnostic.WorkflowHierarchyDebugSnapshot.ChildWorkflow
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.ChildWorker
+import com.squareup.workflow.debugging.WorkflowHierarchyDebugSnapshot.ChildWorkflow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class WorkflowHierarchyDebugSnapshotTest {
 
   @Test fun `fancy toDescriptionString`() {
-    val snapshot = WorkflowHierarchyDebugSnapshot(
-        "root type",
-        "root props",
-        "root state",
-        "root rendering",
-        children = listOf(
-            ChildWorkflow(
-                "first child",
-                WorkflowHierarchyDebugSnapshot(
-                    "first child type",
-                    "first child props",
-                    "first child state",
-                    "first child rendering",
-                    children = listOf(
-                        ChildWorkflow(
-                            "",
-                            WorkflowHierarchyDebugSnapshot(
-                                "nested child type",
-                                "nested child props",
-                                "nested child state",
-                                "nested child rendering",
-                                children = emptyList(),
-                                workers = emptyList()
-                            )
-                        )
-                    ),
-                    workers = emptyList()
-                )
-            ),
-            ChildWorkflow(
-                "second child",
-                WorkflowHierarchyDebugSnapshot(
-                    "second child type",
-                    "second child props",
-                    "second child state",
-                    "second child rendering",
-                    children = emptyList(),
-                    workers = emptyList()
-                )
-            )
-        ),
-        workers = listOf(
-            ChildWorker("first worker key", "first worker description"),
-            ChildWorker("", "second worker description")
-        )
-    )
+    val snapshot =
+      WorkflowHierarchyDebugSnapshot(
+          "root type",
+          "root props",
+          "root state",
+          "root rendering",
+          children = listOf(
+              ChildWorkflow(
+                  "first child",
+                  WorkflowHierarchyDebugSnapshot(
+                      "first child type",
+                      "first child props",
+                      "first child state",
+                      "first child rendering",
+                      children = listOf(
+                          ChildWorkflow(
+                              "",
+                              WorkflowHierarchyDebugSnapshot(
+                                  "nested child type",
+                                  "nested child props",
+                                  "nested child state",
+                                  "nested child rendering",
+                                  children = emptyList(),
+                                  workers = emptyList()
+                              )
+                          )
+                      ),
+                      workers = emptyList()
+                  )
+              ),
+              ChildWorkflow(
+                  "second child",
+                  WorkflowHierarchyDebugSnapshot(
+                      "second child type",
+                      "second child props",
+                      "second child state",
+                      "second child rendering",
+                      children = emptyList(),
+                      workers = emptyList()
+                  )
+              )
+          ),
+          workers = listOf(
+              ChildWorker("first worker key", "first worker description"),
+              ChildWorker("", "second worker description")
+          )
+      )
     val expected = """
       workflowType: root type
       props: root props
@@ -100,28 +102,29 @@ class WorkflowHierarchyDebugSnapshotTest {
   }
 
   @Test fun `fancy toString`() {
-    val snapshot = WorkflowHierarchyDebugSnapshot(
-        "root type",
-        "root props",
-        "root state",
-        "root rendering",
-        children = listOf(
-            ChildWorkflow(
-                "second child",
-                WorkflowHierarchyDebugSnapshot(
-                    "second child type",
-                    "second child props",
-                    "second child state",
-                    "second child rendering",
-                    children = emptyList(),
-                    workers = emptyList()
-                )
-            )
-        ),
-        workers = listOf(
-            ChildWorker("key", "description")
-        )
-    )
+    val snapshot =
+      WorkflowHierarchyDebugSnapshot(
+          "root type",
+          "root props",
+          "root state",
+          "root rendering",
+          children = listOf(
+              ChildWorkflow(
+                  "second child",
+                  WorkflowHierarchyDebugSnapshot(
+                      "second child type",
+                      "second child props",
+                      "second child state",
+                      "second child rendering",
+                      children = emptyList(),
+                      workers = emptyList()
+                  )
+              )
+          ),
+          workers = listOf(
+              ChildWorker("key", "description")
+          )
+      )
     val formatted = snapshot.toString()
     val expected = """
       WorkflowHierarchyDebugSnapshot(
