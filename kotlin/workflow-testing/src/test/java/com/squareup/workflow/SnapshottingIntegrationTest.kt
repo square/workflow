@@ -49,6 +49,18 @@ class SnapshottingIntegrationTest {
     }
   }
 
+  @Test fun `empty snapshot is ignored`() {
+    val root = TreeWorkflow("root")
+    val snapshot = Snapshot.EMPTY
+
+    root.testFromStart(
+        props = "initial props",
+        testParams = WorkflowTestParams(startFrom = StartFromCompleteSnapshot(snapshot))
+    ) {
+      // Success!
+    }
+  }
+
   @Test fun `snapshots and restores parent child workflows`() {
     val root = TreeWorkflow("root", TreeWorkflow("leaf"))
     var snapshot: Snapshot? = null
