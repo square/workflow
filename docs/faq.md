@@ -49,3 +49,9 @@ MVC.
 
 Workflow defines strong boundaries and contracts between separate parts of the application to ensure
 that our code remains predictable and maintainable as the size and complexity of the codebase grows.
+
+## Why ReactiveSwift instead of RxSwift?
+
+Swift has a powerful type system. ReactiveSwift was designed to take advantage of the language – and, as it turns out, that resulted in many common design decisions between ReactiveSwift and Combine (which is/will become the defacto reactive architecture on the platform).
+
+RxSwift, on the other hand, was designed to be similar to rx on other platforms above all else. It lacks typed errors, has weird convention breaking design patterns, etc. 
