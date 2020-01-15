@@ -35,8 +35,8 @@ internal interface WorkflowLoop {
    * Loops forever, or until the coroutine is cancelled, processing the workflow tree and emitting
    * updates by calling [onRendering] and [onOutput].
    *
-   * This function is the lowest-level entry point into the runtime. Don't call this directly, instead
-   * call [com.squareup.workflow.launchWorkflowIn].
+   * This function is the lowest-level entry point into the runtime. Don't call this directly,
+   * instead call [com.squareup.workflow.launchWorkflowIn].
    */
   @Suppress("LongParameterList")
   suspend fun <PropsT, StateT, OutputT : Any, RenderingT> runWorkflowLoop(
@@ -76,7 +76,7 @@ internal open class RealWorkflowLoop : WorkflowLoop {
           id = workflow.id(),
           workflow = workflow,
           initialProps = input,
-          snapshot = initialSnapshot?.bytes,
+          snapshot = initialSnapshot?.bytes?.takeUnless { it.size == 0 },
           baseContext = coroutineContext,
           parentDiagnosticId = null,
           diagnosticListener = diagnosticListener,
