@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'Workflow'
-  s.version      = '0.22.4'
+  s.version      = '0.22.5'
   s.summary      = 'Reactive application architecture'
   s.homepage     = 'https://www.github.com/square/workflow'
   s.license      = 'Apache License, Version 2.0'
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.source_files = 'swift/Workflow/Sources/*.swift'
 
   s.dependency 'ReactiveSwift', '~> 6.0.0'
- 
+
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'swift/Workflow/Tests/**/*.swift'
     test_spec.framework = 'XCTest'

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'WorkflowUI'
-  s.version      = '0.22.4'
+  s.version      = '0.22.5'
   s.summary      = 'Infrastructure for Workflow-powered UI'
   s.homepage     = 'https://www.github.com/square/workflow'
   s.license      = 'Apache License, Version 2.0'
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.source_files = 'swift/WorkflowUI/Sources/**/*.swift'
 
   s.dependency 'Workflow', "#{s.version}"
- 
+
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'swift/WorkflowUI/Tests/**/*.swift'
     test_spec.framework = 'XCTest'
