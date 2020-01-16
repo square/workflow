@@ -46,15 +46,20 @@ import kotlin.reflect.KClass
  *
  * @Composable
  * private fun showFoo(foo: FooRendering) {
- *   MaterialTheme {
- *     Text(foo.message)
- *   }
+ *   Text(foo.message)
  * }
  *
  * …
  *
  * val viewRegistry = ViewRegistry(FooBinding, …)
  * ```
+ *
+ * ## [ComposableDecorator]
+ *
+ * Often all the `@Composable` bindings in an app need to share some context – for example, being
+ * wrapped with a `MaterialTheme`. To configure shared context, provide a [ComposableDecorator] in
+ * your top-level [ContainerHints]. All composable bindings will be wrapped in call to that
+ * decorator function. See the documentation on [ComposableDecorator] for more information.
  */
 inline fun <reified RenderingT : Any> bindCompose(
   noinline showRendering: @Composable() (RenderingT, ViewEnvironment) -> Unit
@@ -89,7 +94,10 @@ internal class ComposeViewFactory<RenderingT : Any>(
       // Don't compose anything until we have the first value (which should happen in the initial
       // frame).
       val (rendering, environment) = renderState.value ?: return@setContent
-      showRendering(rendering, environment)
+      val decorator = AssertingComposableDecorator(environment[ComposableDecorator])
+      decorator.decorate {
+        showRendering(rendering, environment)
+      }
     }
 
     composeContainer.bindShowRendering(

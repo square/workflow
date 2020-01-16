@@ -27,11 +27,17 @@ java {
 
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
+android {
+  defaultConfig {
+    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  }
+}
 
 apply(from = rootProject.file(".buildscript/configure-compose.gradle"))
-tasks.withType<KotlinCompile>().configureEach {
-  kotlinOptions.apiVersion = "1.3"
-}
+tasks.withType<KotlinCompile>()
+    .configureEach {
+      kotlinOptions.apiVersion = "1.3"
+    }
 
 dependencies {
   api(project(":workflow-ui:core-android"))
@@ -44,4 +50,9 @@ dependencies {
 
   testImplementation(Dependencies.Test.junit)
   testImplementation(Dependencies.Test.truth)
+
+  androidTestImplementation(Dependencies.Compose.test)
+  androidTestImplementation(Dependencies.Kotlin.Test.jdk)
+  androidTestImplementation(Dependencies.Test.junit)
+  androidTestImplementation(Dependencies.Test.truth)
 }
