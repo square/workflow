@@ -189,7 +189,7 @@ class RealRenderTesterTest {
         initialState = Unit,
         render = {
           // Need to satisfy the expectation.
-          runningWorker(Worker.finished() as Worker<Unit>) { noAction() }
+          runningWorker(Worker.finished<Unit>()) { noAction() }
           return@stateful actionSink.contraMap { it }
         }
     )
@@ -571,7 +571,7 @@ class RealRenderTesterTest {
   }
 
   @Test fun `verifyAction verifies worker output`() {
-    val worker: Worker<String> = Worker.finished()
+    val worker = Worker.finished<String>()
     val workflow = Workflow.stateless<Unit, Nothing, Unit> {
       runningWorker(worker) { TestAction(it) }
     }
