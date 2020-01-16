@@ -1,5 +1,16 @@
 Change Log
 ==========
+## Version 0.22.4
+
+_2020-01-15_
+
+### Kotlin
+
+ * Allow empty snapshots to be passed into launchWorkflowIn (#881)
+
+### Swift
+
+ * Flag out WorkflowTesting APIs when in Release mode  (#872)
 
 ## Version 0.22.3
 
@@ -508,7 +519,7 @@ _2019-3-12_
    method. (#57)
  * `BackStackEffect` allows configuration of transition effects between `BackStackScreen`s.
  * `ModalContainer` adds support for `AlertDialog` and custom views in `Dialog` windows.
- * Sample app consolidated to two modules, `samples/tictactoe/android` and 
+ * Sample app consolidated to two modules, `samples/tictactoe/android` and
    `samples/tictactoe/common`. Various `Shell*` classes in sample renamed to `Main*`.
  * Breaking change, `EventHandlingScreen` interface eliminated. It wasn't useful.
  * Breaking change, `workflow-core`, `workflow-rx2`, and `workflow-test` modules moved to legacy
@@ -528,7 +539,7 @@ _2019-1-4_
 
  * Breaking change, further API refinement of `WorkflowPool` and friends.
    Extracts `WorkflowUpdate` and `WorkflowPool.Handle` from the defunct
-   `WorkflowHandle`. (#114) 
+   `WorkflowHandle`. (#114)
 
 ## Version 0.6.0
 

@@ -85,7 +85,7 @@ internal typealias Configurator <O, R, T> = CoroutineScope.(
  * will fail (report an exception up through [scope]). If this flow completes _after_ emitting at
  * least one value, the runtime will _not_ fail or stop, it will continue running with the
  * last-emitted input.
- * @param initialSnapshot If not null, used to restore the workflow.
+ * @param initialSnapshot If not null or empty, used to restore the workflow.
  * @param beforeStart Called exactly once with the flows for renderings/snapshots and outputs.
  * It also gets a sub-scope of [scope] with a newly created child [Job] which defines the lifetime
  * of the launched workflow tree. Cancelling that job ends the new workflow session.

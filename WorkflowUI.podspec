@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.source_files = 'swift/WorkflowUI/Sources/**/*.swift'
 
   s.dependency 'Workflow', "#{s.version}"
- 
+
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'swift/WorkflowUI/Tests/**/*.swift'
     test_spec.framework = 'XCTest'
