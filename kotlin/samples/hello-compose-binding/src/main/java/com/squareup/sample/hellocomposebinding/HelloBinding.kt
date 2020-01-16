@@ -28,9 +28,7 @@ import com.squareup.workflow.ui.compose.bindCompose
 import com.squareup.workflow.ui.compose.tooling.preview
 
 val HelloBinding = bindCompose<Rendering> {
-  MaterialTheme {
-    DrawHelloRendering(it)
-  }
+  DrawHelloRendering(it)
 }
 
 @Preview(heightDp = 150)
