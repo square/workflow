@@ -39,6 +39,8 @@ import kotlin.math.min
 object PanelContainer : ViewBinding<PanelContainerScreen<*, *>>
 by ModalContainer.forContainerScreen(
     R.id.panel_container,
+    // This theme defines custom enter and exit animation styles for panel windows.
+    dialogThemeResId = R.style.PanelDialog,
     modalDecorator = { panelBody ->
       PanelBodyWrapper(panelBody.context)
           .apply { addView(panelBody) }

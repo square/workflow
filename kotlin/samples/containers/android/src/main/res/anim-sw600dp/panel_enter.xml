@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2019 Square Inc.
+  ~ Copyright 2020 Square Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,6 +14,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<resources>
-  <bool name="is_tablet">false</bool>
-</resources>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/decelerate_interpolator"
+    android:duration="@android:integer/config_mediumAnimTime"
+    >
+
+  <scale
+      android:fromXScale="0.9"
+      android:toXScale="1"
+      android:fromYScale="0.9"
+      android:toYScale="1"
+      android:pivotX="50%p"
+      android:pivotY="50%p"
+    />
+
+  <alpha
+      android:fromAlpha="0"
+      android:toAlpha="1"
+      />
+
+</set>
