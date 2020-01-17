@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		360F145D23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F145C23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift */; };
 		4152916D2353C4F800A8050C /* TicTacToeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4152916C2353C4F800A8050C /* TicTacToeTests.swift */; };
 		62A30BADED1D3CC18B3B931F /* libPods-TicTacToeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB1495588C5D882E35D1176 /* libPods-TicTacToeTests.a */; };
 		E80216A8230DEBAE00D77178 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80216A7230DEBAE00D77178 /* AppDelegate.swift */; };
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		1C47F98484DD313B41812898 /* libPods-TicTacToe.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicTacToe.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		360F145C23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReactiveFrameworksAdapters.swift; sourceTree = "<group>"; };
 		4152916A2353C4F800A8050C /* TicTacToeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4152916C2353C4F800A8050C /* TicTacToeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToeTests.swift; sourceTree = "<group>"; };
 		4152916E2353C4F800A8050C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				E80216BD230DF52D00D77178 /* Game */,
 				E80216BC230DF51500D77178 /* Main */,
 				E80216A7230DEBAE00D77178 /* AppDelegate.swift */,
+				360F145C23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 				E885D4D9230E20E800F2BA7C /* TwoFactorScreen.swift in Sources */,
 				E80216A8230DEBAE00D77178 /* AppDelegate.swift in Sources */,
 				E882AD332310A55500D83713 /* Board.swift in Sources */,
+				360F145D23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift in Sources */,
 				E885D4D5230E050C00F2BA7C /* LoadingScreen.swift in Sources */,
 				E8021E35230DFDF700D77178 /* LoginWorkflow.swift in Sources */,
 				E80216C2230DF97000D77178 /* AuthenticationWorkflow.swift in Sources */,

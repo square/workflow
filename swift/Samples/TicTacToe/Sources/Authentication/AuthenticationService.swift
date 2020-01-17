@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 import ReactiveSwift
+import RxSwift
 
 
 final class AuthenticationService {
     static let delayMS: TimeInterval = 0.750
+    static let delayRxTimeInterval = RxTimeInterval.milliseconds(750)
     static let weakToken = "Need a second factor there, friend"
     static let realToken = "Welcome aboard!"
     static let secondFactor = "1234"
+}
 
-    func login(email: String, password: String) -> SignalProducer<AuthenticationResponse, AuthenticationError> {
+// MARK: ReactiveSwift API
+extension AuthenticationService {
+    func loginReactiveSwift(email: String, password: String) -> SignalProducer<AuthenticationResponse, AuthenticationError> {
         if password == "password" {
             if email.contains("2fa") {
                 return SignalProducer(value: AuthenticationResponse(
@@ -39,8 +44,8 @@ final class AuthenticationService {
                 .delay(AuthenticationService.delayMS, on: QueueScheduler.main)
         }
     }
-
-    func secondFactor(token: String, secondFactor: String) -> SignalProducer<AuthenticationResponse, AuthenticationError> {
+    
+    func secondFactorReactiveSwift(token: String, secondFactor: String) -> SignalProducer<AuthenticationResponse, AuthenticationError> {
         if token != AuthenticationService.weakToken {
             return SignalProducer(error: .invalidIntermediateToken)
                 .delay(AuthenticationService.delayMS, on: QueueScheduler.main)
@@ -52,6 +57,39 @@ final class AuthenticationService {
                 token: AuthenticationService.realToken,
                 secondFactorRequired: false))
                 .delay(AuthenticationService.delayMS, on: QueueScheduler.main)
+        }
+    }
+}
+
+// MARK: RxSwift API
+
+extension AuthenticationService {
+    func loginRxSwift(email: String, password: String) -> Observable<AuthenticationResponse> {
+        if password == "password" {
+            if email.contains("2fa") {
+                return Observable.just(AuthenticationResponse(token: AuthenticationService.weakToken, secondFactorRequired: true))
+                    .delay(AuthenticationService.delayRxTimeInterval, scheduler: MainScheduler.instance)
+            } else {
+                return Observable.just(AuthenticationResponse(token: AuthenticationService.realToken, secondFactorRequired: false))
+                    .delay(AuthenticationService.delayRxTimeInterval, scheduler: MainScheduler.instance)
+            }
+        } else {
+            return Observable.error(AuthenticationError.invalidUserPassword)
+                .delay(AuthenticationService.delayRxTimeInterval, scheduler: MainScheduler.instance)
+        }
+    }
+    
+    func secondFactorRxSwift(token: String, secondFactor: String) -> Observable<AuthenticationResponse> {
+        if token != AuthenticationService.weakToken {
+            return Observable.error(AuthenticationError.invalidIntermediateToken)
+                .delay(AuthenticationService.delayRxTimeInterval, scheduler: MainScheduler.instance)
+        } else if secondFactor != AuthenticationService.secondFactor {
+            return Observable.error(AuthenticationError.invalidTwoFactor)
+                .delay(AuthenticationService.delayRxTimeInterval, scheduler: MainScheduler.instance)
+        } else {
+            return Observable.just(AuthenticationResponse(token: AuthenticationService.realToken, secondFactorRequired: false))
+                .delay(AuthenticationService.delayRxTimeInterval, scheduler: MainScheduler.instance)
+
         }
     }
 }

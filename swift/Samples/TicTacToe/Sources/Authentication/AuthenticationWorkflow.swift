@@ -17,6 +17,7 @@ import BackStackContainer
 import Workflow
 import WorkflowUI
 import ReactiveSwift
+import RxSwift
 
 
 // MARK: Input and Output
@@ -123,13 +124,18 @@ extension AuthenticationWorkflow {
 
         func run() -> SignalProducer<Output, Never> {
             return authenticationService
-                .login(email: email, password: password)
-                .map({ response -> Action in
-                    return .authenticationSucceeded(response: response)
-                })
-                .flatMapError {
-                    SignalProducer(value: .authenticationError($0))
+                .loginRxSwift(email: email, password: password)
+                .asSignalProducer()
+                .map {
+                    return .authenticationSucceeded(response: $0)
                 }
+                .flatMapError({ (error) -> SignalProducer<Output, Never> in
+                    guard let error = error as? AuthenticationService.AuthenticationError else {
+                        fatalError("Boy, I like typed errors.")
+                    }
+                    
+                    return SignalProducer(value: .authenticationError(error))
+                })
         }
 
         func isEquivalent(to otherWorker: AuthorizingEmailPasswordWorker) -> Bool {
@@ -149,15 +155,18 @@ extension AuthenticationWorkflow {
 
         func run() -> SignalProducer<Output, Never> {
             return authenticationService
-                .secondFactor(
-                    token: intermediateToken,
-                    secondFactor: twoFactorCode)
+                .secondFactorRxSwift(token: intermediateToken, secondFactor: twoFactorCode)
+                .asSignalProducer()
                 .map {
-                    .authenticationSucceeded(response: $0)
+                    return .authenticationSucceeded(response: $0)
                 }
-                .flatMapError {
-                    SignalProducer(value: .authenticationError($0))
-            }
+                .flatMapError({ (error) -> SignalProducer<Output, Never> in
+                    guard let error = error as? AuthenticationService.AuthenticationError else {
+                        fatalError("Boy, I like typed errors.")
+                    }
+                    
+                    return SignalProducer(value: .authenticationError(error))
+                })
         }
 
         func isEquivalent(to otherWorker: AuthenticationWorkflow.AuthorizingTwoFactorWorker) -> Bool {
