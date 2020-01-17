@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2019 Square Inc.
+  ~ Copyright 2020 Square Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,5 +15,16 @@
   ~ limitations under the License.
   -->
 <resources>
-  <bool name="is_tablet">false</bool>
+
+  <style name="PanelDialog">
+    <item name="android:windowAnimationStyle">@style/PanelDialogAnimation</item>
+    <!-- For some reason this is required to get our windowEnterAnimation honored. -->
+    <item name="android:windowIsFloating">true</item>
+  </style>
+
+  <style name="PanelDialogAnimation">
+    <item name="android:windowEnterAnimation">@anim/panel_enter</item>
+    <item name="android:windowExitAnimation">@anim/panel_exit</item>
+  </style>
+
 </resources>

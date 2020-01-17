@@ -22,6 +22,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.transition.Scene
 import androidx.transition.Slide
@@ -129,6 +130,7 @@ open class BackStackContainer @JvmOverloads constructor(
           val transition = TransitionSet()
               .addTransition(Slide(outEdge).addTarget(oldTarget))
               .addTransition(Slide(inEdge).addTarget(newTarget))
+              .setInterpolator(AccelerateDecelerateInterpolator())
 
           TransitionManager.go(Scene(this, newView), transition)
           return
