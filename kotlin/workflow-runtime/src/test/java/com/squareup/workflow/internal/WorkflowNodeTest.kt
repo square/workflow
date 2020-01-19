@@ -94,17 +94,30 @@ class WorkflowNodeTest {
 
   private val context: CoroutineContext = Unconfined
 
-  @Test fun `props are passed to on changed`() {
+  @Test fun `onPropsChanged is called when props change`() {
     val oldAndNewProps = mutableListOf<Pair<String, String>>()
     val workflow = PropsRenderingWorkflow { old, new, state ->
       oldAndNewProps += old to new
-      state
+      return@PropsRenderingWorkflow state
     }
-    val node = WorkflowNode(workflow.id(), workflow, "foo", null, context)
+    val node = WorkflowNode(workflow.id(), workflow, "old", null, context)
 
-    node.render(workflow, "foo2")
+    node.render(workflow, "new")
 
-    assertEquals(listOf("foo" to "foo2"), oldAndNewProps)
+    assertEquals(listOf("old" to "new"), oldAndNewProps)
+  }
+
+  @Test fun `onPropsChanged is not called when props are equal`() {
+    val oldAndNewProps = mutableListOf<Pair<String, String>>()
+    val workflow = PropsRenderingWorkflow { old, new, state ->
+      oldAndNewProps += old to new
+      return@PropsRenderingWorkflow state
+    }
+    val node = WorkflowNode(workflow.id(), workflow, "old", null, context)
+
+    node.render(workflow, "old")
+
+    assertTrue(oldAndNewProps.isEmpty())
   }
 
   @Test fun `props are rendered`() {
@@ -690,13 +703,13 @@ class WorkflowNodeTest {
     )
     listener.consumeEvents()
 
-    node.render(workflow.asStatefulWorkflow(), "props")
+    node.render(workflow.asStatefulWorkflow(), "new props")
 
     assertEquals(
         listOf(
-            "onPropsChanged(${node.diagnosticId}, props, props, (props:), (props:props:(props:)))",
-            "onBeforeWorkflowRendered(${node.diagnosticId}, props, (props:props:(props:)))",
-            "onAfterWorkflowRendered(${node.diagnosticId}, ((props:props:(props:)):props))"
+            "onPropsChanged(${node.diagnosticId}, props, new props, (props:), (props:new props:(props:)))",
+            "onBeforeWorkflowRendered(${node.diagnosticId}, new props, (props:new props:(props:)))",
+            "onAfterWorkflowRendered(${node.diagnosticId}, ((props:new props:(props:)):new props))"
         ), listener.consumeEvents()
     )
   }
@@ -728,7 +741,7 @@ class WorkflowNodeTest {
         parentDiagnosticId = 42,
         diagnosticListener = listener
     )
-    node.render(workflow.asStatefulWorkflow(), "props")
+    node.render(workflow.asStatefulWorkflow(), "new props")
     listener.consumeEvents()
 
     runBlocking {
@@ -751,8 +764,8 @@ class WorkflowNodeTest {
     )
     assertEquals(
         listOf(
-            "onWorkflowAction(${node.diagnosticId}, TestAction, (props:props:(props:))," +
-                " (props:props:(props:)), action output)"
+            "onWorkflowAction(${node.diagnosticId}, TestAction, (props:new props:(props:))," +
+                " (props:new props:(props:)), action output)"
         ), listener.consumeEvents()
     )
   }
@@ -784,7 +797,7 @@ class WorkflowNodeTest {
         parentDiagnosticId = 42,
         diagnosticListener = listener
     )
-    val rendering = node.render(workflow.asStatefulWorkflow(), "props")
+    val rendering = node.render(workflow.asStatefulWorkflow(), "new props")
     listener.consumeEvents()
 
     runBlocking {
@@ -804,7 +817,7 @@ class WorkflowNodeTest {
     assertEquals(
         listOf(
             "onSinkReceived(${node.diagnosticId}, TestAction)",
-            "onWorkflowAction(${node.diagnosticId}, TestAction, (props:props:(props:))," +
+            "onWorkflowAction(0, TestAction, (props:new props:(props:))," +
                 " state: foo, output: foo)"
         ), listener.consumeEvents()
     )
