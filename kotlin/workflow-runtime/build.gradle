@@ -53,6 +53,10 @@ dependencies {
   api deps.kotlin.stdLib.jdk6
   api deps.kotlin.coroutines.core
 
+  implementation "org.apache.sshd:sshd-core:2.3.0"
+  implementation "org.apache.sshd:sshd-sftp:2.3.0"
+
+  testImplementation "org.slf4j:slf4j-simple:1.7.30"
   testImplementation deps.kotlin.test.jdk
   testImplementation deps.kotlin.reflect
 

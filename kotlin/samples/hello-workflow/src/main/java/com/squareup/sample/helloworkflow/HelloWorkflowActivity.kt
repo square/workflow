@@ -17,20 +17,28 @@ package com.squareup.sample.helloworkflow
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.squareup.workflow.VeryExperimentalWorkflow
+import com.squareup.workflow.diagnostic.DebugSnapshotServer
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
+import com.squareup.workflow.diagnostic.andThen
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 
 private val viewRegistry = ViewRegistry(HelloLayoutRunner)
 
+@UseExperimental(VeryExperimentalWorkflow::class)
+private val debugger = DebugSnapshotServer()
+
 class HelloWorkflowActivity : AppCompatActivity() {
+  @UseExperimental(VeryExperimentalWorkflow::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentWorkflow(viewRegistry) {
       WorkflowRunner.Config(
           HelloWorkflow,
           diagnosticListener = SimpleLoggingDiagnosticListener()
+              .andThen(debugger.listener)
       )
     }
   }
