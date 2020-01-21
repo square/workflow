@@ -46,7 +46,7 @@ class TimeMachineAppWorkflow(
     context: RenderContext<Nothing, Nothing>
   ): ShakeableTimeMachineRendering {
     val propsFactory = PropsFactory { recording ->
-      Props(boardPath = props, paused = !recording)
+      Props(paused = !recording)
     }
     return context.renderChild(timeMachineWorkflow, propsFactory)
   }
