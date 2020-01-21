@@ -12,7 +12,7 @@ _Work in progress…_
 
 The root of your workflow hierarchy gets put into a `WorkflowHost` (if you're using `ContainerViewController` this is created for you). As part of its initializer, `WorkflowHost` creates a `WorkflowNode` that wraps the given root `Workflow` (and keeps track of the `Workflow`'s `State`). It then calls `render()` on the node:
 
-```
+```swift
 // WorkflowHost
 public init(workflow: WorkflowType, debugger: WorkflowDebugger? = nil) {
     self.debugger = debugger
@@ -24,7 +24,7 @@ public init(workflow: WorkflowType, debugger: WorkflowDebugger? = nil) {
 
 `WorkflowNode` contains a `SubtreeManager`, whose primary purpose is to manage child workflows (more on this later). When `render()` gets invoked on the node, it calls `render` on the `SubtreeManager` and passes a closure that takes a `RenderContext` and returns a `Rendering` for the `Workflow` associated with the node.
 
-```
+```swift
 // WorkflowNode
 func render() -> WorkflowType.Rendering {
     return subtreeManager.render { context in
