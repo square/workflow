@@ -27,15 +27,17 @@ afterEvaluate { project ->
   project.tasks.dokka {
     outputDirectory = "$rootDir/../docs/kotlin/api"
     outputFormat = 'gfm'
-    reportUndocumented = false
-    skipDeprecated = true
-    jdkVersion = 8
-    packageOptions {
-      prefix = "com.squareup.workflow.internal"
-      suppress = true
-    }
-    if (project.file('Module.md').exists()) {
-      includes = ['Module.md']
+    configuration {
+      reportUndocumented = false
+      skipDeprecated = true
+      jdkVersion = 8
+      perPackageOption {
+        prefix = "com.squareup.workflow.internal"
+        suppress = true
+      }
+      if (project.file('Module.md').exists()) {
+        includes = ['Module.md']
+      }
     }
   }
 }
