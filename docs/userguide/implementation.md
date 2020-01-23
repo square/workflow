@@ -37,3 +37,9 @@ func render() -> WorkflowType.Rendering {
 ```
 
 The `SubtreeManager` instantiates a `Context` object (TODO: Explain what this does), wraps it in a `RenderContext` (TODO: Explain why), and invokes the closure that was passed in. This last step generates the `Rendering`. This `Rendering` then gets passed back up the call stack until it reaches the `WorkflowHost`.
+
+#### Composition
+
+In cases where a `Workflow` has child `Workflow`s, the render sequence is similar.
+
+The [tutorial](../tutorial/building-a-workflow/#the-render-context) goes through this in more detail.
