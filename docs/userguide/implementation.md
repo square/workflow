@@ -40,6 +40,8 @@ The `SubtreeManager` instantiates a `Context` object (TODO: Explain what this do
 
 #### Composition
 
-In cases where a `Workflow` has child `Workflow`s, the render sequence is similar.
+In cases where a `Workflow` has child `Workflow`s, the render sequence is similar. The [tutorial](../tutorial/building-a-workflow/#the-render-context) goes through this in more detail.
 
-The [tutorial](../tutorial/building-a-workflow/#the-render-context) goes through this in more detail.
+![nested workflow rendering sequence diagram](../images/swift/nested_workflow_rendering.png)
+
+Essentially, a `Workflow` containing child `Workflow`s calls `render(workflow:key:outputMap:)` on the `RenderContext` and passes the child `Workflow`. The context does some bookkeeping for the child `Workflow` (creating or updating a `ChildWorkflow<T>`) and then calls `render()`. `ChildWorkflow<T>.render()` calls `render()` on its `WorkflowNode` and we recurse back to step 2.
