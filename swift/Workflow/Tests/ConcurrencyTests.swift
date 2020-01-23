@@ -22,6 +22,7 @@ import ReactiveSwift
 final class ConcurrencyTests: XCTestCase {
 
     // Applying an action from a sink must synchronously update the rendering.
+    // FIXME: This isn't true anymore
     func test_sinkRenderLoopIsSynchronous() {
         let host = WorkflowHost(workflow: TestWorkflow())
 
@@ -41,7 +42,8 @@ final class ConcurrencyTests: XCTestCase {
         XCTAssertEqual(0, initialScreen.count)
         initialScreen.update()
 
-        // This update happens immediately as a new rendering is generated synchronously.
+        // Force a render pass as a new rendering is NOT generated synchronously.
+        host.renderIfNeeded()
         XCTAssertEqual(1, host.rendering.value.count)
 
         wait(for: [expectation], timeout: 1.0)
@@ -56,6 +58,7 @@ final class ConcurrencyTests: XCTestCase {
     }
 
     // Events emitted between `render` on a workflow and `enableEvents` are queued and will be delivered immediately when `enableEvents` is called.
+    // FIXME: This test is broken
     func test_queuedEvents() {
         let host = WorkflowHost(workflow: TestWorkflow())
 
@@ -76,6 +79,7 @@ final class ConcurrencyTests: XCTestCase {
 
         // Updating the screen will cause two events - the `update` here, and the update caused by the first time the rendering changes.
         initialScreen.update()
+        host.renderIfNeeded()
 
         XCTAssertEqual(2, host.rendering.value.count)
 
@@ -98,12 +102,14 @@ final class ConcurrencyTests: XCTestCase {
         // sink of the same type.
         initialScreen.update()
 
+        host.renderIfNeeded()
         let secondScreen = host.rendering.value
         XCTAssertEqual(1, secondScreen.count)
 
         // Send an action from the original screen and sink. It should be proxied through the most recent sink.
         initialScreen.update()
 
+        host.renderIfNeeded()
         let thirdScreen = host.rendering.value
         XCTAssertEqual(2, thirdScreen.count)
     }
@@ -121,6 +127,7 @@ final class ConcurrencyTests: XCTestCase {
         // sink of the same type.
         initialScreen.update()
 
+        host.renderIfNeeded()
         let secondScreen = host.rendering.value
         XCTAssertEqual(1, secondScreen.count)
 
@@ -131,6 +138,7 @@ final class ConcurrencyTests: XCTestCase {
         // If the sink *was* still valid, this would be correct. However, it should just fail and be `1` still.
         //XCTAssertEqual(2, secondScreen.count)
         // Actual expected result, if we had not fatal errored.
+        host.renderIfNeeded()
         XCTAssertEqual(1, host.rendering.value.count)
 
         struct OneShotWorkflow: Workflow {
@@ -205,6 +213,7 @@ final class ConcurrencyTests: XCTestCase {
         let initialScreen = host.rendering.value
         initialScreen.update()
 
+        host.renderIfNeeded()
         XCTAssertEqual(2, debugger.snapshots.count)
         XCTAssertEqual("1", debugger.snapshots[0].stateDescription)
         XCTAssertEqual("2", debugger.snapshots[1].stateDescription)
@@ -220,6 +229,7 @@ final class ConcurrencyTests: XCTestCase {
         XCTAssertEqual(0, initialScreen.count)
         initialScreen.update()
 
+        host.renderIfNeeded()
         // This update happens immediately as a new rendering is generated synchronously.
         // Both the child updates from the action (incrementing state by 1) as well as the
         // parent from the output (incrementing its state by 10)
@@ -300,6 +310,43 @@ final class ConcurrencyTests: XCTestCase {
         disposable?.dispose()
     }
 
+    func test_allSubscriptionActionsAreApplied() {
+        let signal1 = TestSignal()
+        let signal2 = TestSignal()
+        let host = WorkflowHost(
+            workflow: TestWorkflow(
+                running: .doubleSubscribing(secondSignal: signal2),
+                signal: signal1
+            )
+        )
+
+        let expectation = XCTestExpectation()
+        let exp = XCTestExpectation()
+        let outDisposable = host.output.signal.observeValues { output in
+            exp.fulfill()
+        }
+
+        let disposable = host.rendering.signal.observeValues { rendering in
+            expectation.fulfill()
+        }
+
+        let screen = host.rendering.value
+
+        XCTAssertEqual(0, screen.count)
+
+        signal1.send(value: 1)
+        signal2.send(value: 2)
+
+        XCTAssertEqual(0, host.rendering.value.count)
+
+        wait(for: [expectation, exp], timeout: 1.0)
+
+        XCTAssertEqual(101, host.rendering.value.count)
+
+        disposable?.dispose()
+        outDisposable?.dispose()
+    }
+
     // Workers are subscribed on a different scheduler than the UI scheduler,
     // which means that if they fire immediately, the action will be received after
     // `render` has completed.
@@ -334,12 +381,14 @@ final class ConcurrencyTests: XCTestCase {
 
         // Update using the first action.
         initialScreen.updateFirst()
+        host.renderIfNeeded()
 
         let secondScreen = host.rendering.value
         XCTAssertEqual(1, secondScreen.count)
 
         // Update using the second action.
         secondScreen.updateSecond()
+        host.renderIfNeeded()
         XCTAssertEqual(11, host.rendering.value.count)
 
         struct AnyActionWorkflow: Workflow {
@@ -548,6 +597,7 @@ final class ConcurrencyTests: XCTestCase {
         enum Running {
             case idle
             case signal
+            case doubleSubscribing(secondSignal: TestSignal)
             case worker
         }
         var signal: TestSignal
@@ -573,12 +623,16 @@ final class ConcurrencyTests: XCTestCase {
             typealias WorkflowType = TestWorkflow
 
             case update
+            case secondUpdate
 
             func apply(toState state: inout State) -> Output? {
                 switch self {
                 case .update:
                     state.count += 1
                     return .emit
+                case .secondUpdate:
+                    state.count += 100
+                    return nil
                 }
             }
         }
@@ -586,7 +640,6 @@ final class ConcurrencyTests: XCTestCase {
         typealias Rendering = TestScreen
 
         func render(state: State, context: RenderContext<TestWorkflow>) -> Rendering {
-
             switch state.running {
             case .idle:
                 break
@@ -594,6 +647,14 @@ final class ConcurrencyTests: XCTestCase {
                 context.subscribe(signal: signal.signal.map({ _ -> Action in
                     return .update
                 }))
+
+            case .doubleSubscribing(secondSignal: let signal2):
+                context.subscribe(signal: signal.signal.map { _ in
+                    return Action.update
+                })
+                context.subscribe(signal: signal2.signal.map { _ in
+                    return Action.secondUpdate
+                })
 
             case .worker:
                 context.awaitResult(for: TestWorker())

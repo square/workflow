@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import XCTest
-import Workflow
+@testable import Workflow
 
 
 final class WorkflowHostTests: XCTestCase {
@@ -25,6 +25,7 @@ final class WorkflowHostTests: XCTestCase {
         XCTAssertEqual(1, host.rendering.value)
 
         host.update(workflow: TestWorkflow(step: .second))
+        host.renderIfNeeded()
 
         XCTAssertEqual(2, host.rendering.value)
     }

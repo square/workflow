@@ -45,6 +45,10 @@ public final class WorkflowHost<WorkflowType: Workflow> {
     /// as state transitions occur within the hierarchy.
     public let rendering: Property<WorkflowType.Rendering>
 
+    // Run loop management
+    private var needsRender = false
+    private var runLoopObserver: RunLoopObserver?
+
     /// Initializes a new host with the given workflow at the root.
     ///
     /// - Parameter workflow: The root workflow in the hierarchy
@@ -65,6 +69,23 @@ public final class WorkflowHost<WorkflowType: Workflow> {
             self?.handle(output: output)
         }
 
+        runLoopObserver = RunLoopObserver(activityStages: .beforeWaiting, runLoopModes: .commonModes) { [weak self] activity in
+            self?.renderIfNeeded()
+        }
+    }
+
+    public func setNeedsRender() {
+        needsRender = true
+    }
+
+    func renderIfNeeded() {
+        guard needsRender else { return }
+
+        defer { needsRender = false }
+
+        // Do the rendering
+        mutableRendering.value = rootNode.render()
+        rootNode.enableEvents()
     }
 
     /// Update the input for the workflow. Will cause a render pass.
@@ -81,8 +102,6 @@ public final class WorkflowHost<WorkflowType: Workflow> {
     }
 
     private func handle(output: WorkflowNode<WorkflowType>.Output) {
-        mutableRendering.value = rootNode.render()
-
         if let outputEvent = output.outputEvent {
             outputEventObserver.send(value: outputEvent)
         }
@@ -91,7 +110,7 @@ public final class WorkflowHost<WorkflowType: Workflow> {
             snapshot: rootNode.makeDebugSnapshot(),
             updateInfo: output.debugInfo)
 
-        rootNode.enableEvents()
+        setNeedsRender()
     }
 
     /// A signal containing output events emitted by the root workflow in the hierarchy.

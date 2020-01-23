@@ -1,0 +1,52 @@
+/*
+ * Copyright 2020 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import CoreFoundation
+
+/// Swift wrapper for `CFRunLoopObserver`
+internal final class RunLoopObserver {
+    private let runLoop: CFRunLoop
+    private let runLoopModes: CFRunLoopMode
+    private var observer: CFRunLoopObserver!
+
+    /// Creates a `RunLoopObserver` and adds it to the given run loop for the given run loop modes. See the docs for `CFRunLoopObserverCreateWithHandler` for documentation.
+    init(
+        runLoop: CFRunLoop = CFRunLoopGetCurrent(),
+        activityStages: CFRunLoopActivity,
+        repeats: Bool = true,
+        order: CFIndex = 0,
+        runLoopModes: CFRunLoopMode = .defaultMode,
+        callback: @escaping (_ activityStage: CFRunLoopActivity) -> Void
+    ) {
+        self.runLoop = runLoop
+        self.runLoopModes = runLoopModes
+        observer = CFRunLoopObserverCreateWithHandler(
+            kCFAllocatorDefault,
+            activityStages.rawValue,
+            repeats,
+            order,
+            { (observer, activityStage) in
+                callback(activityStage)
+            }
+        )
+        CFRunLoopAddObserver(runLoop, observer, runLoopModes)
+    }
+
+    deinit {
+        // Clean up the observer
+        CFRunLoopRemoveObserver(runLoop, observer, runLoopModes)
+    }
+}
