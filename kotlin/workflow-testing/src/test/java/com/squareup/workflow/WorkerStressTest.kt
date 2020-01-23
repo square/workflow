@@ -17,13 +17,15 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
+private const val WORKER_COUNT = 1000
+
 class WorkerStressTest {
 
   @UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
   @Test fun `multiple subscriptions to single channel when closed`() {
     val channel = Channel<Unit>()
-    val workers = List(100) { channel.asWorker() }
-    val finishedWorkers = List(100) {
+    val workers = List(WORKER_COUNT / 2) { channel.asWorker() }
+    val finishedWorkers = List(WORKER_COUNT / 2) {
       channel.asWorker()
           .transform { it.onCompletion { emit(Unit) } }
     }
@@ -51,8 +53,9 @@ class WorkerStressTest {
       // receiveOrClosed is used.
       channel.close()
 
+      // Collect from all emitted workers to ensure they all reported their values.
       outputs.consumeAsFlow()
-          .take(100)
+          .take(finishedWorkers.size)
           .collect()
 
       // Cancel the runtime so the test can finish.
@@ -63,7 +66,7 @@ class WorkerStressTest {
   @UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
   @Test fun `multiple subscriptions to single channel when emits`() {
     val channel = ConflatedBroadcastChannel(Unit)
-    val workers = List(100) { channel.asWorker() }
+    val workers = List(WORKER_COUNT) { channel.asWorker() }
     val action = action<Nothing, Int> { setOutput(1) }
     val workflow = Workflow.stateless<Unit, Int, Unit> {
       // Run lots of workers that will all see the same conflated channel value.
@@ -77,9 +80,9 @@ class WorkerStressTest {
         it.outputs.produceIn(this)
       }
       val sum = outputs.consumeAsFlow()
-          .take(100)
+          .take(workers.size)
           .reduce { sum, value -> sum + value }
-      assertEquals(100, sum)
+      assertEquals(WORKER_COUNT, sum)
 
       // Cancel the runtime so the test can finish.
       coroutineContext.cancelChildren()
