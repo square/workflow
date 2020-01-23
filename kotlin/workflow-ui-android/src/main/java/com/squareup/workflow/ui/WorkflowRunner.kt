@@ -20,7 +20,7 @@ package com.squareup.workflow.ui
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.toLiveData
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
@@ -108,7 +108,7 @@ interface WorkflowRunner<out OutputT : Any> {
       val factory = WorkflowRunnerViewModel.Factory(activity.savedStateRegistry, configure)
 
       @Suppress("UNCHECKED_CAST")
-      return ViewModelProviders.of(activity, factory)[WorkflowRunnerViewModel::class.java]
+      return ViewModelProvider(activity, factory)[WorkflowRunnerViewModel::class.java]
           as WorkflowRunner<OutputT>
     }
 
@@ -129,7 +129,7 @@ interface WorkflowRunner<out OutputT : Any> {
       val factory = WorkflowRunnerViewModel.Factory(fragment.savedStateRegistry, configure)
 
       @Suppress("UNCHECKED_CAST")
-      return ViewModelProviders.of(fragment, factory)[WorkflowRunnerViewModel::class.java]
+      return ViewModelProvider(fragment, factory)[WorkflowRunnerViewModel::class.java]
           as WorkflowRunner<OutputT>
     }
   }
