@@ -40,6 +40,8 @@ dependencies {
 
   implementation project(':workflow-runtime')
   implementation deps.androidx.appcompat
+  implementation deps.androidx.activity
+  implementation deps.androidx.fragment
   implementation deps.androidx.lifecycle.extensions
   implementation deps.androidx.lifecycle.reactivestreams
   implementation deps.androidx.savedstate
