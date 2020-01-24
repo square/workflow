@@ -20,4 +20,22 @@ class WorkerTest {
     assertTrue(Worker1().doesSameWorkAs(Worker1()))
     assertFalse(Worker1().doesSameWorkAs(Worker2()))
   }
+
+  @Test fun `createSideEffect workers are equivalent`() {
+    val worker1 = Worker.createSideEffect {}
+    val worker2 = Worker.createSideEffect {}
+    assertTrue(worker1.doesSameWorkAs(worker2))
+  }
+
+  @Test fun `TypedWorkers are compared by higher types`() {
+    val worker1 = Worker.create<List<Int>> { }
+    val worker2 = Worker.create<List<String>> { }
+    assertFalse(worker1.doesSameWorkAs(worker2))
+  }
+
+  @Test fun `TypedWorkers are equivalent with higher types`() {
+    val worker1 = Worker.create<List<Int>> { }
+    val worker2 = Worker.create<List<Int>> { }
+    assertTrue(worker1.doesSameWorkAs(worker2))
+  }
 }

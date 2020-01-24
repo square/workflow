@@ -31,7 +31,8 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlin.experimental.ExperimentalTypeInference
-import kotlin.reflect.KClass
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
 /**
  * Represents a unit of asynchronous work that can have zero, one, or multiple outputs.
@@ -180,6 +181,17 @@ interface Worker<out OutputT> {
   companion object {
 
     /**
+     * Use this value instead of calling `typeOf<Nothing>()` directly, which isn't allowed because
+     * [Nothing] isn't allowed as a reified type parameter.
+     *
+     * The KType of Nothing on the JVM is actually java.lang.Void if you do
+     * Nothing::class.createType(). However createType() lives in the reflection library, so we just
+     * reference Void directly so we don't have to add a dependency on kotlin-reflect.
+     */
+    @UseExperimental(ExperimentalStdlibApi::class)
+    private val TYPE_OF_NOTHING = typeOf<Void>()
+
+    /**
      * Shorthand for `flow { block() }.asWorker()`.
      *
      * Note: If your worker just needs to perform side effects and doesn't need to emit anything,
@@ -208,7 +220,7 @@ interface Worker<out OutputT> {
      */
     fun createSideEffect(
       block: suspend () -> Unit
-    ): Worker<Nothing> = TypedWorker(Nothing::class, flow { block() })
+    ): Worker<Nothing> = TypedWorker(TYPE_OF_NOTHING, flow { block() })
 
     /**
      * Returns a [Worker] that finishes immediately without emitting anything.
@@ -259,8 +271,9 @@ interface Worker<out OutputT> {
 /**
  * Returns a [Worker] that will, when performed, emit whatever this [Flow] receives.
  */
+@UseExperimental(ExperimentalStdlibApi::class)
 inline fun <reified OutputT> Flow<OutputT>.asWorker(): Worker<OutputT> =
-  TypedWorker(OutputT::class, this)
+  TypedWorker(typeOf<OutputT>(), this)
 
 /**
  * Returns a [Worker] that will await this [Deferred] and then emit it.
@@ -361,8 +374,7 @@ fun <T, R> Worker<T>.transform(
  */
 @PublishedApi
 internal class TypedWorker<OutputT>(
-  /** Can't be `KClass<OutputT>` because `OutputT` doesn't have upper bound `Any`. */
-  private val type: KClass<*>,
+  private val type: KType,
   private val work: Flow<OutputT>
 ) : Worker<OutputT> {
 
