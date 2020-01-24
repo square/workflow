@@ -27,6 +27,15 @@ android {
     versionName "1.0.0"
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    // The following argument makes the Android Test Orchestrator run its
+    // "pm clear" command after each test invocation. This command ensures
+    // that the app's state is completely cleared between tests.
+    testInstrumentationRunnerArguments clearPackageData: 'true'
+
+    testOptions {
+      execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
   }
 
   // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
@@ -52,4 +61,6 @@ dependencies {
   androidTestImplementation deps.test.androidx.truthExt
   androidTestImplementation deps.test.junit
   androidTestImplementation deps.test.truth
+
+  androidTestUtil deps.test.androidx.orchestrator
 }
