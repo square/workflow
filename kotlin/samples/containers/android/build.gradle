@@ -23,7 +23,7 @@ android rootProject.ext.defaultAndroidConfig
 
 dependencies {
   api project(':workflow-core')
-  api project(':workflow-ui-android')
+  api project(':workflow-ui:core:android')
   api project(':samples:containers:common')
 
   api deps.androidx.transition

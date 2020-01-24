@@ -20,7 +20,7 @@ package com.squareup.workflow.ui
  * zero or more [modal][M] screens above a [base screen][beneathModals].
  *
  * Use of this interface allows platform specific containers to share base classes,
- * like `ModalContainer` in the `workflow-ui-android` module.
+ * like `ModalContainer` in the `workflow-ui:core:android` module.
  */
 interface HasModals<out B : Any, out M : Any> {
   val beneathModals: B

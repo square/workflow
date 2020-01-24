@@ -27,7 +27,7 @@ android rootProject.ext.defaultAndroidConfig
 
 dependencies {
   api project(':workflow-core')
-  api project(':workflow-ui-core')
+  api project(':workflow-ui:core:common')
 
   api deps.androidx.transition
   api deps.kotlin.stdLib.jdk6
