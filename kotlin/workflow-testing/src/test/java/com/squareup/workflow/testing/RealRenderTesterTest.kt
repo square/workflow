@@ -33,6 +33,8 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class RealRenderTesterTest {
@@ -540,17 +542,6 @@ class RealRenderTesterTest {
     assertEquals("action failed", error.message)
   }
 
-  @Test fun `verifyAction fails when no actions processed`() {
-    val workflow = Workflow.stateless<Unit, Nothing, Unit> {}
-    val testResult = workflow.renderTester(Unit)
-        .render()
-
-    val error = assertFailsWith<AssertionError> {
-      testResult.verifyAction {}
-    }
-    assertEquals("No actions were processed.", error.message)
-  }
-
   @Test fun `verifyAction verifies workflow output`() {
     val child = Workflow.stateless<Unit, String, Unit> {}
     val workflow = Workflow.stateless<Unit, Nothing, Unit> {
@@ -600,6 +591,22 @@ class RealRenderTesterTest {
     testResult.verifyAction {
       assertTrue(it is TestAction)
       assertEquals("event", it.name)
+    }
+  }
+
+  @Test fun `verifyAction and verifyActionResult pass when no action processed`() {
+    val workflow = Workflow.stateless<Unit, Nothing, Sink<TestAction>> {
+      actionSink.contraMap { it }
+    }
+    val testResult = workflow.renderTester(Unit)
+        .render {
+          // Don't send to sink!
+        }
+
+    testResult.verifyAction { assertEquals(noAction(), it) }
+    testResult.verifyActionResult { newState, output ->
+      assertSame(Unit, newState)
+      assertNull(output)
     }
   }
 
