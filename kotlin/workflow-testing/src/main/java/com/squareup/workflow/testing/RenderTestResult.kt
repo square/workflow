@@ -30,6 +30,8 @@ interface RenderTestResult<StateT, OutputT : Any> {
    * Asserts that the render pass handled either a workflow/worker output or a rendering event, and
    * passes the resulting [WorkflowAction] to [block] for asserting.
    *
+   * If the workflow didn't process any actions, [block] will be passed [WorkflowAction.noAction].
+   *
    * This is useful if your actions are a sealed class or enum. If you need to test an anonymous
    * action, use [verifyActionResult].
    */
@@ -39,6 +41,9 @@ interface RenderTestResult<StateT, OutputT : Any> {
    * Asserts that the render pass handled either a workflow/worker output or a rendering event,
    * "executes" the action with the state passed to [renderTester], then invokes [block] with the
    * resulting state and output values.
+   *
+   * If the workflow didn't process any actions, `newState` will be the initial state and `output`
+   * will be null.
    *
    * Note that by using this method, you're also testing the implementation of your action. This can
    * be useful if your actions anonymous. If they are a sealed class or enum, use [verifyAction]

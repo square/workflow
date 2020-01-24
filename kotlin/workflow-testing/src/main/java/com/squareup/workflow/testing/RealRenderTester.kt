@@ -21,6 +21,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
+import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.applyTo
 import com.squareup.workflow.testing.RealRenderTester.Expectation.ExpectedWorker
 import com.squareup.workflow.testing.RealRenderTester.Expectation.ExpectedWorkflow
@@ -175,7 +176,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
   ): (EventT) -> Unit = { event -> send(handler(event)) }
 
   override fun verifyAction(block: (WorkflowAction<StateT, OutputT>) -> Unit) {
-    val action = processedAction ?: throw AssertionError("No actions were processed.")
+    val action = processedAction ?: noAction()
     block(action)
   }
 
