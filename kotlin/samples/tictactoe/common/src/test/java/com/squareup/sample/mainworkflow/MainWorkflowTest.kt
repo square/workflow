@@ -58,8 +58,8 @@ class MainWorkflowTest {
   private fun authScreen(wrapped: String = DEFAULT_AUTH) =
     BackStackScreen<Any>(wrapped)
 
-  private val RunGameScreen.panels: List<Any> get() = baseScreen.modals.map { it.top }
-  private val RunGameScreen.body: Any get() = baseScreen.baseScreen
+  private val RunGameScreen.panels: List<Any> get() = beneathModals.modals.map { it.top }
+  private val RunGameScreen.body: Any get() = beneathModals.beneathModals.wrapped
 
   private fun authWorkflow(
     screen: String = DEFAULT_AUTH

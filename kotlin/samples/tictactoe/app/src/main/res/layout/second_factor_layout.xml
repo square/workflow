@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2017 Square Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,11 +13,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     >
   <androidx.appcompat.widget.Toolbar
@@ -29,43 +27,60 @@
       app:title="Enter Second Factor"
       />
 
-  <TextView
-      android:id="@+id/second_factor_error_message"
+  <ScrollView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center"
-      android:textColor="@color/colorAccent"
-      android:textSize="24sp"
-      />
+      android:layout_height="match_parent"
+      >
 
-  <Space
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"
-      />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
 
-  <EditText
-      android:id="@+id/second_factor"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center"
-      android:hint="@string/second_factor_hint"
-      android:inputType="textEmailAddress"
-      />
+      <TextView
+          android:id="@+id/second_factor_error_message"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:textColor="@color/colorAccent"
+          android:textSize="24sp"
+          />
 
-  <Button
-      android:id="@+id/second_factor_submit_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:text="@string/login_button"
-      style="@style/Base.TextAppearance.AppCompat.Button"
-      />
+      <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          />
 
-  <Space
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"
-      />
+      <EditText
+          android:id="@+id/second_factor"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:hint="@string/second_factor_hint"
+          android:inputType="textEmailAddress"
+          />
+
+      <Button
+          android:id="@+id/second_factor_submit_button"
+          style="@style/Base.TextAppearance.AppCompat.Button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:text="@string/login_button"
+          />
+
+      <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          />
+
+    </LinearLayout>
+
+  </ScrollView>
 
 </LinearLayout>

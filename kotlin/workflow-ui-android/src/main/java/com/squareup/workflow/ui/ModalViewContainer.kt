@@ -25,30 +25,57 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.annotation.IdRes
-import androidx.annotation.StyleRes
+import com.squareup.workflow.ui.ModalViewContainer.Companion.binding
 import kotlin.reflect.KClass
 
 /**
- * Class returned by [ModalContainer.forContainerScreen], qv for details.
+ * Container that shows [HasModals.modals] as arbitrary views in a [Dialog]
+ * window. Provides compatibility with [View.backPressedHandler].
+ *
+ * Use [binding] to assign particular rendering types to be shown this way.
  */
-@PublishedApi
-internal class ModalViewContainer @JvmOverloads constructor(
+open class ModalViewContainer @JvmOverloads constructor(
   context: Context,
   attributeSet: AttributeSet? = null,
   defStyle: Int = 0,
-  defStyleRes: Int = 0,
-  @StyleRes private val dialogThemeResId: Int = 0,
-  private val modalDecorator: (View) -> View = { it }
+  defStyleRes: Int = 0
 ) : ModalContainer<Any>(context, attributeSet, defStyle, defStyleRes) {
-  override fun buildDialog(
+
+  /**
+   * Called from [buildDialog]. Builds (but does not show) the [Dialog] to
+   * display a [view] built via [ViewRegistry].
+   *
+   * Subclasses may override completely to build their own kind of [Dialog],
+   * there is no need to call `super`.
+   */
+  open fun buildDialogForView(view: View): Dialog {
+    return Dialog(context).apply {
+      setCancelable(false)
+      setContentView(view)
+
+      // Dialog is sized to wrap the view. Note that this call must come after
+      // setContentView.
+      window!!.setLayout(WRAP_CONTENT, WRAP_CONTENT)
+
+      // If we don't set or clear the background drawable, the window cannot go full bleed.
+      window!!.setBackgroundDrawable(null)
+    }
+  }
+
+  final override fun buildDialog(
     initialModalRendering: Any,
     initialContainerHints: ContainerHints
   ): DialogRef<Any> {
-    val view = initialContainerHints[ViewRegistry].buildView(
-        initialModalRendering, initialContainerHints, this
-    )
+    val view = initialContainerHints[ViewRegistry]
+        .buildView(initialModalRendering, initialContainerHints, this)
+        .apply {
+          // If the modal's root view has no backPressedHandler, add a no-op one to
+          // ensure that the `onBackPressed` call below will not leak up to handlers
+          // that should be blocked by this modal session.
+          if (backPressedHandler == null) backPressedHandler = { }
+        }
 
-    return Dialog(context, dialogThemeResId)
+    return buildDialogForView(view)
         .apply {
           // Dialogs are modal windows and so they block events, including back button presses
           // -- that's their job! But we *want* the Activity's onBackPressedDispatcher to fire
@@ -70,22 +97,6 @@ internal class ModalViewContainer @JvmOverloads constructor(
               false
             }
           }
-
-          setCancelable(false)
-          setContentView(modalDecorator(view))
-              .apply {
-                // If the modal's root view has no backPressedHandler, add a no-op one to
-                // ensure that the `onBackPressed` call above will not leak up to handlers
-                // that should be blocked by this modal session.
-                if (backPressedHandler == null) backPressedHandler = { }
-              }
-
-          window!!.setLayout(WRAP_CONTENT, WRAP_CONTENT)
-
-          if (dialogThemeResId == 0) {
-            // If we don't set or clear the background drawable, the window cannot go full bleed.
-            window!!.setBackgroundDrawable(null)
-          }
         }
         .run {
           DialogRef(initialModalRendering, initialContainerHints, this, view)
@@ -96,24 +107,34 @@ internal class ModalViewContainer @JvmOverloads constructor(
     with(dialogRef) { (extra as View).showRendering(modalRendering, containerHints) }
   }
 
-  class Binding<H : HasModals<*, *>>(
+  @PublishedApi
+  internal class Binding<H : HasModals<*, *>>(
     @IdRes id: Int,
-    type: KClass<H>,
-    @StyleRes dialogThemeResId: Int = 0,
-    modalDecorator: (View) -> View = { it }
+    type: KClass<H>
   ) : ViewBinding<H>
   by BuilderBinding(
       type = type,
       viewConstructor = { initialRendering, initialHints, context, _ ->
-        ModalViewContainer(
-            context,
-            modalDecorator = modalDecorator,
-            dialogThemeResId = dialogThemeResId
-        ).apply {
+        ModalViewContainer(context).apply {
           this.id = id
           layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
           bindShowRendering(initialRendering, initialHints, ::update)
         }
       }
   )
+
+  companion object {
+    /**
+     * Creates a [ViewBinding] for modal container screens of type [H].
+     *
+     * Each view created for [HasModals.modals] will be shown in a [Dialog]
+     * whose window is set to size itself to `WRAP_CONTENT` (see [android.view.Window.setLayout]).
+     *
+     * @param id a unique identifier for containers of this type, allowing them to participate
+     * view persistence
+     */
+    inline fun <reified H : HasModals<*, *>> binding(
+      @IdRes id: Int = View.NO_ID
+    ): ViewBinding<H> = Binding(id, H::class)
+  }
 }

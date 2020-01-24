@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.recyclerview
-
-import com.squareup.workflow.ui.ModalContainer
-import com.squareup.workflow.ui.ModalViewContainer
-import com.squareup.workflow.ui.ViewBinding
+package com.squareup.sample.container.panel
 
 /**
- * A simple [ModalContainer] [ViewBinding] that knows how to render [AppWorkflow.Rendering]s.
+ * Show a scrim over the [wrapped] item, which is invisible if [dimmed] is false,
+ * dark if it is true.
  */
-object AddRowContainer : ViewBinding<AppWorkflow.Rendering> by ModalViewContainer.binding()
+class ScrimContainerScreen<T : Any>(
+  val wrapped: T,
+  val dimmed: Boolean
+)

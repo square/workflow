@@ -31,7 +31,7 @@ import com.squareup.workflow.ui.backstack.BackStackContainer
 internal val defaultViewBindings = ViewRegistry(
     NamedBinding,
     BackStackContainer,
-    ModalContainer.forAlertContainerScreen()
+    AlertContainer.binding()
 )
 
 /**
@@ -67,7 +67,7 @@ internal val defaultViewBindings = ViewRegistry(
  *
  *  - [Named]`<*>` (Delegates to the registered binding for [Named.wrapped].)
  *  - [BackStackScreen]`<*>`
- *  - [AlertContainerScreen]`<*>` (Use [ModalContainer.forAlertContainerScreen] to set
+ *  - [AlertContainerScreen]`<*>` (Use [ModalContainer.binding] to set
  *    a different dialog theme.)
  */
 interface ViewRegistry {

@@ -16,12 +16,12 @@
 package com.squareup.workflow.ui
 
 /**
- * May show a stack of [AlertScreen] over a [baseScreen].
+ * May show a stack of [AlertScreen] over a [beneathModals].
  *
- * @param B the type of [baseScreen]
+ * @param B the type of [beneathModals]
  */
 data class AlertContainerScreen<B : Any>(
-  override val baseScreen: B,
+  override val beneathModals: B,
   override val modals: List<AlertScreen> = emptyList()
 ) : HasModals<B, AlertScreen> {
   constructor(

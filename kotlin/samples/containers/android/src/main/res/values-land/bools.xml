@@ -14,23 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@android:anim/accelerate_interpolator"
-    android:duration="@android:integer/config_shortAnimTime"
-    >
-
-  <scale
-      android:fromXScale="1"
-      android:toXScale="0.9"
-      android:fromYScale="1"
-      android:toYScale="0.9"
-      android:pivotX="50%p"
-      android:pivotY="50%p"
-      />
-
-  <alpha
-      android:fromAlpha="1"
-      android:toAlpha="0"
-      />
-
-</set>
+<resources>
+  <bool name="is_portrait">false</bool>
+</resources>

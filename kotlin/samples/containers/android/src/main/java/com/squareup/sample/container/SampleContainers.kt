@@ -17,6 +17,9 @@ package com.squareup.sample.container
 
 import com.squareup.sample.container.masterdetail.MasterDetailContainer
 import com.squareup.sample.container.panel.PanelContainer
+import com.squareup.sample.container.panel.ScrimContainer
 import com.squareup.workflow.ui.ViewRegistry
 
-val SampleContainers = ViewRegistry(MasterDetailContainer, PanelContainer, BackButtonScreen.Binding)
+val SampleContainers = ViewRegistry(
+    BackButtonScreen.Binding, MasterDetailContainer, PanelContainer, ScrimContainer
+)

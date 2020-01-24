@@ -15,78 +15,70 @@
  */
 package com.squareup.sample.container.panel
 
+import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.TypedValue
-import android.view.View.MeasureSpec.EXACTLY
-import android.view.View.MeasureSpec.makeMeasureSpec
-import android.widget.FrameLayout
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.squareup.sample.container.R
-import com.squareup.workflow.ui.ModalContainer
+import com.squareup.workflow.ui.BuilderBinding
+import com.squareup.workflow.ui.ModalViewContainer
 import com.squareup.workflow.ui.ViewBinding
-import kotlin.math.min
+import com.squareup.workflow.ui.bindShowRendering
 
 /**
  * Used by Tic Tac Workflow sample to show its [PanelContainerScreen]s.
- *
- * [ModalContainer.forContainerScreen] does most of the heavy lifting. We give
- * it a `modalDecorator` that wraps the given views in one that sizes itself
- * based on the screen size. The result looks suspiciously like the modal
- * flow container in Square PoS.
+ * Extends [ModalViewContainer] to make the dialog square on Tablets, and
+ * give it an opaque background.
  */
-object PanelContainer : ViewBinding<PanelContainerScreen<*, *>>
-by ModalContainer.forContainerScreen(
-    R.id.panel_container,
-    // This theme defines custom enter and exit animation styles for panel windows.
-    dialogThemeResId = R.style.PanelDialog,
-    modalDecorator = { panelBody ->
-      PanelBodyWrapper(panelBody.context)
-          .apply { addView(panelBody) }
-    })
-
-/**
- * [FrameLayout] that calculates its size based on the screen size -- to fill the screen on
- * phones, or make a square based on the shorter screen dimension on tablets. Handy
- * for showing a `Dialog` window that is set to `WRAP_CONTENT`, like those created by
- * [ModalContainer.forContainerScreen].
- */
-internal class PanelBodyWrapper
-@JvmOverloads constructor(
+class PanelContainer @JvmOverloads constructor(
   context: Context,
-  attributeSet: AttributeSet? = null
-) : FrameLayout(context, attributeSet) {
-  init {
-    val typedValue = TypedValue()
-    context.theme.resolveAttribute(android.R.attr.windowBackground, typedValue, true)
-    if (typedValue.type in TypedValue.TYPE_FIRST_COLOR_INT..TypedValue.TYPE_LAST_COLOR_INT) {
-      @Suppress("DEPRECATION")
-      background = ColorDrawable(typedValue.data)
+  attributeSet: AttributeSet? = null,
+  defStyle: Int = 0,
+  defStyleRes: Int = 0
+) : ModalViewContainer(context, attributeSet, defStyle, defStyleRes) {
+  override fun buildDialogForView(view: View): Dialog {
+    return Dialog(context, R.style.PanelDialog).also { dialog ->
+      dialog.setContentView(view)
+
+      val typedValue = TypedValue()
+      context.theme.resolveAttribute(android.R.attr.windowBackground, typedValue, true)
+      if (typedValue.type in TypedValue.TYPE_FIRST_COLOR_INT..TypedValue.TYPE_LAST_COLOR_INT) {
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(typedValue.data))
+      }
+
+      // Use setLayout to control window size. Note that it must be
+      // called after setContentView.
+      //
+      // Default layout values are MATCH_PARENT in both dimens, which is
+      // perfect for phone.
+
+      if (context.isTablet) {
+        val displayMetrics = DisplayMetrics().also {
+          dialog.context.display.getMetrics(it)
+        }
+
+        if (context.isPortrait) {
+          dialog.window!!.setLayout(displayMetrics.widthPixels, displayMetrics.widthPixels)
+        } else {
+          dialog.window!!.setLayout(displayMetrics.heightPixels, displayMetrics.heightPixels)
+        }
+      }
     }
   }
 
-  /** For use only by [onMeasure]. Instantiated here to avoid allocation during measure. */
-  private val displayMetrics = DisplayMetrics()
-
-  override fun onMeasure(
-    widthMeasureSpec: Int,
-    heightMeasureSpec: Int
-  ) {
-    context.display.getMetrics(displayMetrics)
-    val calculatedWidthSpec: Int
-    val calculatedHeightSpec: Int
-
-    if (context.isTablet) {
-      val size = min(displayMetrics.widthPixels, displayMetrics.heightPixels)
-
-      calculatedWidthSpec = makeMeasureSpec(size, EXACTLY)
-      calculatedHeightSpec = makeMeasureSpec(size, EXACTLY)
-    } else {
-      calculatedWidthSpec = makeMeasureSpec(displayMetrics.widthPixels, EXACTLY)
-      calculatedHeightSpec = makeMeasureSpec(displayMetrics.heightPixels, EXACTLY)
-    }
-
-    super.onMeasure(calculatedWidthSpec, calculatedHeightSpec)
-  }
+  companion object : ViewBinding<PanelContainerScreen<*, *>> by BuilderBinding(
+      type = PanelContainerScreen::class,
+      viewConstructor = { initialRendering, initialHints, contextForNewView, _ ->
+        PanelContainer(contextForNewView).apply {
+          id = R.id.panel_container
+          layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+          bindShowRendering(initialRendering, initialHints, ::update)
+        }
+      }
+  )
 }

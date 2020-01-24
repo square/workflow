@@ -31,9 +31,9 @@ import com.squareup.workflow.ui.AlertScreen.Event.ButtonClicked
 import com.squareup.workflow.ui.AlertScreen.Event.Canceled
 
 /**
- * Class returned by [ModalContainer.forAlertContainerScreen], qv for details.
+ * Renders the [AlertScreen]s of an [AlertContainerScreen] as [AlertDialog]s.
  */
-internal class AlertContainer @JvmOverloads constructor(
+class AlertContainer @JvmOverloads constructor(
   context: Context,
   attributeSet: AttributeSet? = null,
   defStyle: Int = 0,
@@ -86,7 +86,7 @@ internal class AlertContainer @JvmOverloads constructor(
     NEUTRAL -> DialogInterface.BUTTON_NEUTRAL
   }
 
-  class Binding(
+  private class Binding(
     @StyleRes private val dialogThemeResId: Int = 0
   ) : ViewBinding<AlertContainerScreen<*>>
   by BuilderBinding(
@@ -100,4 +100,17 @@ internal class AlertContainer @JvmOverloads constructor(
             }
       }
   )
+
+  companion object {
+    /**
+     * Creates a [ViewBinding] to show the [AlertScreen]s of an [AlertContainerScreen]
+     * as Android `AlertDialog`s.
+     *
+     * @param dialogThemeResId the resource ID of the theme against which to inflate
+     * dialogs. Defaults to `0` to use the parent `context`'s default alert dialog theme.
+     */
+    fun binding(
+      @StyleRes dialogThemeResId: Int = 0
+    ): ViewBinding<AlertContainerScreen<*>> = AlertContainer.Binding(dialogThemeResId)
+  }
 }

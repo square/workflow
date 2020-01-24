@@ -80,7 +80,7 @@ class MainWorkflow(
     is RunningGame -> {
       val childRendering = context.renderChild(runGameWorkflow) { startAuth }
 
-      val panels = childRendering.baseScreen.modals
+      val panels = childRendering.beneathModals.modals
 
       if (panels.isEmpty()) {
         childRendering
@@ -97,7 +97,7 @@ class MainWorkflow(
 
         val panelsMod = panels.toMutableList()
         panelsMod[0] = stubAuthBackStack + panels[0]
-        childRendering.copy(baseScreen = childRendering.baseScreen.copy(modals = panelsMod))
+        childRendering.copy(beneathModals = childRendering.beneathModals.copy(modals = panelsMod))
       }
     }
   }
