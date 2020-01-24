@@ -36,7 +36,7 @@
 {"name":"TracingDiagnosticListenerTest$TestWorkflow (0)","cat":"rendering","ph":"B","ts":0,"pid":0,"tid":0,"args":{"workflowId":"0","props":"2","state":"changed state"}},
 {"name":"TracingDiagnosticListenerTest$TestWorkflow (1)","cat":"rendering","ph":"B","ts":0,"pid":0,"tid":0,"args":{"workflowId":"1","props":"0","state":"initial"}},
 {"name":"TracingDiagnosticListenerTest$TestWorkflow (1)","cat":"rendering","ph":"E","ts":0,"pid":0,"tid":0,"args":{"rendering":"initial"}},
-{"name":"Worker: 2","cat":"workflow","ph":"b","ts":0,"pid":0,"tid":0,"id":"workflow","args":{"parent":"TracingDiagnosticListenerTest$TestWorkflow (0)","key":"","description":"TypedWorker(class kotlin.String)"}},
+{"name":"Worker: 2","cat":"workflow","ph":"b","ts":0,"pid":0,"tid":0,"id":"workflow","args":{"parent":"TracingDiagnosticListenerTest$TestWorkflow (0)","key":"","description":"TypedWorker(kotlin.String)"}},
 {"name":"TracingDiagnosticListenerTest$TestWorkflow (0)","cat":"rendering","ph":"E","ts":0,"pid":0,"tid":0,"args":{"rendering":"rendering"}},
 {"name":"Render Pass","cat":"rendering","ph":"E","ts":0,"pid":0,"tid":0,"args":{"rendering":"rendering"}},
 {"name":"used/free memory","ph":"C","ts":0,"pid":0,"tid":0,"args":{"usedMemory":1,"freeMemory":42}},
