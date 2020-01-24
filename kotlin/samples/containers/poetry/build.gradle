@@ -39,7 +39,6 @@ dependencies {
   implementation project(':samples:containers:android')
   implementation project(':workflow-runtime')
   implementation deps.androidx.appcompat
-  implementation deps.androidx.lifecycle.extensions
   implementation deps.androidx.lifecycle.reactivestreams
   implementation deps.androidx.recyclerview
   implementation deps.androidx.savedstate
