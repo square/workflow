@@ -248,9 +248,11 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
     newProps: PropsT
   ) {
-    val newState = workflow.onPropsChanged(lastProps, newProps, state)
-    diagnosticListener?.onPropsChanged(diagnosticId, lastProps, newProps, state, newState)
-    state = newState
+    if (newProps != lastProps) {
+      val newState = workflow.onPropsChanged(lastProps, newProps, state)
+      diagnosticListener?.onPropsChanged(diagnosticId, lastProps, newProps, state, newState)
+      state = newState
+    }
     lastProps = newProps
   }
 

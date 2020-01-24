@@ -34,7 +34,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
@@ -74,12 +73,11 @@ class WorkflowDiagnosticListenerIntegrationTest {
       spec = Spec(state = "root state")
 
       // Initial events.
-      assertEquals("state: root state\n", renderings.receive())
+      assertEquals("state: initial state\n", renderings.receive())
       assertEquals(
           listOf(
               "onWorkflowStarted",
               "onBeforeRenderPass",
-              "onPropsChanged",
               "onBeforeWorkflowRendered",
               "onAfterWorkflowRendered",
               "onAfterRenderPass",
@@ -118,7 +116,6 @@ class WorkflowDiagnosticListenerIntegrationTest {
               "onPropsChanged",
               "onBeforeWorkflowRendered",
               "onWorkflowStarted",
-              "onPropsChanged",
               "onBeforeWorkflowRendered",
               "onAfterWorkflowRendered",
               "onAfterWorkflowRendered",
@@ -139,11 +136,9 @@ class WorkflowDiagnosticListenerIntegrationTest {
               "onBeforeRenderPass",
               "onPropsChanged",
               "onBeforeWorkflowRendered",
-              "onPropsChanged",
               "onBeforeWorkflowRendered",
               "onAfterWorkflowRendered",
               "onWorkflowStarted",
-              "onPropsChanged",
               "onBeforeWorkflowRendered",
               "onAfterWorkflowRendered",
               "onAfterWorkflowRendered",
@@ -162,7 +157,6 @@ class WorkflowDiagnosticListenerIntegrationTest {
               "onBeforeRenderPass",
               "onPropsChanged",
               "onBeforeWorkflowRendered",
-              "onPropsChanged",
               "onBeforeWorkflowRendered",
               "onAfterWorkflowRendered",
               "onAfterWorkflowRendered",
@@ -185,17 +179,18 @@ class WorkflowDiagnosticListenerIntegrationTest {
     }
   }
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
+  @UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
   @Test fun `workflow updates emit events in order`() {
+    val propsChannel = Channel<String>(1).apply { offer("initial props") }
     val channel = Channel<String>()
     val worker = channel.asWorker()
     fun action(value: String) = action<Nothing, String> { setOutput("output:$value") }
-    val workflow = Workflow.stateless<Unit, String, Unit> {
+    val workflow = Workflow.stateless<String, String, Unit> {
       runningWorker(worker, "key", ::action)
     }
 
     runBlocking {
-      launchWorkflowIn(this, workflow, flowOf(Unit)) { session ->
+      launchWorkflowIn(this, workflow, propsChannel.consumeAsFlow()) { session ->
         session.diagnosticListener = listener
             .andThen(SimpleLoggingDiagnosticListener())
         session.renderingsAndSnapshots.launchIn(this)
@@ -208,17 +203,8 @@ class WorkflowDiagnosticListenerIntegrationTest {
               "onRuntimeStarted",
               "onWorkflowStarted",
               "onBeforeRenderPass",
-              "onPropsChanged",
               "onBeforeWorkflowRendered",
               "onWorkerStarted",
-              "onAfterWorkflowRendered",
-              "onAfterRenderPass",
-              "onBeforeSnapshotPass",
-              "onAfterSnapshotPass",
-              "onPropsChanged",
-              "onBeforeRenderPass",
-              "onPropsChanged",
-              "onBeforeWorkflowRendered",
               "onAfterWorkflowRendered",
               "onAfterRenderPass",
               "onBeforeSnapshotPass",
@@ -234,6 +220,21 @@ class WorkflowDiagnosticListenerIntegrationTest {
           listOf(
               "onWorkerOutput",
               "onWorkflowAction",
+              "onBeforeRenderPass",
+              "onBeforeWorkflowRendered",
+              "onAfterWorkflowRendered",
+              "onAfterRenderPass",
+              "onBeforeSnapshotPass",
+              "onAfterSnapshotPass"
+          ), listener.consumeEventNames()
+      )
+
+      propsChannel.send("new props")
+      yield()
+      yield()
+      assertEquals(
+          listOf(
+              "onPropsChanged",
               "onBeforeRenderPass",
               "onPropsChanged",
               "onBeforeWorkflowRendered",
