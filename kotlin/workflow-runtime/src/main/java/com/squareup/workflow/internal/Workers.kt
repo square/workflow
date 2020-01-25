@@ -23,14 +23,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
 /**
@@ -42,23 +40,33 @@ import kotlinx.coroutines.plus
 internal fun <T> CoroutineScope.launchWorker(
   worker: Worker<T>,
   key: String,
+  pendingUpdateSink: PendingUpdateSink,
   workerDiagnosticId: Long,
   workflowDiagnosticId: Long,
   diagnosticListener: WorkflowDiagnosticListener?
-): ReceiveChannel<ValueOrDone<T>> = worker.runWithNullCheck()
-    .wireUpDebugger(workerDiagnosticId, workflowDiagnosticId, diagnosticListener)
-    .transformToValueOrDone()
-    .catch { e ->
-      // Workers that failed (as opposed to just cancelled) should have their failure reason
-      // re-thrown from the workflow runtime. If we don't unwrap the cause here, they'll just
-      // cause the runtime to cancel.
-      val cancellationCause = e.unwrapCancellationCause()
-      throw cancellationCause ?: e
+) {
+  val workerFlow = worker.runWithNullCheck()
+      .wireUpDebugger(workerDiagnosticId, workflowDiagnosticId, diagnosticListener)
+      .transformToValueOrDone()
+      .catch { e ->
+        // Workers that failed (as opposed to just cancelled) should have their failure reason
+        // re-thrown from the workflow runtime. If we don't unwrap the cause here, they'll just
+        // cause the runtime to cancel.
+        val cancellationCause = e.unwrapCancellationCause()
+        throw cancellationCause ?: e
+      }
+  val workerScope = createWorkerScope(worker, key)
+
+  workerScope.launch {
+    workerFlow.collect {
+      pendingUpdateSink.update { TODO() }
     }
-    // produceIn implicitly creates a buffer (it uses a Channel to bridge between contexts). This
-    // operator is required to override the default buffer size.
-    .buffer(RENDEZVOUS)
-    .produceIn(createWorkerScope(worker, key))
+  }
+}
+//    // produceIn implicitly creates a buffer (it uses a Channel to bridge between contexts). This
+//    // operator is required to override the default buffer size.
+//    .buffer(RENDEZVOUS)
+//    .produceIn(createWorkerScope(worker, key))
 
 /**
  * In unit tests, if you use a mocking library to create a Worker, the run method will return null

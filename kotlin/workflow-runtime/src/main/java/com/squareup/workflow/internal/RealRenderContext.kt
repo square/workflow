@@ -23,7 +23,6 @@ import com.squareup.workflow.Sink
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
-import kotlinx.coroutines.channels.SendChannel
 
 /**
  * An implementation of [RenderContext] that builds a [Behavior] via [freeze].
@@ -33,7 +32,7 @@ import kotlinx.coroutines.channels.SendChannel
 class RealRenderContext<StateT, OutputT : Any>(
   private val renderer: Renderer<StateT, OutputT>,
   private val workerRunner: WorkerRunner<StateT, OutputT>,
-  private val eventActionsChannel: SendChannel<WorkflowAction<StateT, OutputT>>
+  private val pendingUpdateSink: PendingUpdateSink
 ) : RenderContext<StateT, OutputT>, Sink<WorkflowAction<StateT, OutputT>> {
 
   interface Renderer<StateT, OutputT : Any> {
@@ -72,7 +71,7 @@ class RealRenderContext<StateT, OutputT : Any>(
       // Run the handler synchronously, so we only have to emit the resulting action and don't
       // need the update channel to be generic on each event type.
       val action = handler(event)
-      eventActionsChannel.offer(action)
+      pendingUpdateSink.enqueueUpdate { TODO() }
     }
   }
 
@@ -82,7 +81,7 @@ class RealRenderContext<StateT, OutputT : Any>(
           "Expected sink to not be sent to until after the render pass. Received action: $value"
       )
     }
-    eventActionsChannel.offer(value)
+    pendingUpdateChannel.offer(value)
   }
 
   override fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> renderChild(

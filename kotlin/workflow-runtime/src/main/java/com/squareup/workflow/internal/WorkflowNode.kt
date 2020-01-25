@@ -30,8 +30,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.selects.SelectBuilder
 import okio.ByteString
 import kotlin.coroutines.CoroutineContext
@@ -51,6 +49,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   initialProps: PropsT,
   snapshot: ByteString?,
   baseContext: CoroutineContext,
+  private val pendingUpdateSink: PendingUpdateSink,
   private val emitOutputToParent: (OutputT) -> Any? = { it },
   parentDiagnosticId: Long? = null,
   private val diagnosticListener: WorkflowDiagnosticListener? = null,
@@ -80,8 +79,6 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   private var state: StateT
 
   private var lastProps: PropsT = initialProps
-
-  private val eventActionsChannel = Channel<WorkflowAction<StateT, OutputT>>(capacity = UNLIMITED)
 
   init {
     var restoredFromSnapshot = false
@@ -222,7 +219,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
     val context = RealRenderContext(
         renderer = subtreeManager,
         workerRunner = this,
-        eventActionsChannel = eventActionsChannel
+        pendingUpdateChannel = pendingUpdateChannel
     )
     diagnosticListener?.onBeforeWorkflowRendered(diagnosticId, props, state)
     val rendering = workflow.render(props, state, context)
@@ -270,8 +267,11 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
       workerId = idCounter.createId()
       diagnosticListener.onWorkerStarted(workerId, diagnosticId, key, worker.toString())
     }
-    val workerChannel = launchWorker(worker, key, workerId, diagnosticId, diagnosticListener)
-    return WorkerChildNode(worker, key, workerChannel, handler = handler)
+//    val workerChannel = launchWorker(worker, key, workerId, diagnosticId, diagnosticListener)
+//    return WorkerChildNode(worker, key, workerChannel, handler = handler)
+    val pendingUpdate = {
+
+    }
   }
 
   private fun ByteString.restoreState(): Snapshot? {
