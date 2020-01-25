@@ -22,11 +22,13 @@ import com.squareup.sample.poetry.PoetryViews
 import com.squareup.sample.poetry.model.Poem
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner
+import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.plus
 import com.squareup.workflow.ui.setContentWorkflow
 import timber.log.Timber
 
-private val viewRegistry = SampleContainers + PoetryViews + PoemListLayoutRunner
+private val viewRegistry =
+  SampleContainers + PoetryViews + PoemListLayoutRunner + BackStackContainer
 
 class PoetryActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

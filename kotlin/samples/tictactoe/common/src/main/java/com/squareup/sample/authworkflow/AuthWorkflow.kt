@@ -37,7 +37,7 @@ import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.rx2.asWorker
-import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.backstack.BackStackScreen
 
 /**
  * We define this otherwise redundant typealias to keep composite workflows

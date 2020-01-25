@@ -22,6 +22,7 @@ import com.squareup.sample.dungeon.GameSessionWorkflow.State.Loading
 import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineLayoutRunner
 import com.squareup.sample.todo.R
 import com.squareup.workflow.ui.ViewRegistry
+import com.squareup.workflow.ui.modal.AlertContainer
 import kotlinx.coroutines.Dispatchers
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
@@ -39,7 +40,8 @@ class Component(context: Context) {
       BoardsListLayoutRunner,
       LoadingBinding<Loading>(R.string.loading_board),
       GameLayoutRunner,
-      BoardView
+      BoardView,
+      AlertContainer
   )
 
   val random = Random(System.currentTimeMillis())

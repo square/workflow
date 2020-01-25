@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-  implementation project(':workflow-ui:core:android')
+  implementation project(':workflow-ui:core-android')
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
 

@@ -34,7 +34,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.renderChild
-import com.squareup.workflow.ui.AlertContainerScreen
+import com.squareup.workflow.ui.modal.AlertContainerScreen
 import com.squareup.workflow.workflowAction
 
 /**
@@ -74,7 +74,9 @@ class MainWorkflow(
       // IDE is wrong, removing them breaks the compile.
       // Probably due to https://youtrack.jetbrains.com/issue/KT-32869
       @Suppress("RemoveExplicitTypeArguments")
-      AlertContainerScreen(authScreen.inPanelOver<Any, Any>(emptyGameScreen))
+      (AlertContainerScreen(
+          authScreen.inPanelOver<Any, Any>(emptyGameScreen)
+      ))
     }
 
     is RunningGame -> {

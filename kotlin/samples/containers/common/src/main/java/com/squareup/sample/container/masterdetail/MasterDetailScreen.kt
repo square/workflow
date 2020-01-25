@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.container.masterdetail
 
-import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.backstack.BackStackScreen
 
 /**
  * Rendering type for master / detail containers, with [BackStackScreen] in both roles.

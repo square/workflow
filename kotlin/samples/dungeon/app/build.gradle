@@ -32,7 +32,7 @@ android {
 dependencies {
   implementation project(':samples:dungeon:common')
   implementation project(':samples:dungeon:timemachine-shakeable')
-  implementation project(':workflow-ui:core:android')
+  implementation project(':workflow-ui:modal-android')
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
   implementation project(':workflow-tracing')

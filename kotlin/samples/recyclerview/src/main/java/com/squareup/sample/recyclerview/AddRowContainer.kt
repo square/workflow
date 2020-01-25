@@ -15,9 +15,9 @@
  */
 package com.squareup.sample.recyclerview
 
-import com.squareup.workflow.ui.ModalContainer
-import com.squareup.workflow.ui.ModalViewContainer
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.modal.ModalContainer
+import com.squareup.workflow.ui.modal.ModalViewContainer
 
 /**
  * A simple [ModalContainer] [ViewBinding] that knows how to render [AppWorkflow.Rendering]s.

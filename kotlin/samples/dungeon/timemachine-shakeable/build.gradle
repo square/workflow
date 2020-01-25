@@ -24,7 +24,7 @@ android rootProject.ext.defaultAndroidConfig
 dependencies {
   api project(':samples:dungeon:timemachine')
 
-  implementation project(':workflow-ui:core:android')
+  implementation project(':workflow-ui:core-android')
   implementation deps.androidx.constraint_layout
   implementation deps.androidx.material
   implementation deps.kotlin.stdLib.jdk8

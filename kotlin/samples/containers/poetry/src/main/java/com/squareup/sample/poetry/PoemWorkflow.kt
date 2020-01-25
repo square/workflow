@@ -35,8 +35,8 @@ import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.WorkflowAction.Mutator
 import com.squareup.workflow.parse
-import com.squareup.workflow.ui.BackStackScreen
-import com.squareup.workflow.ui.toBackStackScreen
+import com.squareup.workflow.ui.backstack.BackStackScreen
+import com.squareup.workflow.ui.backstack.toBackStackScreen
 
 /**
  * Renders a [Poem] as a [MasterDetailScreen], whose master is a [StanzaListRendering]

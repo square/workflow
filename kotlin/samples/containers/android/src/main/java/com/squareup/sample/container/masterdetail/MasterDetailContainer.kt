@@ -22,11 +22,11 @@ import com.squareup.sample.container.R
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Single
-import com.squareup.workflow.ui.BackStackScreen
 import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding
 import com.squareup.workflow.ui.WorkflowViewStub
+import com.squareup.workflow.ui.backstack.BackStackScreen
 
 /**
  * Displays [MasterDetailScreen] renderings in either split pane or single pane

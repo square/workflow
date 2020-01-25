@@ -16,7 +16,7 @@
 package com.squareup.sample.container.masterdetail
 
 import com.google.common.truth.Truth.assertThat
-import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.backstack.BackStackScreen
 import org.junit.Test
 
 class MasterDetailScreenTest {

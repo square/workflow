@@ -21,10 +21,12 @@ import com.squareup.sample.container.SampleContainers
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
+import com.squareup.workflow.ui.modal.AlertContainer
 import com.squareup.workflow.ui.plus
 import com.squareup.workflow.ui.setContentWorkflow
 
-private val viewRegistry = ViewRegistry(HelloBackButtonLayoutRunner) + SampleContainers
+private val viewRegistry =
+  ViewRegistry(HelloBackButtonLayoutRunner) + SampleContainers + AlertContainer
 
 class HelloBackButtonActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

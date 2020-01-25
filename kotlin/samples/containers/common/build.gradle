@@ -17,7 +17,8 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 
 dependencies {
-  implementation project(':workflow-ui:core:common')
+  implementation project(':workflow-ui:backstack-common')
+  implementation project(':workflow-ui:modal-common')
   implementation project(':workflow-core')
   implementation project(':workflow-rx2')
 
