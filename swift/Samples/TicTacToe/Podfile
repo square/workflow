@@ -9,5 +9,7 @@ target 'TicTacToe' do
 end
 
 target 'TicTacToeTests' do
+	pod 'RxTest'
+	
     pod 'WorkflowTesting', path: '../../../WorkflowTesting.podspec', :testspecs => ['Tests']
 end

@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import ReactiveSwift
 
-extension Signal {
+public extension Signal {
     func asObservable() -> Observable<Value> {
             let subject = PublishSubject<Value>()
         
@@ -38,7 +38,7 @@ extension Signal {
     }
 }
 
-extension ObservableType {
+public extension ObservableType {
     func asSignalProducer() -> SignalProducer<Element, Error> {
         return SignalProducer<Element, Error>({ (observer, lifetime) in
             let disposable = self

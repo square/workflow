@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		360F145D23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F145C23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift */; };
+		36B0534F23D261B800A09BE9 /* ReactiveFrameworksAdaptersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B0534E23D261B800A09BE9 /* ReactiveFrameworksAdaptersTests.swift */; };
+		36B0535023D264BE00A09BE9 /* ReactiveFrameworksAdapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F145C23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift */; };
 		4152916D2353C4F800A8050C /* TicTacToeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4152916C2353C4F800A8050C /* TicTacToeTests.swift */; };
 		62A30BADED1D3CC18B3B931F /* libPods-TicTacToeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB1495588C5D882E35D1176 /* libPods-TicTacToeTests.a */; };
 		E80216A8230DEBAE00D77178 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80216A7230DEBAE00D77178 /* AppDelegate.swift */; };
@@ -41,6 +43,7 @@
 /* Begin PBXFileReference section */
 		1C47F98484DD313B41812898 /* libPods-TicTacToe.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicTacToe.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		360F145C23D14C9A000D1769 /* ReactiveFrameworksAdapters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReactiveFrameworksAdapters.swift; sourceTree = "<group>"; };
+		36B0534E23D261B800A09BE9 /* ReactiveFrameworksAdaptersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveFrameworksAdaptersTests.swift; sourceTree = "<group>"; };
 		4152916A2353C4F800A8050C /* TicTacToeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4152916C2353C4F800A8050C /* TicTacToeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToeTests.swift; sourceTree = "<group>"; };
 		4152916E2353C4F800A8050C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -93,6 +96,7 @@
 			children = (
 				4152916C2353C4F800A8050C /* TicTacToeTests.swift */,
 				4152916E2353C4F800A8050C /* Info.plist */,
+				36B0534E23D261B800A09BE9 /* ReactiveFrameworksAdaptersTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -350,7 +354,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36B0534F23D261B800A09BE9 /* ReactiveFrameworksAdaptersTests.swift in Sources */,
 				4152916D2353C4F800A8050C /* TicTacToeTests.swift in Sources */,
+				36B0535023D264BE00A09BE9 /* ReactiveFrameworksAdapters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
