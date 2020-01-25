@@ -75,7 +75,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
-    public func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+    public func awaitResult<W, Action>(for worker: W, key: String = "", outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
         fatalError()
     }
     
@@ -114,9 +114,9 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         }
 
 
-        override func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+        override func awaitResult<W, Action>(for worker: W, key: String = "", outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
             assertStillValid()
-            implementation.awaitResult(for: worker, outputMap: outputMap)
+            implementation.awaitResult(for: worker, key: key, outputMap: outputMap)
         }
         
         private func assertStillValid() {
@@ -137,7 +137,7 @@ internal protocol RenderContextType: class {
 
     func subscribe<Action>(signal: Signal<Action, Never>) where Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
-    func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
+    func awaitResult<W, Action>(for worker: W, key: String, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
     
 }
 
@@ -157,12 +157,12 @@ extension RenderContext {
 
 extension RenderContext {
 
-    public func awaitResult<W>(for worker: W) where W : Worker, W.Output : WorkflowAction, WorkflowType == W.Output.WorkflowType {
-        awaitResult(for: worker, outputMap: { $0 })
+    public func awaitResult<W>(for worker: W, key: String = "") where W : Worker, W.Output : WorkflowAction, WorkflowType == W.Output.WorkflowType {
+        awaitResult(for: worker, key: key, outputMap: { $0 })
     }
 
-    public func awaitResult<W>(for worker: W, onOutput: @escaping (W.Output, inout WorkflowType.State) -> WorkflowType.Output?) where W: Worker {
-        awaitResult(for: worker) { output in
+    public func awaitResult<W>(for worker: W, key: String = "", onOutput: @escaping (W.Output, inout WorkflowType.State) -> WorkflowType.Output?) where W: Worker {
+        awaitResult(for: worker, key: key) { output in
             return AnyWorkflowAction<WorkflowType> { state in
                 return onOutput(output, &state)
             }

@@ -282,10 +282,9 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
             }
     }
 
-    func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
-
+    func awaitResult<W, Action>(for worker: W, key: String = "", outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
         guard let workerIndex = expectations.expectedWorkers.firstIndex(where: { (expectedWorker) -> Bool in
-            return expectedWorker.isEquivalent(to: worker)
+            return expectedWorker.isEquivalent(to: worker) && expectedWorker.key == key
         }) else {
             XCTFail("Unexpected worker during render \(worker)", file: file, line: line)
             return

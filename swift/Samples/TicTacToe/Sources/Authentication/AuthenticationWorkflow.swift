@@ -111,7 +111,62 @@ extension AuthenticationWorkflow {
 
 // MARK: Workers
 
-extension AuthenticationWorkflow {}
+extension AuthenticationWorkflow {
+    
+    struct AuthorizingEmailPasswordWorker: Worker {
+        
+        typealias Output = Action
+        
+        var authenticationService: AuthenticationService
+        var email: String
+        var password: String
+        
+        func run() -> SignalProducer<Output, Never> {
+            return authenticationService
+                .login(email: email, password: password)
+                .map({ response -> Action in
+                    return .authenticationSucceeded(response: response)
+                })
+                .flatMapError {
+                    SignalProducer(value: .authenticationError($0))
+            }
+        }
+        
+        func isEquivalent(to otherWorker: AuthorizingEmailPasswordWorker) -> Bool {
+            return email == otherWorker.email
+                && password == otherWorker.password
+        }
+        
+    }
+    
+    struct AuthorizingTwoFactorWorker: Worker {
+        
+        typealias Output = Action
+        
+        var authenticationService: AuthenticationService
+        var intermediateToken: String
+        var twoFactorCode: String
+        
+        func run() -> SignalProducer<Output, Never> {
+            return authenticationService
+                .secondFactor(
+                    token: intermediateToken,
+                    secondFactor: twoFactorCode)
+                .map {
+                    .authenticationSucceeded(response: $0)
+                }
+                .flatMapError {
+                    SignalProducer(value: .authenticationError($0))
+            }
+        }
+        
+        func isEquivalent(to otherWorker: AuthenticationWorkflow.AuthorizingTwoFactorWorker) -> Bool {
+            return intermediateToken == otherWorker.intermediateToken
+                && twoFactorCode == otherWorker.twoFactorCode
+        }
+    }
+    
+}
 
 // MARK: Rendering
 
@@ -145,18 +200,13 @@ extension AuthenticationWorkflow {
             break
 
         case .authorizingEmailPassword(email: let email, password: let password):
-            let worker = authenticationService
-                .login(email: email, password: password)
-                .asWorker()
-            
-            context.awaitResult(for: worker) { (output) -> Action in
-                switch output {
-                case .success(let response):
-                    return .authenticationSucceeded(response: response)
-                case .failure(let error):
-                    return .authenticationError(error)
-                }
-            }
+            context.awaitResult(for:
+                AuthorizingEmailPasswordWorker(
+                    authenticationService: authenticationService,
+                    email: email,
+                    password: password
+                )
+            )
 
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))
 
@@ -167,18 +217,13 @@ extension AuthenticationWorkflow {
                 sink: sink))
 
         case .authorizingTwoFactor(twoFactorCode: let twoFactorCode, intermediateSession: let intermediateSession):
-            let worker = authenticationService
-                .secondFactor(token: intermediateSession, secondFactor: twoFactorCode)
-                .asWorker()
-
-            context.awaitResult(for: worker) { (output) -> Action in
-                switch output {
-                case .success(let response):
-                    return .authenticationSucceeded(response: response)
-                case .failure(let error):
-                    return .authenticationError(error)
-                }
-            }
+            context.awaitResult(
+                for: AuthorizingTwoFactorWorker(
+                    authenticationService: authenticationService,
+                    intermediateToken: intermediateSession,
+                    twoFactorCode: twoFactorCode
+                )
+            )
 
             backStackItems.append(twoFactorScreen(error: nil, intermediateSession: intermediateSession, sink: sink))
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))

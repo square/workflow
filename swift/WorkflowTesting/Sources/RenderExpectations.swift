@@ -75,13 +75,15 @@ public struct ExpectedState<WorkflowType: Workflow> {
 
 
 public struct ExpectedWorker {
+    let key: String
     let worker: Any
     private let output: Any?
 
     /// Create a new expected worker with an optional output. If `output` is not nil, it will be emitted
     /// when this worker is declared in the render pass.
-    public init<WorkerType: Worker>(worker: WorkerType, output: WorkerType.Output? = nil) {
+    public init<WorkerType: Worker>(worker: WorkerType, key: String = "", output: WorkerType.Output? = nil) {
         self.worker = worker
+        self.key = key
         self.output = output
     }
 

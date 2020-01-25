@@ -30,11 +30,11 @@ extension WorkflowNode {
         /// Reusable sinks from the previous render pass
         private var previousSinks: [ObjectIdentifier:AnyReusableSink] = [:]
 
-        /// The current array of children
+        /// The current dictionary of children
         private (set) internal var childWorkflows: [ChildKey:AnyChildWorkflow] = [:]
 
-        /// The current array of workers
-        private (set) internal var childWorkers: [AnyChildWorker] = []
+        /// The current dictionary of workers
+        private (set) internal var childWorkers: [ChildKey:AnyChildWorker] = [:]
 
         /// Subscriptions from the outside world.
         private var subscriptions: Subscriptions = Subscriptions(eventSources: [], eventPipe: EventPipe())
@@ -53,7 +53,8 @@ extension WorkflowNode {
             let context = Context(
                 previousSinks: previousSinks,
                 originalChildWorkflows: childWorkflows,
-                originalChildWorkers: childWorkers)
+                originalChildWorkers: childWorkers
+            )
 
             let wrapped = RenderContext.make(implementation: context)
 
@@ -155,12 +156,12 @@ extension WorkflowNode.SubtreeManager {
         private let originalChildWorkflows: [ChildKey:AnyChildWorkflow]
         private (set) internal var usedChildWorkflows: [ChildKey:AnyChildWorkflow]
 
-        private let originalChildWorkers: [AnyChildWorker]
-        private (set) internal var usedChildWorkers: [AnyChildWorker]
+        private let originalChildWorkers: [ChildKey:AnyChildWorker]
+        private (set) internal var usedChildWorkers: [ChildKey:AnyChildWorker]
 
         private (set) internal var eventSources: [Signal<AnyWorkflowAction<WorkflowType>, Never>] = []
 
-        internal init(previousSinks: [ObjectIdentifier:AnyReusableSink], originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalChildWorkers: [AnyChildWorker]) {
+        internal init(previousSinks: [ObjectIdentifier:AnyReusableSink], originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalChildWorkers: [ChildKey:AnyChildWorker]) {
             self.eventPipes = []
 
             self.sinkStore = SinkStore(previousSinks: previousSinks)
@@ -169,7 +170,7 @@ extension WorkflowNode.SubtreeManager {
             self.usedChildWorkflows = [:]
 
             self.originalChildWorkers = originalChildWorkers
-            self.usedChildWorkers = []
+            self.usedChildWorkers = [:]
         }
 
         func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child : Workflow, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
@@ -232,21 +233,27 @@ extension WorkflowNode.SubtreeManager {
             eventSources.append(signal.map { AnyWorkflowAction($0) })
         }
 
-        func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-
+        func awaitResult<W, Action>(for worker: W, key: String = "", outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+            
+            /// A unique key used to identify this worker
+            let childKey = ChildKey(childType: W.self, key: key)
+            
+            let childWorker: ChildWorker<W>
+            
             let outputMap = { AnyWorkflowAction(outputMap($0)) }
             let eventPipe = EventPipe()
             self.eventPipes.append(eventPipe)
 
-            if let existingWorker = originalChildWorkers
-                .compactMap({ $0 as? ChildWorker<W> })
-                .first(where: { $0.worker.isEquivalent(to: worker) }) {
+            if let existingWorker = originalChildWorkers[childKey] as? ChildWorker<W>,
+                existingWorker.worker.isEquivalent(to: worker) {
                 existingWorker.update(outputMap: outputMap, eventPipe: eventPipe)
-                usedChildWorkers.append(existingWorker)
+                
+                childWorker = existingWorker
             } else {
-                let newChildWorker = ChildWorker(worker: worker, outputMap: outputMap, eventPipe: eventPipe)
-                usedChildWorkers.append(newChildWorker)
+                childWorker = ChildWorker(worker: worker, outputMap: outputMap, eventPipe: eventPipe)
             }
+            
+            usedChildWorkers[childKey] = childWorker
         }
         
     }
