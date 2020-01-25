@@ -21,12 +21,14 @@ import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Sink
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
+import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Companion.emitOutput
 import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.action
 import com.squareup.workflow.asWorker
+import com.squareup.workflow.contraMap
 import com.squareup.workflow.makeEventSink
 import com.squareup.workflow.parse
 import com.squareup.workflow.readUtf8WithLength
@@ -165,7 +167,7 @@ class WorkflowNodeTest {
         return ""
       }
     }
-    val node = WorkflowNode(workflow.id(), workflow, "", null, context)
+    val node = WorkflowNode(workflow.id(), workflow, "", null, context, { "tick:$it" })
     node.render(workflow, "")
 
     sink.send("event")
@@ -173,7 +175,7 @@ class WorkflowNodeTest {
     val result = runBlocking {
       withTimeout(10) {
         select<String?> {
-          node.tick(this) { "tick:$it" }
+          node.tick(this)
         }
       }
     }
@@ -200,7 +202,7 @@ class WorkflowNodeTest {
         return ""
       }
     }
-    val node = WorkflowNode(workflow.id(), workflow, "", null, context)
+    val node = WorkflowNode(workflow.id(), workflow, "", null, context, { "tick:$it" })
     node.render(workflow, "")
 
     sink.send("event")
@@ -208,14 +210,14 @@ class WorkflowNodeTest {
 
     val result = runBlocking {
       withTimeout(10) {
-        List(2) { i ->
+        List(2) {
           select<String?> {
-            node.tick(this) { "tick$i:$it" }
+            node.tick(this)
           }
         }
       }
     }
-    assertEquals(listOf("tick0:event", "tick1:event2"), result)
+    assertEquals(listOf("tick:event", "tick:event2"), result)
   }
 
   @Test fun `send allows subsequent events on same rendering`() {
@@ -312,7 +314,7 @@ class WorkflowNodeTest {
       try {
         withTimeout(1) {
           select<String?> {
-            node.tick(this) { it }
+            node.tick(this)
           }
         }
         fail("Expected exception")
@@ -324,7 +326,7 @@ class WorkflowNodeTest {
 
       withTimeout(1) {
         select<String?> {
-          node.tick(this) { it }
+          node.tick(this)
         }
       }
     }
@@ -379,7 +381,7 @@ class WorkflowNodeTest {
       // This tick will process the event handler, it won't close the channel yet.
       withTimeout(1) {
         select<String?> {
-          node.tick(this) { it }
+          node.tick(this)
         }
       }
 
@@ -749,7 +751,7 @@ class WorkflowNodeTest {
       // update.
       launch(start = UNDISPATCHED) {
         select<String?> {
-          node.tick(this) { null }
+          node.tick(this)
         }
       }
       yield()
@@ -805,7 +807,7 @@ class WorkflowNodeTest {
       // update.
       launch(start = UNDISPATCHED) {
         select<String?> {
-          node.tick(this) { null }
+          node.tick(this)
         }
       }
       yield()
@@ -872,5 +874,167 @@ class WorkflowNodeTest {
             "Received action: TestAction()",
         error.message
     )
+  }
+
+  @Test fun `actionSink action changes state`() {
+    val workflow = Workflow.stateful<Unit, String, Nothing, Pair<String, Sink<String>>>(
+        initialState = { "initial" },
+        render = { _, state ->
+          state to actionSink.contraMap {
+            action { nextState = "$nextState->$it" }
+          }
+        }
+    )
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = Unit,
+        snapshot = null,
+        baseContext = Unconfined
+    )
+    val (_, sink) = node.render(workflow.asStatefulWorkflow(), Unit)
+
+    sink.send("hello")
+
+    runBlocking {
+      select<String?> {
+        node.tick(this)
+      }
+    }
+
+    val (state, _) = node.render(workflow.asStatefulWorkflow(), Unit)
+    assertEquals("initial->hello", state)
+  }
+
+  @Test fun `actionSink action emits output`() {
+    val workflow = Workflow.stateless<Unit, String, Sink<String>> {
+      actionSink.contraMap { action { setOutput(it) } }
+    }
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = Unit,
+        snapshot = null,
+        baseContext = Unconfined,
+        emitOutputToParent = { "output:$it" }
+    )
+    val rendering = node.render(workflow.asStatefulWorkflow(), Unit)
+
+    rendering.send("hello")
+
+    val output = runBlocking {
+      select<String?> {
+        node.tick(this)
+      }
+    }
+
+    assertEquals("output:hello", output)
+  }
+
+  @Test fun `worker action changes state`() {
+    val workflow = Workflow.stateful<Unit, String, Nothing, String>(
+        initialState = { "initial" },
+        render = { _, state ->
+          runningWorker(Worker.from { "hello" }) { action { nextState = "$nextState->$it" } }
+          return@stateful state
+        }
+    )
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = Unit,
+        snapshot = null,
+        baseContext = Unconfined
+    )
+    node.render(workflow.asStatefulWorkflow(), Unit)
+
+    runBlocking {
+      select<String?> {
+        node.tick(this)
+      }
+    }
+
+    val state = node.render(workflow.asStatefulWorkflow(), Unit)
+    assertEquals("initial->hello", state)
+  }
+
+  @Test fun `worker action emits output`() {
+    val workflow = Worker.from { "hello" }
+        .asWorkflow()
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = Unit,
+        snapshot = null,
+        baseContext = Unconfined,
+        emitOutputToParent = { "output:$it" }
+    )
+    node.render(workflow.asStatefulWorkflow(), Unit)
+
+    val output = runBlocking {
+      select<String?> {
+        node.tick(this)
+      }
+    }
+
+    assertEquals("output:hello", output)
+  }
+
+  @Test fun `child action changes state`() {
+    val child = Worker.from { "hello" }
+        .asWorkflow()
+    val workflow = Workflow.stateful<Unit, String, Nothing, String>(
+        initialState = { "initial" },
+        render = { _, state ->
+          renderChild(child) { action { nextState = "$nextState->$it" } }
+          return@stateful state
+        }
+    )
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = Unit,
+        snapshot = null,
+        baseContext = Unconfined
+    )
+    node.render(workflow.asStatefulWorkflow(), Unit)
+
+    runBlocking {
+      select<String?> {
+        node.tick(this)
+      }
+    }
+
+    val state = node.render(workflow.asStatefulWorkflow(), Unit)
+    assertEquals("initial->hello", state)
+  }
+
+  @Test fun `child action emits output`() {
+    val child = Worker.from { "hello" }
+        .asWorkflow()
+    val workflow = Workflow.stateless<Unit, String, Unit> {
+      renderChild(child) { action { setOutput("child:$it") } }
+    }
+    val node = WorkflowNode(
+        workflow.id(),
+        workflow.asStatefulWorkflow(),
+        initialProps = Unit,
+        snapshot = null,
+        baseContext = Unconfined,
+        emitOutputToParent = { "output:$it" }
+    )
+    node.render(workflow.asStatefulWorkflow(), Unit)
+
+    val output = runBlocking {
+      select<String?> {
+        node.tick(this)
+      }
+    }
+
+    assertEquals("output:child:hello", output)
+  }
+
+  private fun <T : Any> Worker<T>.asWorkflow() = Workflow.stateless<Unit, T, Unit> {
+    runningWorker(this@asWorkflow) { action { setOutput(it) } }
   }
 }

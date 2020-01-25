@@ -92,6 +92,7 @@ import kotlin.coroutines.CoroutineContext
  */
 internal class SubtreeManager<StateT, OutputT : Any>(
   private val contextForChildren: CoroutineContext,
+  private val emitActionToParent: (WorkflowAction<StateT, OutputT>) -> Any?,
   private val parentDiagnosticId: Long,
   private val diagnosticListener: WorkflowDiagnosticListener? = null,
   private val idCounter: IdCounter? = null
@@ -150,16 +151,9 @@ internal class SubtreeManager<StateT, OutputT : Any>(
    * Uses [selector] to invoke [WorkflowNode.tick] for every running child workflow this instance
    * is managing.
    */
-  fun <T : Any> tickChildren(
-    selector: SelectBuilder<T?>,
-    handler: (WorkflowAction<StateT, OutputT>) -> T?
-  ) {
+  fun <T : Any> tickChildren(selector: SelectBuilder<T?>) {
     children.forEachActive { child ->
-      child.workflowNode.tick(selector) { output ->
-        val componentUpdate = child.acceptChildOutput(output)
-        @Suppress("UNCHECKED_CAST")
-        return@tick handler(componentUpdate as WorkflowAction<StateT, OutputT>)
-      }
+      child.workflowNode.tick(selector)
     }
   }
 
@@ -187,16 +181,25 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): WorkflowChildNode<ChildPropsT, ChildOutputT, StateT, OutputT> {
     val id = child.id(key)
+    lateinit var node: WorkflowChildNode<ChildPropsT, ChildOutputT, StateT, OutputT>
+
+    fun acceptChildOutput(output: ChildOutputT): Any? {
+      val action = node.acceptChildOutput(output)
+      return emitActionToParent(action)
+    }
+
     val workflowNode = WorkflowNode(
         id,
         child.asStatefulWorkflow(),
         initialProps,
         snapshotCache[id],
         contextForChildren,
+        ::acceptChildOutput,
         parentDiagnosticId,
         diagnosticListener,
         idCounter
     )
     return WorkflowChildNode(child, handler, workflowNode)
+        .also { node = it }
   }
 }
