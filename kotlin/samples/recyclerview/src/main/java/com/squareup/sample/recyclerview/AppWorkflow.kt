@@ -67,7 +67,7 @@ object AppWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
   )
 
   data class Rendering(
-    override val baseScreen: BaseScreen,
+    override val beneathModals: BaseScreen,
     val popup: ChooseRowTypeScreen? = null
   ) : HasModals<BaseScreen, ChooseRowTypeScreen> {
     override val modals: List<ChooseRowTypeScreen>
@@ -105,7 +105,7 @@ object AppWorkflow : StatefulWorkflow<Unit, State, Nothing, Rendering>() {
     return when (state) {
       is ShowList -> Rendering(baseScreen)
       is ChooseNewRow -> Rendering(
-          baseScreen = baseScreen,
+          beneathModals = baseScreen,
           popup = ChooseRowTypeScreen(
               options = allRowTypes.map { it.description },
               onSelectionTapped = { index -> context.actionSink.send(CommitNewRowAction(index)) }

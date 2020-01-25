@@ -17,11 +17,12 @@ package com.squareup.workflow.ui
 
 /**
  * Interface implemented by screen classes that represent a stack of
- * zero or more [modal][M] screens above a [baseScreen]. Use of this
- * interface allows platform specific containers to share base classes,
+ * zero or more [modal][M] screens above a [base screen][beneathModals].
+ *
+ * Use of this interface allows platform specific containers to share base classes,
  * like `ModalContainer` in the `workflow-ui-android` module.
  */
 interface HasModals<out B : Any, out M : Any> {
-  val baseScreen: B
+  val beneathModals: B
   val modals: List<M>
 }

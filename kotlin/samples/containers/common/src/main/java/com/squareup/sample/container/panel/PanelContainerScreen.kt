@@ -23,6 +23,10 @@ import com.squareup.workflow.ui.HasModals
  * nested [sub-flows][modals] over a [baseScreen]. Demonstrates how an app
  * can set up a custom modal design element.
  *
+ * Note the trickiness with our implementation of [HasModals], the interface
+ * that drives Workflow's `ModalContainer`. We wrap the base in a [ScrimContainerScreen]
+ * to give ourselves control over how the base is dimmed when the card modal is shown.
+ *
  * Tic Tac Workflow uses modals for two purposes:
  *
  *  - Alerts, via the stock `AlertContainerScreen`
@@ -32,9 +36,15 @@ import com.squareup.workflow.ui.HasModals
  *    tasks which take multiple steps and involve going backward and forward.
  */
 data class PanelContainerScreen<B : Any, T : Any>(
-  override val baseScreen: B,
+  val baseScreen: B,
   override val modals: List<BackStackScreen<T>> = emptyList()
-) : HasModals<B, BackStackScreen<T>>
+) : HasModals<ScrimContainerScreen<B>, BackStackScreen<T>> {
+  override val beneathModals: ScrimContainerScreen<B>
+    get() = ScrimContainerScreen(
+        wrapped = baseScreen,
+        dimmed = modals.isNotEmpty()
+    )
+}
 
 /**
  * Shows the receiving [BackStackScreen] in the only panel over [baseScreen].

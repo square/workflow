@@ -26,21 +26,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import androidx.annotation.IdRes
-import androidx.annotation.StyleRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.squareup.workflow.ui.ModalContainer.Companion.forAlertContainerScreen
-import com.squareup.workflow.ui.ModalContainer.Companion.forContainerScreen
 
 /**
- * Base class for containers that show [HasModals.modals] in [Dialog]s.
- *
- * The concrete implementations returned by the factory methods [forAlertContainerScreen]
- * and [forContainerScreen] should cover many specific needs, and where those are too
- * limiting subclasses are simple to create.
+ * Base class for containers that show [HasModals.modals] in [Dialog] windows.
  *
  * @param ModalRenderingT the type of the nested renderings to be shown in a dialog window.
  */
@@ -61,7 +53,7 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
     newScreen: HasModals<*, ModalRenderingT>,
     containerHints: ContainerHints
   ) {
-    baseView.update(newScreen.baseScreen, containerHints)
+    baseView.update(newScreen.beneathModals, containerHints)
 
     val newDialogs = mutableListOf<DialogRef<ModalRenderingT>>()
     for ((i, modal) in newScreen.modals.withIndex()) {
@@ -204,46 +196,6 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
 
       override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
     }
-  }
-
-  companion object {
-    /**
-     * Creates a [ViewBinding] to show the [AlertScreen]s of an [AlertContainerScreen]
-     * as Android `AlertDialog`s.
-     *
-     * @param dialogThemeResId the resource ID of the theme against which to inflate
-     * dialogs. Defaults to `0` to use the parent `context`'s default alert dialog theme.
-     */
-    fun forAlertContainerScreen(
-      @StyleRes dialogThemeResId: Int = 0
-    ): ViewBinding<AlertContainerScreen<*>> = AlertContainer.Binding(dialogThemeResId)
-
-    /**
-     * Creates a [ViewBinding] for modal container screens of type [H].
-     *
-     * Each view created for [HasModals.modals] will be shown in a [Dialog]
-     * whose window is set to size itself to `WRAP_CONTENT` (see [android.view.Window.setLayout]).
-     * Two customization hooks are provided: you can specify a [theme][dialogThemeResId] to be
-     * applied to the dialog window; and/or provide a [function][modalDecorator] to decorate
-     * the view to set as the [dialog's content][Dialog.setContentView].
-     *
-     * @param id a unique identifier for containers of this type, allowing them to participate
-     * view persistence
-     *
-     * @param dialogThemeResId a style resource describing the theme to use for dialog
-     * windows. Defaults to `0` to use the default dialog theme.
-     *
-     * @param modalDecorator a function to apply to each [modal][HasModals.modals] view
-     * created before it is passed to [android.app.Dialog.setContentView].
-     * Defaults to making no changes.
-     */
-    inline fun <reified H : HasModals<*, *>> forContainerScreen(
-      @IdRes id: Int,
-      @StyleRes dialogThemeResId: Int = 0,
-      noinline modalDecorator: (View) -> View = { it }
-    ): ViewBinding<H> = ModalViewContainer.Binding(
-        id, H::class, dialogThemeResId, modalDecorator
-    )
   }
 }
 
