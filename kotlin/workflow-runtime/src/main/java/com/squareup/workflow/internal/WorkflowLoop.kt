@@ -121,7 +121,7 @@ internal open class RealWorkflowLoop : WorkflowLoop {
             }
 
             // Tick the workflow tree.
-            rootNode.tick(this) { it }
+            rootNode.tick(this)
           }
         }
         // Compiler gets confused, and thinks both that this throw is unreachable, and without the
