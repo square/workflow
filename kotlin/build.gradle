@@ -64,7 +64,7 @@ buildscript {
       'timber': "com.jakewharton.timber:timber:4.7.1",
 
       'kotlin': [
-          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60",
+          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61",
           'stdLib': [
               'common': "org.jetbrains.kotlin:kotlin-stdlib-common",
               'jdk8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
@@ -78,9 +78,9 @@ buildscript {
               'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.3"
           ],
           'moshi': "com.squareup.moshi:moshi-kotlin:1.9.2",
-          'reflect': "org.jetbrains.kotlin:kotlin-reflect:1.3.60",
+          'reflect': "org.jetbrains.kotlin:kotlin-reflect:1.3.61",
           'serialization': [
-              'gradlePlugin': "org.jetbrains.kotlin:kotlin-serialization:1.3.60",
+              'gradlePlugin': "org.jetbrains.kotlin:kotlin-serialization:1.3.61",
               'runtime': "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0",
               'kaml': "com.charleskorn.kaml:kaml:0.15.0",
           ],
