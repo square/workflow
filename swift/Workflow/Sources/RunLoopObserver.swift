@@ -18,10 +18,10 @@ import CoreFoundation
 
 /// Swift wrapper for `CFRunLoopObserver`
 internal final class RunLoopObserver {
-    private var observer: CFRunLoopObserver!
+    private let observer: CFRunLoopObserver
 
     /// Creates a `RunLoopObserver` and adds it to the given run loop for the given run loop modes. See the docs for `CFRunLoopObserverCreateWithHandler` for documentation.
-    init(
+    init?(
         runLoop: CFRunLoop = CFRunLoopGetCurrent(),
         activityStages: CFRunLoopActivity,
         repeats: Bool = true,
@@ -29,15 +29,15 @@ internal final class RunLoopObserver {
         runLoopModes: CFRunLoopMode = .defaultMode,
         callback: @escaping (_ activityStage: CFRunLoopActivity) -> Void
     ) {
-        observer = CFRunLoopObserverCreateWithHandler(
+        guard let observer = CFRunLoopObserverCreateWithHandler(
             kCFAllocatorDefault,
             activityStages.rawValue,
             repeats,
             order,
-            { (observer, activityStage) in
-                callback(activityStage)
-            }
-        )
+            { _, activityStage in callback(activityStage) }
+        ) else { return nil }
+
+        self.observer = observer
         CFRunLoopAddObserver(runLoop, observer, runLoopModes)
     }
 

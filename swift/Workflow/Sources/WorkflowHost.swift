@@ -69,9 +69,13 @@ public final class WorkflowHost<WorkflowType: Workflow> {
             self?.handle(output: output)
         }
 
-        runLoopObserver = RunLoopObserver(activityStages: .beforeWaiting, runLoopModes: .commonModes) { [weak self] activity in
+        guard let observer = RunLoopObserver(activityStages: .beforeWaiting, runLoopModes: .commonModes, callback: { [weak self] activity in
             self?.renderIfNeeded()
+        }) else {
+            fatalError("RunLoopObserver initialization failed")
         }
+
+        self.runLoopObserver = observer
     }
 
     public func setNeedsRender() {
