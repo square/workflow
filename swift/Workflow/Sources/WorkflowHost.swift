@@ -78,7 +78,7 @@ public final class WorkflowHost<WorkflowType: Workflow> {
         self.runLoopObserver = observer
     }
 
-    public func setNeedsRender() {
+    private func setNeedsRender() {
         needsRender = true
     }
 
