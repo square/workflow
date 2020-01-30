@@ -15,13 +15,24 @@
  */
 package com.squareup.sample.composecontainer.pictureframe
 
+import androidx.compose.Composable
+import androidx.ui.material.MaterialTheme
+import androidx.ui.tooling.preview.Preview
 import androidx.ui.res.dimensionResource
 import com.squareup.workflow.ui.compose.bindCompose
 import com.squareup.workflow.ui.compose.showRendering
+import com.squareup.workflow.ui.compose.tooling.preview
 
 val PictureFrameBinding = bindCompose<PictureFrameRendering> { rendering, hints ->
   val thickness = dimensionResource(id = rendering.thicknessRes)
   PictureFrame(thickness) {
     hints.showRendering(rendering.contents)
+  }
+}
+
+@Preview(widthDp = 200, heightDp = 200)
+@Composable fun PictureFrameBindingPreview() {
+  MaterialTheme {
+    PictureFrameBinding.preview(PictureFrameRendering(contents = "placeholder"))
   }
 }
