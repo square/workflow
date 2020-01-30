@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'WorkflowSplitScreenContainer'
-  s.version      = '0.22.4' #TODO: Change to latest version number.
+  s.version      = '0.23.0'
   s.summary      = 'See the README.'
   s.homepage     = 'https://www.github.com/square/workflow'
   s.license      = 'Apache License, Version 2.0'
