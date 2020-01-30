@@ -50,6 +50,7 @@ include(
     ":workflow-tracing",
     ":workflow-ui:backstack-common",
     ":workflow-ui:backstack-android",
+    ":workflow-ui:compose-tooling",
     ":workflow-ui:core-common",
     ":workflow-ui:core-compose",
     ":workflow-ui:core-android",

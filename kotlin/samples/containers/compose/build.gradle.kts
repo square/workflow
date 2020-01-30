@@ -26,6 +26,7 @@ android {
     applicationId = "com.squareup.sample.composecontainer"
   }
 }
+apply(from = rootProject.file(".buildscript/android-ui-tests.gradle"))
 
 apply(from = rootProject.file(".buildscript/configure-compose.gradle"))
 tasks.withType<KotlinCompile> {
@@ -44,5 +45,8 @@ dependencies {
   implementation(Dependencies.Compose.material)
   implementation(Dependencies.RxJava2.rxjava2)
 
+  compileOnly(project(":workflow-ui:compose-tooling"))
   compileOnly(Dependencies.Compose.tooling)
+
+  androidTestImplementation(Dependencies.Compose.test)
 }
