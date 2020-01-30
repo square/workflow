@@ -53,5 +53,6 @@ dependencies {
   implementation deps.compose.material
   implementation deps.rxjava2.rxjava2
 
+  debugImplementation project(':workflow-ui:compose-tooling')
   debugImplementation deps.compose.tooling
 }

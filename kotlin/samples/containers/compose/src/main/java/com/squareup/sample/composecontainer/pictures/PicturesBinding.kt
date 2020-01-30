@@ -31,6 +31,9 @@ import androidx.ui.graphics.Canvas
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.layout.LayoutSize
 import androidx.ui.material.CircularProgressIndicator
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.surface.Surface
+import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.IntPx
 import androidx.ui.unit.PxSize
 import androidx.ui.unit.dp
@@ -41,6 +44,7 @@ import coil.size.Precision.EXACT
 import coil.size.Scale.FIT
 import com.squareup.sample.composecontainer.pictures.PicturesWorkflow.Rendering
 import com.squareup.workflow.ui.compose.bindCompose
+import com.squareup.workflow.ui.compose.tooling.preview
 
 val PicturesBinding = bindCompose<Rendering> { rendering, _ ->
   WithConstraints { constraints ->
@@ -62,6 +66,22 @@ val PicturesBinding = bindCompose<Rendering> { rendering, _ ->
           }
         }
       }
+    }
+  }
+}
+
+@Preview
+@Composable
+fun PicturesBindingPreview() {
+  MaterialTheme {
+    Surface {
+      PicturesBinding.preview(
+          Rendering(
+              pictureUrl = "todo",
+              pictureDescription = "The Picture",
+              onTap = {}
+          )
+      )
     }
   }
 }

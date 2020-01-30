@@ -25,6 +25,7 @@ import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
 import com.squareup.sample.hellocomposebinding.HelloWorkflow.Rendering
 import com.squareup.workflow.ui.compose.bindCompose
+import com.squareup.workflow.ui.compose.tooling.preview
 
 val HelloBinding = bindCompose<Rendering> { rendering, _ ->
   MaterialTheme {
@@ -32,23 +33,19 @@ val HelloBinding = bindCompose<Rendering> { rendering, _ ->
   }
 }
 
-@Composable
-private fun DrawHelloRendering(rendering: Rendering) {
+@Preview(heightDp = 150)
+@Composable fun HelloBindingPreview() {
+  Surface {
+    HelloBinding.preview(Rendering("Hello!", onClick = {}))
+  }
+}
+
+@Composable private fun DrawHelloRendering(rendering: Rendering) {
   Ripple(bounded = true) {
     Clickable(onClick = { rendering.onClick() }) {
       Center {
         Text(rendering.message)
       }
-    }
-  }
-}
-
-@Preview(heightDp = 150)
-@Composable
-fun DrawHelloRenderingPreview() {
-  MaterialTheme {
-    Surface {
-      DrawHelloRendering(Rendering("Hello!", onClick = {}))
     }
   }
 }
