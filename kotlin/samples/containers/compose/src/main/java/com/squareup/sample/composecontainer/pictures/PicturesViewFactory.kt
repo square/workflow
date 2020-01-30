@@ -15,14 +15,19 @@
  */
 package com.squareup.sample.composecontainer.pictures
 
+import androidx.compose.Composable
 import androidx.ui.core.Alignment
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.material.CircularProgressIndicator
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.surface.Surface
+import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.squareup.sample.composecontainer.pictures.PicturesWorkflow.Rendering
 import com.squareup.workflow.ui.compose.bindCompose
+import com.squareup.workflow.ui.compose.tooling.preview
 
 val PicturesViewFactory = bindCompose<Rendering> { rendering, _ ->
   CoilImage(
@@ -37,4 +42,20 @@ val PicturesViewFactory = bindCompose<Rendering> { rendering, _ ->
           drawImage()
         }
       })
+}
+
+@Preview
+@Composable
+fun PicturesBindingPreview() {
+  MaterialTheme {
+    Surface {
+      PicturesBinding.preview(
+          Rendering(
+              pictureUrl = "todo",
+              pictureDescription = "The Picture",
+              onTap = {}
+          )
+      )
+    }
+  }
 }
