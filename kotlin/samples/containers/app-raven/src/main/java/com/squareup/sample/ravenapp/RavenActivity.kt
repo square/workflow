@@ -23,11 +23,12 @@ import com.squareup.sample.poetry.PoetryViews
 import com.squareup.sample.poetry.model.Raven
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner
+import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.plus
 import com.squareup.workflow.ui.setContentWorkflow
 import timber.log.Timber
 
-private val viewRegistry = SampleContainers + PoetryViews
+private val viewRegistry = SampleContainers + PoetryViews + BackStackContainer
 
 class RavenActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

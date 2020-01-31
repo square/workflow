@@ -30,19 +30,13 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
-  // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
-  packagingOptions {
-    exclude 'META-INF/atomicfu.kotlin_module'
-    exclude 'META-INF/common.kotlin_module'
-  }
-
   testOptions.unitTests.includeAndroidResources = true
 }
 
 dependencies {
   implementation project(':samples:containers:android')
   implementation project(':samples:tictactoe:common')
-  implementation project(':workflow-ui-android')
+  implementation project(':workflow-ui:core-android')
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
   implementation project(':workflow-tracing')

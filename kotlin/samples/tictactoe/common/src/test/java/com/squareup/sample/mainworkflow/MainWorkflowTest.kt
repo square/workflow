@@ -13,7 +13,7 @@ import com.squareup.workflow.action
 import com.squareup.workflow.rendering
 import com.squareup.workflow.stateless
 import com.squareup.workflow.testing.testFromStart
-import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.backstack.BackStackScreen
 import org.junit.Test
 
 /**

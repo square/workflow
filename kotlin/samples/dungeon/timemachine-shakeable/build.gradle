@@ -21,15 +21,10 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 android rootProject.ext.defaultAndroidConfig
 
-// See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
-android.packagingOptions {
-  exclude 'META-INF/atomicfu.kotlin_module'
-}
-
 dependencies {
   api project(':samples:dungeon:timemachine')
 
-  implementation project(':workflow-ui-android')
+  implementation project(':workflow-ui:core-android')
   implementation deps.androidx.constraint_layout
   implementation deps.androidx.material
   implementation deps.kotlin.stdLib.jdk8

@@ -23,7 +23,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.action
 import com.squareup.workflow.parse
-import com.squareup.workflow.ui.BackStackScreen
+import com.squareup.workflow.ui.backstack.BackStackScreen
 
 typealias SelectedPoem = Int
 

@@ -26,7 +26,7 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.action
 import com.squareup.workflow.renderChild
-import com.squareup.workflow.ui.AlertContainerScreen
+import com.squareup.workflow.ui.modal.AlertContainerScreen
 
 class DungeonAppWorkflow(
   private val gameSessionWorkflow: GameSessionWorkflow,

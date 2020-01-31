@@ -34,7 +34,7 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.WorkflowAction
 import com.squareup.workflow.WorkflowAction.Updater
 import com.squareup.workflow.renderChild
-import com.squareup.workflow.ui.HasModals
+import com.squareup.workflow.ui.modal.HasModals
 
 private val allRowTypes = listOf(
     TextInputRow,
