@@ -27,45 +27,21 @@ public struct BackStackScreen: Screen {
 extension BackStackScreen {
     /// A specific item in the back stack. The key and screen type is used to differentiate reused vs replaced screens.
     public struct Item {
-        public var key: AnyHashable
         public var screen: AnyScreen
-        var screenType: Any.Type
         public var barVisibility: BarVisibility
 
-        public init<ScreenType: Screen, Key: Hashable>(key: Key?, screen: ScreenType, barVisibility: BarVisibility) {
+        public init<ScreenType: Screen>(screen: ScreenType, barVisibility: BarVisibility) {
             self.screen = AnyScreen(screen)
-            self.screenType = ScreenType.self
-
-            if let key = key {
-                self.key = AnyHashable(key)
-            } else {
-                self.key = AnyHashable(ObjectIdentifier(ScreenType.self))
-            }
             self.barVisibility = barVisibility
         }
 
-        public init<ScreenType: Screen>(screen: ScreenType, barVisibility: BarVisibility) {
-            let key = Optional<AnyHashable>.none
-            self.init(key: key, screen: screen, barVisibility: barVisibility)
-        }
-
-        public init<ScreenType: Screen, Key: Hashable>(key: Key?, screen: ScreenType, barContent: BackStackScreen.BarContent) {
-            self.init(key: key, screen: screen, barVisibility: .visible(barContent))
-        }
-
         public init<ScreenType: Screen>(screen: ScreenType, barContent: BackStackScreen.BarContent) {
-            let key = Optional<AnyHashable>.none
-            self.init(key: key, screen: screen, barContent: barContent)
-        }
-
-        public init<ScreenType: Screen, Key: Hashable>(key: Key?, screen: ScreenType) {
-            let barVisibility: BarVisibility = .visible(BarContent())
-            self.init(key: key, screen: screen, barVisibility: barVisibility)
+            self.init(screen: screen, barVisibility: .visible(barContent))
         }
 
         public init<ScreenType: Screen>(screen: ScreenType) {
-            let key = Optional<AnyHashable>.none
-            self.init(key: key, screen: screen)
+            let barVisibility: BarVisibility = .visible(BarContent())
+            self.init(screen: screen, barVisibility: barVisibility)
         }
     }
 }

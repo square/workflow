@@ -126,7 +126,6 @@ extension RootWorkflow {
             .rendered(with: context)
 
         let welcomeBackStackItem = BackStackScreen.Item(
-            key: "welcome",
             screen: welcomeScreen,
             // Hide the navigation bar.
             barVisibility: .hidden)

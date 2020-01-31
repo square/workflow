@@ -20,14 +20,11 @@ import WorkflowUI
  Wrapper view controller for being hosted in a backstack. Handles updating the bar button items.
  */
 final class ScreenWrapperViewController: UIViewController {
-    let key: AnyHashable
-    let screenType: Any.Type
-
+    let key: AnyScreen.Key
     let contentViewController: ScreenViewController<AnyScreen>
 
     init(item: BackStackScreen.Item, registry: ViewRegistry) {
-        self.key = item.key
-        self.screenType = item.screenType
+        self.key = item.screen.key
         self.contentViewController = registry.provideView(for: item.screen)
 
         super.init(nibName: nil, bundle: nil)
@@ -57,8 +54,7 @@ final class ScreenWrapperViewController: UIViewController {
     }
 
     func matches(item: BackStackScreen.Item) -> Bool {
-        return item.key == key
-            && item.screenType == screenType
+        return item.screen.key == key
     }
 
     private func update(barVisibility: BackStackScreen.BarVisibility) {

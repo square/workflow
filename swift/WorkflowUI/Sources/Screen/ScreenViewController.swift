@@ -31,7 +31,7 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
         return currentScreen
     }
 
-    public final var screenType: Screen.Type {
+    public final var screenType: Any.Type {
         return ScreenType.self
     }
 

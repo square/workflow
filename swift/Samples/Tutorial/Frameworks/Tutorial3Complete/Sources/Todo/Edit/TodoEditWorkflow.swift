@@ -140,7 +140,6 @@ extension TodoEditWorkflow {
             })
 
         let backStackItem = BackStackScreen.Item(
-            key: "edit",
             screen: todoEditScreen,
             barContent: BackStackScreen.BarContent(
                 title: "Edit",

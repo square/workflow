@@ -19,14 +19,17 @@
 import UIKit
 
 public struct AnyScreen: Screen {
-    internal let wrappedScreen: Screen
+    internal let wrappedScreen: Any
     private let viewControllerBuilder: (ViewRegistry) -> AnyScreenViewController.WrappedViewController
+
+    public var key: AnyHashable
 
     public init<T: Screen>(_ screen: T) {
         if let anyScreen = screen as? AnyScreen {
             self = anyScreen
             return
         }
+        self.key = screen.key
         self.wrappedScreen = screen
         self.viewControllerBuilder = { viewRegistry in
             return viewRegistry.provideView(for: screen)

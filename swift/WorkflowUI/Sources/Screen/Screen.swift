@@ -19,4 +19,21 @@
 ///
 /// Conforming types contain any information needed to populate a screen: data,
 /// styling, event handlers, etc.
-public protocol Screen {}
+public protocol Screen {
+
+    /// The type of key for this screen.
+    associatedtype Key: Hashable = ObjectIdentifier
+
+
+    /// The key for this screen. This is often used by containers to determine screen equality.
+    /// The default value is the object identifier of the screen type.
+    var key: Key { get }
+
+}
+
+
+extension Screen where Key == ObjectIdentifier {
+    public var key: ObjectIdentifier {
+        return ObjectIdentifier(Self.self)
+    }
+}

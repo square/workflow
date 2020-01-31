@@ -131,7 +131,6 @@ extension TodoListWorkflow {
         })
 
         let todoListItem = BackStackScreen.Item(
-            key: "list",
             screen: todoListScreen,
             barContent: BackStackScreen.BarContent(
                 title: "Welcome \(name)",
