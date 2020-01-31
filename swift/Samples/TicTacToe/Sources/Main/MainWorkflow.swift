@@ -76,7 +76,7 @@ extension MainWorkflow {
 
 extension MainWorkflow {
 
-    typealias Rendering = BackStackScreen
+    typealias Rendering = PaddingScreen<BackStackScreen>
 
     func render(state: MainWorkflow.State, context: RenderContext<MainWorkflow>) -> Rendering {
 
@@ -92,10 +92,10 @@ extension MainWorkflow {
                 })
                 .rendered(with: context)
 
-            return BackStackScreen(items: authenticationBackStackItems)
+            return PaddingScreen(BackStackScreen(items: authenticationBackStackItems))
 
         case .runningGame:
-            return RunGameWorkflow().rendered(with: context)
+            return PaddingScreen(RunGameWorkflow().rendered(with: context))
         }
 
     }

@@ -35,11 +35,14 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
 
     private let (lifetime, token) = Lifetime.make()
 
-    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>) {
+    private let containerHints: ContainerHints
+
+    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, initialHints: ContainerHints) {
         self.workflowHost = workflowHost
-        self.rootViewController = DescribedViewController(screen: rendering.value)
+        self.rootViewController = DescribedViewController(screen: rendering.value, hints: initialHints)
         self.rendering = rendering
         self.output = output
+        self.containerHints = initialHints
 
         super.init(nibName: nil, bundle: nil)
 
@@ -51,12 +54,13 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
             }
     }
 
-    public convenience init<W: Workflow>(workflow: W) where W.Rendering == ScreenType, W.Output == Output {
+    public convenience init<W: Workflow>(workflow: W, initialHints: ContainerHints = .empty) where W.Rendering == ScreenType, W.Output == Output {
         let host = WorkflowHost(workflow: workflow)
         self.init(
             workflowHost: host,
             rendering: host.rendering,
-            output: host.output)
+            output: host.output,
+            initialHints: initialHints)
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -64,7 +68,7 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
     }
 
     private func render(screen: ScreenType) {
-        rootViewController.update(screen: screen)
+        rootViewController.update(screen: screen, hints: containerHints)
     }
 
     override public func viewDidLoad() {

@@ -27,8 +27,8 @@ struct LoginScreen: Screen {
 
     var viewControllerDescription: ViewControllerDescription {
         return ViewControllerDescription(
-            build: { LoginViewController() },
-            update: { $0.update(with: self) })
+            build: { _ in LoginViewController() },
+            update: { $0.update(with: self, hints: $1) })
     }
 }
 
@@ -41,6 +41,7 @@ fileprivate final class LoginViewController: UIViewController {
     private var onEmailChanged: (String) -> Void = { _ in }
     private var onPasswordChanged: (String) -> Void = { _ in }
     private var onLoginTapped: () -> Void = { }
+    private var padding: CGFloat = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +75,7 @@ fileprivate final class LoginViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let inset: CGFloat = 12.0
+        let inset = padding
         let height: CGFloat = 44.0
         var yOffset = (view.bounds.size.height - (3 * height + inset)) / 2.0
 
@@ -110,13 +111,18 @@ fileprivate final class LoginViewController: UIViewController {
             .insetBy(dx: inset, dy: 0.0)
     }
 
-    func update(with screen: LoginScreen) {
+    func update(with screen: LoginScreen, hints: ContainerHints) {
         welcomeLabel.text = screen.title
         emailField.text = screen.email
         passwordField.text = screen.password
         onEmailChanged = screen.onEmailChanged
         onPasswordChanged = screen.onPasswordChanged
         onLoginTapped = screen.onLoginTapped
+        let oldPadding = padding
+        padding = hints.padding
+        if oldPadding != padding {
+            view.setNeedsLayout()
+        }
     }
 
     @objc private func textDidChange(sender: UITextField) {

@@ -22,23 +22,23 @@ import UIKit
 public struct ViewControllerDescription {
 
     private let _type: UIViewController.Type
-    private let _build: () -> UIViewController
-    private let _update: (UIViewController) -> Void
+    private let _build: (ContainerHints) -> UIViewController
+    private let _update: (UIViewController, ContainerHints) -> Void
 
-    public init<VC: UIViewController>(build: @escaping () -> VC, update: @escaping (VC) -> Void) {
+    public init<VC: UIViewController>(build: @escaping (ContainerHints) -> VC, update: @escaping (VC, ContainerHints) -> Void) {
         _type = VC.self
         _build = build
-        _update = { untypedViewController in
+        _update = { untypedViewController, hints in
             guard let viewController = untypedViewController as? VC else {
                 fatalError("Unable to update \(untypedViewController), expecting a \(VC.self)")
             }
-            update(viewController)
+            update(viewController, hints)
         }
     }
 
-    func buildViewController() -> UIViewController {
-        let viewController = _build()
-        _update(viewController)
+    func buildViewController(hints: ContainerHints) -> UIViewController {
+        let viewController = _build(hints)
+        _update(viewController, hints)
         return viewController
     }
 
@@ -46,8 +46,8 @@ public struct ViewControllerDescription {
         return type(of: viewController) == _type
     }
 
-    func update(viewController: UIViewController) {
-        _update(viewController)
+    func update(viewController: UIViewController, hints: ContainerHints) {
+        _update(viewController, hints)
     }
 
 }

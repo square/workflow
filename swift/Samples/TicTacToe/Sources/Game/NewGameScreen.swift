@@ -40,14 +40,14 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
     let playerOField: UITextField
     let startGameButton: UIButton
 
-    required init(screen: NewGameScreen) {
+    required init(screen: NewGameScreen, hints: ContainerHints) {
         self.playerXLabel = UILabel(frame: .zero)
         self.playerXField = UITextField(frame: .zero)
         self.playerOLabel = UILabel(frame: .zero)
         self.playerOField = UITextField(frame: .zero)
         self.startGameButton = UIButton(frame: .zero)
 
-        super.init(screen: screen)
+        super.init(screen: screen, hints: hints)
         update(with: screen)
     }
 
@@ -76,7 +76,7 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let inset: CGFloat = 12.0
+        let inset = self.hints.padding
         let height: CGFloat = 44.0
         var yOffset = (view.bounds.size.height - (3 * height + inset)) / 2.0
 
@@ -129,8 +129,11 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
 
     }
 
-    override func screenDidChange(from previousScreen: NewGameScreen) {
+    override func screenDidChange(from previousScreen: NewGameScreen, previousHints: ContainerHints) {
         update(with: screen)
+        if hints.padding != previousHints.padding {
+            view.setNeedsLayout()
+        }
     }
 
     private func update(with screen: NewGameScreen) {

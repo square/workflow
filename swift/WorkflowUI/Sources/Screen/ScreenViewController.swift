@@ -38,18 +38,17 @@ import UIKit
 /// ```
 open class ScreenViewController<ScreenType: Screen>: UIViewController {
 
-    private var currentScreen: ScreenType
-
-    public final var screen: ScreenType {
-        return currentScreen
-    }
+    private(set) public final var screen: ScreenType
 
     public final var screenType: Screen.Type {
         return ScreenType.self
     }
 
-    public required init(screen: ScreenType) {
-        self.currentScreen = screen
+    private(set) public final var hints: ContainerHints
+
+    public required init(screen: ScreenType, hints: ContainerHints) {
+        self.screen = screen
+        self.hints = hints
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -58,14 +57,16 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public final func update(screen: ScreenType) {
-        let previousScreen = currentScreen
-        currentScreen = screen
-        screenDidChange(from: previousScreen)
+    public final func update(screen: ScreenType, hints: ContainerHints) {
+        let previousScreen = self.screen
+        let previousHints = self.hints
+        self.screen = screen
+        self.hints = hints
+        screenDidChange(from: previousScreen, previousHints: previousHints)
     }
 
     /// Subclasses should override this method in order to update any relevant UI bits when the screen model changes.
-    open func screenDidChange(from previousScreen: ScreenType) {
+    open func screenDidChange(from previousScreen: ScreenType, previousHints: ContainerHints) {
 
     }
 
@@ -75,8 +76,8 @@ extension ScreenViewController {
 
     public static func description(for screen: ScreenType) -> ViewControllerDescription {
         return ViewControllerDescription(
-            build: { Self(screen: screen) },
-            update: { $0.update(screen: screen) })
+            build: { Self(screen: screen, hints: $0) },
+            update: { $0.update(screen: screen, hints: $1) })
     }
 
 }
