@@ -19,11 +19,24 @@
 import UIKit
 
 
-/// Generic base class that should be subclassed in order to to define a UI implementation that is powered by the
+/// Generic base class that can be subclassed in order to to define a UI implementation that is powered by the
 /// given screen type.
+///
+/// Using this base class, a screen can be implemented as:
+/// ```
+/// struct MyScreen: Screen {
+///     var viewControllerDescription: ViewControllerDescription {
+///         return MyScreenViewController.description(for: self)
+///     }
+/// }
+///
+/// private class MyScreenViewController: ScreenViewController<MyScreen> {
+///     override func screenDidChange(from previousScreen: MyScreen) {
+///         // … update views as necessary
+///     }
+/// }
+/// ```
 open class ScreenViewController<ScreenType: Screen>: UIViewController {
-
-    public final let viewRegistry: ViewRegistry
 
     private var currentScreen: ScreenType
 
@@ -35,9 +48,8 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
         return ScreenType.self
     }
 
-    public required init(screen: ScreenType, viewRegistry: ViewRegistry) {
+    public required init(screen: ScreenType) {
         self.currentScreen = screen
-        self.viewRegistry = viewRegistry
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -55,6 +67,16 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
     /// Subclasses should override this method in order to update any relevant UI bits when the screen model changes.
     open func screenDidChange(from previousScreen: ScreenType) {
 
+    }
+
+}
+
+extension ScreenViewController {
+
+    public static func description(for screen: ScreenType) -> ViewControllerDescription {
+        return ViewControllerDescription(
+            build: { Self(screen: screen) },
+            update: { $0.update(screen: screen) })
     }
 
 }

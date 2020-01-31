@@ -27,7 +27,7 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
     /// Emits output events from the bound workflow.
     public let output: Signal<Output, Never>
 
-    internal let rootViewController: ScreenViewController<ScreenType>
+    internal let rootViewController: DescribedViewController
 
     private let workflowHost: Any
 
@@ -35,9 +35,9 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
 
     private let (lifetime, token) = Lifetime.make()
 
-    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, viewRegistry: ViewRegistry) {
+    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>) {
         self.workflowHost = workflowHost
-        self.rootViewController = viewRegistry.provideView(for: rendering.value)
+        self.rootViewController = DescribedViewController(screen: rendering.value)
         self.rendering = rendering
         self.output = output
 
@@ -51,13 +51,12 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
             }
     }
 
-    public convenience init<W: Workflow>(workflow: W, viewRegistry: ViewRegistry) where W.Rendering == ScreenType, W.Output == Output {
+    public convenience init<W: Workflow>(workflow: W) where W.Rendering == ScreenType, W.Output == Output {
         let host = WorkflowHost(workflow: workflow)
         self.init(
             workflowHost: host,
             rendering: host.rendering,
-            output: host.output,
-            viewRegistry: viewRegistry)
+            output: host.output)
     }
 
     required public init?(coder aDecoder: NSCoder) {
