@@ -27,15 +27,20 @@ public struct SplitScreenContainerScreen: Screen {
 
     /// The ratio of `leftScreen`'s width relative to that of `rightScreen`. Defaults to `.third`.
     public var ratio: Ratio
+    
+    /// The color of the `separatorView` displayed between `leftScreen`'s and `rightScreen`'s views.
+    public var separatorColor: UIColor
 
     public init<LeftScreenType: Screen, RightScreenType: Screen>(
         leftScreen: LeftScreenType,
         rightScreen: RightScreenType,
-        ratio: Ratio = .third
+        ratio: Ratio = .third,
+        separatorColor: UIColor = .black
     ) {
         self.leftScreen = AnyScreen(leftScreen)
         self.rightScreen = AnyScreen(rightScreen)
         self.ratio = ratio
+        self.separatorColor = separatorColor
     }
 
 }

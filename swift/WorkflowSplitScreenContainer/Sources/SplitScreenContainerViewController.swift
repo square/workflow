@@ -41,7 +41,7 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
 
         self.separatorView = UIView()
         self.separatorView.translatesAutoresizingMaskIntoConstraints = false
-        self.separatorView.backgroundColor = .black
+        self.separatorView.backgroundColor = screen.separatorColor
 
         self.rightContainerView = UIView()
         self.rightContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -65,6 +65,8 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
 
             return viewController
         }
+        
+        self.separatorView.backgroundColor = screen.separatorColor
 
         if let leftContentViewController = leftContentViewController {
             if leftContentViewController.screenType == type(of: screen.leftScreen) {

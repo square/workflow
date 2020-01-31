@@ -30,7 +30,12 @@ Pod::Spec.new do |s|
 
     test_spec.dependency 'iOSSnapshotTestCase'
 
-    test_spec.scheme = { environment_variables: { 'FB_REFERENCE_IMAGE_DIR' => '$PODS_TARGET_SRCROOT/swift/WorkflowSplitScreenContainer/SnapshotTests/ReferenceImages' } }
+    test_spec.scheme = { 
+      environment_variables: { 
+        'FB_REFERENCE_IMAGE_DIR' => '$PODS_TARGET_SRCROOT/swift/WorkflowSplitScreenContainer/SnapshotTests/ReferenceImages',
+        'IMAGE_DIFF_DIR' => '$PODS_TARGET_SRCROOT/swift/WorkflowSplitScreenContainer/SnapshotTests/FailureDiffs'
+      } 
+    }
   end
 
 end

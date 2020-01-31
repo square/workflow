@@ -55,3 +55,6 @@ SampleApp.xcworkspace
 # Special Mkdocs files
 docs/kotlin/api/
 docs/swift/api/
+
+# ios-snapshot-test-case Failure Diffs
+FailureDiffs/
