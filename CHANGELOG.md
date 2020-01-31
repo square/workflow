@@ -1,5 +1,34 @@
 Change Log
 ==========
+
+## Version 0.23.0
+
+_2020-01-31_
+
+### Kotlin
+
+ * Make all workers run on the `Unconfined` dispatcher. (#851)
+ * Paramaterize the return type of `Worker.finished()` to make it more convenient to use in tests. (#884)
+ * Improved animation for `BackStackContainer`, `PanelContainer`. (#886)
+ * Target JVM 1.8 bytecode for all modules. (#898)
+ * Don't call `onPropsChanged` unless the old and new props are actually unequal. (#887)
+ * Use KType instead of KClass in TypedWorker. (#908)
+ * Make verifyAction and verifyActionResult support no processed action. (#909)
+ * Drastically simplified ModalViewContainer. (#913)
+ * Pass `acceptOutput` function to `WorkflowNode` constructor instead of every tick pass. (#916)
+ * Break UI modules into: (#915)
+   * `workflow-ui`
+     * `core-common`
+     * `core-android`
+     * `modal-common`
+     * `modal-android`
+     * `backstack-common`
+     * `backstack-android`
+
+### Swift
+
+ * No changes.
+
 ## Version 0.22.4
 
 _2020-01-15_
