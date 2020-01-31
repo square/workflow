@@ -26,6 +26,10 @@ struct NewGameScreen: Screen {
         case playerOChanged(String)
         case startGame
     }
+
+    var viewControllerDescription: ViewControllerDescription {
+        return NewGameViewController.description(for: self)
+    }
 }
 
 
@@ -36,14 +40,14 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
     let playerOField: UITextField
     let startGameButton: UIButton
 
-    required init(screen: NewGameScreen, viewRegistry: ViewRegistry) {
+    required init(screen: NewGameScreen) {
         self.playerXLabel = UILabel(frame: .zero)
         self.playerXField = UITextField(frame: .zero)
         self.playerOLabel = UILabel(frame: .zero)
         self.playerOField = UITextField(frame: .zero)
         self.startGameButton = UIButton(frame: .zero)
 
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -149,13 +153,4 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
     @objc private func startPressed(sender: UIButton) {
         screen.eventHandler(.startGame)
     }
-}
-
-
-extension ViewRegistry {
-
-    public mutating func registerNewGameScreen() {
-        self.register(screenViewControllerType: NewGameViewController.self)
-    }
-
 }

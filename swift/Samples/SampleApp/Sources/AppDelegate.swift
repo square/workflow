@@ -26,13 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
 
-        var viewRegistry = ViewRegistry()
-        viewRegistry.registerDemoScreen()
-        viewRegistry.registerWelcomeScreen()
-        viewRegistry.registerCrossFadeContainer()
-        window?.rootViewController = ContainerViewController(
-            workflow: RootWorkflow(),
-            viewRegistry: viewRegistry)
+        window?.rootViewController = ContainerViewController(workflow: RootWorkflow())
 
         window?.makeKeyAndVisible()
         

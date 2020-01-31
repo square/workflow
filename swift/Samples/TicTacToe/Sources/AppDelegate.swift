@@ -28,19 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow(frame: UIScreen.main.bounds)
 
-        var viewRegistry = ViewRegistry()
-        viewRegistry.registerLoginScreen()
-        viewRegistry.registerLoadingScreen()
-        viewRegistry.registerTwoFactorScreen()
-
-        viewRegistry.registerNewGameScreen()
-        viewRegistry.registerGamePlayScreen()
-
-        viewRegistry.registerBackStackContainer()
-
-        window?.rootViewController = ContainerViewController(
-            workflow: MainWorkflow(),
-            viewRegistry: viewRegistry)
+        window?.rootViewController = ContainerViewController(workflow: MainWorkflow())
 
         window?.makeKeyAndVisible()
 

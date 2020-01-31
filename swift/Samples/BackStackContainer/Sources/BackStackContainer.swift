@@ -16,20 +16,13 @@
 import WorkflowUI
 
 
-extension ViewRegistry {
-    public mutating func registerBackStackContainer() {
-        self.register(screenViewControllerType: BackStackContainer.self)
-    }
-}
-
-
 public final class BackStackContainer: ScreenViewController<BackStackScreen>, UINavigationControllerDelegate {
     private let navController: UINavigationController
 
-    public required init(screen: BackStackScreen, viewRegistry: ViewRegistry) {
+    public required init(screen: BackStackScreen) {
         self.navController = UINavigationController()
 
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
 
         update(with: screen)
     }
@@ -73,9 +66,7 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
                 existingViewController.update(item: item)
                 updatedViewControllers.append(existingViewController)
             } else {
-                updatedViewControllers.append(ScreenWrapperViewController(
-                    item: item,
-                    registry: viewRegistry))
+                updatedViewControllers.append(ScreenWrapperViewController(item: item))
             }
 
         }

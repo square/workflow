@@ -21,15 +21,10 @@ struct FooScreen: Screen {
     let title: String
     let backgroundColor: UIColor
     let viewTapped: () -> Void
-}
 
-
-extension ViewRegistry {
-    
-    public mutating func registerFooScreen() {
-        self.register(screenViewControllerType: FooScreenViewController.self)
+    var viewControllerDescription: ViewControllerDescription {
+        return FooScreenViewController.description(for: self)
     }
-    
 }
 
 
@@ -38,8 +33,8 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     private lazy var titleLabel: UILabel = .init()
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     
-    required init(screen: FooScreen, viewRegistry: ViewRegistry) {
-        super.init(screen: screen, viewRegistry: viewRegistry)
+    required init(screen: FooScreen) {
+        super.init(screen: screen)
         
         update(with: screen)
     }

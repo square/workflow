@@ -23,12 +23,12 @@ final class ScreenWrapperViewController: UIViewController {
     let key: AnyHashable
     let screenType: Any.Type
 
-    let contentViewController: ScreenViewController<AnyScreen>
+    let contentViewController: DescribedViewController
 
-    init(item: BackStackScreen.Item, registry: ViewRegistry) {
+    init(item: BackStackScreen.Item) {
         self.key = item.key
         self.screenType = item.screenType
-        self.contentViewController = registry.provideView(for: item.screen)
+        self.contentViewController = DescribedViewController(screen: item.screen)
 
         super.init(nibName: nil, bundle: nil)
 

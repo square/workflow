@@ -48,6 +48,10 @@ public struct SplitScreenContainerScreen<LeadingScreenType: Screen, TrailingScre
         self.separatorWidth = separatorWidth
     }
 
+    public var viewControllerDescription: ViewControllerDescription {
+        return SplitScreenContainerViewController.description(for: self)
+    }
+
 }
 
 public extension CGFloat {

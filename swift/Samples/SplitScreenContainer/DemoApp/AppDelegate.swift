@@ -27,14 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
 
-        var viewRegistry = ViewRegistry()
-        viewRegistry.registerSplitScreenContainer()
-        viewRegistry.registerFooScreen()
-        viewRegistry.registerBarScreen()
-
         let container = ContainerViewController(
-            workflow: DemoWorkflow(),
-            viewRegistry: viewRegistry
+            workflow: DemoWorkflow()
         )
 
         window.rootViewController = container
@@ -43,12 +37,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-}
-
-extension ViewRegistry {
-    
-    public mutating func registerSplitScreenContainer() {
-        self.register(screenViewControllerType: SplitScreenContainerViewController<AnyScreen, FooScreen>.self)
-    }
-    
 }

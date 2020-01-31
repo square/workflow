@@ -16,61 +16,44 @@
 import Workflow
 import WorkflowUI
 
-public final class SplitScreenContainerViewController<LeadingScreenType: Screen, TrailingScreenType: Screen>: ScreenViewController<SplitScreenContainerViewController.ContainerScreen> {
-    public typealias ContainerScreen = SplitScreenContainerScreen<LeadingScreenType, TrailingScreenType>
+internal final class SplitScreenContainerViewController<LeadingScreenType: Screen, TrailingScreenType: Screen>: ScreenViewController<SplitScreenContainerViewController.ContainerScreen> {
+    internal typealias ContainerScreen = SplitScreenContainerScreen<LeadingScreenType, TrailingScreenType>
     
-    private var leadingContentViewController: ScreenViewController<LeadingScreenType>? = nil
+    private var leadingContentViewController: DescribedViewController
     private lazy var leadingContainerView: ContainerView = .init()
 
     private lazy var separatorView: UIView = .init()
 
-    private var trailingContentViewController: ScreenViewController<TrailingScreenType>? = nil
+    private var trailingContentViewController: DescribedViewController
     private lazy var trailingContainerView: ContainerView = .init()
     
-    private var currentRatio: CGFloat {
-        didSet {
-            guard oldValue != currentRatio else {
-                return
-            }
-            
-            needsAnimatedLayout = true
-        }
-    }
-
-    private var currentSeparatorWidth: CGFloat {
-        didSet {
-            guard oldValue != currentSeparatorWidth else {
-                return
-            }
-
-            needsAnimatedLayout = true
-        }
-    }
-
     private var needsAnimatedLayout = false
 
-    required init(screen: ContainerScreen, viewRegistry: ViewRegistry) {
-        currentRatio = screen.ratio
-        currentSeparatorWidth = screen.separatorWidth
-        
-        super.init(screen: screen, viewRegistry: viewRegistry)
+    required init(screen: ContainerScreen) {
+        leadingContentViewController = DescribedViewController(screen: screen.leadingScreen)
+        trailingContentViewController = DescribedViewController(screen: screen.trailingScreen)
+        super.init(screen: screen)
     }
 
-    override public func screenDidChange(from previousScreen: ContainerScreen) {
+    override internal func screenDidChange(from previousScreen: ContainerScreen) {
+        if screen.ratio != previousScreen.ratio {
+            needsAnimatedLayout = true
+        }
+        if screen.separatorWidth != previousScreen.separatorWidth {
+            needsAnimatedLayout = true
+        }
         update(with: screen)
     }
 
     private func update(with screen: ContainerScreen) {
         separatorView.backgroundColor = screen.separatorColor
         
-        leadingContentViewController?.update(screen: screen.leadingScreen)
-        trailingContentViewController?.update(screen: screen.trailingScreen)
+        leadingContentViewController.update(screen: screen.leadingScreen)
+        trailingContentViewController.update(screen: screen.trailingScreen)
         
         //Intentional force of layout pass after updating the child view controllers
         view.layoutIfNeeded()
 
-        currentRatio = screen.ratio
-        currentSeparatorWidth = screen.separatorWidth
 
         if needsAnimatedLayout {
             needsAnimatedLayout = false
@@ -82,27 +65,32 @@ public final class SplitScreenContainerViewController<LeadingScreenType: Screen,
         }
     }
 
-    override public func viewDidLoad() {
+    override internal func viewDidLoad() {
         super.viewDidLoad()
         
         view.addSubview(leadingContainerView)
         view.addSubview(separatorView)
         view.addSubview(trailingContainerView)
         
-        self.leadingContentViewController = embed(screen.leadingScreen, in: leadingContainerView)
-        self.trailingContentViewController = embed(screen.trailingScreen, in: trailingContainerView)
-        
+        addChild(leadingContentViewController)
+        leadingContainerView.contentView.addSubview(leadingContentViewController.view)
+        leadingContentViewController.didMove(toParent: self)
+
+        addChild(trailingContentViewController)
+        trailingContainerView.contentView.addSubview(trailingContentViewController.view)
+        trailingContentViewController.didMove(toParent: self)
+
         update(with: screen)
     }
     
-    public override func viewDidLayoutSubviews() {
+    internal override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let distance = view.bounds.width * currentRatio
+        let distance = view.bounds.width * screen.ratio
         
         let (firstSlice, trailingRect) = view.bounds.divided(atDistance: distance, from: .minXEdge)
         
-        let (leadingRect, separatorRect) = firstSlice.divided(atDistance: distance - currentSeparatorWidth, from: .minXEdge)
+        let (leadingRect, separatorRect) = firstSlice.divided(atDistance: distance - screen.separatorWidth, from: .minXEdge)
 
         leadingContainerView.frame = isLayoutDirectionRightToLeft ? trailingRect: leadingRect
         
@@ -119,17 +107,5 @@ fileprivate extension UIViewController {
         } else {
             return UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
         }
-    }
-}
-
-fileprivate extension ScreenViewController {
-    func embed<ScreenType: Screen>(_ screen: ScreenType, in containerView: ContainerView) -> ScreenViewController<ScreenType> {
-        let viewController = viewRegistry.provideView(for: screen)
-
-        addChild(viewController)
-        containerView.contentView.addSubview(viewController.view)
-        viewController.didMove(toParent: self)
-
-        return viewController
     }
 }

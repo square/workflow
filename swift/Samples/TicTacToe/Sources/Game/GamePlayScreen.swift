@@ -22,6 +22,10 @@ struct GamePlayScreen: Screen {
     var playerO: String
     var board: [[Board.Cell]]
     var onSelected: (Int, Int) -> Void
+
+    var viewControllerDescription: ViewControllerDescription {
+        return GamePlayViewController.description(for: self)
+    }
 }
 
 
@@ -29,7 +33,7 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
     let titleLabel: UILabel
     let cells: [[UIButton]]
 
-    required init(screen: GamePlayScreen, viewRegistry: ViewRegistry) {
+    required init(screen: GamePlayScreen) {
         self.titleLabel = UILabel(frame: .zero)
         var cells: [[UIButton]] = []
 
@@ -42,7 +46,7 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
         }
 
         self.cells = cells
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -160,13 +164,4 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
             }
         }
     }
-}
-
-
-extension ViewRegistry {
-
-    public mutating func registerGamePlayScreen() {
-        self.register(screenViewControllerType: GamePlayViewController.self)
-    }
-
 }

@@ -27,6 +27,10 @@ struct TodoEditScreen: Screen {
     // Callback for when the title or note changes
     var onTitleChanged: (String) -> Void
     var onNoteChanged: (String) -> Void
+
+    var viewControllerDescription: ViewControllerDescription {
+        return TodoEditViewController.description(for: self)
+    }
 }
 
 
@@ -34,10 +38,10 @@ final class TodoEditViewController: ScreenViewController<TodoEditScreen> {
     // The `todoEditView` has all the logic for displaying the todo and editing.
     let todoEditView: TodoEditView
 
-    required init(screen: TodoEditScreen, viewRegistry: ViewRegistry) {
+    required init(screen: TodoEditScreen) {
         self.todoEditView = TodoEditView(frame: .zero)
 
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -63,15 +67,6 @@ final class TodoEditViewController: ScreenViewController<TodoEditScreen> {
         todoEditView.note = screen.note
         todoEditView.onTitleChanged = screen.onTitleChanged
         todoEditView.onNoteChanged = screen.onNoteChanged
-    }
-
-}
-
-
-extension ViewRegistry {
-
-    public mutating func registerTodoEditScreen() {
-        self.register(screenViewControllerType: TodoEditViewController.self)
     }
 
 }

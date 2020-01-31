@@ -24,15 +24,19 @@ struct TodoListScreen: Screen {
 
     // Callback when a todo is selected
     var onTodoSelected: (Int) -> Void
+
+    var viewControllerDescription: ViewControllerDescription {
+        return TodoListViewController.description(for: self)
+    }
 }
 
 
 final class TodoListViewController: ScreenViewController<TodoListScreen> {
     let todoListView: TodoListView
 
-    required init(screen: TodoListScreen, viewRegistry: ViewRegistry) {
+    required init(screen: TodoListScreen) {
         self.todoListView = TodoListView(frame: .zero)
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -56,15 +60,6 @@ final class TodoListViewController: ScreenViewController<TodoListScreen> {
         // Update the todoList on the view with what the screen provided:
         todoListView.todoList = screen.todoTitles
         todoListView.onTodoSelected = screen.onTodoSelected
-    }
-
-}
-
-
-extension ViewRegistry {
-
-    public mutating func registerTodoListScreen() {
-        self.register(screenViewControllerType: TodoListViewController.self)
     }
 
 }
