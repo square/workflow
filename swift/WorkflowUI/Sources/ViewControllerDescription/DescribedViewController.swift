@@ -23,13 +23,13 @@ public final class DescribedViewController: UIViewController {
 
     var currentViewController: UIViewController
 
-    public init(description: ViewControllerDescription) {
-        currentViewController = description.buildViewController()
+    public init(description: ViewControllerDescription, hints: ContainerHints) {
+        currentViewController = description.buildViewController(hints: hints)
         super.init(nibName: nil, bundle: nil)
     }
 
-    public convenience init<S: Screen>(screen: S) {
-        self.init(description: screen.viewControllerDescription)
+    public convenience init<S: Screen>(screen: S, hints: ContainerHints) {
+        self.init(description: screen.viewControllerDescription, hints: hints)
     }
 
     @available(*, unavailable)
@@ -37,16 +37,16 @@ public final class DescribedViewController: UIViewController {
         fatalError("init(coder:) is unavailable")
     }
 
-    public func update(description: ViewControllerDescription) {
+    public func update(description: ViewControllerDescription, hints: ContainerHints) {
         if description.canUpdate(viewController: currentViewController) {
-            description.update(viewController: currentViewController)
+            description.update(viewController: currentViewController, hints: hints)
         } else {
             if isViewLoaded {
                 currentViewController.willMove(toParent: nil)
                 currentViewController.view.removeFromSuperview()
                 currentViewController.removeFromParent()
             }
-            currentViewController = description.buildViewController()
+            currentViewController = description.buildViewController(hints: hints)
             if isViewLoaded {
                 addChild(currentViewController)
                 view.addSubview(currentViewController.view)
@@ -56,8 +56,8 @@ public final class DescribedViewController: UIViewController {
         }
     }
 
-    public func update<S: Screen>(screen: S) {
-        update(description: screen.viewControllerDescription)
+    public func update<S: Screen>(screen: S, hints: ContainerHints) {
+        update(description: screen.viewControllerDescription, hints: hints)
     }
 
     public override func viewDidLoad() {

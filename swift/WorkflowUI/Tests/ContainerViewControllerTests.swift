@@ -34,8 +34,8 @@ fileprivate struct TestScreen: Screen {
 fileprivate final class TestScreenViewController: ScreenViewController<TestScreen> {
     var onScreenChange: (() -> Void)? = nil
 
-    override func screenDidChange(from previousScreen: TestScreen) {
-        super.screenDidChange(from: previousScreen)
+    override func screenDidChange(from previousScreen: TestScreen, previousHints: ContainerHints) {
+        super.screenDidChange(from: previousScreen, previousHints: previousHints)
         onScreenChange?()
     }
 }

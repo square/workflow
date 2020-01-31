@@ -25,10 +25,10 @@ final class ScreenWrapperViewController: UIViewController {
 
     let contentViewController: DescribedViewController
 
-    init(item: BackStackScreen.Item) {
+    init(item: BackStackScreen.Item, hints: ContainerHints) {
         self.key = item.key
         self.screenType = item.screenType
-        self.contentViewController = DescribedViewController(screen: item.screen)
+        self.contentViewController = DescribedViewController(screen: item.screen, hints: hints)
 
         super.init(nibName: nil, bundle: nil)
 
@@ -51,8 +51,8 @@ final class ScreenWrapperViewController: UIViewController {
         contentViewController.view.frame = view.bounds
     }
 
-    func update(item: BackStackScreen.Item) {
-        contentViewController.update(screen: item.screen)
+    func update(item: BackStackScreen.Item, hints: ContainerHints) {
+        contentViewController.update(screen: item.screen, hints: hints)
         update(barVisibility: item.barVisibility)
     }
 

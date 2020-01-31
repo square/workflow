@@ -30,24 +30,24 @@ class ViewControllerDescriptionTests: XCTestCase {
 
     func test_build() {
         let description = ViewControllerDescription(
-            build: { BlankViewController() },
-            update: { _ in })
+            build: { _ in BlankViewController() },
+            update: { _, _ in })
 
         // Check built view controller
-        let viewController = description.buildViewController()
+        let viewController = description.buildViewController(hints: .empty)
         XCTAssertTrue(type(of: viewController) == BlankViewController.self)
 
         // Check another built view controller isn’t somehow the same instance
-        let viewControllerAgain = description.buildViewController()
+        let viewControllerAgain = description.buildViewController(hints: .empty)
         XCTAssertFalse(viewController === viewControllerAgain)
     }
 
     func test_canUpdate() {
         let description = ViewControllerDescription(
-            build: { BlankViewController() },
-            update: { _ in })
+            build: { _ in BlankViewController() },
+            update: { _, _ in })
 
-        let viewController = description.buildViewController()
+        let viewController = description.buildViewController(hints: .empty)
         XCTAssertTrue(description.canUpdate(viewController: viewController))
 
         let otherViewController = UIViewController()
@@ -65,8 +65,8 @@ class ViewControllerDescriptionTests: XCTestCase {
 
         var updateCount = 0
         let description = ViewControllerDescription(
-            build: { BlankViewController() },
-            update: { viewController in
+            build: { _ in BlankViewController() },
+            update: { viewController, _ in
                 XCTAssertTrue(type(of: viewController) == BlankViewController.self)
                 updateCount += 1
             })
@@ -74,13 +74,13 @@ class ViewControllerDescriptionTests: XCTestCase {
         XCTAssertEqual(updateCount, 0)
 
         // Build causes an initial update
-        let viewController = description.buildViewController()
+        let viewController = description.buildViewController(hints: .empty)
         XCTAssertEqual(updateCount, 1)
 
-        description.update(viewController: viewController)
+        description.update(viewController: viewController, hints: .empty)
         XCTAssertEqual(updateCount, 2)
 
-        description.update(viewController: viewController)
+        description.update(viewController: viewController, hints: .empty)
         XCTAssertEqual(updateCount, 3)
     }
 
@@ -102,12 +102,12 @@ class ViewControllerDescriptionTests: XCTestCase {
         let screen = MyScreen()
         let description = screen.viewControllerDescription
 
-        let viewController = description.buildViewController()
+        let viewController = description.buildViewController(hints: .empty)
         XCTAssertTrue(type(of: viewController) == MyScreenViewController.self)
 
         XCTAssertTrue(description.canUpdate(viewController: viewController))
 
-        let viewControllerAgain = description.buildViewController()
+        let viewControllerAgain = description.buildViewController(hints: .empty)
         XCTAssertFalse(viewController === viewControllerAgain)
 
     }

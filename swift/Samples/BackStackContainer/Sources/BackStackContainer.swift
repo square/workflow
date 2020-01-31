@@ -19,12 +19,12 @@ import WorkflowUI
 public final class BackStackContainer: ScreenViewController<BackStackScreen>, UINavigationControllerDelegate {
     private let navController: UINavigationController
 
-    public required init(screen: BackStackScreen) {
+    public required init(screen: BackStackScreen, hints: ContainerHints) {
         self.navController = UINavigationController()
 
-        super.init(screen: screen)
+        super.init(screen: screen, hints: hints)
 
-        update(with: screen)
+        update(with: screen, hints: hints)
     }
 
     public override func viewDidLoad() {
@@ -41,9 +41,9 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
 
         navController.view.frame = view.bounds
     }
-
-    public override func screenDidChange(from previousScreen: BackStackScreen) {
-        update(with: screen)
+    
+    public override func screenDidChange(from previousScreen: BackStackScreen, previousHints: ContainerHints) {
+        update(with: screen, hints: hints)
     }
 
     // MARK: - UINavigationControllerDelegate
@@ -54,7 +54,7 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
 
     // MARK: - Private Methods
 
-    private func update(with screen: BackStackScreen) {
+    private func update(with screen: BackStackScreen, hints: ContainerHints) {
         var existingViewControllers: [ScreenWrapperViewController] = self.navController.viewControllers as! [ScreenWrapperViewController]
         var updatedViewControllers: [ScreenWrapperViewController] = []
 
@@ -63,10 +63,10 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
                 viewController.matches(item: item)
             }) {
                 let existingViewController = existingViewControllers.remove(at: idx)
-                existingViewController.update(item: item)
+                existingViewController.update(item: item, hints: hints)
                 updatedViewControllers.append(existingViewController)
             } else {
-                updatedViewControllers.append(ScreenWrapperViewController(item: item))
+                updatedViewControllers.append(ScreenWrapperViewController(item: item, hints: hints))
             }
 
         }

@@ -31,12 +31,12 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
     let twoFactorField: UITextField
     let button: UIButton
 
-    required init(screen: TwoFactorScreen) {
+    required init(screen: TwoFactorScreen, hints: ContainerHints) {
         self.titleLabel = UILabel(frame: .zero)
         self.twoFactorField = UITextField(frame: .zero)
         self.button = UIButton(frame: .zero)
 
-        super.init(screen: screen)
+        super.init(screen: screen, hints: hints)
 
         update(with: screen)
     }
@@ -61,7 +61,7 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let inset: CGFloat = 12.0
+        let inset = self.hints.padding
         let height: CGFloat = 44.0
 
         var yOffset = (view.bounds.size.height - (2 * height + inset)) / 2.0
@@ -89,8 +89,11 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
             .insetBy(dx: inset, dy: 0.0)
     }
 
-    override func screenDidChange(from previousScreen: TwoFactorScreen) {
+    override func screenDidChange(from previousScreen: TwoFactorScreen, previousHints: ContainerHints) {
         update(with: screen)
+        if hints.padding != previousHints.padding {
+            view.setNeedsLayout()
+        }
     }
 
     private func update(with screen: TwoFactorScreen) {
