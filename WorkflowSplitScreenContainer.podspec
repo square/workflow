@@ -12,15 +12,25 @@ Pod::Spec.new do |s|
 
   s.swift_versions = ['5.0']
   s.ios.deployment_target = '9.3'
-  s.osx.deployment_target = '10.12'
 
   s.source_files = 'swift/WorkflowSplitScreenContainer/Sources/**/*.swift'
 
-  s.dependency 'Workflow', "#{s.version}"
-  s.dependency 'WorkflowUI', "#{s.version}"
+  s.dependency 'Workflow', "#{ENV['WORKFLOW_VERSION'] || s.version}"
+  s.dependency 'WorkflowUI', "#{ENV['WORKFLOW_VERSION'] || s.version}"
 
   s.app_spec 'DemoApp' do |app_spec|
     app_spec.source_files = 'swift/WorkflowSplitScreenContainer/DemoApp/**/*.swift'
+  end
+
+  s.test_spec 'SnapshotTests' do |test_spec|
+    test_spec.requires_app_host = true
+    test_spec.source_files = 'swift/WorkflowSplitScreenContainer/SnapshotTests/**/*.swift'
+
+    test_spec.framework = 'XCTest'
+
+    test_spec.dependency 'iOSSnapshotTestCase'
+
+    test_spec.scheme = { environment_variables: { 'FB_REFERENCE_IMAGE_DIR' => '$PODS_TARGET_SRCROOT/swift/WorkflowSplitScreenContainer/SnapshotTests/ReferenceImages' } }
   end
 
 end

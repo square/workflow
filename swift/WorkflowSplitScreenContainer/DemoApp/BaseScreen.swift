@@ -37,7 +37,9 @@ fileprivate final class BaseScreenViewController: ScreenViewController<BaseScree
     private let titleLabel: UILabel
     
     required init(screen: BaseScreen, viewRegistry: ViewRegistry) {
-        titleLabel = UILabel(frame: .zero)
+        titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 20))
+        titleLabel.textAlignment = .center
+        
         super.init(screen: screen, viewRegistry: viewRegistry)
         
         update(with: screen)
@@ -52,15 +54,7 @@ fileprivate final class BaseScreenViewController: ScreenViewController<BaseScree
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let height: CGFloat = 44.0
-        
-        var (top, bottom) = view.bounds.divided(atDistance: view.bounds.height / 2, from: CGRectEdge.minYEdge)
-        
-        top.size.height -= (height / 2.0)
-        bottom.origin.y += (height)
-        bottom.size.height -= (height / 2.0)
-        
-        titleLabel.frame = top
+        titleLabel.center = view.center
     }
     
     override func screenDidChange(from previousScreen: BaseScreen) {

@@ -260,3 +260,17 @@ matrix:
         - cd swift/Samples/TicTacToe
         - bundle exec pod repo update
         - bundle exec pod install
+
+    - language: swift
+      name: "Swift - WorkflowSplitScreenContainer Snapshot Tests - Cocoapods (Xcode 10.2)"
+      os: osx
+      osx_image: xcode10.2
+      xcode_workspace: WorkflowSplitScreenContainer.xcworkspace
+      xcode_scheme: WorkflowSplitScreenContainer-Unit-SnapshotTests
+      xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
+      before_install:
+        - yes | gem update --system
+        - gem install bundler
+        - bundle install
+        - WORKFLOW_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1) | sed s/v//) pod gen WorkflowSplitScreenContainer.podspec
+        - cd gen/WorkflowSplitScreenContainer
