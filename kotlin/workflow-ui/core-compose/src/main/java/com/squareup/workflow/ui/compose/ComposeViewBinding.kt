@@ -52,17 +52,20 @@ import kotlin.reflect.KClass
  *
  * val viewRegistry = ViewRegistry(FooBinding, …)
  * ```
+ *
+ * If your view needs access to [ContainerHints], for example to display differently in
+ * master/detail vs single pane mode, use [ambientContainerHint].
  */
 inline fun <reified RenderingT : Any> bindCompose(
-  noinline showRendering: @Composable() (RenderingT, ContainerHints) -> Unit
-): ViewBinding<RenderingT> = ComposeViewBinding(RenderingT::class) { rendering, hints ->
-  showRendering(rendering, hints)
+  noinline showRendering: @Composable() (RenderingT) -> Unit
+): ViewBinding<RenderingT> = ComposeViewBinding(RenderingT::class) { rendering ->
+  showRendering(rendering)
 }
 
 @PublishedApi
 internal class ComposeViewBinding<RenderingT : Any>(
   override val type: KClass<RenderingT>,
-  private val showRendering: @Composable() (RenderingT, ContainerHints) -> Unit
+  private val showRendering: @Composable() (RenderingT) -> Unit
 ) : ViewBinding<RenderingT> {
 
   override fun buildView(
@@ -79,7 +82,9 @@ internal class ComposeViewBinding<RenderingT : Any>(
         initialContainerHints
     ) { rendering, hints ->
       composeContainer.setContent {
-        showRendering(rendering, hints)
+        ContainerHintsAmbient.Provider(hints) {
+          showRendering(rendering)
+        }
       }
     }
     return composeContainer

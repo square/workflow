@@ -26,9 +26,9 @@ import androidx.ui.tooling.preview.Preview
 import com.squareup.sample.hellocomposebinding.HelloWorkflow.Rendering
 import com.squareup.workflow.ui.compose.bindCompose
 
-val HelloBinding = bindCompose<Rendering> { rendering, _ ->
+val HelloBinding = bindCompose<Rendering> {
   MaterialTheme {
-    DrawHelloRendering(rendering)
+    DrawHelloRendering(it)
   }
 }
 
