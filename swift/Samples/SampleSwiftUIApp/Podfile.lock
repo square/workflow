@@ -1,0 +1,35 @@
+PODS:
+  - ReactiveSwift (6.0.0)
+  - Workflow (0.24.0):
+    - ReactiveSwift (~> 6.0.0)
+  - Workflow/Tests (0.24.0):
+    - ReactiveSwift (~> 6.0.0)
+  - WorkflowUI (0.24.0):
+    - Workflow (= 0.24.0)
+  - WorkflowUI/Tests (0.24.0):
+    - Workflow (= 0.24.0)
+
+DEPENDENCIES:
+  - Workflow (from `../../../Workflow.podspec`)
+  - Workflow/Tests (from `../../../Workflow.podspec`)
+  - WorkflowUI (from `../../../WorkflowUI.podspec`)
+  - WorkflowUI/Tests (from `../../../WorkflowUI.podspec`)
+
+SPEC REPOS:
+  trunk:
+    - ReactiveSwift
+
+EXTERNAL SOURCES:
+  Workflow:
+    :path: "../../../Workflow.podspec"
+  WorkflowUI:
+    :path: "../../../WorkflowUI.podspec"
+
+SPEC CHECKSUMS:
+  ReactiveSwift: 24b7ed245617bbfd30ee0c87779b6c64ac1b4518
+  Workflow: 2c4e797ee249216e5cd9174b65599780e78337f3
+  WorkflowUI: c51ee47cdde720d240232a80f062baaf5e444549
+
+PODFILE CHECKSUM: 90f682c7522dd91f065bfdc215a3c562cccc0d7b
+
+COCOAPODS: 1.8.4
