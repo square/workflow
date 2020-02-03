@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-    s.name         = 'WorkflowUI+SwiftUI'
+    s.name         = 'WorkflowSwiftUI'
     s.version      = '0.24.0'
     s.summary      = 'Infrastructure for WorkflowUI-powered SwiftUI'
     s.homepage     = 'https://www.github.com/square/workflow'
@@ -14,10 +14,9 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = '13.0'
     s.osx.deployment_target = '10.15'
   
-    s.source_files = 'swift/WorkflowUI+SwiftUI/Sources/*.swift'
+    s.source_files = 'swift/WorkflowSwiftUI/Sources/*.swift'
   
     s.dependency 'Workflow', "#{s.version}"
-    s.dependency 'WorkflowUI', "#{s.version}"
   
   end
   

@@ -3,6 +3,5 @@ platform :ios, '13'
 
 target 'SampleSwiftUIApp' do
     pod 'Workflow', path: '../../../Workflow.podspec', :testspecs => ['Tests']
-    pod 'WorkflowUI', path: '../../../WorkflowUI.podspec', :testspecs => ['Tests']
-    pod 'WorkflowUI+SwiftUI', path: '../../../WorkflowUI+SwiftUI.podspec'
+    pod 'WorkflowSwiftUI', path: '../../../WorkflowSwiftUI.podspec'
 end

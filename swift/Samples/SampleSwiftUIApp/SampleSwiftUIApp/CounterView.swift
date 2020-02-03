@@ -16,8 +16,7 @@
 
 import SwiftUI
 import Workflow
-import WorkflowUI
-import WorkflowUI_SwiftUI
+import WorkflowSwiftUI
 
 struct CounterView: View {
     var body: some View {
@@ -64,7 +63,8 @@ struct CounterWorkflow: Workflow {
         return 0
     }
 
-    func workflowDidChange(from previousWorkflow: CounterWorkflow, state: inout Int) {}
+    func workflowDidChange(from previousWorkflow: CounterWorkflow, state: inout Int) {
+    }
 
     func render(state: Int, context: RenderContext<CounterWorkflow>) -> CounterScreen {
         let sink = context.makeSink(of: Action.self)
