@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.23.1
+
+### Kotlin
+
+ * Swift-only release, no changes.
+
+### Swift
+
+ * Seperate `SwiftUI` support to a different module: `WorkflowSwiftUI`. (#929)
+
 ## Version 0.23.0
 
 _2020-01-31_
