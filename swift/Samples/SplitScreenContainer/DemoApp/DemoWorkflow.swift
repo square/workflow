@@ -31,15 +31,34 @@ struct DemoWorkflow: Workflow {
 
 extension DemoWorkflow {
 
-    typealias State = Void
+    typealias State = Int
 
     func makeInitialState() -> State {
-        return ()
+        return 1
     }
 
     func workflowDidChange(from previousWorkflow: DemoWorkflow, state: inout State) {
     }
 
+}
+
+// MARK: Actions
+
+extension DemoWorkflow {
+    enum Action: WorkflowAction {
+        typealias WorkflowType = DemoWorkflow
+        
+        case viewTapped
+        
+        func apply(toState state: inout DemoWorkflow.State) -> Never? {
+            switch self {
+            case .viewTapped:
+                state += 1
+            }
+            
+            return nil
+        }
+    }
 }
 
 
@@ -48,13 +67,16 @@ extension DemoWorkflow {
 extension DemoWorkflow {
 
     typealias Rendering = SplitScreenContainerScreen
+    
+    private static let sizes: [CGFloat] = [.quarter, .third, .half, 0.75]
 
     func render(state: State, context: RenderContext<DemoWorkflow>) -> Rendering {
-
+        let sink = context.makeSink(of: Action.self)
+        
         return SplitScreenContainerScreen(
-            leftScreen: BaseScreen(title: "Left screen", backgroundColor: .red),
-            rightScreen: BaseScreen(title: "Right screen", backgroundColor: .green),
-            ratio: .third
+            leftScreen: BaseScreen(title: "Left screen", backgroundColor: .red, viewTapped: { sink.send(.viewTapped) }),
+            rightScreen: BaseScreen(title: "Right screen", backgroundColor: .green, viewTapped: { sink.send(.viewTapped) }),
+            ratio: DemoWorkflow.sizes[state % DemoWorkflow.sizes.count]
         )
 
     }

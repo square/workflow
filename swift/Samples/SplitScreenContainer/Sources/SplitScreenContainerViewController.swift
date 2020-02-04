@@ -29,6 +29,7 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
 
     private var leftContentViewController: ScreenViewController<AnyScreen>? = nil
     private lazy var leftContainerView: UIView = .init()
+    private var leftContainerViewWidthConstraint: NSLayoutConstraint?
 
     private lazy var separatorView: UIView = .init()
 
@@ -75,6 +76,10 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
         } else {
             self.rightContentViewController = embed(screen.rightScreen, in: rightContainerView)
         }
+        
+        if (leftContainerViewWidthConstraint?.multiplier != screen.ratio) {
+            updateWidthConstraints(ratio: screen.ratio, animated: true)
+        }
     }
     
     private func embed(_ screen: AnyScreen, in containerView: UIView) -> ScreenViewController<AnyScreen> {
@@ -113,7 +118,6 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
             leftContainerView.leftAnchor.constraint(equalTo: view.leftAnchor),
             leftContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             leftContainerView.rightAnchor.constraint(equalTo: separatorView.leftAnchor),
-            leftContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: screen.ratio),
 
             separatorView.topAnchor.constraint(equalTo: view.topAnchor),
             separatorView.widthAnchor.constraint(equalToConstant: 1.0),
@@ -124,5 +128,25 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
             rightContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             rightContainerView.rightAnchor.constraint(equalTo: view.rightAnchor),
         ])
+        
+        updateWidthConstraints(ratio: screen.ratio, animated: false)
+    }
+    
+    private func updateWidthConstraints(ratio: CGFloat, animated: Bool) {
+        guard animated else {
+            self.leftContainerViewWidthConstraint = self.leftContainerView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: ratio)
+            self.leftContainerViewWidthConstraint?.isActive = true
+            return
+        }
+        
+        view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.2) {
+            self.leftContainerViewWidthConstraint?.isActive = false
+            
+            self.leftContainerViewWidthConstraint = self.leftContainerView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: ratio)
+            self.leftContainerViewWidthConstraint?.isActive = true
+            
+            self.view.layoutIfNeeded()
+        }
     }
 }
