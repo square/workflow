@@ -15,7 +15,7 @@
  */
 import Workflow
 import WorkflowUI
-import WorkflowSplitScreenContainer
+import SplitScreenContainer
 
 
 // MARK: Input and Output

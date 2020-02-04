@@ -2,7 +2,7 @@ import Workflow
 import WorkflowUI
 import XCTest
 import FBSnapshotTestCase
-@testable import WorkflowSplitScreenContainer
+@testable import SplitScreenContainer
 
 
 class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
