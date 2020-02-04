@@ -27,25 +27,15 @@ extension ViewRegistry {
 
 final class SplitScreenContainerViewController: ScreenViewController<SplitScreenContainerScreen> {
 
-    var leftContentViewController: ScreenViewController<AnyScreen>? = nil
-    var leftContainerView: UIView
+    private var leftContentViewController: ScreenViewController<AnyScreen>? = nil
+    private lazy var leftContainerView: UIView = .init()
 
-    var separatorView: UIView
+    private lazy var separatorView: UIView = .init()
 
-    var rightContentViewController: ScreenViewController<AnyScreen>? = nil
-    var rightContainerView: UIView
+    private var rightContentViewController: ScreenViewController<AnyScreen>? = nil
+    private lazy var rightContainerView: UIView = .init()
 
     required init(screen: SplitScreenContainerScreen, viewRegistry: ViewRegistry) {
-        self.leftContainerView = UIView()
-        self.leftContainerView.translatesAutoresizingMaskIntoConstraints = false
-
-        self.separatorView = UIView()
-        self.separatorView.translatesAutoresizingMaskIntoConstraints = false
-        self.separatorView.backgroundColor = screen.separatorColor
-
-        self.rightContainerView = UIView()
-        self.rightContainerView.translatesAutoresizingMaskIntoConstraints = false
-
         super.init(screen: screen, viewRegistry: viewRegistry)
 
         update(with: screen)
@@ -56,17 +46,7 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
     }
 
     private func update(with screen: SplitScreenContainerScreen) {
-
-        func embed(_ screen: AnyScreen, in containerView: UIView) -> ScreenViewController<AnyScreen> {
-            let viewController = viewRegistry.provideView(for: screen)
-            addChild(viewController)
-            containerView.addSubview(viewController.view)
-            viewController.didMove(toParent: self)
-
-            return viewController
-        }
-        
-        self.separatorView.backgroundColor = screen.separatorColor
+        separatorView.backgroundColor = screen.separatorColor
 
         if let leftContentViewController = leftContentViewController {
             if leftContentViewController.screenType == type(of: screen.leftScreen) {
@@ -95,30 +75,45 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
         } else {
             self.rightContentViewController = embed(screen.rightScreen, in: rightContainerView)
         }
-
+    }
+    
+    private func embed(_ screen: AnyScreen, in containerView: UIView) -> ScreenViewController<AnyScreen> {
+        let viewController = viewRegistry.provideView(for: screen)
+        
+        addChild(viewController)
+        
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false 
+        containerView.addSubview(viewController.view)
+        
+        NSLayoutConstraint.activate([
+            viewController.view.topAnchor.constraint(equalTo: containerView.topAnchor),
+            viewController.view.rightAnchor.constraint(equalTo: containerView.rightAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            viewController.view.leftAnchor.constraint(equalTo: containerView.leftAnchor),
+            ])
+        
+        viewController.didMove(toParent: self)
+        
+        return viewController
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        leftContainerView.translatesAutoresizingMaskIntoConstraints = false
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
+        rightContainerView.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(leftContainerView)
         view.addSubview(separatorView)
         view.addSubview(rightContainerView)
-
-        if let leftContentViewController = leftContentViewController {
-            leftContainerView.addSubview(leftContentViewController.view)
-        }
-
-        if let rightContentViewController = rightContentViewController {
-            rightContainerView.addSubview(rightContentViewController.view)
-        }
 
         NSLayoutConstraint.activate([
             leftContainerView.topAnchor.constraint(equalTo: view.topAnchor),
             leftContainerView.leftAnchor.constraint(equalTo: view.leftAnchor),
             leftContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             leftContainerView.rightAnchor.constraint(equalTo: separatorView.leftAnchor),
-            leftContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: screen.ratio.value),
+            leftContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: screen.ratio),
 
             separatorView.topAnchor.constraint(equalTo: view.topAnchor),
             separatorView.widthAnchor.constraint(equalToConstant: 1.0),
@@ -129,12 +124,5 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
             rightContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             rightContainerView.rightAnchor.constraint(equalTo: view.rightAnchor),
         ])
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        leftContentViewController?.view.frame = leftContainerView.bounds
-        rightContentViewController?.view.frame = rightContainerView.bounds
     }
 }

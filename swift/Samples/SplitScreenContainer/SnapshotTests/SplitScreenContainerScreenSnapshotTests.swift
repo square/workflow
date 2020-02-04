@@ -15,11 +15,11 @@ class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
         var viewRegistry = ViewRegistry()
         viewRegistry.register(screenViewControllerType: BaseScreenViewController.self)
 
-        let ratios: [String : SplitScreenContainerScreen.Ratio] = [
+        let ratios: [String : CGFloat] = [
             "third" : .third,
             "quarter" : .quarter,
             "half" : .half,
-            "custom" : .init(0.3125)
+            "custom" : 0.3125
         ]
 
         for (name, ratio) in ratios {
@@ -35,7 +35,7 @@ class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
             )
             viewController.view.layoutIfNeeded()
 
-            FBSnapshotVerifyView(viewController.view, identifier: name)
+            FBSnapshotVerifyView(viewController.view, identifier: name, suffixes: ["_64"])
         }
     }
 }

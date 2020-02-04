@@ -20,21 +20,21 @@ import WorkflowUI
 public struct SplitScreenContainerScreen: Screen {
 
     /// The screen displayed to the left of the separator.
-    public var leftScreen: AnyScreen
+    public let leftScreen: AnyScreen
 
     /// The screen displayed to the right of the separator.
-    public var rightScreen: AnyScreen
+    public let rightScreen: AnyScreen
 
     /// The ratio of `leftScreen`'s width relative to that of `rightScreen`. Defaults to `.third`.
-    public var ratio: Ratio
+    public let ratio: CGFloat
     
     /// The color of the `separatorView` displayed between `leftScreen`'s and `rightScreen`'s views.
-    public var separatorColor: UIColor
+    public let separatorColor: UIColor
 
     public init<LeftScreenType: Screen, RightScreenType: Screen>(
         leftScreen: LeftScreenType,
         rightScreen: RightScreenType,
-        ratio: Ratio = .third,
+        ratio: CGFloat = .third,
         separatorColor: UIColor = .black
     ) {
         self.leftScreen = AnyScreen(leftScreen)
@@ -45,21 +45,8 @@ public struct SplitScreenContainerScreen: Screen {
 
 }
 
-
-extension SplitScreenContainerScreen {
-
-    public struct Ratio {
-
-        public var value: CGFloat
-
-        public init(_ value: CGFloat) {
-            self.value = value
-        }
-
-        public static let quarter = Ratio(1.0 / 4.0)
-        public static let third = Ratio(1.0 / 3.0)
-        public static let half = Ratio(1.0 / 2.0)
-
-    }
-
+public extension CGFloat {
+    static let quarter: CGFloat = 1.0 / 4.0
+    static let third: CGFloat = 1.0 / 3.0
+    static let half: CGFloat = 1.0 / 2.0
 }

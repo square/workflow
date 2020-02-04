@@ -18,8 +18,8 @@ import WorkflowUI
 
 
 struct BaseScreen: Screen {
-    var title: String
-    var backgroundColor: UIColor
+    let title: String
+    let backgroundColor: UIColor
 }
 
 
@@ -34,12 +34,9 @@ extension ViewRegistry {
 
 fileprivate final class BaseScreenViewController: ScreenViewController<BaseScreen> {
     
-    private let titleLabel: UILabel
+    private lazy var titleLabel: UILabel = .init()
     
     required init(screen: BaseScreen, viewRegistry: ViewRegistry) {
-        titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 20))
-        titleLabel.textAlignment = .center
-        
         super.init(screen: screen, viewRegistry: viewRegistry)
         
         update(with: screen)
@@ -48,13 +45,14 @@ fileprivate final class BaseScreenViewController: ScreenViewController<BaseScree
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.textAlignment = .center
         view.addSubview(titleLabel)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
         
-        titleLabel.center = view.center
+        NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
     }
     
     override func screenDidChange(from previousScreen: BaseScreen) {
