@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.plus
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Launches a new coroutine that is a child of this node's scope, and calls
@@ -44,7 +45,8 @@ internal fun <T> CoroutineScope.launchWorker(
   key: String,
   workerDiagnosticId: Long,
   workflowDiagnosticId: Long,
-  diagnosticListener: WorkflowDiagnosticListener?
+  diagnosticListener: WorkflowDiagnosticListener?,
+  workerContext: CoroutineContext
 ): ReceiveChannel<ValueOrDone<T>> = worker.runWithNullCheck()
     .wireUpDebugger(workerDiagnosticId, workflowDiagnosticId, diagnosticListener)
     .transformToValueOrDone()
@@ -58,7 +60,7 @@ internal fun <T> CoroutineScope.launchWorker(
     // produceIn implicitly creates a buffer (it uses a Channel to bridge between contexts). This
     // operator is required to override the default buffer size.
     .buffer(RENDEZVOUS)
-    .produceIn(createWorkerScope(worker, key))
+    .produceIn(createWorkerScope(worker, key, workerContext))
 
 /**
  * In unit tests, if you use a mocking library to create a Worker, the run method will return null
@@ -131,8 +133,9 @@ private fun <T> Flow<T>.transformToValueOrDone(): Flow<ValueOrDone<T>> = flow {
 
 private fun CoroutineScope.createWorkerScope(
   worker: Worker<*>,
-  key: String
-): CoroutineScope = this + CoroutineName(worker.debugName(key)) + Unconfined
+  key: String,
+  workerContext: CoroutineContext
+): CoroutineScope = this + CoroutineName(worker.debugName(key)) + Unconfined + workerContext
 
 private fun Worker<*>.debugName(key: String) =
   toString().let { if (key.isBlank()) it else "$it:$key" }

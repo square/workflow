@@ -28,6 +28,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.select
 import org.jetbrains.annotations.TestOnly
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 internal interface WorkflowLoop {
 
@@ -44,6 +46,7 @@ internal interface WorkflowLoop {
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT? = null,
+    workerContext: CoroutineContext = EmptyCoroutineContext,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
     diagnosticListener: WorkflowDiagnosticListener? = null
@@ -59,6 +62,7 @@ internal open class RealWorkflowLoop : WorkflowLoop {
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
+    workerContext: CoroutineContext,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
     diagnosticListener: WorkflowDiagnosticListener?
@@ -78,6 +82,7 @@ internal open class RealWorkflowLoop : WorkflowLoop {
           initialProps = input,
           snapshot = initialSnapshot?.bytes?.takeUnless { it.size == 0 },
           baseContext = coroutineContext,
+          workerContext = workerContext,
           parentDiagnosticId = null,
           diagnosticListener = diagnosticListener,
           idCounter = idCounter,

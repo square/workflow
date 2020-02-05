@@ -34,6 +34,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.yield
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.ContinuationInterceptor
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -85,7 +86,7 @@ class WorkersTest {
     val listener = RecordingDiagnosticListener()
 
     runBlocking {
-      val outputs = launchWorker(worker, "", workerId, workflowId, listener)
+      val outputs = launchWorker(worker, "", workerId, workflowId, listener, EmptyCoroutineContext)
 
       // Start event is sent by WorkflowNode.
       yield()
@@ -220,7 +221,8 @@ class WorkersTest {
       key = key,
       workerDiagnosticId = 0,
       workflowDiagnosticId = 0,
-      diagnosticListener = null
+      diagnosticListener = null,
+      workerContext = EmptyCoroutineContext
   )
 
   private class ExpectedException : RuntimeException()
