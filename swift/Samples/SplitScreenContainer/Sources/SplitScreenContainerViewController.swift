@@ -29,8 +29,6 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
 
     required init(screen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>, viewRegistry: ViewRegistry) {
         super.init(screen: screen, viewRegistry: viewRegistry)
-
-        update(with: screen)
     }
 
     override public func screenDidChange(from previousScreen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>) {
@@ -38,8 +36,10 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
     }
 
     private func update(with screen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>) {
-        separatorView.backgroundColor = screen.separatorColor
-
+        if (separatorView.backgroundColor != screen.separatorColor) {
+            separatorView.backgroundColor = screen.separatorColor
+        }
+        
         leftContentViewController?.update(screen: screen.leftScreen)
         rightContentViewController?.update(screen: screen.rightScreen)
         
@@ -52,11 +52,12 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
         super.viewDidLoad()
         
         leftContainerView.translatesAutoresizingMaskIntoConstraints = false
-        separatorView.translatesAutoresizingMaskIntoConstraints = false
-        rightContainerView.translatesAutoresizingMaskIntoConstraints = false
-
         view.addSubview(leftContainerView)
+        
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(separatorView)
+        
+        rightContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(rightContainerView)
 
         NSLayoutConstraint.activate([
@@ -79,6 +80,8 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
         
         self.leftContentViewController = embed(screen.leftScreen, in: leftContainerView)
         self.rightContentViewController = embed(screen.rightScreen, in: rightContainerView)
+        
+        update(with: screen)
     }
     
     private func embed<ScreenType: Screen>(_ screen: ScreenType, in containerView: UIView) -> ScreenViewController<ScreenType> {
@@ -102,18 +105,21 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
     }
     
     private func updateWidthConstraints(ratio: CGFloat, animated: Bool) {
+        func updateConstraints() {
+            leftContainerViewWidthConstraint?.isActive = false
+            
+            leftContainerViewWidthConstraint = leftContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: ratio)
+            leftContainerViewWidthConstraint?.isActive = true
+        }
+        
         guard animated else {
-            self.leftContainerViewWidthConstraint = self.leftContainerView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: ratio)
-            self.leftContainerViewWidthConstraint?.isActive = true
+            updateConstraints()
             return
         }
         
         view.layoutIfNeeded()
         UIView.animate(withDuration: 0.2) {
-            self.leftContainerViewWidthConstraint?.isActive = false
-            
-            self.leftContainerViewWidthConstraint = self.leftContainerView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: ratio)
-            self.leftContainerViewWidthConstraint?.isActive = true
+            updateConstraints()
             
             self.view.layoutIfNeeded()
         }
