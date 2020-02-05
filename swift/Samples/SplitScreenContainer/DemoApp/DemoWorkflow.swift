@@ -66,18 +66,47 @@ extension DemoWorkflow {
 
 extension DemoWorkflow {
 
-    typealias Rendering = SplitScreenContainerScreen<AnyScreen, BaseScreen>
+    typealias Rendering = SplitScreenContainerScreen<AnyScreen, FooScreen>
     
     private static let sizes: [CGFloat] = [.quarter, .third, .half, 0.75]
+    private static let colors: [UIColor] = [.red, .blue, .green, .yellow]
+    private static let complimentaryColors: [UIColor] = [.blue, .green, .yellow, .purple,]
 
     func render(state: State, context: RenderContext<DemoWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
         
         return SplitScreenContainerScreen(
-            leftScreen: AnyScreen(BaseScreen(title: "Left screen", backgroundColor: .red, viewTapped: { sink.send(.viewTapped) })),
-            rightScreen: BaseScreen(title: "Right screen", backgroundColor: .green, viewTapped: { sink.send(.viewTapped) }),
+            leftScreen: leftScreenFor(state: state, context: context),
+            rightScreen: FooScreen(title: "Right screen", backgroundColor: .green, viewTapped: { sink.send(.viewTapped) }),
             ratio: DemoWorkflow.sizes[state % DemoWorkflow.sizes.count]
         )
+
+    }
+    
+    private func leftScreenFor(state: State, context: RenderContext<DemoWorkflow>) -> AnyScreen {
+        let sink = context.makeSink(of: Action.self)
+        
+        let color = DemoWorkflow.colors[state % DemoWorkflow.colors.count]
+        
+        if state % 2 == 0 {
+            return AnyScreen(
+                FooScreen(
+                    title: "Left Foo screen",
+                    backgroundColor: color,
+                    viewTapped: { sink.send(.viewTapped) }
+                )
+            )
+        } else {
+            let complimentaryColor = DemoWorkflow.complimentaryColors[state % DemoWorkflow.complimentaryColors.count]
+            
+            return AnyScreen(
+                BarScreen(
+                    title: "Left Bar screen",
+                    backgroundColors: [color, complimentaryColor],
+                    viewTapped: { sink.send(.viewTapped) }
+                )
+            )
+        }
 
     }
 

@@ -29,7 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         var viewRegistry = ViewRegistry()
         viewRegistry.registerSplitScreenContainer()
-        viewRegistry.registerBaseScreen()
+        viewRegistry.registerFooScreen()
+        viewRegistry.registerBarScreen()
 
         let container = ContainerViewController(
             workflow: DemoWorkflow(),
@@ -47,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension ViewRegistry {
     
     public mutating func registerSplitScreenContainer() {
-        self.register(screenViewControllerType: SplitScreenContainerViewController<AnyScreen, BaseScreen>.self)
+        self.register(screenViewControllerType: SplitScreenContainerViewController<AnyScreen, FooScreen>.self)
     }
     
 }

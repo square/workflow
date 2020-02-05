@@ -17,7 +17,7 @@ import Workflow
 import WorkflowUI
 
 
-struct BaseScreen: Screen {
+struct FooScreen: Screen {
     let title: String
     let backgroundColor: UIColor
     let viewTapped: () -> Void
@@ -26,19 +26,19 @@ struct BaseScreen: Screen {
 
 extension ViewRegistry {
     
-    public mutating func registerBaseScreen() {
-        self.register(screenViewControllerType: BaseScreenViewController.self)
+    public mutating func registerFooScreen() {
+        self.register(screenViewControllerType: FooScreenViewController.self)
     }
     
 }
 
 
-fileprivate final class BaseScreenViewController: ScreenViewController<BaseScreen> {
+fileprivate final class FooScreenViewController: ScreenViewController<FooScreen> {
     
     private lazy var titleLabel: UILabel = .init()
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     
-    required init(screen: BaseScreen, viewRegistry: ViewRegistry) {
+    required init(screen: FooScreen, viewRegistry: ViewRegistry) {
         super.init(screen: screen, viewRegistry: viewRegistry)
         
         update(with: screen)
@@ -60,11 +60,11 @@ fileprivate final class BaseScreenViewController: ScreenViewController<BaseScree
         ])
     }
     
-    override func screenDidChange(from previousScreen: BaseScreen) {
+    override func screenDidChange(from previousScreen: FooScreen) {
         update(with: screen)
     }
     
-    private func update(with screen: BaseScreen) {
+    private func update(with screen: FooScreen) {
         view.backgroundColor = screen.backgroundColor
         titleLabel.text = screen.title
     }
