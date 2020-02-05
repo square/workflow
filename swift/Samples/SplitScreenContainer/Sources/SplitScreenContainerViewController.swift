@@ -112,16 +112,15 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
             leftContainerViewWidthConstraint?.isActive = true
         }
         
-        guard animated else {
+        if animated {
+            view.layoutIfNeeded()
+            UIView.animate(withDuration: 0.2) {
+                updateConstraints()
+                
+                self.view.layoutIfNeeded()
+            }
+        } else {
             updateConstraints()
-            return
-        }
-        
-        view.layoutIfNeeded()
-        UIView.animate(withDuration: 0.2) {
-            updateConstraints()
-            
-            self.view.layoutIfNeeded()
         }
     }
 }
