@@ -57,7 +57,7 @@ buildscript {
               'reactivestreams': "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.2.0",
           ],
           // Note that we're not using the actual androidx material dep yet, it's still alpha.
-          'material': "com.google.android.material:material:1.0.0",
+          'material': "com.google.android.material:material:1.1.0",
           'recyclerview': "androidx.recyclerview:recyclerview:1.1.0",
           // Note that we are *not* using lifecycle-viewmodel-savedstate, which at this
           // writing is still in beta and still fixing bad bugs. Probably we'll never bother to,
