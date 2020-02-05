@@ -17,13 +17,13 @@ import WorkflowUI
 
 
 /// A `SplitScreenContainerScreen` displays two screens side by side with a separator in between.
-public struct SplitScreenContainerScreen: Screen {
+public struct SplitScreenContainerScreen<LeftScreenType: Screen, RightScreenType: Screen>: Screen {
 
     /// The screen displayed to the left of the separator.
-    public let leftScreen: AnyScreen
+    public let leftScreen: LeftScreenType
 
     /// The screen displayed to the right of the separator.
-    public let rightScreen: AnyScreen
+    public let rightScreen: RightScreenType
 
     /// The ratio of `leftScreen`'s width relative to that of `rightScreen`. Defaults to `.third`.
     public let ratio: CGFloat
@@ -31,14 +31,14 @@ public struct SplitScreenContainerScreen: Screen {
     /// The color of the `separatorView` displayed between `leftScreen`'s and `rightScreen`'s views.
     public let separatorColor: UIColor
 
-    public init<LeftScreenType: Screen, RightScreenType: Screen>(
+    public init(
         leftScreen: LeftScreenType,
         rightScreen: RightScreenType,
         ratio: CGFloat = .third,
         separatorColor: UIColor = .black
     ) {
-        self.leftScreen = AnyScreen(leftScreen)
-        self.rightScreen = AnyScreen(rightScreen)
+        self.leftScreen = leftScreen
+        self.rightScreen = rightScreen
         self.ratio = ratio
         self.separatorColor = separatorColor
     }

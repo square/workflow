@@ -16,93 +16,39 @@
 import Workflow
 import WorkflowUI
 
-extension ViewRegistry {
-    
-    public mutating func registerSplitScreenContainer() {
-        self.register(screenViewControllerType: SplitScreenContainerViewController.self)
-    }
-    
-}
+public final class SplitScreenContainerViewController<LeftScreenType: Screen, RightScreenType: Screen>: ScreenViewController<SplitScreenContainerScreen<LeftScreenType, RightScreenType>> {
 
-
-final class SplitScreenContainerViewController: ScreenViewController<SplitScreenContainerScreen> {
-
-    private var leftContentViewController: ScreenViewController<AnyScreen>? = nil
+    private var leftContentViewController: ScreenViewController<LeftScreenType>? = nil
     private lazy var leftContainerView: UIView = .init()
     private var leftContainerViewWidthConstraint: NSLayoutConstraint?
 
     private lazy var separatorView: UIView = .init()
 
-    private var rightContentViewController: ScreenViewController<AnyScreen>? = nil
+    private var rightContentViewController: ScreenViewController<RightScreenType>? = nil
     private lazy var rightContainerView: UIView = .init()
 
-    required init(screen: SplitScreenContainerScreen, viewRegistry: ViewRegistry) {
+    required init(screen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>, viewRegistry: ViewRegistry) {
         super.init(screen: screen, viewRegistry: viewRegistry)
 
         update(with: screen)
     }
 
-    override func screenDidChange(from previousScreen: SplitScreenContainerScreen) {
+    override public func screenDidChange(from previousScreen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>) {
         update(with: screen)
     }
 
-    private func update(with screen: SplitScreenContainerScreen) {
+    private func update(with screen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>) {
         separatorView.backgroundColor = screen.separatorColor
 
-        if let leftContentViewController = leftContentViewController {
-            if leftContentViewController.screenType == type(of: screen.leftScreen) {
-                leftContentViewController.update(screen: screen.leftScreen)
-            } else {
-                leftContentViewController.willMove(toParent: nil)
-                leftContentViewController.view.removeFromSuperview()
-                leftContentViewController.removeFromParent()
-
-                self.leftContentViewController = embed(screen.leftScreen, in: leftContainerView)
-            }
-        } else {
-            self.leftContentViewController = embed(screen.leftScreen, in: leftContainerView)
-        }
-
-        if let rightContentViewController = rightContentViewController {
-            if rightContentViewController.screenType == type(of: screen.rightScreen) {
-                rightContentViewController.update(screen: screen.rightScreen)
-            } else {
-                rightContentViewController.willMove(toParent: nil)
-                rightContentViewController.view.removeFromSuperview()
-                rightContentViewController.removeFromParent()
-
-                self.rightContentViewController = embed(screen.rightScreen, in: rightContainerView)
-            }
-        } else {
-            self.rightContentViewController = embed(screen.rightScreen, in: rightContainerView)
-        }
+        leftContentViewController?.update(screen: screen.leftScreen)
+        rightContentViewController?.update(screen: screen.rightScreen)
         
         if (leftContainerViewWidthConstraint?.multiplier != screen.ratio) {
             updateWidthConstraints(ratio: screen.ratio, animated: true)
         }
     }
-    
-    private func embed(_ screen: AnyScreen, in containerView: UIView) -> ScreenViewController<AnyScreen> {
-        let viewController = viewRegistry.provideView(for: screen)
-        
-        addChild(viewController)
-        
-        viewController.view.translatesAutoresizingMaskIntoConstraints = false 
-        containerView.addSubview(viewController.view)
-        
-        NSLayoutConstraint.activate([
-            viewController.view.topAnchor.constraint(equalTo: containerView.topAnchor),
-            viewController.view.rightAnchor.constraint(equalTo: containerView.rightAnchor),
-            viewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            viewController.view.leftAnchor.constraint(equalTo: containerView.leftAnchor),
-            ])
-        
-        viewController.didMove(toParent: self)
-        
-        return viewController
-    }
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         leftContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -130,6 +76,29 @@ final class SplitScreenContainerViewController: ScreenViewController<SplitScreen
         ])
         
         updateWidthConstraints(ratio: screen.ratio, animated: false)
+        
+        self.leftContentViewController = embed(screen.leftScreen, in: leftContainerView)
+        self.rightContentViewController = embed(screen.rightScreen, in: rightContainerView)
+    }
+    
+    private func embed<ScreenType: Screen>(_ screen: ScreenType, in containerView: UIView) -> ScreenViewController<ScreenType> {
+        let viewController = viewRegistry.provideView(for: screen)
+        
+        addChild(viewController)
+        
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(viewController.view)
+        
+        NSLayoutConstraint.activate([
+            viewController.view.topAnchor.constraint(equalTo: containerView.topAnchor),
+            viewController.view.rightAnchor.constraint(equalTo: containerView.rightAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            viewController.view.leftAnchor.constraint(equalTo: containerView.leftAnchor),
+            ])
+        
+        viewController.didMove(toParent: self)
+        
+        return viewController
     }
     
     private func updateWidthConstraints(ratio: CGFloat, animated: Bool) {

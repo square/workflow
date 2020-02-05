@@ -66,7 +66,7 @@ extension DemoWorkflow {
 
 extension DemoWorkflow {
 
-    typealias Rendering = SplitScreenContainerScreen
+    typealias Rendering = SplitScreenContainerScreen<AnyScreen, BaseScreen>
     
     private static let sizes: [CGFloat] = [.quarter, .third, .half, 0.75]
 
@@ -74,7 +74,7 @@ extension DemoWorkflow {
         let sink = context.makeSink(of: Action.self)
         
         return SplitScreenContainerScreen(
-            leftScreen: BaseScreen(title: "Left screen", backgroundColor: .red, viewTapped: { sink.send(.viewTapped) }),
+            leftScreen: AnyScreen(BaseScreen(title: "Left screen", backgroundColor: .red, viewTapped: { sink.send(.viewTapped) })),
             rightScreen: BaseScreen(title: "Right screen", backgroundColor: .green, viewTapped: { sink.send(.viewTapped) }),
             ratio: DemoWorkflow.sizes[state % DemoWorkflow.sizes.count]
         )

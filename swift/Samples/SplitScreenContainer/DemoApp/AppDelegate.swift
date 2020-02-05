@@ -16,6 +16,7 @@
 import UIKit
 import Workflow
 import WorkflowUI
+import SplitScreenContainer
 
 
 @UIApplicationMain
@@ -41,4 +42,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+}
+
+extension ViewRegistry {
+    
+    public mutating func registerSplitScreenContainer() {
+        self.register(screenViewControllerType: SplitScreenContainerViewController<AnyScreen, BaseScreen>.self)
+    }
+    
 }
