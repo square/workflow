@@ -16,111 +16,88 @@
 import Workflow
 import WorkflowUI
 
-public final class SplitScreenContainerViewController<LeftScreenType: Screen, RightScreenType: Screen>: ScreenViewController<SplitScreenContainerScreen<LeftScreenType, RightScreenType>> {
-
+public final class SplitScreenContainerViewController<LeftScreenType: Screen, RightScreenType: Screen>: ScreenViewController<SplitScreenContainerViewController.ContainerScreen> {
+    public typealias ContainerScreen = SplitScreenContainerScreen<LeftScreenType, RightScreenType>
+    
     private var leftContentViewController: ScreenViewController<LeftScreenType>? = nil
     private lazy var leftContainerView: UIView = .init()
-    private var leftContainerViewWidthConstraint: NSLayoutConstraint?
 
     private lazy var separatorView: UIView = .init()
 
     private var rightContentViewController: ScreenViewController<RightScreenType>? = nil
     private lazy var rightContainerView: UIView = .init()
+    
+    private var currentRatio: CGFloat {
+        didSet {
+            guard oldValue != currentRatio else {
+                return
+            }
+            
+            UIView.animate(withDuration: 0.25) {
+                self.view.setNeedsLayout()
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
 
-    required init(screen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>, viewRegistry: ViewRegistry) {
+    required init(screen: ContainerScreen, viewRegistry: ViewRegistry) {
+        currentRatio = screen.ratio
+        
         super.init(screen: screen, viewRegistry: viewRegistry)
     }
 
-    override public func screenDidChange(from previousScreen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>) {
+    override public func screenDidChange(from previousScreen: ContainerScreen) {
         update(with: screen)
     }
 
-    private func update(with screen: SplitScreenContainerScreen<LeftScreenType, RightScreenType>) {
-        if (separatorView.backgroundColor != screen.separatorColor) {
-            separatorView.backgroundColor = screen.separatorColor
-        }
+    private func update(with screen: ContainerScreen) {
+        separatorView.backgroundColor = screen.separatorColor
         
         leftContentViewController?.update(screen: screen.leftScreen)
         rightContentViewController?.update(screen: screen.rightScreen)
         
-        if (leftContainerViewWidthConstraint?.multiplier != screen.ratio) {
-            updateWidthConstraints(ratio: screen.ratio, animated: true)
-        }
+        //Intentional force of layout pass after updating the child view controllers
+        view.layoutIfNeeded()
+        
+        //Update the current ratio in an animated fashion if needed
+        currentRatio = screen.ratio
     }
 
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        leftContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(leftContainerView)
-        
-        separatorView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(separatorView)
-        
-        rightContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(rightContainerView)
-
-        NSLayoutConstraint.activate([
-            leftContainerView.topAnchor.constraint(equalTo: view.topAnchor),
-            leftContainerView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            leftContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            leftContainerView.rightAnchor.constraint(equalTo: separatorView.leftAnchor),
-
-            separatorView.topAnchor.constraint(equalTo: view.topAnchor),
-            separatorView.widthAnchor.constraint(equalToConstant: 1.0),
-            separatorView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
-            rightContainerView.topAnchor.constraint(equalTo: view.topAnchor),
-            rightContainerView.leftAnchor.constraint(equalTo: separatorView.rightAnchor),
-            rightContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            rightContainerView.rightAnchor.constraint(equalTo: view.rightAnchor),
-        ])
-        
-        updateWidthConstraints(ratio: screen.ratio, animated: false)
         
         self.leftContentViewController = embed(screen.leftScreen, in: leftContainerView)
         self.rightContentViewController = embed(screen.rightScreen, in: rightContainerView)
-        
         update(with: screen)
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let distance = view.bounds.width * currentRatio
+        
+        let (firstSlice, rightRect) = view.bounds.divided(atDistance: distance, from: .minXEdge)
+        
+        let (leftRect, separatorRect) = firstSlice.divided(atDistance: distance - 1, from: .minXEdge)
+        
+        leftContainerView.frame = leftRect
+        separatorView.frame = separatorRect
+        rightContainerView.frame = rightRect
+        leftContentViewController?.view.frame = leftRect
+        rightContentViewController?.view.frame = CGRect(x: 0, y: 0, width: rightRect.width, height: rightRect.height)
     }
     
     private func embed<ScreenType: Screen>(_ screen: ScreenType, in containerView: UIView) -> ScreenViewController<ScreenType> {
         let viewController = viewRegistry.provideView(for: screen)
         
         addChild(viewController)
-        
-        viewController.view.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(viewController.view)
-        
-        NSLayoutConstraint.activate([
-            viewController.view.topAnchor.constraint(equalTo: containerView.topAnchor),
-            viewController.view.rightAnchor.constraint(equalTo: containerView.rightAnchor),
-            viewController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            viewController.view.leftAnchor.constraint(equalTo: containerView.leftAnchor),
-            ])
-        
         viewController.didMove(toParent: self)
         
         return viewController
-    }
-    
-    private func updateWidthConstraints(ratio: CGFloat, animated: Bool) {
-        func updateConstraints() {
-            leftContainerViewWidthConstraint?.isActive = false
-            
-            leftContainerViewWidthConstraint = leftContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: ratio)
-            leftContainerViewWidthConstraint?.isActive = true
-        }
-        
-        if animated {
-            view.layoutIfNeeded()
-            UIView.animate(withDuration: 0.2) {
-                updateConstraints()
-                
-                self.view.layoutIfNeeded()
-            }
-        } else {
-            updateConstraints()
-        }
     }
 }
