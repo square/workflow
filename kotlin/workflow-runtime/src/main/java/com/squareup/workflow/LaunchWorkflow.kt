@@ -131,6 +131,7 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
   val renderingsAndSnapshots = ConflatedBroadcastChannel<RenderingAndSnapshot<RenderingT>>()
   val outputs = BroadcastChannel<OutputT>(capacity = 1)
   val workflowScope = scope + Job(parent = scope.coroutineContext[Job])
+  require(workerContext[Job] == null) { "Expected workerContext not to have a Job." }
 
   // Give the caller a chance to start collecting outputs.
   val session = WorkflowSession(renderingsAndSnapshots.asFlow(), outputs.asFlow())
