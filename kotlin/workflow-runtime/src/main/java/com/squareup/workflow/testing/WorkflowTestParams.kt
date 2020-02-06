@@ -22,8 +22,6 @@ import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromCompl
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromState
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromWorkflowSnapshot
 import org.jetbrains.annotations.TestOnly
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Defines configuration for workflow testing infrastructure such as `testRender`, `testFromStart`.
@@ -36,15 +34,11 @@ import kotlin.coroutines.EmptyCoroutineContext
  * for any given state, so performing side effects in `render` will almost always result in bugs.
  * It is recommended to leave this on, but if you need to debug a test and don't want to have to
  * deal with the extra passes, you can temporarily set it to false.
- * @param workerContext Used to customize the context in which workers are started for tests.
- * Default is [EmptyCoroutineContext], which means the workers will use the context from their
- * workflow and use the [Unconfined][kotlinx.coroutines.Dispatchers.Unconfined] dispatcher.
  */
 @TestOnly
 data class WorkflowTestParams<out StateT>(
   val startFrom: StartMode<StateT> = StartFresh,
-  val checkRenderIdempotence: Boolean = true,
-  val workerContext: CoroutineContext = EmptyCoroutineContext
+  val checkRenderIdempotence: Boolean = true
 ) {
   /**
    * Defines how to start the workflow for tests.

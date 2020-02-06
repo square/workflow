@@ -26,6 +26,7 @@ import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromCompl
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromState
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromWorkflowSnapshot
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.annotations.TestOnly
 
@@ -63,6 +64,10 @@ fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFr
       initialState = initialState,
       initialSnapshot = initialSnapshot,
       beforeStart = beforeStart,
-      workerContext = testParams.workerContext
+      // Use the base context as the starting point for the worker context since it's often used
+      // to pass in test dispatchers.
+      // Remove any job present in the base context since worker context aren't allowed to contain
+      // jobs (it would violate structured concurrency).
+      workerContext = scope.coroutineContext.minusKey(Job)
   )
 }
