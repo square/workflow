@@ -62,6 +62,7 @@ fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFr
       props,
       initialState = initialState,
       initialSnapshot = initialSnapshot,
-      beforeStart = beforeStart
+      beforeStart = beforeStart,
+      workerContext = testParams.workerContext
   )
 }

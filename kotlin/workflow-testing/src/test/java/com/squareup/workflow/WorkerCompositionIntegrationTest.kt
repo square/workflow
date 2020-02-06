@@ -19,10 +19,14 @@ package com.squareup.workflow
 
 import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.testing.WorkerSink
+import com.squareup.workflow.testing.WorkflowTestParams
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -236,6 +240,19 @@ class WorkerCompositionIntegrationTest {
       assertFailsWith<TimeoutCancellationException> {
         awaitNextOutput(timeoutMs = 100)
       }
+    }
+  }
+
+  @Test fun `worker coroutine uses test worker context`() {
+    val worker = Worker.from { coroutineContext }
+    val workflow = Workflow.stateless<Unit, CoroutineContext, Unit> {
+      runningWorker(worker) { context -> action { setOutput(context) } }
+    }
+    val workerContext = CoroutineName("worker context")
+
+    workflow.testFromStart(testParams = WorkflowTestParams(workerContext = workerContext)) {
+      val actualWorkerContext = awaitNextOutput()
+      assertEquals("worker context", actualWorkerContext[CoroutineName]!!.name)
     }
   }
 }

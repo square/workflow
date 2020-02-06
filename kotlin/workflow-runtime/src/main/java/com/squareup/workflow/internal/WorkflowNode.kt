@@ -35,6 +35,7 @@ import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.selects.SelectBuilder
 import okio.ByteString
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * A node in a state machine tree. Manages the actual state for a given [Workflow].
@@ -55,7 +56,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   parentDiagnosticId: Long? = null,
   private val diagnosticListener: WorkflowDiagnosticListener? = null,
   private val idCounter: IdCounter? = null,
-  initialState: StateT? = null
+  initialState: StateT? = null,
+  private val workerContext: CoroutineContext = EmptyCoroutineContext
 ) : CoroutineScope, WorkerRunner<StateT, OutputT> {
 
   /**
@@ -270,7 +272,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
       workerId = idCounter.createId()
       diagnosticListener.onWorkerStarted(workerId, diagnosticId, key, worker.toString())
     }
-    val workerChannel = launchWorker(worker, key, workerId, diagnosticId, diagnosticListener)
+    val workerChannel =
+      launchWorker(worker, key, workerId, diagnosticId, diagnosticListener, workerContext)
     return WorkerChildNode(worker, key, workerChannel, handler = handler)
   }
 

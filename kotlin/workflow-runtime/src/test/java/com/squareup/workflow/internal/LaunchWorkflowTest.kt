@@ -47,6 +47,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.yield
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -545,6 +546,7 @@ private fun simpleLoop(
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
+    workerContext: CoroutineContext,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
     diagnosticListener: WorkflowDiagnosticListener?
@@ -562,6 +564,7 @@ private object HangingLoop : WorkflowLoop {
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
+    workerContext: CoroutineContext,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
     diagnosticListener: WorkflowDiagnosticListener?
