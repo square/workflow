@@ -13,7 +13,7 @@ class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
     
     func test_splitRatio() {
         var viewRegistry = ViewRegistry()
-        viewRegistry.register(screenViewControllerType: BaseScreenViewController.self)
+        viewRegistry.register(screenViewControllerType: FooScreenViewController.self)
 
         let ratios: [String : CGFloat] = [
             "third" : .third,
@@ -24,8 +24,8 @@ class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
 
         for (name, ratio) in ratios {
             let splitScreenContainerScreen = SplitScreenContainerScreen(
-                leftScreen: BaseScreen(title: "Left screen", backgroundColor: .green),
-                rightScreen: BaseScreen(title: "Right screen", backgroundColor: .red),
+                leadingScreen: FooScreen(title: "Leading screen", backgroundColor: .green, viewTapped: {}),
+                trailingScreen: FooScreen(title: "Trailing screen", backgroundColor: .red, viewTapped: {}),
                 ratio: ratio
             )
 
@@ -41,20 +41,19 @@ class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
 }
 
 
-struct BaseScreen: Screen {
-    var title: String
-    var backgroundColor: UIColor
+fileprivate struct FooScreen: Screen {
+    let title: String
+    let backgroundColor: UIColor
+    let viewTapped: () -> Void
 }
 
 
-fileprivate final class BaseScreenViewController: ScreenViewController<BaseScreen> {
+fileprivate final class FooScreenViewController: ScreenViewController<FooScreen> {
     
-    private let titleLabel: UILabel
+    private lazy var titleLabel: UILabel = .init()
+    private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     
-    required init(screen: BaseScreen, viewRegistry: ViewRegistry) {
-        titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 20))
-        titleLabel.textAlignment = .center
-        
+    required init(screen: FooScreen, viewRegistry: ViewRegistry) {
         super.init(screen: screen, viewRegistry: viewRegistry)
         
         update(with: screen)
@@ -63,22 +62,31 @@ fileprivate final class BaseScreenViewController: ScreenViewController<BaseScree
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubview(titleLabel)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+        tapGestureRecognizer.addTarget(self, action: #selector(viewTapped))
+        view.addGestureRecognizer(tapGestureRecognizer)
         
-        titleLabel.center = view.center
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.textAlignment = .center
+        view.addSubview(titleLabel)
+        
+        NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            ])
     }
     
-    override func screenDidChange(from previousScreen: BaseScreen) {
+    override func screenDidChange(from previousScreen: FooScreen) {
         update(with: screen)
     }
     
-    private func update(with screen: BaseScreen) {
+    private func update(with screen: FooScreen) {
         view.backgroundColor = screen.backgroundColor
         titleLabel.text = screen.title
+    }
+    
+    @objc
+    private func viewTapped() {
+        screen.viewTapped()
     }
 }
 

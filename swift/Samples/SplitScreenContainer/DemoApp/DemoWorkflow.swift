@@ -76,8 +76,8 @@ extension DemoWorkflow {
         let sink = context.makeSink(of: Action.self)
         
         return SplitScreenContainerScreen(
-            leftScreen: leftScreenFor(state: state, context: context),
-            rightScreen: FooScreen(title: "Right screen", backgroundColor: .green, viewTapped: { sink.send(.viewTapped) }),
+            leadingScreen: leadingScreenFor(state: state, context: context),
+            trailingScreen: FooScreen(title: "Trailing screen", backgroundColor: .green, viewTapped: { sink.send(.viewTapped) }),
             ratio: DemoWorkflow.sizes[state % DemoWorkflow.sizes.count],
             separatorColor: .black,
             separatorWidth: 1.0 * CGFloat(state)
@@ -85,7 +85,7 @@ extension DemoWorkflow {
 
     }
     
-    private func leftScreenFor(state: State, context: RenderContext<DemoWorkflow>) -> AnyScreen {
+    private func leadingScreenFor(state: State, context: RenderContext<DemoWorkflow>) -> AnyScreen {
         let sink = context.makeSink(of: Action.self)
         
         let color = DemoWorkflow.colors[state % DemoWorkflow.colors.count]
@@ -93,7 +93,7 @@ extension DemoWorkflow {
         if state % 2 == 0 {
             return AnyScreen(
                 FooScreen(
-                    title: "Left Foo screen",
+                    title: "Leading Foo screen",
                     backgroundColor: color,
                     viewTapped: { sink.send(.viewTapped) }
                 )
@@ -103,7 +103,7 @@ extension DemoWorkflow {
             
             return AnyScreen(
                 BarScreen(
-                    title: "Left Bar screen",
+                    title: "Leading Bar screen",
                     backgroundColors: [color, complimentaryColor],
                     viewTapped: { sink.send(.viewTapped) }
                 )

@@ -17,32 +17,32 @@ import WorkflowUI
 
 
 /// A `SplitScreenContainerScreen` displays two screens side by side with a separator in between.
-public struct SplitScreenContainerScreen<LeftScreenType: Screen, RightScreenType: Screen>: Screen {
+public struct SplitScreenContainerScreen<LeadingScreenType: Screen, TrailingScreenType: Screen>: Screen {
 
-    /// The screen displayed to the left of the separator.
-    public let leftScreen: LeftScreenType
+    /// The screen displayed leading the separator.
+    public let leadingScreen: LeadingScreenType
 
-    /// The screen displayed to the right of the separator.
-    public let rightScreen: RightScreenType
+    /// The screen displayed trailing the separator.
+    public let trailingScreen: TrailingScreenType
 
-    /// The ratio of `leftScreen`'s width relative to that of `rightScreen`. Defaults to `.third`.
+    /// The ratio of `leadingScreen`'s width relative to that of `trailingScreen`. Defaults to `.third`.
     public let ratio: CGFloat
     
-    /// The color of the `separatorView` displayed between `leftScreen`'s and `rightScreen`'s views.
+    /// The color of the `separatorView` displayed between `leadingScreen`'s and `trailingScreen`'s views.
     public let separatorColor: UIColor
 
-    /// The width of the `separatorView` displayed between `leftScreen`'s and `rightScreen`'s views.
+    /// The width of the `separatorView` displayed between `leadingScreen`'s and `trailingScreen`'s views.
     public let separatorWidth: CGFloat
 
     public init(
-        leftScreen: LeftScreenType,
-        rightScreen: RightScreenType,
+        leadingScreen: LeadingScreenType,
+        trailingScreen: TrailingScreenType,
         ratio: CGFloat = .third,
         separatorColor: UIColor = .black,
         separatorWidth: CGFloat = 1.0
     ) {
-        self.leftScreen = leftScreen
-        self.rightScreen = rightScreen
+        self.leadingScreen = leadingScreen
+        self.trailingScreen = trailingScreen
         self.ratio = ratio
         self.separatorColor = separatorColor
         self.separatorWidth = separatorWidth
