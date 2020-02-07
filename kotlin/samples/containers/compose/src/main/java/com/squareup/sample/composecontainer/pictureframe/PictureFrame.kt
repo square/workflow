@@ -20,17 +20,16 @@ package com.squareup.sample.composecontainer.pictureframe
 
 import androidx.compose.Composable
 import androidx.compose.remember
+import androidx.ui.core.Clip
 import androidx.ui.core.DrawModifier
 import androidx.ui.core.Text
 import androidx.ui.foundation.Box
+import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.geometry.Offset
-import androidx.ui.geometry.RRect
-import androidx.ui.geometry.Radius
 import androidx.ui.graphics.Canvas
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.Paint
 import androidx.ui.graphics.StrokeCap.square
-import androidx.ui.graphics.withSaveLayer
 import androidx.ui.layout.Center
 import androidx.ui.layout.Padding
 import androidx.ui.material.MaterialTheme
@@ -40,7 +39,6 @@ import androidx.ui.unit.Density
 import androidx.ui.unit.Dp
 import androidx.ui.unit.PxSize
 import androidx.ui.unit.dp
-import androidx.ui.unit.toRect
 import androidx.ui.unit.withDensity
 
 /**
@@ -53,10 +51,12 @@ import androidx.ui.unit.withDensity
 ) {
   val cache = remember { PictureFrameCache() }
   Center {
-    Box(
-        modifier = PictureFrameModifier(thickness, colors, cache),
-        children = children
-    )
+    Clip(RoundedCornerShape(thickness)) {
+      Box(
+          modifier = PictureFrameModifier(thickness, colors, cache),
+          children = children
+      )
+    }
   }
 }
 
@@ -145,21 +145,17 @@ private class PictureFrameModifier(
           .chunked(2)
     }.also { cache.edges = it }
 
-    val edgeRadius = withDensity(density) { thickness.toPx() }
-    canvas.withSaveLayer(size.toRect(), Paint()) {
-      canvas.clipRRect(RRect(size.toRect(), Radius.circular(edgeRadius.value)))
-      drawContent()
+    drawContent()
 
-      for ((index, corners) in offsets.withIndex()) {
-        for ((p1, p2) in corners) {
-          canvas.drawLine(p1, p2, paints[index])
-        }
+    for ((index, corners) in offsets.withIndex()) {
+      for ((p1, p2) in corners) {
+        canvas.drawLine(p1, p2, paints[index])
       }
+    }
 
-      val innerPaint = paints.last()
-      for ((p1, p2) in edges) {
-        canvas.drawLine(p1, p2, innerPaint)
-      }
+    val innerPaint = paints.last()
+    for ((p1, p2) in edges) {
+      canvas.drawLine(p1, p2, innerPaint)
     }
   }
 }
