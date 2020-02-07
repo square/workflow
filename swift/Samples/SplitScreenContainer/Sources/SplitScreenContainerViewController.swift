@@ -33,15 +33,25 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
                 return
             }
             
-            UIView.animate(withDuration: 0.25) {
-                self.view.setNeedsLayout()
-                self.view.layoutIfNeeded()
-            }
+            needsAnimatedLayout = true
         }
     }
 
+    private var currentSeparatorWidth: CGFloat {
+        didSet {
+            guard oldValue != currentSeparatorWidth else {
+                return
+            }
+
+            needsAnimatedLayout = true
+        }
+    }
+
+    private var needsAnimatedLayout = false
+
     required init(screen: ContainerScreen, viewRegistry: ViewRegistry) {
         currentRatio = screen.ratio
+        currentSeparatorWidth = screen.separatorWidth
         
         super.init(screen: screen, viewRegistry: viewRegistry)
     }
@@ -58,9 +68,18 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
         
         //Intentional force of layout pass after updating the child view controllers
         view.layoutIfNeeded()
-        
-        //Update the current ratio in an animated fashion if needed
+
         currentRatio = screen.ratio
+        currentSeparatorWidth = screen.separatorWidth
+
+        if needsAnimatedLayout {
+            needsAnimatedLayout = false
+
+            UIView.animate(withDuration: 0.25) {
+                self.view.setNeedsLayout()
+                self.view.layoutIfNeeded()
+            }
+        }
     }
 
     override public func viewDidLoad() {
@@ -82,7 +101,7 @@ public final class SplitScreenContainerViewController<LeftScreenType: Screen, Ri
         
         let (firstSlice, rightRect) = view.bounds.divided(atDistance: distance, from: .minXEdge)
         
-        let (leftRect, separatorRect) = firstSlice.divided(atDistance: distance - 1, from: .minXEdge)
+        let (leftRect, separatorRect) = firstSlice.divided(atDistance: distance - currentSeparatorWidth, from: .minXEdge)
         
         leftContainerView.frame = leftRect
         separatorView.frame = separatorRect

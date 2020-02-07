@@ -78,7 +78,9 @@ extension DemoWorkflow {
         return SplitScreenContainerScreen(
             leftScreen: leftScreenFor(state: state, context: context),
             rightScreen: FooScreen(title: "Right screen", backgroundColor: .green, viewTapped: { sink.send(.viewTapped) }),
-            ratio: DemoWorkflow.sizes[state % DemoWorkflow.sizes.count]
+            ratio: DemoWorkflow.sizes[state % DemoWorkflow.sizes.count],
+            separatorColor: .black,
+            separatorWidth: 1.0 * CGFloat(state)
         )
 
     }
