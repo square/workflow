@@ -20,6 +20,7 @@ package com.squareup.workflow.ui
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import kotlin.reflect.KClass
 
 /**
  * [ViewBinding]s that are always available.
@@ -63,7 +64,7 @@ interface ViewRegistry {
    *
    * Used to ensure that duplicate bindings are never registered.
    */
-  val keys: Set<Any>
+  val keys: Set<KClass<*>>
 
   /**
    * It is usually more convenient to use [WorkflowViewStub] than to call this method directly.

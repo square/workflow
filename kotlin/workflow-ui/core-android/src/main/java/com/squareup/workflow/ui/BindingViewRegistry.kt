@@ -36,7 +36,7 @@ internal class BindingViewRegistry private constructor(
       }
   )
 
-  override val keys: Set<Any> get() = bindings.keys
+  override val keys: Set<KClass<*>> get() = bindings.keys
 
   override fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,

@@ -102,7 +102,7 @@ class CompositeViewRegistryTest {
   private object BazRendering
 
   private class TestRegistry(private val bindings: Map<KClass<*>, View>) : ViewRegistry {
-    override val keys: Set<Any> get() = bindings.keys
+    override val keys: Set<KClass<*>> get() = bindings.keys
 
     override fun <RenderingT : Any> buildView(
       initialRendering: RenderingT,

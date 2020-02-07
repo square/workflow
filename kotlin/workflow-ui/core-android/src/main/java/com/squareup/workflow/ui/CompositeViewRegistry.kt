@@ -18,6 +18,7 @@ package com.squareup.workflow.ui
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import kotlin.reflect.KClass
 
 /**
  * A [ViewRegistry] that contains only other registries and delegates to their [buildView] methods.
@@ -34,12 +35,12 @@ import android.view.ViewGroup
  * a reference to another [CompositeViewRegistry].
  */
 internal class CompositeViewRegistry private constructor(
-  private val registriesByKey: Map<Any, ViewRegistry>
+  private val registriesByKey: Map<KClass<*>, ViewRegistry>
 ) : ViewRegistry {
 
   constructor (vararg registries: ViewRegistry) : this(mergeRegistries(*registries))
 
-  override val keys: Set<Any> get() = registriesByKey.keys
+  override val keys: Set<KClass<*>> get() = registriesByKey.keys
 
   override fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
@@ -56,10 +57,10 @@ internal class CompositeViewRegistry private constructor(
   }
 
   companion object {
-    private fun mergeRegistries(vararg registries: ViewRegistry): Map<Any, ViewRegistry> {
-      val registriesByKey = mutableMapOf<Any, ViewRegistry>()
+    private fun mergeRegistries(vararg registries: ViewRegistry): Map<KClass<*>, ViewRegistry> {
+      val registriesByKey = mutableMapOf<KClass<*>, ViewRegistry>()
 
-      fun putAllUnique(other: Map<Any, ViewRegistry>) {
+      fun putAllUnique(other: Map<KClass<*>, ViewRegistry>) {
         val duplicateKeys = registriesByKey.keys.intersect(other.keys)
         check(duplicateKeys.isEmpty()) { "Must not have duplicate entries: $duplicateKeys" }
         registriesByKey.putAll(other)
