@@ -13,7 +13,7 @@ matrix:
     - language: python
       name: "Documentation: Static site"
       python:
-        - "2.7"
+        - "3.6"
       install:
         - pip install mkdocs-material
       script:
