@@ -20,12 +20,12 @@ public final class SplitScreenContainerViewController<LeadingScreenType: Screen,
     public typealias ContainerScreen = SplitScreenContainerScreen<LeadingScreenType, TrailingScreenType>
     
     private var leadingContentViewController: ScreenViewController<LeadingScreenType>? = nil
-    private lazy var leadingContainerView: UIView = .init()
+    private lazy var leadingContainerView: ContainerView = .init()
 
     private lazy var separatorView: UIView = .init()
 
     private var trailingContentViewController: ScreenViewController<TrailingScreenType>? = nil
-    private lazy var trailingContainerView: UIView = .init()
+    private lazy var trailingContainerView: ContainerView = .init()
     
     private var currentRatio: CGFloat {
         didSet {
@@ -91,6 +91,7 @@ public final class SplitScreenContainerViewController<LeadingScreenType: Screen,
         
         self.leadingContentViewController = embed(screen.leadingScreen, in: leadingContainerView)
         self.trailingContentViewController = embed(screen.trailingScreen, in: trailingContainerView)
+        
         update(with: screen)
     }
     
@@ -102,33 +103,33 @@ public final class SplitScreenContainerViewController<LeadingScreenType: Screen,
         let (firstSlice, trailingRect) = view.bounds.divided(atDistance: distance, from: .minXEdge)
         
         let (leadingRect, separatorRect) = firstSlice.divided(atDistance: distance - currentSeparatorWidth, from: .minXEdge)
-        
-        let isRightToLeft = isLayoutDirectionRightToLeft()
-        
-        leadingContainerView.frame = isRightToLeft ? trailingRect: leadingRect
-        leadingContentViewController?.view.frame = leadingContainerView.bounds
+
+        leadingContainerView.frame = isLayoutDirectionRightToLeft ? trailingRect: leadingRect
         
         separatorView.frame = separatorRect
         
-        trailingContainerView.frame = isRightToLeft ? leadingRect : trailingRect
-        trailingContentViewController?.view.frame = trailingContainerView.bounds
+        trailingContainerView.frame = isLayoutDirectionRightToLeft ? leadingRect : trailingRect
     }
-    
-    private func isLayoutDirectionRightToLeft() -> Bool {
+}
+
+fileprivate extension UIViewController {
+    var isLayoutDirectionRightToLeft: Bool {
         if #available(iOS 10.0, *) {
             return traitCollection.layoutDirection == .rightToLeft
         } else {
             return UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
         }
     }
-    
-    private func embed<ScreenType: Screen>(_ screen: ScreenType, in containerView: UIView) -> ScreenViewController<ScreenType> {
+}
+
+fileprivate extension ScreenViewController {
+    func embed<ScreenType: Screen>(_ screen: ScreenType, in containerView: ContainerView) -> ScreenViewController<ScreenType> {
         let viewController = viewRegistry.provideView(for: screen)
-        
+
         addChild(viewController)
-        containerView.addSubview(viewController.view)
+        containerView.contentView.addSubview(viewController.view)
         viewController.didMove(toParent: self)
-        
+
         return viewController
     }
 }
