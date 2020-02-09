@@ -13,7 +13,7 @@ matrix:
     - language: python
       name: "Documentation: Static site"
       python:
-        - "2.7"
+        - "3.6"
       install:
         - pip install mkdocs-material
       script:
@@ -260,3 +260,18 @@ matrix:
         - cd swift/Samples/TicTacToe
         - bundle exec pod repo update
         - bundle exec pod install
+
+    - language: swift
+      name: "Swift - SplitScreenContainer Snapshot Tests - Cocoapods (Xcode 10.2)"
+      os: osx
+      osx_image: xcode10.2
+      xcode_workspace: SplitScreenContainer.xcworkspace
+      xcode_scheme: SplitScreenContainer-Unit-SnapshotTests
+      xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
+      before_install:
+        - yes | gem update --system
+        - gem install bundler
+        - cd swift/Samples/SplitScreenContainer
+        - bundle install
+        - pod gen SplitScreenContainer.podspec
+        - cd gen/SplitScreenContainer
