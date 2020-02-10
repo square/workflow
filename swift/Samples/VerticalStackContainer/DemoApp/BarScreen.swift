@@ -40,6 +40,8 @@ fileprivate final class BarScreenViewController: ScreenViewController<BarScreen>
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     
     required init(screen: BarScreen, viewRegistry: ViewRegistry) {
+        print("\(#file) - \(#function)")
+
         super.init(screen: screen, viewRegistry: viewRegistry)
         
         update(with: screen)
@@ -47,6 +49,8 @@ fileprivate final class BarScreenViewController: ScreenViewController<BarScreen>
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        print("\(#file) - \(#function)")
 
         tapGestureRecognizer.addTarget(self, action: #selector(viewTapped))
         view.addGestureRecognizer(tapGestureRecognizer)
@@ -60,6 +64,8 @@ fileprivate final class BarScreenViewController: ScreenViewController<BarScreen>
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
+        print("\(#file) - \(#function)")
+
         titleLabel.frame = view.bounds.insetBy(dx: titleLabelPadding, dy: titleLabelPadding)
 
         titleLabel.preferredMaxLayoutWidth = view.bounds.width - (titleLabelPadding * 2)
@@ -68,6 +74,8 @@ fileprivate final class BarScreenViewController: ScreenViewController<BarScreen>
     }
 
     private func calculatePreferredSize() {
+        print("\(#file) - \(#function)")
+
         let preferredHeight = titleLabel.intrinsicContentSize.height + (titleLabelPadding * 2)
 
         preferredContentSize = CGSize(width: view.bounds.width, height: preferredHeight)
@@ -78,6 +86,8 @@ fileprivate final class BarScreenViewController: ScreenViewController<BarScreen>
     }
     
     private func update(with screen: BarScreen) {
+        print("\(#file) - \(#function)")
+
         view.backgroundColor = screen.backgroundColor
 
         titleLabel.text = screen.title

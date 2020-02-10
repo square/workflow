@@ -45,16 +45,22 @@ public final class VerticalStackContainerViewController<TopScreenType: Screen, M
     private var needsAnimatedLayout = false
 
     required init(screen: ContainerScreen, viewRegistry: ViewRegistry) {
+        print("\(#file) - \(#function)")
+
         currentSeparatorHeight = screen.separatorHeight
         
         super.init(screen: screen, viewRegistry: viewRegistry)
     }
 
     override public func screenDidChange(from previousScreen: ContainerScreen) {
+        print("\(#file) - \(#function)")
+
         update(with: screen)
     }
 
     private func update(with screen: ContainerScreen) {
+        print("\(#file) - \(#function)")
+
         topMiddleSeparatorView.backgroundColor = screen.separatorColor
         middleBottomSeparatorView.backgroundColor = screen.separatorColor
         
@@ -63,11 +69,13 @@ public final class VerticalStackContainerViewController<TopScreenType: Screen, M
         bottomContentViewController?.update(screen: screen.bottomScreen)
 
         //Intentional force of layout pass after updating the child view controllers
+        print("\(#file) - \(#function) - Intentional Layout Pass")
         view.layoutIfNeeded()
 
         currentSeparatorHeight = screen.separatorHeight
 
         if needsAnimatedLayout {
+            print("\(#file) - \(#function) - Animiate")
             needsAnimatedLayout = false
 
             UIView.animate(withDuration: 0.25) {
@@ -79,7 +87,9 @@ public final class VerticalStackContainerViewController<TopScreenType: Screen, M
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        print("\(#file) - \(#function)")
+
         view.addSubview(topContainerView)
         view.addSubview(topMiddleSeparatorView)
         view.addSubview(middleContainerView)
@@ -95,6 +105,7 @@ public final class VerticalStackContainerViewController<TopScreenType: Screen, M
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        print("\(#file) - \(#function)")
 
         let viewWidth = view.bounds.width
         let topViewHeight = topContentViewController?.preferredContentSize.height ?? 0
@@ -117,12 +128,16 @@ public final class VerticalStackContainerViewController<TopScreenType: Screen, M
     override public func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
         super.preferredContentSizeDidChange(forChildContentContainer: container)
 
+        print("\(#file) - \(#function)")
+
         needsAnimatedLayout = true
     }
 }
 
 fileprivate extension ScreenViewController {
     func embed<ScreenType: Screen>(_ screen: ScreenType, in containerView: ContainerView) -> ScreenViewController<ScreenType> {
+        print("\(#file) - \(#function)")
+
         let viewController = viewRegistry.provideView(for: screen)
 
         addChild(viewController)

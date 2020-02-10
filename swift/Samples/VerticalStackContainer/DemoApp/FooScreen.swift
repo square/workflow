@@ -40,6 +40,8 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     
     required init(screen: FooScreen, viewRegistry: ViewRegistry) {
+        print("\(#file) - \(#function)")
+
         super.init(screen: screen, viewRegistry: viewRegistry)
         
         update(with: screen)
@@ -47,7 +49,9 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        print("\(#file) - \(#function)")
+
         tapGestureRecognizer.addTarget(self, action: #selector(viewTapped))
         view.addGestureRecognizer(tapGestureRecognizer)
 
@@ -59,6 +63,8 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
+        print("\(#file) - \(#function)")
+        
         titleLabel.frame = view.bounds
 
         titleLabel.preferredMaxLayoutWidth = view.bounds.width - (titleLabelPadding * 2)
@@ -67,6 +73,8 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     }
 
     private func calculatePreferredSize() {
+        print("\(#file) - \(#function)")
+
         let preferredHeight = titleLabel.intrinsicContentSize.height + (titleLabelPadding * 2)
 
         preferredContentSize = CGSize(width: view.bounds.width, height: preferredHeight)
@@ -77,6 +85,8 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     }
     
     private func update(with screen: FooScreen) {
+        print("\(#file) - \(#function)")
+        
         view.backgroundColor = screen.backgroundColor
 
         titleLabel.text = screen.title
