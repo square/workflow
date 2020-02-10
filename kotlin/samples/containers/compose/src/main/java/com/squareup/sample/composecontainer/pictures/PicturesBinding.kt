@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("RemoveEmptyParenthesesFromAnnotationEntry", "UNUSED_VALUE")
+
 package com.squareup.sample.composecontainer.pictures
 
 import androidx.compose.Composable
@@ -30,28 +32,30 @@ import com.squareup.workflow.ui.compose.bindCompose
 import com.squareup.workflow.ui.compose.tooling.preview
 
 val PicturesBinding = bindCompose<Rendering> { rendering, _ ->
-  CoilImage(
-      url = rendering.pictureUrl,
-      drawLoading = {
-        Box(modifier = LayoutPadding(200.dp), gravity = Alignment.Center) {
-          CircularProgressIndicator()
+  SlideIn(rendering.pictureUrl) { url ->
+    CoilImage(
+        url = url,
+        drawLoading = {
+          Box(modifier = LayoutPadding(200.dp), gravity = Alignment.Center) {
+            CircularProgressIndicator()
+          }
+        },
+        drawLoaded = { drawImage ->
+          Clickable(onClick = rendering.onTap) {
+            drawImage()
+          }
         }
-      },
-      drawLoaded = { drawImage ->
-        Clickable(onClick = rendering.onTap) {
-          drawImage()
-        }
-      })
+    )
+  }
 }
 
 @Preview
-@Composable
-fun PicturesBindingPreview() {
+@Composable fun PicturesBindingPreview() {
   MaterialTheme {
     Surface {
       PicturesBinding.preview(
           Rendering(
-              pictureUrl = "todo",
+              pictureUrl = CoilPreviewUrl,
               pictureDescription = "The Picture",
               onTap = {}
           )
