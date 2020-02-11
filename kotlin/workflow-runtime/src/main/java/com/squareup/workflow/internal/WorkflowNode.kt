@@ -78,7 +78,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   internal val diagnosticId = idCounter.createId()
 
   private val subtreeManager = SubtreeManager<StateT, OutputT>(
-      coroutineContext, ::applyAction, diagnosticId, diagnosticListener, idCounter
+      coroutineContext, ::applyAction, diagnosticId, diagnosticListener, idCounter, workerContext
   )
 
   private val workers = ActiveStagingList<WorkerChildNode<*, *, *>>()
