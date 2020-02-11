@@ -5,7 +5,7 @@ Change Log
 
 ### Kotlin
 
- * Make the context used to start workers configurable for tests. (#940, #943)
+ * Make the context used to start workers configurable for tests. (#940, #943, #950)
 
 ### Swift
 

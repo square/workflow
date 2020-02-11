@@ -21,10 +21,14 @@ import com.squareup.workflow.WorkflowAction.Companion.noAction
 import com.squareup.workflow.testing.WorkerSink
 import com.squareup.workflow.testing.testFromStart
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
+import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.test.Test
@@ -32,6 +36,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -259,14 +264,41 @@ class WorkerCompositionIntegrationTest {
 
   @Test fun `worker context job is ignored`() {
     val worker = Worker.from { coroutineContext }
-    val workflow = Workflow.stateless<Unit, CoroutineContext, Unit> {
+    val leafWorkflow = Workflow.stateless<Unit, CoroutineContext, Unit> {
       runningWorker(worker) { context -> action { setOutput(context) } }
+    }
+    val workflow = Workflow.stateless<Unit, CoroutineContext, Unit> {
+      renderChild(leafWorkflow) { action { setOutput(it) } }
     }
     val job: Job = Job()
 
     workflow.testFromStart(context = job) {
       val actualWorkerContext = awaitNextOutput()
       assertNotSame(job, actualWorkerContext[Job])
+    }
+  }
+
+  @Test fun `worker context is used for workers`() {
+    val worker = Worker.from { coroutineContext }
+    val leafWorkflow = Workflow.stateless<Unit, CoroutineContext, Unit> {
+      runningWorker(worker) { context -> action { setOutput(context) } }
+    }
+    val workflow = Workflow.stateless<Unit, CoroutineContext, Unit> {
+      renderChild(leafWorkflow) { action { setOutput(it) } }
+    }
+    val dispatcher: CoroutineDispatcher = object : CoroutineDispatcher() {
+      override fun isDispatchNeeded(context: CoroutineContext): Boolean =
+        Unconfined.isDispatchNeeded(context)
+
+      override fun dispatch(
+        context: CoroutineContext,
+        block: Runnable
+      ) = Unconfined.dispatch(context, block)
+    }
+
+    workflow.testFromStart(context = dispatcher) {
+      val actualWorkerContext = awaitNextOutput()
+      assertSame(dispatcher, actualWorkerContext[ContinuationInterceptor])
     }
   }
 }
