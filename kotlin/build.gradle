@@ -83,7 +83,7 @@ buildscript {
           'coroutines': [
               'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3",
               'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3",
-              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.3.3",
+              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.3.3-native-mt",
               'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.3"
           ],
           'moshi': "com.squareup.moshi:moshi-kotlin:1.9.2",
