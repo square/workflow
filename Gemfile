@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
 
 gem 'cocoapods', '1.8.4'
-gem 'cocoapods-generate', '~> 1.0'
+# Unreleased version required for the --local-sources option
+gem 'cocoapods-generate', git: 'https://github.com/square/cocoapods-generate', ref: '2dcee88'

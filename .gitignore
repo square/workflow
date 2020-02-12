@@ -45,6 +45,7 @@ Package.resolved
 
 # CocoaPods
 Pods/
+gen/
 
 # Xcode
 xcuserdata/

@@ -1,0 +1,6 @@
+local_sources:
+  - .
+  - swift/Samples/SplitScreenContainer
+  - swift/Samples/BackStackContainer
+platforms:
+  - ios
