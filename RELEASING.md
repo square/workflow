@@ -76,7 +76,7 @@ and assign it to @bencochran or @aquageek.*
 1. If this was a fix release, merge changes to the master branch:
    ```bash
    git checkout master
-   git reset --hard origin/master
+   git pull
    git merge --no-ff v0.1-fixes
    # Resolve conflicts. Accept master's versions of gradle.properties and podspecs.
    git push origin master
