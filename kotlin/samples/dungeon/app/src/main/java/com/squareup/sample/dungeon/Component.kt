@@ -16,11 +16,11 @@
 package com.squareup.sample.dungeon
 
 import android.content.Context
+import android.content.Context.VIBRATOR_SERVICE
 import android.os.Vibrator
 import com.squareup.sample.dungeon.DungeonAppWorkflow.State.LoadingBoardList
 import com.squareup.sample.dungeon.GameSessionWorkflow.State.Loading
 import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineLayoutRunner
-import com.squareup.sample.todo.R
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.modal.AlertContainer
 import kotlinx.coroutines.Dispatchers
@@ -49,9 +49,14 @@ class Component(context: Context) {
   @UseExperimental(ExperimentalTime::class)
   val clock = MonoClock
 
-  val vibrator = context.getSystemService(Vibrator::class.java)!!
+  val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
 
-  val boardLoader = BoardLoader(Dispatchers.IO, context.assets, boardsAssetPath = "boards")
+  val boardLoader = BoardLoader(
+      ioDispatcher = Dispatchers.IO,
+      assets = context.assets,
+      boardsAssetPath = "boards",
+      delayForFakeLoad = context::delayForFakeLoad
+  )
 
   val playerWorkflow = PlayerWorkflow()
 

@@ -76,6 +76,7 @@ buildscript {
       ],
 
       'cycler': "com.squareup.cycler:cycler:0.1.2",
+      'desugar_jdk_libs': "com.android.tools:desugar_jdk_libs:1.0.4",
       'moshi': "com.squareup.moshi:moshi:1.9.2",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:2.1.1",
       'timber': "com.jakewharton.timber:timber:4.7.1",
@@ -132,6 +133,7 @@ buildscript {
       'test': [
           'androidx': [
               'espresso': [
+                  'contrib': "androidx.test.espresso:espresso-contrib:3.2.0",
                   'core': "androidx.test.espresso:espresso-core:3.2.0",
                   'idlingResource': "androidx.test.espresso:espresso-idling-resource:3.2.0",
                   'intents': "androidx.test.espresso:espresso-intents:3.2.0",
@@ -139,6 +141,7 @@ buildscript {
               'junitExt': "androidx.test.ext:junit:1.1.1",
               'runner': "androidx.test:runner:1.2.0",
               'truthExt': "androidx.test.ext:truth:1.2.0",
+              'uiautomator': "androidx.test.uiautomator:uiautomator:2.2.0",
           ],
           'hamcrestCore': "org.hamcrest:hamcrest-core:2.2",
           'junit': "junit:junit:4.13",

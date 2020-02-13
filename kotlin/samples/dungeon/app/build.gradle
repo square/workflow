@@ -21,15 +21,29 @@ android rootProject.ext.defaultAndroidConfig
 android {
   defaultConfig {
     applicationId "com.squareup.sample.dungeon"
-    minSdkVersion 24
+    minSdkVersion 21
     multiDexEnabled true
     targetSdkVersion versions.targetSdk
     versionCode 1
     versionName "1.0.0"
+
+    testInstrumentationRunner "com.squareup.sample.dungeon.DungeonTestRunner"
+  }
+
+  testOptions {
+    animationsDisabled = true
+  }
+
+  compileOptions {
+    // Required for SnakeYAML.
+    coreLibraryDesugaringEnabled true
   }
 }
 
 dependencies {
+  // Required for SnakeYAML.
+  coreLibraryDesugaring deps.desugar_jdk_libs
+
   implementation project(':samples:dungeon:common')
   implementation project(':samples:dungeon:timemachine-shakeable')
   implementation project(':workflow-ui:modal-android')
@@ -50,4 +64,8 @@ dependencies {
 
   testImplementation deps.test.junit
   testImplementation deps.test.truth
+
+  androidTestImplementation deps.test.androidx.espresso.core
+  androidTestImplementation deps.test.androidx.junitExt
+  androidTestImplementation deps.test.androidx.uiautomator
 }

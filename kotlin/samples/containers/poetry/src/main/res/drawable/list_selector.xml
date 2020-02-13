@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:state_activated="true">
+  <item android:state_selected="true">
     <shape android:shape="rectangle">
       <solid android:color="?attr/colorAccent" />
     </shape>

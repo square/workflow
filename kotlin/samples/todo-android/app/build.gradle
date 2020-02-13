@@ -21,11 +21,17 @@ android rootProject.ext.defaultAndroidConfig
 android {
   defaultConfig {
     applicationId "com.squareup.sample.todo"
-    minSdkVersion 23
+    minSdkVersion 21
     multiDexEnabled true
     targetSdkVersion versions.targetSdk
     versionCode 1
     versionName "1.0.0"
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  testOptions {
+    animationsDisabled = true
   }
 }
 
@@ -48,4 +54,8 @@ dependencies {
 
   testImplementation deps.test.junit
   testImplementation deps.test.truth
+
+  androidTestImplementation deps.test.androidx.espresso.core
+  androidTestImplementation deps.test.androidx.junitExt
+  androidTestImplementation deps.test.androidx.uiautomator
 }

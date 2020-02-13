@@ -24,6 +24,7 @@ import com.squareup.workflow.diagnostic.andThen
 import com.squareup.workflow.diagnostic.tracing.TracingDiagnosticListener
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
+import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.setContentWorkflow
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +45,11 @@ class MainActivity : AppCompatActivity() {
 
   private companion object {
     val viewRegistry =
-      ViewRegistry(TodoEditorLayoutRunner, TodoListsLayoutRunner, MasterDetailContainer)
+      ViewRegistry(
+          TodoEditorLayoutRunner,
+          TodoListsLayoutRunner,
+          MasterDetailContainer,
+          BackStackContainer
+      )
   }
 }

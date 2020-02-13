@@ -15,6 +15,7 @@
  */
 package com.squareup.sample.mainactivity
 
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -58,6 +59,6 @@ fun TextView.setTextChangedListener(listener: ((String) -> Unit)) {
 }
 
 fun View.showSoftKeyboard() {
-  val inputMethodManager = context.getSystemService(InputMethodManager::class.java)
+  val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
   inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }

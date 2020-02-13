@@ -18,7 +18,6 @@ package com.squareup.sample.dungeon
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
-import com.squareup.sample.todo.R
 import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind

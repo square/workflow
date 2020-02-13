@@ -28,9 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.source
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
 
 /**
  * Service class that creates [Worker]s to [load][loadBoard] [Board]s.
@@ -39,12 +37,13 @@ import kotlin.time.seconds
 class BoardLoader(
   private val ioDispatcher: CoroutineDispatcher,
   private val assets: AssetManager,
-  private val boardsAssetPath: String
+  private val boardsAssetPath: String,
+  private val delayForFakeLoad: suspend () -> Unit
 ) {
 
   private inner class BoardListLoaderWorker : Worker<Map<String, Board>> {
     override fun run(): Flow<Map<String, Board>> = flow {
-      val boards = withMinimumDelay(1.seconds) {
+      val boards = withMinimumDelay() {
         withContext(ioDispatcher) {
           loadBoardsBlocking()
         }
@@ -58,7 +57,7 @@ class BoardLoader(
       otherWorker is BoardLoaderWorker && filename == otherWorker.filename
 
     override fun run(): Flow<Board> = flow {
-      val board = withMinimumDelay(1.seconds) {
+      val board = withMinimumDelay() {
         withContext(ioDispatcher) {
           loadBoardBlocking(filename)
         }
@@ -87,13 +86,12 @@ class BoardLoader(
    * least [delay] period of time. Used to add fake delays to demonstrate loading states.
    */
   private suspend inline fun <T> withMinimumDelay(
-    delay: Duration,
     crossinline block: suspend () -> T
   ): T = coroutineScope {
     // Wait at least a second before emitting to make it look like we're doing real work.
     // Structured concurrency means this coroutineScope block won't return until this delay
     // finishes.
-    launch { delay(delay.toLongMilliseconds()) }
+    launch { delayForFakeLoad() }
 
     block()
   }
