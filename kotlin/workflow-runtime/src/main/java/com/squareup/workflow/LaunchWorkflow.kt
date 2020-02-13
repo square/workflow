@@ -30,6 +30,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Don't use this typealias for the public API, better to just use the function directly so it's
@@ -123,11 +125,13 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
   props: Flow<PropsT>,
   initialSnapshot: Snapshot?,
   initialState: StateT?,
+  workerContext: CoroutineContext = EmptyCoroutineContext,
   beforeStart: Configurator<OutputT, RenderingT, RunnerT>
 ): RunnerT {
   val renderingsAndSnapshots = ConflatedBroadcastChannel<RenderingAndSnapshot<RenderingT>>()
   val outputs = BroadcastChannel<OutputT>(capacity = 1)
   val workflowScope = scope + Job(parent = scope.coroutineContext[Job])
+  require(workerContext[Job] == null) { "Expected workerContext not to have a Job." }
 
   // Give the caller a chance to start collecting outputs.
   val session = WorkflowSession(renderingsAndSnapshots.asFlow(), outputs.asFlow())
@@ -143,6 +147,7 @@ internal fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflow
           props,
           initialSnapshot = initialSnapshot,
           initialState = initialState,
+          workerContext = workerContext,
           onRendering = renderingsAndSnapshots::send,
           onOutput = outputs::send,
           diagnosticListener = diagnosticListener

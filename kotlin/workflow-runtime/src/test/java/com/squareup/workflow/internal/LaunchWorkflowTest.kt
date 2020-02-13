@@ -47,9 +47,11 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.yield
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -529,6 +531,28 @@ class LaunchWorkflowTest {
       assertEquals(listOf("onRuntimeStopped"), listener.consumeEventNames())
     }
   }
+
+  @Test fun `throws when workerContext contains Job`() {
+    val loop = simpleLoop { _, _ -> hang() }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> { }
+    val workerContext = Job()
+
+    val error = assertFailsWith<IllegalArgumentException> {
+      runBlocking {
+        launchWorkflowImpl(
+            scope = this,
+            workflowLoop = loop,
+            workflow = workflow.asStatefulWorkflow(),
+            props = emptyFlow(),
+            initialSnapshot = null,
+            initialState = null,
+            beforeStart = {},
+            workerContext = workerContext
+        )
+      }
+    }
+    assertEquals("Expected workerContext not to have a Job.", error.message)
+  }
 }
 
 private suspend fun hang(): Nothing = suspendCancellableCoroutine { }
@@ -545,6 +569,7 @@ private fun simpleLoop(
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
+    workerContext: CoroutineContext,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
     diagnosticListener: WorkflowDiagnosticListener?
@@ -562,6 +587,7 @@ private object HangingLoop : WorkflowLoop {
     props: Flow<PropsT>,
     initialSnapshot: Snapshot?,
     initialState: StateT?,
+    workerContext: CoroutineContext,
     onRendering: suspend (RenderingAndSnapshot<RenderingT>) -> Unit,
     onOutput: suspend (OutputT) -> Unit,
     diagnosticListener: WorkflowDiagnosticListener?

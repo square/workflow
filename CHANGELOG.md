@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.23.2
+
+### Kotlin
+
+ * Make the context used to start workers configurable for tests. (#940, #943, #950)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.23.1
 
 ### Kotlin

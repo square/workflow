@@ -86,8 +86,16 @@ your `repositories` block, and then add dependencies on the following artifacts:
     <td>You are writing tests. This should only be included as a test dependency.</td>
   </tr>
   <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-ui-android:x.y.z</code></td>
+    <td nowrap><code>com.squareup.workflow:workflow-ui-core-android:x.y.z</code></td>
     <td>You're writing an Android app that uses Workflows.</td>
+  </tr>
+  <tr>
+    <td nowrap><code>com.squareup.workflow:workflow-ui-modal-android:x.y.z</code></td>
+    <td>Your Android app uses modals (popups).</td>
+  </tr>
+  <tr>
+    <td nowrap><code>com.squareup.workflow:workflow-ui-backstack-android:x.y.z</code></td>
+    <td>Your android app uses backstacks.</td>
   </tr>
 </table>
 

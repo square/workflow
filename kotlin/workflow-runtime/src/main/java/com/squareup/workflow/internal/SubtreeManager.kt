@@ -23,6 +23,7 @@ import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import kotlinx.coroutines.selects.SelectBuilder
 import okio.ByteString
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Responsible for tracking child workflows, starting them and tearing them down when necessary.
@@ -95,7 +96,8 @@ internal class SubtreeManager<StateT, OutputT : Any>(
   private val emitActionToParent: (WorkflowAction<StateT, OutputT>) -> Any?,
   private val parentDiagnosticId: Long,
   private val diagnosticListener: WorkflowDiagnosticListener? = null,
-  private val idCounter: IdCounter? = null
+  private val idCounter: IdCounter? = null,
+  private val workerContext: CoroutineContext = EmptyCoroutineContext
 ) : RealRenderContext.Renderer<StateT, OutputT> {
 
   /**
@@ -197,7 +199,8 @@ internal class SubtreeManager<StateT, OutputT : Any>(
         ::acceptChildOutput,
         parentDiagnosticId,
         diagnosticListener,
-        idCounter
+        idCounter,
+        workerContext = workerContext
     )
     return WorkflowChildNode(child, handler, workflowNode)
         .also { node = it }

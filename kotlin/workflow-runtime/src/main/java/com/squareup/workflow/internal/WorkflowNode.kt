@@ -35,6 +35,7 @@ import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.selects.SelectBuilder
 import okio.ByteString
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * A node in a state machine tree. Manages the actual state for a given [Workflow].
@@ -43,6 +44,10 @@ import kotlin.coroutines.CoroutineContext
  * value to its parent. Returns either the output to be emitted from the root workflow, or null.
  * @param initialState Allows unit tests to start the node from a given state, instead of calling
  * [StatefulWorkflow.initialState].
+ * @param workerContext [CoroutineContext] that is appended to the end of the context used to launch
+ * worker coroutines. This context will override anything from the workflow's scope and any other
+ * hard-coded values added to worker contexts. It must not contain a [Job] element (it would violate
+ * structured concurrency).
  */
 @UseExperimental(VeryExperimentalWorkflow::class)
 internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
@@ -55,7 +60,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   parentDiagnosticId: Long? = null,
   private val diagnosticListener: WorkflowDiagnosticListener? = null,
   private val idCounter: IdCounter? = null,
-  initialState: StateT? = null
+  initialState: StateT? = null,
+  private val workerContext: CoroutineContext = EmptyCoroutineContext
 ) : CoroutineScope, WorkerRunner<StateT, OutputT> {
 
   /**
@@ -72,7 +78,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   internal val diagnosticId = idCounter.createId()
 
   private val subtreeManager = SubtreeManager<StateT, OutputT>(
-      coroutineContext, ::applyAction, diagnosticId, diagnosticListener, idCounter
+      coroutineContext, ::applyAction, diagnosticId, diagnosticListener, idCounter, workerContext
   )
 
   private val workers = ActiveStagingList<WorkerChildNode<*, *, *>>()
@@ -270,7 +276,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
       workerId = idCounter.createId()
       diagnosticListener.onWorkerStarted(workerId, diagnosticId, key, worker.toString())
     }
-    val workerChannel = launchWorker(worker, key, workerId, diagnosticId, diagnosticListener)
+    val workerChannel =
+      launchWorker(worker, key, workerId, diagnosticId, diagnosticListener, workerContext)
     return WorkerChildNode(worker, key, workerChannel, handler = handler)
   }
 
