@@ -20,20 +20,17 @@ Pod::Spec.new do |s|
 
   dir = Pathname.new(__FILE__).dirname
   snapshot_test_env = {
-    'FB_REFERENCE_IMAGE_DIR' => dir.join('swift/Samples/SplitScreenContainer/SnapshotTests/ReferenceImages'),
-        'IMAGE_DIFF_DIR' => dir.join('swift/Samples/SplitScreenContainer/SnapshotTests/FailureDiffs'),
+    'IMAGE_DIFF_DIR' => dir.join('swift/FailureDiffs'),
+    'FB_REFERENCE_IMAGE_DIR' => dir.join('swift/Samples/SnapshotTests/ReferenceImages'),
   }
 
   s.scheme = { 
-      environment_variables: snapshot_test_env
-    }
+    environment_variables: snapshot_test_env
+  }
 
   s.app_spec 'SampleApp' do |app_spec|
     app_spec.source_files = 'swift/Samples/SampleApp/Sources/**/*.swift'
     app_spec.resources = 'swift/Samples/SampleApp/Resources/**/*.swift'
-    app_spec.pod_target_xcconfig = {
-      'INFOPLIST_FILE' => '${PODS_ROOT}/../../swift/Samples/SampleApp/Configuration/Info.plist'
-    }
   end
 
   s.test_spec 'WorkflowTesting' do |test_spec|
@@ -70,6 +67,10 @@ Pod::Spec.new do |s|
   s.app_spec 'SampleSplitScreen' do |app_spec|
     app_spec.dependency 'SplitScreenContainer'
     app_spec.source_files = 'swift/Samples/SplitScreenContainer/DemoApp/**/*.swift'
+
+    app_spec.scheme = {
+      environment_variables: snapshot_test_env
+    }
   end
 
   s.test_spec 'SplitScreenTests' do |test_spec|

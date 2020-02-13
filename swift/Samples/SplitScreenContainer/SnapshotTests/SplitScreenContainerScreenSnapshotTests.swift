@@ -9,6 +9,8 @@ class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
     override func setUp() {
         super.setUp()
         recordMode = false
+        folderName = "SplitScreenContainerScreenSnapshotTests"
+        fileNameOptions = [.device]
     }
     
     func test_splitRatio() {
