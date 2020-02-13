@@ -28,10 +28,8 @@ matrix:
         - yes | gem update --system
         - bundle install
         - brew install sourcedocs
-        - cd swift/Samples/SampleApp
-        - bundle exec pod repo update
       script:
-        - ../../../.buildscript/build_swift_docs.sh /tmp/swiftdocs
+        - .buildscript/build_swift_docs.sh /tmp/swiftdocs
 
     # Ensure docs are formatted correctly.
     - language: ruby
@@ -188,34 +186,30 @@ matrix:
     #     - bundle exec pod install
 
     - language: swift
-      name: "Swift - Workflow - Cocoapods (Xcode 10.2)"
+      name: "Swift - Workflow - CocoaPods (Xcode 10.2)"
       os: osx
       osx_image: xcode10.2
-      xcode_workspace: SampleApp.xcworkspace
-      xcode_scheme: Workflow-Unit-Tests
+      xcode_workspace: gen/Development/Development.xcworkspace
+      xcode_scheme: Development-Unit-WorkflowTests
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
         - yes | gem update --system
         - gem install bundler
         - bundle install
-        - cd swift/Samples/SampleApp
-        - bundle exec pod repo update
-        - bundle exec pod install
+        - bundle exec pod gen Development.podspec
 
     - language: swift
-      name: "Swift - WorkflowUI - Cocoapods (Xcode 10.2)"
+      name: "Swift - WorkflowUI - CocoaPods (Xcode 10.2)"
       os: osx
       osx_image: xcode10.2
-      xcode_workspace: SampleApp.xcworkspace
-      xcode_scheme: WorkflowUI-Unit-Tests
+      xcode_workspace: gen/Development/Development.xcworkspace
+      xcode_scheme: Development-Unit-WorkflowUITests
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
         - yes | gem update --system
         - gem install bundler
         - bundle install
-        - cd swift/Samples/SampleApp
-        - bundle exec pod repo update
-        - bundle exec pod install
+        - bundle exec pod gen Development.podspec
 
     - language: swift
       name: "Swift - SPM - iOS (Xcode 11.1)"
@@ -232,7 +226,7 @@ matrix:
         - xcodebuild -scheme "Workflow-Package" test
 
     - language: swift
-      name: "Swift - Tutorial - Cocoapods (Xcode 10.2)"
+      name: "Swift - Tutorial - CocoaPods (Xcode 10.2)"
       os: osx
       osx_image: xcode10.2
       xcode_workspace: Tutorial.xcworkspace
@@ -247,31 +241,27 @@ matrix:
         - bundle exec pod install
 
     - language: swift
-      name: "Swift - TicTacToe - Cocoapods (Xcode 10.2)"
+      name: "Swift - SplitScreenContainer Snapshot Tests - CocoaPods (Xcode 10.2)"
       os: osx
       osx_image: xcode10.2
-      xcode_workspace: TicTacToe.xcworkspace
-      xcode_scheme: TicTacToe
+      xcode_workspace: gen/Development/Development.xcworkspace
+      xcode_scheme: Development-Unit-SplitScreenTests
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
         - yes | gem update --system
         - gem install bundler
         - bundle install
-        - cd swift/Samples/TicTacToe
-        - bundle exec pod repo update
-        - bundle exec pod install
+        - bundle exec pod gen Development.podspec
 
     - language: swift
-      name: "Swift - SplitScreenContainer Snapshot Tests - Cocoapods (Xcode 10.2)"
+      name: "Swift - TicTacToe - CocoaPods (Xcode 10.2)"
       os: osx
       osx_image: xcode10.2
-      xcode_workspace: SplitScreenContainer.xcworkspace
-      xcode_scheme: SplitScreenContainer-Unit-SnapshotTests
+      xcode_workspace: gen/Development/Development.xcworkspace
+      xcode_scheme: Development-Unit-TicTacToeTests
       xcode_destination: platform=iOS Simulator,OS=12.2,name=iPad Pro (9.7-inch)
       before_install:
         - yes | gem update --system
         - gem install bundler
-        - cd swift/Samples/SplitScreenContainer
         - bundle install
-        - pod gen SplitScreenContainer.podspec
-        - cd gen/SplitScreenContainer
+        - bundle exec pod gen Development.podspec
