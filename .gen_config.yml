@@ -4,3 +4,5 @@ local_sources:
   - swift/Samples/BackStackContainer
 platforms:
   - ios
+podspec_paths:
+  - Development.podspec
