@@ -153,6 +153,43 @@ class RealRenderTesterTest {
     tester.expectWorker(matchesWhen = { true })
   }
 
+  @Test fun `expectWorker taking Worker matches`() {
+    val worker = object : Worker<String> {
+      override fun doesSameWorkAs(otherWorker: Worker<*>) = otherWorker === this
+      override fun run() = emptyFlow<Nothing>()
+    }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      runningWorker(worker) { noAction() }
+    }
+
+    workflow.renderTester(Unit)
+        .expectWorker(worker)
+        .render()
+  }
+
+  @Test fun `expectWorker taking Worker doesn't match`() {
+    val worker1 = object : Worker<String> {
+      override fun doesSameWorkAs(otherWorker: Worker<*>) = otherWorker === this
+      override fun toString(): String = "Worker1"
+      override fun run() = emptyFlow<Nothing>()
+    }
+    val worker2 = object : Worker<String> {
+      override fun doesSameWorkAs(otherWorker: Worker<*>) = otherWorker === this
+      override fun toString(): String = "Worker2"
+      override fun run() = emptyFlow<Nothing>()
+    }
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      runningWorker(worker1) { noAction() }
+    }
+    val tester = workflow.renderTester(Unit)
+        .expectWorker(worker2)
+
+    val error = assertFailsWith<AssertionError> {
+      tester.render()
+    }
+    assertEquals("Tried to render unexpected worker Worker1.", error.message)
+  }
+
   @Test fun `sending to sink throws when called multiple times`() {
     class TestAction(private val name: String) : WorkflowAction<Unit, Nothing> {
       override fun Updater<Unit, Nothing>.apply() {}

@@ -265,9 +265,9 @@ interface RenderTester<PropsT, StateT, OutputT : Any, RenderingT> {
 /* ktlint-disable parameter-list-wrapping */
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     RenderTester<PropsT, StateT, OutputT, RenderingT>.expectWorker(
-  doesSameWorkAs: Worker<OutputT>,
+  doesSameWorkAs: Worker<*>,
   key: String = "",
-  output: EmittedOutput<OutputT>? = null
+  output: EmittedOutput<Any?>? = null
 ): RenderTester<PropsT, StateT, OutputT, RenderingT> = expectWorker(
 /* ktlint-enable parameter-list-wrapping */
     matchesWhen = { it.doesSameWorkAs(doesSameWorkAs) },
