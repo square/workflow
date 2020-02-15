@@ -42,4 +42,7 @@ dependencies {
   implementation(Dependencies.AndroidX.recyclerview)
   implementation(Dependencies.RxJava2.rxjava2)
   implementation(Dependencies.timber)
+
+  androidTestImplementation(Dependencies.Test.AndroidX.Espresso.contrib)
+  androidTestImplementation(Dependencies.Test.AndroidX.uiautomator)
 }

@@ -15,13 +15,24 @@
  */
 package com.squareup.sample.poetryapp
 
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isSelected
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.uiautomator.UiDevice
 import com.squareup.sample.container.poetryapp.R
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,9 +41,94 @@ import org.junit.runner.RunWith
 class PoetryAppTest {
 
   @Rule @JvmField val scenarioRule = ActivityScenarioRule(PoetryActivity::class.java)
+  private val uiDevice by lazy { UiDevice.getInstance(getInstrumentation()) }
 
   @Test fun launches() {
     onView(withText(R.string.poems))
         .check(matches(isDisplayed()))
+  }
+
+  @Test fun navigatesToStanzaListAndBack_portrait() {
+    ensurePortrait()
+
+    onView(withText("The Conqueror Worm"))
+        .perform(click())
+
+    onView(withText("Edgar Allan Poe"))
+        .check(matches(isDisplayed()))
+    pressBack()
+
+    onView(withText(R.string.poems))
+        .check(matches(isDisplayed()))
+  }
+
+  @Test fun navigatesToStanzaAndBack_portrait() {
+    ensurePortrait()
+
+    onView(withText("The Conqueror Worm"))
+        .perform(click())
+
+    onView(withId(R.id.list_body))
+        .perform(
+            actionOnItem<ViewHolder>(
+                withText(containsString("Lo!")),
+                click()
+            )
+        )
+
+    onView(withText("Stanza 1"))
+        .check(matches(isDisplayed()))
+    pressBack()
+
+    onView(withText("Edgar Allan Poe"))
+        .check(matches(isDisplayed()))
+  }
+
+  @Test fun navigatesToStanzaListAndBack_landscape() {
+    ensureLandscape()
+
+    onView(withText("The Conqueror Worm"))
+        .perform(click())
+
+    onView(withText("Edgar Allan Poe"))
+        .check(matches(isDisplayed()))
+    onView(withText("Stanza 1"))
+        .check(matches(isDisplayed()))
+    pressBack()
+
+    onView(withText(R.string.poems))
+        .check(matches(isDisplayed()))
+  }
+
+  @Test fun navigatesBetweenStanzasInMaster_landscape() {
+    ensureLandscape()
+
+    onView(withText("The Conqueror Worm"))
+        .perform(click())
+
+    onView(withText("Stanza 1"))
+        .check(matches(isDisplayed()))
+    onView(allOf(withText(containsString("Lo!")), withParent(withId(R.id.list_body))))
+        .check(matches(isSelected()))
+
+    onView(withId(R.id.list_body))
+        .perform(
+            actionOnItem<ViewHolder>(
+                withText(containsString("Mimes")),
+                click()
+            )
+        )
+    onView(withText("Stanza 2"))
+        .check(matches(isDisplayed()))
+    onView(allOf(withText(containsString("Mimes")), withParent(withId(R.id.list_body))))
+        .check(matches(isSelected()))
+  }
+
+  private fun ensurePortrait() {
+    uiDevice.setOrientationNatural()
+  }
+
+  private fun ensureLandscape() {
+    uiDevice.setOrientationLeft()
   }
 }
