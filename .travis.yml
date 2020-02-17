@@ -154,37 +154,6 @@ matrix:
           - $HOME/.gradle/wrapper/
           - $HOME/.m2
 
-    # Disabled due to https://github.com/square/workflow/issues/223
-    # - language: swift
-    #   name: "Swift - Workflow - Cocoapods (Xcode 10.1)"
-    #   os: osx
-    #   osx_image: xcode10.1
-    #   xcode_workspace: SampleApp.xcworkspace
-    #   xcode_scheme: Workflow-Unit-Tests
-    #   xcode_destination: platform=iOS Simulator,OS=10.1,name=iPad Pro (9.7-inch)
-    #   before_install:
-    #     - yes | gem update --system
-    #     - gem install bundler
-    #     - bundle install
-    #     - cd swift/Samples/SampleApp
-    #     - bundle exec pod repo update
-    #     - bundle exec pod install
-    # Disabled due to https://github.com/square/workflow/issues/201
-    # - language: swift
-    #   name: "Swift - WorkflowUI - Cocoapods (Xcode 10.1)"
-    #   os: osx
-    #   osx_image: xcode10.1
-    #   xcode_workspace: SampleApp.xcworkspace
-    #   xcode_scheme: WorkflowUI-Unit-Tests
-    #   xcode_destination: platform=iOS Simulator,OS=10.1,name=iPad Pro (9.7-inch)
-    #   before_install:
-    #     - yes | gem update --system
-    #     - gem install bundler
-    #     - bundle install
-    #     - cd swift/Samples/SampleApp
-    #     - bundle exec pod repo update
-    #     - bundle exec pod install
-
     - language: swift
       name: "Swift - Workflow - CocoaPods (Xcode 11.3)"
       os: osx
