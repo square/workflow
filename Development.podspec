@@ -9,8 +9,10 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '11.0'
   s.swift_version = '5.0'
+
   s.dependency 'Workflow'
   s.dependency 'WorkflowUI'
+
   s.source_files = 'swift/Samples/Dummy.swift'
 
   s.subspec 'Dummy' do |ss|
@@ -79,6 +81,31 @@ Pod::Spec.new do |s|
     test_spec.app_host_name = 'Development/SampleSplitScreen'
     test_spec.requires_app_host = true
     test_spec.source_files = 'swift/Samples/SplitScreenContainer/SnapshotTests/**/*.swift'
+
+    test_spec.framework = 'XCTest'
+
+    test_spec.dependency 'iOSSnapshotTestCase'
+
+    test_spec.scheme = { 
+      environment_variables: snapshot_test_env
+    }
+  end
+
+  s.app_spec 'VerticalStackContainer' do |app_spec|
+    app_spec.dependency 'VerticalStackContainer'
+    app_spec.source_files = 'swift/Samples/VerticalStackContainer/DemoApp/**/*.swift'
+
+    app_spec.scheme = {
+      environment_variables: snapshot_test_env
+    }
+  end
+
+  s.test_spec 'VerticalStackContainerTests' do |test_spec|
+    test_spec.dependency 'VerticalStackContainer'
+    test_spec.dependency 'Development/SampleSplitScreen'
+    test_spec.app_host_name = 'Development/SampleSplitScreen'
+    test_spec.requires_app_host = true
+    test_spec.source_files = 'swift/Samples/VerticalStackContainer/SnapshotTests/**/*.swift'
 
     test_spec.framework = 'XCTest'
 

@@ -2,6 +2,7 @@ local_sources:
   - .
   - swift/Samples/SplitScreenContainer
   - swift/Samples/BackStackContainer
+  - swift/Samples/VerticalStackContainer
 platforms:
   - ios
 podspec_paths:

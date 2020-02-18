@@ -9,6 +9,8 @@ class VerticalStackContainerScreenSnapshotTests: FBSnapshotTestCase {
     override func setUp() {
         super.setUp()
         recordMode = false
+        folderName = "VerticalStackContainerScreenSnapshotTests"
+        fileNameOptions = [.device]
     }
     
     func test_stacking() {
