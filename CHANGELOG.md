@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.23.3
+
+### Kotlin
+
+ * Fix type parameter for expectWorker accepting Worker instance. (#969)
+
+### Swift
+
+ * Kotlin-only release, no changes.
+
 ## Version 0.23.2
 
 ### Kotlin
