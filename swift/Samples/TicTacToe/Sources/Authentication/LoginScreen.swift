@@ -27,7 +27,7 @@ struct LoginScreen: Screen {
 
     var viewControllerDescription: ViewControllerDescription {
         return ViewControllerDescription(
-            build: { LoginViewController(screen: self) },
+            build: { LoginViewController() },
             update: { $0.update(with: self) })
     }
 }
@@ -41,15 +41,6 @@ fileprivate final class LoginViewController: UIViewController {
     private var onEmailChanged: (String) -> Void = { _ in }
     private var onPasswordChanged: (String) -> Void = { _ in }
     private var onLoginTapped: () -> Void = { }
-
-    init(screen: LoginScreen) {
-        super.init(nibName: nil, bundle: nil)
-        update(with: screen)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

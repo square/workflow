@@ -53,6 +53,10 @@ public struct ViewControllerDescription {
     internal func buildViewController() -> UIViewController {
         let viewController = build()
         assert(canUpdate(viewController: viewController), "View controller description built a view controller it cannot update (\(viewController) is not exactly type \(viewControllerType))")
+
+        // Perform an initial update of the built view controller
+        update(viewController: viewController)
+
         return viewController
     }
 

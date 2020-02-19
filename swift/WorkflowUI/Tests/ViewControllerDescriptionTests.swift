@@ -73,15 +73,15 @@ class ViewControllerDescriptionTests: XCTestCase {
 
         XCTAssertEqual(updateCount, 0)
 
-        // Build does not cause an update
+        // Build causes an initial update
         let viewController = description.buildViewController()
-        XCTAssertEqual(updateCount, 0)
-
-        description.update(viewController: viewController)
         XCTAssertEqual(updateCount, 1)
 
         description.update(viewController: viewController)
         XCTAssertEqual(updateCount, 2)
+
+        description.update(viewController: viewController)
+        XCTAssertEqual(updateCount, 3)
     }
 
     func test_screenViewController() {
