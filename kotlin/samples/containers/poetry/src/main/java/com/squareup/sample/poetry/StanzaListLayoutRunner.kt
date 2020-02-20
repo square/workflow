@@ -93,7 +93,7 @@ class StanzaListLayoutRunner(view: View) : LayoutRunner<StanzaListRendering> {
       position: Int
     ) = with(holder.view) {
       text = rendering.firstLines[position]
-      isActivated = rendering.selection == position
+      isSelected = rendering.selection == position
       setOnClickListener {
         rendering.onStanzaSelected(position)
       }

@@ -13,6 +13,7 @@
       android:layout_height="?attr/actionBarSize"
       android:layout_weight="0"
       app:navigationIcon="?attr/homeAsUpIndicator"
+      app:navigationContentDescription="@string/up"
       />
 
   <androidx.recyclerview.widget.RecyclerView

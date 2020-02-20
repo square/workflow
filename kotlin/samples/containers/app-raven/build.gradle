@@ -21,10 +21,12 @@ android rootProject.ext.defaultAndroidConfig
 android {
   defaultConfig {
     applicationId "com.squareup.sample.containers.raven"
-    minSdkVersion 26
+    minSdkVersion 21
     targetSdkVersion versions.targetSdk
     versionCode 1
     versionName "1.0.0"
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 }
 
@@ -38,4 +40,7 @@ dependencies {
   implementation deps.androidx.appcompat
   implementation deps.rxjava2.rxjava2
   implementation deps.timber
+
+  androidTestImplementation deps.test.androidx.espresso.core
+  androidTestImplementation deps.test.androidx.junitExt
 }

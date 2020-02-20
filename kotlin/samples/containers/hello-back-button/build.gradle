@@ -40,10 +40,5 @@ dependencies {
   implementation deps.rxjava2.rxjava2
 
   androidTestImplementation deps.test.androidx.espresso.core
-  androidTestImplementation deps.test.androidx.espresso.intents
   androidTestImplementation deps.test.androidx.junitExt
-  androidTestImplementation deps.test.androidx.runner
-  androidTestImplementation deps.test.androidx.truthExt
-  androidTestImplementation deps.test.junit
-  androidTestImplementation deps.test.truth
 }
