@@ -15,14 +15,11 @@
  */
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-// Dokka does not currently work with Compose.
-//apply plugin: 'org.jetbrains.dokka-android'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
-//apply from: rootProject.file('.buildscript/configure-dokka.gradle')
 
 android rootProject.ext.defaultAndroidConfig
 
