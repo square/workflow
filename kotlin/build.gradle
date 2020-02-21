@@ -16,7 +16,7 @@
 buildscript {
   ext.versions = [
       'targetSdk': 29,
-      'compose': '0.1.0-dev04',
+      'compose': '0.1.0-dev05',
   ]
 
   rootProject.ext.defaultAndroidConfig = {
