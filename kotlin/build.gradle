@@ -124,7 +124,7 @@ buildscript {
       'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.1",
       'okio': "com.squareup.okio:okio:2.4.3",
       'rxjava2':[
-          'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.17",
+          'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.18",
           'extensions': "com.github.akarnokd:rxjava2-extensions:0.20.10"
       ],
       'annotations': [
