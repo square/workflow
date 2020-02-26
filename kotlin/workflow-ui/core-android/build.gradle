@@ -26,6 +26,8 @@ apply from: rootProject.file('.buildscript/configure-dokka.gradle')
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
+  compileOnly deps.androidx.viewbinding
+
   api project(':workflow-core')
   api project(':workflow-ui:core-common')
 

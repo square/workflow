@@ -37,6 +37,8 @@ buildscript {
       versionName "1.0"
     }
 
+    buildFeatures.viewBinding = true
+
     // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
     packagingOptions {
       exclude 'META-INF/atomicfu.kotlin_module'
@@ -67,6 +69,7 @@ buildscript {
           // it doesn't really add value for us.
           'savedstate': "androidx.savedstate:savedstate:1.0.0",
           'transition': "androidx.transition:transition:1.3.1",
+          'viewbinding': "androidx.databinding:viewbinding:3.6.1",
       ],
 
       'compose': [
