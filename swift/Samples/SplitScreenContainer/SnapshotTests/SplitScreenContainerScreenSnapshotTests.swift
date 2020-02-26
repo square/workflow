@@ -14,9 +14,6 @@ class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
     }
     
     func test_splitRatio() {
-        var viewRegistry = ViewRegistry()
-        viewRegistry.register(screenViewControllerType: FooScreenViewController.self)
-
         let ratios: [String : CGFloat] = [
             "third" : .third,
             "quarter" : .quarter,
@@ -32,8 +29,7 @@ class SplitScreenContainerScreenSnapshotTests: FBSnapshotTestCase {
             )
 
             let viewController = SplitScreenContainerViewController(
-                screen: splitScreenContainerScreen,
-                viewRegistry: viewRegistry
+                screen: splitScreenContainerScreen
             )
             viewController.view.layoutIfNeeded()
 
@@ -47,6 +43,10 @@ fileprivate struct FooScreen: Screen {
     let title: String
     let backgroundColor: UIColor
     let viewTapped: () -> Void
+
+    var viewControllerDescription: ViewControllerDescription {
+        return FooScreenViewController.description(for: self)
+    }
 }
 
 
@@ -55,8 +55,8 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     private lazy var titleLabel: UILabel = .init()
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     
-    required init(screen: FooScreen, viewRegistry: ViewRegistry) {
-        super.init(screen: screen, viewRegistry: viewRegistry)
+    required init(screen: FooScreen) {
+        super.init(screen: screen)
         
         update(with: screen)
     }

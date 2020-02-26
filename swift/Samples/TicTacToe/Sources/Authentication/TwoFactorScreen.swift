@@ -19,13 +19,9 @@ import WorkflowUI
 struct TwoFactorScreen: Screen {
     var title: String
     var onLoginTapped: (String) -> Void
-}
 
-
-extension ViewRegistry {
-
-    public mutating func registerTwoFactorScreen() {
-        self.register(screenViewControllerType: TwoFactorViewController.self)
+    var viewControllerDescription: ViewControllerDescription {
+        return TwoFactorViewController.description(for: self)
     }
 }
 
@@ -35,12 +31,12 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
     let twoFactorField: UITextField
     let button: UIButton
 
-    required init(screen: TwoFactorScreen, viewRegistry: ViewRegistry) {
+    required init(screen: TwoFactorScreen) {
         self.titleLabel = UILabel(frame: .zero)
         self.twoFactorField = UITextField(frame: .zero)
         self.button = UIButton(frame: .zero)
 
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
 
         update(with: screen)
     }

@@ -19,8 +19,12 @@
 import UIKit
 
 public struct AnyScreen: Screen {
+
+    /// The original screen, retained for debugging
     internal let wrappedScreen: Screen
-    private let viewControllerBuilder: (ViewRegistry) -> AnyScreenViewController.WrappedViewController
+
+    /// The wrapped screen’s view controller description is passed straight through
+    public let viewControllerDescription: ViewControllerDescription
 
     public init<T: Screen>(_ screen: T) {
         if let anyScreen = screen as? AnyScreen {
@@ -28,15 +32,9 @@ public struct AnyScreen: Screen {
             return
         }
         self.wrappedScreen = screen
-        self.viewControllerBuilder = { viewRegistry in
-            return viewRegistry.provideView(for: screen)
-        }
+        self.viewControllerDescription = screen.viewControllerDescription
     }
 
-    // Internal method to inflate the wrapped screen from a view registry
-    func makeViewController(from viewRegistry: ViewRegistry) -> AnyScreenViewController.WrappedViewController {
-        return viewControllerBuilder(viewRegistry)
-    }
 }
 
 #endif

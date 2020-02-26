@@ -38,24 +38,19 @@ struct CrossFadeScreen: Screen {
     fileprivate func isEquivalent(to otherScreen: CrossFadeScreen) -> Bool {
         return self.key == otherScreen.key
     }
-}
 
-
-extension ViewRegistry {
-
-    public mutating func registerCrossFadeContainer() {
-        self.register(screenViewControllerType: CrossFadeContainerViewController.self)
+    var viewControllerDescription: ViewControllerDescription {
+        return CrossFadeContainerViewController.description(for: self)
     }
-
 }
 
 
 fileprivate final class CrossFadeContainerViewController: ScreenViewController<CrossFadeScreen> {
-    var childViewController: ScreenViewController<AnyScreen>
+    var childViewController: DescribedViewController
 
-    required init(screen: CrossFadeScreen, viewRegistry: ViewRegistry) {
-        childViewController = viewRegistry.provideView(for: screen.baseScreen)
-        super.init(screen: screen, viewRegistry: viewRegistry)
+    required init(screen: CrossFadeScreen) {
+        childViewController = DescribedViewController(screen: screen.baseScreen)
+        super.init(screen: screen)
     }
 
     override func viewDidLoad() {
@@ -78,7 +73,7 @@ fileprivate final class CrossFadeContainerViewController: ScreenViewController<C
         } else {
             // The new screen is different than the previous. Animate the transition.
             let oldChild = childViewController
-            childViewController = viewRegistry.provideView(for: screen.baseScreen)
+            childViewController = DescribedViewController(screen: screen.baseScreen)
             addChild(childViewController)
             view.addSubview(childViewController.view)
             UIView.transition(

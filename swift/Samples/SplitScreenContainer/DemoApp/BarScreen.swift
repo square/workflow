@@ -21,15 +21,10 @@ struct BarScreen: Screen {
     let title: String
     let backgroundColors: [UIColor]
     let viewTapped: () -> Void
-}
 
-
-extension ViewRegistry {
-    
-    public mutating func registerBarScreen() {
-        self.register(screenViewControllerType: BarScreenViewController.self)
+    var viewControllerDescription: ViewControllerDescription {
+        return BarScreenViewController.description(for: self)
     }
-    
 }
 
 
@@ -39,8 +34,8 @@ fileprivate final class BarScreenViewController: ScreenViewController<BarScreen>
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     private var gradientLayer: CAGradientLayer?
     
-    required init(screen: BarScreen, viewRegistry: ViewRegistry) {
-        super.init(screen: screen, viewRegistry: viewRegistry)
+    required init(screen: BarScreen) {
+        super.init(screen: screen)
         
         update(with: screen)
     }

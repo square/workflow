@@ -25,6 +25,10 @@ struct WelcomeScreen: Screen {
     var onNameChanged: (String) -> Void
     /// Callback when the login button is tapped.
     var onLoginTapped: () -> Void
+
+    var viewControllerDescription: ViewControllerDescription {
+        return WelcomeViewController.description(for: self)
+    }
 }
 
 
@@ -32,9 +36,9 @@ final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
 
     var welcomeView: WelcomeView
 
-    required init(screen: WelcomeScreen, viewRegistry: ViewRegistry) {
+    required init(screen: WelcomeScreen) {
         self.welcomeView = WelcomeView(frame: .zero)
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -59,15 +63,6 @@ final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
         welcomeView.name = screen.name
         welcomeView.onNameChanged = screen.onNameChanged
         welcomeView.onLoginTapped = screen.onLoginTapped
-    }
-
-}
-
-
-extension ViewRegistry {
-
-    public mutating func registerWelcomeScreen() {
-        self.register(screenViewControllerType: WelcomeViewController.self)
     }
 
 }

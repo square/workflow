@@ -23,11 +23,15 @@ import Workflow
 @testable import WorkflowUI
 
 
-struct TestScreen: Screen {
+fileprivate struct TestScreen: Screen {
     var string: String
+
+    var viewControllerDescription: ViewControllerDescription {
+        return TestScreenViewController.description(for: self)
+    }
 }
 
-final class TestScreenViewController: ScreenViewController<TestScreen> {
+fileprivate final class TestScreenViewController: ScreenViewController<TestScreen> {
     var onScreenChange: (() -> Void)? = nil
 
     override func screenDidChange(from previousScreen: TestScreen) {
@@ -39,19 +43,13 @@ final class TestScreenViewController: ScreenViewController<TestScreen> {
 
 class ContainerViewControllerTests: XCTestCase {
 
-    let registry: ViewRegistry = {
-        var registry = ViewRegistry()
-        registry.register(screenViewControllerType: TestScreenViewController.self)
-        return registry
-    }()
-
     func test_initialization_renders_workflow() {
         let (signal, _) = Signal<Int, Never>.pipe()
         let workflow = MockWorkflow(subscription: signal)
-        let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
+        let container = ContainerViewController(workflow: workflow)
 
         withExtendedLifetime(container) {
-            let vc = container.rootViewController as! TestScreenViewController
+            let vc = container.rootViewController.currentViewController as! TestScreenViewController
             XCTAssertEqual("0", vc.screen.string)
         }
     }
@@ -59,13 +57,13 @@ class ContainerViewControllerTests: XCTestCase {
     func test_workflow_update_causes_rerender() {
         let (signal, observer) = Signal<Int, Never>.pipe()
         let workflow = MockWorkflow(subscription: signal)
-        let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
+        let container = ContainerViewController(workflow: workflow)
 
         withExtendedLifetime(container) {
 
             let expectation = XCTestExpectation(description: "View Controller updated")
 
-            let vc = container.rootViewController as! TestScreenViewController
+            let vc = container.rootViewController.currentViewController as! TestScreenViewController
             vc.onScreenChange = {
                 expectation.fulfill()
             }
@@ -82,7 +80,7 @@ class ContainerViewControllerTests: XCTestCase {
 
         let (signal, observer) = Signal<Int, Never>.pipe()
         let workflow = MockWorkflow(subscription: signal)
-        let container = ContainerViewController(workflow: workflow, viewRegistry: registry)
+        let container = ContainerViewController(workflow: workflow)
 
         let expectation = XCTestExpectation(description: "Output")
 

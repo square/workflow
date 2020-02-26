@@ -22,15 +22,8 @@ public final class TutorialContainerViewController: UIViewController {
     let containerViewController: UIViewController
 
     public init() {
-        // Create a view registry. This will allow the infrastructure to map `Screen` types to their respective view controller type.
-        var viewRegistry = ViewRegistry()
-        // Register the `WelcomeScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerWelcomeScreen()
-
-        // Create a `ContainerViewController` with the `WelcomeWorkflow` as the root workflow, with the view registry we just created.
-        containerViewController = ContainerViewController(
-            workflow: WelcomeWorkflow(),
-            viewRegistry: viewRegistry)
+        // Create a `ContainerViewController` with the `WelcomeWorkflow` as the root workflow
+        containerViewController = ContainerViewController(workflow: WelcomeWorkflow())
 
         super.init(nibName: nil, bundle: nil)
     }

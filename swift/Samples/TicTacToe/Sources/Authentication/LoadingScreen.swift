@@ -17,24 +17,19 @@ import WorkflowUI
 
 
 struct LoadingScreen: Screen {
-
-}
-
-
-extension ViewRegistry {
-
-    public mutating func registerLoadingScreen() {
-        self.register(screenViewControllerType: LoadingScreenViewController.self)
+    var viewControllerDescription: ViewControllerDescription {
+        return LoadingScreenViewController.description(for: self)
     }
 }
+
 
 fileprivate final class LoadingScreenViewController: ScreenViewController<LoadingScreen> {
     let loadingLabel: UILabel
 
-    required init(screen: LoadingScreen, viewRegistry: ViewRegistry) {
+    required init(screen: LoadingScreen) {
         self.loadingLabel = UILabel(frame: .zero)
 
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
     }
 
     override func viewDidLoad() {

@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
+#if canImport(UIKit)
 
 /// Screens are the building blocks of an interactive application.
 ///
 /// Conforming types contain any information needed to populate a screen: data,
 /// styling, event handlers, etc.
-public protocol Screen {}
+public protocol Screen {
+
+    /// A view controller description that acts as a recipe to either build
+    /// or update a previously-built view controller to match this screen.
+    var viewControllerDescription: ViewControllerDescription { get }
+
+}
+
+#endif

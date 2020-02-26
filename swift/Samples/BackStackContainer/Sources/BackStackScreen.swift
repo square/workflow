@@ -22,6 +22,10 @@ public struct BackStackScreen: Screen {
     public init(items: [BackStackScreen.Item]) {
         self.items = items
     }
+
+    public var viewControllerDescription: ViewControllerDescription {
+        return BackStackContainer.description(for: self)
+    }
 }
 
 extension BackStackScreen {

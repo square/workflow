@@ -24,33 +24,23 @@ struct LoginScreen: Screen {
     var password: String
     var onPasswordChanged: (String) -> Void
     var onLoginTapped: () -> Void
+
+    var viewControllerDescription: ViewControllerDescription {
+        return ViewControllerDescription(
+            build: { LoginViewController() },
+            update: { $0.update(with: self) })
+    }
 }
 
 
-extension ViewRegistry {
-
-    public mutating func registerLoginScreen() {
-        self.register(screenViewControllerType: LoginViewController.self)
-    }
-
-}
-
-
-fileprivate final class LoginViewController: ScreenViewController<LoginScreen> {
-    let welcomeLabel: UILabel
-    let emailField: UITextField
-    let passwordField: UITextField
-    let button: UIButton
-
-    required init(screen: LoginScreen, viewRegistry: ViewRegistry) {
-        welcomeLabel = UILabel(frame: .zero)
-        emailField = UITextField(frame: .zero)
-        passwordField = UITextField(frame: .zero)
-        button = UIButton(frame: .zero)
-        super.init(screen: screen, viewRegistry: viewRegistry)
-
-        update(with: screen)
-    }
+fileprivate final class LoginViewController: UIViewController {
+    private let welcomeLabel: UILabel = UILabel(frame: .zero)
+    private let emailField: UITextField = UITextField(frame: .zero)
+    private let passwordField: UITextField = UITextField(frame: .zero)
+    private let button: UIButton = UIButton(frame: .zero)
+    private var onEmailChanged: (String) -> Void = { _ in }
+    private var onPasswordChanged: (String) -> Void = { _ in }
+    private var onLoginTapped: () -> Void = { }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -120,14 +110,13 @@ fileprivate final class LoginViewController: ScreenViewController<LoginScreen> {
             .insetBy(dx: inset, dy: 0.0)
     }
 
-    override func screenDidChange(from previousScreen: LoginScreen) {
-        update(with: screen)
-    }
-
-    private func update(with screen: LoginScreen) {
+    func update(with screen: LoginScreen) {
         welcomeLabel.text = screen.title
         emailField.text = screen.email
         passwordField.text = screen.password
+        onEmailChanged = screen.onEmailChanged
+        onPasswordChanged = screen.onPasswordChanged
+        onLoginTapped = screen.onLoginTapped
     }
 
     @objc private func textDidChange(sender: UITextField) {
@@ -135,13 +124,13 @@ fileprivate final class LoginViewController: ScreenViewController<LoginScreen> {
             return
         }
         if sender == emailField {
-            screen.onEmailChanged(text)
+            onEmailChanged(text)
         } else if sender == passwordField {
-            screen.onPasswordChanged(text)
+            onPasswordChanged(text)
         }
     }
 
     @objc private func buttonTapped(sender: UIButton) {
-        screen.onLoginTapped()
+        onLoginTapped()
     }
 }

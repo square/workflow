@@ -21,15 +21,10 @@ struct WelcomeScreen: Screen {
     var name: String
     var onNameChanged: (String) -> Void
     var onLoginTapped: () -> Void
-}
 
-
-extension ViewRegistry {
-
-    public mutating func registerWelcomeScreen() {
-        self.register(screenViewControllerType: WelcomeViewController.self)
+    var viewControllerDescription: ViewControllerDescription {
+        return WelcomeViewController.description(for: self)
     }
-
 }
 
 
@@ -38,11 +33,11 @@ fileprivate final class WelcomeViewController: ScreenViewController<WelcomeScree
     let nameField: UITextField
     let button: UIButton
 
-    required init(screen: WelcomeScreen, viewRegistry: ViewRegistry) {
+    required init(screen: WelcomeScreen) {
         welcomeLabel = UILabel(frame: .zero)
         nameField = UITextField(frame: .zero)
         button = UIButton(frame: .zero)
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
 
         update(with: screen)
     }

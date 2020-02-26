@@ -28,15 +28,10 @@ struct DemoScreen: Screen {
     let refreshText: String
     let isRefreshEnabled: Bool
     let onRefreshTap: () -> Void
-}
 
-
-extension ViewRegistry {
-
-    public mutating func registerDemoScreen() {
-        self.register(screenViewControllerType: DemoViewController.self)
+    var viewControllerDescription: ViewControllerDescription {
+        return DemoViewController.description(for: self)
     }
-
 }
 
 
@@ -47,12 +42,12 @@ fileprivate final class DemoViewController: ScreenViewController<DemoScreen> {
     private let statusLabel: UILabel
     private let refreshButton: UIButton
 
-    required init(screen: DemoScreen, viewRegistry: ViewRegistry) {
+    required init(screen: DemoScreen) {
         titleButton = UIButton(frame: .zero)
         subscribeButton = UIButton(frame: .zero)
         statusLabel = UILabel(frame: .zero)
         refreshButton = UIButton(frame: .zero)
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
 
         update(with: screen)
     }
