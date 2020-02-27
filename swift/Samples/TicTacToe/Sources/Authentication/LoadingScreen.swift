@@ -17,8 +17,8 @@ import WorkflowUI
 
 
 struct LoadingScreen: Screen {
-    var viewControllerDescription: ViewControllerDescription {
-        return LoadingScreenViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return LoadingScreenViewController.description(for: self, environment: environment)
     }
 }
 

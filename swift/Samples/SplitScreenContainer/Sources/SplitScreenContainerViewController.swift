@@ -30,8 +30,16 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
     private var needsAnimatedLayout = false
 
     required init(screen: ContainerScreen, environment: ViewEnvironment) {
-        leadingContentViewController = DescribedViewController(screen: screen.leadingScreen, environment: environment)
-        trailingContentViewController = DescribedViewController(screen: screen.trailingScreen, environment: environment)
+        leadingContentViewController = DescribedViewController(
+            screen: screen.leadingScreen,
+            environment: environment
+                .setting(\.splitScreenPosition, to: .leading)
+        )
+        trailingContentViewController = DescribedViewController(
+            screen: screen.trailingScreen,
+            environment: environment
+                .setting(\.splitScreenPosition, to: .trailing)
+        )
         super.init(screen: screen, environment: environment)
     }
 
@@ -48,8 +56,18 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
     private func update(with screen: ContainerScreen) {
         separatorView.backgroundColor = screen.separatorColor
         
-        leadingContentViewController.update(screen: screen.leadingScreen, environment: environment)
-        trailingContentViewController.update(screen: screen.trailingScreen, environment: environment)
+        leadingContentViewController
+            .update(
+                screen: screen.leadingScreen,
+                environment: environment
+                    .setting(\.splitScreenPosition, to: .leading)
+            )
+        trailingContentViewController
+            .update(
+                screen: screen.trailingScreen,
+                environment: environment
+                    .setting(\.splitScreenPosition, to: .trailing)
+            )
         
         //Intentional force of layout pass after updating the child view controllers
         view.layoutIfNeeded()

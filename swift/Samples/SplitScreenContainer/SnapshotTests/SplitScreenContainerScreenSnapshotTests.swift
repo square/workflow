@@ -45,8 +45,8 @@ fileprivate struct FooScreen: Screen {
     let backgroundColor: UIColor
     let viewTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return FooScreenViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return FooScreenViewController.description(for: self, environment: environment)
     }
 }
 

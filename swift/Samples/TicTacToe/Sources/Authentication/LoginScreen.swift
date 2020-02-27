@@ -25,10 +25,10 @@ struct LoginScreen: Screen {
     var onPasswordChanged: (String) -> Void
     var onLoginTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
         return ViewControllerDescription(
-            build: { _ in LoginViewController() },
-            update: { $0.update(with: self, environment: $1) })
+            build: { LoginViewController() },
+            update: { $0.update(with: self, environment: environment) })
     }
 }
 

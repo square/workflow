@@ -27,8 +27,8 @@ struct NewGameScreen: Screen {
         case startGame
     }
 
-    var viewControllerDescription: ViewControllerDescription {
-        return NewGameViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return NewGameViewController.description(for: self, environment: environment)
     }
 }
 

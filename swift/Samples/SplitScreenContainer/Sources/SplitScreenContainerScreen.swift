@@ -15,6 +15,33 @@
  */
 import WorkflowUI
 
+public enum SplitScreenPosition {
+    /// View is not in a split screen container
+    case none
+
+    /// View is in the leading screen in split screen container
+    case leading
+
+    /// View is in the trailing screen in a split screen container
+    case trailing
+
+    /// View is in a collapsed split screen container
+    case single
+}
+
+private enum SplitScreenPositionKey: ViewEnvironmentKey {
+    static let defaultValue: SplitScreenPosition = .none
+}
+
+extension ViewEnvironment {
+
+    var splitScreenPosition: SplitScreenPosition {
+        get { self[SplitScreenPositionKey.self] }
+        set { self[SplitScreenPositionKey.self] = newValue }
+    }
+
+}
+
 
 /// A `SplitScreenContainerScreen` displays two screens side by side with a separator in between.
 public struct SplitScreenContainerScreen<LeadingScreenType: Screen, TrailingScreenType: Screen>: Screen {
@@ -48,8 +75,8 @@ public struct SplitScreenContainerScreen<LeadingScreenType: Screen, TrailingScre
         self.separatorWidth = separatorWidth
     }
 
-    public var viewControllerDescription: ViewControllerDescription {
-        return SplitScreenContainerViewController.description(for: self)
+    public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return SplitScreenContainerViewController.description(for: self, environment: environment)
     }
 
 }

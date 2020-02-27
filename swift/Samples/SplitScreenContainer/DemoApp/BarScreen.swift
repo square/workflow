@@ -22,8 +22,8 @@ struct BarScreen: Screen {
     let backgroundColors: [UIColor]
     let viewTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return BarScreenViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return BarScreenViewController.description(for: self, environment: environment)
     }
 }
 

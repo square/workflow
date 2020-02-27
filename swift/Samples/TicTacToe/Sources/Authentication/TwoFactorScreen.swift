@@ -20,8 +20,8 @@ struct TwoFactorScreen: Screen {
     var title: String
     var onLoginTapped: (String) -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return TwoFactorViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return TwoFactorViewController.description(for: self, environment: environment)
     }
 }
 

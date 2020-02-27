@@ -24,7 +24,23 @@ public protocol Screen {
 
     /// A view controller description that acts as a recipe to either build
     /// or update a previously-built view controller to match this screen.
-    var viewControllerDescription: ViewControllerDescription { get }
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription
+
+}
+
+public protocol ProxyScreen: Screen {
+
+    associatedtype Content: Screen
+
+    var screenRepresentation: Content { get }
+
+}
+
+extension ProxyScreen {
+
+    public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return screenRepresentation.viewControllerDescription(environment: environment)
+    }
 
 }
 

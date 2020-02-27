@@ -23,8 +23,8 @@ struct GamePlayScreen: Screen {
     var board: [[Board.Cell]]
     var onSelected: (Int, Int) -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return GamePlayViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return GamePlayViewController.description(for: self, environment: environment)
     }
 }
 

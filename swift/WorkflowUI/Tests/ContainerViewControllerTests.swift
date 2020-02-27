@@ -26,8 +26,8 @@ import Workflow
 fileprivate struct TestScreen: Screen {
     var string: String
 
-    var viewControllerDescription: ViewControllerDescription {
-        return TestScreenViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return TestScreenViewController.description(for: self, environment: environment)
     }
 }
 

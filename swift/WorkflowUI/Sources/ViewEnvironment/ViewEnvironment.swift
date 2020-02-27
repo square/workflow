@@ -24,7 +24,7 @@ public struct ViewEnvironment {
         storage = [:]
     }
 
-    public subscript<Key: ContainerHintKey>(key: Key.Type) -> Key.Value {
+    public subscript<Key: ViewEnvironmentKey>(key: Key.Type) -> Key.Value {
         get {
             guard let value = storage[ObjectIdentifier(Key.self)] as? Key.Value else {
                 return Key.defaultValue
@@ -36,9 +36,15 @@ public struct ViewEnvironment {
         }
     }
 
+    public func setting<Value>(_ keyPath: WritableKeyPath<ViewEnvironment, Value>, to value: Value) -> ViewEnvironment {
+        var environment = self
+        environment[keyPath: keyPath] = value
+        return environment
+    }
+
 }
 
-public protocol ContainerHintKey {
+public protocol ViewEnvironmentKey {
     associatedtype Value
 
     static var defaultValue: Value { get }

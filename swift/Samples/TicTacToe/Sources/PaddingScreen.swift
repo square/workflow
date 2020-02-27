@@ -8,7 +8,7 @@
 
 import WorkflowUI
 
-private enum PaddingKey: ContainerHintKey {
+private enum PaddingKey: ViewEnvironmentKey {
     static let defaultValue: CGFloat = 16
 }
 
@@ -34,10 +34,10 @@ struct PaddingScreen<Content> {
 
 extension PaddingScreen: Screen where Content: Screen {
 
-    var viewControllerDescription: ViewControllerDescription {
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
         return ViewControllerDescription(
-            build: { PaddingViewController(content: self.content, environment: $0) },
-            update: { $0.update(content: self.content, environment: $1) })
+            build: { PaddingViewController(content: self.content, environment: environment) },
+            update: { $0.update(content: self.content, environment: environment) })
     }
 
 }

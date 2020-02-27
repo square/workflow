@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow(frame: UIScreen.main.bounds)
 
-        window?.rootViewController = ContainerViewController(workflow: MainWorkflow())
+        window?.rootViewController = ContainerViewController(workflow: RootWorkflow())
 
         window?.makeKeyAndVisible()
 
