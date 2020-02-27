@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-#if canImport(UIKit)
+public struct ViewEnvironment {
 
-public struct ContainerHints {
-
-    public static let empty: ContainerHints = ContainerHints()
+    public static let empty: ViewEnvironment = ViewEnvironment()
 
     private var storage: [ObjectIdentifier: Any]
 
@@ -45,5 +43,3 @@ public protocol ContainerHintKey {
 
     static var defaultValue: Value { get }
 }
-
-#endif

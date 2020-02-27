@@ -12,7 +12,7 @@ private enum PaddingKey: ContainerHintKey {
     static let defaultValue: CGFloat = 16
 }
 
-extension ContainerHints {
+extension ViewEnvironment {
 
     var padding: CGFloat {
         get { self[PaddingKey.self] }
@@ -36,27 +36,27 @@ extension PaddingScreen: Screen where Content: Screen {
 
     var viewControllerDescription: ViewControllerDescription {
         return ViewControllerDescription(
-            build: { PaddingViewController(content: self.content, hints: $0) },
-            update: { $0.update(content: self.content, hints: $1) })
+            build: { PaddingViewController(content: self.content, environment: $0) },
+            update: { $0.update(content: self.content, environment: $1) })
     }
 
 }
 
 private final class PaddingViewController<Content: Screen>: UIViewController {
 
-    private var hints: ContainerHints
+    private var environment: ViewEnvironment
     private var content: Content
     private var padding: CGFloat = 16
     private var slider: UISlider = UISlider()
     private var contentViewController: DescribedViewController
 
-    init(content: Content, hints: ContainerHints) {
-        self.hints = hints
-        self.hints.padding = padding
+    init(content: Content, environment: ViewEnvironment) {
+        self.environment = environment
+        self.environment.padding = padding
         self.content = content
         contentViewController = DescribedViewController(
             screen: content,
-            hints: self.hints)
+            environment: self.environment)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -64,18 +64,18 @@ private final class PaddingViewController<Content: Screen>: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(content: Content, hints: ContainerHints) {
-        self.hints = hints
-        self.hints.padding = padding
+    func update(content: Content, environment: ViewEnvironment) {
+        self.environment = environment
+        self.environment.padding = padding
         self.content = content
         contentViewController.update(
             screen: content,
-            hints: self.hints)
+            environment: self.environment)
     }
 
     @objc func sliderDidChange() {
         padding = CGFloat(slider.value)
-        update(content: content, hints: hints)
+        update(content: content, environment: environment)
     }
 
     override func viewDidLoad() {

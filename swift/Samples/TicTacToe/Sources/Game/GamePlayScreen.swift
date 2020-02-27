@@ -33,7 +33,7 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
     let titleLabel: UILabel
     let cells: [[UIButton]]
 
-    required init(screen: GamePlayScreen, hints: ContainerHints) {
+    required init(screen: GamePlayScreen, environment: ViewEnvironment) {
         self.titleLabel = UILabel(frame: .zero)
         var cells: [[UIButton]] = []
 
@@ -46,7 +46,7 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
         }
 
         self.cells = cells
-        super.init(screen: screen, hints: hints)
+        super.init(screen: screen, environment: environment)
         update(with: screen)
     }
 
@@ -79,7 +79,7 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let inset = self.hints.padding / 2
+        let inset = self.environment.padding / 2
         let boardLength = min(view.bounds.width, view.bounds.height) - inset * 2
         let cellLength = (boardLength - inset * 2) / 3.0
 
@@ -106,9 +106,9 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
         }
     }
 
-    override func screenDidChange(from previousScreen: GamePlayScreen, previousHints: ContainerHints) {
+    override func screenDidChange(from previousScreen: GamePlayScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
-        if hints.padding != previousHints.padding {
+        if environment.padding != previousEnvironment.padding {
             view.setNeedsLayout()
         }
     }

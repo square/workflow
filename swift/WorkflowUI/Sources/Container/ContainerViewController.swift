@@ -35,14 +35,14 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
 
     private let (lifetime, token) = Lifetime.make()
 
-    private let containerHints: ContainerHints
+    private let environment: ViewEnvironment
 
-    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, initialHints: ContainerHints) {
+    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, initialEnvironment: ViewEnvironment = .empty) {
         self.workflowHost = workflowHost
-        self.rootViewController = DescribedViewController(screen: rendering.value, hints: initialHints)
+        self.rootViewController = DescribedViewController(screen: rendering.value, environment: initialEnvironment)
         self.rendering = rendering
         self.output = output
-        self.containerHints = initialHints
+        self.environment = initialEnvironment
 
         super.init(nibName: nil, bundle: nil)
 
@@ -54,13 +54,13 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
             }
     }
 
-    public convenience init<W: Workflow>(workflow: W, initialHints: ContainerHints = .empty) where W.Rendering == ScreenType, W.Output == Output {
+    public convenience init<W: Workflow>(workflow: W, initialEnvironment: ViewEnvironment = .empty) where W.Rendering == ScreenType, W.Output == Output {
         let host = WorkflowHost(workflow: workflow)
         self.init(
             workflowHost: host,
             rendering: host.rendering,
             output: host.output,
-            initialHints: initialHints)
+            initialEnvironment: initialEnvironment)
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -68,7 +68,7 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
     }
 
     private func render(screen: ScreenType) {
-        rootViewController.update(screen: screen, hints: containerHints)
+        rootViewController.update(screen: screen, environment: environment)
     }
 
     override public func viewDidLoad() {

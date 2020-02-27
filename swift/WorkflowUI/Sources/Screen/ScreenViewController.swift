@@ -44,11 +44,11 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
         return ScreenType.self
     }
 
-    private(set) public final var hints: ContainerHints
+    private(set) public final var environment: ViewEnvironment
 
-    public required init(screen: ScreenType, hints: ContainerHints) {
+    public required init(screen: ScreenType, environment: ViewEnvironment) {
         self.screen = screen
-        self.hints = hints
+        self.environment = environment
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -57,16 +57,16 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public final func update(screen: ScreenType, hints: ContainerHints) {
+    public final func update(screen: ScreenType, environment: ViewEnvironment) {
         let previousScreen = self.screen
-        let previousHints = self.hints
+        let previousEnvironment = self.environment
         self.screen = screen
-        self.hints = hints
-        screenDidChange(from: previousScreen, previousHints: previousHints)
+        self.environment = environment
+        screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
     }
 
     /// Subclasses should override this method in order to update any relevant UI bits when the screen model changes.
-    open func screenDidChange(from previousScreen: ScreenType, previousHints: ContainerHints) {
+    open func screenDidChange(from previousScreen: ScreenType, previousEnvironment: ViewEnvironment) {
 
     }
 
@@ -80,8 +80,8 @@ extension ScreenViewController {
     public final class func description(for screen: ScreenType) -> ViewControllerDescription {
         return ViewControllerDescription(
             type: self,
-            build: { self.init(screen: screen, hints: $0) },
-            update: { $0.update(screen: screen, hints: $1) })
+            build: { self.init(screen: screen, environment: $0) },
+            update: { $0.update(screen: screen, environment: $1) })
     }
 
 }

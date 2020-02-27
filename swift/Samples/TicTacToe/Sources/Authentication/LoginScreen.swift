@@ -28,7 +28,7 @@ struct LoginScreen: Screen {
     var viewControllerDescription: ViewControllerDescription {
         return ViewControllerDescription(
             build: { _ in LoginViewController() },
-            update: { $0.update(with: self, hints: $1) })
+            update: { $0.update(with: self, environment: $1) })
     }
 }
 
@@ -111,7 +111,7 @@ fileprivate final class LoginViewController: UIViewController {
             .insetBy(dx: inset, dy: 0.0)
     }
 
-    func update(with screen: LoginScreen, hints: ContainerHints) {
+    func update(with screen: LoginScreen, environment: ViewEnvironment) {
         welcomeLabel.text = screen.title
         emailField.text = screen.email
         passwordField.text = screen.password
@@ -119,7 +119,7 @@ fileprivate final class LoginViewController: UIViewController {
         onPasswordChanged = screen.onPasswordChanged
         onLoginTapped = screen.onLoginTapped
         let oldPadding = padding
-        padding = hints.padding
+        padding = environment.padding
         if oldPadding != padding {
             view.setNeedsLayout()
         }

@@ -24,8 +24,8 @@ import UIKit
 public struct ViewControllerDescription {
 
     private let viewControllerType: UIViewController.Type
-    private let build: (ContainerHints) -> UIViewController
-    private let update: (UIViewController, ContainerHints) -> Void
+    private let build: (ViewEnvironment) -> UIViewController
+    private let update: (UIViewController, ViewEnvironment) -> Void
 
     /// Constructs a view controller description by providing a closure used to
     /// build and update a specific view controller type.
@@ -37,25 +37,25 @@ public struct ViewControllerDescription {
     ///           an escape hatch.
     ///   - build: Closure that produces a new instance of the view controller
     ///   - update: Closure that updates the given view controller
-    public init<VC: UIViewController>(type: VC.Type = VC.self, build: @escaping (ContainerHints) -> VC, update: @escaping (VC, ContainerHints) -> Void) {
+    public init<VC: UIViewController>(type: VC.Type = VC.self, build: @escaping (ViewEnvironment) -> VC, update: @escaping (VC, ViewEnvironment) -> Void) {
         self.viewControllerType = type
         self.build = build
-        self.update = { untypedViewController, hints in
+        self.update = { untypedViewController, environment in
             guard let viewController = untypedViewController as? VC else {
                 fatalError("Unable to update \(untypedViewController), expecting a \(VC.self)")
             }
-            update(viewController, hints)
+            update(viewController, environment)
         }
     }
 
     /// Construct and update a new view controller as described by this view
     /// controller description.
-    internal func buildViewController(hints: ContainerHints) -> UIViewController {
-        let viewController = build(hints)
+    internal func buildViewController(environment: ViewEnvironment) -> UIViewController {
+        let viewController = build(environment)
         assert(canUpdate(viewController: viewController), "View controller description built a view controller it cannot update (\(viewController) is not exactly type \(viewControllerType))")
 
         // Perform an initial update of the built view controller
-        update(viewController: viewController, hints: hints)
+        update(viewController: viewController, environment: environment)
 
         return viewController
     }
@@ -72,8 +72,8 @@ public struct ViewControllerDescription {
     ///         `canUpdate(viewController:)` will result in an exception.
     ///
     /// - Parameter viewController: The view controller instance to update
-    internal func update(viewController: UIViewController, hints: ContainerHints) {
-        update(viewController, hints)
+    internal func update(viewController: UIViewController, environment: ViewEnvironment) {
+        update(viewController, environment)
     }
 
 }

@@ -23,13 +23,13 @@ public final class DescribedViewController: UIViewController {
 
     var currentViewController: UIViewController
 
-    public init(description: ViewControllerDescription, hints: ContainerHints) {
-        currentViewController = description.buildViewController(hints: hints)
+    public init(description: ViewControllerDescription, environment: ViewEnvironment) {
+        currentViewController = description.buildViewController(environment: environment)
         super.init(nibName: nil, bundle: nil)
     }
 
-    public convenience init<S: Screen>(screen: S, hints: ContainerHints) {
-        self.init(description: screen.viewControllerDescription, hints: hints)
+    public convenience init<S: Screen>(screen: S, environment: ViewEnvironment) {
+        self.init(description: screen.viewControllerDescription, environment: environment)
     }
 
     @available(*, unavailable)
@@ -37,16 +37,16 @@ public final class DescribedViewController: UIViewController {
         fatalError("init(coder:) is unavailable")
     }
 
-    public func update(description: ViewControllerDescription, hints: ContainerHints) {
+    public func update(description: ViewControllerDescription, environment: ViewEnvironment) {
         if description.canUpdate(viewController: currentViewController) {
-            description.update(viewController: currentViewController, hints: hints)
+            description.update(viewController: currentViewController, environment: environment)
         } else {
             if isViewLoaded {
                 currentViewController.willMove(toParent: nil)
                 currentViewController.view.removeFromSuperview()
                 currentViewController.removeFromParent()
             }
-            currentViewController = description.buildViewController(hints: hints)
+            currentViewController = description.buildViewController(environment: environment)
             if isViewLoaded {
                 addChild(currentViewController)
                 view.addSubview(currentViewController.view)
@@ -56,8 +56,8 @@ public final class DescribedViewController: UIViewController {
         }
     }
 
-    public func update<S: Screen>(screen: S, hints: ContainerHints) {
-        update(description: screen.viewControllerDescription, hints: hints)
+    public func update<S: Screen>(screen: S, environment: ViewEnvironment) {
+        update(description: screen.viewControllerDescription, environment: environment)
     }
 
     public override func viewDidLoad() {

@@ -34,11 +34,11 @@ class ViewControllerDescriptionTests: XCTestCase {
             update: { _, _ in })
 
         // Check built view controller
-        let viewController = description.buildViewController(hints: .empty)
+        let viewController = description.buildViewController(environment: .empty)
         XCTAssertTrue(type(of: viewController) == BlankViewController.self)
 
         // Check another built view controller isn’t somehow the same instance
-        let viewControllerAgain = description.buildViewController(hints: .empty)
+        let viewControllerAgain = description.buildViewController(environment: .empty)
         XCTAssertFalse(viewController === viewControllerAgain)
     }
 
@@ -47,7 +47,7 @@ class ViewControllerDescriptionTests: XCTestCase {
             build: { _ in BlankViewController() },
             update: { _, _ in })
 
-        let viewController = description.buildViewController(hints: .empty)
+        let viewController = description.buildViewController(environment: .empty)
         XCTAssertTrue(description.canUpdate(viewController: viewController))
 
         let otherViewController = UIViewController()
@@ -74,13 +74,13 @@ class ViewControllerDescriptionTests: XCTestCase {
         XCTAssertEqual(updateCount, 0)
 
         // Build causes an initial update
-        let viewController = description.buildViewController(hints: .empty)
+        let viewController = description.buildViewController(environment: .empty)
         XCTAssertEqual(updateCount, 1)
 
-        description.update(viewController: viewController, hints: .empty)
+        description.update(viewController: viewController, environment: .empty)
         XCTAssertEqual(updateCount, 2)
 
-        description.update(viewController: viewController, hints: .empty)
+        description.update(viewController: viewController, environment: .empty)
         XCTAssertEqual(updateCount, 3)
     }
 
@@ -102,12 +102,12 @@ class ViewControllerDescriptionTests: XCTestCase {
         let screen = MyScreen()
         let description = screen.viewControllerDescription
 
-        let viewController = description.buildViewController(hints: .empty)
+        let viewController = description.buildViewController(environment: .empty)
         XCTAssertTrue(type(of: viewController) == MyScreenViewController.self)
 
         XCTAssertTrue(description.canUpdate(viewController: viewController))
 
-        let viewControllerAgain = description.buildViewController(hints: .empty)
+        let viewControllerAgain = description.buildViewController(environment: .empty)
         XCTAssertFalse(viewController === viewControllerAgain)
 
     }
