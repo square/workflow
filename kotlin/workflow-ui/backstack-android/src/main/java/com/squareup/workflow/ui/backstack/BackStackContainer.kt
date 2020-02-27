@@ -56,7 +56,7 @@ open class BackStackContainer @JvmOverloads constructor(
   private val currentView: View? get() = if (childCount > 0) getChildAt(0) else null
   private var currentRendering: BackStackScreen<Named<*>>? = null
 
-  private fun update(
+  protected fun update(
     newRendering: BackStackScreen<*>,
     newViewEnvironment: ViewEnvironment
   ) {
