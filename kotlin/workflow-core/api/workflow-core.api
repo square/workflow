@@ -82,11 +82,9 @@ public final class com/squareup/workflow/SnapshotKt {
 	public static final fun parse (Lokio/ByteString;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun readBooleanFromInt (Lokio/BufferedSource;)Z
 	public static final fun readByteStringWithLength (Lokio/BufferedSource;)Lokio/ByteString;
-	public static final synthetic fun readEnumByOrdinal (Lokio/BufferedSource;)Ljava/lang/Enum;
 	public static final fun readFloat (Lokio/BufferedSource;)F
 	public static final fun readList (Lokio/BufferedSource;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun readNullable (Lokio/BufferedSource;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final synthetic fun readOptionalEnumByOrdinal (Lokio/BufferedSource;)Ljava/lang/Enum;
 	public static final fun readOptionalUtf8WithLength (Lokio/BufferedSource;)Ljava/lang/String;
 	public static final fun readUtf8WithLength (Lokio/BufferedSource;)Ljava/lang/String;
 	public static final fun writeBooleanAsInt (Lokio/BufferedSink;Z)Lokio/BufferedSink;
@@ -156,11 +154,8 @@ public abstract interface class com/squareup/workflow/Worker {
 }
 
 public final class com/squareup/workflow/Worker$Companion {
-	public final synthetic fun create (Lkotlin/jvm/functions/Function2;)Lcom/squareup/workflow/Worker;
 	public final fun createSideEffect (Lkotlin/jvm/functions/Function1;)Lcom/squareup/workflow/Worker;
 	public final fun finished ()Lcom/squareup/workflow/Worker;
-	public final synthetic fun from (Lkotlin/jvm/functions/Function1;)Lcom/squareup/workflow/Worker;
-	public final synthetic fun fromNullable (Lkotlin/jvm/functions/Function1;)Lcom/squareup/workflow/Worker;
 	public final fun timer (JLjava/lang/String;)Lcom/squareup/workflow/Worker;
 	public static synthetic fun timer$default (Lcom/squareup/workflow/Worker$Companion;JLjava/lang/String;ILjava/lang/Object;)Lcom/squareup/workflow/Worker;
 }
@@ -170,11 +165,6 @@ public final class com/squareup/workflow/Worker$DefaultImpls {
 }
 
 public final class com/squareup/workflow/WorkerKt {
-	public static final synthetic fun asWorker (Lkotlinx/coroutines/Deferred;)Lcom/squareup/workflow/Worker;
-	public static final synthetic fun asWorker (Lkotlinx/coroutines/channels/BroadcastChannel;)Lcom/squareup/workflow/Worker;
-	public static final synthetic fun asWorker (Lkotlinx/coroutines/channels/ReceiveChannel;Z)Lcom/squareup/workflow/Worker;
-	public static final synthetic fun asWorker (Lkotlinx/coroutines/flow/Flow;)Lcom/squareup/workflow/Worker;
-	public static synthetic fun asWorker$default (Lkotlinx/coroutines/channels/ReceiveChannel;ZILjava/lang/Object;)Lcom/squareup/workflow/Worker;
 	public static final fun transform (Lcom/squareup/workflow/Worker;Lkotlin/jvm/functions/Function1;)Lcom/squareup/workflow/Worker;
 }
 

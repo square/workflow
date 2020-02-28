@@ -82,7 +82,7 @@ buildscript {
       'timber': "com.jakewharton.timber:timber:4.7.1",
 
       'kotlin': [
-          'binaryCompatibilityValidatorPlugin': "org.jetbrains.kotlinx:binary-compatibility-validator:0.1.1",
+          'binaryCompatibilityValidatorPlugin': "org.jetbrains.kotlinx:binary-compatibility-validator:0.2.1",
           'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61",
           'stdLib': [
               'common': "org.jetbrains.kotlin:kotlin-stdlib-common",

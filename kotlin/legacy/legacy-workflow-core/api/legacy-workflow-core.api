@@ -132,13 +132,9 @@ public final class com/squareup/workflow/legacy/WorkflowPool {
 	public static final field Companion Lcom/squareup/workflow/legacy/WorkflowPool$Companion;
 	public fun <init> ()V
 	public final fun abandonAll ()V
-	public final synthetic fun abandonWorker (Lcom/squareup/workflow/legacy/Worker;Ljava/lang/String;)V
-	public static synthetic fun abandonWorker$default (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/Worker;Ljava/lang/String;ILjava/lang/Object;)V
 	public final fun abandonWorkflow (Lcom/squareup/workflow/legacy/WorkflowPool$Handle;)V
 	public final fun abandonWorkflow (Lcom/squareup/workflow/legacy/WorkflowPool$Id;)V
 	public final fun awaitWorkerResult (Lcom/squareup/workflow/legacy/Worker;Ljava/lang/Object;Ljava/lang/String;Lcom/squareup/workflow/legacy/WorkflowPool$Type;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final synthetic fun awaitWorkerResult (Lcom/squareup/workflow/legacy/Worker;Ljava/lang/Object;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun awaitWorkerResult$default (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/Worker;Ljava/lang/Object;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun awaitWorkflowUpdate (Lcom/squareup/workflow/legacy/WorkflowPool$Handle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getPeekWorkflowsCount ()I
 	public final fun input (Lcom/squareup/workflow/legacy/WorkflowPool$Handle;)Lcom/squareup/workflow/legacy/WorkflowInput;
@@ -146,10 +142,6 @@ public final class com/squareup/workflow/legacy/WorkflowPool {
 }
 
 public final class com/squareup/workflow/legacy/WorkflowPool$Companion {
-	public final synthetic fun handle (Lkotlin/reflect/KClass;Ljava/lang/Object;Ljava/lang/String;)Lcom/squareup/workflow/legacy/WorkflowPool$Handle;
-	public final synthetic fun handle (Lkotlin/reflect/KClass;Ljava/lang/String;)Lcom/squareup/workflow/legacy/WorkflowPool$Handle;
-	public static synthetic fun handle$default (Lcom/squareup/workflow/legacy/WorkflowPool$Companion;Lkotlin/reflect/KClass;Ljava/lang/Object;Ljava/lang/String;ILjava/lang/Object;)Lcom/squareup/workflow/legacy/WorkflowPool$Handle;
-	public static synthetic fun handle$default (Lcom/squareup/workflow/legacy/WorkflowPool$Companion;Lkotlin/reflect/KClass;Ljava/lang/String;ILjava/lang/Object;)Lcom/squareup/workflow/legacy/WorkflowPool$Handle;
 }
 
 public final class com/squareup/workflow/legacy/WorkflowPool$Handle {
@@ -187,12 +179,7 @@ public final class com/squareup/workflow/legacy/WorkflowPool$Type {
 }
 
 public final class com/squareup/workflow/legacy/WorkflowPoolKt {
-	public static final synthetic fun getWorkflowType (Lcom/squareup/workflow/legacy/WorkflowPool$Launcher;)Lcom/squareup/workflow/legacy/WorkflowPool$Type;
-	public static final synthetic fun getWorkflowType (Lkotlin/reflect/KClass;)Lcom/squareup/workflow/legacy/WorkflowPool$Type;
-	public static final synthetic fun register (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/WorkflowPool$Launcher;)V
-	public static final synthetic fun workerResult (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/Worker;Ljava/lang/Object;Ljava/lang/String;)Lkotlinx/coroutines/Deferred;
 	public static final fun workerResult (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/Worker;Ljava/lang/Object;Ljava/lang/String;Lcom/squareup/workflow/legacy/WorkflowPool$Type;)Lkotlinx/coroutines/Deferred;
-	public static synthetic fun workerResult$default (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/Worker;Ljava/lang/Object;Ljava/lang/String;ILjava/lang/Object;)Lkotlinx/coroutines/Deferred;
 	public static final fun workflowUpdate (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/WorkflowPool$Handle;)Lkotlinx/coroutines/Deferred;
 }
 
