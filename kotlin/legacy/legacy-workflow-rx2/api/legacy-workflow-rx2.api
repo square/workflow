@@ -8,11 +8,8 @@ public final class com/squareup/workflow/legacy/rx2/EventChannelKt {
 
 public final class com/squareup/workflow/legacy/rx2/EventSelectBuilder {
 	public final fun addEventCase (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun onEvent (Lkotlin/jvm/functions/Function1;)V
 	public final fun onSuccess (Lio/reactivex/Single;Lkotlin/jvm/functions/Function1;)V
 	public final fun onSuspending (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun onWorkerResult (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/Worker;Ljava/lang/Object;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun onWorkerResult$default (Lcom/squareup/workflow/legacy/rx2/EventSelectBuilder;Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/Worker;Ljava/lang/Object;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public final fun onWorkflowUpdate (Lcom/squareup/workflow/legacy/WorkflowPool;Lcom/squareup/workflow/legacy/WorkflowPool$Handle;Lkotlin/jvm/functions/Function1;)V
 }
 

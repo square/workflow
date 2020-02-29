@@ -41,10 +41,6 @@ public final class com/squareup/workflow/testing/WorkerSink : com/squareup/workf
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/squareup/workflow/testing/WorkerSinkKt {
-	public static final synthetic fun WorkerSink (Ljava/lang/String;)Lcom/squareup/workflow/testing/WorkerSink;
-}
-
 public abstract interface class com/squareup/workflow/testing/WorkerTester {
 	public abstract fun assertFinished (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun assertNoOutput ()V
