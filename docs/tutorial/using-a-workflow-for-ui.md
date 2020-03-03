@@ -14,16 +14,12 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
     /// Emits output events from the bound workflow.
     public let output: Signal<Output, Never>
 
-    public convenience init<W: Workflow>(workflow: W, viewRegistry: ViewRegistry) where W.Rendering == ScreenType, W.Output == Output
+    public convenience init<W: Workflow>(workflow: W) where W.Rendering == ScreenType, W.Output == Output
 }
 
 ```
 
-The first initializer argument is the workflow that will drive your application.
-
-The second initializer argument is the view registry. The view registry acts as a mapping between
-the view models (`Screen`s) that your workflow emits and the concrete UI implementations that should
-be used to display them.
+The initializer argument is the workflow that will drive your application.
 
 ```swift
 import UIKit
@@ -38,11 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
 
-        var viewRegistry = ViewRegistry()
-
         let container = ContainerViewController(
-            workflow: DemoWorkflow(),
-            viewRegistry: viewRegistry)
+            workflow: DemoWorkflow()
+        )
 
         window.rootViewController = container
         self.window = window
@@ -53,21 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 ```
 
-Your project should compile at this point. It will crash as soon as the workflow emits a screen,
-however, because we have not registered any UI implementations with the view registry. Let's fix
-that:
-
-```swift
-var viewRegistry = ViewRegistry()
-
-// Register the DemoScreenViewController to be responsible for DemoScreen.
-viewRegistry.register(screenViewControllerType: DemoScreenViewController.self)
-
-let container = ContainerViewController(
-    workflow: DemoWorkflow(),
-    viewRegistry: viewRegistry)
-```
-
 Now, when the `ContainerViewController` is shown, it will start the workflow and `render` will be
-called returning the `DemoScreen`. The container will use the view registry to map the `DemoScreen`
-to a `DemoScreenViewController` and add it to the view hierarchy to display.
+called returning the `DemoScreen`. The container will use `viewControllerDescription` to build
+a `DemoScreenViewController` and add it to the view hierarchy to display.

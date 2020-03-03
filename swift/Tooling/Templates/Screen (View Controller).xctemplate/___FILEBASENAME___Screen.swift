@@ -9,13 +9,17 @@ struct ___VARIABLE_productName___Screen: Screen {
 
     // It should also contain callbacks for any UI events, for example:
     // var onButtonTapped: () -> Void
+
+    var viewControllerDescription: ViewControllerDescription {
+        return ___VARIABLE_productName___ViewController.description(for: self)
+    }
 }
 
 
 final class ___VARIABLE_productName___ViewController: ScreenViewController<___VARIABLE_productName___Screen> {
 
-    required init(screen: ___VARIABLE_productName___Screen, viewRegistry: ViewRegistry) {
-        super.init(screen: screen, viewRegistry: viewRegistry)
+    required init(screen: ___VARIABLE_productName___Screen) {
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -25,15 +29,6 @@ final class ___VARIABLE_productName___ViewController: ScreenViewController<___VA
 
     private func update(with screen: ___VARIABLE_productName___Screen) {
         /// Update UI
-    }
-
-}
-
-
-extension ViewRegistry {
-
-    public mutating func register___VARIABLE_productName___Screen() {
-        self.register(screenViewControllerType: ___VARIABLE_productName___ViewController.self)
     }
 
 }

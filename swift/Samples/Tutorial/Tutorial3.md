@@ -48,10 +48,10 @@ final class TodoEditViewController: ScreenViewController<TodoEditScreen> {
     // The `todoEditView` has all the logic for displaying the todo and editing.
     let todoEditView: TodoEditView
 
-    required init(screen: TodoEditScreen, viewRegistry: ViewRegistry) {
+    required init(screen: TodoEditScreen) {
         self.todoEditView = TodoEditView(frame: .zero)
 
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -85,6 +85,16 @@ struct TodoEditScreen: Screen {
 }
 ```
 
+The `Screen` protocol also requires a `viewControllerDescription` property. This describes the `UIViewController` that will be used to render the screen:
+
+```swift
+extension TodoEditScreen {
+    var viewControllerDescription: ViewControllerDescription {
+        TodoEditViewController.description(for: self)
+    }
+}
+```
+
 Then update the view with the data from the screen:
 
 ```swift
@@ -104,35 +114,6 @@ final class TodoEditViewController: ScreenViewController<TodoEditScreen> {
     }
 
 }
-```
-
-Finally, register the `TodoEditScreen` in the `TutorialContainerViewController` with the viewRegistry:
-
-```swift
-public final class TutorialContainerViewController: UIViewController {
-    let containerViewController: UIViewController
-
-    public init() {
-        // Create a view registry. This will allow the infrastructure to map `Screen` types to their respective view controller type.
-        var viewRegistry = ViewRegistry()
-        // Register the `WelcomeScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerWelcomeScreen()
-        // Register the `TodoListScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerTodoListScreen()
-        // Register the `BackStackContainer`, which provides a container for the `BackStackScreen`.
-        viewRegistry.registerBackStackContainer()
-        // Register the `TodoEditScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerTodoEditScreen()
-
-        // Create a `ContainerViewController` with the `RootWorkflow` as the root workflow, with the view registry we just created.
-        containerViewController = ContainerViewController(
-            workflow: RootWorkflow(),
-            viewRegistry: viewRegistry)
-
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    // ... rest of the implementation ...
 ```
 
 #### TodoEditWorkflow

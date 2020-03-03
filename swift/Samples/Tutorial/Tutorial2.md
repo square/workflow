@@ -30,15 +30,19 @@ struct TodoListScreen: Screen {
 
     // It should also contain callbacks for any UI events, for example:
     // var onButtonTapped: () -> Void
+
+    // It should also return viewControllerDescription property that 
+    // describes the UIViewController that will be used for rendering 
+    // the screen.
 }
 
 
 final class TodoListViewController: ScreenViewController<TodoListScreen> {
     let todoListView: TodoListView
 
-    required init(screen: TodoListScreen, viewRegistry: ViewRegistry) {
+    required init(screen: TodoListScreen) {
         self.todoListView = TodoListView(frame: .zero)
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -77,28 +81,21 @@ extension TodoListWorkflow {
 
 ### Showing the new screen and workflow
 
-For now, let's just show this new screen instead of the login screen/workflow. Update the `TutorialContainerViewController` to register to the new screen and show the `TodoListWorkflow`:
+For now, let's just show this new screen instead of the login screen/workflow. Update the `TutorialContainerViewController` to show the `TodoListWorkflow`:
 
 ```swift
 public final class TutorialContainerViewController: UIViewController {
     let containerViewController: UIViewController
 
     public init() {
-        // Create a view registry. This will allow the infrastructure to map `Screen` types to their respective view controller type.
-        var viewRegistry = ViewRegistry()
-        // Register the `WelcomeScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerWelcomeScreen()
-        // Register the `TodoListScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerTodoListScreen()
-
-        // Create a `ContainerViewController` with the `WelcomeWorkflow` as the root workflow, with the view registry we just created.
+        // Create a `ContainerViewController` with the `WelcomeWorkflow` as the root workflow.
 //        containerViewController = ContainerViewController(
-//            workflow: WelcomeWorkflow(),
-//            viewRegistry: viewRegistry)
+//            workflow: WelcomeWorkflow()
+//        )
         // Show the TodoList Workflow instead:
         containerViewController = ContainerViewController(
-            workflow: TodoListWorkflow(),
-            viewRegistry: viewRegistry)
+            workflow: TodoListWorkflow()
+        )
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -236,10 +233,10 @@ public final class TutorialContainerViewController: UIViewController {
     public init() {
         // ...
 
-        // Create a `ContainerViewController` with the `RootWorkflow` as the root workflow, with the view registry we just created.
+        // Create a `ContainerViewController` with the `RootWorkflow` as the root workflow.
         containerViewController = ContainerViewController(
-            workflow: RootWorkflow(),
-            viewRegistry: viewRegistry)
+            workflow: RootWorkflow()
+        )
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -474,7 +471,7 @@ This works, but with no animation between the two screens it's pretty unsatisfyi
 
 ### Back Stack and "Containers"
 
-We want to put our different screens in a navigation controller. Because we want all of our navigation state to be declarative, we need to use the `BackStackContainer` to do this - by registering and using the `BackStackScreen`:
+We want to put our different screens in a navigation controller. Because we want all of our navigation state to be declarative, we need to use the `BackStackContainer` to do this - by using the `BackStackScreen`:
 
 ```swift
 public struct BackStackScreen: Screen {
@@ -488,8 +485,6 @@ public struct BackStackScreen: Screen {
 
 The `BackStackScreen` contains a list of all screens in the back stack that are specified on each render pass.
 
-Register the `BackStackScreen` so that we can use it in the TutorialContainerViewController:
-
 ```swift
 import UIKit
 import Workflow
@@ -501,19 +496,10 @@ public final class TutorialContainerViewController: UIViewController {
     let containerViewController: UIViewController
 
     public init() {
-        // Create a view registry. This will allow the infrastructure to map `Screen` types to their respective view controller type.
-        var viewRegistry = ViewRegistry()
-        // Register the `WelcomeScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerWelcomeScreen()
-        // Register the `TodoListScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerTodoListScreen()
-        // Register the `BackStackContainer`, which provides a container for the `BackStackScreen`.
-        viewRegistry.registerBackStackContainer()
-
-        // Create a `ContainerViewController` with the `RootWorkflow` as the root workflow, with the view registry we just created.
+        // Create a `ContainerViewController` with the `RootWorkflow` as the root workflow.
         containerViewController = ContainerViewController(
-            workflow: RootWorkflow(),
-            viewRegistry: viewRegistry)
+            workflow: RootWorkflow()
+        )
 
         super.init(nibName: nil, bundle: nil)
     }

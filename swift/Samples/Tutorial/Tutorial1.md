@@ -43,6 +43,10 @@ struct WelcomeScreen: Screen {
     var onNameChanged: (String) -> Void
     /// Callback when the login button is tapped.
     var onLoginTapped: () -> Void
+
+    var viewControllerDescription: ViewControllerDescription {
+        return WelcomeViewController.description(for: self)
+    }
 }
 ```
 
@@ -54,9 +58,9 @@ import TutorialViews
 final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
     var welcomeView: WelcomeView
 
-    required init(screen: WelcomeScreen, viewRegistry: ViewRegistry) {
+    required init(screen: WelcomeScreen) {
         self.welcomeView = WelcomeView(frame: .zero)
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
         update(with: screen)
     }
 
@@ -122,24 +126,16 @@ public final class TutorialContainerViewController: UIViewController {
     let containerViewController: UIViewController
 
     public init() {
-        // Create a view registry. This will allow the infrastructure to map `Screen` types to their respective view controller type.
-        var viewRegistry = ViewRegistry()
-        // Register the `WelcomeScreen` and view controller with the convenience method the template provided.
-        viewRegistry.registerWelcomeScreen()
-
-        // Create a `ContainerViewController` with the `WelcomeWorkflow` as the root workflow, with the view registry we just created.
+        // Create a `ContainerViewController` with the `WelcomeWorkflow` as the root workflow.
         containerViewController = ContainerViewController(
-            workflow: WelcomeWorkflow(),
-            viewRegistry: viewRegistry)
+            workflow: WelcomeWorkflow()
+        )
 
         super.init(nibName: nil, bundle: nil)
     }
 ```
 
-We did a few things here.
-- We created a *view registry* that is used to map screen types to view controllers. The view registry is used by the container to determine what view controller to instantiate the first time we see a screen.
-- We registered our `WelcomeScreen` with the view registry so we have that mapping.
-- We created our `ContainerViewController` with the `WelcomeWorkflow` as the root.
+Now, we've created our `ContainerViewController` with the `WelcomeWorkflow` as the root.
 
 We can finally run the app again! It will look the exact same as before, but now powered by our workflow.
 
