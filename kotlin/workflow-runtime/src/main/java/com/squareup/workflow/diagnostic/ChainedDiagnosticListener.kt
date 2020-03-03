@@ -31,7 +31,7 @@ fun WorkflowDiagnosticListener.andThen(
       .apply { addVisitor(next) }
 }
 
-@UseExperimental(VeryExperimentalWorkflow::class)
+@OptIn(VeryExperimentalWorkflow::class)
 @Suppress("TooManyFunctions")
 internal class ChainedDiagnosticListener(
   listener: WorkflowDiagnosticListener

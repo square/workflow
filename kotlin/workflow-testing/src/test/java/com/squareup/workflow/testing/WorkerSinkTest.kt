@@ -73,7 +73,7 @@ class WorkerSinkTest {
     }
   }
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
+  @OptIn(ExperimentalCoroutinesApi::class)
   @Test fun `multiple values are buffered`() {
     val worker = WorkerSink<String>("foo")
     worker.send("hello")
@@ -84,7 +84,7 @@ class WorkerSinkTest {
     }
   }
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
+  @OptIn(ExperimentalCoroutinesApi::class)
   @Test fun `throws when consumed concurrently`() {
     val worker = WorkerSink<String>("foo")
 

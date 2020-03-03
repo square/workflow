@@ -112,7 +112,7 @@ fun <PropsT, OutputT : Any, RenderingT, RunnerT> launchWorkflowIn(
     beforeStart = beforeStart
 )
 
-@UseExperimental(
+@OptIn(
     ExperimentalCoroutinesApi::class,
     FlowPreview::class,
     VeryExperimentalWorkflow::class

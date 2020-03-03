@@ -36,7 +36,7 @@ data class TerminalSize(
   val columns: Int
 )
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 internal fun Terminal.listenForResizesOn(
   scope: CoroutineScope
 ): ReceiveChannel<TerminalSize> =

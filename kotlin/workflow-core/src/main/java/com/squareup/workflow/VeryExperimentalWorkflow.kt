@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow
 
-import kotlin.Experimental.Level.ERROR
+import kotlin.RequiresOptIn.Level.ERROR
 import kotlin.annotation.AnnotationRetention.BINARY
 
 /**
@@ -25,5 +25,5 @@ import kotlin.annotation.AnnotationRetention.BINARY
  */
 @MustBeDocumented
 @Retention(value = BINARY)
-@Experimental(level = ERROR)
+@RequiresOptIn(level = ERROR)
 annotation class VeryExperimentalWorkflow

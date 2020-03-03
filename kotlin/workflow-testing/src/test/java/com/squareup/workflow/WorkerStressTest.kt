@@ -21,7 +21,7 @@ private const val WORKER_COUNT = 1000
 
 class WorkerStressTest {
 
-  @UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
+  @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
   @Test fun `multiple subscriptions to single channel when closed`() {
     val channel = Channel<Unit>()
     val workers = List(WORKER_COUNT / 2) { channel.asWorker() }
@@ -63,7 +63,7 @@ class WorkerStressTest {
     }
   }
 
-  @UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
+  @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
   @Test fun `multiple subscriptions to single channel when emits`() {
     val channel = ConflatedBroadcastChannel(Unit)
     val workers = List(WORKER_COUNT) { channel.asWorker() }

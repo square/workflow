@@ -20,18 +20,18 @@ import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.ClockMark
+import kotlin.time.TimeMark
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.microseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class TraceEncoderTest {
 
   /**
-   * [ClockMark] that always returns [now] as [elapsedNow].
+   * [TimeMark] that always returns [now] as [elapsedNow].
    */
-  private class FakeClockMark : ClockMark() {
+  private class FakeTimeMark : TimeMark() {
     var now: Duration = 0.microseconds
     override fun elapsedNow(): Duration = now
   }
@@ -45,14 +45,14 @@ class TraceEncoderTest {
 
     val buffer = Buffer()
     runBlocking {
-      val fakeClockMark = FakeClockMark()
-      val encoder = TraceEncoder(this, start = fakeClockMark) { buffer }
+      val fakeTimeMark = FakeTimeMark()
+      val encoder = TraceEncoder(this, start = fakeTimeMark) { buffer }
       val logger = encoder.createLogger("process", "thread")
 
-      fakeClockMark.now = 1.microseconds
+      fakeTimeMark.now = 1.microseconds
       logger.log(firstBatch)
 
-      fakeClockMark.now = 2.microseconds
+      fakeTimeMark.now = 2.microseconds
       logger.log(secondBatch)
 
       encoder.close()

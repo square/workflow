@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.flowOf
  *
  *     adb shell am broadcast -a com.squareup.sample.timemachine.SHAKE
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class ShakeWorker(private val context: Context) : Worker<Unit> {
 
   private val sensorManager = context.getSystemService(SENSOR_SERVICE) as SensorManager
@@ -63,7 +63,7 @@ class ShakeWorker(private val context: Context) : Worker<Unit> {
     awaitClose { context.unregisterReceiver(receiver) }
   }
 
-  @UseExperimental(FlowPreview::class)
+  @OptIn(FlowPreview::class)
   override fun run(): Flow<Unit> = flowOf(realShakes, fakeShakes).flattenMerge()
 
   override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = otherWorker is ShakeWorker

@@ -56,7 +56,7 @@ data class KeyStroke(
 }
 
 @Suppress("BlockingMethodInNonBlockingContext")
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 internal fun InputProvider.listenForKeyStrokesOn(
   scope: CoroutineScope
 ): BroadcastChannel<KeyStroke> = scope.broadcast {

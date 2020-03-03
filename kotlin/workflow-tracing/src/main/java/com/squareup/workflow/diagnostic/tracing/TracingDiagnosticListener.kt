@@ -95,7 +95,7 @@ internal fun provideLogger(
  *
  * @constructor The primary constructor is internal so that it can inject [GcDetector] for tests.
  */
-@UseExperimental(VeryExperimentalWorkflow::class)
+@OptIn(VeryExperimentalWorkflow::class)
 class TracingDiagnosticListener internal constructor(
   private val memoryStats: MemoryStats,
   private val gcDetectorConstructor: GcDetectorConstructor,

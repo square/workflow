@@ -39,11 +39,11 @@ import okio.buffer
 import okio.source
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.ClockMark
+import kotlin.time.TimeMark
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class TracingDiagnosticListenerTest {
 
   private lateinit var onGcDetected: () -> Unit
@@ -58,7 +58,7 @@ class TracingDiagnosticListenerTest {
     val scope = CoroutineScope(Unconfined)
     val encoder = TraceEncoder(
         scope = scope,
-        start = ZeroClockMark,
+        start = ZeroTimeMark,
         ioDispatcher = Unconfined,
         sinkProvider = { buffer }
     )
@@ -135,7 +135,7 @@ class TracingDiagnosticListenerTest {
   }
 }
 
-@UseExperimental(ExperimentalTime::class)
-private object ZeroClockMark : ClockMark() {
+@OptIn(ExperimentalTime::class)
+private object ZeroTimeMark : TimeMark() {
   override fun elapsedNow(): Duration = Duration.ZERO
 }

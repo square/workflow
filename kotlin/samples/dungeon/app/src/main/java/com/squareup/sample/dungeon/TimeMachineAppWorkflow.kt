@@ -24,17 +24,17 @@ import com.squareup.sample.timemachine.shakeable.ShakeableTimeMachineWorkflow.Pr
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.renderChild
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeSource
 
 /**
  * A workflow that wraps [DungeonAppWorkflow] with a [ShakeableTimeMachineWorkflow] to enable
  * time travel debugging.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class TimeMachineAppWorkflow(
   appWorkflow: DungeonAppWorkflow,
-  clock: Clock,
+  clock: TimeSource,
   context: Context
 ) : StatelessWorkflow<BoardPath, Nothing, ShakeableTimeMachineRendering>() {
 

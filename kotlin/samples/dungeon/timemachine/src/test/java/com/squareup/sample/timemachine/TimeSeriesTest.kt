@@ -23,7 +23,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.days
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class TimeSeriesTest {
 
   private val series = TimeSeries<String>()

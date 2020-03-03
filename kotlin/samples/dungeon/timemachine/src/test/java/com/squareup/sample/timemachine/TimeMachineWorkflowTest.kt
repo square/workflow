@@ -27,10 +27,10 @@ import com.squareup.workflow.testing.testFromStart
 import org.junit.Test
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.TestClock
+import kotlin.time.TestTimeSource
 import kotlin.time.seconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class TimeMachineWorkflowTest {
 
   @Test fun `records and plays back`() {
@@ -46,7 +46,7 @@ class TimeMachineWorkflowTest {
           DelegateRendering(state, setState = { sink.send(it) })
         }
     )
-    val clock = TestClock()
+    val clock = TestTimeSource()
     val tmWorkflow = TimeMachineWorkflow(delegateWorkflow, clock)
 
     tmWorkflow.testFromStart(Recording(Unit) as TimeMachineProps<Unit>) {

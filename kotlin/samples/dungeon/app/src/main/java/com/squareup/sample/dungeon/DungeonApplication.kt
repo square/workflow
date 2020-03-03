@@ -32,7 +32,7 @@ interface DungeonApplication {
  * Retrieves the loading delay from the application if it is a [DungeonApplication], or else a
  * default.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 suspend fun Context.delayForFakeLoad() =
   (applicationContext as? DungeonApplication)?.delayForFakeLoad()
       ?: delay(1.seconds.toLongMilliseconds())

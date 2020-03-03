@@ -36,7 +36,7 @@ import kotlin.time.milliseconds
  * Renders [ShakeableTimeMachineWorkflow][ShakeableTimeMachineWorkflow]
  * [renderings][ShakeableTimeMachineRendering].
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class ShakeableTimeMachineLayoutRunner(
   private val view: View
 ) : LayoutRunner<ShakeableTimeMachineRendering> {

@@ -22,7 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 /**
  * A [WorkflowDiagnosticListener] that just prints all events using [println].
  */
-@UseExperimental(VeryExperimentalWorkflow::class)
+@OptIn(VeryExperimentalWorkflow::class)
 @Suppress("TooManyFunctions")
 open class SimpleLoggingDiagnosticListener : WorkflowDiagnosticListener {
 

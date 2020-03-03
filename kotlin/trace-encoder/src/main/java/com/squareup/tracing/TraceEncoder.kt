@@ -27,26 +27,27 @@ import kotlinx.coroutines.channels.consumeEach
 import okio.BufferedSink
 import java.io.Closeable
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.ClockMark
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 /**
  * Encodes and writes [trace events][TraceEvent] to an Okio [BufferedSink].
  *
  * @param scope The [CoroutineScope] that defines the lifetime for the encoder. When the scope is
  * cancelled or fails, the sink returned from [sinkProvider] will be closed.
- * @param start The [ClockMark] to consider the beginning timestamp of the trace. All trace events'
- * timestamps are relative to this mark. [MonoClock].[markNow][MonoClock.markNow] by default.
+ * @param start The [TimeMark] to consider the beginning timestamp of the trace. All trace events'
+ * timestamps are relative to this mark.
+ * [TimeSource.Monotonic].[markNow][TimeSource.Monotonic.markNow] by default.
  * @param ioDispatcher The [CoroutineDispatcher] to use to execute all IO operations.
  * [IO] by default.
  * @param sinkProvider Returns the [BufferedSink] to use to write trace events to. Called on a
  * background thread.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class TraceEncoder(
   scope: CoroutineScope,
-  private val start: ClockMark = MonoClock.markNow(),
+  private val start: TimeMark = TimeSource.Monotonic.markNow(),
   ioDispatcher: CoroutineDispatcher = IO,
   private val sinkProvider: () -> BufferedSink
 ) : Closeable {

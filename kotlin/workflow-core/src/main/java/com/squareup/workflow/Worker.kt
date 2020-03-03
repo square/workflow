@@ -188,7 +188,7 @@ interface Worker<out OutputT> {
      * Nothing::class.createType(). However createType() lives in the reflection library, so we just
      * reference Void directly so we don't have to add a dependency on kotlin-reflect.
      */
-    @UseExperimental(ExperimentalStdlibApi::class)
+    @OptIn(ExperimentalStdlibApi::class)
     private val TYPE_OF_NOTHING = typeOf<Void>()
 
     /**
@@ -197,7 +197,7 @@ interface Worker<out OutputT> {
      * Note: If your worker just needs to perform side effects and doesn't need to emit anything,
      * use [createSideEffect] instead (since `Nothing` can't be used as a reified type parameter).
      */
-    @UseExperimental(ExperimentalTypeInference::class)
+    @OptIn(ExperimentalTypeInference::class)
     inline fun <reified OutputT> create(
       @BuilderInference noinline block: suspend FlowCollector<OutputT>.() -> Unit
     ): Worker<OutputT> = flow(block).asWorker()
@@ -235,7 +235,7 @@ interface Worker<out OutputT> {
      * The returned [Worker] will equate to any other workers created with any of the [Worker]
      * builder functions that have the same output type.
      */
-    @UseExperimental(FlowPreview::class)
+    @OptIn(FlowPreview::class)
     inline fun <reified OutputT> from(noinline block: suspend () -> OutputT): Worker<OutputT> =
       block.asFlow().asWorker()
 
@@ -271,7 +271,7 @@ interface Worker<out OutputT> {
 /**
  * Returns a [Worker] that will, when performed, emit whatever this [Flow] receives.
  */
-@UseExperimental(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class)
 inline fun <reified OutputT> Flow<OutputT>.asWorker(): Worker<OutputT> =
   TypedWorker(typeOf<OutputT>(), this)
 
@@ -291,7 +291,7 @@ inline fun <reified OutputT> Deferred<OutputT>.asWorker(): Worker<OutputT> =
 /**
  * Shorthand for `.asFlow().asWorker()`.
  */
-@UseExperimental(
+@OptIn(
     FlowPreview::class,
     ExperimentalCoroutinesApi::class
 )
@@ -313,7 +313,7 @@ inline fun <reified OutputT> BroadcastChannel<OutputT>.asWorker(): Worker<Output
  *
  * True by default.
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 inline fun <reified OutputT> ReceiveChannel<OutputT>.asWorker(
   closeOnCancel: Boolean = true
 ): Worker<OutputT> = create {
