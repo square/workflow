@@ -47,7 +47,7 @@ class WorkflowDiagnosticListenerIntegrationTest {
 
   private val listener = RecordingDiagnosticListener()
 
-  @UseExperimental(FlowPreview::class)
+  @OptIn(FlowPreview::class)
   @Test fun `workflow tree structure changes emit events in order`() {
     val specChannel = Channel<Spec>()
     var spec by observable<Spec?>(null) { _, _, newValue ->
@@ -179,7 +179,7 @@ class WorkflowDiagnosticListenerIntegrationTest {
     }
   }
 
-  @UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
+  @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
   @Test fun `workflow updates emit events in order`() {
     val propsChannel = Channel<String>(1).apply { offer("initial props") }
     val channel = Channel<String>()

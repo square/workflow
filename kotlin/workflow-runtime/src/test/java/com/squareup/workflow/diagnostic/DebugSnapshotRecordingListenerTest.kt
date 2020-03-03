@@ -24,7 +24,7 @@ import com.squareup.workflow.diagnostic.WorkflowUpdateDebugInfo.Source
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@UseExperimental(VeryExperimentalWorkflow::class)
+@OptIn(VeryExperimentalWorkflow::class)
 class DebugSnapshotRecordingListenerTest {
 
   private var snapshot: WorkflowHierarchyDebugSnapshot? = null

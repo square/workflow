@@ -97,7 +97,7 @@ private fun <T : Enum<T>> Random.nextEnum(enumClass: KClass<T>): T {
 /**
  * Scales the tick frequency by a random amount to make direction changes look more arbitrary.
  */
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 private fun Worker<Long>.createDirectionTicker(random: Random): Worker<Unit> =
   transform { flow ->
     flow.transform { tick ->

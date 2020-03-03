@@ -82,7 +82,7 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
 
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
-  @UseExperimental(ExperimentalCoroutinesApi::class)
+  @OptIn(ExperimentalCoroutinesApi::class)
   override val renderings: Observable<out Any> = session.renderingsAndSnapshots
       .map { it.rendering }
       .asObservable()

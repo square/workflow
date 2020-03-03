@@ -31,7 +31,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.junit.Test
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class WorkflowRunnerViewModelTest {
 
   private val scope = CoroutineScope(Unconfined)

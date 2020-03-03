@@ -53,7 +53,7 @@ internal interface WorkflowLoop {
   ): Nothing
 }
 
-@UseExperimental(VeryExperimentalWorkflow::class)
+@OptIn(VeryExperimentalWorkflow::class)
 internal open class RealWorkflowLoop : WorkflowLoop {
 
   @Suppress("LongMethod")

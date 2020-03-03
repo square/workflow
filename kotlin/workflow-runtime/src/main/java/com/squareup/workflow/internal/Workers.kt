@@ -39,7 +39,7 @@ import kotlin.coroutines.CoroutineContext
  * [com.squareup.workflow.Worker.run] from that coroutine. Returns a [ReceiveChannel] that
  * will emit everything from the worker. The channel will be closed when the flow completes.
  */
-@UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal fun <T> CoroutineScope.launchWorker(
   worker: Worker<T>,
   key: String,
@@ -79,7 +79,7 @@ private fun <T> Worker<T>.runWithNullCheck(): Flow<T> =
           "If this is a test mock, make sure you mock the run() method!"
   )
 
-@UseExperimental(VeryExperimentalWorkflow::class)
+@OptIn(VeryExperimentalWorkflow::class)
 private fun <T> Flow<T>.wireUpDebugger(
   workerDiagnosticId: Long,
   workflowDiagnosticId: Long,

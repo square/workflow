@@ -25,9 +25,9 @@ import com.squareup.workflow.StatelessWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.action
 import com.squareup.workflow.renderChild
-import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeSource
 
 /**
  * A workflow that will continuously render [delegateWorkflow] and either record its renderings, or
@@ -43,7 +43,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class TimeMachineWorkflow<P, O : Any, out R>(
   private val delegateWorkflow: Workflow<P, O, R>,
-  clock: Clock
+  clock: TimeSource
 ) : StatelessWorkflow<TimeMachineProps<P>, O, TimeMachineRendering<R>>() {
 
   /**

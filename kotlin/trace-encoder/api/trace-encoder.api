@@ -1,6 +1,6 @@
 public final class com/squareup/tracing/TraceEncoder : java/io/Closeable {
-	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/time/ClockMark;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlin/jvm/functions/Function0;)V
-	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/time/ClockMark;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/time/TimeMark;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/time/TimeMark;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun close ()V
 	public final fun createLogger (Ljava/lang/String;Ljava/lang/String;)Lcom/squareup/tracing/TraceLogger;
 	public static synthetic fun createLogger$default (Lcom/squareup/tracing/TraceEncoder;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/squareup/tracing/TraceLogger;

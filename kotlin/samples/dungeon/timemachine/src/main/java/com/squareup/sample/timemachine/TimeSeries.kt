@@ -22,7 +22,7 @@ import kotlin.time.ExperimentalTime
  * An immutable, [append]-only list of values that are each associated with increasing timestamps.
  *
  * Timestamps are represented as [Duration]s, relative to some starting point (usually a
- * [ClockMark][kotlin.time.ClockMark], probably from [Clock.markNow][kotlin.time.Clock.markNow]).
+ * [TimeMark][kotlin.time.TimeMark], probably from [Clock.markNow][kotlin.time.Clock.markNow]).
  *
  * The timestamp of the last value is exposed as [duration].
  * To get the values without their timestamps, use the [values] sequence.

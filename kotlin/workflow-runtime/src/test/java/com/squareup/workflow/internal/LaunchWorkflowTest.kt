@@ -58,7 +58,7 @@ import kotlin.test.assertTrue
 import kotlin.test.fail
 
 @Suppress("UNCHECKED_CAST")
-@UseExperimental(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class LaunchWorkflowTest {
 
   private val scope = CoroutineScope(Unconfined)

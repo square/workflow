@@ -22,14 +22,14 @@ import com.squareup.sample.timemachine.RecorderWorkflow.Recording
 import com.squareup.workflow.testing.renderTester
 import org.junit.Test
 import kotlin.time.ExperimentalTime
-import kotlin.time.TestClock
+import kotlin.time.TestTimeSource
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class RecorderWorkflowTest {
 
   @Test fun `onPropsChanged records value when recording`() {
-    val clock = TestClock()
+    val clock = TestTimeSource()
     val workflow = RecorderWorkflow<String>(clock)
     val startTime = clock.markNow()
     clock += 42.milliseconds
@@ -48,7 +48,7 @@ class RecorderWorkflowTest {
   }
 
   @Test fun `onPropsChanged doesn't record value when not recording`() {
-    val clock = TestClock()
+    val clock = TestTimeSource()
     val workflow = RecorderWorkflow<String>(clock)
     val startTime = clock.markNow()
     clock += 42.milliseconds
@@ -67,7 +67,7 @@ class RecorderWorkflowTest {
   }
 
   @Test fun `render returns recorded value when recording`() {
-    val clock = TestClock()
+    val clock = TestTimeSource()
     val workflow = RecorderWorkflow<String>(clock)
     val startTime = clock.markNow()
 
@@ -85,7 +85,7 @@ class RecorderWorkflowTest {
   }
 
   @Test fun `render returns recorded value when playing back`() {
-    val clock = TestClock()
+    val clock = TestTimeSource()
     val workflow = RecorderWorkflow<String>(clock)
     val startTime = clock.markNow()
 

@@ -22,10 +22,10 @@ import com.squareup.sample.timemachine.RecorderWorkflow.Recording
 import com.squareup.workflow.RenderContext
 import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
-import kotlin.time.Clock
-import kotlin.time.ClockMark
+import kotlin.time.TimeMark
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeSource
 
 /**
  * A workflow that will either record values or play them back, depending on the mode selected by
@@ -39,7 +39,7 @@ import kotlin.time.ExperimentalTime
  */
 @ExperimentalTime
 internal class RecorderWorkflow<T>(
-  private val clock: Clock
+  private val clock: TimeSource
 ) : StatefulWorkflow<RecorderProps<T>, Recording<T>, Nothing, TimeMachineRendering<T>>() {
 
   /**
@@ -59,7 +59,7 @@ internal class RecorderWorkflow<T>(
   }
 
   data class Recording<out T>(
-    val startTime: ClockMark,
+    val startTime: TimeMark,
     val series: TimeSeries<T>
   )
 

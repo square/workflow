@@ -26,7 +26,7 @@ import com.squareup.workflow.ui.modal.AlertContainer
 import kotlinx.coroutines.Dispatchers
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
+import kotlin.time.TimeSource.Monotonic
 
 private const val AI_COUNT = 4
 
@@ -46,8 +46,8 @@ class Component(context: Context) {
 
   val random = Random(System.currentTimeMillis())
 
-  @UseExperimental(ExperimentalTime::class)
-  val clock = MonoClock
+  @OptIn(ExperimentalTime::class)
+  val clock = Monotonic
 
   val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
 

@@ -61,7 +61,7 @@ class TerminalWorkflowRunner(
   /**
    * Runs [workflow] until it emits an [ExitCode] and then returns it.
    */
-  @UseExperimental(
+  @OptIn(
       FlowPreview::class,
       ExperimentalCoroutinesApi::class,
       ObsoleteCoroutinesApi::class
@@ -94,7 +94,7 @@ class TerminalWorkflowRunner(
 }
 
 @Suppress("BlockingMethodInNonBlockingContext")
-@UseExperimental(FlowPreview::class, ExperimentalCoroutinesApi::class)
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 private suspend fun runTerminalWorkflow(
   workflow: TerminalWorkflow,
   screen: TerminalScreen,

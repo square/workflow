@@ -49,7 +49,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * hard-coded values added to worker contexts. It must not contain a [Job] element (it would violate
  * structured concurrency).
  */
-@UseExperimental(VeryExperimentalWorkflow::class)
+@OptIn(VeryExperimentalWorkflow::class)
 internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   val id: WorkflowId<PropsT, OutputT, RenderingT>,
   workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,

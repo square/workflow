@@ -33,7 +33,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Service class that creates [Worker]s to [load][loadBoard] [Board]s.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class BoardLoader(
   private val ioDispatcher: CoroutineDispatcher,
   private val assets: AssetManager,
