@@ -17,6 +17,7 @@ buildscript {
   ext.versions = [
       'targetSdk': 29,
       'compose': '0.1.0-dev05',
+      'kotlin': '1.3.61',
   ]
 
   rootProject.ext.defaultAndroidConfig = {
@@ -83,7 +84,7 @@ buildscript {
 
       'kotlin': [
           'binaryCompatibilityValidatorPlugin': "org.jetbrains.kotlinx:binary-compatibility-validator:0.2.1",
-          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61",
+          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
           'stdLib': [
               'common': "org.jetbrains.kotlin:kotlin-stdlib-common",
               'jdk8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
@@ -97,9 +98,9 @@ buildscript {
               'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.3"
           ],
           'moshi': "com.squareup.moshi:moshi-kotlin:1.9.2",
-          'reflect': "org.jetbrains.kotlin:kotlin-reflect:1.3.61",
+          'reflect': "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
           'serialization': [
-              'gradlePlugin': "org.jetbrains.kotlin:kotlin-serialization:1.3.61",
+              'gradlePlugin': "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}",
               'runtime': "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0",
               'kaml': "com.charleskorn.kaml:kaml:0.15.0",
           ],
