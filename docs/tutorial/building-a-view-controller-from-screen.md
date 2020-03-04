@@ -18,9 +18,9 @@ class DemoScreenViewController: ScreenViewController<DemoScreen> {
 
     private let button: UIButton
 
-    required init(screen: DemoScreen, viewRegistry: ViewRegistry) {
+    required init(screen: DemoScreen) {
         button = UIButton()
-        super.init(screen: screen, viewRegistry: viewRegistry)
+        super.init(screen: screen)
 
         update(screen: screen)
     }
