@@ -22,8 +22,8 @@ struct FooScreen: Screen {
     let backgroundColor: UIColor
     let viewTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return FooScreenViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return FooScreenViewController.description(for: self, environment: environment)
     }
 }
 
@@ -33,8 +33,8 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     private lazy var titleLabel: UILabel = .init()
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     
-    required init(screen: FooScreen) {
-        super.init(screen: screen)
+    required init(screen: FooScreen, environment: ViewEnvironment) {
+        super.init(screen: screen, environment: environment)
         
         update(with: screen)
     }
@@ -54,8 +54,8 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
             titleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
-    
-    override func screenDidChange(from previousScreen: FooScreen) {
+
+    override func screenDidChange(from previousScreen: FooScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
     

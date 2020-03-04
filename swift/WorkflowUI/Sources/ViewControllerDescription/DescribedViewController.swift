@@ -28,8 +28,8 @@ public final class DescribedViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    public convenience init<S: Screen>(screen: S) {
-        self.init(description: screen.viewControllerDescription)
+    public convenience init<S: Screen>(screen: S, environment: ViewEnvironment) {
+        self.init(description: screen.viewControllerDescription(environment: environment))
     }
 
     @available(*, unavailable)
@@ -56,8 +56,8 @@ public final class DescribedViewController: UIViewController {
         }
     }
 
-    public func update<S: Screen>(screen: S) {
-        update(description: screen.viewControllerDescription)
+    public func update<S: Screen>(screen: S, environment: ViewEnvironment) {
+        update(description: screen.viewControllerDescription(environment: environment))
     }
 
     public override func viewDidLoad() {

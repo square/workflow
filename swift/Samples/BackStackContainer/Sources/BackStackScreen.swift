@@ -23,8 +23,8 @@ public struct BackStackScreen: Screen {
         self.items = items
     }
 
-    public var viewControllerDescription: ViewControllerDescription {
-        return BackStackContainer.description(for: self)
+    public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return BackStackContainer.description(for: self, environment: environment)
     }
 }
 

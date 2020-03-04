@@ -29,13 +29,21 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
     
     private var needsAnimatedLayout = false
 
-    required init(screen: ContainerScreen) {
-        leadingContentViewController = DescribedViewController(screen: screen.leadingScreen)
-        trailingContentViewController = DescribedViewController(screen: screen.trailingScreen)
-        super.init(screen: screen)
+    required init(screen: ContainerScreen, environment: ViewEnvironment) {
+        leadingContentViewController = DescribedViewController(
+            screen: screen.leadingScreen,
+            environment: environment
+                .setting(keyPath: \.splitScreenPosition, to: .leading)
+        )
+        trailingContentViewController = DescribedViewController(
+            screen: screen.trailingScreen,
+            environment: environment
+                .setting(keyPath: \.splitScreenPosition, to: .trailing)
+        )
+        super.init(screen: screen, environment: environment)
     }
 
-    override internal func screenDidChange(from previousScreen: ContainerScreen) {
+    override internal func screenDidChange(from previousScreen: ContainerScreen, previousEnvironment: ViewEnvironment) {
         if screen.ratio != previousScreen.ratio {
             needsAnimatedLayout = true
         }
@@ -48,8 +56,16 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
     private func update(with screen: ContainerScreen) {
         separatorView.backgroundColor = screen.separatorColor
         
-        leadingContentViewController.update(screen: screen.leadingScreen)
-        trailingContentViewController.update(screen: screen.trailingScreen)
+        leadingContentViewController.update(
+            screen: screen.leadingScreen,
+            environment: environment
+                .setting(keyPath: \.splitScreenPosition, to: .leading)
+        )
+        trailingContentViewController.update(
+            screen: screen.trailingScreen,
+            environment: environment
+                .setting(keyPath: \.splitScreenPosition, to: .trailing)
+        )
         
         //Intentional force of layout pass after updating the child view controllers
         view.layoutIfNeeded()

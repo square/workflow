@@ -25,7 +25,7 @@ struct LoginScreen: Screen {
     var onPasswordChanged: (String) -> Void
     var onLoginTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
         return ViewControllerDescription(
             build: { LoginViewController() },
             update: { $0.update(with: self) })

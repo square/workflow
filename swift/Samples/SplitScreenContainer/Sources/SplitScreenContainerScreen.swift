@@ -48,8 +48,8 @@ public struct SplitScreenContainerScreen<LeadingScreenType: Screen, TrailingScre
         self.separatorWidth = separatorWidth
     }
 
-    public var viewControllerDescription: ViewControllerDescription {
-        return SplitScreenContainerViewController.description(for: self)
+    public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return SplitScreenContainerViewController.description(for: self, environment: environment)
     }
 
 }

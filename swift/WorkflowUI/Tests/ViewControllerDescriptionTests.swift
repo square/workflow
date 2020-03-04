@@ -90,8 +90,8 @@ class ViewControllerDescriptionTests: XCTestCase {
         // description
 
         struct MyScreen: Screen {
-            var viewControllerDescription: ViewControllerDescription {
-                return MyScreenViewController.description(for: self)
+            func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+                return MyScreenViewController.description(for: self, environment: environment)
             }
         }
 
@@ -100,7 +100,7 @@ class ViewControllerDescriptionTests: XCTestCase {
 
 
         let screen = MyScreen()
-        let description = screen.viewControllerDescription
+        let description = screen.viewControllerDescription(environment: .empty)
 
         let viewController = description.buildViewController()
         XCTAssertTrue(type(of: viewController) == MyScreenViewController.self)

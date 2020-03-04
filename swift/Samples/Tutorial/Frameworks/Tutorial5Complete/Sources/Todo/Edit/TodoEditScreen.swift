@@ -28,8 +28,8 @@ struct TodoEditScreen: Screen {
     var onTitleChanged: (String) -> Void
     var onNoteChanged: (String) -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return TodoEditViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return TodoEditViewController.description(for: self, environment: environment)
     }
 }
 
@@ -38,10 +38,10 @@ final class TodoEditViewController: ScreenViewController<TodoEditScreen> {
     // The `todoEditView` has all the logic for displaying the todo and editing.
     let todoEditView: TodoEditView
 
-    required init(screen: TodoEditScreen) {
+    required init(screen: TodoEditScreen, environment: ViewEnvironment) {
         self.todoEditView = TodoEditView(frame: .zero)
 
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
         update(with: screen)
     }
 
@@ -57,7 +57,7 @@ final class TodoEditViewController: ScreenViewController<TodoEditScreen> {
         todoEditView.frame = view.bounds.inset(by: view.safeAreaInsets)
     }
 
-    override func screenDidChange(from previousScreen: TodoEditScreen) {
+    override func screenDidChange(from previousScreen: TodoEditScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 
