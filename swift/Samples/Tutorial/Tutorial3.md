@@ -89,8 +89,8 @@ The `Screen` protocol also requires a `viewControllerDescription` property. This
 
 ```swift
 extension TodoEditScreen {
-    var viewControllerDescription: ViewControllerDescription {
-        TodoEditViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        TodoEditViewController.description(for: self, environment: environment)
     }
 }
 ```

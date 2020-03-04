@@ -25,13 +25,13 @@ import UIKit
 /// Using this base class, a screen can be implemented as:
 /// ```
 /// struct MyScreen: Screen {
-///     var viewControllerDescription: ViewControllerDescription {
+///     func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
 ///         return MyScreenViewController.description(for: self)
 ///     }
 /// }
 ///
 /// private class MyScreenViewController: ScreenViewController<MyScreen> {
-///     override func screenDidChange(from previousScreen: MyScreen) {
+///     override func screenDidChange(from previousScreen: MyScreen, previousEnvironment: ViewEnvironment) {
 ///         // … update views as necessary
 ///     }
 /// }

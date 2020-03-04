@@ -44,8 +44,8 @@ struct WelcomeScreen: Screen {
     /// Callback when the login button is tapped.
     var onLoginTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return WelcomeViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return WelcomeViewController.description(for: self, environment: environment)
     }
 }
 ```
