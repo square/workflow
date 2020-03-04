@@ -2,6 +2,14 @@ local_sources:
   - .
   - swift/Samples/SplitScreenContainer
   - swift/Samples/BackStackContainer
+  - swift/Samples/Tutorial/Frameworks/TutorialViews
+  - swift/Samples/Tutorial/Frameworks/TutorialBase
+  - swift/Samples/Tutorial/Frameworks/Tutorial1Complete
+  - swift/Samples/Tutorial/Frameworks/Tutorial2Complete
+  - swift/Samples/Tutorial/Frameworks/Tutorial3Complete
+  - swift/Samples/Tutorial/Frameworks/Tutorial4Complete
+  - swift/Samples/Tutorial/Frameworks/Tutorial5Complete
+  - swift/
 platforms:
   - ios
 podspec_paths:

@@ -89,6 +89,32 @@ Pod::Spec.new do |s|
     }
   end
 
+  s.app_spec 'Tutorial' do |app_spec|
+    app_spec.dependency 'BackStackContainer'
+    app_spec.dependency 'TutorialViews'
+    app_spec.dependency 'TutorialBase'
+    app_spec.dependency 'Tutorial1'
+    app_spec.dependency 'Tutorial2'
+    app_spec.dependency 'Tutorial3'
+    app_spec.dependency 'Tutorial4'
+    app_spec.dependency 'Tutorial5'
+    app_spec.source_files = 'swift/Samples/Tutorial/AppHost/Sources/*.swift'
+
+    app_spec.scheme = {
+      environment_variables: snapshot_test_env
+    }
+  end
+
+  s.test_spec 'Tutorial5Tests' do |test_spec|
+    test_spec.dependency 'BackStackContainer'
+    test_spec.dependency 'TutorialBase'
+    test_spec.dependency 'Tutorial5'
+    test_spec.dependency 'WorkflowTesting'
+    test_spec.requires_app_host = true
+    test_spec.source_files = 'swift/Samples/Tutorial/Frameworks/TutorialBase/Tests/**/*.swift'
+    test_spec.framework = 'XCTest'
+  end
+
   s.test_spec 'WorkflowTests' do |test_spec|
     test_spec.requires_app_host = true
     test_spec.source_files = 'swift/Workflow/Tests/**/*.swift'
