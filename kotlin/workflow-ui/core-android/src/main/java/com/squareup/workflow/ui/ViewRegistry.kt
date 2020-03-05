@@ -79,12 +79,12 @@ interface ViewRegistry {
    */
   fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
-    initialContainerHints: ContainerHints,
+    initialViewEnvironment: ViewEnvironment,
     contextForNewView: Context,
     container: ViewGroup? = null
   ): View
 
-  companion object : ContainerHintKey<ViewRegistry>(ViewRegistry::class) {
+  companion object : ViewEnvironmentKey<ViewRegistry>(ViewRegistry::class) {
     override val default: ViewRegistry
       get() = error("There should always be a ViewRegistry hint, this is bug in Workflow.")
   }
@@ -117,9 +117,9 @@ fun ViewRegistry(): ViewRegistry = BindingViewRegistry()
  */
 fun <RenderingT : Any> ViewRegistry.buildView(
   initialRendering: RenderingT,
-  initialContainerHints: ContainerHints,
+  initialViewEnvironment: ViewEnvironment,
   container: ViewGroup
-): View = buildView(initialRendering, initialContainerHints, container.context, container)
+): View = buildView(initialRendering, initialViewEnvironment, container.context, container)
 
 operator fun ViewRegistry.plus(binding: ViewBinding<*>): ViewRegistry = this + ViewRegistry(binding)
 

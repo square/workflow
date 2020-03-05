@@ -40,7 +40,7 @@ internal class BindingViewRegistry private constructor(
 
   override fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
-    initialContainerHints: ContainerHints,
+    initialViewEnvironment: ViewEnvironment,
     contextForNewView: Context,
     container: ViewGroup?
   ): View {
@@ -48,7 +48,7 @@ internal class BindingViewRegistry private constructor(
     return (bindings[initialRendering::class] as? ViewBinding<RenderingT>)
         ?.buildView(
             initialRendering,
-            initialContainerHints,
+            initialViewEnvironment,
             contextForNewView,
             container
         )

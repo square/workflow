@@ -55,15 +55,15 @@ class BuilderBinding<RenderingT : Any>(
   override val type: KClass<RenderingT>,
   private val viewConstructor: (
     initialRendering: RenderingT,
-    initialContainerHints: ContainerHints,
+    initialViewEnvironment: ViewEnvironment,
     contextForNewView: Context,
     container: ViewGroup?
   ) -> View
 ) : ViewBinding<RenderingT> {
   override fun buildView(
     initialRendering: RenderingT,
-    initialContainerHints: ContainerHints,
+    initialViewEnvironment: ViewEnvironment,
     contextForNewView: Context,
     container: ViewGroup?
-  ): View = viewConstructor(initialRendering, initialContainerHints, contextForNewView, container)
+  ): View = viewConstructor(initialRendering, initialViewEnvironment, contextForNewView, container)
 }

@@ -7,7 +7,7 @@ public final class com/squareup/workflow/ui/backstack/BackStackConfig : java/lan
 	public static fun values ()[Lcom/squareup/workflow/ui/backstack/BackStackConfig;
 }
 
-public final class com/squareup/workflow/ui/backstack/BackStackConfig$Companion : com/squareup/workflow/ui/ContainerHintKey {
+public final class com/squareup/workflow/ui/backstack/BackStackConfig$Companion : com/squareup/workflow/ui/ViewEnvironmentKey {
 	public fun getDefault ()Lcom/squareup/workflow/ui/backstack/BackStackConfig;
 	public synthetic fun getDefault ()Ljava/lang/Object;
 }
@@ -25,8 +25,8 @@ public class com/squareup/workflow/ui/backstack/BackStackContainer : android/wid
 }
 
 public final class com/squareup/workflow/ui/backstack/BackStackContainer$Companion : com/squareup/workflow/ui/ViewBinding {
-	public fun buildView (Lcom/squareup/workflow/ui/backstack/BackStackScreen;Lcom/squareup/workflow/ui/ContainerHints;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
-	public synthetic fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ContainerHints;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
+	public fun buildView (Lcom/squareup/workflow/ui/backstack/BackStackScreen;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
+	public synthetic fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public fun getType ()Lkotlin/reflect/KClass;
 }
 

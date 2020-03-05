@@ -55,7 +55,7 @@ import kotlin.reflect.KClass
 interface LayoutRunner<RenderingT : Any> {
   fun showRendering(
     rendering: RenderingT,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   )
 
   class Binding<RenderingT : Any>(
@@ -65,7 +65,7 @@ interface LayoutRunner<RenderingT : Any> {
   ) : ViewBinding<RenderingT> {
     override fun buildView(
       initialRendering: RenderingT,
-      initialContainerHints: ContainerHints,
+      initialViewEnvironment: ViewEnvironment,
       contextForNewView: Context,
       container: ViewGroup?
     ): View {
@@ -75,7 +75,7 @@ interface LayoutRunner<RenderingT : Any> {
           .apply {
             bindShowRendering(
                 initialRendering,
-                initialContainerHints,
+                initialViewEnvironment,
                 runnerConstructor.invoke(this)::showRendering
             )
           }
@@ -102,7 +102,7 @@ interface LayoutRunner<RenderingT : Any> {
       object : LayoutRunner<RenderingT> {
         override fun showRendering(
           rendering: RenderingT,
-          containerHints: ContainerHints
+          viewEnvironment: ViewEnvironment
         ) = Unit
       }
     }

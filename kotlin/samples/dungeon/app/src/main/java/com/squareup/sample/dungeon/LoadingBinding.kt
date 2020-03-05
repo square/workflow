@@ -18,10 +18,10 @@ package com.squareup.sample.dungeon
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 
 /**
  * Factory function for [ViewBinding]s that show a full-screen loading indicator with some text
@@ -51,7 +51,7 @@ internal class LoadingLayoutRunner<RenderingT : Any>(
 
   override fun showRendering(
     rendering: RenderingT,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
     // No-op.
   }

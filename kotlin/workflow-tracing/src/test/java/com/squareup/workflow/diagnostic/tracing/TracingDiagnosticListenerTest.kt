@@ -39,9 +39,9 @@ import okio.buffer
 import okio.source
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.TimeMark
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeMark
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TracingDiagnosticListenerTest {

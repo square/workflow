@@ -19,10 +19,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 
 internal class NewGameLayoutRunner(private val view: View) : LayoutRunner<NewGameScreen> {
@@ -33,7 +33,7 @@ internal class NewGameLayoutRunner(private val view: View) : LayoutRunner<NewGam
 
   override fun showRendering(
     rendering: NewGameScreen,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
     if (playerX.text.isBlank()) playerX.setText(rendering.defaultNameX)
     if (playerO.text.isBlank()) playerO.setText(rendering.defaultNameO)

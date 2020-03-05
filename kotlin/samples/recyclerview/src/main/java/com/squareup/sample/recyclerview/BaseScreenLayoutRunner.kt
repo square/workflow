@@ -21,10 +21,10 @@ import com.squareup.sample.recyclerview.AppWorkflow.BaseScreen
 import com.squareup.sample.recyclerview.editablelistworkflow.ListDiffMode
 import com.squareup.sample.recyclerview.editablelistworkflow.ListDiffMode.Asynchronous
 import com.squareup.sample.recyclerview.editablelistworkflow.ListDiffMode.Synchronous
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 
 /**
@@ -42,11 +42,11 @@ class BaseScreenLayoutRunner(view: View) : LayoutRunner<BaseScreen> {
 
   override fun showRendering(
     rendering: BaseScreen,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
-    val syncHints = containerHints + (ListDiffMode to Synchronous)
-    val asyncHints = containerHints + (ListDiffMode to Asynchronous)
-    noDiffListStub.update(rendering.listRendering, containerHints)
+    val syncHints = viewEnvironment + (ListDiffMode to Synchronous)
+    val asyncHints = viewEnvironment + (ListDiffMode to Asynchronous)
+    noDiffListStub.update(rendering.listRendering, viewEnvironment)
     syncListStub.update(rendering.listRendering, syncHints)
     asyncListStub.update(rendering.listRendering, asyncHints)
     addRowButton.setOnClickListener { rendering.onAddRowTapped() }

@@ -23,13 +23,13 @@ import kotlin.reflect.KClass
 import kotlin.test.fail
 
 fun <R : Any> ViewRegistry.buildView(rendering: R): View =
-  buildView(rendering, ContainerHints(this), mock())
+  buildView(rendering, ViewEnvironment(this), mock())
 
 class TestBinding<R : Any>(override val type: KClass<R>) :
     ViewBinding<R> {
   override fun buildView(
     initialRendering: R,
-    initialContainerHints: ContainerHints,
+    initialViewEnvironment: ViewEnvironment,
     contextForNewView: Context,
     container: ViewGroup?
   ): View {

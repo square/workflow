@@ -26,10 +26,10 @@ import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 
 internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameOverScreen> {
@@ -48,7 +48,7 @@ internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameO
 
   override fun showRendering(
     rendering: GameOverScreen,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
     exitItem.setOnMenuItemClickListener {
       rendering.onPlayAgain()

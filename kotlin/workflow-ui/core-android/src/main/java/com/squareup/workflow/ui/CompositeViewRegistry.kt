@@ -44,7 +44,7 @@ internal class CompositeViewRegistry private constructor(
 
   override fun <RenderingT : Any> buildView(
     initialRendering: RenderingT,
-    initialContainerHints: ContainerHints,
+    initialViewEnvironment: ViewEnvironment,
     contextForNewView: Context,
     container: ViewGroup?
   ): View {
@@ -53,7 +53,7 @@ internal class CompositeViewRegistry private constructor(
             "A ${ViewBinding::class.java.name} should have been registered " +
                 "to display $initialRendering."
         )
-    return registry.buildView(initialRendering, initialContainerHints, contextForNewView, container)
+    return registry.buildView(initialRendering, initialViewEnvironment, contextForNewView, container)
   }
 
   companion object {

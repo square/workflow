@@ -29,9 +29,9 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.Named
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backstack.BackStackConfig.First
 import com.squareup.workflow.ui.backstack.BackStackConfig.Other
@@ -58,10 +58,10 @@ open class BackStackContainer @JvmOverloads constructor(
 
   private fun update(
     newRendering: BackStackScreen<*>,
-    newContainerHints: ContainerHints
+    newViewEnvironment: ViewEnvironment
   ) {
     val config = if (newRendering.backStack.isEmpty()) First else Other
-    val hints = newContainerHints + (BackStackConfig to config)
+    val environment = newViewEnvironment + (BackStackConfig to config)
 
     val named: BackStackScreen<Named<*>> = newRendering
         // ViewStateCache requires that everything be Named.
@@ -75,11 +75,11 @@ open class BackStackContainer @JvmOverloads constructor(
         ?.takeIf { it.canShowRendering(named.top) }
         ?.let {
           viewStateCache.prune(named.frames)
-          it.showRendering(named.top, hints)
+          it.showRendering(named.top, environment)
           return
         }
 
-    val newView = hints[ViewRegistry].buildView(named.top, hints, this)
+    val newView = environment[ViewRegistry].buildView(named.top, environment, this)
     viewStateCache.update(named.backStack, oldViewMaybe, newView)
 
     val popped = currentRendering?.backStack?.any { compatible(it, named.top) } == true

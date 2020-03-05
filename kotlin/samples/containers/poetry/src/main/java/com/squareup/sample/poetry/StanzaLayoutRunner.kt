@@ -26,9 +26,9 @@ import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.container.masterdetail.MasterDetailConfig
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.poetry.R
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.backstack.BackStackConfig
 import com.squareup.workflow.ui.backstack.BackStackConfig.None
@@ -47,9 +47,9 @@ class StanzaLayoutRunner(private val view: View) : LayoutRunner<StanzaRendering>
 
   override fun showRendering(
     rendering: StanzaRendering,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
-    if (containerHints[MasterDetailConfig] == Detail) {
+    if (viewEnvironment[MasterDetailConfig] == Detail) {
       toolbar.title = "Stanza ${rendering.stanzaNumber}"
       toolbar.subtitle = null
     } else {
@@ -81,14 +81,14 @@ class StanzaLayoutRunner(private val view: View) : LayoutRunner<StanzaRendering>
           goBack.visibility = View.INVISIBLE
         }
 
-    if (containerHints[MasterDetailConfig] != Detail && containerHints[BackStackConfig] != None) {
+    if (viewEnvironment[MasterDetailConfig] != Detail && viewEnvironment[BackStackConfig] != None) {
       toolbar.setNavigationOnClickListener { rendering.onGoUp.invoke() }
     } else {
       toolbar.navigationIcon = null
     }
 
     view.backPressedHandler = rendering.onGoBack
-        ?: rendering.onGoUp.takeIf { containerHints[MasterDetailConfig] != Detail }
+        ?: rendering.onGoUp.takeIf { viewEnvironment[MasterDetailConfig] != Detail }
   }
 
   private fun TextView.setTabulatedText(lines: List<String>) {

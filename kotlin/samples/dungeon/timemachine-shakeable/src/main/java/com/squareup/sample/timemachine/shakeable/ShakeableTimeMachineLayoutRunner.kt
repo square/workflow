@@ -22,10 +22,10 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.Group
 import androidx.transition.TransitionManager
 import com.squareup.sample.timemachine.shakeable.internal.GlassFrameLayout
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 import com.squareup.workflow.ui.backPressedHandler
 import kotlin.time.Duration
@@ -55,7 +55,7 @@ class ShakeableTimeMachineLayoutRunner(
 
   override fun showRendering(
     rendering: ShakeableTimeMachineRendering,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
     // Only handle back presses explicitly if in playback mode.
     view.backPressedHandler = rendering.onResumeRecording.takeUnless { rendering.recording }
@@ -94,7 +94,7 @@ class ShakeableTimeMachineLayoutRunner(
     }
 
     // Show the child screen.
-    childStub.update(rendering.rendering, containerHints)
+    childStub.update(rendering.rendering, viewEnvironment)
   }
 
   private fun Duration.toProgressInt(): Int = toLongMilliseconds().toInt()

@@ -46,9 +46,9 @@ import android.view.ViewGroup
  *
  *       override fun showRendering(
  *          rendering: YourRendering,
- *          containerHints: ContainerHints
+ *          viewEnvironment: ViewEnvironment
  *       ) {
- *         child.update(rendering.childRendering, containerHints)
+ *         child.update(rendering.childRendering, viewEnvironment)
  *       }
  *     }
  * ```
@@ -83,18 +83,18 @@ class WorkflowViewStub @JvmOverloads constructor(
    */
   fun update(
     rendering: Any,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ): View {
     actual.takeIf { it.canShowRendering(rendering) }
         ?.let {
-          it.showRendering(rendering, containerHints)
+          it.showRendering(rendering, viewEnvironment)
           return it
         }
 
     return when (val parent = actual.parent) {
-      is ViewGroup -> containerHints[ViewRegistry].buildView(rendering, containerHints, parent)
+      is ViewGroup -> viewEnvironment[ViewRegistry].buildView(rendering, viewEnvironment, parent)
           .also { buildNewViewAndReplaceOldView(parent, it) }
-      else -> containerHints[ViewRegistry].buildView(rendering, containerHints, actual.context)
+      else -> viewEnvironment[ViewRegistry].buildView(rendering, viewEnvironment, actual.context)
     }.also { actual = it }
   }
 

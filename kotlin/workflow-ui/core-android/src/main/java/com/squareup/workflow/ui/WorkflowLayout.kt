@@ -52,30 +52,30 @@ class WorkflowLayout(
     renderings: Observable<out Any>,
     registry: ViewRegistry
   ) {
-    start(renderings, ContainerHints(registry))
+    start(renderings, ViewEnvironment(registry))
   }
 
   /**
-   * Subscribes to [renderings], and uses the [ViewRegistry] in the given [hints] to
+   * Subscribes to [renderings], and uses the [ViewRegistry] in the given [environment] to
    * [build a new view][ViewRegistry.buildView] each time a new type of rendering is received,
    * making that view the only child of this one.
    */
   fun start(
     renderings: Observable<out Any>,
-    hints: ContainerHints
+    environment: ViewEnvironment
   ) {
-    val hintsWithDefaults = hints.withDefaultViewBindings()
+    val hintsWithDefaults = environment.withDefaultViewBindings()
     takeWhileAttached(renderings) { show(it, hintsWithDefaults) }
   }
 
-  private fun ContainerHints.withDefaultViewBindings(): ContainerHints =
+  private fun ViewEnvironment.withDefaultViewBindings(): ViewEnvironment =
     this + (ViewRegistry to (this[ViewRegistry] + defaultViewBindings))
 
   private fun show(
     newRendering: Any,
-    hints: ContainerHints
+    environment: ViewEnvironment
   ) {
-    showing.update(newRendering, hints)
+    showing.update(newRendering, environment)
     restoredChildState?.let { restoredState ->
       restoredChildState = null
       showing.actual.restoreHierarchyState(restoredState)

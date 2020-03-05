@@ -25,10 +25,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.sample.container.masterdetail.MasterDetailConfig
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.poetryapp.R
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 
 class PoemListLayoutRunner(view: View) : LayoutRunner<PoemListRendering> {
   init {
@@ -46,10 +46,10 @@ class PoemListLayoutRunner(view: View) : LayoutRunner<PoemListRendering> {
 
   override fun showRendering(
     rendering: PoemListRendering,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
     adapter.rendering = rendering
-    adapter.hints = containerHints
+    adapter.environment = viewEnvironment
     adapter.notifyDataSetChanged()
     if (recyclerView.adapter == null) recyclerView.adapter = adapter
 
@@ -60,13 +60,13 @@ class PoemListLayoutRunner(view: View) : LayoutRunner<PoemListRendering> {
 
   private class Adapter : RecyclerView.Adapter<ViewHolder>() {
     lateinit var rendering: PoemListRendering
-    lateinit var hints: ContainerHints
+    lateinit var environment: ViewEnvironment
 
     override fun onCreateViewHolder(
       parent: ViewGroup,
       viewType: Int
     ): ViewHolder {
-      val selectable = hints[MasterDetailConfig] == Master
+      val selectable = environment[MasterDetailConfig] == Master
       val layoutId = if (selectable) {
         R.layout.list_row_selectable
       } else {

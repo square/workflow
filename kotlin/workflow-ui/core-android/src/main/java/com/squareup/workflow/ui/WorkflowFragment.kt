@@ -60,7 +60,7 @@ abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
   /**
    * Provides the [ViewRegistry] used to display workflow renderings.
    */
-  protected abstract val containerHints: ContainerHints
+  protected abstract val viewEnvironment: ViewEnvironment
 
   /**
    * Called from [onActivityCreated], so it should be safe for implementations
@@ -87,6 +87,6 @@ abstract class WorkflowFragment<PropsT, OutputT : Any> : Fragment() {
 
     _runner = WorkflowRunner.startWorkflow(this, ::onCreateWorkflow)
 
-    (view as WorkflowLayout).start(runner.renderings, containerHints)
+    (view as WorkflowLayout).start(runner.renderings, viewEnvironment)
   }
 }
