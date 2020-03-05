@@ -1,5 +1,5 @@
 public final class com/squareup/workflow/ui/compose/ComposeViewFactory : com/squareup/workflow/ui/ViewFactory {
-	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)V
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function3;)V
 	public fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public fun getType ()Lkotlin/reflect/KClass;
 }
