@@ -35,11 +35,19 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
 
     private let (lifetime, token) = Lifetime.make()
 
-    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>) {
+    public var rootViewEnvironment: ViewEnvironment {
+        didSet {
+            // Re-render the current rendering with the new environment
+            render(screen: rendering.value, environment: rootViewEnvironment)
+        }
+    }
+
+    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, rootViewEnvironment: ViewEnvironment) {
         self.workflowHost = workflowHost
-        self.rootViewController = DescribedViewController(screen: rendering.value)
+        self.rootViewController = DescribedViewController(screen: rendering.value, environment: rootViewEnvironment)
         self.rendering = rendering
         self.output = output
+        self.rootViewEnvironment = rootViewEnvironment
 
         super.init(nibName: nil, bundle: nil)
 
@@ -47,24 +55,26 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
             .signal
             .take(during: lifetime)
             .observeValues { [weak self] screen in
-                self?.render(screen: screen)
+                guard let self = self else { return }
+                self.render(screen: screen, environment: self.rootViewEnvironment)
             }
     }
 
-    public convenience init<W: Workflow>(workflow: W) where W.Rendering == ScreenType, W.Output == Output {
+    public convenience init<W: Workflow>(workflow: W, rootViewEnvironment: ViewEnvironment = .empty) where W.Rendering == ScreenType, W.Output == Output {
         let host = WorkflowHost(workflow: workflow)
         self.init(
             workflowHost: host,
             rendering: host.rendering,
-            output: host.output)
+            output: host.output,
+            rootViewEnvironment: rootViewEnvironment)
     }
 
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func render(screen: ScreenType) {
-        rootViewController.update(screen: screen)
+    private func render(screen: ScreenType, environment: ViewEnvironment) {
+        rootViewController.update(screen: screen, environment: environment)
     }
 
     override public func viewDidLoad() {

@@ -17,8 +17,8 @@ import WorkflowUI
 
 
 struct LoadingScreen: Screen {
-    var viewControllerDescription: ViewControllerDescription {
-        return LoadingScreenViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return LoadingScreenViewController.description(for: self, environment: environment)
     }
 }
 
@@ -26,10 +26,10 @@ struct LoadingScreen: Screen {
 fileprivate final class LoadingScreenViewController: ScreenViewController<LoadingScreen> {
     let loadingLabel: UILabel
 
-    required init(screen: LoadingScreen) {
+    required init(screen: LoadingScreen, environment: ViewEnvironment) {
         self.loadingLabel = UILabel(frame: .zero)
 
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
     }
 
     override func viewDidLoad() {

@@ -22,13 +22,15 @@ import WorkflowUI
 final class ScreenWrapperViewController: UIViewController {
     let key: AnyHashable
     let screenType: Any.Type
+    let environment: ViewEnvironment
 
     let contentViewController: DescribedViewController
 
-    init(item: BackStackScreen.Item) {
+    init(item: BackStackScreen.Item, environment: ViewEnvironment) {
         self.key = item.key
         self.screenType = item.screenType
-        self.contentViewController = DescribedViewController(screen: item.screen)
+        self.environment = environment
+        self.contentViewController = DescribedViewController(screen: item.screen, environment: environment)
 
         super.init(nibName: nil, bundle: nil)
 
@@ -51,8 +53,8 @@ final class ScreenWrapperViewController: UIViewController {
         contentViewController.view.frame = view.bounds
     }
 
-    func update(item: BackStackScreen.Item) {
-        contentViewController.update(screen: item.screen)
+    func update(item: BackStackScreen.Item, environment: ViewEnvironment) {
+        contentViewController.update(screen: item.screen, environment: environment)
         update(barVisibility: item.barVisibility)
     }
 

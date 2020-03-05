@@ -25,31 +25,30 @@ import UIKit
 /// Using this base class, a screen can be implemented as:
 /// ```
 /// struct MyScreen: Screen {
-///     var viewControllerDescription: ViewControllerDescription {
+///     func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
 ///         return MyScreenViewController.description(for: self)
 ///     }
 /// }
 ///
 /// private class MyScreenViewController: ScreenViewController<MyScreen> {
-///     override func screenDidChange(from previousScreen: MyScreen) {
+///     override func screenDidChange(from previousScreen: MyScreen, previousEnvironment: ViewEnvironment) {
 ///         // … update views as necessary
 ///     }
 /// }
 /// ```
 open class ScreenViewController<ScreenType: Screen>: UIViewController {
 
-    private var currentScreen: ScreenType
-
-    public final var screen: ScreenType {
-        return currentScreen
-    }
+    private(set) public final var screen: ScreenType
 
     public final var screenType: Screen.Type {
         return ScreenType.self
     }
 
-    public required init(screen: ScreenType) {
-        self.currentScreen = screen
+    private(set) public final var environment: ViewEnvironment
+
+    public required init(screen: ScreenType, environment: ViewEnvironment) {
+        self.screen = screen
+        self.environment = environment
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -58,14 +57,16 @@ open class ScreenViewController<ScreenType: Screen>: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public final func update(screen: ScreenType) {
-        let previousScreen = currentScreen
-        currentScreen = screen
-        screenDidChange(from: previousScreen)
+    public final func update(screen: ScreenType, environment: ViewEnvironment) {
+        let previousScreen = self.screen
+        self.screen = screen
+        let previousEnvironment = self.environment
+        self.environment = environment
+        screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
     }
 
     /// Subclasses should override this method in order to update any relevant UI bits when the screen model changes.
-    open func screenDidChange(from previousScreen: ScreenType) {
+    open func screenDidChange(from previousScreen: ScreenType, previousEnvironment: ViewEnvironment) {
 
     }
 
@@ -76,11 +77,11 @@ extension ScreenViewController {
     /// Convenience to create a view controller description for the given screen
     /// value. See the example on the comment for ScreenViewController for
     /// usage.
-    public final class func description(for screen: ScreenType) -> ViewControllerDescription {
+    public final class func description(for screen: ScreenType, environment: ViewEnvironment) -> ViewControllerDescription {
         return ViewControllerDescription(
             type: self,
-            build: { self.init(screen: screen) },
-            update: { $0.update(screen: screen) })
+            build: { self.init(screen: screen, environment: environment) },
+            update: { $0.update(screen: screen, environment: environment) })
     }
 
 }

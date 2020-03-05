@@ -29,8 +29,8 @@ struct DemoScreen: Screen {
     let isRefreshEnabled: Bool
     let onRefreshTap: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return DemoViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return DemoViewController.description(for: self, environment: environment)
     }
 }
 
@@ -42,12 +42,12 @@ fileprivate final class DemoViewController: ScreenViewController<DemoScreen> {
     private let statusLabel: UILabel
     private let refreshButton: UIButton
 
-    required init(screen: DemoScreen) {
+    required init(screen: DemoScreen, environment: ViewEnvironment) {
         titleButton = UIButton(frame: .zero)
         subscribeButton = UIButton(frame: .zero)
         statusLabel = UILabel(frame: .zero)
         refreshButton = UIButton(frame: .zero)
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
 
         update(with: screen)
     }
@@ -106,7 +106,7 @@ fileprivate final class DemoViewController: ScreenViewController<DemoScreen> {
             height: height)
     }
 
-    override func screenDidChange(from previousScreen: DemoScreen) {
+    override func screenDidChange(from previousScreen: DemoScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 

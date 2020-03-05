@@ -22,8 +22,8 @@ struct WelcomeScreen: Screen {
     var onNameChanged: (String) -> Void
     var onLoginTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return WelcomeViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return WelcomeViewController.description(for: self, environment: environment)
     }
 }
 
@@ -33,11 +33,11 @@ fileprivate final class WelcomeViewController: ScreenViewController<WelcomeScree
     let nameField: UITextField
     let button: UIButton
 
-    required init(screen: WelcomeScreen) {
+    required init(screen: WelcomeScreen, environment: ViewEnvironment) {
         welcomeLabel = UILabel(frame: .zero)
         nameField = UITextField(frame: .zero)
         button = UIButton(frame: .zero)
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
 
         update(with: screen)
     }
@@ -89,7 +89,7 @@ fileprivate final class WelcomeViewController: ScreenViewController<WelcomeScree
             .insetBy(dx: inset, dy: 0.0)
     }
 
-    override func screenDidChange(from previousScreen: WelcomeScreen) {
+    override func screenDidChange(from previousScreen: WelcomeScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 

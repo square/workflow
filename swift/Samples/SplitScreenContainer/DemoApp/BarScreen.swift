@@ -22,8 +22,8 @@ struct BarScreen: Screen {
     let backgroundColors: [UIColor]
     let viewTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return BarScreenViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return BarScreenViewController.description(for: self, environment: environment)
     }
 }
 
@@ -34,8 +34,8 @@ fileprivate final class BarScreenViewController: ScreenViewController<BarScreen>
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     private var gradientLayer: CAGradientLayer?
     
-    required init(screen: BarScreen) {
-        super.init(screen: screen)
+    required init(screen: BarScreen, environment: ViewEnvironment) {
+        super.init(screen: screen, environment: environment)
         
         update(with: screen)
     }
@@ -58,8 +58,8 @@ fileprivate final class BarScreenViewController: ScreenViewController<BarScreen>
         
         updateGradient(for: view, colors: screen.backgroundColors)
     }
-    
-    override func screenDidChange(from previousScreen: BarScreen) {
+
+    override func screenDidChange(from previousScreen: BarScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
     

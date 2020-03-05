@@ -26,8 +26,8 @@ struct WelcomeScreen: Screen {
     /// Callback when the login button is tapped.
     var onLoginTapped: () -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return WelcomeViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return WelcomeViewController.description(for: self, environment: environment)
     }
 }
 
@@ -36,9 +36,9 @@ final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
 
     var welcomeView: WelcomeView
 
-    required init(screen: WelcomeScreen) {
+    required init(screen: WelcomeScreen, environment: ViewEnvironment) {
         self.welcomeView = WelcomeView(frame: .zero)
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
         update(with: screen)
     }
 
@@ -54,7 +54,7 @@ final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
         welcomeView.frame = view.bounds.inset(by: view.safeAreaInsets)
     }
 
-    override func screenDidChange(from previousScreen: WelcomeScreen) {
+    override func screenDidChange(from previousScreen: WelcomeScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 

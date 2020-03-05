@@ -25,8 +25,8 @@ struct TodoListScreen: Screen {
     // Callback when a todo is selected
     var onTodoSelected: (Int) -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return TodoListViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return TodoListViewController.description(for: self, environment: environment)
     }
 }
 
@@ -34,9 +34,9 @@ struct TodoListScreen: Screen {
 final class TodoListViewController: ScreenViewController<TodoListScreen> {
     let todoListView: TodoListView
 
-    required init(screen: TodoListScreen) {
+    required init(screen: TodoListScreen, environment: ViewEnvironment) {
         self.todoListView = TodoListView(frame: .zero)
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
         update(with: screen)
     }
 
@@ -52,7 +52,7 @@ final class TodoListViewController: ScreenViewController<TodoListScreen> {
         todoListView.frame = view.bounds.inset(by: view.safeAreaInsets)
     }
 
-    override func screenDidChange(from previousScreen: TodoListScreen) {
+    override func screenDidChange(from previousScreen: TodoListScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 

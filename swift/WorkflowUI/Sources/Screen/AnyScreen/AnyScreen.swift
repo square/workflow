@@ -23,8 +23,8 @@ public struct AnyScreen: Screen {
     /// The original screen, retained for debugging
     internal let wrappedScreen: Screen
 
-    /// The wrapped screen’s view controller description is passed straight through
-    public let viewControllerDescription: ViewControllerDescription
+    /// Stored getter for the wrapped screen’s view controller description
+    private let _viewControllerDescription: (ViewEnvironment) -> ViewControllerDescription
 
     public init<T: Screen>(_ screen: T) {
         if let anyScreen = screen as? AnyScreen {
@@ -32,7 +32,12 @@ public struct AnyScreen: Screen {
             return
         }
         self.wrappedScreen = screen
-        self.viewControllerDescription = screen.viewControllerDescription
+        self._viewControllerDescription = screen.viewControllerDescription(environment:)
+    }
+
+    public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        // Passed straight through
+        return _viewControllerDescription(environment)
     }
 
 }

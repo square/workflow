@@ -19,10 +19,10 @@ import WorkflowUI
 public final class BackStackContainer: ScreenViewController<BackStackScreen>, UINavigationControllerDelegate {
     private let navController: UINavigationController
 
-    public required init(screen: BackStackScreen) {
+    public required init(screen: BackStackScreen, environment: ViewEnvironment) {
         self.navController = UINavigationController()
 
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
 
         update(with: screen)
     }
@@ -42,7 +42,7 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
         navController.view.frame = view.bounds
     }
 
-    public override func screenDidChange(from previousScreen: BackStackScreen) {
+    public override func screenDidChange(from previousScreen: BackStackScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 
@@ -63,10 +63,10 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
                 viewController.matches(item: item)
             }) {
                 let existingViewController = existingViewControllers.remove(at: idx)
-                existingViewController.update(item: item)
+                existingViewController.update(item: item, environment: environment)
                 updatedViewControllers.append(existingViewController)
             } else {
-                updatedViewControllers.append(ScreenWrapperViewController(item: item))
+                updatedViewControllers.append(ScreenWrapperViewController(item: item, environment: environment))
             }
 
         }

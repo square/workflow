@@ -39,8 +39,8 @@ struct CrossFadeScreen: Screen {
         return self.key == otherScreen.key
     }
 
-    var viewControllerDescription: ViewControllerDescription {
-        return CrossFadeContainerViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return CrossFadeContainerViewController.description(for: self, environment: environment)
     }
 }
 
@@ -48,9 +48,9 @@ struct CrossFadeScreen: Screen {
 fileprivate final class CrossFadeContainerViewController: ScreenViewController<CrossFadeScreen> {
     var childViewController: DescribedViewController
 
-    required init(screen: CrossFadeScreen) {
-        childViewController = DescribedViewController(screen: screen.baseScreen)
-        super.init(screen: screen)
+    required init(screen: CrossFadeScreen, environment: ViewEnvironment) {
+        childViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
+        super.init(screen: screen, environment: environment)
     }
 
     override func viewDidLoad() {
@@ -67,13 +67,13 @@ fileprivate final class CrossFadeContainerViewController: ScreenViewController<C
         childViewController.view.frame = view.bounds
     }
 
-    override func screenDidChange(from previousScreen: CrossFadeScreen) {
+    override func screenDidChange(from previousScreen: CrossFadeScreen, previousEnvironment: ViewEnvironment) {
         if screen.isEquivalent(to: previousScreen) {
-            childViewController.update(screen: screen.baseScreen)
+            childViewController.update(screen: screen.baseScreen, environment: environment)
         } else {
             // The new screen is different than the previous. Animate the transition.
             let oldChild = childViewController
-            childViewController = DescribedViewController(screen: screen.baseScreen)
+            childViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
             addChild(childViewController)
             view.addSubview(childViewController.view)
             UIView.transition(

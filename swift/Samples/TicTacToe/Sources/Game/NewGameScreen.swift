@@ -27,8 +27,8 @@ struct NewGameScreen: Screen {
         case startGame
     }
 
-    var viewControllerDescription: ViewControllerDescription {
-        return NewGameViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return NewGameViewController.description(for: self, environment: environment)
     }
 }
 
@@ -40,14 +40,14 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
     let playerOField: UITextField
     let startGameButton: UIButton
 
-    required init(screen: NewGameScreen) {
+    required init(screen: NewGameScreen, environment: ViewEnvironment) {
         self.playerXLabel = UILabel(frame: .zero)
         self.playerXField = UITextField(frame: .zero)
         self.playerOLabel = UILabel(frame: .zero)
         self.playerOField = UITextField(frame: .zero)
         self.startGameButton = UIButton(frame: .zero)
 
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
         update(with: screen)
     }
 
@@ -129,7 +129,7 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
 
     }
 
-    override func screenDidChange(from previousScreen: NewGameScreen) {
+    override func screenDidChange(from previousScreen: NewGameScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 

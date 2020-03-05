@@ -20,8 +20,8 @@ struct TwoFactorScreen: Screen {
     var title: String
     var onLoginTapped: (String) -> Void
 
-    var viewControllerDescription: ViewControllerDescription {
-        return TwoFactorViewController.description(for: self)
+    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+        return TwoFactorViewController.description(for: self, environment: environment)
     }
 }
 
@@ -31,12 +31,12 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
     let twoFactorField: UITextField
     let button: UIButton
 
-    required init(screen: TwoFactorScreen) {
+    required init(screen: TwoFactorScreen, environment: ViewEnvironment) {
         self.titleLabel = UILabel(frame: .zero)
         self.twoFactorField = UITextField(frame: .zero)
         self.button = UIButton(frame: .zero)
 
-        super.init(screen: screen)
+        super.init(screen: screen, environment: environment)
 
         update(with: screen)
     }
@@ -89,7 +89,7 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
             .insetBy(dx: inset, dy: 0.0)
     }
 
-    override func screenDidChange(from previousScreen: TwoFactorScreen) {
+    override func screenDidChange(from previousScreen: TwoFactorScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 
