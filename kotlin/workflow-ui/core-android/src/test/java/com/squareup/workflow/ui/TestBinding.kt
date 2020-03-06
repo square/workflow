@@ -26,7 +26,7 @@ fun <R : Any> ViewRegistry.buildView(rendering: R): View =
   buildView(rendering, ViewEnvironment(this), mock())
 
 class TestBinding<R : Any>(override val type: KClass<R>) :
-    ViewBinding<R> {
+    ViewFactory<R> {
   override fun buildView(
     initialRendering: R,
     initialViewEnvironment: ViewEnvironment,

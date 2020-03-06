@@ -93,7 +93,7 @@ class CompositeViewRegistryTest {
     }
     assertThat(error).hasMessageThat()
         .isEqualTo(
-            "A ${ViewBinding::class.java.name} should have been registered to display $BarRendering."
+            "A ${ViewFactory::class.java.name} should have been registered to display $BarRendering."
         )
   }
 

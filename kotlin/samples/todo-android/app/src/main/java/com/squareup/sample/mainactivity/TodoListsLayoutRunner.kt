@@ -26,7 +26,7 @@ import com.squareup.sample.todo.TodoList
 import com.squareup.sample.todo.TodoListsScreen
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 
 internal class TodoListsLayoutRunner(view: View) : LayoutRunner<TodoListsScreen> {
@@ -75,7 +75,7 @@ internal class TodoListsLayoutRunner(view: View) : LayoutRunner<TodoListsScreen>
     while (listsContainer.childCount > index) listsContainer.removeViewAt(index)
   }
 
-  companion object : ViewBinding<TodoListsScreen> by bind(
+  companion object : ViewFactory<TodoListsScreen> by bind(
       R.layout.todo_lists_layout, ::TodoListsLayoutRunner
   )
 }

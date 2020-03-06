@@ -43,7 +43,7 @@ data class ShowRenderingTag<out RenderingT : Any>(
  * for the receiver, possibly replacing the existing one. Immediately invokes [showRendering]
  * to display [initialRendering].
  *
- * Intended for use by implementations of [ViewBinding.buildView].
+ * Intended for use by implementations of [ViewFactory.buildView].
  */
 fun <RenderingT : Any> View.bindShowRendering(
   initialRendering: RenderingT,
@@ -95,7 +95,7 @@ fun <RenderingT : Any> View.showRendering(
       ?: error(
           "Expected $this to have a showRendering function to show $rendering. " +
               "Perhaps it was not built by a ${ViewRegistry::class.java.simpleName}, " +
-              "or perhaps its ${ViewBinding::class.java.simpleName} did not call" +
+              "or perhaps its ${ViewFactory::class.java.simpleName} did not call" +
               "View.bindShowRendering."
       )
 }

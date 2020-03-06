@@ -23,7 +23,7 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Single
 import com.squareup.workflow.ui.LayoutRunner
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 import com.squareup.workflow.ui.backstack.BackStackScreen
@@ -95,7 +95,7 @@ class MasterDetailContainer(view: View) : LayoutRunner<MasterDetailScreen> {
     stub.update(combined, viewEnvironment + (MasterDetailConfig to Single))
   }
 
-  companion object : ViewBinding<MasterDetailScreen> by LayoutRunner.Binding(
+  companion object : ViewFactory<MasterDetailScreen> by LayoutRunner.Binding(
       type = MasterDetailScreen::class,
       layoutId = R.layout.master_detail,
       runnerConstructor = ::MasterDetailContainer

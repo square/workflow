@@ -16,7 +16,7 @@
 package com.squareup.sample.container
 
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.bindShowRendering
@@ -40,7 +40,7 @@ data class BackButtonScreen<W : Any>(
   val override: Boolean = false,
   val onBackPressed: (() -> Unit)? = null
 ) {
-  companion object Binding : ViewBinding<BackButtonScreen<*>>
+  companion object Binding : ViewFactory<BackButtonScreen<*>>
   by BuilderBinding(
       type = BackButtonScreen::class,
       viewConstructor = { initialRendering, initialHints, contextForNewView, container ->

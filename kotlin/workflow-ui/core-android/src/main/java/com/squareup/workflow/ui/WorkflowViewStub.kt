@@ -78,7 +78,7 @@ class WorkflowViewStub @JvmOverloads constructor(
    *
    * @throws IllegalArgumentException if no binding can be find for the type of [rendering]
    *
-   * @throws IllegalStateException if the matching [ViewBinding] fails to call
+   * @throws IllegalStateException if the matching [ViewFactory] fails to call
    * [View.bindShowRendering] when constructing the view
    */
   fun update(

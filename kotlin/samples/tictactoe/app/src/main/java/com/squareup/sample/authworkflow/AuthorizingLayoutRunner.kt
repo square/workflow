@@ -20,7 +20,7 @@ import android.widget.TextView
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 
 internal class AuthorizingLayoutRunner(view: View) : LayoutRunner<AuthorizingScreen> {
@@ -33,7 +33,7 @@ internal class AuthorizingLayoutRunner(view: View) : LayoutRunner<AuthorizingScr
     messageView.text = rendering.message
   }
 
-  companion object : ViewBinding<AuthorizingScreen> by bind(
+  companion object : ViewFactory<AuthorizingScreen> by bind(
       R.layout.authorizing_layout, ::AuthorizingLayoutRunner
   )
 }

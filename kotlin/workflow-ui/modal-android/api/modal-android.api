@@ -9,11 +9,11 @@ public final class com/squareup/workflow/ui/modal/AlertContainer : com/squareup/
 	public synthetic fun buildDialog (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;)Lcom/squareup/workflow/ui/modal/ModalContainer$DialogRef;
 }
 
-public final class com/squareup/workflow/ui/modal/AlertContainer$Companion : com/squareup/workflow/ui/ViewBinding {
+public final class com/squareup/workflow/ui/modal/AlertContainer$Companion : com/squareup/workflow/ui/ViewFactory {
 	public fun buildView (Lcom/squareup/workflow/ui/modal/AlertContainerScreen;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public synthetic fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
-	public final fun customThemeBinding (I)Lcom/squareup/workflow/ui/ViewBinding;
-	public static synthetic fun customThemeBinding$default (Lcom/squareup/workflow/ui/modal/AlertContainer$Companion;IILjava/lang/Object;)Lcom/squareup/workflow/ui/ViewBinding;
+	public final fun customThemeBinding (I)Lcom/squareup/workflow/ui/ViewFactory;
+	public static synthetic fun customThemeBinding$default (Lcom/squareup/workflow/ui/modal/AlertContainer$Companion;IILjava/lang/Object;)Lcom/squareup/workflow/ui/ViewFactory;
 	public fun getType ()Lkotlin/reflect/KClass;
 }
 
@@ -69,7 +69,7 @@ public class com/squareup/workflow/ui/modal/ModalViewContainer : com/squareup/wo
 	protected fun updateDialog (Lcom/squareup/workflow/ui/modal/ModalContainer$DialogRef;)V
 }
 
-public final class com/squareup/workflow/ui/modal/ModalViewContainer$Binding : com/squareup/workflow/ui/ViewBinding {
+public final class com/squareup/workflow/ui/modal/ModalViewContainer$Binding : com/squareup/workflow/ui/ViewFactory {
 	public fun <init> (ILkotlin/reflect/KClass;)V
 	public fun buildView (Lcom/squareup/workflow/ui/modal/HasModals;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public synthetic fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;

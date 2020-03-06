@@ -27,7 +27,7 @@ import kotlin.reflect.KClass
  *
  * Sets of bindings are gathered in [ViewRegistry] instances.
  */
-interface ViewBinding<RenderingT : Any> {
+interface ViewFactory<RenderingT : Any> {
   val type: KClass<RenderingT>
 
   /**
@@ -41,3 +41,10 @@ interface ViewBinding<RenderingT : Any> {
     container: ViewGroup? = null
   ): View
 }
+
+@Suppress("unused")
+@Deprecated(
+    "Use ViewFactory.",
+    ReplaceWith("ViewFactory<RenderingT>", "com.squareup.workflow.ui.ViewFactory")
+)
+typealias ViewBinding<RenderingT> = ViewFactory<RenderingT>

@@ -22,7 +22,7 @@ import com.squareup.sample.hellobackbutton.R.id
 import com.squareup.sample.hellobackbutton.R.layout
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 
@@ -38,7 +38,7 @@ class HelloBackButtonLayoutRunner(view: View) : LayoutRunner<Rendering> {
     messageView.backPressedHandler = rendering.onBackPressed
   }
 
-  companion object : ViewBinding<Rendering> by bind(
+  companion object : ViewFactory<Rendering> by bind(
       layout.hello_back_button_layout, ::HelloBackButtonLayoutRunner
   )
 }

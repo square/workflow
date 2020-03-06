@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
  * than layouts.)
  *
  * Typical usage is to have a [LayoutRunner]'s `companion object` implement
- * [ViewBinding] by delegating to [LayoutRunner.bind], specifying the layout resource
+ * [ViewFactory] by delegating to [LayoutRunner.bind], specifying the layout resource
  * it expects to drive.
  *
  *   class HelloLayoutRunner(view: View) : LayoutRunner<Rendering> {
@@ -40,7 +40,7 @@ import kotlin.reflect.KClass
  *       messageView.setOnClickListener { rendering.onClick(Unit) }
  *     }
  *
- *     companion object : ViewBinding<Rendering> by bind(
+ *     companion object : ViewFactory<Rendering> by bind(
  *         R.layout.hello_goodbye_layout, ::HelloLayoutRunner
  *     )
  *   }
@@ -62,7 +62,7 @@ interface LayoutRunner<RenderingT : Any> {
     override val type: KClass<RenderingT>,
     @LayoutRes private val layoutId: Int,
     private val runnerConstructor: (View) -> LayoutRunner<RenderingT>
-  ) : ViewBinding<RenderingT> {
+  ) : ViewFactory<RenderingT> {
     override fun buildView(
       initialRendering: RenderingT,
       initialViewEnvironment: ViewEnvironment,
@@ -84,21 +84,21 @@ interface LayoutRunner<RenderingT : Any> {
 
   companion object {
     /**
-     * Creates a [ViewBinding] that inflates [layoutId] to show renderings of type [RenderingT],
+     * Creates a [ViewFactory] that inflates [layoutId] to show renderings of type [RenderingT],
      * using a [LayoutRunner] created by [constructor].
      */
     inline fun <reified RenderingT : Any> bind(
       @LayoutRes layoutId: Int,
       noinline constructor: (View) -> LayoutRunner<RenderingT>
-    ): ViewBinding<RenderingT> = Binding(RenderingT::class, layoutId, constructor)
+    ): ViewFactory<RenderingT> = Binding(RenderingT::class, layoutId, constructor)
 
     /**
-     * Creates a [ViewBinding] that inflates [layoutId] to "show" renderings of type [RenderingT],
+     * Creates a [ViewFactory] that inflates [layoutId] to "show" renderings of type [RenderingT],
      * with a no-op [LayoutRunner]. Handy for showing static views.
      */
     inline fun <reified RenderingT : Any> bindNoRunner(
       @LayoutRes layoutId: Int
-    ): ViewBinding<RenderingT> = bind(layoutId) {
+    ): ViewFactory<RenderingT> = bind(layoutId) {
       object : LayoutRunner<RenderingT> {
         override fun showRendering(
           rendering: RenderingT,

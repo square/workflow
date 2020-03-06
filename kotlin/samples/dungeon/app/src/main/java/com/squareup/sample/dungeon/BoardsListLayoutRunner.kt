@@ -26,7 +26,7 @@ import com.squareup.sample.dungeon.DungeonAppWorkflow.DisplayBoardsListScreen
 import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 
@@ -101,7 +101,7 @@ class BoardsListLayoutRunner(rootView: View) : LayoutRunner<DisplayBoardsListScr
     )
   }
 
-  companion object : ViewBinding<DisplayBoardsListScreen> by bind(
+  companion object : ViewFactory<DisplayBoardsListScreen> by bind(
       R.layout.boards_list_layout, ::BoardsListLayoutRunner
   )
 }

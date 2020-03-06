@@ -20,11 +20,11 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 
 /**
- * Factory function for [ViewBinding]s that show a full-screen loading indicator with some text
+ * Factory function for [ViewFactory]s that show a full-screen loading indicator with some text
  * underneath.
  *
  * The binding is parameterized on two things: the type of the rendering that this binding is
@@ -33,7 +33,7 @@ import com.squareup.workflow.ui.ViewEnvironment
 @Suppress("FunctionName")
 inline fun <reified RenderingT : Any> LoadingBinding(
   @StringRes loadingLabelRes: Int
-): ViewBinding<RenderingT> =
+): ViewFactory<RenderingT> =
   bind(R.layout.loading_layout) { view -> LoadingLayoutRunner<RenderingT>(loadingLabelRes, view) }
 
 @PublishedApi

@@ -27,7 +27,7 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.poetry.R
 import com.squareup.workflow.ui.LayoutRunner
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.backstack.BackStackConfig
@@ -106,7 +106,7 @@ class StanzaLayoutRunner(private val view: View) : LayoutRunner<StanzaRendering>
     setText(spans, SPANNABLE)
   }
 
-  companion object : ViewBinding<StanzaRendering> by LayoutRunner.bind(
+  companion object : ViewFactory<StanzaRendering> by LayoutRunner.bind(
       R.layout.stanza_layout,
       ::StanzaLayoutRunner
   )

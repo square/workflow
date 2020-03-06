@@ -24,13 +24,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.Composable
 import androidx.ui.core.setContent
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.bindShowRendering
 import kotlin.reflect.KClass
 
 /**
- * Creates a [ViewBinding] that uses a [Composable] function to display the rendering.
+ * Creates a [ViewFactory] that uses a [Composable] function to display the rendering.
  *
  * Note that the function you pass in will not have any `MaterialTheme` applied, so views that rely
  * on Material theme attributes must be explicitly wrapped with `MaterialTheme`.
@@ -55,15 +55,15 @@ import kotlin.reflect.KClass
  */
 inline fun <reified RenderingT : Any> bindCompose(
   noinline showRendering: @Composable() (RenderingT, ViewEnvironment) -> Unit
-): ViewBinding<RenderingT> = ComposeViewBinding(RenderingT::class) { rendering, environment ->
+): ViewFactory<RenderingT> = ComposeViewFactory(RenderingT::class) { rendering, environment ->
   showRendering(rendering, environment)
 }
 
 @PublishedApi
-internal class ComposeViewBinding<RenderingT : Any>(
+internal class ComposeViewFactory<RenderingT : Any>(
   override val type: KClass<RenderingT>,
   private val showRendering: @Composable() (RenderingT, ViewEnvironment) -> Unit
-) : ViewBinding<RenderingT> {
+) : ViewFactory<RenderingT> {
 
   override fun buildView(
     initialRendering: RenderingT,
