@@ -22,10 +22,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.sample.recyclerview.R
 import com.squareup.sample.recyclerview.R.id
 import com.squareup.sample.recyclerview.editablelistworkflow.EditableListWorkflow.Rendering
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 
 class EditableListLayoutRunner(view: View) : LayoutRunner<Rendering> {
   private val adapter = EditableListAdapter()
@@ -41,9 +41,9 @@ class EditableListLayoutRunner(view: View) : LayoutRunner<Rendering> {
 
   override fun showRendering(
     rendering: Rendering,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
-    adapter.updateRendering(rendering, containerHints[ListDiffMode])
+    adapter.updateRendering(rendering, viewEnvironment[ListDiffMode])
   }
 
   companion object : ViewBinding<Rendering> by bind(

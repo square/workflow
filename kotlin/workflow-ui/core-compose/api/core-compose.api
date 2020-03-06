@@ -1,6 +1,6 @@
 public final class com/squareup/workflow/ui/compose/ComposeViewBinding : com/squareup/workflow/ui/ViewBinding {
 	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)V
-	public fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ContainerHints;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
+	public fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public fun getType ()Lkotlin/reflect/KClass;
 }
 

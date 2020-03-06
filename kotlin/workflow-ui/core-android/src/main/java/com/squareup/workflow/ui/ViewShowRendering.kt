@@ -21,7 +21,7 @@ import android.view.View
  * Function attached to a view created by [ViewRegistry], to allow it
  * to respond to [View.showRendering].
  */
-typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT, ContainerHints) -> Unit
+typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT, ViewEnvironment) -> Unit
 
 /**
 ` * View tag that holds the function to make the view show instances of [RenderingT], and
@@ -32,7 +32,7 @@ typealias ViewShowRendering<RenderingT> = (@UnsafeVariance RenderingT, Container
  */
 data class ShowRenderingTag<out RenderingT : Any>(
   val showing: RenderingT,
-  val hints: ContainerHints,
+  val environment: ViewEnvironment,
   val showRendering: ViewShowRendering<RenderingT>
 )
 
@@ -47,14 +47,14 @@ data class ShowRenderingTag<out RenderingT : Any>(
  */
 fun <RenderingT : Any> View.bindShowRendering(
   initialRendering: RenderingT,
-  initialContainerHints: ContainerHints,
+  initialViewEnvironment: ViewEnvironment,
   showRendering: ViewShowRendering<RenderingT>
 ) {
   setTag(
       R.id.view_show_rendering_function,
-      ShowRenderingTag(initialRendering, initialContainerHints, showRendering)
+      ShowRenderingTag(initialRendering, initialViewEnvironment, showRendering)
   )
-  showRendering.invoke(initialRendering, initialContainerHints)
+  showRendering.invoke(initialRendering, initialViewEnvironment)
 }
 
 /**
@@ -80,7 +80,7 @@ fun View.canShowRendering(rendering: Any): Boolean {
  */
 fun <RenderingT : Any> View.showRendering(
   rendering: RenderingT,
-  containerHints: ContainerHints
+  viewEnvironment: ViewEnvironment
 ) {
   showRenderingTag
       ?.let { tag ->
@@ -90,7 +90,7 @@ fun <RenderingT : Any> View.showRendering(
               "Consider using ${WorkflowViewStub::class.java.simpleName} to display arbitrary types."
         }
 
-        bindShowRendering(rendering, containerHints, tag.showRendering)
+        bindShowRendering(rendering, viewEnvironment, tag.showRendering)
       }
       ?: error(
           "Expected $this to have a showRendering function to show $rendering. " +
@@ -114,10 +114,10 @@ fun <RenderingT : Any> View.getRendering(): RenderingT? {
 }
 
 /**
- * Returns the most recent [ContainerHints] that apply to this view, or null if [bindShowRendering]
+ * Returns the most recent [ViewEnvironment] that apply to this view, or null if [bindShowRendering]
  * has never been called.
  */
-val View.hints: ContainerHints? get() = showRenderingTag?.hints
+val View.environment: ViewEnvironment? get() = showRenderingTag?.environment
 
 /**
  * Returns the function set by the most recent call to [bindShowRendering], or null

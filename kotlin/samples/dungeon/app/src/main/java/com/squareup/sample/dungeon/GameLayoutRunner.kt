@@ -24,10 +24,10 @@ import com.squareup.sample.dungeon.Direction.LEFT
 import com.squareup.sample.dungeon.Direction.RIGHT
 import com.squareup.sample.dungeon.Direction.UP
 import com.squareup.sample.dungeon.GameWorkflow.GameRendering
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 
 /**
@@ -53,9 +53,9 @@ class GameLayoutRunner(view: View) : LayoutRunner<GameRendering> {
 
   override fun showRendering(
     rendering: GameRendering,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
-    boardView.update(rendering.board, containerHints)
+    boardView.update(rendering.board, viewEnvironment)
     this.rendering = rendering
 
     // Disable the views if we don't have an event handler, e.g. when the game has finished.

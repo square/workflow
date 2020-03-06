@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.recyclerview.editablelistworkflow
 
-import com.squareup.workflow.ui.ContainerHintKey
+import com.squareup.workflow.ui.ViewEnvironmentKey
 
 /**
  * Tells [EditableListAdapter]s how to calculate and notify updates.
@@ -26,7 +26,7 @@ enum class ListDiffMode {
   Synchronous,
   Asynchronous;
 
-  companion object : ContainerHintKey<ListDiffMode>(ListDiffMode::class) {
+  companion object : ViewEnvironmentKey<ListDiffMode>(ListDiffMode::class) {
     override val default get() = None
   }
 }

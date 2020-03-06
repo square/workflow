@@ -24,8 +24,8 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.bindShowRendering
 import com.squareup.workflow.ui.modal.AlertScreen.Button
 import com.squareup.workflow.ui.modal.AlertScreen.Button.NEGATIVE
@@ -47,11 +47,11 @@ class AlertContainer @JvmOverloads constructor(
 
   override fun buildDialog(
     initialModalRendering: AlertScreen,
-    initialContainerHints: ContainerHints
+    initialViewEnvironment: ViewEnvironment
   ): DialogRef<AlertScreen> {
     val dialog = AlertDialog.Builder(context, dialogThemeResId)
         .create()
-    val ref = DialogRef(initialModalRendering, initialContainerHints, dialog)
+    val ref = DialogRef(initialModalRendering, initialViewEnvironment, dialog)
     updateDialog(ref)
     return ref
   }

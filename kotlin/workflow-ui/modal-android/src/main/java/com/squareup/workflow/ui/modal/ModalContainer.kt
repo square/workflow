@@ -30,8 +30,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.Named
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 import com.squareup.workflow.ui.compatible
 import com.squareup.workflow.ui.lifecycleOrNull
@@ -56,17 +56,17 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
 
   protected fun update(
     newScreen: HasModals<*, ModalRenderingT>,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
-    baseView.update(newScreen.beneathModals, containerHints)
+    baseView.update(newScreen.beneathModals, viewEnvironment)
 
     val newDialogs = mutableListOf<DialogRef<ModalRenderingT>>()
     for ((i, modal) in newScreen.modals.withIndex()) {
       newDialogs += if (i < dialogs.size && compatible(dialogs[i].modalRendering, modal)) {
-        dialogs[i].copy(modalRendering = modal, containerHints = containerHints)
+        dialogs[i].copy(modalRendering = modal, viewEnvironment = viewEnvironment)
             .also { updateDialog(it) }
       } else {
-        buildDialog(modal, containerHints).apply {
+        buildDialog(modal, viewEnvironment).apply {
           dialog.show()
           // Android makes a lot of logcat noise if it has to close the window for us. :/
           // https://github.com/square/workflow/issues/51
@@ -85,7 +85,7 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
    */
   protected abstract fun buildDialog(
     initialModalRendering: ModalRenderingT,
-    initialContainerHints: ContainerHints
+    initialViewEnvironment: ViewEnvironment
   ): DialogRef<ModalRenderingT>
 
   protected abstract fun updateDialog(dialogRef: DialogRef<ModalRenderingT>)
@@ -139,7 +139,7 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
    */
   protected data class DialogRef<ModalRenderingT : Any>(
     val modalRendering: ModalRenderingT,
-    val containerHints: ContainerHints,
+    val viewEnvironment: ViewEnvironment,
     val dialog: Dialog,
     val extra: Any? = null
   ) {

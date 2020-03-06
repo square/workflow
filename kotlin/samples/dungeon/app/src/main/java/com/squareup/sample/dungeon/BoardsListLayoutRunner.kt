@@ -24,10 +24,10 @@ import com.squareup.cycler.Recycler
 import com.squareup.cycler.toDataSource
 import com.squareup.sample.dungeon.DungeonAppWorkflow.DisplayBoardsListScreen
 import com.squareup.sample.dungeon.board.Board
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 
 /**
@@ -39,14 +39,14 @@ import com.squareup.workflow.ui.WorkflowViewStub
 class BoardsListLayoutRunner(rootView: View) : LayoutRunner<DisplayBoardsListScreen> {
 
   /**
-   * Used to associate a single [ContainerHints] and [DisplayBoardsListScreen.onBoardSelected]
+   * Used to associate a single [ViewEnvironment] and [DisplayBoardsListScreen.onBoardSelected]
    * event handler with every item of a [DisplayBoardsListScreen].
    *
    * @see toDataSource
    */
   private data class BoardItem(
     val board: Board,
-    val containerHints: ContainerHints,
+    val viewEnvironment: ViewEnvironment,
     val onClicked: () -> Unit
   )
 
@@ -66,7 +66,7 @@ class BoardsListLayoutRunner(rootView: View) : LayoutRunner<DisplayBoardsListScr
             val boardPreviewView: WorkflowViewStub = view.findViewById(R.id.board_preview)
 
             boardNameView.text = item.board.metadata.name
-            boardPreviewView.update(item.board, item.containerHints)
+            boardPreviewView.update(item.board, item.viewEnvironment)
             card.setOnClickListener { item.onClicked() }
           }
         }
@@ -75,28 +75,28 @@ class BoardsListLayoutRunner(rootView: View) : LayoutRunner<DisplayBoardsListScr
 
   override fun showRendering(
     rendering: DisplayBoardsListScreen,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
     // Associate the containerHints and event handler to each item because it needs to be used when
     // binding the RecyclerView item above.
     // Recycler is configured with a DataSource, which effectively (and often in practice) a simple
     // wrapper around a List.
-    recycler.data = rendering.toDataSource(containerHints)
+    recycler.data = rendering.toDataSource(viewEnvironment)
   }
 
   /**
    * Converts this [DisplayBoardsListScreen] into a [DataSource] by lazily wrapping it in a
-   * [BoardItem] to associate it with the [ContainerHints] and selection event handler from the
+   * [BoardItem] to associate it with the [ViewEnvironment] and selection event handler from the
    * rendering.
    */
   private fun DisplayBoardsListScreen.toDataSource(
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ): DataSource<BoardItem> = object : DataSource<BoardItem> {
     override val size: Int get() = boards.size
 
     override fun get(i: Int): BoardItem = BoardItem(
         board = boards[i],
-        containerHints = containerHints,
+        viewEnvironment = viewEnvironment,
         onClicked = { onBoardSelected(i) }
     )
   }

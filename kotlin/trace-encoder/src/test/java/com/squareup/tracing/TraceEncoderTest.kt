@@ -20,9 +20,9 @@ import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.TimeMark
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeMark
 import kotlin.time.microseconds
 
 @OptIn(ExperimentalTime::class)

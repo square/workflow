@@ -39,8 +39,8 @@ import com.squareup.sample.gameworkflow.Player
 import com.squareup.sample.gameworkflow.symbol
 import com.squareup.sample.mainactivity.MainActivity
 import com.squareup.sample.tictactoe.R
-import com.squareup.workflow.ui.ContainerHints
-import com.squareup.workflow.ui.hints
+import com.squareup.workflow.ui.ViewEnvironment
+import com.squareup.workflow.ui.environment
 import com.squareup.workflow.ui.getRendering
 import org.junit.After
 import org.junit.Before
@@ -83,7 +83,7 @@ class TicTacToeEspressoTest {
 
     onView(withId(R.id.start_game)).perform(click())
 
-    val hints = AtomicReference<ContainerHints>()
+    val environment = AtomicReference<ViewEnvironment>()
 
     // Why should I learn how to write a matcher when I can just grab the activity
     // and work with it directly?
@@ -92,9 +92,9 @@ class TicTacToeEspressoTest {
       val parent = button.parent as View
       val rendering = parent.getRendering<GamePlayScreen>()!!
       assertThat(rendering.gameState.playing).isSameInstanceAs(Player.X)
-      val firstHints = parent.hints
+      val firstHints = parent.environment
       assertThat(firstHints).isNotNull()
-      hints.set(firstHints)
+      environment.set(firstHints)
 
       // Make a move.
       rendering.onClick(0, 0)
@@ -115,7 +115,7 @@ class TicTacToeEspressoTest {
       val parent = button.parent as View
       val rendering = parent.getRendering<GamePlayScreen>()!!
       assertThat(rendering.gameState.playing).isSameInstanceAs(Player.O)
-      assertThat(parent.hints).isEqualTo(hints.get())
+      assertThat(parent.environment).isEqualTo(environment.get())
     }
   }
 

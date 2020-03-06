@@ -24,8 +24,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.Composable
 import androidx.ui.core.setContent
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.bindShowRendering
 import kotlin.reflect.KClass
 
@@ -54,20 +54,20 @@ import kotlin.reflect.KClass
  * ```
  */
 inline fun <reified RenderingT : Any> bindCompose(
-  noinline showRendering: @Composable() (RenderingT, ContainerHints) -> Unit
-): ViewBinding<RenderingT> = ComposeViewBinding(RenderingT::class) { rendering, hints ->
-  showRendering(rendering, hints)
+  noinline showRendering: @Composable() (RenderingT, ViewEnvironment) -> Unit
+): ViewBinding<RenderingT> = ComposeViewBinding(RenderingT::class) { rendering, environment ->
+  showRendering(rendering, environment)
 }
 
 @PublishedApi
 internal class ComposeViewBinding<RenderingT : Any>(
   override val type: KClass<RenderingT>,
-  private val showRendering: @Composable() (RenderingT, ContainerHints) -> Unit
+  private val showRendering: @Composable() (RenderingT, ViewEnvironment) -> Unit
 ) : ViewBinding<RenderingT> {
 
   override fun buildView(
     initialRendering: RenderingT,
-    initialContainerHints: ContainerHints,
+    initialViewEnvironment: ViewEnvironment,
     contextForNewView: Context,
     container: ViewGroup?
   ): View {
@@ -76,10 +76,10 @@ internal class ComposeViewBinding<RenderingT : Any>(
     val composeContainer = FrameLayout(contextForNewView)
     composeContainer.bindShowRendering(
         initialRendering,
-        initialContainerHints
-    ) { rendering, hints ->
+        initialViewEnvironment
+    ) { rendering, environment ->
       composeContainer.setContent {
-        showRendering(rendering, hints)
+        showRendering(rendering, environment)
       }
     }
     return composeContainer

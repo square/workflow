@@ -106,7 +106,7 @@ class CompositeViewRegistryTest {
 
     override fun <RenderingT : Any> buildView(
       initialRendering: RenderingT,
-      initialContainerHints: ContainerHints,
+      initialViewEnvironment: ViewEnvironment,
       contextForNewView: Context,
       container: ViewGroup?
     ): View = bindings.getValue(initialRendering::class)

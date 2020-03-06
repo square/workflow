@@ -25,10 +25,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.sample.container.masterdetail.MasterDetailConfig
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.poetry.R
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.backstack.BackStackConfig
 import com.squareup.workflow.ui.backstack.BackStackConfig.Other
@@ -42,16 +42,16 @@ class StanzaListLayoutRunner(view: View) : LayoutRunner<StanzaListRendering> {
 
   override fun showRendering(
     rendering: StanzaListRendering,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
     adapter.rendering = rendering
-    adapter.hints = containerHints
+    adapter.environment = viewEnvironment
     adapter.notifyDataSetChanged()
     if (recyclerView.adapter == null) recyclerView.adapter = adapter
     toolbar.title = rendering.title
     toolbar.subtitle = rendering.subtitle
 
-    if (containerHints[BackStackConfig] == Other) {
+    if (viewEnvironment[BackStackConfig] == Other) {
       toolbar.setNavigationOnClickListener { rendering.onExit() }
       toolbar.backPressedHandler = rendering.onExit
     } else {
@@ -66,13 +66,13 @@ class StanzaListLayoutRunner(view: View) : LayoutRunner<StanzaListRendering> {
 
   private class Adapter : RecyclerView.Adapter<ViewHolder>() {
     lateinit var rendering: StanzaListRendering
-    lateinit var hints: ContainerHints
+    lateinit var environment: ViewEnvironment
 
     override fun onCreateViewHolder(
       parent: ViewGroup,
       viewType: Int
     ): ViewHolder {
-      val selectable = hints[MasterDetailConfig] == Master
+      val selectable = environment[MasterDetailConfig] == Master
       val layoutId = if (selectable) {
         R.layout.list_row_selectable
       } else {

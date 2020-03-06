@@ -26,8 +26,8 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.annotation.IdRes
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.bindShowRendering
@@ -73,10 +73,10 @@ open class ModalViewContainer @JvmOverloads constructor(
 
   final override fun buildDialog(
     initialModalRendering: Any,
-    initialContainerHints: ContainerHints
+    initialViewEnvironment: ViewEnvironment
   ): DialogRef<Any> {
-    val view = initialContainerHints[ViewRegistry]
-        .buildView(initialModalRendering, initialContainerHints, this)
+    val view = initialViewEnvironment[ViewRegistry]
+        .buildView(initialModalRendering, initialViewEnvironment, this)
         .apply {
           // If the modal's root view has no backPressedHandler, add a no-op one to
           // ensure that the `onBackPressed` call below will not leak up to handlers
@@ -108,12 +108,12 @@ open class ModalViewContainer @JvmOverloads constructor(
           }
         }
         .run {
-          DialogRef(initialModalRendering, initialContainerHints, this, view)
+          DialogRef(initialModalRendering, initialViewEnvironment, this, view)
         }
   }
 
   override fun updateDialog(dialogRef: DialogRef<Any>) {
-    with(dialogRef) { (extra as View).showRendering(modalRendering, containerHints) }
+    with(dialogRef) { (extra as View).showRendering(modalRendering, viewEnvironment) }
   }
 
   @PublishedApi

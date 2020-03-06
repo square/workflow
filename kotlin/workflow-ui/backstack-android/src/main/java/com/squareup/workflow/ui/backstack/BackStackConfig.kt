@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow.ui.backstack
 
-import com.squareup.workflow.ui.ContainerHintKey
+import com.squareup.workflow.ui.ViewEnvironmentKey
 import com.squareup.workflow.ui.backstack.BackStackConfig.First
 import com.squareup.workflow.ui.backstack.BackStackConfig.Other
 
@@ -41,7 +41,7 @@ enum class BackStackConfig {
    */
   Other;
 
-  companion object : ContainerHintKey<BackStackConfig>(BackStackConfig::class) {
+  companion object : ViewEnvironmentKey<BackStackConfig>(BackStackConfig::class) {
     override val default = None
   }
 }

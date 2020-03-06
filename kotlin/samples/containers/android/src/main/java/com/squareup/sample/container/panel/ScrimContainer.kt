@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.squareup.sample.container.panel
+
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -105,7 +106,7 @@ class ScrimContainer @JvmOverloads constructor(
 
   companion object : ViewBinding<ScrimContainerScreen<*>> by BuilderBinding(
       type = ScrimContainerScreen::class,
-      viewConstructor = { initialRendering, initialContainerHints, contextForNewView, _ ->
+      viewConstructor = { initialRendering, initialViewEnvironment, contextForNewView, _ ->
         val stub = WorkflowViewStub(contextForNewView)
 
         ScrimContainer(contextForNewView)
@@ -113,8 +114,10 @@ class ScrimContainer @JvmOverloads constructor(
               layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
               addView(stub)
 
-              bindShowRendering(initialRendering, initialContainerHints) { rendering, hints ->
-                stub.update(rendering.wrapped, hints)
+              bindShowRendering(
+                  initialRendering, initialViewEnvironment
+              ) { rendering, environment ->
+                stub.update(rendering.wrapped, environment)
                 isDimmed = rendering.dimmed
               }
             }

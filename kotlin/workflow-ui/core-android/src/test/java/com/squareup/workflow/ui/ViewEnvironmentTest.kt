@@ -18,12 +18,12 @@ package com.squareup.workflow.ui
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class ContainerHintsTest {
-  private object StringHint : ContainerHintKey<String>(String::class) {
+class ViewEnvironmentTest {
+  private object StringHint : ViewEnvironmentKey<String>(String::class) {
     override val default = ""
   }
 
-  private object OtherStringHint : ContainerHintKey<String>(String::class) {
+  private object OtherStringHint : ViewEnvironmentKey<String>(String::class) {
     override val default = ""
   }
 
@@ -31,24 +31,24 @@ class ContainerHintsTest {
     val int: Int = -1,
     val string: String = ""
   ) {
-    companion object : ContainerHintKey<DataHint>(DataHint::class) {
+    companion object : ViewEnvironmentKey<DataHint>(DataHint::class) {
       override val default = DataHint()
     }
   }
 
-  private val emptyHints = ContainerHints(ViewRegistry())
+  private val emptyHints = ViewEnvironment(ViewRegistry())
 
   @Test fun defaults() {
     assertThat(emptyHints[DataHint]).isEqualTo(DataHint())
   }
 
   @Test fun put() {
-    val hints = emptyHints +
+    val environment = emptyHints +
         (StringHint to "fnord") +
         (DataHint to DataHint(42, "foo"))
 
-    assertThat(hints[StringHint]).isEqualTo("fnord")
-    assertThat(hints[DataHint]).isEqualTo(DataHint(42, "foo"))
+    assertThat(environment[StringHint]).isEqualTo("fnord")
+    assertThat(environment[DataHint]).isEqualTo(DataHint(42, "foo"))
   }
 
   @Test fun `map equality`() {
@@ -84,19 +84,19 @@ class ContainerHintsTest {
   }
 
   @Test fun override() {
-    val hints = emptyHints +
+    val environment = emptyHints +
         (StringHint to "able") +
         (StringHint to "baker")
 
-    assertThat(hints[StringHint]).isEqualTo("baker")
+    assertThat(environment[StringHint]).isEqualTo("baker")
   }
 
   @Test fun `keys of the same type`() {
-    val hints = emptyHints +
+    val environment = emptyHints +
         (StringHint to "able") +
         (OtherStringHint to "baker")
 
-    assertThat(hints[StringHint]).isEqualTo("able")
-    assertThat(hints[OtherStringHint]).isEqualTo("baker")
+    assertThat(environment[StringHint]).isEqualTo("able")
+    assertThat(environment[OtherStringHint]).isEqualTo("baker")
   }
 }

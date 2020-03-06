@@ -35,8 +35,8 @@ by BuilderBinding(
 
             val wrappedUpdater = view.getShowRendering<Any>()!!
 
-            view.bindShowRendering(initialRendering, initialHints) { rendering, hints ->
-              wrappedUpdater.invoke(rendering.wrapped, hints)
+            view.bindShowRendering(initialRendering, initialHints) { rendering, environment ->
+              wrappedUpdater.invoke(rendering.wrapped, environment)
             }
           }
     }

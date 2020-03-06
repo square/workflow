@@ -17,41 +17,48 @@ package com.squareup.workflow.ui
 
 import kotlin.reflect.KClass
 
+@Suppress("unused")
+@Deprecated(
+    "Renamed to ViewEnvironment.",
+    replaceWith = ReplaceWith("ViewEnvironment", "com.squareup.workflow.ui.ViewEnvironment")
+)
+typealias ContainerHints = ViewEnvironment
+
 /**
  * Immutable, append-only map of values that a parent view can pass down to
  * its children via [View.showRendering][android.view.View.showRendering] et al.
  * Allows container views to give descendants information about the context in which
  * they're drawing.
  *
- * Every [ContainerHints] includes a [ViewRegistry]. This allows container views to
+ * Every [ViewEnvironment] includes a [ViewRegistry]. This allows container views to
  * make recursive [ViewRegistry.buildView] calls to build child views to show nested renderings.
  */
-class ContainerHints private constructor(
-  private val map: Map<ContainerHintKey<*>, Any>
+class ViewEnvironment private constructor(
+  private val map: Map<ViewEnvironmentKey<*>, Any>
 ) {
   constructor(registry: ViewRegistry) :
-      this(mapOf<ContainerHintKey<*>, Any>(ViewRegistry to registry))
+      this(mapOf<ViewEnvironmentKey<*>, Any>(ViewRegistry to registry))
 
   @Suppress("UNCHECKED_CAST")
-  operator fun <T : Any> get(key: ContainerHintKey<T>): T = map[key] as? T ?: key.default
+  operator fun <T : Any> get(key: ViewEnvironmentKey<T>): T = map[key] as? T ?: key.default
 
-  operator fun <T : Any> plus(pair: Pair<ContainerHintKey<T>, T>): ContainerHints =
-    ContainerHints(map + pair)
+  operator fun <T : Any> plus(pair: Pair<ViewEnvironmentKey<T>, T>): ViewEnvironment =
+    ViewEnvironment(map + pair)
 
-  operator fun plus(other: ContainerHints): ContainerHints = ContainerHints(map + other.map)
+  operator fun plus(other: ViewEnvironment): ViewEnvironment = ViewEnvironment(map + other.map)
 
-  override fun toString() = "ContainerHints($map)"
+  override fun toString() = "ViewEnvironment($map)"
 
-  override fun equals(other: Any?) = (other as? ContainerHints)?.let { it.map == map } ?: false
+  override fun equals(other: Any?) = (other as? ViewEnvironment)?.let { it.map == map } ?: false
 
   override fun hashCode() = map.hashCode()
 }
 
 /**
- * Defines a value that can be provided by a [ContainerHints] map, specifying its [type]
+ * Defines a value that can be provided by a [ViewEnvironment] map, specifying its [type]
  * and [default] value.
  */
-abstract class ContainerHintKey<T : Any>(
+abstract class ViewEnvironmentKey<T : Any>(
   private val type: KClass<T>
 ) {
   abstract val default: T
@@ -59,12 +66,12 @@ abstract class ContainerHintKey<T : Any>(
   final override fun equals(other: Any?) = when {
     this === other -> true
     other != null && this::class != other::class -> false
-    else -> type == (other as ContainerHintKey<*>).type
+    else -> type == (other as ViewEnvironmentKey<*>).type
   }
 
   final override fun hashCode() = type.hashCode()
 
   override fun toString(): String {
-    return "ContainerHintKey($type)-${super.toString()}"
+    return "ViewEnvironmentKey($type)-${super.toString()}"
   }
 }

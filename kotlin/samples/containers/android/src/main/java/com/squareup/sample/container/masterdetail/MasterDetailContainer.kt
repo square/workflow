@@ -22,9 +22,9 @@ import com.squareup.sample.container.R
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.masterdetail.MasterDetailConfig.Single
-import com.squareup.workflow.ui.ContainerHints
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 import com.squareup.workflow.ui.backstack.BackStackScreen
 
@@ -52,29 +52,29 @@ class MasterDetailContainer(view: View) : LayoutRunner<MasterDetailScreen> {
 
   override fun showRendering(
     rendering: MasterDetailScreen,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
-    if (singleStub == null) renderSplitView(rendering, containerHints)
-    else renderSingleView(rendering, containerHints, singleStub)
+    if (singleStub == null) renderSplitView(rendering, viewEnvironment)
+    else renderSingleView(rendering, viewEnvironment, singleStub)
   }
 
   private fun renderSplitView(
     rendering: MasterDetailScreen,
-    containerHints: ContainerHints
+    viewEnvironment: ViewEnvironment
   ) {
     if (rendering.detailRendering == null && rendering.selectDefault != null) {
       rendering.selectDefault!!.invoke()
     } else {
       masterStub!!.update(
           rendering.masterRendering,
-          containerHints + (MasterDetailConfig to Master)
+          viewEnvironment + (MasterDetailConfig to Master)
       )
       rendering.detailRendering
           ?.let { detail ->
             detailStub!!.actual.visibility = VISIBLE
             detailStub.update(
                 detail,
-                containerHints + (MasterDetailConfig to Detail)
+                viewEnvironment + (MasterDetailConfig to Detail)
             )
           }
           ?: run {
@@ -85,14 +85,14 @@ class MasterDetailContainer(view: View) : LayoutRunner<MasterDetailScreen> {
 
   private fun renderSingleView(
     rendering: MasterDetailScreen,
-    containerHints: ContainerHints,
+    viewEnvironment: ViewEnvironment,
     stub: WorkflowViewStub
   ) {
     val combined: BackStackScreen<*> = rendering.detailRendering
         ?.let { rendering.masterRendering + it }
         ?: rendering.masterRendering
 
-    stub.update(combined, containerHints + (MasterDetailConfig to Single))
+    stub.update(combined, viewEnvironment + (MasterDetailConfig to Single))
   }
 
   companion object : ViewBinding<MasterDetailScreen> by LayoutRunner.Binding(

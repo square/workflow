@@ -17,8 +17,8 @@ package com.squareup.sample.poetry
 
 import com.squareup.sample.poetry.StanzaWorkflow.Output
 import com.squareup.sample.poetry.StanzaWorkflow.Output.CloseStanzas
-import com.squareup.sample.poetry.StanzaWorkflow.Output.ShowPreviousStanza
 import com.squareup.sample.poetry.StanzaWorkflow.Output.ShowNextStanza
+import com.squareup.sample.poetry.StanzaWorkflow.Output.ShowPreviousStanza
 import com.squareup.sample.poetry.StanzaWorkflow.Props
 import com.squareup.sample.poetry.model.Poem
 import com.squareup.workflow.RenderContext

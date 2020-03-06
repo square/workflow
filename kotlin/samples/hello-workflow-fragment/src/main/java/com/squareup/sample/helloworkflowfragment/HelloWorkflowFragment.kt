@@ -16,13 +16,13 @@
 package com.squareup.sample.helloworkflowfragment
 
 import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
-import com.squareup.workflow.ui.ContainerHints
+import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowFragment
 import com.squareup.workflow.ui.WorkflowRunner
 
 class HelloWorkflowFragment : WorkflowFragment<Unit, Nothing>() {
-  override val containerHints = ContainerHints(ViewRegistry(HelloFragmentLayoutRunner))
+  override val viewEnvironment = ViewEnvironment(ViewRegistry(HelloFragmentLayoutRunner))
 
   override fun onCreateWorkflow(): WorkflowRunner.Config<Unit, Nothing> {
     return WorkflowRunner.Config(

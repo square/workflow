@@ -55,7 +55,7 @@ data class BackButtonScreen<W : Any>(
             .also { view ->
               val wrappedUpdater = view.getShowRendering<Any>()!!
 
-              view.bindShowRendering(initialRendering, initialHints) { rendering, hints ->
+              view.bindShowRendering(initialRendering, initialHints) { rendering, environment ->
                 if (!rendering.override) {
                   // Place our handler before invoking the wrapped updater, so that
                   // its later calls to view.backPressedHandler will take precedence
@@ -63,7 +63,7 @@ data class BackButtonScreen<W : Any>(
                   view.backPressedHandler = rendering.onBackPressed
                 }
 
-                wrappedUpdater.invoke(rendering.wrapped, hints)
+                wrappedUpdater.invoke(rendering.wrapped, environment)
 
                 if (rendering.override) {
                   // Place our handler after invoking the wrapped updater, so that ours

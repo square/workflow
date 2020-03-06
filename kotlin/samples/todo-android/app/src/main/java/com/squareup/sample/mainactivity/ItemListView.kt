@@ -15,13 +15,13 @@
  */
 package com.squareup.sample.mainactivity
 
-import androidx.annotation.IdRes
 import android.text.style.StrikethroughSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.annotation.IdRes
 import com.squareup.sample.todo.R
 
 class ItemListView private constructor(private val itemContainer: LinearLayout) {
