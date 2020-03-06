@@ -17,6 +17,7 @@ buildscript {
   ext.versions = [
       'targetSdk': 29,
       'compose': '0.1.0-dev05',
+      'coroutines': '1.3.4',
       'kotlin': '1.3.70',
   ]
 
@@ -93,10 +94,10 @@ buildscript {
               'jdk6': "org.jetbrains.kotlin:kotlin-stdlib"
           ],
           'coroutines': [
-              'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3",
-              'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3",
-              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.3.3",
-              'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.3"
+              'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
+              'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.coroutines}",
+              'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
           ],
           'moshi': "com.squareup.moshi:moshi-kotlin:1.9.2",
           'reflect': "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
@@ -196,9 +197,9 @@ subprojects {
 
       jvmTarget = "1.8"
 
-      // Don't panic, all this does is allow us to use the @Experimental meta-annotation.
+      // Don't panic, all this does is allow us to use the @OptIn meta-annotation.
       // to define our own experiments.
-      freeCompilerArgs += "-Xopt-in=kotlin.Experimental"
+      freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
   }
 
