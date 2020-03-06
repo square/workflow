@@ -17,6 +17,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android rootProject.ext.defaultAndroidConfig
+apply from: rootProject.file('.buildscript/android-ui-tests.gradle')
 
 android {
   defaultConfig {
@@ -26,8 +27,6 @@ android {
     targetSdkVersion versions.targetSdk
     versionCode 1
     versionName "1.0.0"
-
-    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
   testOptions.unitTests.includeAndroidResources = true
@@ -50,9 +49,7 @@ dependencies {
   implementation deps.test.androidx.espresso.idlingResource
   implementation deps.timber
 
-  androidTestImplementation deps.test.androidx.espresso.core
   androidTestImplementation deps.test.androidx.espresso.intents
-  androidTestImplementation deps.test.androidx.junitExt
   androidTestImplementation deps.test.androidx.runner
   androidTestImplementation deps.test.androidx.truthExt
   androidTestImplementation deps.test.junit
