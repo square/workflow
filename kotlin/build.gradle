@@ -77,7 +77,8 @@ buildscript {
       ],
 
       'cycler': "com.squareup.cycler:cycler:0.1.2",
-      'desugar_jdk_libs': "com.android.tools:desugar_jdk_libs:1.0.4",
+      // Required for Dungeon Crawler sample.
+      'desugar_jdk_libs': "com.android.tools:desugar_jdk_libs:1.0.5",
       'moshi': "com.squareup.moshi:moshi:1.9.2",
       'rxandroid2': "io.reactivex.rxjava2:rxandroid:2.1.1",
       'timber': "com.jakewharton.timber:timber:4.7.1",
