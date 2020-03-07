@@ -64,12 +64,12 @@ class WorkflowLayout(
     renderings: Observable<out Any>,
     environment: ViewEnvironment
   ) {
-    val hintsWithDefaults = environment.withDefaultViewBindings()
+    val hintsWithDefaults = environment.withDefaultViewFactories()
     takeWhileAttached(renderings) { show(it, hintsWithDefaults) }
   }
 
-  private fun ViewEnvironment.withDefaultViewBindings(): ViewEnvironment =
-    this + (ViewRegistry to (this[ViewRegistry] + defaultViewBindings))
+  private fun ViewEnvironment.withDefaultViewFactories(): ViewEnvironment =
+    this + (ViewRegistry to (this[ViewRegistry] + defaultViewFactories))
 
   private fun show(
     newRendering: Any,

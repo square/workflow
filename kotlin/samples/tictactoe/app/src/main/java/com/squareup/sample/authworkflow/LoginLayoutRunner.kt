@@ -22,7 +22,7 @@ import android.widget.TextView
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 
@@ -45,7 +45,7 @@ internal class LoginLayoutRunner(val view: View) : LayoutRunner<LoginScreen> {
     view.backPressedHandler = { rendering.onCancel() }
   }
 
-  companion object : ViewBinding<LoginScreen> by bind(
+  companion object : ViewFactory<LoginScreen> by bind(
       R.layout.login_layout, ::LoginLayoutRunner
   )
 }

@@ -26,7 +26,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.annotation.IdRes
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backPressedHandler
@@ -120,7 +120,7 @@ open class ModalViewContainer @JvmOverloads constructor(
   internal class Binding<H : HasModals<*, *>>(
     @IdRes id: Int,
     type: KClass<H>
-  ) : ViewBinding<H>
+  ) : ViewFactory<H>
   by BuilderBinding(
       type = type,
       viewConstructor = { initialRendering, initialHints, context, _ ->
@@ -134,7 +134,7 @@ open class ModalViewContainer @JvmOverloads constructor(
 
   companion object {
     /**
-     * Creates a [ViewBinding] for modal container screens of type [H].
+     * Creates a [ViewFactory] for modal container screens of type [H].
      *
      * Each view created for [HasModals.modals] will be shown in a [Dialog]
      * whose window is set to size itself to `WRAP_CONTENT` (see [android.view.Window.setLayout]).
@@ -144,6 +144,6 @@ open class ModalViewContainer @JvmOverloads constructor(
      */
     inline fun <reified H : HasModals<*, *>> binding(
       @IdRes id: Int = View.NO_ID
-    ): ViewBinding<H> = Binding(id, H::class)
+    ): ViewFactory<H> = Binding(id, H::class)
   }
 }

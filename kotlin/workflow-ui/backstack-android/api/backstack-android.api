@@ -24,7 +24,7 @@ public class com/squareup/workflow/ui/backstack/BackStackContainer : android/wid
 	protected fun performTransition (Landroid/view/View;Landroid/view/View;Z)V
 }
 
-public final class com/squareup/workflow/ui/backstack/BackStackContainer$Companion : com/squareup/workflow/ui/ViewBinding {
+public final class com/squareup/workflow/ui/backstack/BackStackContainer$Companion : com/squareup/workflow/ui/ViewFactory {
 	public fun buildView (Lcom/squareup/workflow/ui/backstack/BackStackScreen;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public synthetic fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public fun getType ()Lkotlin/reflect/KClass;

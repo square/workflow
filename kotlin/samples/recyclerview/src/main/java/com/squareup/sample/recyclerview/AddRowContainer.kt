@@ -15,11 +15,11 @@
  */
 package com.squareup.sample.recyclerview
 
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.modal.ModalContainer
 import com.squareup.workflow.ui.modal.ModalViewContainer
 
 /**
- * A simple [ModalContainer] [ViewBinding] that knows how to render [AppWorkflow.Rendering]s.
+ * A simple [ModalContainer] [ViewFactory] that knows how to render [AppWorkflow.Rendering]s.
  */
-object AddRowContainer : ViewBinding<AppWorkflow.Rendering> by ModalViewContainer.binding()
+object AddRowContainer : ViewFactory<AppWorkflow.Rendering> by ModalViewContainer.binding()

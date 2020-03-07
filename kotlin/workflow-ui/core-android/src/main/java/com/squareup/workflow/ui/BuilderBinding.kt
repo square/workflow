@@ -21,11 +21,11 @@ import android.view.ViewGroup
 import kotlin.reflect.KClass
 
 /**
- * A [ViewBinding] that allows a [ViewRegistry] to create [View]s that need
+ * A [ViewFactory] that allows a [ViewRegistry] to create [View]s that need
  * to be generated from code. (Use [LayoutRunner] to work with XML layout resources.)
  *
  * Typical usage is to have a custom builder or view's `companion object` implement
- * [ViewBinding] by delegating to a [BuilderBinding], like this:
+ * [ViewFactory] by delegating to a [BuilderBinding], like this:
  *
  *    class MyView(
  *      context: Context,
@@ -59,7 +59,7 @@ class BuilderBinding<RenderingT : Any>(
     contextForNewView: Context,
     container: ViewGroup?
   ) -> View
-) : ViewBinding<RenderingT> {
+) : ViewFactory<RenderingT> {
   override fun buildView(
     initialRendering: RenderingT,
     initialViewEnvironment: ViewEnvironment,

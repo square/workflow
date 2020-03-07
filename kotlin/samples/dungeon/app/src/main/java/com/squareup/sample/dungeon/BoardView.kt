@@ -24,7 +24,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.squareup.sample.dungeon.board.Board
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.bindShowRendering
 import kotlin.math.abs
 import kotlin.math.min
@@ -97,7 +97,7 @@ class BoardView(context: Context) : View(context) {
     }
   }
 
-  companion object : ViewBinding<Board> by BuilderBinding(
+  companion object : ViewFactory<Board> by BuilderBinding(
       type = Board::class,
       viewConstructor = { initialRendering, initialHints, contextForNewView, _ ->
         BoardView(contextForNewView)

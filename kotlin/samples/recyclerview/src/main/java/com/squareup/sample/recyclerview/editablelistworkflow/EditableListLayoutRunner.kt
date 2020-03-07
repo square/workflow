@@ -24,7 +24,7 @@ import com.squareup.sample.recyclerview.R.id
 import com.squareup.sample.recyclerview.editablelistworkflow.EditableListWorkflow.Rendering
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 
 class EditableListLayoutRunner(view: View) : LayoutRunner<Rendering> {
@@ -46,7 +46,7 @@ class EditableListLayoutRunner(view: View) : LayoutRunner<Rendering> {
     adapter.updateRendering(rendering, viewEnvironment[ListDiffMode])
   }
 
-  companion object : ViewBinding<Rendering> by bind(
+  companion object : ViewFactory<Rendering> by bind(
       R.layout.recyclerview_layout, ::EditableListLayoutRunner
   )
 }

@@ -30,7 +30,7 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.squareup.workflow.ui.BuilderBinding
 import com.squareup.workflow.ui.Named
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backstack.BackStackConfig.First
@@ -151,7 +151,7 @@ open class BackStackContainer @JvmOverloads constructor(
         ?: super.onRestoreInstanceState(state)
   }
 
-  companion object : ViewBinding<BackStackScreen<*>>
+  companion object : ViewFactory<BackStackScreen<*>>
   by BuilderBinding(
       type = BackStackScreen::class,
       viewConstructor = { initialRendering, initialHints, context, _ ->

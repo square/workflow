@@ -17,7 +17,7 @@ package com.squareup.sample.gameworkflow
 
 import com.squareup.workflow.ui.ViewRegistry
 
-val TicTacToeViewBindings = ViewRegistry(
+val TicTacToeViewFactories = ViewRegistry(
     NewGameLayoutRunner,
     GamePlayLayoutRunner,
     GameOverLayoutRunner

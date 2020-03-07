@@ -24,7 +24,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import com.squareup.workflow.ui.BuilderBinding
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.bindShowRendering
 import com.squareup.workflow.ui.modal.AlertScreen.Button
@@ -92,7 +92,7 @@ class AlertContainer @JvmOverloads constructor(
 
   private class AlertContainerBinding(
     @StyleRes private val dialogThemeResId: Int = 0
-  ) : ViewBinding<AlertContainerScreen<*>> by BuilderBinding(
+  ) : ViewFactory<AlertContainerScreen<*>> by BuilderBinding(
       type = AlertContainerScreen::class,
       viewConstructor = { initialRendering, initialHints, context, _ ->
         AlertContainer(context, dialogThemeResId = dialogThemeResId)
@@ -104,9 +104,9 @@ class AlertContainer @JvmOverloads constructor(
       }
   )
 
-  companion object : ViewBinding<AlertContainerScreen<*>> by AlertContainerBinding() {
+  companion object : ViewFactory<AlertContainerScreen<*>> by AlertContainerBinding() {
     /**
-     * Creates a [ViewBinding] to show the [AlertScreen]s of an [AlertContainerScreen]
+     * Creates a [ViewFactory] to show the [AlertScreen]s of an [AlertContainerScreen]
      * as Android `AlertDialog`s.
      *
      * @param dialogThemeResId the resource ID of the theme against which to inflate
@@ -114,6 +114,6 @@ class AlertContainer @JvmOverloads constructor(
      */
     fun customThemeBinding(
       @StyleRes dialogThemeResId: Int = 0
-    ): ViewBinding<AlertContainerScreen<*>> = AlertContainerBinding(dialogThemeResId)
+    ): ViewFactory<AlertContainerScreen<*>> = AlertContainerBinding(dialogThemeResId)
   }
 }

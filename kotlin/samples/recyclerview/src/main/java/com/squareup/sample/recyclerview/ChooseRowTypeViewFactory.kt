@@ -25,7 +25,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
 import android.widget.LinearLayout
 import com.squareup.sample.recyclerview.AppWorkflow.ChooseRowTypeScreen
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.bindShowRendering
 import kotlin.reflect.KClass
@@ -33,7 +33,7 @@ import kotlin.reflect.KClass
 /**
  * Shows a list of buttons for selecting a new row type to add.
  */
-object ChooseRowTypeViewBinding : ViewBinding<ChooseRowTypeScreen> {
+object ChooseRowTypeViewFactory : ViewFactory<ChooseRowTypeScreen> {
   override val type: KClass<ChooseRowTypeScreen> get() = ChooseRowTypeScreen::class
 
   override fun buildView(

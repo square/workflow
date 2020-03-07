@@ -21,19 +21,21 @@ import android.view.ViewGroup
 import kotlin.reflect.KClass
 
 /**
- * A [ViewRegistry] that contains a set of [ViewBinding]s, keyed by the [KClass]es of the rendering
- * types.
+ * A [ViewRegistry] that contains a set of [ViewFactory]s, keyed by the [KClass]es of the
+ * rendering types.
  */
 internal class BindingViewRegistry private constructor(
-  private val bindings: Map<KClass<*>, ViewBinding<*>>
+  private val bindings: Map<KClass<*>, ViewFactory<*>>
 ) : ViewRegistry {
 
-  constructor(vararg bindings: ViewBinding<*>) : this(
-      bindings.map { it.type to it }.toMap().apply {
-        check(keys.size == bindings.size) {
-          "${bindings.map { it.type }} must not have duplicate entries."
-        }
-      }
+  constructor(vararg bindings: ViewFactory<*>) : this(
+      bindings.map { it.type to it }
+          .toMap()
+          .apply {
+            check(keys.size == bindings.size) {
+              "${bindings.map { it.type }} must not have duplicate entries."
+            }
+          }
   )
 
   override val keys: Set<KClass<*>> get() = bindings.keys
@@ -45,7 +47,7 @@ internal class BindingViewRegistry private constructor(
     container: ViewGroup?
   ): View {
     @Suppress("UNCHECKED_CAST")
-    return (bindings[initialRendering::class] as? ViewBinding<RenderingT>)
+    return (bindings[initialRendering::class] as? ViewFactory<RenderingT>)
         ?.buildView(
             initialRendering,
             initialViewEnvironment,
@@ -55,11 +57,11 @@ internal class BindingViewRegistry private constructor(
         ?.apply {
           checkNotNull(getRendering<RenderingT>()) {
             "View.bindShowRendering should have been called for $this, typically by the " +
-                "${ViewBinding::class.java.name} that created it."
+                "${ViewFactory::class.java.name} that created it."
           }
         }
         ?: throw IllegalArgumentException(
-            "A ${ViewBinding::class.java.name} should have been registered " +
+            "A ${ViewFactory::class.java.name} should have been registered " +
                 "to display $initialRendering."
         )
   }

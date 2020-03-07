@@ -23,7 +23,7 @@ import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 
@@ -49,7 +49,7 @@ internal class SecondFactorLayoutRunner(
     }
   }
 
-  companion object : ViewBinding<SecondFactorScreen> by bind(
+  companion object : ViewFactory<SecondFactorScreen> by bind(
       R.layout.second_factor_layout, ::SecondFactorLayoutRunner
   )
 }

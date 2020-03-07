@@ -50,7 +50,7 @@ internal class CompositeViewRegistry private constructor(
   ): View {
     val registry = registriesByKey[initialRendering::class]
         ?: throw IllegalArgumentException(
-            "A ${ViewBinding::class.java.name} should have been registered " +
+            "A ${ViewFactory::class.java.name} should have been registered " +
                 "to display $initialRendering."
         )
     return registry.buildView(initialRendering, initialViewEnvironment, contextForNewView, container)

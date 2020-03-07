@@ -23,7 +23,7 @@ import com.squareup.sample.recyclerview.editablelistworkflow.ListDiffMode.Asynch
 import com.squareup.sample.recyclerview.editablelistworkflow.ListDiffMode.Synchronous
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 
@@ -52,7 +52,7 @@ class BaseScreenLayoutRunner(view: View) : LayoutRunner<BaseScreen> {
     addRowButton.setOnClickListener { rendering.onAddRowTapped() }
   }
 
-  companion object : ViewBinding<BaseScreen> by bind(
+  companion object : ViewFactory<BaseScreen> by bind(
       R.layout.base_screen_layout, ::BaseScreenLayoutRunner
   )
 }

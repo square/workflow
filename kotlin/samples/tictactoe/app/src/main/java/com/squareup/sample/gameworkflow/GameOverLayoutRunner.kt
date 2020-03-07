@@ -28,7 +28,7 @@ import com.squareup.sample.gameworkflow.SyncState.SAVING
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 
@@ -115,7 +115,7 @@ internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameO
   }
 
   /** Note how easily  we're sharing this layout with [GamePlayLayoutRunner]. */
-  companion object : ViewBinding<GameOverScreen> by bind(
+  companion object : ViewFactory<GameOverScreen> by bind(
       R.layout.game_play_layout, ::GameOverLayoutRunner
   )
 }

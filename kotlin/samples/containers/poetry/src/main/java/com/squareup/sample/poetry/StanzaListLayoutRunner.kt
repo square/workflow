@@ -27,7 +27,7 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.poetry.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.backstack.BackStackConfig
@@ -100,7 +100,7 @@ class StanzaListLayoutRunner(view: View) : LayoutRunner<StanzaListRendering> {
     }
   }
 
-  companion object : ViewBinding<StanzaListRendering>
+  companion object : ViewFactory<StanzaListRendering>
   by bind(
       R.layout.list,
       ::StanzaListLayoutRunner

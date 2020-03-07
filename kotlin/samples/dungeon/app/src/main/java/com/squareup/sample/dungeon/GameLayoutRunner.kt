@@ -26,7 +26,7 @@ import com.squareup.sample.dungeon.Direction.UP
 import com.squareup.sample.dungeon.GameWorkflow.GameRendering
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.WorkflowViewStub
 
@@ -77,7 +77,7 @@ class GameLayoutRunner(view: View) : LayoutRunner<GameRendering> {
     }
   }
 
-  companion object : ViewBinding<GameRendering> by bind(
+  companion object : ViewFactory<GameRendering> by bind(
       R.layout.game_layout, ::GameLayoutRunner
   )
 }

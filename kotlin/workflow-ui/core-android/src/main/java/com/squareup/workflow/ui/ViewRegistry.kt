@@ -23,15 +23,15 @@ import android.view.ViewGroup
 import kotlin.reflect.KClass
 
 /**
- * [ViewBinding]s that are always available.
+ * [ViewFactory]s that are always available.
  */
-internal val defaultViewBindings = ViewRegistry(NamedBinding)
+internal val defaultViewFactories = ViewRegistry(NamedBinding)
 
 /**
- * A collection of [ViewBinding]s that can be used to display the stream of renderings
+ * A collection of [ViewFactory]s that can be used to display the stream of renderings
  * from a workflow tree.
  *
- * Two concrete [ViewBinding] implementations are provided:
+ * Two concrete [ViewFactory] implementations are provided:
  *
  *  - [LayoutRunner.Binding], allowing the easy pairing of Android XML layout resources with
  *    [LayoutRunner]s to drive them.
@@ -41,19 +41,19 @@ internal val defaultViewBindings = ViewRegistry(NamedBinding)
  *  Registries can be assembled via concatenation, making it easy to snap together screen sets.
  *  For example:
  *
- *     val AuthViewBindings = ViewRegistry(
+ *     val AuthViewFactories = ViewRegistry(
  *         AuthorizingLayoutRunner, LoginLayoutRunner, SecondFactorLayoutRunner
  *     )
  *
- *     val TicTacToeViewBindings = ViewRegistry(
+ *     val TicTacToeViewFactories = ViewRegistry(
  *         NewGameLayoutRunner, GamePlayLayoutRunner, GameOverLayoutRunner
  *     )
  *
- *     val ApplicationViewBindings = ViewRegistry(ApplicationLayoutRunner) +
- *         AuthViewBindings + TicTacToeViewBindings
+ *     val ApplicationViewFactories = ViewRegistry(ApplicationLayoutRunner) +
+ *         AuthViewFactories + TicTacToeViewFactories
  *
  * In the above example, note that the `companion object`s of the various [LayoutRunner] classes
- * honor a convention of implementing [ViewBinding], in aid of this kind of assembly. See the
+ * honor a convention of implementing [ViewFactory], in aid of this kind of assembly. See the
  * class doc on [LayoutRunner] for details.
  */
 interface ViewRegistry {
@@ -74,7 +74,7 @@ interface ViewRegistry {
    *
    * @throws IllegalArgumentException if no binding can be find for type [RenderingT]
    *
-   * @throws IllegalStateException if the matching [ViewBinding] fails to call
+   * @throws IllegalStateException if the matching [ViewFactory] fails to call
    * [View.bindShowRendering] when constructing the view
    */
   fun <RenderingT : Any> buildView(
@@ -90,7 +90,7 @@ interface ViewRegistry {
   }
 }
 
-fun ViewRegistry(vararg bindings: ViewBinding<*>): ViewRegistry = BindingViewRegistry(*bindings)
+fun ViewRegistry(vararg bindings: ViewFactory<*>): ViewRegistry = BindingViewRegistry(*bindings)
 
 /**
  * Returns a [ViewRegistry] that merges all the given [registries].
@@ -112,7 +112,7 @@ fun ViewRegistry(): ViewRegistry = BindingViewRegistry()
  *
  * @throws IllegalArgumentException if no binding can be find for type [RenderingT]
  *
- * @throws IllegalStateException if the matching [ViewBinding] fails to call
+ * @throws IllegalStateException if the matching [ViewFactory] fails to call
  * [View.bindShowRendering] when constructing the view
  */
 fun <RenderingT : Any> ViewRegistry.buildView(
@@ -121,6 +121,7 @@ fun <RenderingT : Any> ViewRegistry.buildView(
   container: ViewGroup
 ): View = buildView(initialRendering, initialViewEnvironment, container.context, container)
 
-operator fun ViewRegistry.plus(binding: ViewBinding<*>): ViewRegistry = this + ViewRegistry(binding)
+operator fun ViewRegistry.plus(binding: ViewFactory<*>): ViewRegistry =
+  this + ViewRegistry(binding)
 
 operator fun ViewRegistry.plus(other: ViewRegistry): ViewRegistry = ViewRegistry(this, other)

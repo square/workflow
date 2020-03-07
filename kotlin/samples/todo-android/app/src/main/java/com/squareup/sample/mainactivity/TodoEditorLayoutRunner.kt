@@ -22,7 +22,7 @@ import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoRendering
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.backstack.BackStackConfig
@@ -75,7 +75,7 @@ internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<Tod
     }
   }
 
-  companion object : ViewBinding<TodoRendering> by bind(
+  companion object : ViewFactory<TodoRendering> by bind(
       R.layout.todo_editor_layout, ::TodoEditorLayoutRunner
   )
 }

@@ -27,7 +27,7 @@ import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
 import com.squareup.sample.container.poetryapp.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 
 class PoemListLayoutRunner(view: View) : LayoutRunner<PoemListRendering> {
@@ -94,7 +94,7 @@ class PoemListLayoutRunner(view: View) : LayoutRunner<PoemListRendering> {
     }
   }
 
-  companion object : ViewBinding<PoemListRendering>
+  companion object : ViewFactory<PoemListRendering>
   by bind(
       R.layout.list,
       ::PoemListLayoutRunner

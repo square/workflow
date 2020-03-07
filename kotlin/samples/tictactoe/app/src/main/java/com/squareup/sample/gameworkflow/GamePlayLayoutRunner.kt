@@ -21,7 +21,7 @@ import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.tictactoe.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 
@@ -74,7 +74,7 @@ internal class GamePlayLayoutRunner(private val view: View) : LayoutRunner<GameP
     }
   }
 
-  companion object : ViewBinding<GamePlayScreen> by bind(
+  companion object : ViewFactory<GamePlayScreen> by bind(
       R.layout.game_play_layout, ::GamePlayLayoutRunner
   )
 }

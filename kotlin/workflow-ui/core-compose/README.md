@@ -2,7 +2,7 @@
 
 This module provides experimental support for [Jetpack Compose UI][1] with workflows.
 
-The only integration that is currently supported is the ability to define [`ViewBinding`][2]s that
+The only integration that is currently supported is the ability to define [ViewFactories][2] that
 are implemented as `@Composable` functions. See the `hello-compose-binding` sample in `samples` for
 an example of how to use.
 
@@ -49,7 +49,7 @@ val HelloBinding = bindCompose<MyRendering> { rendering ->
 }
 ```
 
-The `bindCompose` function returns a regular [`ViewBinding`][2] which can be added to a
+The `bindCompose` function returns a regular [`ViewFactory`][2] which can be added to a
 [`ViewRegistry`][3] like any other:
 
 ```kotlin

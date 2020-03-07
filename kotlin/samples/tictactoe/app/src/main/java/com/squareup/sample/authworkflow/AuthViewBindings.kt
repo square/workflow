@@ -17,7 +17,7 @@ package com.squareup.sample.authworkflow
 
 import com.squareup.workflow.ui.ViewRegistry
 
-val AuthViewBindings = ViewRegistry(
+val AuthViewFactories = ViewRegistry(
     AuthorizingLayoutRunner,
     LoginLayoutRunner,
     SecondFactorLayoutRunner

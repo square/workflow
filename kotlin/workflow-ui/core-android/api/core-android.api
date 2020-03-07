@@ -13,7 +13,7 @@ public final class com/squareup/workflow/ui/BuildConfig {
 	public fun <init> ()V
 }
 
-public final class com/squareup/workflow/ui/BuilderBinding : com/squareup/workflow/ui/ViewBinding {
+public final class com/squareup/workflow/ui/BuilderBinding : com/squareup/workflow/ui/ViewFactory {
 	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function4;)V
 	public fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public fun getType ()Lkotlin/reflect/KClass;
@@ -24,7 +24,7 @@ public abstract interface class com/squareup/workflow/ui/LayoutRunner {
 	public abstract fun showRendering (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;)V
 }
 
-public final class com/squareup/workflow/ui/LayoutRunner$Binding : com/squareup/workflow/ui/ViewBinding {
+public final class com/squareup/workflow/ui/LayoutRunner$Binding : com/squareup/workflow/ui/ViewFactory {
 	public fun <init> (Lkotlin/reflect/KClass;ILkotlin/jvm/functions/Function1;)V
 	public fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
 	public fun getType ()Lkotlin/reflect/KClass;
@@ -52,15 +52,6 @@ public final class com/squareup/workflow/ui/ShowRenderingTag {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class com/squareup/workflow/ui/ViewBinding {
-	public abstract fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
-	public abstract fun getType ()Lkotlin/reflect/KClass;
-}
-
-public final class com/squareup/workflow/ui/ViewBinding$DefaultImpls {
-	public static synthetic fun buildView$default (Lcom/squareup/workflow/ui/ViewBinding;Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;ILjava/lang/Object;)Landroid/view/View;
-}
-
 public final class com/squareup/workflow/ui/ViewEnvironment {
 	public fun <init> (Lcom/squareup/workflow/ui/ViewRegistry;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -77,6 +68,15 @@ public abstract class com/squareup/workflow/ui/ViewEnvironmentKey {
 	public abstract fun getDefault ()Ljava/lang/Object;
 	public final fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/squareup/workflow/ui/ViewFactory {
+	public abstract fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
+	public abstract fun getType ()Lkotlin/reflect/KClass;
+}
+
+public final class com/squareup/workflow/ui/ViewFactory$DefaultImpls {
+	public static synthetic fun buildView$default (Lcom/squareup/workflow/ui/ViewFactory;Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;ILjava/lang/Object;)Landroid/view/View;
 }
 
 public abstract interface class com/squareup/workflow/ui/ViewRegistry {
@@ -96,10 +96,10 @@ public final class com/squareup/workflow/ui/ViewRegistry$DefaultImpls {
 
 public final class com/squareup/workflow/ui/ViewRegistryKt {
 	public static final fun ViewRegistry ()Lcom/squareup/workflow/ui/ViewRegistry;
-	public static final fun ViewRegistry ([Lcom/squareup/workflow/ui/ViewBinding;)Lcom/squareup/workflow/ui/ViewRegistry;
+	public static final fun ViewRegistry ([Lcom/squareup/workflow/ui/ViewFactory;)Lcom/squareup/workflow/ui/ViewRegistry;
 	public static final fun ViewRegistry ([Lcom/squareup/workflow/ui/ViewRegistry;)Lcom/squareup/workflow/ui/ViewRegistry;
 	public static final fun buildView (Lcom/squareup/workflow/ui/ViewRegistry;Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/view/ViewGroup;)Landroid/view/View;
-	public static final fun plus (Lcom/squareup/workflow/ui/ViewRegistry;Lcom/squareup/workflow/ui/ViewBinding;)Lcom/squareup/workflow/ui/ViewRegistry;
+	public static final fun plus (Lcom/squareup/workflow/ui/ViewRegistry;Lcom/squareup/workflow/ui/ViewFactory;)Lcom/squareup/workflow/ui/ViewRegistry;
 	public static final fun plus (Lcom/squareup/workflow/ui/ViewRegistry;Lcom/squareup/workflow/ui/ViewRegistry;)Lcom/squareup/workflow/ui/ViewRegistry;
 }
 

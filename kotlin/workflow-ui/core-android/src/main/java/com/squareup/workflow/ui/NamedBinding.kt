@@ -15,7 +15,7 @@
  */
 package com.squareup.workflow.ui
 
-internal object NamedBinding : ViewBinding<Named<*>>
+internal object NamedBinding : ViewFactory<Named<*>>
 by BuilderBinding(
     type = Named::class,
     viewConstructor = { initialRendering, initialHints, contextForNewView, container ->

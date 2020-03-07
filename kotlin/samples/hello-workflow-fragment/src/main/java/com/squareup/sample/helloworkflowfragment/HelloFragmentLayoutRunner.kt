@@ -20,7 +20,7 @@ import android.view.View
 import android.widget.TextView
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewBinding
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 
 class HelloFragmentLayoutRunner(view: View) : LayoutRunner<HelloWorkflow.Rendering> {
@@ -35,7 +35,7 @@ class HelloFragmentLayoutRunner(view: View) : LayoutRunner<HelloWorkflow.Renderi
     messageView.setOnClickListener { rendering.onClick() }
   }
 
-  companion object : ViewBinding<HelloWorkflow.Rendering> by bind(
+  companion object : ViewFactory<HelloWorkflow.Rendering> by bind(
       R.layout.hello_goodbye_layout, ::HelloFragmentLayoutRunner
   )
 }
