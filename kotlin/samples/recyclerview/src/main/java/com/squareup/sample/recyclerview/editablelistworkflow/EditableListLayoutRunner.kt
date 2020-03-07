@@ -15,28 +15,24 @@
  */
 package com.squareup.sample.recyclerview.editablelistworkflow
 
-import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.squareup.sample.recyclerview.R
-import com.squareup.sample.recyclerview.R.id
+import com.squareup.sample.recyclerview.databinding.RecyclerviewLayoutBinding
 import com.squareup.sample.recyclerview.editablelistworkflow.EditableListWorkflow.Rendering
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 
-class EditableListLayoutRunner(view: View) : LayoutRunner<Rendering> {
+class EditableListLayoutRunner(binding: RecyclerviewLayoutBinding) : LayoutRunner<Rendering> {
   private val adapter = EditableListAdapter()
 
   init {
-    view.findViewById<RecyclerView>(id.recyclerview)
-        .apply {
-          layoutManager = LinearLayoutManager(view.context)
-          adapter = this@EditableListLayoutRunner.adapter
-          itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
-        }
+    with(binding.recyclerview) {
+      layoutManager = LinearLayoutManager(binding.root.context)
+      adapter = this@EditableListLayoutRunner.adapter
+      itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+    }
   }
 
   override fun showRendering(
@@ -47,6 +43,6 @@ class EditableListLayoutRunner(view: View) : LayoutRunner<Rendering> {
   }
 
   companion object : ViewFactory<Rendering> by bind(
-      R.layout.recyclerview_layout, ::EditableListLayoutRunner
+      RecyclerviewLayoutBinding::inflate, ::EditableListLayoutRunner
   )
 }

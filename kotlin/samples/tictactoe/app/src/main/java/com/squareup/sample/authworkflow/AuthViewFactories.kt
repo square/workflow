@@ -18,7 +18,7 @@ package com.squareup.sample.authworkflow
 import com.squareup.workflow.ui.ViewRegistry
 
 val AuthViewFactories = ViewRegistry(
-    AuthorizingLayoutRunner,
-    LoginLayoutRunner,
-    SecondFactorLayoutRunner
+    AuthorizingViewFactory,
+    LoginViewFactory,
+    SecondFactorViewFactory
 )

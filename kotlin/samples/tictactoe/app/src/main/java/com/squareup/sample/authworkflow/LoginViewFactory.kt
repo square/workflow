@@ -15,25 +15,18 @@
  */
 package com.squareup.sample.authworkflow
 
-import android.view.View
-import android.widget.TextView
-import com.squareup.sample.tictactoe.R
+import com.squareup.sample.tictactoe.databinding.LoginLayoutBinding
 import com.squareup.workflow.ui.LayoutRunner
-import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewFactory
-import com.squareup.workflow.ui.ViewEnvironment
+import com.squareup.workflow.ui.backPressedHandler
 
-internal class AuthorizingLayoutRunner(view: View) : LayoutRunner<AuthorizingScreen> {
-  private val messageView: TextView = view.findViewById(R.id.authorizing_message)
+internal val LoginViewFactory: ViewFactory<LoginScreen> =
+  LayoutRunner.bind(LoginLayoutBinding::inflate) { rendering, _ ->
+    loginErrorMessage.text = rendering.errorMessage
 
-  override fun showRendering(
-    rendering: AuthorizingScreen,
-    viewEnvironment: ViewEnvironment
-  ) {
-    messageView.text = rendering.message
+    loginButton.setOnClickListener {
+      rendering.onLogin(loginEmail.text.toString(), loginPassword.text.toString())
+    }
+
+    root.backPressedHandler = { rendering.onCancel() }
   }
-
-  companion object : ViewFactory<AuthorizingScreen> by bind(
-      R.layout.authorizing_layout, ::AuthorizingLayoutRunner
-  )
-}

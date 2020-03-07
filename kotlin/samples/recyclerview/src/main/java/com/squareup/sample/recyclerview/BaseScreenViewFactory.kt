@@ -15,17 +15,13 @@
  */
 package com.squareup.sample.recyclerview
 
-import android.view.View
-import android.widget.Button
 import com.squareup.sample.recyclerview.AppWorkflow.BaseScreen
+import com.squareup.sample.recyclerview.databinding.BaseScreenLayoutBinding
 import com.squareup.sample.recyclerview.editablelistworkflow.ListDiffMode
 import com.squareup.sample.recyclerview.editablelistworkflow.ListDiffMode.Asynchronous
 import com.squareup.sample.recyclerview.editablelistworkflow.ListDiffMode.Synchronous
 import com.squareup.workflow.ui.LayoutRunner
-import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewFactory
-import com.squareup.workflow.ui.ViewEnvironment
-import com.squareup.workflow.ui.WorkflowViewStub
 
 /**
  * Renders a [BaseScreen] from the [AppWorkflow] by showing the list in three separate
@@ -33,26 +29,12 @@ import com.squareup.workflow.ui.WorkflowViewStub
  *
  * Each of the `RecyclerView`s uses a different [ListDiffMode] for updating its adapter.
  */
-class BaseScreenLayoutRunner(view: View) : LayoutRunner<BaseScreen> {
-
-  private val noDiffListStub = view.findViewById<WorkflowViewStub>(R.id.list_stub)
-  private val syncListStub = view.findViewById<WorkflowViewStub>(R.id.sync_list_stub)
-  private val asyncListStub = view.findViewById<WorkflowViewStub>(R.id.async_list_stub)
-  private val addRowButton = view.findViewById<Button>(R.id.add_new_row_button)
-
-  override fun showRendering(
-    rendering: BaseScreen,
-    viewEnvironment: ViewEnvironment
-  ) {
-    val syncHints = viewEnvironment + (ListDiffMode to Synchronous)
-    val asyncHints = viewEnvironment + (ListDiffMode to Asynchronous)
-    noDiffListStub.update(rendering.listRendering, viewEnvironment)
+val BaseScreenViewFactory: ViewFactory<BaseScreen> =
+  LayoutRunner.bind(BaseScreenLayoutBinding::inflate) { rendering, containerHints ->
+    val syncHints = containerHints + (ListDiffMode to Synchronous)
+    val asyncHints = containerHints + (ListDiffMode to Asynchronous)
+    listStub.update(rendering.listRendering, containerHints)
     syncListStub.update(rendering.listRendering, syncHints)
     asyncListStub.update(rendering.listRendering, asyncHints)
-    addRowButton.setOnClickListener { rendering.onAddRowTapped() }
+    addNewRowButton.setOnClickListener { rendering.onAddRowTapped() }
   }
-
-  companion object : ViewFactory<BaseScreen> by bind(
-      R.layout.base_screen_layout, ::BaseScreenLayoutRunner
-  )
-}

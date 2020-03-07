@@ -16,8 +16,6 @@
 package com.squareup.sample.gameworkflow
 
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import com.squareup.sample.gameworkflow.Ending.Draw
 import com.squareup.sample.gameworkflow.Ending.Quitted
@@ -25,23 +23,24 @@ import com.squareup.sample.gameworkflow.Ending.Victory
 import com.squareup.sample.gameworkflow.SyncState.SAVED
 import com.squareup.sample.gameworkflow.SyncState.SAVE_FAILED
 import com.squareup.sample.gameworkflow.SyncState.SAVING
-import com.squareup.sample.tictactoe.R
+import com.squareup.sample.tictactoe.databinding.BoardBinding
+import com.squareup.sample.tictactoe.databinding.GamePlayLayoutBinding
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.backPressedHandler
 
-internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameOverScreen> {
-  private val boardView: ViewGroup = view.findViewById(R.id.game_play_board)
-  private val toolbar: Toolbar = view.findViewById(R.id.game_play_toolbar)
+internal class GameOverLayoutRunner(
+  private val binding: GamePlayLayoutBinding
+) : LayoutRunner<GameOverScreen> {
 
-  private val saveItem: MenuItem = toolbar.menu.add("")
+  private val saveItem: MenuItem = binding.gamePlayToolbar.menu.add("")
       .apply {
         setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
       }
 
-  private val exitItem: MenuItem = toolbar.menu.add("Exit")
+  private val exitItem: MenuItem = binding.gamePlayToolbar.menu.add("Exit")
       .apply {
         setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
       }
@@ -54,7 +53,7 @@ internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameO
       rendering.onPlayAgain()
       true
     }
-    view.backPressedHandler = { rendering.onExit() }
+    binding.root.backPressedHandler = { rendering.onExit() }
 
     when (rendering.endGameState.syncState) {
       SAVING -> {
@@ -77,18 +76,19 @@ internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameO
     }
 
     renderGame(
-        boardView, toolbar, rendering.endGameState.completedGame, rendering.endGameState.playerInfo
+        binding.gamePlayBoard, binding.gamePlayToolbar, rendering.endGameState.completedGame,
+        rendering.endGameState.playerInfo
     )
   }
 
   private fun renderGame(
-    boardView: ViewGroup,
+    boardView: BoardBinding,
     toolbar: Toolbar,
     completedGame: CompletedGame,
     playerInfo: PlayerInfo
   ) {
     renderResult(toolbar, completedGame, playerInfo)
-    completedGame.lastTurn.board.render(boardView)
+    completedGame.lastTurn.board.render(boardView.root)
   }
 
   private fun renderResult(
@@ -114,8 +114,8 @@ internal class GameOverLayoutRunner(private val view: View) : LayoutRunner<GameO
     }
   }
 
-  /** Note how easily  we're sharing this layout with [GamePlayLayoutRunner]. */
+  /** Note how easily we're sharing this layout with [GamePlayViewFactory]. */
   companion object : ViewFactory<GameOverScreen> by bind(
-      R.layout.game_play_layout, ::GameOverLayoutRunner
+      GamePlayLayoutBinding::inflate, ::GameOverLayoutRunner
   )
 }

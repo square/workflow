@@ -22,9 +22,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.Button
 import android.widget.LinearLayout
 import com.squareup.sample.recyclerview.AppWorkflow.ChooseRowTypeScreen
+import com.squareup.sample.recyclerview.databinding.NewRowTypeItemBinding
 import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.bindShowRendering
@@ -51,7 +51,7 @@ object ChooseRowTypeViewFactory : ViewFactory<ChooseRowTypeScreen> {
     list.bindShowRendering(initialRendering, initialViewEnvironment) { rendering, _ ->
       list.removeAllViews()
       rendering.options.forEachIndexed { index, option ->
-        val row = inflater.inflate(R.layout.new_row_type_item, list, false) as Button
+        val row = NewRowTypeItemBinding.inflate(inflater, list, false).button
         row.text = option
         row.setOnClickListener { rendering.onSelectionTapped(index) }
         list.addView(row, LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
