@@ -35,5 +35,6 @@ dependencies {
   implementation project(':workflow-runtime')
 
   implementation deps.androidx.appcompat
+  implementation deps.androidx.viewbinding
   implementation deps.rxjava2.rxjava2
 }

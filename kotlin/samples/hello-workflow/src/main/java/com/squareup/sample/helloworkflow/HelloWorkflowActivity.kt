@@ -22,7 +22,7 @@ import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.WorkflowRunner
 import com.squareup.workflow.ui.setContentWorkflow
 
-private val viewRegistry = ViewRegistry(HelloLayoutRunner)
+private val viewRegistry = ViewRegistry(HelloViewFactory)
 
 class HelloWorkflowActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

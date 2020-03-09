@@ -20,7 +20,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.viewbinding.ViewBinding
+import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import kotlin.reflect.KClass
+
+typealias ViewBindingInflater<BindingT> = (LayoutInflater, ViewGroup?, Boolean) -> BindingT
 
 /**
  * A delegate that implements a [showRendering] method to be called when a workflow rendering
@@ -51,6 +55,31 @@ import kotlin.reflect.KClass
  *    val TicTacToeViewBuilders = ViewRegistry(
  *        NewGameLayoutRunner, GamePlayLayoutRunner, GameOverLayoutRunner
  *    )
+ *
+ * ## AndroidX ViewBinding
+ *
+ * [AndroidX ViewBinding][ViewBinding] is supported in two ways.
+ * In most cases, you can use the `bind` function that takes a function and avoid implementing
+ * [LayoutRunner] at all.
+ *
+ * If you need to perform some set up before [showRendering] is called, use the
+ * `bind` overload that takes:
+ *  - a reference to a `ViewBinding.inflate` method and
+ *  - a [LayoutRunner] constructor that accepts a [ViewBinding]
+ *
+ *   class HelloLayoutRunner(private val binding: HelloGoodbyeLayoutBinding) : LayoutRunner<Rendering> {
+ *
+ *     override fun showRendering(rendering: Rendering) {
+ *       binding.messageView.text = rendering.message
+ *       binding.messageView.setOnClickListener { rendering.onClick(Unit) }
+ *     }
+ *
+ *     companion object : ViewFactory<Rendering> by bind(
+ *         HelloGoodbyeLayoutBinding, ::HelloLayoutRunner
+ *     )
+ *   }
+ *
+ * If the view does not need to be initialized, the [bind] function can be used instead.
  */
 interface LayoutRunner<RenderingT : Any> {
   fun showRendering(
@@ -69,8 +98,7 @@ interface LayoutRunner<RenderingT : Any> {
       contextForNewView: Context,
       container: ViewGroup?
     ): View {
-      return LayoutInflater.from(container?.context ?: contextForNewView)
-          .cloneInContext(contextForNewView)
+      return contextForNewView.viewBindingLayoutInflater(container)
           .inflate(layoutId, container, false)
           .apply {
             bindShowRendering(
@@ -93,6 +121,47 @@ interface LayoutRunner<RenderingT : Any> {
     ): ViewFactory<RenderingT> = Binding(RenderingT::class, layoutId, constructor)
 
     /**
+     * Creates a [ViewFactory] that [inflates][bindingInflater] a [ViewBinding] ([BindingT]) to show
+     * renderings of type [RenderingT], using [showRendering].
+     *
+     * ```
+     * val HelloBinding: ViewFactory<Rendering> =
+     *   bindViewBinding(HelloGoodbyeLayoutBinding::inflate) { rendering, containerHints ->
+     *     helloMessage.text = rendering.message
+     *     helloMessage.setOnClickListener { rendering.onClick(Unit) }
+     *   }
+     * ```
+     *
+     * If you need to initialize your view before [showRendering] is called, create a [LayoutRunner]
+     * and create a binding using `LayoutRunner.bind` instead.
+     */
+    inline fun <BindingT : ViewBinding, reified RenderingT : Any> bind(
+      noinline bindingInflater: ViewBindingInflater<BindingT>,
+      crossinline showRendering: BindingT.(RenderingT, ViewEnvironment) -> Unit
+    ): ViewFactory<RenderingT> = bind(bindingInflater) { binding ->
+      object : LayoutRunner<RenderingT> {
+        override fun showRendering(
+          rendering: RenderingT,
+          viewEnvironment: ViewEnvironment
+        ) = binding.showRendering(rendering, viewEnvironment)
+      }
+    }
+
+    /**
+     * Creates a [ViewFactory] that [inflates][bindingInflater] a [BindingT] to show renderings of
+     * type [RenderingT], using a [LayoutRunner] created by [constructor].
+     *
+     * If the view doesn't need to be initialized before [showRendering] is called,
+     * [bind] can be used instead, which just takes a lambda instead requiring a whole
+     * [LayoutRunner] class.
+     */
+    inline fun <BindingT : ViewBinding, reified RenderingT : Any> bind(
+      noinline bindingInflater: ViewBindingInflater<BindingT>,
+      noinline constructor: (BindingT) -> LayoutRunner<RenderingT>
+    ): ViewFactory<RenderingT> =
+      ViewBindingViewFactory(RenderingT::class, bindingInflater, constructor)
+
+    /**
      * Creates a [ViewFactory] that inflates [layoutId] to "show" renderings of type [RenderingT],
      * with a no-op [LayoutRunner]. Handy for showing static views.
      */
@@ -108,3 +177,7 @@ interface LayoutRunner<RenderingT : Any> {
     }
   }
 }
+
+internal fun Context.viewBindingLayoutInflater(container: ViewGroup?) =
+  LayoutInflater.from(container?.context ?: this)
+      .cloneInContext(this)

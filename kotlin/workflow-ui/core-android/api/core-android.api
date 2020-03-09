@@ -52,6 +52,12 @@ public final class com/squareup/workflow/ui/ShowRenderingTag {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/squareup/workflow/ui/ViewBindingViewFactory : com/squareup/workflow/ui/ViewFactory {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;)V
+	public fun buildView (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;Landroid/content/Context;Landroid/view/ViewGroup;)Landroid/view/View;
+	public fun getType ()Lkotlin/reflect/KClass;
+}
+
 public final class com/squareup/workflow/ui/ViewEnvironment {
 	public fun <init> (Lcom/squareup/workflow/ui/ViewRegistry;)V
 	public fun equals (Ljava/lang/Object;)Z

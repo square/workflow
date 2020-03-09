@@ -72,3 +72,12 @@ public final class com/squareup/workflow/ui/backstack/ViewStateCache$SavedState$
 	public synthetic fun newArray (I)[Ljava/lang/Object;
 }
 
+public final class com/squareup/workflow/ui/backstack/databinding/ViewStackLayoutBinding : androidx/viewbinding/ViewBinding {
+	public final field viewStack Lcom/squareup/workflow/ui/backstack/BackStackContainer;
+	public static fun bind (Landroid/view/View;)Lcom/squareup/workflow/ui/backstack/databinding/ViewStackLayoutBinding;
+	public synthetic fun getRoot ()Landroid/view/View;
+	public fun getRoot ()Lcom/squareup/workflow/ui/backstack/BackStackContainer;
+	public static fun inflate (Landroid/view/LayoutInflater;)Lcom/squareup/workflow/ui/backstack/databinding/ViewStackLayoutBinding;
+	public static fun inflate (Landroid/view/LayoutInflater;Landroid/view/ViewGroup;Z)Lcom/squareup/workflow/ui/backstack/databinding/ViewStackLayoutBinding;
+}
+
