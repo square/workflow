@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+## Version 0.24.0
+
+_2020-03-10_
+
+### Kotlin
+
+ * Introduce a view binding function that works with AndroidX ViewBindings. (#985)
+ * Rename ViewBinding to ViewFactory. (#1009)
+ * Rename ContainerHints to ViewEnvironment to match Swift. (#1005)
+ * Fix type parameter for expectWorker accepting Worker instance. (#969)
+
+### Swift
+
+ * Removes ViewRegistry, Introduce ViewControllerDescription. (#974)
+ * Introduce ViewEnvironment. (#999)
+
 ## Version 0.23.3
 
 ### Kotlin
