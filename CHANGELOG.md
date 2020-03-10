@@ -10,6 +10,7 @@ _2020-03-10_
  * Introduce a view binding function that works with AndroidX ViewBindings. (#985)
  * Rename ViewBinding to ViewFactory. (#1009)
  * Rename ContainerHints to ViewEnvironment to match Swift. (#1005)
+ * Fix type parameter for expectWorker accepting Worker instance. (#969)
 
 ### Swift
 
