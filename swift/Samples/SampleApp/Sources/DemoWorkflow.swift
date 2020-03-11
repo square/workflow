@@ -178,13 +178,14 @@ extension DemoWorkflow {
         }
 
         let subscribeTitle: String
-        var timerSubscription: Timer?
+        var timerSubscription: SignalProducer<Date, Never>?
         
         switch state.subscriptionState {
         case .not:
             subscribeTitle = "Subscribe"
         case .subscribing:
-            timerSubscription = Timer(time: .seconds(1))
+            timerSubscription = SignalProducer
+            .timer(interval: .seconds(1), on: QueueScheduler.main)
             
             subscribeTitle = "Stop"
         }
@@ -207,6 +208,7 @@ extension DemoWorkflow {
         )
 
         let subscription = timerSubscription?
+            .subscriptionProvider(using: SubscribeOnlyOnFirstRenderStrategy())
             .map { _ in Action.titleButtonTapped }
             .subscribe(context: context)
 
