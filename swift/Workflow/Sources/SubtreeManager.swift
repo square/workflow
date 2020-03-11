@@ -33,7 +33,7 @@ extension WorkflowNode {
         /// The current array of children
         private (set) internal var childWorkflows: [ChildKey:AnyChildWorkflow] = [:]
 
-        private (set) internal var sideEffects: [AnyHashable: SideEffect] = [:]
+        private (set) internal var sideEffectLifetimes: [AnyHashable: (Lifetime, Lifetime.Token)] = [:]
 
         init() {}
 
@@ -49,7 +49,7 @@ extension WorkflowNode {
             let context = Context(
                 previousSinks: previousSinks,
                 originalChildWorkflows: childWorkflows,
-                originalSideEffects: sideEffects)
+                originalSideEffectLifetimes: sideEffectLifetimes)
 
             let wrapped = RenderContext.make(implementation: context)
 
@@ -62,7 +62,7 @@ extension WorkflowNode {
             /// pass.* This means that any pre-existing children that were *not* used during the render pass are removed
             /// as a result of this call to `render`.
             self.childWorkflows = context.usedChildWorkflows
-            self.sideEffects = context.usedSideEffects
+            self.sideEffectLifetimes = context.usedSideEffectLifetimes
 
             /// Captured the reusable sinks from this render pass.
             self.previousSinks = context.sinkStore.usedSinks
@@ -148,12 +148,12 @@ extension WorkflowNode.SubtreeManager {
         private let originalChildWorkflows: [ChildKey:AnyChildWorkflow]
         private (set) internal var usedChildWorkflows: [ChildKey:AnyChildWorkflow]
 
-        private let originalSideEffects: [AnyHashable: SideEffect]
-        private (set) internal var usedSideEffects: [AnyHashable: SideEffect]
+        private let originalSideEffectLifetimes: [AnyHashable: (Lifetime, Lifetime.Token)]
+        private (set) internal var usedSideEffectLifetimes: [AnyHashable: (Lifetime, Lifetime.Token)]
 
         private (set) internal var eventSources: [Signal<AnyWorkflowAction<WorkflowType>, Never>] = []
 
-        internal init(previousSinks: [ObjectIdentifier:AnyReusableSink], originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalSideEffects: [AnyHashable: SideEffect]) {
+        internal init(previousSinks: [ObjectIdentifier:AnyReusableSink], originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalSideEffectLifetimes: [AnyHashable: (Lifetime, Lifetime.Token)]) {
             self.eventPipes = []
 
             self.sinkStore = SinkStore(previousSinks: previousSinks)
@@ -161,8 +161,8 @@ extension WorkflowNode.SubtreeManager {
             self.originalChildWorkflows = originalChildWorkflows
             self.usedChildWorkflows = [:]
 
-            self.originalSideEffects = originalSideEffects
-            self.usedSideEffects = [:]
+            self.originalSideEffectLifetimes = originalSideEffectLifetimes
+            self.usedSideEffectLifetimes = [:]
         }
 
         func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child : Workflow, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
@@ -221,21 +221,14 @@ extension WorkflowNode.SubtreeManager {
             return sink
         }
 
-        func runSideEffect<Action>(actionType: Action.Type, key: AnyHashable, action: (_ sink: Sink<Action>, _ lifetime: Lifetime) -> Void) where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
+        func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void) {
 
-            let eventPipe = EventPipe()
-            self.eventPipes.append(eventPipe)
-
-            if let existingSideEffect = originalSideEffects[key] {
-                existingSideEffect.update(eventPipe: eventPipe)
-                usedSideEffects[key] = existingSideEffect
+            if let existingSideEffect = originalSideEffectLifetimes[key] {
+                usedSideEffectLifetimes[key] = existingSideEffect
             } else {
-                let newSideEffect = SideEffect(
-                    action: { sink, lifetime in
-                        action(sink.contraMap({ AnyWorkflowAction<WorkflowType>($0) }), lifetime)
-                    },
-                    eventPipe: eventPipe)
-                usedSideEffects[key] = newSideEffect
+                let (lifetime, token) = Lifetime.make()
+                action(lifetime)
+                usedSideEffectLifetimes[key] = (lifetime, token)
             }
 
         }
@@ -485,36 +478,4 @@ extension WorkflowNode.SubtreeManager {
     }
     
     
-}
-
-
-extension WorkflowNode.SubtreeManager {
-
-    /// Abstract base class for running side effects in the subtree.
-    internal class SideEffect {
-
-        private var eventPipe: EventPipe
-        private let lifeTime: Lifetime
-        private let token: Lifetime.Token
-
-        fileprivate init(action: (Sink<AnyWorkflowAction<WorkflowType>>, Lifetime) -> Void, eventPipe: EventPipe) {
-            self.eventPipe = eventPipe
-            (self.lifeTime, self.token) = Lifetime.make()
-
-            let sink = Sink { [weak self] in
-                self?.handle(action: $0)
-            }
-            action(sink, lifeTime)
-        }
-
-        fileprivate func update(eventPipe: EventPipe) {
-            self.eventPipe = eventPipe
-        }
-
-        private func handle(action: AnyWorkflowAction<WorkflowType>) {
-            eventPipe.handle(event: Output.update(action, source: .sideEffect))
-        }
-
-    }
-
 }

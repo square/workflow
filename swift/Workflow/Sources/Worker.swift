@@ -78,7 +78,8 @@ fileprivate struct WorkerWorkflow<WorkerType: Worker>: Workflow {
     typealias Rendering = Void
 
     func render(state: State, context: RenderContext<WorkerWorkflow>) -> Rendering {
-        context.runSideEffect(key: state) { sink, lifetime in
+        let sink = context.makeSink(of: AnyWorkflowAction.self)
+        context.runSideEffect(key: state) { lifetime in
             worker
                 .run()
                 .take(during: lifetime)

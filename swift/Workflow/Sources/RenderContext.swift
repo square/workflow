@@ -71,7 +71,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
-    public func runSideEffect<Action>(actionType: Action.Type = Action.self, key: AnyHashable, action: (_ sink: Sink<Action>, _ lifetime: Lifetime) -> Void) where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
+    public func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void) {
         fatalError()
     }
     
@@ -104,9 +104,9 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
             return implementation.makeSink(of: actionType)
         }
 
-        override func runSideEffect<Action>(actionType: Action.Type = Action.self, key: AnyHashable, action: (_ sink: Sink<Action>, _ lifetime: Lifetime) -> Void) where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
+        override func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void) {
             assertStillValid()
-            implementation.runSideEffect(actionType: actionType, key: key, action: action)
+            implementation.runSideEffect(key: key, action: action)
         }
 
         private func assertStillValid() {
@@ -125,7 +125,7 @@ internal protocol RenderContextType: class {
 
     func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
-    func runSideEffect<Action>(actionType: Action.Type, key: AnyHashable, action: (_ sink: Sink<Action>, _ lifetime: Lifetime) -> Void) where Action: WorkflowAction, Action.WorkflowType == WorkflowType
+    func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void)
 
 }
 
@@ -134,7 +134,8 @@ import Foundation
 extension RenderContext {
 
     public func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-        runSideEffect(actionType: Action.self, key: UUID()) { sink, lifetime in
+        let sink = makeSink(of: Action.self)
+        runSideEffect(key: UUID()) { lifetime in
             signal
                 .take(during: lifetime)
                 .observe(on: QueueScheduler.workflowExecution)
