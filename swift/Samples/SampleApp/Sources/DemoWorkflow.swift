@@ -136,6 +136,40 @@ struct RefreshWorker: Worker {
 }
 
 
+struct SubscriptionWorkflow: Workflow {
+    fileprivate let signal: TimerSignal
+
+    func makeInitialState() -> Void {}
+
+    func workflowDidChange(
+        from previousWorkflow: SubscriptionWorkflow,
+        state: inout Void
+    ) {}
+
+    enum Action: WorkflowAction {
+        func apply(toState state: inout ()) -> SubscriptionWorkflow.Action? {
+            return self
+        }
+
+        typealias WorkflowType = SubscriptionWorkflow
+
+        case tapped
+    }
+
+    typealias Output = Action
+
+    func render(
+        state: Void,
+        context: RenderContext<SubscriptionWorkflow>
+    ) -> Void {
+        let sink = context.makeSink(of: Action.self)
+        signal.signal.observeValues { _ in
+            sink.send(.tapped)
+        }
+        return
+    }
+}
+
 // MARK: Rendering
 
 extension DemoWorkflow {
@@ -185,9 +219,14 @@ extension DemoWorkflow {
             subscribeTitle = "Subscribe"
         case .subscribing:
             // Subscribe to the timer signal, simulating the title being tapped.
-            context.subscribe(signal: state.signal.signal.map({ _ -> Action in
-                return .titleButtonTapped
-            }))
+//            context.subscribe(signal: state.signal.signal.map({ _ -> Action in
+//                return .titleButtonTapped
+//            }))
+            
+            context.render(workflow: SubscriptionWorkflow(signal: state.signal),
+                           key: "") { _ in
+                Action.titleButtonTapped
+            }
             subscribeTitle = "Stop"
         }
 
