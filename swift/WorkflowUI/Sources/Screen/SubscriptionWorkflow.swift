@@ -1,15 +1,16 @@
 import Foundation
 import ReactiveSwift
+import Workflow
 
-public struct SubscribedScreen<S: Screen, O>: Screen {
+public struct SubscribedScreen<S: Screen, SubPro: SubscriptionProvider>: Screen {
     let screen: S
-    let subscription: Subscription<O>?
+    let subscription: Subscription<SubPro>?
 
     public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
         return ViewController.description(for: self, environment: environment)
     }
 
-    private class ViewController: ScreenViewController<SubscribedScreen<S, O>> {
+    private class ViewController: ScreenViewController<SubscribedScreen<S, SubPro>> {
         private var disposable: Disposable?
         private let screenViewController: DescribedViewController
 
@@ -18,10 +19,10 @@ public struct SubscribedScreen<S: Screen, O>: Screen {
 
             super.init(screen: screen, environment: environment)
         }
-        
+
         override func viewDidLoad() {
             super.viewDidLoad()
-            
+
             self.view.addSubview(screenViewController.view)
         }
 
@@ -32,7 +33,7 @@ public struct SubscribedScreen<S: Screen, O>: Screen {
         }
 
         override func screenDidChange(
-            from previousScreen: SubscribedScreen<S, O>,
+            from previousScreen: SubscribedScreen<S, SubPro>,
             previousEnvironment: ViewEnvironment
         ) {
             updateSubscription()
@@ -44,12 +45,12 @@ public struct SubscribedScreen<S: Screen, O>: Screen {
                 disposable = nil
                 return
             }
-            
+
             guard disposable == nil else {
                 return
             }
 
-            disposable = subscription.producer.start { ev in
+            disposable = subscription.provider.producer.start { ev in
                 guard let value = ev.value else {
                     return
                 }
@@ -57,21 +58,63 @@ public struct SubscribedScreen<S: Screen, O>: Screen {
                 subscription.action(value)
             }
         }
+
+        private func shouldUpdateSubscription(from previousScreen: SubscribedScreen<S, SubPro>) -> Bool {
+            screen.subscription?.provider == previousScreen.subscription?.provider
+        }
     }
 }
 
 public extension Screen {
-    func subscribed<O>(to subscription: Subscription<O>?) -> SubscribedScreen<Self, O> {
+    func subscribed<Provider: SubscriptionProvider>(to subscription: Subscription<Provider>?) -> SubscribedScreen<Self, Provider> {
         return SubscribedScreen(screen: self, subscription: subscription)
     }
 }
 
-public struct Subscription<O> {
-    let producer: SignalProducer<O, Never>
-    let action: ((O) -> Void)
-    
-    public init(producer: SignalProducer<O, Never>, action: @escaping ((O) -> Void)) {
-        self.producer = producer
-        self.action = action
+public protocol SubscriptionProvider: Equatable {
+    associatedtype Output
+
+    var producer: SignalProducer<Output, Never> { get }
+}
+
+public struct MappedSubscriptionProvider<Sub: SubscriptionProvider, Output>: SubscriptionProvider {
+    let wrapped: Sub
+    let mapper: ((Sub.Output) -> Output)
+
+    public var producer: SignalProducer<Output, Never> {
+        wrapped
+            .producer
+            .map { self.mapper($0) }
+    }
+
+    public static func == (
+        lhs: MappedSubscriptionProvider<Sub, Output>,
+        rhs: MappedSubscriptionProvider<Sub, Output>
+    ) -> Bool {
+        lhs.wrapped == rhs.wrapped
+    }
+}
+
+public extension SubscriptionProvider {
+    func map<NewOutput>(_ mapper: @escaping (Output) -> NewOutput) -> MappedSubscriptionProvider<Self, NewOutput> {
+        MappedSubscriptionProvider(wrapped: self, mapper: mapper)
+    }
+}
+
+public struct Subscription<Provider: SubscriptionProvider> {
+    let provider: Provider
+    let action: ((Provider.Output) -> Void)
+}
+
+public extension SubscriptionProvider {
+    func subscribe<WorkflowType>(context: RenderContext<WorkflowType>) -> Subscription<Self>
+        where
+        Output: WorkflowAction,
+        Output.WorkflowType == WorkflowType
+    {
+        let sink = context.makeSink(of: Output.self)
+        return Subscription(provider: self) { o in
+            sink.send(o)
+        }
     }
 }

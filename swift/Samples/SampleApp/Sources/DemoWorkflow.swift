@@ -113,10 +113,29 @@ extension DemoWorkflow {
     }
 }
 
-extension SignalProducer {
-    static var refresher: SignalProducer<String, Never> {
-        return SignalProducer<String, Never>(value: "We did it!")
+struct Refresher: SubscriptionProvider {
+    var producer: SignalProducer<String, Never> {
+        SignalProducer<String, Never>(value: "We did it!")
             .delay(1.0, on: QueueScheduler.main)
+    }
+}
+
+struct Timer: SubscriptionProvider {
+    let time: DispatchTimeInterval
+
+    var producer: SignalProducer<Date, Never> {
+        SignalProducer
+            .timer(interval: time, on: QueueScheduler.main)
+    }
+}
+
+extension DispatchTimeInterval: SubscriptionProvider {
+    public var producer: SignalProducer<Date, Never> {
+        SignalProducer
+            .timer(
+                interval: self,
+                on: QueueScheduler.main
+            )
     }
 }
 
@@ -139,7 +158,7 @@ extension DemoWorkflow {
         var title = "Hello, \(name)!"
         let refreshText: String
         let refreshEnabled: Bool
-        var refreshSubscription: Subscription<String>?
+        var refreshSubscription: Refresher?
         // Create a sink of our Action type so we can send actions back to the workflow.
         let sink = context.makeSink(of: Action.self)
 
@@ -155,29 +174,20 @@ extension DemoWorkflow {
             refreshText = "Loading..."
             refreshEnabled = false
 
-            refreshSubscription = Subscription(producer: SignalProducer<String, Never>.refresher) { val in
-                sink.send(.refreshComplete(val))
-            }
+            refreshSubscription = Refresher()
         }
 
         let subscribeTitle: String
-        var subscription: Subscription<Void>?
+        var timerSubscription: Timer?
         
         switch state.subscriptionState {
         case .not:
             subscribeTitle = "Subscribe"
         case .subscribing:
-            let producer = SignalProducer
-                .timer(interval: .seconds(1), on: QueueScheduler.main)
-                .map { _ in () }
+            timerSubscription = Timer(time: .seconds(1))
             
-            subscription = Subscription(producer: producer) {
-                sink.send(.titleButtonTapped)
-            }
-
             subscribeTitle = "Stop"
         }
-
 
         let demoScreen = DemoScreen(
             title: title,
@@ -196,9 +206,17 @@ extension DemoWorkflow {
             }
         )
 
+        let subscription = timerSubscription?
+            .map { _ in Action.titleButtonTapped }
+            .subscribe(context: context)
+
+        let refresh = refreshSubscription?
+            .map { _ in Action.refreshButtonTapped }
+            .subscribe(context: context)
+
         return demoScreen
             .subscribed(to: subscription)
-            .subscribed(to: refreshSubscription)
+            .subscribed(to: refresh)
             .asAny()
     }
 }
