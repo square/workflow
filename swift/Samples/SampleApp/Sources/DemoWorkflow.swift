@@ -32,7 +32,6 @@ struct DemoWorkflow: Workflow {
 extension DemoWorkflow {
 
     struct State {
-        fileprivate var signal: TimerSignal
         var colorState: ColorState
         var loadingState: LoadingState
         var subscriptionState: SubscriptionState
@@ -56,7 +55,6 @@ extension DemoWorkflow {
 
     func makeInitialState() -> DemoWorkflow.State {
         return State(
-            signal: TimerSignal(),
             colorState: .red,
             loadingState: .idle(title: "Not Loaded"),
             subscriptionState: .not)
@@ -115,64 +113,17 @@ extension DemoWorkflow {
     }
 }
 
-
-// MARK: Workers
-
-
-struct RefreshWorker: Worker {
-    enum Output {
-        case success(String)
-        case error(Error)
-    }
-
-    func run() -> SignalProducer<RefreshWorker.Output, Never> {
-        return SignalProducer(value: .success("We did it!"))
+extension SignalProducer {
+    static var refresher: SignalProducer<String, Never> {
+        return SignalProducer<String, Never>(value: "We did it!")
             .delay(1.0, on: QueueScheduler.main)
-    }
-
-    func isEquivalent(to otherWorker: RefreshWorker) -> Bool {
-        return true
-    }
-}
-
-
-struct SubscriptionWorkflow<O>: Workflow {
-    fileprivate let signal: Signal<O, Never>
-
-    func makeInitialState() -> Void {}
-
-    func workflowDidChange(
-        from previousWorkflow: SubscriptionWorkflow,
-        state: inout Void
-    ) {}
-    
-    struct Action: WorkflowAction {
-        typealias WorkflowType = SubscriptionWorkflow<O>
-        
-        let val: O
-        func apply(toState state: inout ()) -> SubscriptionWorkflow<O>.Output? {
-            return val
-        }
-    }
-
-    typealias Output = O
-
-    func render(
-        state: Void,
-        context: RenderContext<SubscriptionWorkflow<O>>
-    ) -> Void {
-        let sink = context.makeSink(of: Action.self)
-        signal.signal.observeValues { val in
-            sink.send(.init(val: val))
-        }
-        return
     }
 }
 
 // MARK: Rendering
 
 extension DemoWorkflow {
-    typealias Rendering = DemoScreen
+    typealias Rendering = AnyScreen
 
     func render(state: DemoWorkflow.State, context: RenderContext<DemoWorkflow>) -> Rendering {
         let color: UIColor
@@ -188,6 +139,9 @@ extension DemoWorkflow {
         var title = "Hello, \(name)!"
         let refreshText: String
         let refreshEnabled: Bool
+        var refreshSubscription: Subscription<String>?
+        // Create a sink of our Action type so we can send actions back to the workflow.
+        let sink = context.makeSink(of: Action.self)
 
         switch state.loadingState {
         case .idle(title: let refreshTitle):
@@ -201,38 +155,31 @@ extension DemoWorkflow {
             refreshText = "Loading..."
             refreshEnabled = false
 
-            context.awaitResult(for: RefreshWorker()) { output -> Action in
-                switch output {
-                case .success(let result):
-                    return .refreshComplete(result)
-                case .error(let error):
-                    return .refreshError(error)
-                }
+            refreshSubscription = Subscription(producer: SignalProducer<String, Never>.refresher) { val in
+                sink.send(.refreshComplete(val))
             }
         }
 
         let subscribeTitle: String
-
+        var subscription: Subscription<Void>?
+        
         switch state.subscriptionState {
         case .not:
             subscribeTitle = "Subscribe"
         case .subscribing:
-            // Subscribe to the timer signal, simulating the title being tapped.
-//            context.subscribe(signal: state.signal.signal.map({ _ -> Action in
-//                return .titleButtonTapped
-//            }))
+            let producer = SignalProducer
+                .timer(interval: .seconds(1), on: QueueScheduler.main)
+                .map { _ in () }
             
-            context.render(workflow: SubscriptionWorkflow(signal: state.signal.signal),
-                           key: "") { _ in
-                Action.titleButtonTapped
+            subscription = Subscription(producer: producer) {
+                sink.send(.titleButtonTapped)
             }
+
             subscribeTitle = "Stop"
         }
 
-        // Create a sink of our Action type so we can send actions back to the workflow.
-        let sink = context.makeSink(of: Action.self)
 
-        return DemoScreen(
+        let demoScreen = DemoScreen(
             title: title,
             color: color,
             onTitleTap: {
@@ -246,25 +193,12 @@ extension DemoWorkflow {
             isRefreshEnabled: refreshEnabled,
             onRefreshTap: {
                 sink.send(.refreshButtonTapped)
-            })
-    }
-}
+            }
+        )
 
-
-fileprivate class TimerSignal {
-    let signal: Signal<Void, Never>
-    let observer: Signal<Void, Never>.Observer
-    let timer: Timer
-
-    init() {
-        let (signal, observer) = Signal<Void, Never>.pipe()
-
-        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak observer] _ in
-            observer?.send(value: ())
-        }
-
-        self.signal = signal
-        self.observer = observer
-        self.timer = timer
+        return demoScreen
+            .subscribed(to: subscription)
+            .subscribed(to: refreshSubscription)
+            .asAny()
     }
 }

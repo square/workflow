@@ -42,4 +42,10 @@ public struct AnyScreen: Screen {
 
 }
 
+public extension Screen {
+    func asAny() -> AnyScreen {
+        AnyScreen(self)
+    }
+}
+
 #endif
