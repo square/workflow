@@ -164,13 +164,13 @@ final class SubtreeManagerTests: XCTestCase {
                 case .notWorking:
                     return false
                 case .working:
-                    context.awaitResult(
-                        for: ExpectingWorker(
-                            startExpectation: startExpectation,
-                            endExpectation: endExpectation),
-                        outputMap: { output -> AnyWorkflowAction<WorkerWorkflow> in
+                    ExpectingWorker(
+                        startExpectation: startExpectation,
+                        endExpectation: endExpectation)
+                        .mapOutput { output -> AnyWorkflowAction<WorkerWorkflow> in
                             return AnyWorkflowAction.noAction
-                        })
+                        }
+                    .running(with: context)
                     return true
                 }
             }

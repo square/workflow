@@ -142,7 +142,7 @@ final class WorkflowNodeTests: XCTestCase {
             XCTFail()
         case .didUpdate(let source):
             switch source {
-            case .external, .worker:
+            case .external, .worker, .sideEffect:
                 XCTFail()
             case .subtree(let childInfo):
                 XCTAssert(childInfo.workflowType == "\(EventEmittingWorkflow.self)")
@@ -153,7 +153,7 @@ final class WorkflowNodeTests: XCTestCase {
                     switch source {
                     case .external:
                         break
-                    case .subtree(_), .worker:
+                    case .subtree(_), .worker, .sideEffect:
                         XCTFail()
                     }
                 }
@@ -215,9 +215,11 @@ final class WorkflowNodeTests: XCTestCase {
             }
 
             func render(state: WF.State, context: RenderContext<WF>) -> Void {
-                context.awaitResult(for: TestWorker()) { output in
-                    return AnyWorkflowAction(sendingOutput: output)
-                }
+                TestWorker()
+                    .mapOutput { output in
+                        return AnyWorkflowAction(sendingOutput: output)
+                    }
+                    .running(with: context)
             }
         }
 

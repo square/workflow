@@ -200,10 +200,11 @@ extension AuthenticationWorkflow {
             break
 
         case .authorizingEmailPassword(email: let email, password: let password):
-            context.awaitResult(for: AuthorizingEmailPasswordWorker(
+            AuthorizingEmailPasswordWorker(
                 authenticationService: authenticationService,
                 email: email,
-                password: password))
+                password: password
+            ).running(with: context)
 
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))
 
@@ -215,11 +216,11 @@ extension AuthenticationWorkflow {
 
         case .authorizingTwoFactor(twoFactorCode: let twoFactorCode, intermediateSession: let intermediateSession):
 
-            context.awaitResult(
-                for: AuthorizingTwoFactorWorker(
-                    authenticationService: authenticationService,
-                    intermediateToken: intermediateSession,
-                    twoFactorCode: twoFactorCode))
+            AuthorizingTwoFactorWorker(
+                authenticationService: authenticationService,
+                intermediateToken: intermediateSession,
+                twoFactorCode: twoFactorCode
+            ).running(with: context)
 
             backStackItems.append(twoFactorScreen(error: nil, intermediateSession: intermediateSession, sink: sink))
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))

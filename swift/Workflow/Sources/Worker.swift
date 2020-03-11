@@ -23,7 +23,7 @@ import ReactiveSwift
 /// If there is, and if the workers are 'equivalent', the context leaves the existing worker running.
 ///
 /// If there is not an existing worker of this type, the context will kick off the new worker (via `run`).
-public protocol Worker {
+public protocol Worker: AnyWorkflowConvertible {
 
     /// The type of output events returned by this worker.
     associatedtype Output
@@ -41,6 +41,51 @@ extension Worker where Self: Equatable {
 
     public func isEquivalent(to otherWorker: Self) -> Bool {
         return self == otherWorker
+    }
+
+}
+
+extension Worker {
+
+    public func asAnyWorkflow() -> AnyWorkflow<Void, Output> {
+        return WorkerWorkflow(worker: self).asAnyWorkflow()
+    }
+
+}
+
+
+import Foundation
+
+
+fileprivate struct WorkerWorkflow<WorkerType: Worker>: Workflow {
+
+    var worker: WorkerType
+
+    typealias Output = WorkerType.Output
+
+    typealias State = UUID
+
+    func makeInitialState() -> State {
+        return UUID()
+    }
+
+    func workflowDidChange(from previousWorkflow: WorkerWorkflow<WorkerType>, state: inout UUID) {
+        if !worker.isEquivalent(to: previousWorkflow.worker) {
+            state = UUID()
+        }
+    }
+
+    typealias Rendering = Void
+
+    func render(state: State, context: RenderContext<WorkerWorkflow>) -> Rendering {
+        context.runSideEffect(key: state) { sink, lifetime in
+            worker
+                .run()
+                .take(during: lifetime)
+                .map { AnyWorkflowAction(sendingOutput: $0) }
+                .observe(on: QueueScheduler.workflowExecution)
+                .startWithValues(sink.send)
+        }
     }
 
 }

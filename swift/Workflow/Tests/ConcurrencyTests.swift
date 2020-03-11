@@ -203,7 +203,9 @@ final class ConcurrencyTests: XCTestCase {
         }
 
         let initialScreen = host.rendering.value
-        initialScreen.update()
+        withExtendedLifetime(host) {
+            initialScreen.update()
+        }
 
         XCTAssertEqual(2, debugger.snapshots.count)
         XCTAssertEqual("1", debugger.snapshots[0].stateDescription)
@@ -505,7 +507,7 @@ final class ConcurrencyTests: XCTestCase {
                     update = {}
                 }
 
-                context.awaitResult(for: DelayWorker(), outputMap: { $0 })
+                DelayWorker().running(with: context)
 
                 return TestScreen(count: state.count, update: update)
             }
@@ -596,7 +598,7 @@ final class ConcurrencyTests: XCTestCase {
                 }))
 
             case .worker:
-                context.awaitResult(for: TestWorker())
+                TestWorker().running(with: context)
             }
 
             let sink = context.makeSink(of: Action.self)
