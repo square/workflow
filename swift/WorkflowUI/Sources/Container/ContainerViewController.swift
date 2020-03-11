@@ -17,7 +17,6 @@
 #if canImport(UIKit)
 
 import UIKit
-import ReactiveSwift
 import Workflow
 
 
@@ -25,39 +24,42 @@ import Workflow
 public final class ContainerViewController<Output, ScreenType>: UIViewController where ScreenType: Screen {
 
     /// Emits output events from the bound workflow.
-    public let output: Signal<Output, Never>
+    public var outputListener: ((Output) -> Void)?
 
     internal let rootViewController: DescribedViewController
 
     private let workflowHost: Any
-
-    private let rendering: Property<ScreenType>
-
-    private let (lifetime, token) = Lifetime.make()
+    
+    private var rendering: ScreenType
 
     public var rootViewEnvironment: ViewEnvironment {
         didSet {
             // Re-render the current rendering with the new environment
-            render(screen: rendering.value, environment: rootViewEnvironment)
+            render(screen: rendering, environment: rootViewEnvironment)
         }
     }
 
-    private init(workflowHost: Any, rendering: Property<ScreenType>, output: Signal<Output, Never>, rootViewEnvironment: ViewEnvironment) {
+    private init(workflowHost: Any,
+                 rendering: ScreenType,
+                 outputListener: ListenerContainer<Output>,
+                 renderingListener: ListenerContainer<ScreenType>,
+                 rootViewEnvironment: ViewEnvironment) {
         self.workflowHost = workflowHost
-        self.rootViewController = DescribedViewController(screen: rendering.value, environment: rootViewEnvironment)
+        self.rootViewController = DescribedViewController(screen: rendering, environment: rootViewEnvironment)
         self.rendering = rendering
-        self.output = output
         self.rootViewEnvironment = rootViewEnvironment
 
         super.init(nibName: nil, bundle: nil)
-
-        rendering
-            .signal
-            .take(during: lifetime)
-            .observeValues { [weak self] screen in
-                guard let self = self else { return }
-                self.render(screen: screen, environment: self.rootViewEnvironment)
-            }
+        
+        renderingListener.listener = { [weak self] screen in
+            guard let self = self else { return }
+            self.render(screen: screen, environment: self.rootViewEnvironment)
+        }
+        
+        outputListener.listener = { [weak self] output in
+            guard let self = self else { return }
+            self.outputListener?(output)
+        }
     }
 
     public convenience init<W: Workflow>(workflow: W, rootViewEnvironment: ViewEnvironment = .empty) where W.Rendering == ScreenType, W.Output == Output {
@@ -65,7 +67,8 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
         self.init(
             workflowHost: host,
             rendering: host.rendering,
-            output: host.output,
+            outputListener: host.outputListener,
+            renderingListener: host.renderingListener,
             rootViewEnvironment: rootViewEnvironment)
     }
 

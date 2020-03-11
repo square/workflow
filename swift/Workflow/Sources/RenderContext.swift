@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ReactiveSwift
 
 /// `RenderContext` is the composition point for the workflow tree.
 ///
@@ -70,14 +69,6 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
     public func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
         fatalError()
     }
-
-    public func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-        fatalError()
-    }
-
-    public func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-        fatalError()
-    }
     
     final func invalidate() {
         isValid = false
@@ -107,17 +98,6 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         override func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where WorkflowType == Action.WorkflowType, Action : WorkflowAction {
             return implementation.makeSink(of: actionType)
         }
-
-        override func subscribe<Action>(signal: Signal<Action, Never>) where WorkflowType == Action.WorkflowType, Action : WorkflowAction {
-            assertStillValid()
-            return implementation.subscribe(signal: signal)
-        }
-
-
-        override func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-            assertStillValid()
-            implementation.awaitResult(for: worker, outputMap: outputMap)
-        }
         
         private func assertStillValid() {
             assert(isValid, "A `RenderContext` instance was used outside of the workflow's `render` method. It is a programmer error to capture a context in a closure or otherwise cause it to be used outside of the `render` method.")
@@ -134,11 +114,6 @@ internal protocol RenderContextType: class {
     func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child: Workflow, Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
     func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType
-
-    func subscribe<Action>(signal: Signal<Action, Never>) where Action: WorkflowAction, Action.WorkflowType == WorkflowType
-
-    func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
-    
 }
 
 
@@ -151,22 +126,6 @@ extension RenderContext {
                     return onEvent(event, &state)
                 }
             }
-    }
-
-}
-
-extension RenderContext {
-
-    public func awaitResult<W>(for worker: W) where W : Worker, W.Output : WorkflowAction, WorkflowType == W.Output.WorkflowType {
-        awaitResult(for: worker, outputMap: { $0 })
-    }
-
-    public func awaitResult<W>(for worker: W, onOutput: @escaping (W.Output, inout WorkflowType.State) -> WorkflowType.Output?) where W: Worker {
-        awaitResult(for: worker) { output in
-            return AnyWorkflowAction<WorkflowType> { state in
-                return onOutput(output, &state)
-            }
-        }
     }
 
 }

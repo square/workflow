@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ReactiveSwift
 
 /// Defines a type that receives debug information about a running workflow hierarchy.
 public protocol WorkflowDebugger {
@@ -35,15 +34,12 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
     private let debugger: WorkflowDebugger?
 
-    private let (outputEvent, outputEventObserver) = Signal<WorkflowType.Output, Never>.pipe()
-
     private let rootNode: WorkflowNode<WorkflowType>
-
-    private let mutableRendering: MutableProperty<WorkflowType.Rendering>
-
+    
     /// Represents the `Rendering` produced by the root workflow in the hierarchy. New `Rendering` values are produced
     /// as state transitions occur within the hierarchy.
-    public let rendering: Property<WorkflowType.Rendering>
+    public private(set) var rendering: WorkflowType.Rendering
+
 
     /// Initializes a new host with the given workflow at the root.
     ///
@@ -55,8 +51,7 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
         self.rootNode = WorkflowNode(workflow: workflow)
 
-        self.mutableRendering = MutableProperty(self.rootNode.render())
-        self.rendering = Property(mutableRendering)
+        self.rendering = self.rootNode.render()
         self.rootNode.enableEvents()
 
         debugger?.didEnterInitialState(snapshot: self.rootNode.makeDebugSnapshot())
@@ -81,10 +76,11 @@ public final class WorkflowHost<WorkflowType: Workflow> {
     }
 
     private func handle(output: WorkflowNode<WorkflowType>.Output) {
-        mutableRendering.value = rootNode.render()
+        rendering = rootNode.render()
+        renderingListener.listener?(rendering)
 
         if let outputEvent = output.outputEvent {
-            outputEventObserver.send(value: outputEvent)
+            outputListener.listener?(outputEvent)
         }
 
         debugger?.didUpdate(
@@ -93,10 +89,13 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
         rootNode.enableEvents()
     }
+    
+    public let outputListener: ListenerContainer<WorkflowType.Output> = .init()
+    public let renderingListener: ListenerContainer<WorkflowType.Rendering> = .init()
 
-    /// A signal containing output events emitted by the root workflow in the hierarchy.
-    public var output: Signal<WorkflowType.Output, Never> {
-        return outputEvent
-    }
+}
 
+
+public class ListenerContainer<Output> {
+    public var listener: ((Output) -> Void)?
 }
