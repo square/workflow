@@ -13,7 +13,7 @@ and assign it to @bencochran or @aquageek.*
 ---
 1. Merge an update of [the change log](CHANGELOG.md) with the changes since the last release.
 
-1. Make sure you're on the `master` branch (or fix branch, e.g. `v0.1-fixes`).
+1. Create a new release branch `release-v0.1.x` (or checkout fix branch, e.g. `release-v0.0.x`).
 
 1. Confirm that the kotlin build is green before committing any changes
    ```bash
@@ -22,11 +22,17 @@ and assign it to @bencochran or @aquageek.*
 
 1. In `kotlin/gradle.properties`, remove the `-SNAPSHOT` prefix from the `VERSION_NAME` property.
    E.g. `VERSION_NAME=0.1.0`
+   ```bash
+   sed -i '' -e 's/-SNAPSHOT//g' kotlin/gradle.properties
+   ```
 
 1. Create a commit and tag the commit with the version number:
    ```bash
    git commit -am "Releasing v0.1.0."
+   git push origin release-v0.1.x
+
    git tag v0.1.0
+   git push origin v0.1.0
    ```
 
 1. Upload the kotlin artifacts:
@@ -44,23 +50,22 @@ and assign it to @bencochran or @aquageek.*
     bundle exec pod trunk push Workflow.podspec
     bundle exec pod trunk push WorkflowTesting.podspec
     bundle exec pod trunk push WorkflowUI.podspec
+    bundle exec pod trunk push WorkflowSwiftUI.podspec
     ```
 
-1. Bump the version
+1. Checkout `master` and bump the version (if doing a new release)
    - **Kotlin:** Update the `VERSION_NAME` property in `kotlin/gradle.properties` to the new
      snapshot version, e.g. `VERSION_NAME=0.2.0-SNAPSHOT`.
    - **Swift:** Update `s.version` in `*.podspec` to the new version, e.g. `0.2.0`.
+   ```bash
+   git checkout master
+   sed -i '' -e 's/0.1.0-SNAPSHOT/0.2.0-SNAPSHOT/g' kotlin/gradle.properties 
+   ls *.podspec | xargs sed -i '' -e 's/0.1.0/0.2.0/g'
+   ```
 
 1. Commit the new snapshot version:
    ```
    git commit -am "Finish releasing v0.1.0."
-   ```
-
-1. Push your commits and tag:
-   ```
-   git push origin master
-   # or git push origin fix-branch
-   git push origin v0.1.0
    ```
 
 1. Create the release on GitHub:
@@ -77,7 +82,7 @@ and assign it to @bencochran or @aquageek.*
    ```bash
    git checkout master
    git pull
-   git merge --no-ff v0.1-fixes
+   git merge --no-ff release-v0.0.x
    # Resolve conflicts. Accept master's versions of gradle.properties and podspecs.
    git push origin master
    ```
@@ -86,7 +91,7 @@ and assign it to @bencochran or @aquageek.*
 
 ## Deploying the documentation website
 
-Official Workflow documentation lives at <https://squareup.github.io/workflow>. The website content
+Official Workflow documentation lives at <https://square.github.io/workflow>. The website content
 consists of three parts:
 
 1. Markdown documentation: Lives in the `docs/` folder, and consists of a set of hand-written

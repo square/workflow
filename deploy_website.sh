@@ -56,7 +56,7 @@ git checkout $SHA
 (cd kotlin && ./gradlew dokka)
 
 # Generate the Swift API docs.
-(cd swift/Samples/SampleApp && $SWIFT_DOCS_SCRIPT $SWIFT_API_DIR)
+($SWIFT_DOCS_SCRIPT $SWIFT_API_DIR)
 
 # Build the site
 mkdocs gh-deploy
