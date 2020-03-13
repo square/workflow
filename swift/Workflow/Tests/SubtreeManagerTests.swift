@@ -241,7 +241,7 @@ final class SubtreeManagerTests: XCTestCase {
 
             func render(state: SubscribingWorkflow.State, context: RenderContext<SubscribingWorkflow>) -> Bool {
                 if let signal = signal {
-                    context.awaitResult(for: SignalWorker(signal: signal)) { _ -> AnyWorkflowAction<SubscribingWorkflow> in
+                    context.awaitResult(for: SignalWorker(key: "signal", signal: signal)) { _ -> AnyWorkflowAction<SubscribingWorkflow> in
                         return AnyWorkflowAction.noAction
                     }
                     return true

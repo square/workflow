@@ -46,10 +46,12 @@ extension Worker where Self: Equatable {
 }
 
 /// A Worker that wraps a `Signal`
-public struct SignalWorker<Value>: Worker {
+public struct SignalWorker<Key: Equatable, Value>: Worker {
+    let key: Key
     let signal: Signal<Value, Never>
 
-    public init(signal: Signal<Value, Never>) {
+    public init(key: Key, signal: Signal<Value, Never>) {
+        self.key = key
         self.signal = signal
     }
 
@@ -58,6 +60,6 @@ public struct SignalWorker<Value>: Worker {
     }
 
     public func isEquivalent(to otherWorker: SignalWorker) -> Bool {
-        return true
+        return key == otherWorker.key
     }
 }

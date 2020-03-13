@@ -185,7 +185,7 @@ extension DemoWorkflow {
             subscribeTitle = "Subscribe"
         case .subscribing:
             // Subscribe to the timer signal, simulating the title being tapped.
-            context.awaitResult(for: SignalWorker(signal: state.signal.signal)) { _ -> Action in
+            context.awaitResult(for: SignalWorker(key: "Timer", signal: state.signal.signal)) { _ -> Action in
                 return .titleButtonTapped
             }
             subscribeTitle = "Stop"
