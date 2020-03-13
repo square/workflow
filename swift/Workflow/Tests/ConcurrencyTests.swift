@@ -300,6 +300,43 @@ final class ConcurrencyTests: XCTestCase {
         disposable?.dispose()
     }
 
+    func test_allSubscriptionActionsAreApplied() {
+        let signal1 = TestSignal()
+        let signal2 = TestSignal()
+        let host = WorkflowHost(
+            workflow: TestWorkflow(
+                running: .doubleSubscribing(secondSignal: signal2),
+                signal: signal1
+            )
+        )
+
+        let renderingExpectation = XCTestExpectation()
+        let outputExpectation = XCTestExpectation()
+        let outDisposable = host.output.signal.observeValues { output in
+            outputExpectation.fulfill()
+        }
+
+        let disposable = host.rendering.signal.observeValues { rendering in
+            renderingExpectation.fulfill()
+        }
+
+        let screen = host.rendering.value
+
+        XCTAssertEqual(0, screen.count)
+
+        signal1.send(value: 1)
+        signal2.send(value: 2)
+
+        XCTAssertEqual(0, host.rendering.value.count)
+
+        wait(for: [renderingExpectation, outputExpectation], timeout: 1.0)
+
+        XCTAssertEqual(101, host.rendering.value.count)
+
+        disposable?.dispose()
+        outDisposable?.dispose()
+    }
+
     // Workers are subscribed on a different scheduler than the UI scheduler,
     // which means that if they fire immediately, the action will be received after
     // `render` has completed.
@@ -548,6 +585,7 @@ final class ConcurrencyTests: XCTestCase {
         enum Running {
             case idle
             case signal
+            case doubleSubscribing(secondSignal: TestSignal)
             case worker
         }
         var signal: TestSignal
@@ -573,12 +611,16 @@ final class ConcurrencyTests: XCTestCase {
             typealias WorkflowType = TestWorkflow
 
             case update
+            case secondUpdate
 
             func apply(toState state: inout State) -> Output? {
                 switch self {
                 case .update:
                     state.count += 1
                     return .emit
+                case .secondUpdate:
+                    state.count += 100
+                    return nil
                 }
             }
         }
@@ -591,6 +633,14 @@ final class ConcurrencyTests: XCTestCase {
             case .idle:
                 break
             case .signal:
+                context.awaitResult(for: SignalWorker(key: "signal1", signal: signal.signal)) { _ -> Action in
+                    return .update
+                }
+
+            case .doubleSubscribing(secondSignal: let signal2):
+                context.awaitResult(for: SignalWorker(key: "signal2", signal: signal2.signal)) { _ -> Action in
+                    return .secondUpdate
+                }
                 context.awaitResult(for: SignalWorker(key: "signal1", signal: signal.signal)) { _ -> Action in
                     return .update
                 }
