@@ -44,3 +44,20 @@ extension Worker where Self: Equatable {
     }
 
 }
+
+/// A Worker that wraps a `Signal`
+public struct SignalWorker<Value>: Worker {
+    let signal: Signal<Value, Never>
+
+    public init(signal: Signal<Value, Never>) {
+        self.signal = signal
+    }
+
+    public func run() -> SignalProducer<Value, Never> {
+        return SignalProducer(signal)
+    }
+
+    public func isEquivalent(to otherWorker: SignalWorker) -> Bool {
+        return true
+    }
+}

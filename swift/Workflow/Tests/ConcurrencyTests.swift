@@ -591,9 +591,9 @@ final class ConcurrencyTests: XCTestCase {
             case .idle:
                 break
             case .signal:
-                context.subscribe(signal: signal.signal.map({ _ -> Action in
+                context.awaitResult(for: SignalWorker(signal: signal.signal)) { _ -> Action in
                     return .update
-                }))
+                }
 
             case .worker:
                 context.awaitResult(for: TestWorker())

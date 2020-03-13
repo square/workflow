@@ -228,10 +228,6 @@ extension WorkflowNode.SubtreeManager {
             return sink
         }
 
-        func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-            eventSources.append(signal.map { AnyWorkflowAction($0) })
-        }
-
         func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
 
             let outputMap = { AnyWorkflowAction(outputMap($0)) }
