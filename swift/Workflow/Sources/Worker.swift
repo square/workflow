@@ -63,3 +63,9 @@ public struct SignalWorker<Key: Equatable, Value>: Worker {
         return key == otherWorker.key
     }
 }
+
+extension Signal where Error == Never {
+    public func asWorker<Key: Equatable>(key: Key) -> SignalWorker<Key, Value> {
+        return SignalWorker(key: key, signal: self)
+    }
+}

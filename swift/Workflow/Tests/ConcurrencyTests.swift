@@ -633,15 +633,15 @@ final class ConcurrencyTests: XCTestCase {
             case .idle:
                 break
             case .signal:
-                context.awaitResult(for: SignalWorker(key: "signal1", signal: signal.signal)) { _ -> Action in
+                context.awaitResult(for: signal.signal.asWorker(key: "signal1")) { _ -> Action in
                     return .update
                 }
 
             case .doubleSubscribing(secondSignal: let signal2):
-                context.awaitResult(for: SignalWorker(key: "signal2", signal: signal2.signal)) { _ -> Action in
+                context.awaitResult(for: signal2.signal.asWorker(key: "signal2")) { _ -> Action in
                     return .secondUpdate
                 }
-                context.awaitResult(for: SignalWorker(key: "signal1", signal: signal.signal)) { _ -> Action in
+                context.awaitResult(for: signal.signal.asWorker(key: "signal1")) { _ -> Action in
                     return .update
                 }
 
