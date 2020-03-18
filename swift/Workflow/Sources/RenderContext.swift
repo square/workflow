@@ -153,7 +153,32 @@ extension RenderContext {
 
 }
 
+extension Lifetime {
 
+    public var reactiveLifetime: ReactiveSwift.Lifetime {
+        let (lifetime, token) = ReactiveSwift.Lifetime.make()
+        onEnded {
+            token.dispose()
+        }
+        return lifetime
+    }
+
+}
+
+extension Signal {
+
+    public func take(during lifetime: Lifetime) -> Signal<Value, Error> {
+        take(during: lifetime.reactiveLifetime)
+    }
+
+}
+extension SignalProducer {
+
+    public func take(during lifetime: Lifetime) -> SignalProducer<Value, Error> {
+        take(during: lifetime.reactiveLifetime)
+    }
+
+}
 
 
 
