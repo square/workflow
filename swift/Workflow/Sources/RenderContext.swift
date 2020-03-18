@@ -217,7 +217,7 @@ private struct SignalProducerWorkflow<Value>: Workflow {
     typealias Rendering = Void
     func render(state: State, context: RenderContext<SignalProducerWorkflow>) -> Rendering {
         let sink = context.makeSink(of: AnyWorkflowAction.self)
-        context.runSideEffect(key: UUID()) { [signalProducer] lifetime in
+        context.runSideEffect(key: "") { [signalProducer] lifetime in
             signalProducer
                 .take(during: lifetime)
                 .map { AnyWorkflowAction(sendingOutput: $0) }
@@ -240,7 +240,9 @@ private struct PropertyWorkflow<Value>: Workflow {
     typealias Rendering = Value
     func render(state: State, context: RenderContext<PropertyWorkflow>) -> Rendering {
         let sink = context.makeSink(of: AnyWorkflowAction.self)
-        context.runSideEffect(key: UUID()) { [property] lifetime in
+        // Use the object identifier of the property as the key (so we
+        // resubscribe if the property instance is different)
+        context.runSideEffect(key: ObjectIdentifier(property)) { [property] lifetime in
             property
                 .signal
                 .take(during: lifetime)
