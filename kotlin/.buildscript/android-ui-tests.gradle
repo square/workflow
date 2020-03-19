@@ -1,21 +1,10 @@
 android {
   defaultConfig {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-    // The following argument makes the Android Test Orchestrator run its
-    // "pm clear" command after each test invocation. This command ensures
-    // that the app's state is completely cleared between tests.
-    testInstrumentationRunnerArguments clearPackageData: 'true'
-  }
-
-  testOptions {
-    execution 'ANDROIDX_TEST_ORCHESTRATOR'
   }
 }
 
 dependencies {
-  androidTestUtil 'androidx.test:orchestrator:1.2.0'
-
   androidTestImplementation deps.test.androidx.espresso.core
   androidTestImplementation deps.test.androidx.junitExt
 }
