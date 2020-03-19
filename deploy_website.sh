@@ -53,10 +53,10 @@ pushd $DIR
 git checkout $SHA
 
 # Generate the Kotlin API docs.
-(cd kotlin && ./gradlew dokka)
+(cd kotlin && ./gradlew assemble && ./gradlew dokka)
 
 # Generate the Swift API docs.
-(cd swift/Samples/SampleApp && $SWIFT_DOCS_SCRIPT $SWIFT_API_DIR)
+$SWIFT_DOCS_SCRIPT $SWIFT_API_DIR
 
 # Build the site
 mkdocs gh-deploy

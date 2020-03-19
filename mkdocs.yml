@@ -95,8 +95,13 @@ nav:
   - 'Kotlin API':
     - 'workflow-core': 'kotlin/api/workflow-core/com.squareup.workflow/index.md'
     - 'workflow-runtime': 'kotlin/api/workflow-runtime/com.squareup.workflow/index.md'
-    - 'workflow-ui-core': 'kotlin/api/workflow-ui-core/com.squareup.workflow.ui/index.md'
-    - 'workflow-ui-android': 'kotlin/api/workflow-ui-android/com.squareup.workflow.ui/index.md'
+    - 'workflow-ui':
+      - 'core-common': 'kotlin/api/core-common/com.squareup.workflow.ui/index.md'
+      - 'core-android': 'kotlin/api/core-android/com.squareup.workflow.ui/index.md'
+      - 'modal-common': 'kotlin/api/modal-common/com.squareup.workflow.ui.modal/index.md'
+      - 'modal-android': 'kotlin/api/modal-android/com.squareup.workflow.ui.modal/index.md'
+      - 'backstack-common': 'kotlin/api/backstack-common/com.squareup.workflow.ui.backstack/index.md'
+      - 'backstack-android': 'kotlin/api/backstack-android/com.squareup.workflow.ui.backstack/index.md'
     - 'workflow-testing': 'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md'
     - 'workflow-rx2': 'kotlin/api/workflow-rx2/com.squareup.workflow.rx2/index.md'
     - 'trace-encoder': 'kotlin/api/trace-encoder/com.squareup.tracing/index.md'
