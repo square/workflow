@@ -18,16 +18,11 @@ package com.squareup.sample.composebackstack
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.ui.core.setContent
-import androidx.ui.layout.Column
-import androidx.ui.material.Slider
-import androidx.ui.material.SliderPosition
 
 class ComposeBackstackActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContent {
-      App()
-    }
+    setContent { App() }
   }
 }

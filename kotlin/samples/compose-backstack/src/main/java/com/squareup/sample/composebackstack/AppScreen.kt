@@ -42,30 +42,30 @@ val markerRadius = 24.dp
     Stack(modifier = LayoutSize.Fill) {
       Box(
           shape = CircleShape,
-          modifier = LayoutGravity.TopLeft +
+          modifier = LayoutGravity.TopStart +
               LayoutSize(markerRadius * 2) +
-              LayoutPadding(left = -markerRadius, top = -markerRadius),
+              LayoutPadding(start = -markerRadius, top = -markerRadius),
           backgroundColor = Color.Red
       ) {}
       Box(
           shape = CircleShape,
-          modifier = LayoutGravity.TopRight +
+          modifier = LayoutGravity.TopEnd +
               LayoutSize(markerRadius * 2) +
-              LayoutPadding(right = -markerRadius, top = -markerRadius),
+              LayoutPadding(end = -markerRadius, top = -markerRadius),
           backgroundColor = Color.Red
       ) {}
       Box(
           shape = CircleShape,
-          modifier = LayoutGravity.BottomLeft +
+          modifier = LayoutGravity.BottomStart +
               LayoutSize(markerRadius * 2) +
-              LayoutPadding(left = -markerRadius, bottom = -markerRadius),
+              LayoutPadding(start = -markerRadius, bottom = -markerRadius),
           backgroundColor = Color.Red
       ) {}
       Box(
           shape = CircleShape,
-          modifier = LayoutGravity.BottomRight +
+          modifier = LayoutGravity.BottomEnd +
               LayoutSize(markerRadius * 2) +
-              LayoutPadding(right = -markerRadius, bottom = -markerRadius),
+              LayoutPadding(end = -markerRadius, bottom = -markerRadius),
           backgroundColor = Color.Red
       ) {}
 

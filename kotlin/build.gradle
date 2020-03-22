@@ -196,7 +196,7 @@ subprojects {
 
   tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-      kotlinOptions.allWarningsAsErrors = true
+//      kotlinOptions.allWarningsAsErrors = true
 
       jvmTarget = "1.8"
 
