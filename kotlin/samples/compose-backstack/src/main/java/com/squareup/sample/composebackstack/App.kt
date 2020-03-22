@@ -87,7 +87,7 @@ private fun DrawScreen(key: String) {
     }
   }
   Center {
-    Text("$key: ${Counter(1000)}")
+    Text("$key: ${Counter(200)}")
   }
 }
 
