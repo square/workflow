@@ -24,19 +24,17 @@ package com.squareup.sample.composebackstack
 import android.os.Handler
 import androidx.compose.Composable
 import androidx.compose.Pivotal
+import androidx.compose.compositionReference
+import androidx.compose.currentComposer
+import androidx.compose.escapeCompose
 import androidx.compose.onActive
 import androidx.compose.state
 import androidx.ui.core.Text
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.DrawBorder
-import androidx.ui.graphics.Color
+import androidx.ui.foundation.AdapterList
 import androidx.ui.layout.Center
 import androidx.ui.layout.Column
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutSize
 import androidx.ui.material.Button
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 
 enum class BackstackImpl {
   Fader,
@@ -52,29 +50,59 @@ enum class BackstackImpl {
 private val backstacks = listOf(
     listOf("one"),
     listOf("one", "two"),
-    listOf("one", "two", "three")
+    listOf("one", "two", "three"),
+    listOf("two", "one")
 ).associateBy { it.joinToString() }
 
 private val backstackNames = backstacks.keys.sorted()
 
 @Composable
 fun App() {
-  var currentBackstack by state { backstackNames.first() }
-
+  var bool by state { false }
   Column {
-    Text("Current backstack: $currentBackstack")
-    backstackNames.forEach { name ->
-      Button(onClick = { currentBackstack = name }) { Text(name) }
+    Button(onClick = { bool = !bool }) {
+      Text(if (bool) "Set to false" else "Set to true")
     }
-    Box(
-        modifier = LayoutSize.Fill +
-            LayoutPadding(24.dp) +
-            DrawBorder(size = 3.dp, color = Color.Red)
+    DrawBool(
+        value = bool,
+        trueWrapper = { it() },
+        falseWrapper = { it() }
     ) {
-      Backstack(backstack = backstacks.getValue(currentBackstack)) {
-        DrawScreen(it)
-      }
+      Text("Counter: ${Counter(200)}")
     }
+  }
+
+//  var currentBackstack by state { backstackNames.first() }
+//
+//  Column {
+//    Text("Current backstack: $currentBackstack")
+//    backstackNames.forEach { name ->
+//      Button(onClick = { currentBackstack = name }) { Text(name) }
+//    }
+//    Box(
+//        modifier = LayoutSize.Fill +
+//            LayoutPadding(24.dp) +
+//            DrawBorder(size = 3.dp, color = Color.Red)
+//    ) {
+//      Backstack(backstack = backstacks.getValue(currentBackstack)) {
+//        DrawScreen(it)
+//      }
+//    }
+//  }
+}
+
+@Composable private fun DrawBool(
+  value: Boolean,
+  trueWrapper: @Composable() (@Composable() () -> Unit) -> Unit,
+  falseWrapper: @Composable() (@Composable() () -> Unit) -> Unit,
+  children: @Composable() () -> Unit
+) {
+  AdapterList()
+
+  if (value) {
+    trueWrapper(children)
+  } else {
+    falseWrapper(children)
   }
 }
 

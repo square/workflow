@@ -21,14 +21,14 @@ import com.squareup.sample.composebackstack.Direction.Forward
 interface BackstackTransitions {
 
   @Composable
-  fun drawPrevious(
+  fun drawBelowTop(
     direction: Direction,
     onEnd: () -> Unit,
     drawScreen: @Composable() () -> Unit
   )
 
   @Composable
-  fun drawNext(
+  fun drawTop(
     direction: Direction,
     onEnd: () -> Unit,
     drawScreen: @Composable() () -> Unit
@@ -40,35 +40,35 @@ interface BackstackTransitions {
         .apply { duration = 1000 }
 
     @Composable
-    abstract fun drawPrevious(
+    abstract fun drawBelowTop(
       visibleProgress: Float,
       drawScreen: @Composable() () -> Unit
     )
 
     @Composable
-    abstract fun drawNext(
+    abstract fun drawTop(
       visibleProgress: Float,
       drawScreen: @Composable() () -> Unit
     )
 
     @Composable
-    final override fun drawPrevious(
+    final override fun drawBelowTop(
       direction: Direction,
       onEnd: () -> Unit,
       drawScreen: @Composable() () -> Unit
     ) {
       val progress = animatedProgress(direction == Backward, onEnd)
-      drawPrevious(progress, drawScreen)
+      drawBelowTop(progress, drawScreen)
     }
 
     @Composable
-    final override fun drawNext(
+    final override fun drawTop(
       direction: Direction,
       onEnd: () -> Unit,
       drawScreen: @Composable() () -> Unit
     ) {
       val progress = animatedProgress(direction == Forward, onEnd)
-      drawNext(progress, drawScreen)
+      drawTop(progress, drawScreen)
     }
 
     @Composable
@@ -94,7 +94,7 @@ interface BackstackTransitions {
 
   object Slide : CoordinatedTransition() {
     @Composable
-    override fun drawPrevious(
+    override fun drawBelowTop(
       visibleProgress: Float,
       drawScreen: @Composable() () -> Unit
     ) {
@@ -105,7 +105,7 @@ interface BackstackTransitions {
     }
 
     @Composable
-    override fun drawNext(
+    override fun drawTop(
       visibleProgress: Float,
       drawScreen: @Composable() () -> Unit
     ) {
@@ -131,7 +131,7 @@ interface BackstackTransitions {
 
   object Crossfade : CoordinatedTransition() {
     @Composable
-    override fun drawPrevious(
+    override fun drawBelowTop(
       visibleProgress: Float,
       drawScreen: @Composable() () -> Unit
     ) {
@@ -139,7 +139,7 @@ interface BackstackTransitions {
     }
 
     @Composable
-    override fun drawNext(
+    override fun drawTop(
       visibleProgress: Float,
       drawScreen: @Composable() () -> Unit
     ) {
