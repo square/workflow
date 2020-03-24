@@ -15,6 +15,7 @@
  */
 import Dispatch
 import ReactiveSwift
+import os.signpost
 
 extension WorkflowNode {
 
@@ -213,7 +214,14 @@ extension WorkflowNode.SubtreeManager {
 
             let reusableSink = sinkStore.findOrCreate(actionType: Action.self)
 
+            let signpostRef = NSObject()
+
             let sink = Sink<Action> { action in
+                if #available(iOS 12.0, *) {
+                    let signpostID = OSSignpostID(log: .workflow, object: signpostRef)
+                    os_signpost(.event, log: .workflow, name: "Sink Event", signpostID: signpostID, "Event: %@", String(describing: action))
+                }
+
                 reusableSink.handle(action: action)
             }
 
@@ -236,9 +244,7 @@ extension WorkflowNode.SubtreeManager {
                 usedChildWorkers.append(newChildWorker)
             }
         }
-        
     }
-
 }
 
 
@@ -433,11 +439,36 @@ extension WorkflowNode.SubtreeManager {
             self.outputMap = outputMap
             super.init(eventPipe: eventPipe)
 
+            let signpostRef = NSObject()
+
+            if #available(iOS 12.0, *) {
+                let signpostID = OSSignpostID(log: .worker, object: signpostRef)
+                os_signpost(.begin, log: .worker, name: "Worker Created", signpostID: signpostID, "Worker: %{public}@", String(describing: W.self))
+            }
+
             signalProducer
                 .take(during: lifetime)
                 .observe(on: QueueScheduler.workflowExecution)
-                .startWithValues { [weak self] output in
-                    self?.handle(output: output)
+                .start { [weak self] event in
+                    switch event {
+                    case .value(let output):
+                        self?.handle(output: output)
+                    case .completed:
+                        if #available(iOS 12.0, *) {
+                            let signpostID = OSSignpostID(log: .worker, object: signpostRef)
+                            os_signpost(.end, log: .worker, name: "Worker Created", signpostID: signpostID)
+                        }
+                    case .interrupted:
+                        if #available(iOS 12.0, *) {
+                            let signpostID = OSSignpostID(log: .worker, object: signpostRef)
+                            os_signpost(.end, log: .worker, name: "Worker Created", signpostID: signpostID, "Interrupted")
+                        }
+                    case .failed:
+                        if #available(iOS 12.0, *) {
+                            let signpostID = OSSignpostID(log: .worker, object: signpostRef)
+                            os_signpost(.end, log: .worker, name: "Worker Created", signpostID: signpostID, "Failed")
+                        }
+                    }
                 }
         }
 
