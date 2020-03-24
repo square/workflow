@@ -16,7 +16,7 @@
 buildscript {
   ext.versions = [
       'targetSdk': 29,
-      'compose': '0.1.0-dev06',
+      'compose': '0.1.0-dev07',
       'coroutines': '1.3.4',
       'kotlin': '1.3.71',
   ]
