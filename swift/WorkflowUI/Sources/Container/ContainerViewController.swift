@@ -19,6 +19,7 @@
 import UIKit
 import ReactiveSwift
 import Workflow
+import WorkflowReactiveSwift
 
 
 /// Drives view controllers from a root Workflow.
@@ -64,8 +65,8 @@ public final class ContainerViewController<Output, ScreenType>: UIViewController
         let host = WorkflowHost(workflow: workflow)
         self.init(
             workflowHost: host,
-            rendering: host.rendering,
-            output: host.output,
+            rendering: host.reactive.rendering,
+            output: host.reactive.output,
             rootViewEnvironment: rootViewEnvironment)
     }
 

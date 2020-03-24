@@ -16,8 +16,6 @@ Pod::Spec.new do |s|
 
   s.source_files = 'swift/Workflow/Sources/*.swift'
 
-  s.dependency 'ReactiveSwift', '~> 6.0.0'
-
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'swift/Workflow/Tests/**/*.swift'
     test_spec.framework = 'XCTest'

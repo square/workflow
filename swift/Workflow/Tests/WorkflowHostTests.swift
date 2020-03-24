@@ -22,11 +22,11 @@ final class WorkflowHostTests: XCTestCase {
     func test_updatedInputCausesRenderPass() {
         let host = WorkflowHost(workflow: TestWorkflow(step: .first))
 
-        XCTAssertEqual(1, host.rendering.value)
+        XCTAssertEqual(1, host.rendering)
 
         host.update(workflow: TestWorkflow(step: .second))
 
-        XCTAssertEqual(2, host.rendering.value)
+        XCTAssertEqual(2, host.rendering)
     }
 
     fileprivate struct TestWorkflow: Workflow {

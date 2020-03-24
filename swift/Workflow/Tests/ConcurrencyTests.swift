@@ -16,8 +16,9 @@
 import XCTest
 @testable import Workflow
 
+import Foundation
 import ReactiveSwift
-
+import WorkflowReactiveSwift
 
 final class ConcurrencyTests: XCTestCase {
 
@@ -29,7 +30,7 @@ final class ConcurrencyTests: XCTestCase {
         var first = true
         var observedScreen: TestScreen? = nil
 
-        let disposable = host.rendering.signal.observeValues { rendering in
+        let disposable = host.reactive.rendering.signal.observeValues { rendering in
             if first {
                 expectation.fulfill()
                 first = false
@@ -37,12 +38,12 @@ final class ConcurrencyTests: XCTestCase {
             observedScreen = rendering
         }
 
-        let initialScreen = host.rendering.value
+        let initialScreen = host.rendering
         XCTAssertEqual(0, initialScreen.count)
         initialScreen.update()
 
         // This update happens immediately as a new rendering is generated synchronously.
-        XCTAssertEqual(1, host.rendering.value.count)
+        XCTAssertEqual(1, host.rendering.count)
 
         wait(for: [expectation], timeout: 1.0)
         guard let screen = observedScreen else {
@@ -62,7 +63,7 @@ final class ConcurrencyTests: XCTestCase {
         let expectation = XCTestExpectation()
         var first = true
 
-        let disposable = host.rendering.signal.observeValues { rendering in
+        let disposable = host.reactive.rendering.signal.observeValues { rendering in
             if first {
                 expectation.fulfill()
                 first = false
@@ -71,13 +72,13 @@ final class ConcurrencyTests: XCTestCase {
             }
         }
 
-        let initialScreen = host.rendering.value
+        let initialScreen = host.rendering
         XCTAssertEqual(0, initialScreen.count)
 
         // Updating the screen will cause two events - the `update` here, and the update caused by the first time the rendering changes.
         initialScreen.update()
 
-        XCTAssertEqual(2, host.rendering.value.count)
+        XCTAssertEqual(2, host.rendering.count)
 
         wait(for: [expectation], timeout: 1.0)
 
@@ -91,20 +92,20 @@ final class ConcurrencyTests: XCTestCase {
         let host = WorkflowHost(workflow: TestWorkflow())
 
         // Capture the initial screen and corresponding closure that uses the original sink.
-        let initialScreen = host.rendering.value
+        let initialScreen = host.rendering
         XCTAssertEqual(0, initialScreen.count)
 
         // Send an action to the workflow. This invalidates this sink, but the next render pass declares a
         // sink of the same type.
         initialScreen.update()
 
-        let secondScreen = host.rendering.value
+        let secondScreen = host.rendering
         XCTAssertEqual(1, secondScreen.count)
 
         // Send an action from the original screen and sink. It should be proxied through the most recent sink.
         initialScreen.update()
 
-        let thirdScreen = host.rendering.value
+        let thirdScreen = host.rendering
         XCTAssertEqual(2, thirdScreen.count)
     }
 
@@ -114,14 +115,14 @@ final class ConcurrencyTests: XCTestCase {
         let host = WorkflowHost(workflow: OneShotWorkflow())
 
         // Capture the initial screen and corresponding closure that uses the original sink.
-        let initialScreen = host.rendering.value
+        let initialScreen = host.rendering
         XCTAssertEqual(0, initialScreen.count)
 
         // Send an action to the workflow. This invalidates this sink, but the next render pass declares a
         // sink of the same type.
         initialScreen.update()
 
-        let secondScreen = host.rendering.value
+        let secondScreen = host.rendering
         XCTAssertEqual(1, secondScreen.count)
 
         // MANUAL TEST CASE: Uncomment to validate this fatal errors.
@@ -131,7 +132,7 @@ final class ConcurrencyTests: XCTestCase {
         // If the sink *was* still valid, this would be correct. However, it should just fail and be `1` still.
         //XCTAssertEqual(2, secondScreen.count)
         // Actual expected result, if we had not fatal errored.
-        XCTAssertEqual(1, host.rendering.value.count)
+        XCTAssertEqual(1, host.rendering.count)
 
         struct OneShotWorkflow: Workflow {
             typealias Output = Never
@@ -195,14 +196,14 @@ final class ConcurrencyTests: XCTestCase {
         let host = WorkflowHost(workflow: TestWorkflow(), debugger: debugger)
 
         var first = true
-        let disposable = host.rendering.signal.observeValues { rendering in
+        let disposable = host.reactive.rendering.signal.observeValues { rendering in
             if first {
                 first = false
                 rendering.update()
             }
         }
 
-        let initialScreen = host.rendering.value
+        let initialScreen = host.rendering
         withExtendedLifetime(host) {
             initialScreen.update()
         }
@@ -218,14 +219,14 @@ final class ConcurrencyTests: XCTestCase {
 
         let host = WorkflowHost(workflow: ParentWorkflow())
 
-        let initialScreen = host.rendering.value
+        let initialScreen = host.rendering
         XCTAssertEqual(0, initialScreen.count)
         initialScreen.update()
 
         // This update happens immediately as a new rendering is generated synchronously.
         // Both the child updates from the action (incrementing state by 1) as well as the
         // parent from the output (incrementing its state by 10)
-        XCTAssertEqual(11, host.rendering.value.count)
+        XCTAssertEqual(11, host.rendering.count)
 
         struct ParentWorkflow: Workflow {
             struct State {
@@ -283,21 +284,21 @@ final class ConcurrencyTests: XCTestCase {
                 signal: signal))
 
         let expectation = XCTestExpectation()
-        let disposable = host.rendering.signal.observeValues { rendering in
+        let disposable = host.reactive.rendering.signal.observeValues { rendering in
             expectation.fulfill()
         }
 
-        let screen = host.rendering.value
+        let screen = host.rendering
 
         XCTAssertEqual(0, screen.count)
 
         signal.send(value: 1)
 
-        XCTAssertEqual(0, host.rendering.value.count)
+        XCTAssertEqual(0, host.rendering.count)
 
         wait(for: [expectation], timeout: 1.0)
 
-        XCTAssertEqual(1, host.rendering.value.count)
+        XCTAssertEqual(1, host.rendering.count)
 
         disposable?.dispose()
     }
@@ -311,14 +312,14 @@ final class ConcurrencyTests: XCTestCase {
                 running: .worker))
 
         let expectation = XCTestExpectation()
-        let disposable = host.rendering.signal.observeValues { rendering in
+        let disposable = host.reactive.rendering.signal.observeValues { rendering in
             expectation.fulfill()
         }
 
-        XCTAssertEqual(0, host.rendering.value.count)
+        XCTAssertEqual(0, host.rendering.count)
 
         wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(1, host.rendering.value.count)
+        XCTAssertEqual(1, host.rendering.count)
 
         disposable?.dispose()
     }
@@ -331,18 +332,18 @@ final class ConcurrencyTests: XCTestCase {
 
         let host = WorkflowHost(workflow: AnyActionWorkflow())
 
-        let initialScreen = host.rendering.value
+        let initialScreen = host.rendering
         XCTAssertEqual(0, initialScreen.count)
 
         // Update using the first action.
         initialScreen.updateFirst()
 
-        let secondScreen = host.rendering.value
+        let secondScreen = host.rendering
         XCTAssertEqual(1, secondScreen.count)
 
         // Update using the second action.
         secondScreen.updateSecond()
-        XCTAssertEqual(11, host.rendering.value.count)
+        XCTAssertEqual(11, host.rendering.count)
 
         struct AnyActionWorkflow: Workflow {
             enum Output {
@@ -435,18 +436,18 @@ final class ConcurrencyTests: XCTestCase {
         let host = WorkflowHost(workflow: SourceDifferentiatingWorkflow(step: .first))
 
         //let initialScreen = host.rendering.value
-        XCTAssertEqual(0, host.rendering.value.count)
+        XCTAssertEqual(0, host.rendering.count)
 
         // Update to the second "step", which will cause a render update, with the sink not being declared.
         host.update(workflow: SourceDifferentiatingWorkflow(step: .second))
         // The state should be the same, even though it rendered again.
-        XCTAssertEqual(0, host.rendering.value.count)
+        XCTAssertEqual(0, host.rendering.count)
 
         // MANUAL TEST CASE
         // This will fail, as the sink held by `initialScreen` has not be redeclared, even though the backing action is the same for the worker.
         // Uncomment to validate this test fails with a fatal error.
         //initialScreen.update()
-        XCTAssertEqual(0, host.rendering.value.count)
+        XCTAssertEqual(0, host.rendering.count)
 
         struct SourceDifferentiatingWorkflow: Workflow {
 

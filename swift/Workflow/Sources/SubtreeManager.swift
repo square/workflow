@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import Dispatch
-import ReactiveSwift
 
 extension WorkflowNode {
 
@@ -150,8 +149,6 @@ extension WorkflowNode.SubtreeManager {
 
         private let originalSideEffectLifetimes: [AnyHashable: SideEffectLifetime]
         private (set) internal var usedSideEffectLifetimes: [AnyHashable: SideEffectLifetime]
-
-        private (set) internal var eventSources: [Signal<AnyWorkflowAction<WorkflowType>, Never>] = []
 
         internal init(previousSinks: [ObjectIdentifier:AnyReusableSink], originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalSideEffectLifetimes: [AnyHashable: SideEffectLifetime]) {
             self.eventPipes = []

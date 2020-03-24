@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
-  s.name         = 'WorkflowUI'
+  s.name         = 'WorkflowReactiveSwift'
   s.version      = '0.25.0'
-  s.summary      = 'Infrastructure for Workflow-powered UI'
+  s.summary      = 'Reactive application architecture'
   s.homepage     = 'https://www.github.com/square/workflow'
   s.license      = 'Apache License, Version 2.0'
   s.author       = 'Square'
@@ -14,13 +14,13 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.3'
   s.osx.deployment_target = '10.12'
 
-  s.source_files = 'swift/WorkflowUI/Sources/**/*.swift'
+  s.source_files = 'swift/WorkflowReactiveSwift/Sources/*.swift'
 
+  s.dependency 'ReactiveSwift', '~> 6.0.0'
   s.dependency 'Workflow', "#{s.version}"
-  s.dependency 'WorkflowReactiveSwift', "#{s.version}"
 
   s.test_spec 'Tests' do |test_spec|
-    test_spec.source_files = 'swift/WorkflowUI/Tests/**/*.swift'
+    test_spec.source_files = 'swift/WorkflowReactiveSwift/Tests/**/*.swift'
     test_spec.framework = 'XCTest'
   end
 

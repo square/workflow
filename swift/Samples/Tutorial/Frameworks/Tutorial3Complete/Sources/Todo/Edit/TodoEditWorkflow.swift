@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import Workflow
+import WorkflowReactiveSwift
 import WorkflowUI
 import BackStackContainer
 import ReactiveSwift

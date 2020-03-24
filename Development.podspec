@@ -10,6 +10,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '11.0'
   s.swift_version = '5.0'
   s.dependency 'Workflow'
+  s.dependency 'WorkflowReactiveSwift'
   s.dependency 'WorkflowUI'
   s.source_files = 'swift/Samples/Dummy.swift'
 
@@ -92,6 +93,12 @@ Pod::Spec.new do |s|
   s.test_spec 'WorkflowTests' do |test_spec|
     test_spec.requires_app_host = true
     test_spec.source_files = 'swift/Workflow/Tests/**/*.swift'
+    test_spec.framework = 'XCTest'
+  end
+
+  s.test_spec 'WorkflowReactiveSwiftTests' do |test_spec|
+    test_spec.requires_app_host = true
+    test_spec.source_files = 'swift/WorkflowReactiveSwift/Tests/**/*.swift'
     test_spec.framework = 'XCTest'
   end
 

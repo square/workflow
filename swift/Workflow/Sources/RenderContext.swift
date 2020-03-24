@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ReactiveSwift
 
 /// `RenderContext` is the composition point for the workflow tree.
 ///
@@ -74,7 +73,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
     public func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void) {
         fatalError()
     }
-    
+
     final func invalidate() {
         isValid = false
     }
@@ -129,17 +128,6 @@ internal protocol RenderContextType: class {
 
 }
 
-import Foundation
-
-extension RenderContext {
-
-    public func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-        signal.running(with: self)
-    }
-
-
-}
-
 extension RenderContext {
 
     public func makeSink<Event>(of eventType: Event.Type, onEvent: @escaping (Event, inout WorkflowType.State) -> WorkflowType.Output?) -> Sink<Event> {
@@ -153,133 +141,4 @@ extension RenderContext {
 
 }
 
-extension Lifetime {
 
-    public var reactiveLifetime: ReactiveSwift.Lifetime {
-        let (lifetime, token) = ReactiveSwift.Lifetime.make()
-        onEnded {
-            token.dispose()
-        }
-        return lifetime
-    }
-
-}
-
-extension Signal {
-
-    public func take(during lifetime: Lifetime) -> Signal<Value, Error> {
-        take(during: lifetime.reactiveLifetime)
-    }
-
-}
-extension SignalProducer {
-
-    public func take(during lifetime: Lifetime) -> SignalProducer<Value, Error> {
-        take(during: lifetime.reactiveLifetime)
-    }
-
-}
-
-
-
-extension Signal: AnyWorkflowConvertible where Error == Never {
-
-    public func asAnyWorkflow() -> AnyWorkflow<Void, Value> {
-        return SignalWorkflow(signal: self).asAnyWorkflow()
-    }
-
-}
-
-extension SignalProducer: AnyWorkflowConvertible where Error == Never {
-
-    public func asAnyWorkflow() -> AnyWorkflow<Void, Value> {
-        return SignalProducerWorkflow(signalProducer: self).asAnyWorkflow()
-    }
-
-}
-
-extension Property: AnyWorkflowConvertible {
-
-    public func asAnyWorkflow() -> AnyWorkflow<Value, Never> {
-        return PropertyWorkflow(property: self).asAnyWorkflow()
-    }
-
-
-}
-
-private struct SignalWorkflow<Value>: Workflow {
-    var signal: Signal<Value, Never>
-    typealias Output = Value
-    typealias State = Void
-    func makeInitialState() -> State {
-        return ()
-    }
-    func workflowDidChange(from previousWorkflow: SignalWorkflow, state: inout State) {
-    }
-    typealias Rendering = Void
-    func render(state: State, context: RenderContext<SignalWorkflow>) -> Rendering {
-        let sink = context.makeSink(of: AnyWorkflowAction.self)
-        context.runSideEffect(key: UUID()) { [signal] lifetime in
-            signal
-                .take(during: lifetime)
-                .map { AnyWorkflowAction(sendingOutput: $0) }
-                .observe(on: QueueScheduler.workflowExecution)
-                .observeValues(sink.send)
-        }
-        return ()
-    }
-}
-
-private struct SignalProducerWorkflow<Value>: Workflow {
-    var signalProducer: SignalProducer<Value, Never>
-    typealias Output = Value
-    typealias State = Void
-    func makeInitialState() -> State {
-        return ()
-    }
-    func workflowDidChange(from previousWorkflow: SignalProducerWorkflow, state: inout State) {
-    }
-    typealias Rendering = Void
-    func render(state: State, context: RenderContext<SignalProducerWorkflow>) -> Rendering {
-        let sink = context.makeSink(of: AnyWorkflowAction.self)
-        context.runSideEffect(key: "") { [signalProducer] lifetime in
-            signalProducer
-                .take(during: lifetime)
-                .map { AnyWorkflowAction(sendingOutput: $0) }
-                .observe(on: QueueScheduler.workflowExecution)
-                .startWithValues(sink.send)
-        }
-        return ()
-    }
-}
-
-private struct PropertyWorkflow<Value>: Workflow {
-    var property: Property<Value>
-    typealias Output = Never
-    typealias State = Value
-    func makeInitialState() -> State {
-        return property.value
-    }
-    func workflowDidChange(from previousWorkflow: PropertyWorkflow, state: inout State) {
-    }
-    typealias Rendering = Value
-    func render(state: State, context: RenderContext<PropertyWorkflow>) -> Rendering {
-        let sink = context.makeSink(of: AnyWorkflowAction.self)
-        // Use the object identifier of the property as the key (so we
-        // resubscribe if the property instance is different)
-        context.runSideEffect(key: ObjectIdentifier(property)) { [property] lifetime in
-            property
-                .signal
-                .take(during: lifetime)
-                .map { value in
-                    AnyWorkflowAction { state in
-                        state = value
-                        return nil
-                    }
-                }
-                .observe(on: QueueScheduler.workflowExecution)
-                .observeValues(sink.send)
-        }
-        return property.value
-    }
-}

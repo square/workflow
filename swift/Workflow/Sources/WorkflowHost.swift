@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ReactiveSwift
+import Foundation
 
 /// Defines a type that receives debug information about a running workflow hierarchy.
 public protocol WorkflowDebugger {
@@ -30,20 +30,40 @@ public protocol WorkflowDebugger {
     func didUpdate(snapshot: WorkflowHierarchyDebugSnapshot, updateInfo: WorkflowUpdateDebugInfo)
 }
 
+public protocol WorkflowHostConvertible {
+
+    associatedtype WorkflowType: Workflow
+
+    func asWorkflowHost() -> WorkflowHost<WorkflowType>
+
+}
+
+
+public protocol WorkflowHostObserver: class {
+
+    associatedtype WorkflowType: Workflow
+
+    func workflowHost(host: WorkflowHost<WorkflowType>, didRender rendering: WorkflowType.Rendering)
+
+    func workflowHost(host: WorkflowHost<WorkflowType>, didOutput output: WorkflowType.Output)
+
+}
+
+
 /// Manages an active workflow hierarchy.
-public final class WorkflowHost<WorkflowType: Workflow> {
+public final class WorkflowHost<WorkflowType: Workflow>: WorkflowHostConvertible {
+
+    public func asWorkflowHost() -> WorkflowHost<WorkflowType> {
+        return self
+    }
 
     private let debugger: WorkflowDebugger?
 
-    private let (outputEvent, outputEventObserver) = Signal<WorkflowType.Output, Never>.pipe()
-
     private let rootNode: WorkflowNode<WorkflowType>
 
-    private let mutableRendering: MutableProperty<WorkflowType.Rendering>
+    public private(set) var rendering: WorkflowType.Rendering
 
-    /// Represents the `Rendering` produced by the root workflow in the hierarchy. New `Rendering` values are produced
-    /// as state transitions occur within the hierarchy.
-    public let rendering: Property<WorkflowType.Rendering>
+    private var observers: [ObserverToken: AnyWorkflowHostObserver<WorkflowType>] = [:]
 
     /// Initializes a new host with the given workflow at the root.
     ///
@@ -55,8 +75,7 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
         self.rootNode = WorkflowNode(workflow: workflow)
 
-        self.mutableRendering = MutableProperty(self.rootNode.render())
-        self.rendering = Property(mutableRendering)
+        self.rendering = self.rootNode.render()
         self.rootNode.enableEvents()
 
         debugger?.didEnterInitialState(snapshot: self.rootNode.makeDebugSnapshot())
@@ -80,11 +99,27 @@ public final class WorkflowHost<WorkflowType: Workflow> {
         handle(output: output)
     }
 
+    public func add<ObserverType>(observer: ObserverType) -> ObserverToken where ObserverType: WorkflowHostObserver, ObserverType.WorkflowType == WorkflowType {
+        let token = ObserverToken()
+        if let observer = observer as? AnyWorkflowHostObserver<WorkflowType> {
+            observers[token] = observer
+        } else {
+            observers[token] = AnyWorkflowHostObserver(observer)
+
+        }
+        return token
+    }
+
+    public func removeObserver(for token: ObserverToken) {
+        observers[token] = nil
+    }
+
     private func handle(output: WorkflowNode<WorkflowType>.Output) {
-        mutableRendering.value = rootNode.render()
+        rendering = rootNode.render()
+        notifyRendering(rendering: rendering)
 
         if let outputEvent = output.outputEvent {
-            outputEventObserver.send(value: outputEvent)
+            notifyOutput(output: outputEvent)
         }
 
         debugger?.didUpdate(
@@ -94,9 +129,62 @@ public final class WorkflowHost<WorkflowType: Workflow> {
         rootNode.enableEvents()
     }
 
-    /// A signal containing output events emitted by the root workflow in the hierarchy.
-    public var output: Signal<WorkflowType.Output, Never> {
-        return outputEvent
+    private func notifyRendering(rendering: WorkflowType.Rendering) {
+        for (_, observer) in observers {
+            observer.workflowHost(host: self, didRender: rendering)
+        }
+    }
+
+    private func notifyOutput(output: WorkflowType.Output) {
+        for (_, observer) in observers {
+            observer.workflowHost(host: self, didOutput: output)
+        }
+    }
+
+}
+
+
+extension WorkflowHost {
+
+    public struct ObserverToken: Hashable {
+
+        private var uuid: UUID
+
+        init() {
+            uuid = UUID()
+        }
+    }
+
+}
+
+
+public final class AnyWorkflowHostObserver<WorkflowType: Workflow>: WorkflowHostObserver {
+
+    private let onRender: (WorkflowHost<WorkflowType>, WorkflowType.Rendering) -> Void
+    private let onOutput: (WorkflowHost<WorkflowType>,WorkflowType.Output) -> Void
+
+    public convenience init<ObserverType>(_ observer: ObserverType) where ObserverType: WorkflowHostObserver, ObserverType.WorkflowType == WorkflowType {
+        self.init(
+            onRender: { [weak observer] host, rendering in
+                observer?.workflowHost(host: host, didRender: rendering)
+            },
+            onOutput: { [weak observer] host, output in
+                observer?.workflowHost(host: host, didOutput: output)
+            }
+        )
+    }
+
+    public init(onRender: @escaping (WorkflowHost<WorkflowType>, WorkflowType.Rendering) -> Void, onOutput: @escaping (WorkflowHost<WorkflowType>,WorkflowType.Output) -> Void) {
+        self.onRender = onRender
+        self.onOutput = onOutput
+    }
+
+    public func workflowHost(host: WorkflowHost<WorkflowType>, didRender rendering: WorkflowType.Rendering) {
+        onRender(host, rendering)
+    }
+
+    public func workflowHost(host: WorkflowHost<WorkflowType>, didOutput output: WorkflowType.Output) {
+        onOutput(host, output)
     }
 
 }

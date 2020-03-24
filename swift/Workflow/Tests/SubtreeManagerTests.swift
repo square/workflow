@@ -16,6 +16,7 @@
 import XCTest
 @testable import Workflow
 import ReactiveSwift
+import WorkflowReactiveSwift
 
 
 final class SubtreeManagerTests: XCTestCase {

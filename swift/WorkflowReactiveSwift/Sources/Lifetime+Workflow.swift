@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Foundation
+
+import ReactiveSwift
+import class Workflow.Lifetime
 
 
-extension DispatchQueue {
+extension Lifetime {
 
-    public static let workflowExecution: DispatchQueue = .main
+    public var reactiveLifetime: ReactiveSwift.Lifetime {
+        let (lifetime, token) = ReactiveSwift.Lifetime.make()
+        onEnded {
+            token.dispose()
+        }
+        return lifetime
+    }
 
 }
+

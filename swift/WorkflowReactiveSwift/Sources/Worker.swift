@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import ReactiveSwift
+import Workflow
 
 /// Workers define a unit of asynchronous work.
 ///
@@ -27,7 +29,7 @@ public protocol Worker: AnyWorkflowConvertible {
 
     /// The type of output events returned by this worker.
     associatedtype Output
-    
+
     /// Returns a signal producer to execute the work represented by this worker.
     func run() -> SignalProducer<Output, Never>
 

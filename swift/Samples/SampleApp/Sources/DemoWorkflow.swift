@@ -15,6 +15,7 @@
  */
 import Workflow
 import WorkflowUI
+import WorkflowReactiveSwift
 import ReactiveSwift
 
 
