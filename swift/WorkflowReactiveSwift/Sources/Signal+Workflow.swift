@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import Foundation
 import ReactiveSwift
 import Workflow
 import class Workflow.Lifetime
@@ -48,7 +47,7 @@ private struct SignalWorkflow<Value>: Workflow {
     typealias Rendering = Void
     func render(state: State, context: RenderContext<SignalWorkflow>) -> Rendering {
         let sink = context.makeSink(of: AnyWorkflowAction.self)
-        context.runSideEffect(key: UUID()) { [signal] lifetime in
+        context.runSideEffect(key: "") { [signal] lifetime in
             signal
                 .take(during: lifetime)
                 .map { AnyWorkflowAction(sendingOutput: $0) }
