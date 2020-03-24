@@ -80,15 +80,10 @@ fileprivate struct WorkerWorkflow<WorkerType: Worker>: Workflow {
     typealias Rendering = Void
 
     func render(state: State, context: RenderContext<WorkerWorkflow>) -> Rendering {
-        let sink = context.makeSink(of: AnyWorkflowAction.self)
-        context.runSideEffect(key: state) { lifetime in
-            worker
-                .run()
-                .take(during: lifetime)
-                .map { AnyWorkflowAction(sendingOutput: $0) }
-                .observe(on: QueueScheduler.workflowExecution)
-                .startWithValues(sink.send)
-        }
+        worker
+            .run()
+            .map { AnyWorkflowAction(sendingOutput: $0) }
+            .running(with: context, key: state.uuidString)
     }
 
 }
