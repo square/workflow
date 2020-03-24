@@ -19,9 +19,13 @@ let package = Package(
         .library(
             name: "WorkflowReactiveSwift",
             targets: ["WorkflowReactiveSwift"]),
+        .library(
+            name: "WorkflowRxSwift",
+            targets: ["WorkflowRxSwift"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", from: "6.0.0")
+        .package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", from: "6.0.0"),
+        .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "4.4.0"),
     ],
     targets: [
         .target(
@@ -47,6 +51,14 @@ let package = Package(
             name: "WorkflowReactiveSwiftTests",
             dependencies: ["Workflow", "WorkflowReactiveSwift", "ReactiveSwift"],
             path: "swift/WorkflowReactiveSwift/Tests"),
+        .target(
+            name: "WorkflowRxSwift",
+            dependencies: ["Workflow", "RxSwift"],
+            path: "swift/WorkflowRxSwift/Sources"),
+        .testTarget(
+            name: "WorkflowRxSwiftTests",
+            dependencies: ["Workflow", "WorkflowReactiveSwift", "RxSwift"],
+            path: "swift/WorkflowRxSwift/Tests"),
     ],
     swiftLanguageVersions: [.v5]
 )
