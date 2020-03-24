@@ -29,6 +29,10 @@ android {
     versionName "1.0.0"
   }
 
+  defaultConfig {
+    testInstrumentationRunner "com.squareup.sample.dungeon.DungeonTestRunner"
+  }
+
   testOptions {
     animationsDisabled = true
   }
