@@ -270,9 +270,13 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
         let sink = Sink<Action> { action in
             observer.send(value: AnyWorkflowAction(action))
         }
-        awaitResult(for: signal.asWorker(key: "\(actionType)")) { output in
-            return output
-        }
+
+        signal
+            .take(during: lifetime)
+            .observeValues { [weak self] action in
+                self?.apply(action: action)
+            }
+
         return sink
     }
 
