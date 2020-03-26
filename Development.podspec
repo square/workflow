@@ -55,6 +55,7 @@ Pod::Spec.new do |s|
     app_spec.source_files = 'swift/Samples/TicTacToe/Sources/**/*.swift'
     app_spec.resources = 'swift/Samples/TicTacToe/Resources/**/*'
     app_spec.dependency 'BackStackContainer'
+    app_spec.dependency 'ModalContainer'
   end
 
   s.test_spec 'TicTacToeTests' do |test_spec|
