@@ -16,6 +16,7 @@
 import Workflow
 import WorkflowUI
 import BackStackContainer
+import ModalContainer
 
 
 // MARK: Input and Output
@@ -37,6 +38,7 @@ extension RunGameWorkflow {
         enum Step {
             case newGame
             case playing
+            case maybeQuit
         }
     }
 
@@ -62,6 +64,7 @@ extension RunGameWorkflow {
         case updatePlayerO(String)
         case startGame
         case back
+        case confirmQuit
 
         func apply(toState state: inout RunGameWorkflow.State) -> RunGameWorkflow.Output? {
 
@@ -77,6 +80,10 @@ extension RunGameWorkflow {
 
             case .back:
                 state.step = .newGame
+            
+            case .confirmQuit:
+                state.step = .maybeQuit
+                
             }
 
             return nil
@@ -90,10 +97,11 @@ extension RunGameWorkflow {
 extension RunGameWorkflow {
 
     typealias Rendering = BackStackScreen
+    
 
     func render(state: RunGameWorkflow.State, context: RenderContext<RunGameWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
-
+        
         var backStackItems: [BackStackScreen.Item] = [BackStackScreen.Item(
             screen: newGameScreen(
                 sink: sink,
@@ -102,6 +110,7 @@ extension RunGameWorkflow {
             barVisibility: .hidden)]
         switch state.step {
         case .newGame:
+            //newScreen = BackStackScreen(items: backStackItems)
             break
 
         case .playing:
@@ -115,8 +124,17 @@ extension RunGameWorkflow {
                     leftItem: BackStackScreen.BarContent.BarButtonItem.button(BackStackScreen.BarContent.Button(
                         content: .text("Quit"),
                         handler: {
-                            sink.send(.back)
+                            sink.send(.confirmQuit)
                         }))))))
+             //newScreen = BackStackScreen(items: backStackItems)
+            
+        case .maybeQuit:
+            
+           // let modalScreen = ModalContainerScreen
+            
+            let confirmQuitScreen = ConfirmQuitWorkflow()
+                                    .rendered(with: context)
+            backStackItems.append(BackStackScreen.Item(screen: confirmQuitScreen))
         }
 
         return BackStackScreen(items: backStackItems)
