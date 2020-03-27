@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+## Version 0.25.0
+
+_2020-03-27_
+
+### Kotlin
+
+* Swift-only release. No changes.
+
+### Swift
+
+* Introduce `SignalWorker` to wrap `Signal`s (#1048)
+
 ## Version 0.24.0
 
 _2020-03-10_
