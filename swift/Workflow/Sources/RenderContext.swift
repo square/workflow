@@ -71,6 +71,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
+    @available(*, deprecated, message: "Use a SignalWorker instead")
     public func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
         fatalError()
     }
