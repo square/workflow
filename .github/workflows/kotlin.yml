@@ -1,0 +1,150 @@
+name: Kotlin CI
+
+on:
+  push:
+    branches:
+      - master
+      - '!gh-pages'
+    paths:
+      # Rebuild when workflow configs change.
+      - .github/workflows/kotlin.yml
+      # Or when kotlin code changes.
+      - kotlin/**
+  pull_request:
+    paths:
+      - .github/workflows/kotlin.yml
+      - kotlin/**
+
+jobs:
+  assemble:
+    name: Assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # These setup steps should be common across all jobs in this workflow.
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      ## Caching
+      - name: Cache Gradle wrapper
+        uses: actions/cache@v1
+        with:
+            path: ~/.gradle/wrapper
+            # Don't set restore-keys so cache is always only valid for the current build config.
+            key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Cache build artifacts
+        uses: actions/cache@v1
+        with:
+            path: ~/.gradle/caches
+            # Include the SHA in the hash so this step always adds a cache entry. If we didn't use the SHA, the artifacts
+            # would only get cached once for each build config hash.
+            # Don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
+            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ github.sha }}
+            # The first time a SHA is assembled, we still want to load dependencies from the cache.
+            # Note that none of jobs dependent on this one need restore keys, since they'll always have an exact hit.
+            restore-keys: |
+              gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-
+
+      ## Actual task
+      - name: Assemble with Gradle
+        working-directory: ./kotlin
+        run: ./gradlew assemble --stacktrace
+
+  # Runs all check tasks in parallel.
+  check:
+    name: Check
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      # Run all checks, even if some fail.
+      fail-fast: false
+      matrix:
+        gradle-task:
+          # Unit tests
+          - test
+          # Binary compatibility
+          - apiCheck
+          - lint
+          - ktlintCheck
+          - detekt
+          # Build the JMH benchmarks to verify, but don't run them.
+          - jmhJar
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      ## Caching
+      - name: Cache Gradle wrapper
+        uses: actions/cache@v1
+        with:
+            path: ~/.gradle/wrapper
+            # Don't set restore-keys so cache is always only valid for the current build config.
+            key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Cache build artifacts
+        uses: actions/cache@v1
+        with:
+            path: ~/.gradle/caches
+            # Don't set restore-keys so cache is always only valid for the current build config.
+            # Also don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
+            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ github.sha }}
+
+      ## Actual task
+      - name: Check with Gradle
+        working-directory: ./kotlin
+        run: ./gradlew ${{ matrix.gradle-task }} --stacktrace
+
+  instrumentation-tests:
+    name: Instrumentation tests
+    needs: assemble
+    runs-on: macos-latest
+    timeout-minutes: 20
+    strategy:
+      # Allow tests to continue on other devices if they fail on one device.
+      fail-fast: false
+      matrix:
+        api-level:
+          # Tests are failing on APIs <24.
+          #- 21
+          #- 23
+          - 24
+          - 29
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      ## Caching
+      - name: Cache Gradle wrapper
+        uses: actions/cache@v1
+        with:
+            path: ~/.gradle/wrapper
+            # Don't set restore-keys so cache is always only valid for the current build config.
+            key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Cache build artifacts
+        uses: actions/cache@v1
+        with:
+            path: ~/.gradle/caches
+            # Don't set restore-keys so cache is always only valid for the current build config.
+            # Also don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
+            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ github.sha }}
+
+      ## Actual task
+      - name: Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          working-directory: ./kotlin
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          script: ./gradlew connectedCheck --stacktrace
