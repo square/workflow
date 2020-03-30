@@ -33,12 +33,23 @@ android {
   }
 }
 
+apply from: rootProject.file('.buildscript/configure-compose.gradle')
+
+repositories {
+  mavenLocal()
+}
+
 dependencies {
   implementation project(':samples:containers:android')
   implementation project(':samples:containers:poetry')
   implementation project(':workflow-ui:core-android')
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
+  implementation project(':workflow-ui:core-compose')
+  implementation deps.compose.foundation
+  implementation deps.compose.layout
+  implementation deps.compose.material
+  implementation "com.zachklipp:compose-backstack:0.4.0-SNAPSHOT"
 
   implementation deps.androidx.appcompat
   implementation deps.androidx.recyclerview

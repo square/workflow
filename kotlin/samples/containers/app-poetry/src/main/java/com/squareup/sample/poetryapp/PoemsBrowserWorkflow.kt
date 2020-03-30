@@ -34,7 +34,7 @@ object PoemsBrowserWorkflow :
     snapshot: Snapshot?
   ): SelectedPoem {
     return snapshot?.bytes?.parse { source -> source.readInt() }
-        ?: -1
+        ?: 1
   }
 
   override fun render(

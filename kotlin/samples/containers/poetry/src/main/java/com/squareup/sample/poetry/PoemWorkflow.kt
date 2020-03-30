@@ -50,7 +50,7 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>
     snapshot: Snapshot?
   ): Int {
     return snapshot?.bytes?.parse { source -> source.readInt() }
-        ?: -1
+        ?: 2
   }
 
   override fun render(
