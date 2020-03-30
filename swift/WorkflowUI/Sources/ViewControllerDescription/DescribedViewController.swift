@@ -52,6 +52,7 @@ public final class DescribedViewController: UIViewController {
                 view.addSubview(currentViewController.view)
                 currentViewController.view.frame = view.bounds
                 currentViewController.didMove(toParent: self)
+                preferredContentSize = currentViewController.preferredContentSize
             }
         }
     }
@@ -66,6 +67,7 @@ public final class DescribedViewController: UIViewController {
         addChild(currentViewController)
         view.addSubview(currentViewController.view)
         currentViewController.didMove(toParent: self)
+        preferredContentSize = currentViewController.preferredContentSize
     }
 
     public override func viewDidLayoutSubviews() {
@@ -93,6 +95,16 @@ public final class DescribedViewController: UIViewController {
         return currentViewController.supportedInterfaceOrientations
     }
 
+    public override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+        super.preferredContentSizeDidChange(forChildContentContainer: container)
+
+        guard
+            (container as? UIViewController) == currentViewController,
+            container.preferredContentSize != preferredContentSize
+        else { return }
+
+        preferredContentSize = container.preferredContentSize
+    }
 }
 
 #endif
