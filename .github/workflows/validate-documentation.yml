@@ -1,0 +1,54 @@
+name: Build and validate documentation site
+
+on:
+  push:
+    branches:
+      - master
+      - '!gh-pages'
+    paths:
+      # Rebuild when workflow configs change.
+      - .github/workflows/validate-documentation.yml
+      # Or when documentation code changes.
+      - docs/**
+      - ./**.md
+      - mkdocs.yml
+      - lint_docs.sh
+      - .markdownlint.rb
+  pull_request:
+    paths:
+      - .github/workflows/validate-documentation.yml
+      - docs/**
+      - ./**.md
+      - mkdocs.yml
+      - lint_docs.sh
+      - .markdownlint.rb
+
+jobs:
+  mkdocs:
+    name: Validate mkdocs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: pip install mkdocs-material
+      - name: Run mkdocs
+        run: mkdocs build
+
+  lint-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - name: Install dependencies
+        run: gem install mdl
+      - name: Lint docs
+        run: ./lint_docs.sh
