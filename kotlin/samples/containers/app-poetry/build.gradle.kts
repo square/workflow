@@ -23,6 +23,7 @@ apply(from = rootProject.file(".buildscript/android-ui-tests.gradle"))
 
 android {
   defaultConfig {
+    setApplicationId("com.squareup.sample.containers.poetry")
     applicationId = "com.squareup.sample.containers.poetry"
   }
 

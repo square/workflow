@@ -1,0 +1,29 @@
+<resources><!--
+  ~ Copyright 2020 Square Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+  <string name="app_name">Porchbox</string>
+  <string name="inbox_label">Inbox</string>
+  <string name="item_previous">Previous</string>
+  <string name="item_next">Next</string>
+  <string name="logging_in">Logging in...</string>
+  <string name="loading_data">Loading Porchbox...</string>
+  <string name="drop_item">Drop Item</string>
+  <string name="enter_recepient_email">Enter Porch Email</string>
+  <string name="enter_item_name">Enter Item Name</string>
+  <string name="enter_photo_uri">Enter Photo Address</string>
+  <string name="enter_email">Enter Email</string>
+  <string name="enter_password">Enter Password</string>
+  <string name="login">Login</string>
+</resources>

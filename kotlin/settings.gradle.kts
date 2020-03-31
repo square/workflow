@@ -22,6 +22,7 @@ include(
     ":legacy:legacy-workflow-test",
     ":samples:containers:app-poetry",
     ":samples:containers:app-raven",
+    ":samples:containers:app-porchbox",
     ":samples:containers:android",
     ":samples:containers:common",
     ":samples:containers:hello-back-button",

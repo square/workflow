@@ -12,7 +12,7 @@ object Versions {
 
 @Suppress("unused")
 object Dependencies {
-  const val android_gradle_plugin = "com.android.tools.build:gradle:4.0.0-beta03"
+  const val android_gradle_plugin = "com.android.tools.build:gradle:4.1.0-alpha04"
 
   object AndroidX {
     const val activity = "androidx.activity:activity:1.1.0"
@@ -47,6 +47,7 @@ object Dependencies {
   }
 
   const val cycler = "com.squareup.cycler:cycler:0.1.3"
+  const val picasso = "com.squareup.picasso:picasso:2.71828"
 
   // Required for Dungeon Crawler sample.
   const val desugar_jdk_libs = "com.android.tools:desugar_jdk_libs:1.0.5"
@@ -90,6 +91,16 @@ object Dependencies {
       const val jdk = "org.jetbrains.kotlin:kotlin-test-junit"
 
       const val mockito = "com.nhaarman:mockito-kotlin-kt1.1:1.6.0"
+    }
+  }
+
+  object Google {
+    const val services = "com.google.gms:google-services:4.3.3"
+
+    object Firebase {
+      const val analytics = "com.google.firebase:firebase-analytics:17.3.0"
+      const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.2"
+      const val auth = "com.google.firebase:firebase-auth:19.3.0"
     }
   }
 
