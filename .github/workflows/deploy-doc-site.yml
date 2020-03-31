@@ -1,0 +1,82 @@
+name: Deploy documentation site
+
+on:
+  push:
+    tags: [ v* ]
+  pull_request:
+    # Run this workflow as a dry run when it's edited, so we can test it.
+    paths: .github/workflows/deploy-doc-site.yml
+
+jobs:
+  deploy:
+    runs-on: macOS-latest
+    env:
+      # Default to deploying the current REF. If this is a pull request run, that ref will be invalid
+      # (local-only merge commit), so we'll override it with the GITHUB_HEAD_REF below.
+      DEPLOY_REF: ${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v2
+
+      # Gradle caches (keys must match those defined in kotlin.yml)
+      # Don't use the gradle wrapper cache, since there's only one job we're downloading the whole wrapper once either way.
+      - name: Cache gradle artifacts
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ github.sha }}
+          restore-keys: |
+            gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-
+
+      # Swift caches (keys must match those defined in swift.yml)
+      - name: Load gem cache
+        uses: actions/cache@v1
+        with:
+          path: .bundle
+          key: gems-${{ hashFiles('Gemfile.lock') }}
+
+      - name: Set up Swift environment
+        run: |
+          # Set global bundle path so it gets used by build_swift_docs.sh running in the nested repo as well.
+          bundle config --global path "$(pwd)/.bundle"
+          bundle check || bundle install
+          # Don't need to run pod gen, the website script does that itself.
+          brew install sourcedocs
+          sudo xcode-select -s /Applications/Xcode_11.3.1.app
+
+      # Docs dependencies
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+
+      # This environment variable step should be run after all 3rd-party actions to ensure nothing
+      # else accidentally overrides any of our special variables.
+      - name: 'If pull request: enable dry run and configure deploy ref'
+        if: github.event_name == 'pull_request'
+        run: |
+          # When building pull requests, we shouldn't actually deploy, just do a dry run to make
+          # sure all the dependencies are set up correctly.
+          echo "::set-env name=DRY_RUN::true"
+          # GITHUB_REF is a local-only merge commit, so we need to explicitly deploy the PR's branch.
+          echo "::set-env name=DEPLOY_REF::$GITHUB_HEAD_REF"
+
+      - name: Debug info
+        run: |
+          echo event_name=${{ github.event_name }}
+          echo GITHUB_REF=$GITHUB_REF
+          echo GITHUB_HEAD_REF=$GITHUB_HEAD_REF
+          echo DEPLOY_REF=$DEPLOY_REF
+          echo DRY_RUN=$DRY_RUN
+          git remote -v
+
+      ## Main steps
+      - name: Build and deploy website
+        env:
+          WORKFLOW_GOOGLE_ANALYTICS_KEY: ${{ secrets.WORKFLOW_GOOGLE_ANALYTICS_KEY }}
+          GIT_USERNAME: ${{ github.actor }}
+          GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: ./deploy_website.sh $DEPLOY_REF
