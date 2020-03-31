@@ -9,16 +9,6 @@ notifications:
 
 matrix:
   include:
-    # Verify the documentation site builds successfully, but don't deploy it.
-    - language: python
-      name: "Documentation: Static site"
-      python:
-        - "3.6"
-      install:
-        - pip install mkdocs-material
-      script:
-        - mkdocs build
-
     # Verify the Swift documentation builds successfully.
     - language: swift
       name: "Documentation: Swift API"
@@ -30,14 +20,6 @@ matrix:
         - brew install sourcedocs
       script:
         - .buildscript/build_swift_docs.sh /tmp/swiftdocs
-
-    # Ensure docs are formatted correctly.
-    - language: ruby
-      name: "Documentation: Markdown lint"
-      install:
-        - gem install mdl
-      script:
-        - ./lint_docs.sh
 
     # Disabled due to https://github.com/square/workflow/issues/223
     # - language: swift
