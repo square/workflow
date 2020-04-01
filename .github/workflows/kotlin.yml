@@ -18,7 +18,7 @@ jobs:
   assemble:
     name: Assemble
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       # These setup steps should be common across all jobs in this workflow.
       - uses: actions/checkout@v2
@@ -58,7 +58,7 @@ jobs:
     name: Check
     needs: assemble
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     strategy:
       # Run all checks, even if some fail.
       fail-fast: false
