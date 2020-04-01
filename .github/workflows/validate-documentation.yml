@@ -1,24 +1,13 @@
 name: Build and validate documentation site
 
 on:
-  push:
-    branches:
-      - master
-      - '!gh-pages'
+  pull_request:
     paths:
       # Rebuild when workflow configs change.
       - .github/workflows/validate-documentation.yml
       # Or when documentation code changes.
-      - docs/**
-      - ./**.md
-      - mkdocs.yml
-      - lint_docs.sh
-      - .markdownlint.rb
-  pull_request:
-    paths:
-      - .github/workflows/validate-documentation.yml
-      - docs/**
-      - ./**.md
+      - 'docs/**'
+      - '**.md'
       - mkdocs.yml
       - lint_docs.sh
       - .markdownlint.rb

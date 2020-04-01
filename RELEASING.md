@@ -99,6 +99,9 @@ consists of three parts:
    [Sourcedocs](https://github.com/eneko/SourceDocs) and then included in the statically-generated
    website.
 
+**Note: The documentation site is automatically built and deployed whenever a version tag is pushed.
+You only need these steps if you want to work on the site locally.**
+
 ### Setting up the site generators
 
 If you've already done this, you can skip to _Deploying the website to production_ below.
@@ -167,6 +170,9 @@ mkdocs serve
 ```
 
 ### Deploying the website to production
+
+**Note: The documentation site is automatically built and deployed by a Github Workflow whenever a
+version tag is pushed. You only need these steps if you want to publish the site manually.**
 
 Before deploying the website for real, you need to export our Google Analytics key in an environment
 variable so that it will get added to the HTML. Get the key from one of the project maintainers,
