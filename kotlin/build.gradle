@@ -127,7 +127,7 @@ buildscript {
       'lanterna': "com.googlecode.lanterna:lanterna:3.0.2",
       'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.1",
       'okio': "com.squareup.okio:okio:2.5.0",
-      'rxjava2':[
+      'rxjava2': [
           'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.19",
           'extensions': "com.github.akarnokd:rxjava2-extensions:0.20.10"
       ],
@@ -224,3 +224,53 @@ subprojects {
 }
 
 apply from: rootProject.file('.buildscript/binary-validation.gradle')
+
+// This is intentionally *not* applied to subprojects. When building subprojects' kdoc for maven
+// javadocs artifacts, we want to use the default config. This config is for the
+// statically-generated documentation site.
+apply plugin: 'org.jetbrains.dokka'
+repositories {
+  // Dokka is not in Maven Central.
+  jcenter()
+}
+tasks.register('siteDokka', org.jetbrains.dokka.gradle.DokkaTask) {
+  description = 'Generate dokka Github-flavored Markdown for documentation site.'
+  // TODO(#1065) Make this task depend on assembling all subprojects.
+
+  outputDirectory = "$rootDir/../docs/kotlin/api"
+  outputFormat = 'gfm'
+
+  // TODO(#1064) Generate this list automatically.
+  // These can't be absolute paths, they can only be the leaf project name.
+  subProjects = [
+      'backstack-android',
+      'backstack-common',
+      'core-android',
+      'core-common',
+      'core-compose',
+      'legacy-workflow-core',
+      'legacy-workflow-rx2',
+      'legacy-workflow-test',
+      'modal-android',
+      'modal-common',
+      'trace-encoder',
+      'workflow-core',
+      'workflow-runtime',
+      'workflow-rx2',
+      'workflow-testing',
+      'workflow-tracing',
+  ]
+
+  configuration {
+    reportUndocumented = false
+    skipDeprecated = true
+    jdkVersion = 8
+
+    // TODO(#1063) Add source links using same automated process as subProjects.
+
+    perPackageOption {
+      prefix = "com.squareup.workflow.internal"
+      suppress = true
+    }
+  }
+}

@@ -154,7 +154,7 @@ Mkdocs is written in Python, so you'll need Python and pip in order to run it. A
 set up, run:
 
 ```bash
-pip install mkdocs mkdocs-material
+pip install mkdocs mkdocs-material mkdocs-redirects
 ```
 
 Generate the site manually with:

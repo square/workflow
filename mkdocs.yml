@@ -57,6 +57,17 @@ markdown_extensions:
   - pymdownx.superfences
   - tables
 
+plugins:
+  - redirects:
+      redirect_maps:
+        # Redirect some of the most-visited pages from their old locations in case there are links
+        # to these pages somewhere.
+        'kotlin/api/workflow-core/com.squareup.workflow/index.md': 'kotlin/api/workflow/com.squareup.workflow/index.md'
+        'kotlin/api/workflow-core/com.squareup.workflow/-worker/index.md': 'kotlin/api/workflow/com.squareup.workflow/-worker/index.md'
+        'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md': 'kotlin/api/workflow/com.squareup.workflow.testing/index.md'
+        'kotlin/api/workflow-testing/com.squareup.workflow.testing/-render-tester/index.md': 'kotlin/api/workflow/com.squareup.workflow.testing/-render-tester/index.md'
+        'kotlin/api/workflow-ui-android/com.squareup.workflow.ui/index.md': 'kotlin/api/workflow/com.squareup.workflow.ui/index.md'
+
 extra:
   # type is the name of the FontAwesome icon without the fa- prefix.
   social:
@@ -92,24 +103,12 @@ nav:
       - 'Using a Workflow to Show UI': 'tutorial/using-a-workflow-for-ui.md'
     - 'Code Recipes': 'code-recipes.md'
     - 'Development Process': 'development-process.md'
-  - 'Kotlin API':
-    - 'workflow-core': 'kotlin/api/workflow-core/com.squareup.workflow/index.md'
-    - 'workflow-runtime': 'kotlin/api/workflow-runtime/com.squareup.workflow/index.md'
-    - 'workflow-ui':
-      - 'core-common': 'kotlin/api/core-common/com.squareup.workflow.ui/index.md'
-      - 'core-android': 'kotlin/api/core-android/com.squareup.workflow.ui/index.md'
-      - 'modal-common': 'kotlin/api/modal-common/com.squareup.workflow.ui.modal/index.md'
-      - 'modal-android': 'kotlin/api/modal-android/com.squareup.workflow.ui.modal/index.md'
-      - 'backstack-common': 'kotlin/api/backstack-common/com.squareup.workflow.ui.backstack/index.md'
-      - 'backstack-android': 'kotlin/api/backstack-android/com.squareup.workflow.ui.backstack/index.md'
-    - 'workflow-testing': 'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md'
-    - 'workflow-rx2': 'kotlin/api/workflow-rx2/com.squareup.workflow.rx2/index.md'
-    - 'trace-encoder': 'kotlin/api/trace-encoder/com.squareup.tracing/index.md'
-    - 'workflow-tracing': 'kotlin/api/workflow-tracing/com.squareup.workflow.diagnostic.tracing/index.md'
-  - 'Swift API':
-    - 'Workflow ': 'swift/api/Workflow/README.md'
-    - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
-    - 'WorkflowTesting ': 'swift/api/WorkflowTesting/README.md'
+  - 'API Reference':
+    - 'Kotlin': 'kotlin/api/workflow/index.md'
+    - 'Swift API':
+      - 'Workflow ': 'swift/api/Workflow/README.md'
+      - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
+      - 'WorkflowTesting ': 'swift/api/WorkflowTesting/README.md'
   - 'FAQ': faq.md
   - 'Change Log ⏏': CHANGELOG.md
   - 'Contributing': CONTRIBUTING.md
