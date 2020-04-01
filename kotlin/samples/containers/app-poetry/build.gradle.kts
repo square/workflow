@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+  id("com.android.application")
+  kotlin("android")
+}
 
-apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
-apply from: rootProject.file('.buildscript/android-ui-tests.gradle')
+apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
+apply(from = rootProject.file(".buildscript/android-ui-tests.gradle"))
 
 android {
   defaultConfig {
-    applicationId "com.squareup.sample.containers.poetry"
+    applicationId = "com.squareup.sample.containers.poetry"
   }
 
   testOptions {
@@ -30,14 +32,14 @@ android {
 }
 
 dependencies {
-  implementation project(':samples:containers:android')
-  implementation project(':samples:containers:poetry')
-  implementation project(':workflow-ui:core-android')
-  implementation project(':workflow-core')
-  implementation project(':workflow-runtime')
+  implementation(project(":samples:containers:android"))
+  implementation(project(":samples:containers:poetry"))
+  implementation(project(":workflow-ui:core-android"))
+  implementation(project(":workflow-core"))
+  implementation(project(":workflow-runtime"))
 
-  implementation Dep.get("androidx.appcompat")
-  implementation Dep.get("androidx.recyclerview")
-  implementation Dep.get("rxjava2.rxjava2")
-  implementation Dep.get("timber")
+  implementation(get("androidx.appcompat"))
+  implementation(get("androidx.recyclerview"))
+  implementation(get("rxjava2.rxjava2"))
+  implementation(get("timber"))
 }

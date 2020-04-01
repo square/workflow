@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+  id("com.android.application")
+  kotlin("android")
+}
 
-apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
-apply from: rootProject.file('.buildscript/android-ui-tests.gradle')
+apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
+apply(from = rootProject.file(".buildscript/android-ui-tests.gradle"))
 
 android {
   defaultConfig {
-    applicationId "com.squareup.sample.recyclerview"
+    applicationId = "com.squareup.sample.recyclerview"
   }
 }
 
 dependencies {
-  implementation project(':workflow-ui:modal-android')
-  implementation project(':workflow-core')
-  implementation project(':workflow-runtime')
+  implementation(project(":workflow-ui:modal-android"))
+  implementation(project(":workflow-core"))
+  implementation(project(":workflow-runtime"))
 
-  implementation Dep.get("androidx.appcompat")
-  implementation Dep.get("androidx.recyclerview")
-  implementation Dep.get("kotlin.coroutines.android")
-  implementation Dep.get("kotlin.coroutines.core")
-  implementation Dep.get("rxjava2.rxjava2")
-  implementation Dep.get("timber")
+  implementation(get("androidx.appcompat"))
+  implementation(get("androidx.recyclerview"))
+  implementation(get("kotlin.coroutines.android"))
+  implementation(get("kotlin.coroutines.core"))
+  implementation(get("rxjava2.rxjava2"))
+  implementation(get("timber"))
 }

@@ -13,32 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+  id("com.android.application")
+  kotlin("android")
+}
 
-apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
-apply from: rootProject.file('.buildscript/android-ui-tests.gradle')
+apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
+apply(from = rootProject.file(".buildscript/android-ui-tests.gradle"))
 
 android {
   defaultConfig {
-    applicationId "com.squareup.sample.hellocomposebinding"
+    applicationId = "com.squareup.sample.hellocomposebinding"
   }
 }
 
-apply from: rootProject.file('.buildscript/configure-compose.gradle')
+apply(from = rootProject.file(".buildscript/configure-compose.gradle"))
 
 dependencies {
-  implementation project(':workflow-core')
-  implementation project(':workflow-runtime')
-  implementation project(':workflow-ui:core-compose')
+  implementation(project(":workflow-core"))
+  implementation(project(":workflow-runtime"))
+  implementation(project(":workflow-ui:core-compose"))
 
-  implementation Dep.get("androidx.appcompat")
-  implementation Dep.get("compose.layout")
-  implementation Dep.get("compose.material")
-  implementation Dep.get("compose.tooling")
-  implementation Dep.get("compose.foundation")
-  implementation Dep.get("rxjava2.rxjava2")
+  implementation(get("androidx.appcompat"))
+  implementation(get("compose.layout"))
+  implementation(get("compose.material"))
+  implementation(get("compose.tooling"))
+  implementation(get("compose.foundation"))
+  implementation(get("rxjava2.rxjava2"))
 
-  androidTestImplementation Dep.get("compose.test")
-  androidTestImplementation Dep.get("test.junit")
+  androidTestImplementation(get("compose.test"))
+  androidTestImplementation(get("test.junit"))
 }

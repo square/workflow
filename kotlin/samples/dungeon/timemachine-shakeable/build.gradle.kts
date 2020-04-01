@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+  id("com.android.library")
+  kotlin("android")
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
+apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
 
 dependencies {
-  api project(':samples:dungeon:timemachine')
+  api(project(":samples:dungeon:timemachine"))
 
-  implementation project(':workflow-ui:core-android')
-  implementation Dep.get("androidx.constraint_layout")
-  implementation Dep.get("androidx.material")
-  implementation Dep.get("kotlin.stdLib.jdk8")
-  implementation 'com.squareup:seismic:1.0.2'
+  implementation(project(":workflow-ui:core-android"))
+  implementation(get("androidx.constraint_layout"))
+  implementation(get("androidx.material"))
+  implementation(get("kotlin.stdLib.jdk8"))
+  implementation("com.squareup:seismic:1.0.2")
 }

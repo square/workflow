@@ -13,39 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'org.jetbrains.dokka'
+plugins {
+  id("com.android.library")
+  kotlin("android")
+  id("org.jetbrains.dokka")
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
-apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
+apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
 
 dependencies {
-  api project(':workflow-core')
-  api project(':workflow-ui:core-android')
-  api project(':workflow-ui:modal-common')
+  api(project(":workflow-core"))
+  api(project(":workflow-ui:core-android"))
+  api(project(":workflow-ui:modal-common"))
 
-  api Dep.get("androidx.transition")
-  api Dep.get("kotlin.stdLib.jdk6")
-  api Dep.get("rxjava2.rxjava2")
+  api(get("androidx.transition"))
+  api(get("kotlin.stdLib.jdk6"))
+  api(get("rxjava2.rxjava2"))
 
-  implementation project(':workflow-runtime')
-  implementation Dep.get("androidx.appcompat")
-  implementation Dep.get("androidx.activity")
-  implementation Dep.get("androidx.fragment")
-  implementation Dep.get("androidx.lifecycle.reactivestreams")
-  implementation Dep.get("androidx.savedstate")
-  implementation Dep.get("kotlin.coroutines.android")
-  implementation Dep.get("kotlin.coroutines.core")
-  implementation Dep.get("kotlin.coroutines.rx2")
+  implementation(project(":workflow-runtime"))
+  implementation(get("androidx.appcompat"))
+  implementation(get("androidx.activity"))
+  implementation(get("androidx.fragment"))
+  implementation(get("androidx.lifecycle.reactivestreams"))
+  implementation(get("androidx.savedstate"))
+  implementation(get("kotlin.coroutines.android"))
+  implementation(get("kotlin.coroutines.core"))
+  implementation(get("kotlin.coroutines.rx2"))
 
-  testImplementation Dep.get("test.junit")
-  testImplementation Dep.get("test.truth")
-  testImplementation Dep.get("kotlin.coroutines.test")
-  testImplementation Dep.get("kotlin.test.jdk")
-  testImplementation Dep.get("kotlin.test.mockito")
+  testImplementation(get("test.junit"))
+  testImplementation(get("test.truth"))
+  testImplementation(get("kotlin.coroutines.test"))
+  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(get("kotlin.test.mockito"))
 }

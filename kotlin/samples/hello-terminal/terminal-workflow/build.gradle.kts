@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+plugins {
+  `java-library`
+  kotlin("jvm")
+}
 
 dependencies {
-  implementation project(':workflow-core')
-  implementation project(':workflow-runtime')
+  implementation(project(":workflow-core"))
+  implementation(project(":workflow-runtime"))
 
-  implementation Dep.get("lanterna")
+  implementation(get("lanterna"))
 }

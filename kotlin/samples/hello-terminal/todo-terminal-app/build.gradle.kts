@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java'
-apply plugin: 'kotlin'
-apply plugin: 'application'
+plugins {
+  application
+  kotlin("jvm")
+}
 
-mainClassName = 'com.squareup.sample.hellotodo.MainKt'
+application.mainClassName = "com.squareup.sample.hellotodo.MainKt"
 
 dependencies {
-  implementation project(':samples:hello-terminal:terminal-workflow')
-  implementation project(':workflow-core')
-  implementation project(':workflow-runtime')
+  implementation(project(":samples:hello-terminal:terminal-workflow"))
+  implementation(project(":workflow-core"))
+  implementation(project(":workflow-runtime"))
 }

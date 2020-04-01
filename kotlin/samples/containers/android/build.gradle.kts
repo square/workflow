@@ -13,33 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+  id("com.android.library")
+  kotlin("android")
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
+apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
 
 dependencies {
-  api project(':workflow-core')
-  api project(':workflow-ui:backstack-android')
-  api project(':workflow-ui:modal-android')
-  api project(':samples:containers:common')
+  api(project(":workflow-core"))
+  api(project(":workflow-ui:backstack-android"))
+  api(project(":workflow-ui:modal-android"))
+  api(project(":samples:containers:common"))
 
-  api Dep.get("androidx.transition")
-  api Dep.get("kotlin.stdLib.jdk6")
-  api Dep.get("rxjava2.rxjava2")
+  api(get("androidx.transition"))
+  api(get("kotlin.stdLib.jdk6"))
+  api(get("rxjava2.rxjava2"))
 
-  implementation project(':workflow-runtime')
-  implementation Dep.get("androidx.appcompat")
-  implementation Dep.get("androidx.lifecycle.reactivestreams")
-  implementation Dep.get("androidx.savedstate")
-  implementation Dep.get("kotlin.coroutines.android")
-  implementation Dep.get("kotlin.coroutines.core")
-  implementation Dep.get("kotlin.coroutines.rx2")
+  implementation(project(":workflow-runtime"))
+  implementation(get("androidx.appcompat"))
+  implementation(get("androidx.lifecycle.reactivestreams"))
+  implementation(get("androidx.savedstate"))
+  implementation(get("kotlin.coroutines.android"))
+  implementation(get("kotlin.coroutines.core"))
+  implementation(get("kotlin.coroutines.rx2"))
 
-  testImplementation Dep.get("test.junit")
-  testImplementation Dep.get("test.truth")
-  testImplementation Dep.get("kotlin.coroutines.test")
+  testImplementation(get("test.junit"))
+  testImplementation(get("test.truth"))
+  testImplementation(get("kotlin.coroutines.test"))
 }

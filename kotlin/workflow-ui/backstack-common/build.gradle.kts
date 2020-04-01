@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
-apply plugin: 'org.jetbrains.dokka'
+plugins {
+  `java-library`
+  kotlin("jvm")
+  id("org.jetbrains.dokka")
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 dependencies {
-  api Dep.get("kotlin.stdLib.jdk6")
-  api Dep.get("okio")
+  api(get("kotlin.stdLib.jdk6"))
+  api(get("okio"))
 
-  testImplementation Dep.get("kotlin.test.jdk")
-  testImplementation Dep.get("test.truth")
+  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(get("test.truth"))
 }

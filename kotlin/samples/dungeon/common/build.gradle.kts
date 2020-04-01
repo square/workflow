@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java'
-apply plugin: 'kotlin'
-apply plugin: 'kotlinx-serialization'
+plugins {
+  `java-library`
+  kotlin("jvm")
+  id("kotlinx-serialization")
+}
 
 dependencies {
-  implementation project(':workflow-ui:core-common')
-  implementation project(':workflow-core')
-  implementation project(':workflow-rx2')
+  implementation(project(":workflow-ui:core-common"))
+  implementation(project(":workflow-core"))
+  implementation(project(":workflow-rx2"))
 
-  implementation Dep.get("kotlin.serialization.kaml")
-  implementation Dep.get("kotlin.serialization.runtime")
-  implementation Dep.get("kotlin.stdLib.jdk8")
-  implementation Dep.get("rxjava2.rxjava2")
+  implementation(get("kotlin.serialization.kaml"))
+  implementation(get("kotlin.serialization.runtime"))
+  implementation(get("kotlin.stdLib.jdk8"))
+  implementation(get("rxjava2.rxjava2"))
 
-  testImplementation project(':workflow-testing')
-  testImplementation Dep.get("kotlin.test.jdk")
-  testImplementation Dep.get("test.truth")
+  testImplementation(project(":workflow-testing"))
+  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(get("test.truth"))
 }

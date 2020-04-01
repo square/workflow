@@ -13,27 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+  id("com.android.library")
+  kotlin("android")
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
-apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
+apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
 
-apply from: rootProject.file('.buildscript/configure-compose.gradle')
+apply(from = rootProject.file(".buildscript/configure-compose.gradle"))
 
 dependencies {
-  api project(':workflow-ui:core-android')
-  api Dep.get("kotlin.stdLib.jdk8")
+  api(project(":workflow-ui:core-android"))
+  api(get("kotlin.stdLib.jdk8"))
 
-  implementation project(':workflow-runtime')
-  implementation Dep.get("compose.foundation")
-  implementation Dep.get("compose.layout")
-  implementation Dep.get("compose.tooling")
+  implementation(project(":workflow-runtime"))
+  implementation(get("compose.foundation"))
+  implementation(get("compose.layout"))
+  implementation(get("compose.tooling"))
 
-  testImplementation Dep.get("test.junit")
-  testImplementation Dep.get("test.truth")
+  testImplementation(get("test.junit"))
+  testImplementation(get("test.truth"))
 }

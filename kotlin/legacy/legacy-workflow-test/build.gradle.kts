@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+plugins {
+  `java-library`
+  kotlin("jvm")
+}
 
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 dependencies {
-  implementation project(':legacy:legacy-workflow-rx2')
+  implementation(project(":legacy:legacy-workflow-rx2"))
 }

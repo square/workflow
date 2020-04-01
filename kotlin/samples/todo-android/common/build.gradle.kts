@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java'
-apply plugin: 'kotlin'
+plugins {
+  `java-library`
+  kotlin("jvm")
+}
 
 dependencies {
-  implementation project(':samples:containers:common')
-  implementation project(':workflow-ui:backstack-common')
-  implementation project(':workflow-core')
-  implementation project(':workflow-rx2')
+  implementation(project(":samples:containers:common"))
+  implementation(project(":workflow-ui:backstack-common"))
+  implementation(project(":workflow-core"))
+  implementation(project(":workflow-rx2"))
 
-  implementation Dep.get("kotlin.stdLib.jdk6")
-  implementation Dep.get("rxjava2.rxjava2")
+  implementation(get("kotlin.stdLib.jdk6"))
+  implementation(get("rxjava2.rxjava2"))
 
-  testImplementation Dep.get("test.hamcrestCore")
-  testImplementation Dep.get("test.junit")
-  testImplementation Dep.get("test.truth")
-  testImplementation Dep.get("rxjava2.extensions")
-  testImplementation project(':workflow-testing')
+  testImplementation(get("test.hamcrestCore"))
+  testImplementation(get("test.junit"))
+  testImplementation(get("test.truth"))
+  testImplementation(get("rxjava2.extensions"))
+  testImplementation(project(":workflow-testing"))
 }

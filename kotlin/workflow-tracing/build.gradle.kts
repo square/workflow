@@ -13,28 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
-apply plugin: 'com.vanniktech.maven.publish'
+plugins {
+  `java-library`
+  kotlin("jvm")
+  id("com.vanniktech.maven.publish")
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 dependencies {
-  compileOnly Dep.get("annotations.intellij")
+  compileOnly(get("annotations.intellij"))
 
-  api project(':trace-encoder')
-  api project(':workflow-runtime')
-  api Dep.get("kotlin.stdLib.jdk6")
-  api Dep.get("kotlin.coroutines.core")
+  api(project(":trace-encoder"))
+  api(project(":workflow-runtime"))
+  api(get("kotlin.stdLib.jdk6"))
+  api(get("kotlin.coroutines.core"))
 
-  implementation Dep.get("kotlin.reflect")
-  implementation Dep.get("kotlin.moshi")
-  implementation Dep.get("okio")
-  implementation Dep.get("moshi")
+  implementation(get("kotlin.reflect"))
+  implementation(get("kotlin.moshi"))
+  implementation(get("okio"))
+  implementation(get("moshi"))
 
-  testImplementation Dep.get("kotlin.test.jdk")
-  testImplementation Dep.get("kotlin.test.mockito")
+  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(get("kotlin.test.mockito"))
 }

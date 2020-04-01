@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'kotlin'
+plugins {
+  kotlin("jvm")
+}
 
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 dependencies {
-  implementation Dep.get("kotlin.stdLib.jdk8")
+  implementation(get("kotlin.stdLib.jdk8"))
 
-  testImplementation Dep.get("kotlin.test.jdk")
-  testImplementation Dep.get("test.junit")
-  testImplementation Dep.get("test.truth")
+  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(get("test.junit"))
+  testImplementation(get("test.truth"))
 }

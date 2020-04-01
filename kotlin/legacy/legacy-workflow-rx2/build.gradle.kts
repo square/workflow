@@ -13,34 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+plugins {
+  `java-library`
+  kotlin("jvm")
+}
 
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 dependencies {
-  compileOnly Dep.get("androidx.annotations")
-  compileOnly Dep.get("annotations.intellij")
+  compileOnly(get("androidx.annotations"))
+  compileOnly(get("annotations.intellij"))
 
-  api project(':legacy:legacy-workflow-core')
+  api(project(":legacy:legacy-workflow-core"))
   // For Snapshot.
-  api project(':workflow-core')
-  api Dep.get("kotlin.stdLib.jdk6")
-  api Dep.get("kotlin.coroutines.core")
-  api Dep.get("okio")
-  api Dep.get("rxjava2.rxjava2")
+  api(project(":workflow-core"))
+  api(get("kotlin.stdLib.jdk6"))
+  api(get("kotlin.coroutines.core"))
+  api(get("okio"))
+  api(get("rxjava2.rxjava2"))
 
-  implementation Dep.get("kotlin.coroutines.rx2")
+  implementation(get("kotlin.coroutines.rx2"))
 
-  testImplementation project(':internal-testing-utils')
-  testImplementation Dep.get("kotlin.test.jdk")
-  testImplementation Dep.get("kotlin.test.mockito")
-  testImplementation Dep.get("test.hamcrestCore")
-  testImplementation Dep.get("test.junit")
-  testImplementation Dep.get("test.truth")
-  testImplementation Dep.get("test.mockito")
-  testImplementation Dep.get("rxjava2.extensions")
+  testImplementation(project(":internal-testing-utils"))
+  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(get("kotlin.test.mockito"))
+  testImplementation(get("test.hamcrestCore"))
+  testImplementation(get("test.junit"))
+  testImplementation(get("test.truth"))
+  testImplementation(get("test.mockito"))
+  testImplementation(get("rxjava2.extensions"))
 }

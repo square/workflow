@@ -1,3 +1,6 @@
+import me.champeau.gradle.JMHPluginExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 /*
  * Copyright 2019 Square Inc.
  *
@@ -13,50 +16,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
-apply plugin: 'org.jetbrains.dokka'
+plugins {
+  `java-library`
+  kotlin("jvm")
+  id("org.jetbrains.dokka")
+  // Benchmark plugins.
+  id("me.champeau.gradle.jmh")
+  // If this plugin is not applied, IntelliJ won't see the JMH definitions for some reason.
+  idea
+}
 
-// Benchmark plugins.
-apply plugin: 'me.champeau.gradle.jmh'
-// If this plugin is not applied, IntelliJ won't see the JMH definitions for some reason.
-apply plugin: 'idea'
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 // Benchmark configuration.
-jmh {
-  include = ['.*']
-  duplicateClassesStrategy = 'warn'
+configure<JMHPluginExtension> {
+  include = listOf(".*")
+  duplicateClassesStrategy = DuplicatesStrategy.WARN
 }
-configurations {
-  jmh.with {
-    attributes.attribute(Usage.USAGE_ATTRIBUTE, getObjects().named(Usage, Usage.JAVA_RUNTIME))
-  }
+configurations.named("jmh") {
+  attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
 }
-compileJmhKotlin {
+tasks.named<KotlinCompile>("compileJmhKotlin") {
   kotlinOptions {
     // Give the benchmark code access to internal definitions.
-    // Can't use sourceSets.main.runtimeClasspath since it would have to be evaluated eagerly.
+    val compileKotlin: KotlinCompile by tasks
     freeCompilerArgs += "-Xfriend-paths=${compileKotlin.destinationDir}"
   }
 }
 
 dependencies {
-  compileOnly Dep.get("annotations.intellij")
+  compileOnly(get("annotations.intellij"))
 
-  api project(':workflow-core')
-  api Dep.get("kotlin.stdLib.jdk6")
-  api Dep.get("kotlin.coroutines.core")
+  api(project(":workflow-core"))
+  api(get("kotlin.stdLib.jdk6"))
+  api(get("kotlin.coroutines.core"))
 
-  testImplementation Dep.get("kotlin.test.jdk")
-  testImplementation Dep.get("kotlin.reflect")
+  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(get("kotlin.reflect"))
 
   // These dependencies will be available on the classpath for source inside src/jmh.
-  jmh Dep.get("kotlin.stdLib.jdk6")
-  jmh Dep.get("jmh.core")
-  jmh Dep.get("jmh.generator")
+  "jmh"(get("kotlin.stdLib.jdk6"))
+  "jmh"(get("jmh.core"))
+  "jmh"(get("jmh.generator"))
 }

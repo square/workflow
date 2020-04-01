@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
-apply plugin: 'org.jetbrains.dokka'
+plugins {
+  `java-library`
+  kotlin("jvm")
+  id("org.jetbrains.dokka")
+}
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 dependencies {
-  compileOnly Dep.get("annotations.intellij")
+  compileOnly(get("annotations.intellij"))
 
-  api project(':workflow-core')
-  api Dep.get("kotlin.stdLib.jdk6")
-  api Dep.get("kotlin.coroutines.core")
-  api Dep.get("rxjava2.rxjava2")
+  api(project(":workflow-core"))
+  api(get("kotlin.stdLib.jdk6"))
+  api(get("kotlin.coroutines.core"))
+  api(get("rxjava2.rxjava2"))
 
-  implementation Dep.get("kotlin.coroutines.rx2")
+  implementation(get("kotlin.coroutines.rx2"))
 
-  testImplementation project(':workflow-testing')
-  testImplementation Dep.get("kotlin.test.jdk")
+  testImplementation(project(":workflow-testing"))
+  testImplementation(get("kotlin.test.jdk"))
 }
