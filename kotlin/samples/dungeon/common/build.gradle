@@ -22,12 +22,12 @@ dependencies {
   implementation project(':workflow-core')
   implementation project(':workflow-rx2')
 
-  implementation deps.kotlin.serialization.kaml
-  implementation deps.kotlin.serialization.runtime
-  implementation deps.kotlin.stdLib.jdk8
-  implementation deps.rxjava2.rxjava2
+  implementation Dep.get("kotlin.serialization.kaml")
+  implementation Dep.get("kotlin.serialization.runtime")
+  implementation Dep.get("kotlin.stdLib.jdk8")
+  implementation Dep.get("rxjava2.rxjava2")
 
   testImplementation project(':workflow-testing')
-  testImplementation deps.kotlin.test.jdk
-  testImplementation deps.test.truth
+  testImplementation Dep.get("kotlin.test.jdk")
+  testImplementation Dep.get("test.truth")
 }

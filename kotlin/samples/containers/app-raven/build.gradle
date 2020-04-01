@@ -23,7 +23,7 @@ android {
   defaultConfig {
     applicationId "com.squareup.sample.containers.raven"
     minSdkVersion 21
-    targetSdkVersion versions.targetSdk
+    targetSdkVersion Versions.targetSdk
     versionCode 1
     versionName "1.0.0"
   }
@@ -36,7 +36,7 @@ dependencies {
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
 
-  implementation deps.androidx.appcompat
-  implementation deps.rxjava2.rxjava2
-  implementation deps.timber
+  implementation Dep.get("androidx.appcompat")
+  implementation Dep.get("rxjava2.rxjava2")
+  implementation Dep.get("timber")
 }

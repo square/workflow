@@ -27,13 +27,13 @@ apply from: rootProject.file('.buildscript/configure-compose.gradle')
 
 dependencies {
   api project(':workflow-ui:core-android')
-  api deps.kotlin.stdLib.jdk8
+  api Dep.get("kotlin.stdLib.jdk8")
 
   implementation project(':workflow-runtime')
-  implementation deps.compose.foundation
-  implementation deps.compose.layout
-  implementation deps.compose.tooling
+  implementation Dep.get("compose.foundation")
+  implementation Dep.get("compose.layout")
+  implementation Dep.get("compose.tooling")
 
-  testImplementation deps.test.junit
-  testImplementation deps.test.truth
+  testImplementation Dep.get("test.junit")
+  testImplementation Dep.get("test.truth")
 }

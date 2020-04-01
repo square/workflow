@@ -25,27 +25,27 @@ apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
-  compileOnly deps.androidx.viewbinding
+  compileOnly Dep.get("androidx.viewbinding")
 
   api project(':workflow-core')
   api project(':workflow-ui:core-common')
 
-  api deps.androidx.transition
-  api deps.kotlin.stdLib.jdk6
-  api deps.rxjava2.rxjava2
+  api Dep.get("androidx.transition")
+  api Dep.get("kotlin.stdLib.jdk6")
+  api Dep.get("rxjava2.rxjava2")
 
   implementation project(':workflow-runtime')
-  implementation deps.androidx.activity
-  implementation deps.androidx.fragment
-  implementation deps.androidx.lifecycle.reactivestreams
-  implementation deps.androidx.savedstate
-  implementation deps.kotlin.coroutines.android
-  implementation deps.kotlin.coroutines.core
-  implementation deps.kotlin.coroutines.rx2
+  implementation Dep.get("androidx.activity")
+  implementation Dep.get("androidx.fragment")
+  implementation Dep.get("androidx.lifecycle.reactivestreams")
+  implementation Dep.get("androidx.savedstate")
+  implementation Dep.get("kotlin.coroutines.android")
+  implementation Dep.get("kotlin.coroutines.core")
+  implementation Dep.get("kotlin.coroutines.rx2")
 
-  testImplementation deps.test.junit
-  testImplementation deps.test.truth
-  testImplementation deps.kotlin.coroutines.test
-  testImplementation deps.kotlin.test.jdk
-  testImplementation deps.kotlin.test.mockito
+  testImplementation Dep.get("test.junit")
+  testImplementation Dep.get("test.truth")
+  testImplementation Dep.get("kotlin.coroutines.test")
+  testImplementation Dep.get("kotlin.test.jdk")
+  testImplementation Dep.get("kotlin.test.mockito")
 }

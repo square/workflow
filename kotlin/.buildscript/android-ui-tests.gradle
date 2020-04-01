@@ -5,6 +5,6 @@ android {
 }
 
 dependencies {
-  androidTestImplementation deps.test.androidx.espresso.core
-  androidTestImplementation deps.test.androidx.junitExt
+  androidTestImplementation Dep.get("test.androidx.espresso.core")
+  androidTestImplementation Dep.get("test.androidx.junitExt")
 }

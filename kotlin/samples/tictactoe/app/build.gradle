@@ -24,7 +24,7 @@ android {
     applicationId "com.squareup.sample.tictacworkflow"
     minSdkVersion 21
     multiDexEnabled true
-    targetSdkVersion versions.targetSdk
+    targetSdkVersion Versions.targetSdk
     versionCode 1
     versionName "1.0.0"
   }
@@ -40,18 +40,18 @@ dependencies {
   implementation project(':workflow-runtime')
   implementation project(':workflow-tracing')
 
-  implementation deps.androidx.appcompat
-  implementation deps.androidx.constraint_layout
-  implementation deps.kotlin.coroutines.rx2
-  implementation deps.okio
-  implementation deps.rxandroid2
-  implementation deps.rxjava2.rxjava2
-  implementation deps.test.androidx.espresso.idlingResource
-  implementation deps.timber
+  implementation Dep.get("androidx.appcompat")
+  implementation Dep.get("androidx.constraint_layout")
+  implementation Dep.get("kotlin.coroutines.rx2")
+  implementation Dep.get("okio")
+  implementation Dep.get("rxandroid2")
+  implementation Dep.get("rxjava2.rxjava2")
+  implementation Dep.get("test.androidx.espresso.idlingResource")
+  implementation Dep.get("timber")
 
-  androidTestImplementation deps.test.androidx.espresso.intents
-  androidTestImplementation deps.test.androidx.runner
-  androidTestImplementation deps.test.androidx.truthExt
-  androidTestImplementation deps.test.junit
-  androidTestImplementation deps.test.truth
+  androidTestImplementation Dep.get("test.androidx.espresso.intents")
+  androidTestImplementation Dep.get("test.androidx.runner")
+  androidTestImplementation Dep.get("test.androidx.truthExt")
+  androidTestImplementation Dep.get("test.junit")
+  androidTestImplementation Dep.get("test.truth")
 }

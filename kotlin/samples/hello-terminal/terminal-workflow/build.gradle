@@ -20,5 +20,5 @@ dependencies {
   implementation project(':workflow-core')
   implementation project(':workflow-runtime')
 
-  implementation deps.lanterna
+  implementation Dep.get("lanterna")
 }

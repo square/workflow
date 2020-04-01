@@ -19,12 +19,12 @@ apply plugin: 'kotlin'
 dependencies {
   implementation project(':workflow-core')
 
-  implementation deps.kotlin.stdLib.jdk8
+  implementation Dep.get("kotlin.stdLib.jdk8")
 
-  testImplementation deps.kotlin.test.jdk
-  testImplementation deps.test.hamcrestCore
-  testImplementation deps.test.junit
-  testImplementation deps.test.truth
-  testImplementation deps.rxjava2.extensions
+  testImplementation Dep.get("kotlin.test.jdk")
+  testImplementation Dep.get("test.hamcrestCore")
+  testImplementation Dep.get("test.junit")
+  testImplementation Dep.get("test.truth")
+  testImplementation Dep.get("rxjava2.extensions")
   testImplementation project(':workflow-testing')
 }

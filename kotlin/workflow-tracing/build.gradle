@@ -23,18 +23,18 @@ targetCompatibility = JavaVersion.VERSION_1_8
 apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
 
 dependencies {
-  compileOnly deps.annotations.intellij
+  compileOnly Dep.get("annotations.intellij")
 
   api project(':trace-encoder')
   api project(':workflow-runtime')
-  api deps.kotlin.stdLib.jdk6
-  api deps.kotlin.coroutines.core
+  api Dep.get("kotlin.stdLib.jdk6")
+  api Dep.get("kotlin.coroutines.core")
 
-  implementation deps.kotlin.reflect
-  implementation deps.kotlin.moshi
-  implementation deps.okio
-  implementation deps.moshi
+  implementation Dep.get("kotlin.reflect")
+  implementation Dep.get("kotlin.moshi")
+  implementation Dep.get("okio")
+  implementation Dep.get("moshi")
 
-  testImplementation deps.kotlin.test.jdk
-  testImplementation deps.kotlin.test.mockito
+  testImplementation Dep.get("kotlin.test.jdk")
+  testImplementation Dep.get("kotlin.test.mockito")
 }
