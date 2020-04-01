@@ -16,16 +16,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-android rootProject.ext.defaultAndroidConfig
+apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
 apply from: rootProject.file('.buildscript/android-ui-tests.gradle')
 
 android {
   defaultConfig {
     applicationId "com.squareup.sample.helloworkflowfragment"
-    minSdkVersion 21
-    targetSdkVersion Versions.targetSdk
-    versionCode 1
-    versionName "1.0.0"
   }
 }
 

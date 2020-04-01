@@ -22,7 +22,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
 
-android rootProject.ext.defaultAndroidConfig
+apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
 
 // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
 android.packagingOptions.exclude '**/*.kotlin_*'

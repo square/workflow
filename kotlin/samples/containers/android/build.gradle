@@ -19,7 +19,7 @@ apply plugin: 'kotlin-android'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-android rootProject.ext.defaultAndroidConfig
+apply from: rootProject.file('.buildscript/configure-android-defaults.gradle')
 
 dependencies {
   api project(':workflow-core')
