@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - '!gh-pages'
     paths:
       # Rebuild when workflow configs change.
       - .github/workflows/kotlin.yml
@@ -59,7 +58,7 @@ jobs:
     name: Check
     needs: assemble
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       # Run all checks, even if some fail.
       fail-fast: false
