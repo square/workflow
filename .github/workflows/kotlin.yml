@@ -29,12 +29,6 @@ jobs:
           java-version: 1.8
 
       ## Caching
-      - name: Cache Gradle wrapper
-        uses: actions/cache@v1
-        with:
-            path: ~/.gradle/wrapper
-            # Don't set restore-keys so cache is always only valid for the current build config.
-            key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
       - name: Cache build artifacts
         uses: actions/cache@v1
         with:
@@ -82,12 +76,6 @@ jobs:
           java-version: 1.8
 
       ## Caching
-      - name: Cache Gradle wrapper
-        uses: actions/cache@v1
-        with:
-            path: ~/.gradle/wrapper
-            # Don't set restore-keys so cache is always only valid for the current build config.
-            key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
       - name: Cache build artifacts
         uses: actions/cache@v1
         with:
@@ -125,12 +113,6 @@ jobs:
           java-version: 1.8
 
       ## Caching
-      - name: Cache Gradle wrapper
-        uses: actions/cache@v1
-        with:
-            path: ~/.gradle/wrapper
-            # Don't set restore-keys so cache is always only valid for the current build config.
-            key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
       - name: Cache build artifacts
         uses: actions/cache@v1
         with:
