@@ -19,7 +19,7 @@
 # https://squidfunk.github.io/mkdocs-material/
 # It requires Python to run.
 # Install the packages with the following command:
-# pip install mkdocs mkdocs-material
+# pip install mkdocs mkdocs-material mkdocs-redirects
 # Preview the site as you're editing it with:
 # mkdocs serve
 # It also uses CocoaPods and Sourcedocs to build the Swift docs.
@@ -87,7 +87,7 @@ echo "SWIFT_API_DIR=$SWIFT_API_DIR"
 
 # Generate the Kotlin API docs.
 echo "Building Kotlin docs…"
-( cd kotlin && ./gradlew assemble --quiet && ./gradlew dokka --quiet )
+( cd kotlin && ./gradlew assemble --quiet && ./gradlew siteDokka --quiet )
 
 # Generate the Swift API docs.
 echo "Building Swift docs…"
