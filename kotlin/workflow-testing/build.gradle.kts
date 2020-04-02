@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 plugins {
-  `java-library`
-  kotlin("jvm")
+  kotlin("multiplatform")
   id("org.jetbrains.dokka")
-}
-
-java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
-dependencies {
-  compileOnly(Dependencies.Annotations.intellij)
+kotlin {
+  jvm {
+    compilations["main"].defaultSourceSet {
+      dependencies {
+        compileOnly(Dependencies.Annotations.intellij)
 
-  api(project(":workflow-core"))
-  api(project(":workflow-runtime"))
-  api(Dependencies.Kotlin.Coroutines.test)
-  api(Dependencies.Kotlin.Stdlib.jdk7)
+        api(project(":workflow-core"))
+        api(project(":workflow-runtime"))
+        api(Dependencies.Kotlin.Coroutines.test)
+        api(Dependencies.Kotlin.Stdlib.jdk7)
 
-  implementation(project(":internal-testing-utils"))
-  implementation(Dependencies.Kotlin.reflect)
+        implementation(project(":internal-testing-utils"))
+        implementation(Dependencies.Kotlin.reflect)
+      }
+    }
 
-  testImplementation(Dependencies.Kotlin.Test.jdk)
+    compilations["test"].defaultSourceSet {
+      dependencies {
+        implementation(Dependencies.Kotlin.Test.jdk)
+      }
+    }
+  }
 }
