@@ -1,0 +1,26 @@
+android {
+  compileSdkVersion Versions.targetSdk
+  buildToolsVersion '29.0.2'
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  defaultConfig {
+    minSdkVersion 21
+    targetSdkVersion Versions.targetSdk
+    versionCode 1
+    versionName "1.0"
+  }
+
+  buildFeatures.viewBinding = true
+
+  // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
+  packagingOptions {
+    exclude 'META-INF/atomicfu.kotlin_module'
+    exclude 'META-INF/common.kotlin_module'
+    exclude 'META-INF/android_debug.kotlin_module'
+    exclude 'META-INF/android_release.kotlin_module'
+  }
+}
