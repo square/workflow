@@ -36,11 +36,11 @@ jobs:
             # Include the SHA in the hash so this step always adds a cache entry. If we didn't use the SHA, the artifacts
             # would only get cached once for each build config hash.
             # Don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
-            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ github.sha }}
+            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/buildSrc/**') }}-${{ github.sha }}
             # The first time a SHA is assembled, we still want to load dependencies from the cache.
             # Note that none of jobs dependent on this one need restore keys, since they'll always have an exact hit.
             restore-keys: |
-              gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-
+              gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/buildSrc/**') }}-
 
       ## Actual task
       - name: Assemble with Gradle
@@ -82,7 +82,7 @@ jobs:
             path: ~/.gradle/caches
             # Don't set restore-keys so cache is always only valid for the current build config.
             # Also don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
-            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ github.sha }}
+            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/buildSrc/**') }}-${{ github.sha }}
 
       ## Actual task
       - name: Check with Gradle
@@ -119,7 +119,7 @@ jobs:
             path: ~/.gradle/caches
             # Don't set restore-keys so cache is always only valid for the current build config.
             # Also don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
-            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ github.sha }}
+            key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/buildSrc/**') }}-${{ github.sha }}
 
       ## Actual task
       - name: Instrumentation Tests
