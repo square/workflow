@@ -19,6 +19,6 @@ android {
     compose true
   }
   composeOptions {
-    kotlinCompilerExtensionVersion versions.compose
+    kotlinCompilerExtensionVersion Versions.compose
   }
 }

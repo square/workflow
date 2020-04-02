@@ -23,7 +23,7 @@ android {
   defaultConfig {
     applicationId "com.squareup.sample.hellocomposebinding"
     minSdkVersion 21
-    targetSdkVersion versions.targetSdk
+    targetSdkVersion Versions.targetSdk
     versionCode 1
     versionName "1.0.0"
   }
@@ -42,13 +42,13 @@ dependencies {
   implementation project(':workflow-runtime')
   implementation project(':workflow-ui:core-compose')
 
-  implementation deps.androidx.appcompat
-  implementation deps.compose.layout
-  implementation deps.compose.material
-  implementation deps.compose.tooling
-  implementation deps.compose.foundation
-  implementation deps.rxjava2.rxjava2
+  implementation Dep.get("androidx.appcompat")
+  implementation Dep.get("compose.layout")
+  implementation Dep.get("compose.material")
+  implementation Dep.get("compose.tooling")
+  implementation Dep.get("compose.foundation")
+  implementation Dep.get("rxjava2.rxjava2")
 
-  androidTestImplementation deps.compose.test
-  androidTestImplementation deps.test.junit
+  androidTestImplementation Dep.get("compose.test")
+  androidTestImplementation Dep.get("test.junit")
 }

@@ -24,7 +24,7 @@ android {
     applicationId "com.squareup.sample.todo"
     minSdkVersion 21
     multiDexEnabled true
-    targetSdkVersion versions.targetSdk
+    targetSdkVersion Versions.targetSdk
     versionCode 1
     versionName "1.0.0"
   }
@@ -42,17 +42,17 @@ dependencies {
   implementation project(':workflow-runtime')
   implementation project(':workflow-tracing')
 
-  implementation deps.androidx.appcompat
-  implementation deps.androidx.constraint_layout
-  implementation deps.androidx.material
-  implementation deps.kotlin.coroutines.rx2
-  implementation deps.okio
-  implementation deps.rxandroid2
-  implementation deps.rxjava2.rxjava2
-  implementation deps.timber
+  implementation Dep.get("androidx.appcompat")
+  implementation Dep.get("androidx.constraint_layout")
+  implementation Dep.get("androidx.material")
+  implementation Dep.get("kotlin.coroutines.rx2")
+  implementation Dep.get("okio")
+  implementation Dep.get("rxandroid2")
+  implementation Dep.get("rxjava2.rxjava2")
+  implementation Dep.get("timber")
 
-  testImplementation deps.test.junit
-  testImplementation deps.test.truth
+  testImplementation Dep.get("test.junit")
+  testImplementation Dep.get("test.truth")
 
-  androidTestImplementation deps.test.androidx.uiautomator
+  androidTestImplementation Dep.get("test.androidx.uiautomator")
 }

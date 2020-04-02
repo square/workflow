@@ -46,17 +46,17 @@ compileJmhKotlin {
 }
 
 dependencies {
-  compileOnly deps.annotations.intellij
+  compileOnly Dep.get("annotations.intellij")
 
   api project(':workflow-core')
-  api deps.kotlin.stdLib.jdk6
-  api deps.kotlin.coroutines.core
+  api Dep.get("kotlin.stdLib.jdk6")
+  api Dep.get("kotlin.coroutines.core")
 
-  testImplementation deps.kotlin.test.jdk
-  testImplementation deps.kotlin.reflect
+  testImplementation Dep.get("kotlin.test.jdk")
+  testImplementation Dep.get("kotlin.reflect")
 
   // These dependencies will be available on the classpath for source inside src/jmh.
-  jmh deps.kotlin.stdLib.jdk6
-  jmh deps.jmh.core
-  jmh deps.jmh.generator
+  jmh Dep.get("kotlin.stdLib.jdk6")
+  jmh Dep.get("jmh.core")
+  jmh Dep.get("jmh.generator")
 }

@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 buildscript {
-  ext.versions = [
-      'targetSdk': 29,
-      'compose': '0.1.0-dev07',
-      'coroutines': '1.3.4',
-      'kotlin': '1.3.71',
-  ]
-
   rootProject.ext.defaultAndroidConfig = {
-    compileSdkVersion versions.targetSdk
+    compileSdkVersion Versions.targetSdk
     buildToolsVersion '29.0.2'
 
     compileOptions {
@@ -32,7 +25,7 @@ buildscript {
 
     defaultConfig {
       minSdkVersion 21
-      targetSdkVersion versions.targetSdk
+      targetSdkVersion Versions.targetSdk
       versionCode 1
       versionName "1.0"
     }
@@ -48,122 +41,16 @@ buildscript {
     }
   }
 
-  ext.deps = [
-      'android_gradle_plugin': "com.android.tools.build:gradle:4.0.0-beta03",
-
-      'androidx': [
-          'activity': "androidx.activity:activity:1.1.0",
-          'annotations': "androidx.annotation:annotation:1.1.0",
-          'appcompat': "androidx.appcompat:appcompat:1.1.0",
-          'constraint_layout': "androidx.constraintlayout:constraintlayout:1.1.3",
-          'fragment': "androidx.fragment:fragment:1.2.3",
-          'gridlayout': "androidx.gridlayout:gridlayout:1.0.0",
-          'lifecycle': [
-              'reactivestreams': "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.2.0",
-          ],
-          // Note that we're not using the actual androidx material dep yet, it's still alpha.
-          'material': "com.google.android.material:material:1.1.0",
-          'recyclerview': "androidx.recyclerview:recyclerview:1.1.0",
-          // Note that we are *not* using lifecycle-viewmodel-savedstate, which at this
-          // writing is still in beta and still fixing bad bugs. Probably we'll never bother to,
-          // it doesn't really add value for us.
-          'savedstate': "androidx.savedstate:savedstate:1.0.0",
-          'transition': "androidx.transition:transition:1.3.1",
-          'viewbinding': "androidx.databinding:viewbinding:3.6.2",
-      ],
-
-      'compose': [
-          'foundation': "androidx.ui:ui-foundation:${versions.compose}",
-          'layout': "androidx.ui:ui-layout:${versions.compose}",
-          'material': "androidx.ui:ui-material:${versions.compose}",
-          'test': "androidx.ui:ui-test:${versions.compose}",
-          'tooling': "androidx.ui:ui-tooling:${versions.compose}",
-      ],
-
-      'cycler': "com.squareup.cycler:cycler:0.1.3",
-      // Required for Dungeon Crawler sample.
-      'desugar_jdk_libs': "com.android.tools:desugar_jdk_libs:1.0.5",
-      'moshi': "com.squareup.moshi:moshi:1.9.2",
-      'rxandroid2': "io.reactivex.rxjava2:rxandroid:2.1.1",
-      'timber': "com.jakewharton.timber:timber:4.7.1",
-
-      'kotlin': [
-          'binaryCompatibilityValidatorPlugin': "org.jetbrains.kotlinx:binary-compatibility-validator:0.2.3",
-          'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
-          'stdLib': [
-              'common': "org.jetbrains.kotlin:kotlin-stdlib-common",
-              'jdk8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
-              'jdk7': "org.jetbrains.kotlin:kotlin-stdlib-jdk7",
-              'jdk6': "org.jetbrains.kotlin:kotlin-stdlib"
-          ],
-          'coroutines': [
-              'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
-              'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
-              'rx2': "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.coroutines}",
-              'test': "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
-          ],
-          'moshi': "com.squareup.moshi:moshi-kotlin:1.9.2",
-          'reflect': "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
-          'serialization': [
-              'gradlePlugin': "org.jetbrains.kotlin:kotlin-serialization:${versions.kotlin}",
-              'runtime': "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0-1.3.70-eap-134",
-              'kaml': "com.charleskorn.kaml:kaml:0.16.1",
-          ],
-          'test': [
-              'common': "org.jetbrains.kotlin:kotlin-test-common",
-              'annotations': "org.jetbrains.kotlin:kotlin-test-annotations-common",
-              'jdk': "org.jetbrains.kotlin:kotlin-test-junit",
-              'mockito': "com.nhaarman:mockito-kotlin-kt1.1:1.6.0"
-          ]
-      ],
-      'dokka': "org.jetbrains.dokka:dokka-gradle-plugin:0.10.0",
-      'jmh': [
-          'gradlePlugin': "me.champeau.gradle:jmh-gradle-plugin:0.5.0",
-          'core': "org.openjdk.jmh:jmh-core:1.23",
-          'generator': "org.openjdk.jmh:jmh-generator-annprocess:1.23",
-      ],
-      'mavenPublish': "com.vanniktech:gradle-maven-publish-plugin:0.11.1",
-      'ktlint': "org.jlleitschuh.gradle:ktlint-gradle:9.2.0",
-      'lanterna': "com.googlecode.lanterna:lanterna:3.0.2",
-      'detekt': "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.1",
-      'okio': "com.squareup.okio:okio:2.5.0",
-      'rxjava2': [
-          'rxjava2': "io.reactivex.rxjava2:rxjava:2.2.19",
-          'extensions': "com.github.akarnokd:rxjava2-extensions:0.20.10"
-      ],
-      'annotations': [
-          'intellij': "org.jetbrains:annotations:19.0.0",
-      ],
-      'test': [
-          'androidx': [
-              'espresso': [
-                  'contrib': "androidx.test.espresso:espresso-contrib:3.2.0",
-                  'core': "androidx.test.espresso:espresso-core:3.2.0",
-                  'idlingResource': "androidx.test.espresso:espresso-idling-resource:3.2.0",
-                  'intents': "androidx.test.espresso:espresso-intents:3.2.0",
-              ],
-              'junitExt': "androidx.test.ext:junit:1.1.1",
-              'runner': "androidx.test:runner:1.2.0",
-              'truthExt': "androidx.test.ext:truth:1.2.0",
-              'uiautomator': "androidx.test.uiautomator:uiautomator:2.2.0",
-          ],
-          'hamcrestCore': "org.hamcrest:hamcrest-core:2.2",
-          'junit': "junit:junit:4.13",
-          'mockito': "org.mockito:mockito-core:3.3.3",
-          'truth': "com.google.truth:truth:1.0.1",
-      ]
-  ]
-
   dependencies {
-    classpath deps.android_gradle_plugin
-    classpath deps.detekt
-    classpath deps.dokka
-    classpath deps.jmh.gradlePlugin
-    classpath deps.kotlin.binaryCompatibilityValidatorPlugin
-    classpath deps.kotlin.gradlePlugin
-    classpath deps.kotlin.serialization.gradlePlugin
-    classpath deps.ktlint
-    classpath deps.mavenPublish
+    classpath Dep.get("android_gradle_plugin")
+    classpath Dep.get("detekt")
+    classpath Dep.get("dokka")
+    classpath Dep.get("jmh.gradlePlugin")
+    classpath Dep.get("kotlin.binaryCompatibilityValidatorPlugin")
+    classpath Dep.get("kotlin.gradlePlugin")
+    classpath Dep.get("kotlin.serialization.gradlePlugin")
+    classpath Dep.get("ktlint")
+    classpath Dep.get("mavenPublish")
   }
 
   repositories {
@@ -190,7 +77,7 @@ subprojects {
     project.configurations.configureEach {
       // There could be transitive dependencies in tests with a lower version. This could cause
       // problems with a newer Kotlin version that we use.
-      resolutionStrategy.force deps.kotlin.reflect
+      resolutionStrategy.force Dep.get("kotlin.reflect")
     }
   }
 

@@ -23,15 +23,15 @@ targetCompatibility = JavaVersion.VERSION_1_8
 apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
 
 dependencies {
-  compileOnly deps.annotations.intellij
+  compileOnly Dep.get("annotations.intellij")
 
   api project(':workflow-core')
   api project(':workflow-runtime')
-  api deps.kotlin.coroutines.test
-  api deps.kotlin.stdLib.jdk7
+  api Dep.get("kotlin.coroutines.test")
+  api Dep.get("kotlin.stdLib.jdk7")
 
   implementation project(':internal-testing-utils')
-  implementation deps.kotlin.reflect
+  implementation Dep.get("kotlin.reflect")
 
-  testImplementation deps.kotlin.test.jdk
+  testImplementation Dep.get("kotlin.test.jdk")
 }

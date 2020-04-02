@@ -23,9 +23,9 @@ targetCompatibility = JavaVersion.VERSION_1_8
 apply from: rootProject.file('.buildscript/configure-maven-publish.gradle')
 
 dependencies {
-  api deps.kotlin.stdLib.jdk6
-  api deps.okio
+  api Dep.get("kotlin.stdLib.jdk6")
+  api Dep.get("okio")
 
-  testImplementation deps.kotlin.test.jdk
-  testImplementation deps.test.truth
+  testImplementation Dep.get("kotlin.test.jdk")
+  testImplementation Dep.get("test.truth")
 }

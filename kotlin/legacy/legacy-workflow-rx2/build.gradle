@@ -22,25 +22,25 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-  compileOnly deps.androidx.annotations
-  compileOnly deps.annotations.intellij
+  compileOnly Dep.get("androidx.annotations")
+  compileOnly Dep.get("annotations.intellij")
 
   api project(':legacy:legacy-workflow-core')
   // For Snapshot.
   api project(':workflow-core')
-  api deps.kotlin.stdLib.jdk6
-  api deps.kotlin.coroutines.core
-  api deps.okio
-  api deps.rxjava2.rxjava2
+  api Dep.get("kotlin.stdLib.jdk6")
+  api Dep.get("kotlin.coroutines.core")
+  api Dep.get("okio")
+  api Dep.get("rxjava2.rxjava2")
 
-  implementation deps.kotlin.coroutines.rx2
+  implementation Dep.get("kotlin.coroutines.rx2")
 
   testImplementation project(':internal-testing-utils')
-  testImplementation deps.kotlin.test.jdk
-  testImplementation deps.kotlin.test.mockito
-  testImplementation deps.test.hamcrestCore
-  testImplementation deps.test.junit
-  testImplementation deps.test.truth
-  testImplementation deps.test.mockito
-  testImplementation deps.rxjava2.extensions
+  testImplementation Dep.get("kotlin.test.jdk")
+  testImplementation Dep.get("kotlin.test.mockito")
+  testImplementation Dep.get("test.hamcrestCore")
+  testImplementation Dep.get("test.junit")
+  testImplementation Dep.get("test.truth")
+  testImplementation Dep.get("test.mockito")
+  testImplementation Dep.get("rxjava2.extensions")
 }

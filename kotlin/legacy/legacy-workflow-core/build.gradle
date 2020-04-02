@@ -22,10 +22,10 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-  compileOnly deps.annotations.intellij
+  compileOnly Dep.get("annotations.intellij")
 
-  api deps.kotlin.stdLib.jdk6
-  api deps.kotlin.coroutines.core
+  api Dep.get("kotlin.stdLib.jdk6")
+  api Dep.get("kotlin.coroutines.core")
 
-  testImplementation deps.kotlin.test.jdk
+  testImplementation Dep.get("kotlin.test.jdk")
 }
