@@ -24,12 +24,12 @@ dependencies {
   implementation(project(":workflow-core"))
   implementation(project(":workflow-rx2"))
 
-  implementation(get("kotlin.serialization.kaml"))
-  implementation(get("kotlin.serialization.runtime"))
-  implementation(get("kotlin.stdLib.jdk8"))
-  implementation(get("rxjava2.rxjava2"))
+  implementation(Dependencies.Kotlin.Serialization.kaml)
+  implementation(Dependencies.Kotlin.Serialization.runtime)
+  implementation(Dependencies.Kotlin.Stdlib.jdk8)
+  implementation(Dependencies.RxJava2.rxjava2)
 
   testImplementation(project(":workflow-testing"))
-  testImplementation(get("kotlin.test.jdk"))
-  testImplementation(get("test.truth"))
+  testImplementation(Dependencies.Kotlin.Test.jdk)
+  testImplementation(Dependencies.Test.truth)
 }

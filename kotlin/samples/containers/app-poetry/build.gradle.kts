@@ -38,8 +38,8 @@ dependencies {
   implementation(project(":workflow-core"))
   implementation(project(":workflow-runtime"))
 
-  implementation(get("androidx.appcompat"))
-  implementation(get("androidx.recyclerview"))
-  implementation(get("rxjava2.rxjava2"))
-  implementation(get("timber"))
+  implementation(Dependencies.AndroidX.appcompat)
+  implementation(Dependencies.AndroidX.recyclerview)
+  implementation(Dependencies.RxJava2.rxjava2)
+  implementation(Dependencies.timber)
 }

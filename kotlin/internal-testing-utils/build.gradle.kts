@@ -25,9 +25,9 @@ java {
 }
 
 dependencies {
-  implementation(get("kotlin.stdLib.jdk8"))
+  implementation(Dependencies.Kotlin.Stdlib.jdk8)
 
-  testImplementation(get("kotlin.test.jdk"))
-  testImplementation(get("test.junit"))
-  testImplementation(get("test.truth"))
+  testImplementation(Dependencies.Kotlin.Test.jdk)
+  testImplementation(Dependencies.Test.junit)
+  testImplementation(Dependencies.Test.truth)
 }

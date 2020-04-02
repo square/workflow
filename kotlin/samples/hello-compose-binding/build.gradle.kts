@@ -34,13 +34,13 @@ dependencies {
   implementation(project(":workflow-runtime"))
   implementation(project(":workflow-ui:core-compose"))
 
-  implementation(get("androidx.appcompat"))
-  implementation(get("compose.layout"))
-  implementation(get("compose.material"))
-  implementation(get("compose.tooling"))
-  implementation(get("compose.foundation"))
-  implementation(get("rxjava2.rxjava2"))
+  implementation(Dependencies.AndroidX.appcompat)
+  implementation(Dependencies.Compose.layout)
+  implementation(Dependencies.Compose.material)
+  implementation(Dependencies.Compose.tooling)
+  implementation(Dependencies.Compose.foundation)
+  implementation(Dependencies.RxJava2.rxjava2)
 
-  androidTestImplementation(get("compose.test"))
-  androidTestImplementation(get("test.junit"))
+  androidTestImplementation(Dependencies.Compose.test)
+  androidTestImplementation(Dependencies.Test.junit)
 }

@@ -26,10 +26,10 @@ java {
 }
 
 dependencies {
-  compileOnly(get("annotations.intellij"))
+  compileOnly(Dependencies.Annotations.intellij)
 
-  api(get("kotlin.stdLib.jdk6"))
-  api(get("kotlin.coroutines.core"))
+  api(Dependencies.Kotlin.Stdlib.jdk6)
+  api(Dependencies.Kotlin.Coroutines.core)
 
-  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(Dependencies.Kotlin.Test.jdk)
 }

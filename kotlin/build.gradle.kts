@@ -20,15 +20,15 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 buildscript {
   dependencies {
-    classpath(get("android_gradle_plugin"))
-    classpath(get("detekt"))
-    classpath(get("dokka"))
-    classpath(get("jmh.gradlePlugin"))
-    classpath(get("kotlin.binaryCompatibilityValidatorPlugin"))
-    classpath(get("kotlin.gradlePlugin"))
-    classpath(get("kotlin.serialization.gradlePlugin"))
-    classpath(get("ktlint"))
-    classpath(get("mavenPublish"))
+    classpath(Dependencies.android_gradle_plugin)
+    classpath(Dependencies.detekt)
+    classpath(Dependencies.dokka)
+    classpath(Dependencies.Jmh.gradlePlugin)
+    classpath(Dependencies.Kotlin.binaryCompatibilityValidatorPlugin)
+    classpath(Dependencies.Kotlin.gradlePlugin)
+    classpath(Dependencies.Kotlin.Serialization.gradlePlugin)
+    classpath(Dependencies.ktlint)
+    classpath(Dependencies.mavenPublish)
   }
 
   repositories {
@@ -56,7 +56,7 @@ subprojects {
     configurations.configureEach {
       // There could be transitive dependencies in tests with a lower version. This could cause
       // problems with a newer Kotlin version that we use.
-      resolutionStrategy.force(get("kotlin.reflect"))
+      resolutionStrategy.force(Dependencies.Kotlin.reflect)
     }
   }
 

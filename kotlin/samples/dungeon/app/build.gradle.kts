@@ -41,7 +41,7 @@ android {
 
 dependencies {
   // Required for SnakeYAML.
-  "coreLibraryDesugaring"(get("desugar_jdk_libs"))
+  "coreLibraryDesugaring"(Dependencies.desugar_jdk_libs)
 
   implementation(project(":samples:dungeon:common"))
   implementation(project(":samples:dungeon:timemachine-shakeable"))
@@ -50,19 +50,19 @@ dependencies {
   implementation(project(":workflow-runtime"))
   implementation(project(":workflow-tracing"))
 
-  implementation(get("androidx.appcompat"))
-  implementation(get("androidx.constraint_layout"))
-  implementation(get("androidx.material"))
-  implementation(get("androidx.gridlayout"))
-  implementation(get("kotlin.coroutines.rx2"))
-  implementation(get("okio"))
-  implementation(get("rxandroid2"))
-  implementation(get("rxjava2.rxjava2"))
-  implementation(get("timber"))
-  implementation(get("cycler"))
+  implementation(Dependencies.AndroidX.appcompat)
+  implementation(Dependencies.AndroidX.constraint_layout)
+  implementation(Dependencies.AndroidX.material)
+  implementation(Dependencies.AndroidX.gridlayout)
+  implementation(Dependencies.Kotlin.Coroutines.rx2)
+  implementation(Dependencies.okio)
+  implementation(Dependencies.rxandroid2)
+  implementation(Dependencies.RxJava2.rxjava2)
+  implementation(Dependencies.timber)
+  implementation(Dependencies.cycler)
 
-  testImplementation(get("test.junit"))
-  testImplementation(get("test.truth"))
+  testImplementation(Dependencies.Test.junit)
+  testImplementation(Dependencies.Test.truth)
 
-  androidTestImplementation(get("test.androidx.uiautomator"))
+  androidTestImplementation(Dependencies.Test.AndroidX.uiautomator)
 }

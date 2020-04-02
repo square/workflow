@@ -21,12 +21,12 @@ plugins {
 dependencies {
   implementation(project(":workflow-core"))
 
-  implementation(get("kotlin.stdLib.jdk8"))
+  implementation(Dependencies.Kotlin.Stdlib.jdk8)
 
-  testImplementation(get("kotlin.test.jdk"))
-  testImplementation(get("test.hamcrestCore"))
-  testImplementation(get("test.junit"))
-  testImplementation(get("test.truth"))
-  testImplementation(get("rxjava2.extensions"))
+  testImplementation(Dependencies.Kotlin.Test.jdk)
+  testImplementation(Dependencies.Test.hamcrestCore)
+  testImplementation(Dependencies.Test.junit)
+  testImplementation(Dependencies.Test.truth)
+  testImplementation(Dependencies.RxJava2.extensions)
   testImplementation(project(":workflow-testing"))
 }

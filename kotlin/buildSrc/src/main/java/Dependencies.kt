@@ -1,4 +1,4 @@
-@file:JvmName("Dep")
+@file:JvmName("Deps")
 
 import java.util.Locale.US
 import kotlin.reflect.full.declaredMembers
@@ -8,27 +8,6 @@ object Versions {
   const val coroutines = "1.3.4"
   const val kotlin = "1.3.71"
   const val targetSdk = 29
-}
-
-/** Temporary hack to make [Dependencies] accessible from Groovy scripts. */
-fun get(path: String) = Dependencies.resolveObject(
-    path.toLowerCase(US)
-        .split(".")
-)
-
-private tailrec fun Any.resolveObject(pathParts: List<String>): String {
-  require(pathParts.isNotEmpty())
-  val klass = this::class
-
-  if (pathParts.size == 1) {
-    @Suppress("UNCHECKED_CAST")
-    val member = klass.declaredMembers.single { it.name.toLowerCase(US) == pathParts.single() }
-    return member.call() as String
-  }
-
-  val nestedKlasses = klass.nestedClasses
-  val selectedKlass = nestedKlasses.single { it.simpleName!!.toLowerCase(US) == pathParts.first() }
-  return selectedKlass.objectInstance!!.resolveObject(pathParts.subList(1, pathParts.size))
 }
 
 @Suppress("unused")
@@ -158,4 +137,34 @@ object Dependencies {
     const val mockito = "org.mockito:mockito-core:3.3.3"
     const val truth = "com.google.truth:truth:1.0.1"
   }
+}
+
+/**
+ * Workaround to make [Dependencies] accessible from Groovy scripts. [path] is case-insensitive.
+ *
+ * ```
+ * dependencies {
+ *   implementation Deps.get("kotlin.stdlib.common")
+ * }
+ * ```
+ */
+@JvmName("get")
+fun getDependencyFromGroovy(path: String): String = Dependencies.resolveObject(
+    path.toLowerCase(US)
+        .split(".")
+)
+
+private tailrec fun Any.resolveObject(pathParts: List<String>): String {
+  require(pathParts.isNotEmpty())
+  val klass = this::class
+
+  if (pathParts.size == 1) {
+    @Suppress("UNCHECKED_CAST")
+    val member = klass.declaredMembers.single { it.name.toLowerCase(US) == pathParts.single() }
+    return member.call() as String
+  }
+
+  val nestedKlasses = klass.nestedClasses
+  val selectedKlass = nestedKlasses.single { it.simpleName!!.toLowerCase(US) == pathParts.first() }
+  return selectedKlass.objectInstance!!.resolveObject(pathParts.subList(1, pathParts.size))
 }

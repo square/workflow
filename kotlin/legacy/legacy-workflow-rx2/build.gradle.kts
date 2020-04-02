@@ -26,25 +26,25 @@ java {
 }
 
 dependencies {
-  compileOnly(get("androidx.annotations"))
-  compileOnly(get("annotations.intellij"))
+  compileOnly(Dependencies.AndroidX.annotations)
+  compileOnly(Dependencies.Annotations.intellij)
 
   api(project(":legacy:legacy-workflow-core"))
   // For Snapshot.
   api(project(":workflow-core"))
-  api(get("kotlin.stdLib.jdk6"))
-  api(get("kotlin.coroutines.core"))
-  api(get("okio"))
-  api(get("rxjava2.rxjava2"))
+  api(Dependencies.Kotlin.Stdlib.jdk6)
+  api(Dependencies.Kotlin.Coroutines.core)
+  api(Dependencies.okio)
+  api(Dependencies.RxJava2.rxjava2)
 
-  implementation(get("kotlin.coroutines.rx2"))
+  implementation(Dependencies.Kotlin.Coroutines.rx2)
 
   testImplementation(project(":internal-testing-utils"))
-  testImplementation(get("kotlin.test.jdk"))
-  testImplementation(get("kotlin.test.mockito"))
-  testImplementation(get("test.hamcrestCore"))
-  testImplementation(get("test.junit"))
-  testImplementation(get("test.truth"))
-  testImplementation(get("test.mockito"))
-  testImplementation(get("rxjava2.extensions"))
+  testImplementation(Dependencies.Kotlin.Test.jdk)
+  testImplementation(Dependencies.Kotlin.Test.mockito)
+  testImplementation(Dependencies.Test.hamcrestCore)
+  testImplementation(Dependencies.Test.junit)
+  testImplementation(Dependencies.Test.truth)
+  testImplementation(Dependencies.Test.mockito)
+  testImplementation(Dependencies.RxJava2.extensions)
 }

@@ -33,6 +33,6 @@ dependencies {
   implementation(project(":workflow-core"))
   implementation(project(":workflow-runtime"))
 
-  implementation(get("androidx.appcompat"))
-  implementation(get("rxjava2.rxjava2"))
+  implementation(Dependencies.AndroidX.appcompat)
+  implementation(Dependencies.RxJava2.rxjava2)
 }

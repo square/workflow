@@ -27,15 +27,15 @@ java {
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 dependencies {
-  compileOnly(get("annotations.intellij"))
+  compileOnly(Dependencies.Annotations.intellij)
 
   api(project(":workflow-core"))
   api(project(":workflow-runtime"))
-  api(get("kotlin.coroutines.test"))
-  api(get("kotlin.stdLib.jdk7"))
+  api(Dependencies.Kotlin.Coroutines.test)
+  api(Dependencies.Kotlin.Stdlib.jdk7)
 
   implementation(project(":internal-testing-utils"))
-  implementation(get("kotlin.reflect"))
+  implementation(Dependencies.Kotlin.reflect)
 
-  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(Dependencies.Kotlin.Test.jdk)
 }

@@ -25,12 +25,12 @@ dependencies {
   implementation(project(":workflow-core"))
   implementation(project(":workflow-rx2"))
 
-  implementation(get("kotlin.stdLib.jdk6"))
-  implementation(get("rxjava2.rxjava2"))
+  implementation(Dependencies.Kotlin.Stdlib.jdk6)
+  implementation(Dependencies.RxJava2.rxjava2)
 
-  testImplementation(get("test.hamcrestCore"))
-  testImplementation(get("test.junit"))
-  testImplementation(get("test.truth"))
-  testImplementation(get("rxjava2.extensions"))
+  testImplementation(Dependencies.Test.hamcrestCore)
+  testImplementation(Dependencies.Test.junit)
+  testImplementation(Dependencies.Test.truth)
+  testImplementation(Dependencies.RxJava2.extensions)
   testImplementation(project(":workflow-testing"))
 }

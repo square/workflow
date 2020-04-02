@@ -27,14 +27,14 @@ java {
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 dependencies {
-  compileOnly(get("annotations.intellij"))
+  compileOnly(Dependencies.Annotations.intellij)
 
-  api(get("kotlin.stdLib.jdk6"))
-  api(get("kotlin.coroutines.core"))
+  api(Dependencies.Kotlin.Stdlib.jdk6)
+  api(Dependencies.Kotlin.Coroutines.core)
 
-  implementation(get("kotlin.reflect"))
-  implementation(get("kotlin.moshi"))
-  implementation(get("moshi"))
+  implementation(Dependencies.Kotlin.reflect)
+  implementation(Dependencies.Kotlin.moshi)
+  implementation(Dependencies.moshi)
 
-  testImplementation(get("kotlin.test.jdk"))
+  testImplementation(Dependencies.Kotlin.Test.jdk)
 }
