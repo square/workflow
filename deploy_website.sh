@@ -38,13 +38,12 @@ if [ -z "$WORKFLOW_GOOGLE_ANALYTICS_KEY" ]; then
     exit 1
 fi
 
-# This is only necessary if the remote configured by checkout doesnt automatically have
-# push access. Verify it's actually required before merging.
-GIT_CREDENTIALS=git
+REPO="git@github.com:square/workflow.git"
 # Accept username/password overrides from environment variables for Github Actions.
 if [ -n "$GIT_USERNAME" -a -n "$GIT_PASSWORD" ]; then
 	echo "Authenticating as $GIT_USERNAME."
 	GIT_CREDENTIALS="$GIT_USERNAME:$GIT_PASSWORD"
+	REPO="https://${GIT_CREDENTIALS}@github.com/square/workflow.git"
 else
 	echo "Authenticating as current user."
 fi
@@ -66,7 +65,6 @@ set -e
 
 DIR=mkdocs-clone
 SWIFT_DOCS_SCRIPT="$(pwd)/.buildscript/build_swift_docs.sh"
-REPO="https://${GIT_CREDENTIALS}@github.com/square/workflow.git"
 
 # Delete any existing temporary website clone.
 echo "Removing ${DIR}…"
