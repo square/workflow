@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+## Version 0.101.0
+
+_2020-04-02_
+
+### Kotlin
+
+* Awesome new change (#123)
+
+### Swift
+
+* Awesome new change (#123)
+
 ## Version 0.100.0
 
 _2020-04-02_
