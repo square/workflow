@@ -1,6 +1,3 @@
-import me.champeau.gradle.JMHPluginExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 /*
  * Copyright 2019 Square Inc.
  *
@@ -16,19 +13,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import me.champeau.gradle.JMHPluginExtension
+
 plugins {
-  `java-library`
-  kotlin("jvm")
+  kotlin("multiplatform")
   id("org.jetbrains.dokka")
   // Benchmark plugins.
   id("me.champeau.gradle.jmh")
   // If this plugin is not applied, IntelliJ won't see the JMH definitions for some reason.
   idea
-}
-
-java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
@@ -38,29 +31,44 @@ configure<JMHPluginExtension> {
   include = listOf(".*")
   duplicateClassesStrategy = DuplicatesStrategy.WARN
 }
-configurations.named("jmh") {
+configurations.named("jmhRuntime") {
   attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
 }
-tasks.named<KotlinCompile>("compileJmhKotlin") {
-  kotlinOptions {
-    // Give the benchmark code access to internal definitions.
-    val compileKotlin: KotlinCompile by tasks
-    freeCompilerArgs += "-Xfriend-paths=${compileKotlin.destinationDir}"
+
+kotlin {
+  jvm {
+    val main by compilations.getting {
+      defaultSourceSet {
+        dependencies {
+          compileOnly(Dependencies.Annotations.intellij)
+
+          api(project(":workflow-core"))
+          api(Dependencies.Kotlin.Stdlib.jdk6)
+          api(Dependencies.Kotlin.Coroutines.core)
+        }
+      }
+    }
+
+    compilations["test"].defaultSourceSet {
+      withJava()
+      dependencies {
+        implementation(Dependencies.Kotlin.Test.jdk)
+        implementation(Dependencies.Kotlin.reflect)
+      }
+    }
+
+    compilations["jmh"].defaultSourceSet {
+      // Ideally we would just pass the friend-paths argument to the compiler, like we did
+      // pre-multiplatform, but even if we configure the default task it doesn't seem to get
+      // picked up. This causes warnings about duplicate class files, but the benchmarks do work.
+      dependsOn(main.defaultSourceSet)
+
+      dependencies {
+        // These dependencies will be available on the classpath for source inside src/jmh.
+        dependencies.add("jmh", Dependencies.Kotlin.Stdlib.jdk6)
+        dependencies.add("jmh", Dependencies.Jmh.core)
+        dependencies.add("jmh", Dependencies.Jmh.generator)
+      }
+    }
   }
-}
-
-dependencies {
-  compileOnly(Dependencies.Annotations.intellij)
-
-  api(project(":workflow-core"))
-  api(Dependencies.Kotlin.Stdlib.jdk6)
-  api(Dependencies.Kotlin.Coroutines.core)
-
-  testImplementation(Dependencies.Kotlin.Test.jdk)
-  testImplementation(Dependencies.Kotlin.reflect)
-
-  // These dependencies will be available on the classpath for source inside src/jmh.
-  "jmh"(Dependencies.Kotlin.Stdlib.jdk6)
-  "jmh"(Dependencies.Jmh.core)
-  "jmh"(Dependencies.Jmh.generator)
 }
