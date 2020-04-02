@@ -7,7 +7,7 @@ on:
     # Run this workflow as a dry run when it or its main script are edited, to test it.
     paths:
       - '.github/workflows/deploy-doc-site.yml'
-      - 'deploy-website.sh'
+      - 'deploy_website.sh'
 
 jobs:
   deploy:
