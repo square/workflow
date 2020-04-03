@@ -85,7 +85,7 @@ echo "SWIFT_API_DIR=$SWIFT_API_DIR"
 
 # Generate the Kotlin API docs.
 echo "Building Kotlin docs…"
-( cd kotlin && ./gradlew assemble --quiet && ./gradlew siteDokka --quiet )
+( cd kotlin && ./gradlew assemble --build-cache --quiet && ./gradlew siteDokka --build-cache --quiet )
 
 # Generate the Swift API docs.
 echo "Building Swift docs…"
