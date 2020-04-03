@@ -28,7 +28,6 @@ import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromWorkf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import org.jetbrains.annotations.TestOnly
 
 /**
  * Launches the [workflow] in a new coroutine in [scope]. The workflow tree is seeded with
@@ -37,7 +36,6 @@ import org.jetbrains.annotations.TestOnly
  *
  * See [launchWorkflowIn] for documentation about most of the parameters and behavior.
  */
-@TestOnly
 fun <PropsT, StateT, OutputT : Any, RenderingT, RunnerT> launchWorkflowForTestFromStateIn(
   scope: CoroutineScope,
   workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,

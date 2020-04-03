@@ -28,7 +28,6 @@ import com.squareup.workflow.internal.SubtreeManagerTest.TestWorkflow.Rendering
 import com.squareup.workflow.makeEventSink
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -143,7 +142,7 @@ class SubtreeManagerTest {
       manager.render(workflow, "props", "foo", handler = { fail() })
     }
     assertEquals(
-        "Expected keys to be unique for ${TestWorkflow::class.java.name}: key=foo",
+        "Expected keys to be unique for ${TestWorkflow::class.qualifiedName}: key=foo",
         error.message
     )
   }

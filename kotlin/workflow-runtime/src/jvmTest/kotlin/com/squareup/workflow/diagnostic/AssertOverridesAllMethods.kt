@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
  * Uses Kotlin reflection instead of Java reflection, because Java reflection will return all
  * methods with default interface implementations as "declared" on subclasses.
  */
-fun <I : Any, T : I> assertOverridesAllMethods(
+actual fun <I : Any, T : I> assertOverridesAllMethods(
   type: KClass<T>,
   superType: KClass<I>
 ) {
@@ -41,19 +41,4 @@ fun <I : Any, T : I> assertOverridesAllMethods(
         "Expected $type to implement $expectedMethod"
     )
   }
-}
-
-class AssertOverridesAllMethodsTest {
-  @Test fun `fails on missing method`() {
-    val failure = assertFailsWith<AssertionError> {
-      assertOverridesAllMethods(Implementation::class, Interface::class)
-    }
-    assertEquals("Expected ${Implementation::class} to implement method", failure.message)
-  }
-
-  private interface Interface {
-    fun method() = Unit
-  }
-
-  private class Implementation : Interface
 }

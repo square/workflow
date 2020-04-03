@@ -36,13 +36,33 @@ configurations.named("jmhRuntime") {
 }
 
 kotlin {
+  sourceSets {
+    all {
+      languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+    }
+
+    commonMain {
+      dependencies {
+        compileOnly(Dependencies.Annotations.intellij)
+
+        api(project(":workflow-core"))
+        api(Dependencies.Kotlin.Stdlib.common)
+        api(Dependencies.Kotlin.Coroutines.coreCommon)
+      }
+    }
+
+    commonTest {
+      dependencies {
+        implementation(Dependencies.Kotlin.Test.common)
+        implementation(Dependencies.Kotlin.Test.annotations)
+      }
+    }
+  }
+
   jvm {
     val main by compilations.getting {
       defaultSourceSet {
         dependencies {
-          compileOnly(Dependencies.Annotations.intellij)
-
-          api(project(":workflow-core"))
           api(Dependencies.Kotlin.Stdlib.jdk6)
           api(Dependencies.Kotlin.Coroutines.core)
         }

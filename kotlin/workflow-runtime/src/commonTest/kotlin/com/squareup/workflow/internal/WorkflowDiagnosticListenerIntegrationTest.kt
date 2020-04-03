@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import kotlin.properties.Delegates.observable
 import kotlin.test.Test

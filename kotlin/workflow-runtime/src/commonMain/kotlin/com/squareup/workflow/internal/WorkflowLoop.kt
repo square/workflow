@@ -27,7 +27,6 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.selects.select
-import org.jetbrains.annotations.TestOnly
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -154,7 +153,6 @@ internal open class RealWorkflowLoop : WorkflowLoop {
  * A [WorkflowLoop] that is identical to [RealWorkflowLoop] but runs every render pass twice to
  * suss out render methods that try to perform side effects.
  */
-@TestOnly
 internal class DoubleCheckingWorkflowLoop : RealWorkflowLoop() {
   override fun <PropsT, StateT, OutputT : Any, RenderingT> doRender(
     rootNode: WorkflowNode<PropsT, StateT, OutputT, RenderingT>,

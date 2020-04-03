@@ -21,7 +21,6 @@ import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFresh
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromCompleteSnapshot
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromState
 import com.squareup.workflow.testing.WorkflowTestParams.StartMode.StartFromWorkflowSnapshot
-import org.jetbrains.annotations.TestOnly
 
 /**
  * Defines configuration for workflow testing infrastructure such as `testRender`, `testFromStart`.
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.TestOnly
  * It is recommended to leave this on, but if you need to debug a test and don't want to have to
  * deal with the extra passes, you can temporarily set it to false.
  */
-@TestOnly
 data class WorkflowTestParams<out StateT>(
   val startFrom: StartMode<StateT> = StartFresh,
   val checkRenderIdempotence: Boolean = true

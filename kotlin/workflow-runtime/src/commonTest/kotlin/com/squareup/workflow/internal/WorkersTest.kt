@@ -29,10 +29,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.yield
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -48,7 +46,7 @@ class WorkersTest {
     val channel = Channel<String>()
     val worker = channel.asWorker()
     // Used to assert ordering.
-    val counter = AtomicInteger(0)
+    val counter = CoroutineOrderCounter()
 
     runBlocking {
       val workerOutputs = launchWorker(worker)
