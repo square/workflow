@@ -21,6 +21,30 @@ plugins {
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 kotlin {
+  sourceSets {
+    all {
+      languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+    }
+
+    commonMain {
+      dependencies {
+        compileOnly(Dependencies.Annotations.intellij)
+
+        api(Dependencies.Kotlin.Stdlib.common)
+        api(Dependencies.Kotlin.Coroutines.coreCommon)
+        // For Snapshot.
+        api(Dependencies.okioMultiplatform)
+      }
+    }
+
+    commonTest {
+      dependencies {
+        implementation(Dependencies.Kotlin.Test.common)
+        implementation(Dependencies.Kotlin.Test.annotations)
+      }
+    }
+  }
+
   jvm {
     compilations["main"].defaultSourceSet {
       dependencies {
@@ -28,12 +52,11 @@ kotlin {
 
         api(Dependencies.Kotlin.Stdlib.jdk6)
         api(Dependencies.Kotlin.Coroutines.core)
-        // For Snapshot.
-        api(Dependencies.okio)
       }
     }
     compilations["test"].defaultSourceSet {
       dependencies {
+        // Needed to run the tests on JVM, even if all tests are defined in common.
         implementation(Dependencies.Kotlin.Test.jdk)
       }
     }

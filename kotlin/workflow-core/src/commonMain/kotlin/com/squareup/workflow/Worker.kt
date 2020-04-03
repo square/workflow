@@ -181,15 +181,9 @@ interface Worker<out OutputT> {
   companion object {
 
     /**
-     * Use this value instead of calling `typeOf<Nothing>()` directly, which isn't allowed because
-     * [Nothing] isn't allowed as a reified type parameter.
-     *
-     * The KType of Nothing on the JVM is actually java.lang.Void if you do
-     * Nothing::class.createType(). However createType() lives in the reflection library, so we just
-     * reference Void directly so we don't have to add a dependency on kotlin-reflect.
+     * This is a sentinel value for [TypedWorker.type] that indicates a type parameter of [Nothing].
      */
-    @OptIn(ExperimentalStdlibApi::class)
-    private val TYPE_OF_NOTHING = typeOf<Void>()
+    private val TYPE_OF_NOTHING: KType? = null
 
     /**
      * Shorthand for `flow { block() }.asWorker()`.
@@ -371,10 +365,12 @@ fun <T, R> Worker<T>.transform(
 /**
  * A generic [Worker] implementation that defines equivalent workers as those having equivalent
  * [type]s. This is used by all the [Worker] builder functions.
+ *
+ * @param type The [KType] of [OutputT]. Pass [Worker.TYPE_OF_NOTHING] if [OutputT] is [Nothing].
  */
 @PublishedApi
 internal class TypedWorker<OutputT>(
-  private val type: KType,
+  private val type: KType?,
   private val work: Flow<OutputT>
 ) : Worker<OutputT> {
 
