@@ -55,3 +55,6 @@ include(
     ":workflow-ui:modal-common",
     ":workflow-ui:modal-android"
 )
+
+// Enable publishing metadata for multiplatform artifacts.
+enableFeaturePreview("GRADLE_METADATA")
