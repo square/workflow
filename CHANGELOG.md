@@ -13,6 +13,18 @@ _2020-04-03_
 
 * Awesome new change (#123)
 
+## Version 0.107.6
+
+_2020-04-03_
+
+### Kotlin
+
+* Awesome new change (#123)
+
+### Swift
+
+* Awesome new change (#123)
+
 ## Version 0.107.5
 
 _2020-04-03_
