@@ -69,6 +69,8 @@ object Dependencies {
     object Coroutines {
       const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
       const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
+      const val coreCommon =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.coroutines}"
       const val rx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.coroutines}"
 
       const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
@@ -106,6 +108,7 @@ object Dependencies {
   const val lanterna = "com.googlecode.lanterna:lanterna:3.0.2"
   const val detekt = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.1"
   const val okio = "com.squareup.okio:okio:2.5.0"
+  const val okioMultiplatform = "com.squareup.okio:okio-multiplatform:2.5.0"
 
   object RxJava2 {
     const val rxjava2 = "io.reactivex.rxjava2:rxjava:2.2.19"
