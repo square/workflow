@@ -96,11 +96,11 @@ extension RunGameWorkflow {
 
 extension RunGameWorkflow {
 
-    typealias Rendering = BackStackScreen
-    
+    typealias Rendering = ModalContainerScreen<AnyScreen>
 
     func render(state: RunGameWorkflow.State, context: RenderContext<RunGameWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
+        var modals:[ModalContainerScreen<AnyScreen>.Modal] = []
         
         var backStackItems: [BackStackScreen.Item] = [BackStackScreen.Item(
             screen: newGameScreen(
@@ -108,9 +108,9 @@ extension RunGameWorkflow {
                 playerX: state.playerX,
                 playerO: state.playerO),
             barVisibility: .hidden)]
+
         switch state.step {
         case .newGame:
-            //newScreen = BackStackScreen(items: backStackItems)
             break
 
         case .playing:
@@ -126,18 +126,38 @@ extension RunGameWorkflow {
                         handler: {
                             sink.send(.confirmQuit)
                         }))))))
-             //newScreen = BackStackScreen(items: backStackItems)
             
         case .maybeQuit:
             
-           // let modalScreen = ModalContainerScreen
+            let takeTurnsScreen = TakeTurnsWorkflow(
+                playerX: state.playerX,
+                playerO: state.playerO)
+                .rendered(with: context)
+            backStackItems.append(BackStackScreen.Item(
+                screen: takeTurnsScreen,
+                barVisibility: .visible(BackStackScreen.BarContent(
+                    leftItem: BackStackScreen.BarContent.BarButtonItem.button(BackStackScreen.BarContent.Button(
+                        content: .text("Quit"),
+                        handler: {
+                            sink.send(.confirmQuit)
+                        }))))))
             
             let confirmQuitScreen = ConfirmQuitWorkflow()
-                                    .rendered(with: context)
-            backStackItems.append(BackStackScreen.Item(screen: confirmQuitScreen))
+                .mapOutput( { output -> Action in
+                    switch output {
+                    case .cancel:
+                        return .startGame
+                    case .confirm:
+                        return .back
+                    }
+                })
+                .rendered(with: context)
+            modals.append(ModalContainerScreen.Modal(screen: AnyScreen(confirmQuitScreen), style: .sheet, key: "0", animated: true))
         }
+        
+        let modalContainerScreen = ModalContainerScreen(baseScreen: AnyScreen(BackStackScreen(items: backStackItems)), modals: modals)
 
-        return BackStackScreen(items: backStackItems)
+        return modalContainerScreen // this is the base screen. Render all of the pieces of the backstack.
     }
 
     private func newGameScreen(sink: Sink<Action>, playerX: String, playerO: String) -> NewGameScreen {
