@@ -17,26 +17,6 @@ import Workflow
 import WorkflowUI
 
 
-enum GameState {
-    case ongoing(turn: Player)
-    case win(Player)
-    case tie
-
-    mutating func toggle() {
-        switch self {
-        case .ongoing(turn: let player):
-            switch player {
-            case .x:
-                self = .ongoing(turn: .o)
-            case .o:
-                self = .ongoing(turn: .x)
-            }
-        default:
-            break
-        }
-    }
-}
-
 // MARK: Input and Output
 
 struct TakeTurnsWorkflow: Workflow {

@@ -37,5 +37,11 @@ final class ConfirmQuitViewController: ScreenViewController<ConfirmQuitScreen> {
     private func update(with screen: ConfirmQuitScreen, environment: ViewEnvironment) {
         /// Update UI
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.view.backgroundColor = .red
+    }
 
 }

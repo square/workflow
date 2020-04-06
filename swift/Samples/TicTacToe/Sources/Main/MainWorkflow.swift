@@ -16,6 +16,7 @@
 import Workflow
 import WorkflowUI
 import BackStackContainer
+import ModalContainer
 
 
 // MARK: Input and Output
@@ -76,7 +77,7 @@ extension MainWorkflow {
 
 extension MainWorkflow {
 
-    typealias Rendering = BackStackScreen
+    typealias Rendering = ModalContainerScreen
 
     func render(state: MainWorkflow.State, context: RenderContext<MainWorkflow>) -> Rendering {
 
@@ -92,10 +93,11 @@ extension MainWorkflow {
                 })
                 .rendered(with: context)
 
-            return BackStackScreen(items: authenticationBackStackItems)
+            return ModalContainerScreen(baseScreen:BackStackScreen(items: authenticationBackStackItems) , modals: [])// BackStackScreen(items: authenticationBackStackItems)
 
         case .runningGame:
-            return RunGameWorkflow().rendered(with: context)
+            let runGameModalScreen = RunGameWorkflow().rendered(with: context)
+            return ModalContainerScreen(baseScreen:runGameModalScreen.baseScreen , modals: runGameModalScreen.modals)
         }
 
     }
