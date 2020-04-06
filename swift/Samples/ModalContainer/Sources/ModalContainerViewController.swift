@@ -3,45 +3,31 @@ import Workflow
 import WorkflowUI
 
 /// Container for showing workflow screens modally over a base screen.
-internal final class ModalContainerViewController: ScreenViewController<ModalContainerScreen> {
+internal final class ModalContainerViewController<ModalScreen : Screen>: ScreenViewController <ModalContainerScreen<ModalScreen>> {
 
-    private var baseScreenViewController: DescribedViewController? = nil
+    var baseScreenViewController: DescribedViewController
 
     private var presentedScreens: [ModallyPresentedScreen] = []
 
     private var topmostScreenViewController: DescribedViewController? {
         if let topModal = presentedScreens.last {
             return topModal.viewController
-        } else if let baseScreenViewController = baseScreenViewController {
-            return baseScreenViewController
         } else {
-            return nil
+            return baseScreenViewController
         }
     }
 
-    required init(screen: ModalContainerScreen, environment: ViewEnvironment) {
+    required init(screen: ModalContainerScreen<ModalScreen>, environment: ViewEnvironment) {
+        baseScreenViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
         super.init(screen: screen, environment: environment)
-        update()
     }
 
-    override func screenDidChange(from previousScreen: ModalContainerScreen, previousEnvironment: ViewEnvironment) {
+    override func screenDidChange(from previousScreen: ModalContainerScreen<ModalScreen>, previousEnvironment: ViewEnvironment) {
         update()
     }
 
     func update() {
-
-        if let baseScreenViewController = baseScreenViewController {
-            baseScreenViewController.update(screen: screen.baseScreen,  environment: environment)
-        }
-
-        if baseScreenViewController == nil {
-            // We don't have a base screen view controller, so make one.
-            let viewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
-            addChild(viewController)
-            view.addSubview(viewController.view)
-            viewController.didMove(toParent: self)
-            baseScreenViewController = viewController
-        }
+        baseScreenViewController.update(screen: screen.baseScreen, environment: environment)
 
         // Sort our existing modals into keyed buckets. This will typically contain a single view controller
         // per value, but duplicate keys/styles/screen types will result in more. In that case, we simply dequeue them in order during the update cycle (first to last)
@@ -55,14 +41,14 @@ internal final class ModalContainerViewController: ScreenViewController<ModalCon
         for modal in screen.modals {
             if let existing = previousScreens[modal.identifier]?.removeFirst() {
                 // Update existing screen view controller
-                existing.viewController.update(screen: modal.screen,  environment: environment)
+                existing.viewController.update(screen: modal.screen, environment: environment)
                 newScreens.append(
                     ModallyPresentedScreen(
                         viewController: existing.viewController,
-                        screenType: type(of: modal.screen),
                         style: modal.style,
                         key: modal.key,
-                        dimmingView: existing.dimmingView
+                        dimmingView: existing.dimmingView,
+                        animated: modal.animated
                     ))
             } else {
                 // Make a new screen view controller
@@ -71,9 +57,9 @@ internal final class ModalContainerViewController: ScreenViewController<ModalCon
                 view.addSubview(newViewController.view)
                 newViewController.didMove(toParent: self)
 
-                // Create and set a dimming view if the modal is in card style
+                // Create and set a dimming view if the modal is in popover/formsheet or pagesheet style
                 var newDimmingView: UIView?
-                if .card == modal.style {
+                if modal.style == .sheet {
                     let dimmingView = UIView()
                     dimmingView.backgroundColor = UIColor(white: 0, alpha: 0.5)
                     dimmingView.frame = view.bounds
@@ -84,10 +70,10 @@ internal final class ModalContainerViewController: ScreenViewController<ModalCon
 
                 let modal = ModallyPresentedScreen(
                     viewController: newViewController,
-                    screenType: type(of: modal.screen),
                     style: modal.style,
                     key: modal.key,
-                    dimmingView: newDimmingView
+                    dimmingView: newDimmingView,
+                    animated: modal.animated
                 )
                 newScreens.append(modal)
                 screensNeedingAppearanceTransition.append(modal)
@@ -97,7 +83,7 @@ internal final class ModalContainerViewController: ScreenViewController<ModalCon
         for modal in previousScreens.values.flatMap({ $0 }) {
             // Anything left behind in `previousScreens` should be removed
 
-            let displayInfo = ModalDisplayInfo(containerSize: view.bounds.size, style: modal.style)
+            let displayInfo = ModalDisplayInfo(containerSize: view.bounds.size, style: modal.style, animated: modal.animated)
 
             modal.viewController.willMove(toParent: nil)
 
@@ -120,7 +106,7 @@ internal final class ModalContainerViewController: ScreenViewController<ModalCon
         }
 
         for modal in screensNeedingAppearanceTransition {
-            let displayInfo = ModalDisplayInfo(containerSize: view.bounds.size, style: modal.style)
+            let displayInfo = ModalDisplayInfo(containerSize: view.bounds.size, style: modal.style, animated: modal.animated)
             modal.viewController.view.frame = displayInfo.incomingInitialFrame
             modal.viewController.view.transform = displayInfo.incomingInitialTransform
             modal.viewController.view.alpha = displayInfo.incomingInitialAlpha
@@ -159,7 +145,7 @@ internal final class ModalContainerViewController: ScreenViewController<ModalCon
             }
         }
 
-        view.sendSubviewToBack(baseScreenViewController!.view)
+        view.sendSubviewToBack(baseScreenViewController.view)
 
         setNeedsStatusBarAppearanceUpdate()
 
@@ -174,13 +160,21 @@ internal final class ModalContainerViewController: ScreenViewController<ModalCon
             modal.viewController.view.accessibilityViewIsModal = false
         }
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        addChild(baseScreenViewController)
+        view.addSubview(baseScreenViewController.view)
+        baseScreenViewController.didMove(toParent: self)
+    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        baseScreenViewController?.view.frame = view.bounds
+        baseScreenViewController.view.frame = view.bounds
 
         presentedScreens.forEach {
-            let displayInfo = ModalDisplayInfo(containerSize: view.bounds.size, style: $0.style)
+            let displayInfo = ModalDisplayInfo(containerSize: view.bounds.size, style: $0.style, animated: $0.animated)
             $0.viewController.view.frame = displayInfo.frame
             $0.dimmingView?.frame = view.bounds
         }
@@ -205,52 +199,38 @@ internal final class ModalContainerViewController: ScreenViewController<ModalCon
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return topmostScreenViewController?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
     }
-
 }
 
 fileprivate struct ModallyPresentedScreen {
     var viewController: DescribedViewController
-    var screenType: Screen.Type
-    var style: ModalContainerScreen.Modal.Style
-    var key: String
+    var style: ModalContainerScreenModal.Style
+    var key: AnyHashable
     var dimmingView: UIView?
+    var animated: Bool
 
     var identifier: ModalIdentifier {
         return ModalIdentifier(
-            screenType: screenType,
             style: style,
-            key: key
+            key: key,
+            animated: animated
         )
     }
 }
 
-extension ModalContainerScreen.Modal {
+extension ModalContainerScreenModal {
     fileprivate var identifier: ModalIdentifier {
         return ModalIdentifier(
-            screenType: type(of: screen),
             style: style,
-            key: key
+            key: key,
+            animated: animated
         )
     }
 }
 
 fileprivate struct ModalIdentifier: Hashable {
-    var screenType: Any.Type
-    var style: ModalContainerScreen.Modal.Style
-    var key: String
-
-    static func == (lhs: ModalIdentifier, rhs: ModalIdentifier) -> Bool {
-        return lhs.screenType == rhs.screenType
-            && lhs.style == rhs.style
-            && lhs.key == rhs.key
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(screenType))
-        hasher.combine(style)
-        hasher.combine(key)
-    }
-
+    var style: ModalContainerScreenModal.Style
+    var key: AnyHashable
+    var animated: Bool
 }
 
 fileprivate struct ModalDisplayInfo {
@@ -267,9 +247,9 @@ fileprivate struct ModalDisplayInfo {
     var duration: TimeInterval
     var animationOptions: UIView.AnimationOptions
 
-    init(containerSize: CGSize, style: ModalContainerScreen.Modal.Style) {
+    init(containerSize: CGSize, style: ModalContainerScreenModal.Style, animated: Bool) {
 
-        // Configure all properties so that they default to fullScreen animation.
+        // Configure all properties so that they default to fullScreen/sheet animation.
         frame = CGRect(origin: .zero, size: containerSize)
         alpha = 1.0
         transform = .identity
@@ -293,28 +273,28 @@ fileprivate struct ModalDisplayInfo {
         animationOptions = UIView.AnimationOptions(rawValue: 7 << 16)
 
         switch style {
-        case .fullScreen(let animated):
+        case .fullScreen:
+            // Clear the default fullscreen animation configuration.
             if !animated {
-                // Clear the default fullscreen animation configuration.
                 duration = 0
                 animationOptions = UIView.AnimationOptions.init(rawValue: 0)
                 incomingInitialFrame = frame
                 outgoingFinalFrame = frame
             }
-        case .card:
+        case .sheet:
             if UIDevice.current.userInterfaceIdiom == .phone {
                 // On iPhone always show modal in fullscreen.
                 break
             }
 
-            let cardSideLength = min(containerSize.width, containerSize.height)
-            let cardSize = CGSize(width: cardSideLength, height: cardSideLength)
-            let cardOrigin = CGPoint(
-                x: (containerSize.width - cardSideLength) / 2,
-                y: (containerSize.height - cardSideLength) / 2
+            let popoverSideLength = min(containerSize.width, containerSize.height)
+            let popoverSize = CGSize(width: popoverSideLength, height: popoverSideLength)
+            let popOverOrigin = CGPoint(
+                x: (containerSize.width - popoverSideLength) / 2,
+                y: (containerSize.height - popoverSideLength) / 2
             )
 
-            frame = CGRect(origin: cardOrigin, size: cardSize)
+            frame = CGRect(origin: popOverOrigin, size: popoverSize)
 
             duration = 0.1
             animationOptions = UIView.AnimationOptions.init(rawValue: 0)

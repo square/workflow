@@ -1,10 +1,18 @@
-//  
-//  ConfirmQuitWorkflow.swift
-//  AppHost-Development-Unit-Tests
-//
-//  Created by Astha Trivedi on 3/26/20.
-//
-
+/*
+* Copyright 2019 Square Inc.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 import Workflow
 import WorkflowUI
 import ReactiveSwift
@@ -15,13 +23,13 @@ import BackStackContainer
 
 struct ConfirmQuitWorkflow: Workflow {
     
-    //let baseScreen: AnyScreen
+   // let baseScreen: AnyScreen
     
-    typealias Output = Never
-//    enum Output {
-//        case quit
-//        case back
-//    }
+   enum Output {
+        case cancel
+        case confirm
+    }
+
 }
 
 
@@ -29,13 +37,7 @@ struct ConfirmQuitWorkflow: Workflow {
 
 extension ConfirmQuitWorkflow {
 
-    struct State {
-//        var step: Step
-//        enum Step {
-//            case confirmOnce
-//            case confirmTwice
-//        }
-    }
+    typealias State = Void
 
     func makeInitialState() -> ConfirmQuitWorkflow.State {
         return State()
@@ -52,57 +54,42 @@ extension ConfirmQuitWorkflow {
 extension ConfirmQuitWorkflow {
 
     enum Action: WorkflowAction {
+        
+        case cancel
+        case quit
 
         typealias WorkflowType = ConfirmQuitWorkflow
 
         func apply(toState state: inout ConfirmQuitWorkflow.State) -> ConfirmQuitWorkflow.Output? {
 
             switch self {
-                // Update state and produce an optional output based on which action was received.
+                case .cancel:
+                    return .cancel
+                
+                case .quit:
+                    return .confirm
             }
-
         }
     }
-}
-
-
-// MARK: Workers
-
-extension ConfirmQuitWorkflow {
-
-    struct ConfirmQuitWorker: Worker {
-
-        enum Output {
-
-        }
-
-        func run() -> SignalProducer<Output, Never> {
-            fatalError()
-        }
-
-        func isEquivalent(to otherWorker: ConfirmQuitWorker) -> Bool {
-            return true
-        }
-
-    }
-
 }
 
 // MARK: Rendering
 
 extension ConfirmQuitWorkflow {
     
-//    typealias Rendering = ModalContainerScreen
-//
-//    func render(state: ConfirmQuitWorkflow.State, context: RenderContext<ConfirmQuitWorkflow>) -> Rendering {
-//
-//        return ModalContainerScreen(baseScreen: , modals: <#T##[ModalContainerScreen.Modal]#>)
-//    }
-
     typealias Rendering = ConfirmQuitScreen
 
     func render(state: ConfirmQuitWorkflow.State, context: RenderContext<ConfirmQuitWorkflow>) -> Rendering {
-
-        return ConfirmQuitScreen(Question: "Are you sure??")
+        
+        let sink = context.makeSink(of: Action.self)
+        
+        return ConfirmQuitScreen(
+            question: "Are you sure you want to quit?",
+            onQuitTapped: {
+                sink.send(.quit)
+            },
+            onCancelTapped: {
+                sink.send(.cancel)
+            })
     }
 }
