@@ -18,24 +18,4 @@ Pod::Spec.new do |s|
   s.dependency 'Workflow'
   s.dependency 'WorkflowUI'
 
-  s.app_spec 'DemoApp' do |app_spec|
-    app_spec.source_files = 'DemoApp/**/*.swift'
-  end
-
-  s.test_spec 'SnapshotTests' do |test_spec|
-    test_spec.requires_app_host = true
-    test_spec.source_files = 'SnapshotTests/**/*.swift'
-
-    test_spec.framework = 'XCTest'
-
-    test_spec.dependency 'iOSSnapshotTestCase'
-
-    test_spec.scheme = { 
-      environment_variables: { 
-        'FB_REFERENCE_IMAGE_DIR' => '$PODS_TARGET_SRCROOT/SnapshotTests/ReferenceImages',
-        'IMAGE_DIFF_DIR' => '$PODS_TARGET_SRCROOT/SnapshotTests/FailureDiffs'
-      } 
-    }
-  end
-
 end
