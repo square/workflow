@@ -34,6 +34,17 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: setup environment secrets
+        shell: bash
+        env: # pull in the secrets and environment variables
+          PORCHBOX_GOOGLE_SERVICES: $${{ secrets.GoogleServices }}
+          PORCHBOX_KEYS: $${{ secrets.PorchboxKeys }}
+        run: |
+          touch kotlin/samples/containers/app-porchbox/google-services.json
+          touch kotlin/samples/containers/app-porchbox/keys.properties
+          echo "$PORCHBOX_GOOGLE_SERVICES" > kotlin/samples/containers/app-porchbox/google-services.json
+          echo "$PORCHBOX_KEYS" > kotlin/samples/containers/app-porchbox/keys.properties
+
       ## Caching
       - name: Cache gradle dependencies
         uses: actions/cache@v1
