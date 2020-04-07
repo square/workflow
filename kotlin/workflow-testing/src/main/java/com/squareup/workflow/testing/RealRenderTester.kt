@@ -187,7 +187,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     }
   }
 
-  private inline fun <reified T : Expectation<*>> consumeExpectedChildWorkflow(
+  private inline fun <reified T : ExpectedWorkflow<*, *>> consumeExpectedChildWorkflow(
     predicate: (T) -> Boolean,
     description: () -> String
   ): T {
@@ -213,7 +213,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     return expected
   }
 
-  private inline fun <reified T : Expectation<*>> consumeExpectedWorker(
+  private inline fun <reified T : ExpectedWorker<*>> consumeExpectedWorker(
     predicate: (T) -> Boolean,
     description: () -> String
   ): T? {
