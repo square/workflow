@@ -18,7 +18,7 @@ plugins {
   kotlin("android")
 }
 
-apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
+apply(from = rootProject.file(".buildscript/android-sample-app.gradle"))
 apply(from = rootProject.file(".buildscript/android-ui-tests.gradle"))
 
 android {
@@ -34,11 +34,8 @@ dependencies {
   implementation(project(":samples:containers:android"))
   implementation(project(":samples:tictactoe:common"))
   implementation(project(":workflow-ui:core-android"))
-  implementation(project(":workflow-core"))
-  implementation(project(":workflow-runtime"))
   implementation(project(":workflow-tracing"))
 
-  implementation(Dependencies.AndroidX.appcompat)
   implementation(Dependencies.AndroidX.constraint_layout)
   implementation(Dependencies.Kotlin.Coroutines.rx2)
   implementation(Dependencies.okio)

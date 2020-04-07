@@ -18,7 +18,7 @@ plugins {
   kotlin("android")
 }
 
-apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
+apply(from = rootProject.file(".buildscript/android-sample-app.gradle"))
 apply(from = rootProject.file(".buildscript/android-ui-tests.gradle"))
 
 android {
@@ -29,13 +29,9 @@ android {
 
 dependencies {
   implementation(project(":workflow-ui:modal-android"))
-  implementation(project(":workflow-core"))
-  implementation(project(":workflow-runtime"))
 
-  implementation(Dependencies.AndroidX.appcompat)
   implementation(Dependencies.AndroidX.recyclerview)
   implementation(Dependencies.Kotlin.Coroutines.android)
   implementation(Dependencies.Kotlin.Coroutines.core)
   implementation(Dependencies.RxJava2.rxjava2)
-  implementation(Dependencies.timber)
 }
