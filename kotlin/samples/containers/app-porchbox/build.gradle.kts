@@ -30,11 +30,17 @@ android {
     applicationId = "com.squareup.sample.porchbox"
 
     val apikeyPropertiesFile = rootProject.file("samples/containers/app-porchbox/keys.properties")
-    val apikeyProperties = Properties()
-    apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
     val stringField = "String"
-    buildConfigField(stringField, "CLIENT_PASS", apikeyProperties.getProperty("CLIENT_PASS"))
-    buildConfigField(stringField, "CLIENT_EMAIL", apikeyProperties.getProperty("CLIENT_EMAIL"))
+    var pass = ""
+    var email = ""
+    if (apikeyPropertiesFile.exists()) {
+      val apikeyProperties = Properties()
+      apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
+      pass = apikeyProperties.getProperty("CLIENT_PASS")
+      email = apikeyProperties.getProperty("CLIENT_EMAIL")
+    }
+    buildConfigField(stringField, "CLIENT_PASS", pass)
+    buildConfigField(stringField, "CLIENT_EMAIL", email)
   }
 
   testOptions {
