@@ -187,7 +187,7 @@ class RealRenderTesterTest {
     val error = assertFailsWith<AssertionError> {
       tester.render()
     }
-    assertEquals("Tried to render unexpected worker Worker1.", error.message)
+    assertTrue(error.message!!.startsWith("Expected 1 more workflows or workers to be ran:"))
   }
 
   @Test fun `sending to sink throws when called multiple times`() {
@@ -369,7 +369,7 @@ class RealRenderTesterTest {
     )
   }
 
-  @Test fun `runningWorker throws when none expected`() {
+  @Test fun `runningWorker doesn't throw when none expected`() {
     val worker = object : Worker<Nothing> {
       override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = true
       override fun run(): Flow<Nothing> = emptyFlow()
@@ -380,14 +380,7 @@ class RealRenderTesterTest {
       runningWorker(worker)
     }
     val tester = workflow.renderTester(Unit)
-
-    val error = assertFailsWith<AssertionError> {
-      tester.render()
-    }
-    assertEquals(
-        "Tried to render unexpected worker TestWorker.",
-        error.message
-    )
+    tester.render()
   }
 
   @Test fun `runningWorker throws when expectation doesn't match`() {
@@ -406,13 +399,11 @@ class RealRenderTesterTest {
     val error = assertFailsWith<AssertionError> {
       tester.render()
     }
-    assertEquals(
-        "Tried to render unexpected worker TestWorker.",
-        error.message
-    )
+
+    assertTrue(error.message!!.startsWith("Expected 1 more workflows or workers to be ran:"))
   }
 
-  @Test fun `runningWorker with key throws when none expected`() {
+  @Test fun `runningWorker with key does not throw when none expected`() {
     val worker = object : Worker<Nothing> {
       override fun doesSameWorkAs(otherWorker: Worker<*>): Boolean = true
       override fun run(): Flow<Nothing> = emptyFlow()
@@ -424,13 +415,7 @@ class RealRenderTesterTest {
     }
     val tester = workflow.renderTester(Unit)
 
-    val error = assertFailsWith<AssertionError> {
-      tester.render()
-    }
-    assertEquals(
-        "Tried to render unexpected worker TestWorker with key \"key\".",
-        error.message
-    )
+    tester.render()
   }
 
   @Test fun `runningWorker with key throws when no key expected`() {
@@ -449,10 +434,7 @@ class RealRenderTesterTest {
     val error = assertFailsWith<AssertionError> {
       tester.render()
     }
-    assertEquals(
-        "Tried to render unexpected worker TestWorker with key \"key\".",
-        error.message
-    )
+    assertTrue(error.message!!.startsWith("Expected 1 more workflows or workers to be ran:"))
   }
 
   @Test fun `runningWorker with key throws when wrong key expected`() {
@@ -474,10 +456,7 @@ class RealRenderTesterTest {
     val error = assertFailsWith<AssertionError> {
       tester.render()
     }
-    assertEquals(
-        "Tried to render unexpected worker TestWorker with key \"key\".",
-        error.message
-    )
+    assertTrue(error.message!!.startsWith("Expected 1 more workflows or workers to be ran:"))
   }
 
   @Test fun `runningWorker throws when multiple expectations match`() {

@@ -117,7 +117,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     key: String,
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT {
-    val expected = consumeExpectation<ExpectedWorkflow<*, *>>(
+    val expected = consumeExpectedChildWorkflow<ExpectedWorkflow<*, *>>(
         predicate = { it.workflowType.isInstance(child) && it.key == key },
         description = {
           "child workflow ${child::class.java.name}" +
@@ -144,7 +144,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     key: String,
     handler: (T) -> WorkflowAction<StateT, OutputT>
   ) {
-    val expected = consumeExpectation<ExpectedWorker<*>>(
+    val expected = consumeExpectedWorker<ExpectedWorker<*>>(
         predicate = { it.matchesWhen(worker) && it.key == key },
         description = {
           "worker $worker" +
@@ -154,7 +154,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
         }
     )
 
-    if (expected.output != null) {
+    if (expected?.output != null) {
       check(processedAction == null)
       @Suppress("UNCHECKED_CAST")
       processedAction = handler(expected.output.output as T)
@@ -187,7 +187,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     }
   }
 
-  private inline fun <reified T : Expectation<*>> consumeExpectation(
+  private inline fun <reified T : Expectation<*>> consumeExpectedChildWorkflow(
     predicate: (T) -> Boolean,
     description: () -> String
   ): T {
@@ -211,6 +211,29 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     consumedExpectations += expected
 
     return expected
+  }
+
+  private inline fun <reified T : Expectation<*>> consumeExpectedWorker(
+    predicate: (T) -> Boolean,
+    description: () -> String
+  ): T? {
+    val matchedExpectations = expectations.filterIsInstance<T>()
+        .filter(predicate)
+    return when (matchedExpectations.size) {
+      1 -> {
+        val expected = matchedExpectations[0]
+        // Move the workflow to the consumed list.
+        expectations -= expected
+        consumedExpectations += expected
+
+        expected
+      }
+      0 -> null
+      else -> throw AssertionError(
+          "Multiple expectations matched ${description()}:\n" +
+              matchedExpectations.joinToString(separator = "\n") { "  $it" }
+      )
+    }
   }
 
   private fun deepCloneForRender(): RenderContext<StateT, OutputT> = RealRenderTester(
