@@ -18,7 +18,7 @@ plugins {
   kotlin("android")
 }
 
-apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
+apply(from = rootProject.file(".buildscript/android-sample-app.gradle"))
 apply(from = rootProject.file(".buildscript/android-ui-tests.gradle"))
 
 android {
@@ -46,11 +46,8 @@ dependencies {
   implementation(project(":samples:dungeon:common"))
   implementation(project(":samples:dungeon:timemachine-shakeable"))
   implementation(project(":workflow-ui:modal-android"))
-  implementation(project(":workflow-core"))
-  implementation(project(":workflow-runtime"))
   implementation(project(":workflow-tracing"))
 
-  implementation(Dependencies.AndroidX.appcompat)
   implementation(Dependencies.AndroidX.constraint_layout)
   implementation(Dependencies.AndroidX.material)
   implementation(Dependencies.AndroidX.gridlayout)
@@ -58,7 +55,6 @@ dependencies {
   implementation(Dependencies.okio)
   implementation(Dependencies.rxandroid2)
   implementation(Dependencies.RxJava2.rxjava2)
-  implementation(Dependencies.timber)
   implementation(Dependencies.cycler)
 
   testImplementation(Dependencies.Test.junit)
