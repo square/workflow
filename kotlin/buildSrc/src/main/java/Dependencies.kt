@@ -79,8 +79,7 @@ object Dependencies {
 
     object Serialization {
       const val gradlePlugin = "org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}"
-      const val runtime =
-        "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0-1.3.70-eap-134"
+      const val runtime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
       const val kaml = "com.charleskorn.kaml:kaml:0.16.1"
     }
 
