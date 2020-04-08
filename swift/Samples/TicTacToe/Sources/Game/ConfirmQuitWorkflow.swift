@@ -18,10 +18,6 @@ struct ConfirmQuitWorkflow: Workflow {
    // let baseScreen: AnyScreen
     
     typealias Output = Never
-//    enum Output {
-//        case quit
-//        case back
-//    }
 }
 
 
@@ -52,6 +48,9 @@ extension ConfirmQuitWorkflow {
 extension ConfirmQuitWorkflow {
 
     enum Action: WorkflowAction {
+        
+        case cancel
+        case quit
 
         typealias WorkflowType = ConfirmQuitWorkflow
 
@@ -59,8 +58,13 @@ extension ConfirmQuitWorkflow {
 
             switch self {
                 // Update state and produce an optional output based on which action was received.
+                case .cancel:
+                    print("cancel")
+                
+                case .quit:
+                    print("quit")
             }
-
+            return nil
         }
     }
 }
@@ -96,13 +100,21 @@ extension ConfirmQuitWorkflow {
 //
 //    func render(state: ConfirmQuitWorkflow.State, context: RenderContext<ConfirmQuitWorkflow>) -> Rendering {
 //
-//        return ModalContainerScreen(baseScreen: , modals: <#T##[ModalContainerScreen.Modal]#>)
+//        return ModalContainerScreen(baseScreen: , modals: )
 //    }
 
     typealias Rendering = ConfirmQuitScreen
 
     func render(state: ConfirmQuitWorkflow.State, context: RenderContext<ConfirmQuitWorkflow>) -> Rendering {
-
-        return ConfirmQuitScreen(Question: "Are you sure??")
+        
+        let sink = context.makeSink(of: Action.self)
+        
+        return ConfirmQuitScreen(question: "Are you sure you want to quit?",
+                              onQuitTapped: {
+                                sink.send(.quit)
+                              },
+                              onCancelTapped: {
+                                sink.send(.cancel)
+                              })
     }
 }

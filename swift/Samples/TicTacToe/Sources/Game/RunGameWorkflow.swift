@@ -144,9 +144,19 @@ extension RunGameWorkflow {
             
             let confirmQuitScreen = ConfirmQuitWorkflow()
                                     .rendered(with: context)
-           // backStackItems.append(BackStackScreen.Item(screen: confirmQuitScreen))
-            
-            modals.append(ModalContainerScreen.Modal(screen: confirmQuitScreen, style: .fullScreen(animated: true), key: "0"))
+//            let confirmBackStack = BackStackScreen.Item(
+//                    screen: confirmQuitScreen,
+//                    barVisibility: .visible(BackStackScreen.BarContent(
+//                        title: "are you sure?",
+//                        leftItem: nil,
+//                        rightItem: BackStackScreen.BarContent.BarButtonItem.button(
+//                            BackStackScreen.BarContent.Button(
+//                                content: .text("Dismiss"), handler: {
+//                sink.send(.back)
+//            })))))
+
+            //modals.append(ModalContainerScreen.Modal(screen: confirmQuitScreen, style: .fullScreen(animated: true), key: "0"))
+            modals.append(ModalContainerScreen.Modal(screen: confirmQuitScreen, style: .card, key: "0"))
         }
         
         let modalContainerScreen = ModalContainerScreen(baseScreen: BackStackScreen(items: backStackItems), modals: modals)
