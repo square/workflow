@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 plugins {
-  id("com.android.library")
+  id("android-defaults-plugin")
   kotlin("android")
 }
 
@@ -22,8 +22,6 @@ java {
   sourceCompatibility = JavaVersion.VERSION_1_8
   targetCompatibility = JavaVersion.VERSION_1_8
 }
-
-apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
 
 dependencies {
   api(project(":workflow-core"))

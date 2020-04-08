@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 plugins {
-  id("com.android.library")
+  id("android-defaults-plugin")
   kotlin("android")
 }
 
@@ -24,8 +24,6 @@ java {
 }
 
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
-
-apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
 
 apply(from = rootProject.file(".buildscript/configure-compose.gradle"))
 

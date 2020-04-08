@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 plugins {
-  id("com.android.library")
+  id("android-defaults-plugin")
   kotlin("android")
   id("org.jetbrains.dokka")
 }
@@ -25,8 +25,6 @@ java {
 }
 
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
-
-apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
 
 // See https://github.com/Kotlin/kotlinx.coroutines/issues/1064#issuecomment-479412940
 android.packagingOptions.exclude("**/*.kotlin_*")

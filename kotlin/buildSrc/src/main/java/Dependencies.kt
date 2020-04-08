@@ -8,6 +8,7 @@ object Versions {
   const val coroutines = "1.3.4"
   const val kotlin = "1.3.71"
   const val targetSdk = 29
+  const val minSdk = 21
 }
 
 @Suppress("unused")

@@ -6,6 +6,8 @@ public final class com/squareup/workflow/ui/modal/AlertContainer : com/squareup/
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;II)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;III)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun _$_clearFindViewByIdCache ()V
+	public fun _$_findCachedViewById (I)Landroid/view/View;
 	public synthetic fun buildDialog (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;)Lcom/squareup/workflow/ui/modal/ModalContainer$DialogRef;
 }
 
@@ -32,6 +34,8 @@ public abstract class com/squareup/workflow/ui/modal/ModalContainer : android/wi
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;II)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun _$_clearFindViewByIdCache ()V
+	public fun _$_findCachedViewById (I)Landroid/view/View;
 	protected abstract fun buildDialog (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;)Lcom/squareup/workflow/ui/modal/ModalContainer$DialogRef;
 	protected fun onRestoreInstanceState (Landroid/os/Parcelable;)V
 	protected fun onSaveInstanceState ()Landroid/os/Parcelable;
@@ -64,6 +68,8 @@ public class com/squareup/workflow/ui/modal/ModalViewContainer : com/squareup/wo
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;II)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun _$_clearFindViewByIdCache ()V
+	public fun _$_findCachedViewById (I)Landroid/view/View;
 	protected final fun buildDialog (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;)Lcom/squareup/workflow/ui/modal/ModalContainer$DialogRef;
 	public fun buildDialogForView (Landroid/view/View;)Landroid/app/Dialog;
 	protected fun updateDialog (Lcom/squareup/workflow/ui/modal/ModalContainer$DialogRef;)V

@@ -19,6 +19,8 @@ public class com/squareup/workflow/ui/backstack/BackStackContainer : android/wid
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;II)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun _$_clearFindViewByIdCache ()V
+	public fun _$_findCachedViewById (I)Landroid/view/View;
 	protected fun onRestoreInstanceState (Landroid/os/Parcelable;)V
 	protected fun onSaveInstanceState ()Landroid/os/Parcelable;
 	protected fun performTransition (Landroid/view/View;Landroid/view/View;Z)V

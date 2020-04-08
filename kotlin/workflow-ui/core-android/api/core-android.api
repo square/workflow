@@ -120,17 +120,22 @@ public final class com/squareup/workflow/ui/ViewShowRenderingKt {
 
 public abstract class com/squareup/workflow/ui/WorkflowFragment : androidx/fragment/app/Fragment {
 	public fun <init> ()V
+	public fun _$_clearFindViewByIdCache ()V
+	public fun _$_findCachedViewById (I)Landroid/view/View;
 	protected final fun getRunner ()Lcom/squareup/workflow/ui/WorkflowRunner;
 	protected abstract fun getViewEnvironment ()Lcom/squareup/workflow/ui/ViewEnvironment;
 	public fun onActivityCreated (Landroid/os/Bundle;)V
 	public synthetic fun onCreateView (Landroid/view/LayoutInflater;Landroid/view/ViewGroup;Landroid/os/Bundle;)Landroid/view/View;
 	public final fun onCreateView (Landroid/view/LayoutInflater;Landroid/view/ViewGroup;Landroid/os/Bundle;)Lcom/squareup/workflow/ui/WorkflowLayout;
 	protected abstract fun onCreateWorkflow ()Lcom/squareup/workflow/ui/WorkflowRunner$Config;
+	public synthetic fun onDestroyView ()V
 }
 
 public final class com/squareup/workflow/ui/WorkflowLayout : android/widget/FrameLayout {
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun _$_clearFindViewByIdCache ()V
+	public fun _$_findCachedViewById (I)Landroid/view/View;
 	public final fun start (Lio/reactivex/Observable;Lcom/squareup/workflow/ui/ViewEnvironment;)V
 	public final fun start (Lio/reactivex/Observable;Lcom/squareup/workflow/ui/ViewRegistry;)V
 }
@@ -171,6 +176,8 @@ public final class com/squareup/workflow/ui/WorkflowViewStub : android/view/View
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;II)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun _$_clearFindViewByIdCache ()V
+	public fun _$_findCachedViewById (I)Landroid/view/View;
 	public final fun getActual ()Landroid/view/View;
 	public final fun setActual (Landroid/view/View;)V
 	public final fun update (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;)Landroid/view/View;
