@@ -95,13 +95,6 @@ extension ConfirmQuitWorkflow {
 
 extension ConfirmQuitWorkflow {
     
-//    typealias Rendering = ModalContainerScreen
-//
-//    func render(state: ConfirmQuitWorkflow.State, context: RenderContext<ConfirmQuitWorkflow>) -> Rendering {
-//
-//        return ModalContainerScreen(baseScreen: , modals: )
-//    }
-
     typealias Rendering = ConfirmQuitScreen
 
     func render(state: ConfirmQuitWorkflow.State, context: RenderContext<ConfirmQuitWorkflow>) -> Rendering {

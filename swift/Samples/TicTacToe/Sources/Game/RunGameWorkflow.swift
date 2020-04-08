@@ -177,10 +177,4 @@ extension RunGameWorkflow {
                 }
             })
     }
-    
-//    private func gamePlayScreen(sink: Sink<Action>, gameState: GameState, playerX: String, playerO: String, board: [[Board.Cell]], onSelected: @escaping ((Int, Int) -> Void)) -> GamePlayScreen {
-//        return GamePlayScreen(gameState: gameState, playerX: playerX, playerO: playerO, board: board, onSelected: { row, col in
-//            sink.send(.selected(row: row, col: col))
-//        })
-//    }
 }

@@ -14,10 +14,6 @@ struct ConfirmQuitScreen: Screen {
     let question: String
     var onQuitTapped: () -> Void = {}
     var onCancelTapped: () -> Void = {}
-    // This should contain all data to display in the UI
-
-    // It should also contain callbacks for any UI events, for example:
-    // var onButtonTapped: () -> Void
 
     func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
         return ConfirmQuitViewController.description(for: self, environment: environment)
