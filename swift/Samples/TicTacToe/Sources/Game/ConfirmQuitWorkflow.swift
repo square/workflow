@@ -17,7 +17,11 @@ struct ConfirmQuitWorkflow: Workflow {
     
    // let baseScreen: AnyScreen
     
-    typealias Output = Never
+   enum Output {
+        case cancel
+        case confirm
+    }
+
 }
 
 
@@ -26,11 +30,7 @@ struct ConfirmQuitWorkflow: Workflow {
 extension ConfirmQuitWorkflow {
 
     struct State {
-//        var step: Step
-//        enum Step {
-//            case confirmOnce
-//            case confirmTwice
-//        }
+
     }
 
     func makeInitialState() -> ConfirmQuitWorkflow.State {
@@ -59,12 +59,11 @@ extension ConfirmQuitWorkflow {
             switch self {
                 // Update state and produce an optional output based on which action was received.
                 case .cancel:
-                    print("cancel")
+                    return .cancel
                 
                 case .quit:
-                    print("quit")
+                    return .confirm
             }
-            return nil
         }
     }
 }
