@@ -37,6 +37,9 @@ buildscript {
     google()
     // For binary compatibility validator.
     maven { url = uri("https://kotlin.bintray.com/kotlinx") }
+
+    // For 1.4 pre-releases.
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
   }
 }
 
@@ -45,6 +48,10 @@ subprojects {
     google()
     mavenCentral()
     jcenter()
+
+    // For 1.4 pre-releases.
+    maven("https://kotlin.bintray.com/kotlinx")
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
   }
 
   apply(plugin = "org.jlleitschuh.gradle.ktlint")

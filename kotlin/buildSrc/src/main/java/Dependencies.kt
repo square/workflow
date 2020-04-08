@@ -5,8 +5,8 @@ import kotlin.reflect.full.declaredMembers
 
 object Versions {
   const val compose = "0.1.0-dev07"
-  const val coroutines = "1.3.4"
-  const val kotlin = "1.3.71"
+  const val coroutines = "1.3.5-1.4-M1"
+  const val kotlin = "1.4-M1"
   const val targetSdk = 29
 }
 
@@ -79,7 +79,8 @@ object Dependencies {
 
     object Serialization {
       const val gradlePlugin = "org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}"
-      const val runtime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+      const val runtime =
+        "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0-1.4-M1"
       const val kaml = "com.charleskorn.kaml:kaml:0.16.1"
     }
 

@@ -311,7 +311,9 @@ class ReactorAsWorkflowIntegrationTest {
         events: EventChannel<String>,
         workflows: WorkflowPool
       ): Single<out Reaction<TestState, String>> = when (state) {
-        is FirstState -> proceedToSecondState.andThen(just(EnterState(SecondState(""))))
+        is FirstState -> proceedToSecondState.andThen(
+            just(EnterState(SecondState("")) as Reaction<TestState, String>)
+        )
         is SecondState -> events.select {
           onEvent<String> { FinishWith(it) }
         }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 /*
  * Copyright 2017 Square Inc.
  *
@@ -25,8 +27,13 @@ java {
 }
 
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
-
 apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
+
+tasks.withType<KotlinCompile> {
+  // New type inference is on by default in 1.4, but still buggy.
+  // See https://youtrack.jetbrains.com/issue/KT-38134#focus=streamItem-27-4074931.0-0
+  kotlinOptions.freeCompilerArgs += listOf("-XXLanguage:-NewInference")
+}
 
 dependencies {
   compileOnly(Dependencies.AndroidX.viewbinding)

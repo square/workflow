@@ -376,7 +376,7 @@ class WorkflowOperatorsTest {
     val source = scope.workflow<Unit, Unit, Nothing> { states, events ->
       events.receive()
       states.send(Unit)
-      suspendCancellableCoroutine { }
+      suspendCancellableCoroutine<Nothing> { }
     }
     val withMappedStates = source.switchMapState { transformedChannel }
 
