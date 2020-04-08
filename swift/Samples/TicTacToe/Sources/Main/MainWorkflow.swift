@@ -77,7 +77,7 @@ extension MainWorkflow {
 
 extension MainWorkflow {
 
-    typealias Rendering = ModalContainerScreen
+    typealias Rendering = AnyScreen
 
     func render(state: MainWorkflow.State, context: RenderContext<MainWorkflow>) -> Rendering {
 
@@ -93,11 +93,10 @@ extension MainWorkflow {
                 })
                 .rendered(with: context)
 
-            return ModalContainerScreen(baseScreen:BackStackScreen(items: authenticationBackStackItems) , modals: [])// BackStackScreen(items: authenticationBackStackItems)
-
+            return AnyScreen(BackStackScreen(items: authenticationBackStackItems))
         case .runningGame:
             let runGameModalScreen = RunGameWorkflow().rendered(with: context)
-            return ModalContainerScreen(baseScreen:runGameModalScreen.baseScreen , modals: runGameModalScreen.modals)
+            return AnyScreen(ModalContainerScreen(baseScreen:runGameModalScreen.baseScreen , modals: runGameModalScreen.modals))
         }
 
     }
