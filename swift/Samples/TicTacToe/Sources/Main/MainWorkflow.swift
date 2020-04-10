@@ -95,8 +95,7 @@ extension MainWorkflow {
 
             return AnyScreen(BackStackScreen(items: authenticationBackStackItems))
         case .runningGame:
-            let runGameModalScreen = RunGameWorkflow().rendered(with: context)
-            return AnyScreen(ModalContainerScreen(baseScreen:runGameModalScreen.baseScreen , modals: runGameModalScreen.modals))
+            return AnyScreen(RunGameWorkflow().rendered(with: context))
         }
 
     }
