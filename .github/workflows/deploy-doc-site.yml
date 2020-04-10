@@ -43,7 +43,7 @@ jobs:
           bundle check || bundle install
           # Don't need to run pod gen, the website script does that itself.
           brew install sourcedocs
-          sudo xcode-select -s /Applications/Xcode_11.3.1.app
+          sudo xcode-select -s /Applications/Xcode_11.4.app
 
       # Docs dependencies
       - name: Set up Python
