@@ -91,14 +91,14 @@ import kotlin.coroutines.EmptyCoroutineContext
  * change (no workflows are added or removed), and children are re-rendered in the same order as
  * before, so the first active child will usually match.
  */
-internal class SubtreeManager<StateT, OutputT : Any>(
+internal class SubtreeManager<PropsT, StateT, OutputT : Any>(
   private val contextForChildren: CoroutineContext,
-  private val emitActionToParent: (WorkflowAction<StateT, OutputT>) -> Any?,
+  private val emitActionToParent: (WorkflowAction<PropsT, StateT, OutputT>) -> Any?,
   private val parentDiagnosticId: Long,
   private val diagnosticListener: WorkflowDiagnosticListener? = null,
   private val idCounter: IdCounter? = null,
   private val workerContext: CoroutineContext = EmptyCoroutineContext
-) : RealRenderContext.Renderer<StateT, OutputT> {
+) : RealRenderContext.Renderer<PropsT, StateT, OutputT> {
 
   /**
    * When this manager's node is restored from a snapshot, its children snapshots are extracted into
@@ -129,7 +129,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
     props: ChildPropsT,
     key: String,
-    handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+    handler: (ChildOutputT) -> WorkflowAction<PropsT, StateT, OutputT>
   ): ChildRenderingT {
     /* ktlint-enable parameter-list-wrapping */
 
@@ -180,7 +180,7 @@ internal class SubtreeManager<StateT, OutputT : Any>(
     child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
     initialProps: ChildPropsT,
     key: String,
-    handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+    handler: (ChildOutputT) -> WorkflowAction<PropsT, StateT, OutputT>
   ): WorkflowChildNode<ChildPropsT, ChildOutputT, StateT, OutputT> {
     val id = child.id(key)
     lateinit var node: WorkflowChildNode<ChildPropsT, ChildOutputT, StateT, OutputT>

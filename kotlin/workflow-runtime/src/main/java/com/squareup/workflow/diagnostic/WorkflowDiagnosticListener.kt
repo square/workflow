@@ -274,7 +274,7 @@ interface WorkflowDiagnosticListener {
   @VeryExperimentalWorkflow
   fun onSinkReceived(
     workflowId: Long,
-    action: WorkflowAction<*, *>
+    action: WorkflowAction<*, *, *>
   ) = Unit
 
   /**
@@ -293,7 +293,7 @@ interface WorkflowDiagnosticListener {
   @VeryExperimentalWorkflow
   fun onWorkflowAction(
     workflowId: Long,
-    action: WorkflowAction<*, *>,
+    action: WorkflowAction<*, *, *>,
     oldState: Any?,
     newState: Any?,
     output: Any?

@@ -180,7 +180,7 @@ class DebugSnapshotRecordingListener(
 
   override fun onSinkReceived(
     workflowId: Long,
-    action: WorkflowAction<*, *>
+    action: WorkflowAction<*, *, *>
   ) {
     val recorder = recordersById.getValue(workflowId)
     currentUpdate = WorkflowUpdateDebugInfo(
@@ -191,7 +191,7 @@ class DebugSnapshotRecordingListener(
 
   override fun onWorkflowAction(
     workflowId: Long,
-    action: WorkflowAction<*, *>,
+    action: WorkflowAction<*, *, *>,
     oldState: Any?,
     newState: Any?,
     output: Any?

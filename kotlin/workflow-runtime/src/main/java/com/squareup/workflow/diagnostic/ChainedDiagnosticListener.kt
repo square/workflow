@@ -145,14 +145,14 @@ internal class ChainedDiagnosticListener(
 
   override fun onSinkReceived(
     workflowId: Long,
-    action: WorkflowAction<*, *>
+    action: WorkflowAction<*, *, *>
   ) {
     visitors.forEach { it.onSinkReceived(workflowId, action) }
   }
 
   override fun onWorkflowAction(
     workflowId: Long,
-    action: WorkflowAction<*, *>,
+    action: WorkflowAction<*, *, *>,
     oldState: Any?,
     newState: Any?,
     output: Any?

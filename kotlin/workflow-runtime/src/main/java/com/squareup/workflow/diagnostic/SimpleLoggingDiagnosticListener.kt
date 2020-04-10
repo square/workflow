@@ -130,14 +130,14 @@ open class SimpleLoggingDiagnosticListener : WorkflowDiagnosticListener {
 
   override fun onSinkReceived(
     workflowId: Long,
-    action: WorkflowAction<*, *>
+    action: WorkflowAction<*, *, *>
   ) {
     println("onSinkReceived($workflowId, $action)")
   }
 
   override fun onWorkflowAction(
     workflowId: Long,
-    action: WorkflowAction<*, *>,
+    action: WorkflowAction<*, *, *>,
     oldState: Any?,
     newState: Any?,
     output: Any?

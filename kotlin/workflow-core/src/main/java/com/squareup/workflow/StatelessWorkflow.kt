@@ -40,7 +40,7 @@ abstract class StatelessWorkflow<in PropsT, out OutputT : Any, out RenderingT> :
   @Suppress("UNCHECKED_CAST")
   private val statefulWorkflow = Workflow.stateful<PropsT, Unit, OutputT, RenderingT>(
       initialState = { Unit },
-      render = { props, _ -> render(props, this as RenderContext<Nothing, OutputT>) }
+      render = { props, _ -> render(props, this as RenderContext<PropsT, Nothing, OutputT>) }
   )
 
   /**
@@ -59,7 +59,7 @@ abstract class StatelessWorkflow<in PropsT, out OutputT : Any, out RenderingT> :
    */
   abstract fun render(
     props: PropsT,
-    context: RenderContext<Nothing, OutputT>
+    context: RenderContext<PropsT, Nothing, OutputT>
   ): RenderingT
 
   /**
@@ -81,12 +81,12 @@ abstract class StatelessWorkflow<in PropsT, out OutputT : Any, out RenderingT> :
  * their own internal state.
  */
 inline fun <PropsT, OutputT : Any, RenderingT> Workflow.Companion.stateless(
-  crossinline render: RenderContext<Nothing, OutputT>.(props: PropsT) -> RenderingT
+  crossinline render: RenderContext<PropsT, Nothing, OutputT>.(props: PropsT) -> RenderingT
 ): Workflow<PropsT, OutputT, RenderingT> =
   object : StatelessWorkflow<PropsT, OutputT, RenderingT>() {
     override fun render(
       props: PropsT,
-      context: RenderContext<Nothing, OutputT>
+      context: RenderContext<PropsT, Nothing, OutputT>
     ): RenderingT = render(context, props)
   }
 
@@ -124,7 +124,7 @@ fun <PropsT, OutputT : Any, FromRenderingT, ToRenderingT>
 fun <PropsT, OutputT : Any, RenderingT>
     StatelessWorkflow<PropsT, OutputT, RenderingT>.action(
   name: String = "",
-  update: Updater<Nothing, OutputT>.() -> Unit
+  update: Updater<PropsT, Nothing, OutputT>.() -> Unit
 ) = action({ name }, update)
 
 /**
@@ -139,8 +139,8 @@ fun <PropsT, OutputT : Any, RenderingT>
 fun <PropsT, OutputT : Any, RenderingT>
     StatelessWorkflow<PropsT, OutputT, RenderingT>.action(
   name: () -> String,
-  update: Updater<Nothing, OutputT>.() -> Unit
-): WorkflowAction<Nothing, OutputT> = object : WorkflowAction<Nothing, OutputT> {
-  override fun Updater<Nothing, OutputT>.apply() = update.invoke(this)
+  update: Updater<PropsT, Nothing, OutputT>.() -> Unit
+): WorkflowAction<PropsT, Nothing, OutputT> = object : WorkflowAction<PropsT, Nothing, OutputT> {
+  override fun Updater<PropsT, Nothing, OutputT>.apply() = update.invoke(this)
   override fun toString(): String = "action(${name()})-${this@action}"
 }

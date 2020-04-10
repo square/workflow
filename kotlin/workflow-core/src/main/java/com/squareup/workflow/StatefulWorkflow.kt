@@ -125,7 +125,7 @@ abstract class StatefulWorkflow<
   abstract fun render(
     props: PropsT,
     state: StateT,
-    context: RenderContext<StateT, OutputT>
+    context: RenderContext<PropsT, StateT, OutputT>
   ): RenderingT
 
   /**
@@ -156,7 +156,7 @@ abstract class StatefulWorkflow<
  */
 inline fun <PropsT, StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
   crossinline initialState: (PropsT, Snapshot?) -> StateT,
-  crossinline render: RenderContext<StateT, OutputT>.(props: PropsT, state: StateT) -> RenderingT,
+  crossinline render: RenderContext<PropsT, StateT, OutputT>.(props: PropsT, state: StateT) -> RenderingT,
   crossinline snapshot: (StateT) -> Snapshot,
   crossinline onPropsChanged: (
     old: PropsT,
@@ -179,7 +179,7 @@ inline fun <PropsT, StateT, OutputT : Any, RenderingT> Workflow.Companion.statef
     override fun render(
       props: PropsT,
       state: StateT,
-      context: RenderContext<StateT, OutputT>
+      context: RenderContext<PropsT, StateT, OutputT>
     ): RenderingT = render(context, props, state)
 
     override fun snapshotState(state: StateT): Snapshot = snapshot(state)
@@ -190,7 +190,7 @@ inline fun <PropsT, StateT, OutputT : Any, RenderingT> Workflow.Companion.statef
  */
 inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
   crossinline initialState: (Snapshot?) -> StateT,
-  crossinline render: RenderContext<StateT, OutputT>.(state: StateT) -> RenderingT,
+  crossinline render: RenderContext<Unit, StateT, OutputT>.(state: StateT) -> RenderingT,
   crossinline snapshot: (StateT) -> Snapshot
 ): StatefulWorkflow<Unit, StateT, OutputT, RenderingT> = stateful(
     { _, initialSnapshot -> initialState(initialSnapshot) },
@@ -205,7 +205,7 @@ inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
  */
 inline fun <PropsT, StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
   crossinline initialState: (PropsT) -> StateT,
-  crossinline render: RenderContext<StateT, OutputT>.(props: PropsT, state: StateT) -> RenderingT,
+  crossinline render: RenderContext<PropsT, StateT, OutputT>.(props: PropsT, state: StateT) -> RenderingT,
   crossinline onPropsChanged: (
     old: PropsT,
     new: PropsT,
@@ -225,7 +225,7 @@ inline fun <PropsT, StateT, OutputT : Any, RenderingT> Workflow.Companion.statef
  */
 inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
   initialState: StateT,
-  crossinline render: RenderContext<StateT, OutputT>.(state: StateT) -> RenderingT
+  crossinline render: RenderContext<Unit, StateT, OutputT>.(state: StateT) -> RenderingT
 ): StatefulWorkflow<Unit, StateT, OutputT, RenderingT> = stateful(
     { initialState },
     { _, state -> render(state) }
@@ -239,11 +239,13 @@ inline fun <StateT, OutputT : Any, RenderingT> Workflow.Companion.stateful(
  * @param name A string describing the update for debugging, included in [toString].
  * @param update Function that defines the workflow update.
  */
+/* ktlint-disable parameter-list-wrapping */
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.action(
-      name: String = "",
-      update: Updater<StateT, OutputT>.() -> Unit
-    ) = action({ name }, update)
+  name: String = "",
+  update: Updater<PropsT, StateT, OutputT>.() -> Unit
+) = action({ name }, update)
+/* ktlint-enable parameter-list-wrapping */
 
 /**
  * Convenience to create a [WorkflowAction] with parameter types matching those
@@ -254,14 +256,17 @@ fun <PropsT, StateT, OutputT : Any, RenderingT>
  * in [toString].
  * @param update Function that defines the workflow update.
  */
+/* ktlint-disable parameter-list-wrapping */
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.action(
-      name: () -> String,
-      update: Updater<StateT, OutputT>.() -> Unit
-    ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
-  override fun Updater<StateT, OutputT>.apply() = update.invoke(this)
-  override fun toString(): String = "action(${name()})-${this@action}"
-}
+  name: () -> String,
+  update: Updater<PropsT, StateT, OutputT>.() -> Unit
+): WorkflowAction<PropsT, StateT, OutputT> =
+/* ktlint-enable parameter-list-wrapping */
+  object : WorkflowAction<PropsT, StateT, OutputT> {
+    override fun Updater<PropsT, StateT, OutputT>.apply() = update.invoke(this)
+    override fun toString(): String = "action(${name()})-${this@action}"
+  }
 
 @Deprecated(
     message = "Use action",
@@ -270,11 +275,13 @@ fun <PropsT, StateT, OutputT : Any, RenderingT>
         imports = arrayOf("com.squareup.workflow.action")
     )
 )
+/* ktlint-disable parameter-list-wrapping */
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.workflowAction(
-      name: String = "",
-      block: Mutator<StateT>.() -> OutputT?
-    ) = workflowAction({ name }, block)
+  name: String = "",
+  block: Mutator<StateT>.() -> OutputT?
+) = workflowAction({ name }, block)
+/* ktlint-enable parameter-list-wrapping */
 
 @Suppress("OverridingDeprecatedMember")
 @Deprecated(
@@ -286,9 +293,9 @@ fun <PropsT, StateT, OutputT : Any, RenderingT>
 )
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.workflowAction(
-      name: () -> String,
-      block: Mutator<StateT>.() -> OutputT?
-    ): WorkflowAction<StateT, OutputT> = object : WorkflowAction<StateT, OutputT> {
+  name: () -> String,
+  block: Mutator<StateT>.() -> OutputT?
+): WorkflowAction<PropsT, StateT, OutputT> = object : WorkflowAction<PropsT, StateT, OutputT> {
   override fun Mutator<StateT>.apply() = block.invoke(this)
   override fun toString(): String = "workflowAction(${name()})-${this@workflowAction}"
 }

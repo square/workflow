@@ -34,26 +34,26 @@ import kotlinx.coroutines.channels.ReceiveChannel
  * after the worker finishes so that they aren't immediately restarted on the next render pass. This
  * flag indicates that the channel should not be polled on the next tick.
  */
-internal class WorkerChildNode<T, StateT, OutputT : Any>(
+internal class WorkerChildNode<T, PropsT, StateT, OutputT : Any>(
   val worker: Worker<T>,
   val key: String,
   val channel: ReceiveChannel<ValueOrDone<*>>,
   var tombstone: Boolean = false,
-  private var handler: (T) -> WorkflowAction<StateT, OutputT>
-) : InlineListNode<WorkerChildNode<*, *, *>> {
+  private var handler: (T) -> WorkflowAction<PropsT, StateT, OutputT>
+) : InlineListNode<WorkerChildNode<*, *, *, *>> {
 
-  override var nextListNode: WorkerChildNode<*, *, *>? = null
+  override var nextListNode: WorkerChildNode<*, *, *, *>? = null
 
   /**
    * Updates the handler function that will be invoked by [acceptUpdate].
    */
-  fun <T2, S, O : Any> setHandler(newHandler: (T2) -> WorkflowAction<S, O>) {
+  fun <T2, P, S, O : Any> setHandler(newHandler: (T2) -> WorkflowAction<P, S, O>) {
     @Suppress("UNCHECKED_CAST")
-    handler = newHandler as (T) -> WorkflowAction<StateT, OutputT>
+    handler = newHandler as (T) -> WorkflowAction<PropsT, StateT, OutputT>
   }
 
   @Suppress("UNCHECKED_CAST")
-  fun acceptUpdate(value: Any?): WorkflowAction<StateT, OutputT> =
+  fun acceptUpdate(value: Any?): WorkflowAction<PropsT, StateT, OutputT> =
     handler(value as T)
 
   /**

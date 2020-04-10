@@ -30,26 +30,26 @@ import kotlinx.coroutines.channels.SendChannel
  *
  * Not for general application use.
  */
-class RealRenderContext<StateT, OutputT : Any>(
-  private val renderer: Renderer<StateT, OutputT>,
-  private val workerRunner: WorkerRunner<StateT, OutputT>,
-  private val eventActionsChannel: SendChannel<WorkflowAction<StateT, OutputT>>
-) : RenderContext<StateT, OutputT>, Sink<WorkflowAction<StateT, OutputT>> {
+class RealRenderContext<PropsT, StateT, OutputT : Any>(
+  private val renderer: Renderer<PropsT, StateT, OutputT>,
+  private val workerRunner: WorkerRunner<PropsT, StateT, OutputT>,
+  private val eventActionsChannel: SendChannel<WorkflowAction<PropsT, StateT, OutputT>>
+) : RenderContext<PropsT, StateT, OutputT>, Sink<WorkflowAction<PropsT, StateT, OutputT>> {
 
-  interface Renderer<StateT, OutputT : Any> {
+  interface Renderer<PropsT, StateT, OutputT : Any> {
     fun <ChildPropsT, ChildOutputT : Any, ChildRenderingT> render(
       child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
       props: ChildPropsT,
       key: String,
-      handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+      handler: (ChildOutputT) -> WorkflowAction<PropsT, StateT, OutputT>
     ): ChildRenderingT
   }
 
-  interface WorkerRunner<StateT, OutputT : Any> {
+  interface WorkerRunner<PropsT, StateT, OutputT : Any> {
     fun <T> runningWorker(
       worker: Worker<T>,
       key: String,
-      handler: (T) -> WorkflowAction<StateT, OutputT>
+      handler: (T) -> WorkflowAction<PropsT, StateT, OutputT>
     )
   }
 
@@ -62,10 +62,10 @@ class RealRenderContext<StateT, OutputT : Any>(
    */
   private var frozen = false
 
-  override val actionSink: Sink<WorkflowAction<StateT, OutputT>> get() = this
+  override val actionSink: Sink<WorkflowAction<PropsT, StateT, OutputT>> get() = this
 
   @Suppress("OverridingDeprecatedMember")
-  override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<StateT, OutputT>):
+  override fun <EventT : Any> onEvent(handler: (EventT) -> WorkflowAction<PropsT, StateT, OutputT>):
       EventHandler<EventT> {
     checkNotFrozen()
     return EventHandler { event ->
@@ -76,7 +76,7 @@ class RealRenderContext<StateT, OutputT : Any>(
     }
   }
 
-  override fun send(value: WorkflowAction<StateT, OutputT>) {
+  override fun send(value: WorkflowAction<PropsT, StateT, OutputT>) {
     if (!frozen) {
       throw UnsupportedOperationException(
           "Expected sink to not be sent to until after the render pass. Received action: $value"
@@ -89,7 +89,7 @@ class RealRenderContext<StateT, OutputT : Any>(
     child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
     props: ChildPropsT,
     key: String,
-    handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+    handler: (ChildOutputT) -> WorkflowAction<PropsT, StateT, OutputT>
   ): ChildRenderingT {
     checkNotFrozen()
     return renderer.render(child, props, key, handler)
@@ -98,7 +98,7 @@ class RealRenderContext<StateT, OutputT : Any>(
   override fun <T> runningWorker(
     worker: Worker<T>,
     key: String,
-    handler: (T) -> WorkflowAction<StateT, OutputT>
+    handler: (T) -> WorkflowAction<PropsT, StateT, OutputT>
   ) {
     checkNotFrozen()
     workerRunner.runningWorker(worker, key, handler)

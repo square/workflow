@@ -206,8 +206,9 @@ public final class com/squareup/workflow/WorkflowAction$Mutator {
 }
 
 public final class com/squareup/workflow/WorkflowAction$Updater {
-	public fun <init> (Ljava/lang/Object;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;)V
 	public final fun getNextState ()Ljava/lang/Object;
+	public final fun getProps ()Ljava/lang/Object;
 	public final fun setNextState (Ljava/lang/Object;)V
 	public final fun setOutput (Ljava/lang/Object;)V
 }
@@ -216,6 +217,6 @@ public final class com/squareup/workflow/WorkflowActionKt {
 	public static final fun action (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/squareup/workflow/WorkflowAction;
 	public static final fun action (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Lcom/squareup/workflow/WorkflowAction;
 	public static synthetic fun action$default (Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/squareup/workflow/WorkflowAction;
-	public static final fun applyTo (Lcom/squareup/workflow/WorkflowAction;Ljava/lang/Object;)Lkotlin/Pair;
+	public static final fun applyTo (Lcom/squareup/workflow/WorkflowAction;Ljava/lang/Object;Ljava/lang/Object;)Lkotlin/Pair;
 }
 

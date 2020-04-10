@@ -62,7 +62,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   private val idCounter: IdCounter? = null,
   initialState: StateT? = null,
   private val workerContext: CoroutineContext = EmptyCoroutineContext
-) : CoroutineScope, WorkerRunner<StateT, OutputT> {
+) : CoroutineScope, WorkerRunner<PropsT, StateT, OutputT> {
 
   /**
    * Context that has a job that will live as long as this node.
@@ -77,7 +77,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    */
   internal val diagnosticId = idCounter.createId()
 
-  private val subtreeManager = SubtreeManager<StateT, OutputT>(
+  private val subtreeManager = SubtreeManager<PropsT, StateT, OutputT>(
       coroutineContext, ::applyAction, diagnosticId, diagnosticListener, idCounter, workerContext
   )
 
@@ -87,7 +87,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
 
   private var lastProps: PropsT = initialProps
 
-  private val eventActionsChannel = Channel<WorkflowAction<StateT, OutputT>>(capacity = UNLIMITED)
+  private val eventActionsChannel =
+    Channel<WorkflowAction<PropsT, StateT, OutputT>>(capacity = UNLIMITED)
 
   init {
     var restoredFromSnapshot = false
@@ -141,7 +142,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   override fun <T> runningWorker(
     worker: Worker<T>,
     key: String,
-    handler: (T) -> WorkflowAction<StateT, OutputT>
+    handler: (T) -> WorkflowAction<PropsT, StateT, OutputT>
   ) {
     // Prevent duplicate workflows with the same key.
     workers.forEachStaging {
@@ -186,7 +187,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
           } else {
             val update = child.acceptUpdate(valueOrDone.value)
             @Suppress("UNCHECKED_CAST")
-            return@onReceive applyAction(update as WorkflowAction<StateT, OutputT>)
+            return@onReceive applyAction(update as WorkflowAction<PropsT, StateT, OutputT>)
           }
         }
       }
@@ -258,8 +259,8 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    * Applies [action] to this workflow's [state] and
    * [emits an output to its parent][emitOutputToParent] if necessary.
    */
-  private fun <T : Any> applyAction(action: WorkflowAction<StateT, OutputT>): T? {
-    val (newState, output) = action.applyTo(state)
+  private fun <T : Any> applyAction(action: WorkflowAction<PropsT, StateT, OutputT>): T? {
+    val (newState, output) = action.applyTo(lastProps, state)
     diagnosticListener?.onWorkflowAction(diagnosticId, action, state, newState, output)
     state = newState
     @Suppress("UNCHECKED_CAST")
@@ -269,7 +270,7 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
   private fun <T> createWorkerNode(
     worker: Worker<T>,
     key: String,
-    handler: (T) -> WorkflowAction<StateT, OutputT>
+    handler: (T) -> WorkflowAction<PropsT, StateT, OutputT>
   ): WorkerChildNode<T, StateT, OutputT> {
     var workerId = 0L
     if (diagnosticListener != null) {

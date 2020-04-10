@@ -51,7 +51,7 @@ import com.squareup.workflow.WorkflowAction.Updater
  *
  * See [renderChild].
  */
-interface RenderContext<StateT, in OutputT : Any> {
+interface RenderContext<out PropsT, StateT, in OutputT : Any> {
 
   /**
    * Accepts a single [WorkflowAction], invokes that action by calling [WorkflowAction.apply]
@@ -60,11 +60,11 @@ interface RenderContext<StateT, in OutputT : Any> {
    * This method is defined by the [Sink] interface. Since [RenderContext] implements [Sink],
    * operations like [contraMap] are available.
    */
-  val actionSink: Sink<WorkflowAction<StateT, OutputT>>
+  val actionSink: Sink<WorkflowAction<PropsT, StateT, OutputT>>
 
   @Deprecated("Use RenderContext.actionSink.")
   fun <EventT : Any> onEvent(
-    handler: (EventT) -> WorkflowAction<StateT, OutputT>
+    handler: (EventT) -> WorkflowAction<PropsT, StateT, OutputT>
   ): (EventT) -> Unit
 
   /**
@@ -74,7 +74,7 @@ interface RenderContext<StateT, in OutputT : Any> {
    */
   @Suppress("UNCHECKED_CAST", "DeprecatedCallableAddReplaceWith")
   @Deprecated("Use RenderContext.actionSink.")
-  fun <A : WorkflowAction<StateT, OutputT>> makeActionSink(): Sink<A> = actionSink
+  fun <A : WorkflowAction<PropsT, StateT, OutputT>> makeActionSink(): Sink<A> = actionSink
 
   /**
    * Ensures [child] is running as a child of this workflow, and returns the result of its
@@ -101,7 +101,7 @@ interface RenderContext<StateT, in OutputT : Any> {
     child: Workflow<ChildPropsT, ChildOutputT, ChildRenderingT>,
     props: ChildPropsT,
     key: String = "",
-    handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+    handler: (ChildOutputT) -> WorkflowAction<PropsT, StateT, OutputT>
   ): ChildRenderingT
 
   /**
@@ -114,7 +114,7 @@ interface RenderContext<StateT, in OutputT : Any> {
   fun <T> runningWorker(
     worker: Worker<T>,
     key: String = "",
-    handler: (T) -> WorkflowAction<StateT, OutputT>
+    handler: (T) -> WorkflowAction<PropsT, StateT, OutputT>
   )
 }
 
@@ -122,11 +122,11 @@ interface RenderContext<StateT, in OutputT : Any> {
  * Convenience alias of [RenderContext.renderChild] for workflows that don't take props.
  */
 /* ktlint-disable parameter-list-wrapping */
-fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
-    RenderContext<StateT, OutputT>.renderChild(
+fun <PropsT, StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
+    RenderContext<PropsT, StateT, OutputT>.renderChild(
   child: Workflow<Unit, ChildOutputT, ChildRenderingT>,
   key: String = "",
-  handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
+  handler: (ChildOutputT) -> WorkflowAction<PropsT, StateT, OutputT>
 ): ChildRenderingT = renderChild(child, Unit, key, handler)
 /* ktlint-enable parameter-list-wrapping */
 
@@ -135,10 +135,10 @@ fun <StateT, OutputT : Any, ChildOutputT : Any, ChildRenderingT>
  * output.
  */
 /* ktlint-disable parameter-list-wrapping */
-fun <PropsT, StateT, OutputT : Any, ChildRenderingT>
-    RenderContext<StateT, OutputT>.renderChild(
-  child: Workflow<PropsT, Nothing, ChildRenderingT>,
-  props: PropsT,
+fun <ChildPropsT, OutputT : Any, ChildRenderingT>
+    RenderContext<Any?, Any, OutputT>.renderChild(
+  child: Workflow<ChildPropsT, Nothing, ChildRenderingT>,
+  props: ChildPropsT,
   key: String = ""
 ): ChildRenderingT = renderChild(child, props, key) { noAction() }
 /* ktlint-enable parameter-list-wrapping */
@@ -148,8 +148,8 @@ fun <PropsT, StateT, OutputT : Any, ChildRenderingT>
  * output.
  */
 /* ktlint-disable parameter-list-wrapping */
-fun <StateT, OutputT : Any, ChildRenderingT>
-    RenderContext<StateT, OutputT>.renderChild(
+fun <OutputT : Any, ChildRenderingT>
+    RenderContext<Any?, Any, OutputT>.renderChild(
   child: Workflow<Unit, Nothing, ChildRenderingT>,
   key: String = ""
 ): ChildRenderingT = renderChild(child, Unit, key) { noAction() }
@@ -163,7 +163,7 @@ fun <StateT, OutputT : Any, ChildRenderingT>
  *
  * @param key An optional string key that is used to distinguish between identical [Worker]s.
  */
-fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
+fun <OutputT : Any> RenderContext<*, *, OutputT>.runningWorker(
   worker: Worker<Nothing>,
   key: String = ""
 ) {
@@ -177,8 +177,8 @@ fun <StateT, OutputT : Any> RenderContext<StateT, OutputT>.runningWorker(
  * Alternative to [RenderContext.actionSink] that allows externally defined
  * event types to be mapped to anonymous [WorkflowAction]s.
  */
-fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink(
-  update: Updater<StateT, OutputT>.(EventT) -> Unit
+fun <EventT, PropsT, StateT, OutputT : Any> RenderContext<PropsT, StateT, OutputT>.makeEventSink(
+  update: Updater<PropsT, StateT, OutputT>.(EventT) -> Unit
 ): Sink<EventT> = actionSink.contraMap { event ->
   action({ "eventSink($event)" }) { update(event) }
 }
@@ -194,8 +194,8 @@ fun <EventT, StateT, OutputT : Any> RenderContext<StateT, OutputT>.makeEventSink
     "Use runningWorker",
     ReplaceWith("runningWorker(worker, key, handler)", "com.squareup.workflow.runningWorker")
 )
-fun <StateT, OutputT : Any, T> RenderContext<StateT, OutputT>.onWorkerOutput(
+fun <PropsT, StateT, OutputT : Any, T> RenderContext<PropsT, StateT, OutputT>.onWorkerOutput(
   worker: Worker<T>,
   key: String = "",
-  handler: (T) -> WorkflowAction<StateT, OutputT>
+  handler: (T) -> WorkflowAction<PropsT, StateT, OutputT>
 ) = runningWorker(worker, key, handler)
