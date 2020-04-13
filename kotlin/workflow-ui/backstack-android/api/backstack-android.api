@@ -22,6 +22,7 @@ public class com/squareup/workflow/ui/backstack/BackStackContainer : android/wid
 	protected fun onRestoreInstanceState (Landroid/os/Parcelable;)V
 	protected fun onSaveInstanceState ()Landroid/os/Parcelable;
 	protected fun performTransition (Landroid/view/View;Landroid/view/View;Z)V
+	protected final fun update (Lcom/squareup/workflow/ui/backstack/BackStackScreen;Lcom/squareup/workflow/ui/ViewEnvironment;)V
 }
 
 public final class com/squareup/workflow/ui/backstack/BackStackContainer$Companion : com/squareup/workflow/ui/ViewFactory {
