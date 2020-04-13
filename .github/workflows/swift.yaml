@@ -51,11 +51,11 @@ jobs:
         bundle exec pod gen Development.podspec
 
     - name: Switch Xcode
-      run: sudo xcode-select -s /Applications/Xcode_11.3.1.app
+      run: sudo xcode-select -s /Applications/Xcode_11.4.app
 
     - name: Build & Test
       run: |
-        set -o pipefail && xcodebuild -workspace gen/Development/Development.xcworkspace -scheme ${{ matrix.scheme }} -destination platform\=iOS\ Simulator,OS\=13.3,name\=iPad\ Pro\ \(9.7-inch\) build test | xcpretty
+        set -o pipefail && xcodebuild -workspace gen/Development/Development.xcworkspace -scheme ${{ matrix.scheme }} -destination platform\=iOS\ Simulator,OS\=13.4,name\=iPad\ Pro\ \(9.7-inch\) build test | xcpretty
 
   spm:
     runs-on: macOS-latest
@@ -87,11 +87,14 @@ jobs:
       run: |
         bundle check || bundle install --path .bundle
 
+    - name: Switch Xcode
+      run: sudo xcode-select -s /Applications/Xcode_11.4.app
+
     - name: Tutorial App
       run: |
         cd swift/Samples/Tutorial
         bundle exec pod install
-        set -o pipefail && xcodebuild -workspace Tutorial.xcworkspace -scheme Tutorial -destination platform\=iOS\ Simulator,OS\=13.3,name\=iPad\ Pro\ \(9.7-inch\) build test | xcpretty
+        set -o pipefail && xcodebuild -workspace Tutorial.xcworkspace -scheme Tutorial -destination platform\=iOS\ Simulator,OS\=13.4,name\=iPad\ Pro\ \(9.7-inch\) build test | xcpretty
 
   documentation-lint:
     runs-on: macOS-latest

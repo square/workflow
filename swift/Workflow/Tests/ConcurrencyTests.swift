@@ -447,6 +447,7 @@ final class ConcurrencyTests: XCTestCase {
         XCTAssertEqual(0, host.rendering.value.count)
 
         struct SourceDifferentiatingWorkflow: Workflow {
+            typealias Output = Never
 
             var step: Step
             enum Step {
