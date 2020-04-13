@@ -1,17 +1,17 @@
 import WorkflowUI
 
-
 /// A `ModalContainerScreen` displays a base screen and optionally one or more modals on top of it.
-public struct ModalContainerScreen: Screen {
+public struct ModalContainerScreen<BaseScreen: Screen>: Screen
+{
 
     /// The base screen to show underneath any modally presented screens.
-    public var baseScreen: AnyScreen
+    public var baseScreen: BaseScreen
 
     /// Modally presented screens
     public var modals: [Modal]
 
-    public init<ScreenType: Screen>(baseScreen: ScreenType, modals: [Modal]) {
-        self.baseScreen = AnyScreen(baseScreen)
+    public init(baseScreen: BaseScreen, modals: [Modal]) {
+        self.baseScreen = baseScreen
         self.modals = modals
     }
 
@@ -20,19 +20,21 @@ public struct ModalContainerScreen: Screen {
     }
 }
 
-
 extension ModalContainerScreen {
 
     /// Represents a single screen to be displayed modally
     public struct Modal {
 
         public enum Style: Hashable {
-            case fullScreen(animated: Bool)
-            case card
+            case sheet
+            case popover
         }
 
         /// The screen to be displayed
-        public var screen: AnyScreen
+        public var screen: BaseScreen
+        
+        /// A bool used to specify whether presentation should b animated
+        public var animated: Bool
 
         /// The style in which the screen should be presented
         public var style: Style
@@ -40,10 +42,11 @@ extension ModalContainerScreen {
         /// A key used to differentiate modal screens during updates
         public var key: String
 
-        public init<ScreenType: Screen>(screen: ScreenType, style: Style = .fullScreen(animated: true), key: String = "") {
-            self.screen = AnyScreen(screen)
+        public init(screen: BaseScreen, style: Style = .sheet, key: String = "", animated: Bool = true) {
+            self.screen = screen
             self.style = style
             self.key = key
+            self.animated = animated
         }
     }
 
