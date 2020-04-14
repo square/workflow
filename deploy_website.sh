@@ -17,9 +17,9 @@
 
 # The website is built using MkDocs with the Material theme.
 # https://squidfunk.github.io/mkdocs-material/
-# It requires Python to run.
+# It requires Python 3 to run.
 # Install the packages with the following command:
-# pip install mkdocs mkdocs-material mkdocs-redirects
+# pip install -r requirements.txt
 # Preview the site as you're editing it with:
 # mkdocs serve
 # It also uses CocoaPods and Sourcedocs to build the Swift docs.

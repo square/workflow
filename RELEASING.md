@@ -150,11 +150,11 @@ an error about Catalyst and only empty READMEs will get generated.
 
 #### mkdocs
 
-Mkdocs is written in Python, so you'll need Python and pip in order to run it. Assuming those are
+Mkdocs is written in Python, so you'll need Python 3 and pip in order to run it. Assuming those are
 set up, run:
 
 ```bash
-pip install mkdocs mkdocs-material mkdocs-redirects
+pip install -r requirements.txt
 ```
 
 Generate the site manually with:
