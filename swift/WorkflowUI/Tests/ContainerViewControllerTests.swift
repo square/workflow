@@ -95,6 +95,26 @@ class ContainerViewControllerTests: XCTestCase {
 
         disposable?.dispose()
     }
+
+    func test_container_with_anyworkflow() {
+
+        let (signal, observer) = Signal<Int, Never>.pipe()
+        let workflow = MockWorkflow(subscription: signal)
+        let container = ContainerViewController(workflow: workflow.asAnyWorkflow())
+
+        let expectation = XCTestExpectation(description: "Output")
+
+        let disposable = container.output.observeValues { value in
+            XCTAssertEqual(3, value)
+            expectation.fulfill()
+        }
+
+        observer.send(value: 3)
+
+        wait(for: [expectation], timeout: 1.0)
+
+        disposable?.dispose()
+    }
 }
 
 
