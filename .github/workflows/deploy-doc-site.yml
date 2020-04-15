@@ -53,7 +53,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs mkdocs-material mkdocs-redirects
+          pip install -r requirements.txt
 
       # This environment variable step should be run after all 3rd-party actions to ensure nothing
       # else accidentally overrides any of our special variables.
