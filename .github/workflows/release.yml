@@ -108,10 +108,9 @@ jobs:
         key: gems-${{ hashFiles('Gemfile.lock') }}
 
     - name: Set up Swift environment
-      with:
-        path: release
       run: |
         # Set global bundle path so it gets used by build_swift_docs.sh running in the nested repo as well.
+        cd release
         bundle config --global path "$(pwd)/.bundle"
         bundle check || bundle install
         # Don't need to run pod gen, the website script does that itself.
