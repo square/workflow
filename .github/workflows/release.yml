@@ -15,7 +15,7 @@ env:
 
 jobs:
   bump-master:
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
     - name: Calculate Release Branch
@@ -89,9 +89,75 @@ jobs:
       run: |
         echo "TODO: Push to Cocoapods"
 
-    - name: Publish Docs
+      # Publish Documentation
+      # Gradle caches (keys must match those defined in kotlin.yml)
+      # Don't use the gradle wrapper cache, since there's only one job we're downloading the whole wrapper once either way.
+    - name: Cache gradle artifacts
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/caches
+        key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/buildSrc/**') }}-${{ github.sha }}
+        restore-keys: |
+          gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-
+
+    # Swift caches (keys must match those defined in swift.yml)
+    - name: Load gem cache
+      uses: actions/cache@v1
+      with:
+        path: release/.bundle
+        key: gems-${{ hashFiles('Gemfile.lock') }}
+
+    - name: Set up Swift environment
+      with:
+        path: release
       run: |
-        echo "TODO: Publish Docs"
+        # Set global bundle path so it gets used by build_swift_docs.sh running in the nested repo as well.
+        bundle config --global path "$(pwd)/.bundle"
+        bundle check || bundle install
+        # Don't need to run pod gen, the website script does that itself.
+        brew install sourcedocs
+        sudo xcode-select -s /Applications/Xcode_11.4.app
+
+    # Docs dependencies
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # This environment variable step should be run after all 3rd-party actions to ensure nothing
+    # else accidentally overrides any of our special variables.
+    - name: 'If in test-mode: enable dry run'
+      if: env.PREFIX_FOR_TEST != ''
+      run: |
+        # When PREFIX_FOR_TEST is not empty, we shouldn't actually deploy, just do a dry run to make
+        # sure all the dependencies are set up correctly.
+        echo "::set-env name=DRY_RUN::true"
+
+    - name: Debug info
+      with:
+        path: release
+      run: |
+        echo event_name=${{ github.event_name }}
+        echo GITHUB_REF=$GITHUB_REF
+        echo GITHUB_HEAD_REF=$GITHUB_HEAD_REF
+        echo DRY_RUN=$DRY_RUN
+        git remote -v
+
+      ## Main steps
+    - name: Build and deploy website
+      with:
+        path: release
+      env:
+        WORKFLOW_GOOGLE_ANALYTICS_KEY: ${{ secrets.WORKFLOW_GOOGLE_ANALYTICS_KEY }}
+        GIT_USERNAME: ${{ github.actor }}
+        GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      run: ./deploy_website.sh ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
+
 
     - name: Create Github Release
       run: |
