@@ -23,7 +23,7 @@ on:
 
 jobs:
   development-apps:
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     strategy:
       matrix:
@@ -58,7 +58,7 @@ jobs:
         set -o pipefail && xcodebuild -workspace gen/Development/Development.xcworkspace -scheme ${{ matrix.scheme }} -destination platform\=iOS\ Simulator,OS\=13.4,name\=iPad\ Pro\ \(9.7-inch\) build test | xcpretty
 
   spm:
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v1
@@ -72,7 +72,7 @@ jobs:
         xcodebuild -scheme "Workflow-Package" test
 
   tutorial:
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v1
@@ -97,7 +97,7 @@ jobs:
         set -o pipefail && xcodebuild -workspace Tutorial.xcworkspace -scheme Tutorial -destination platform\=iOS\ Simulator,OS\=13.4,name\=iPad\ Pro\ \(9.7-inch\) build test | xcpretty
 
   documentation-lint:
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v1
