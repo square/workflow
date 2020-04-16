@@ -39,13 +39,6 @@ fileprivate struct WrapperWorkflow<Rendering, Output>: Workflow {
         self.wrapped = wrapped.asAnyWorkflow()
     }
 
-    func makeInitialState() -> State {
-        return ()
-    }
-
-    func workflowDidChange(from previousWorkflow: WrapperWorkflow, state: inout State) {
-    }
-
     func render(state: State, context: RenderContext<WrapperWorkflow>) -> Rendering {
         return wrapped
             .mapOutput { AnyWorkflowAction(sendingOutput: $0) }
