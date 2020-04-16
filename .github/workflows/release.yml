@@ -138,9 +138,8 @@ jobs:
         echo "::set-env name=DRY_RUN::true"
 
     - name: Debug info
-      with:
-        path: release
       run: |
+        cd release
         echo event_name=${{ github.event_name }}
         echo GITHUB_REF=$GITHUB_REF
         echo GITHUB_HEAD_REF=$GITHUB_HEAD_REF
@@ -149,13 +148,13 @@ jobs:
 
       ## Main steps
     - name: Build and deploy website
-      with:
-        path: release
       env:
         WORKFLOW_GOOGLE_ANALYTICS_KEY: ${{ secrets.WORKFLOW_GOOGLE_ANALYTICS_KEY }}
         GIT_USERNAME: ${{ github.actor }}
         GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      run: ./deploy_website.sh ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
+      run: |
+        cd release
+        ./deploy_website.sh ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
 
 
     - name: Create Github Release
