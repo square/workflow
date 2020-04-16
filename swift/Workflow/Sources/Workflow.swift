@@ -85,6 +85,21 @@ public protocol Workflow: AnyWorkflowConvertible {
 
 }
 
+
+/// When State is Void, provide empty `makeInitialState` and `workflowDidChange`
+/// implementations, making a “stateless workflow”.
+extension Workflow where State == Void {
+
+    public func makeInitialState() -> State {
+        return ()
+    }
+
+    public func workflowDidChange(from previousWorkflow: Self, state: inout State) {
+    }
+
+}
+
+
 extension Workflow {
 
     public func asAnyWorkflow() -> AnyWorkflow<Rendering, Output> {
