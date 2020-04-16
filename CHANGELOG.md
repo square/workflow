@@ -1,6 +1,28 @@
 Change Log
 ==========
 
+## Version 0.26.0
+
+_2020-04-16_
+
+### Kotlin
+
+* Move dependency declarations to buildSrc. (#1070)
+* Convert build scripts to kotlin. (#1073)
+* Upgrade kotlinx.serialization now that KAML supports it. (#1018)
+* Common sample app gradle config (#1082)
+* Makes BackStackContainer.update protected, required for customization. (#1088)
+
+
+### Swift
+
+* Vend `preferredContentSize` through the `DescribedViewController` (#1051)
+* Bump CI to Xcode 11.4 (#1089)
+* Add ContainerViewController init with AnyWorkflowConvertable (#1092)
+* Github Workflow to release Workflow version (#1076)
+* Provide empty `makeInitialState` and `workflowDidChange` when State is Void (#1094)
+
+
 ## Version 0.25.0
 
 _2020-03-27_
