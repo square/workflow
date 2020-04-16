@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.cocoapods_version = '>= 1.7.0.beta.1'
 
   s.swift_versions = ['5.0']
-  s.ios.deployment_target = '9.3'
+  s.ios.deployment_target = '10.0'
   s.osx.deployment_target = '10.12'
 
   s.source_files = 'swift/Workflow/Sources/*.swift'
