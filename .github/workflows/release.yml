@@ -11,7 +11,7 @@ env:
   KOTLIN_CHANGELOG: ${{ github.event.client_payload.kotlin_changelog }}
   PUBLISH_SWIFT: ${{ github.event.client_payload.publish_swift }}
   PUBLISH_KOTLIN: ${{ github.event.client_payload.publish_kotlin }}
-  PREFIX_FOR_TEST: 'test/' # Will be removed once live
+  PREFIX_FOR_TEST: ${{ github.event.client_payload.test_prefix }}
 
 jobs:
   bump-master:
