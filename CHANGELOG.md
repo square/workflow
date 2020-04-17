@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+## Version 0.26.0
+
+_2020-04-17_
+
+### Kotlin
+
+* Upgrade kotlinx.serialization now that KAML supports it. (#1018)
+* Makes BackStackContainer.update protected, required for customization. (#1088)
+
+### Swift
+
+* Vend `preferredContentSize` through the `DescribedViewController` (#1051)
+* Add ContainerViewController init with AnyWorkflowConvertable (#1092)
+* Provide empty `makeInitialState` and `workflowDidChange` when State is Void (#1094)
+
 ## Version 0.25.0
 
 _2020-03-27_
