@@ -7,7 +7,7 @@ internal final class ModalContainerViewController<ModalScreen : Screen>: ScreenV
 
     var baseScreenViewController: DescribedViewController
 
-    private var presentedScreens: [ModallyPresentedScreen<ModalScreen>] = []
+    private var presentedScreens: [ModallyPresentedScreen] = []
 
     private var topmostScreenViewController: DescribedViewController? {
         if let topModal = presentedScreens.last {
@@ -31,12 +31,12 @@ internal final class ModalContainerViewController<ModalScreen : Screen>: ScreenV
 
         // Sort our existing modals into keyed buckets. This will typically contain a single view controller
         // per value, but duplicate keys/styles/screen types will result in more. In that case, we simply dequeue them in order during the update cycle (first to last)
-        var previousScreens: [ModalIdentifier: [ModallyPresentedScreen<ModalScreen>]] = Dictionary(presentedScreens.map { ($0.identifier, [$0]) }, uniquingKeysWith: +)
+        var previousScreens: [ModalIdentifier: [ModallyPresentedScreen]] = Dictionary(presentedScreens.map { ($0.identifier, [$0]) }, uniquingKeysWith: +)
 
         // Will contain the new set of presented screens by the end of this method
-        var newScreens: [ModallyPresentedScreen<ModalScreen>] = []
+        var newScreens: [ModallyPresentedScreen] = []
 
-        var screensNeedingAppearanceTransition: [ModallyPresentedScreen<ModalScreen>] = []
+        var screensNeedingAppearanceTransition: [ModallyPresentedScreen] = []
 
         for modal in screen.modals {
             if let existing = previousScreens[modal.identifier]?.removeFirst() {
@@ -201,14 +201,14 @@ internal final class ModalContainerViewController<ModalScreen : Screen>: ScreenV
     }
 }
 
-fileprivate struct ModallyPresentedScreen<ModalScreen: Screen> {
+fileprivate struct ModallyPresentedScreen {
     var viewController: DescribedViewController
-    var style: ModalContainerScreen<ModalScreen>.Modal.Style
+    var style: ModalContainerScreenModal.Style
     var key: String
     var dimmingView: UIView?
     var animated: Bool
 
-    var identifier: ModalIdentifier<ModalScreen> {
+    var identifier: ModalIdentifier {
         return ModalIdentifier(
             style: style,
             key: key,
@@ -217,8 +217,8 @@ fileprivate struct ModallyPresentedScreen<ModalScreen: Screen> {
     }
 }
 
-extension ModalContainerScreen.Modal {
-    fileprivate var identifier: ModalIdentifier<BaseScreen> {
+extension ModalContainerScreenModal {
+    fileprivate var identifier: ModalIdentifier {
         return ModalIdentifier(
             style: style,
             key: key,
@@ -227,13 +227,13 @@ extension ModalContainerScreen.Modal {
     }
 }
 
-fileprivate struct ModalIdentifier<ModalScreen: Screen>: Hashable {
-    var style: ModalContainerScreen<ModalScreen>.Modal.Style
+fileprivate struct ModalIdentifier: Hashable {
+    var style: ModalContainerScreenModal.Style
     var key: String
     var animated: Bool
 }
 
-fileprivate struct ModalDisplayInfo<ModalScreen: Screen> {
+fileprivate struct ModalDisplayInfo {
 
     var frame: CGRect
     var alpha: CGFloat
@@ -247,7 +247,7 @@ fileprivate struct ModalDisplayInfo<ModalScreen: Screen> {
     var duration: TimeInterval
     var animationOptions: UIView.AnimationOptions
 
-    init(containerSize: CGSize, style: ModalContainerScreen<ModalScreen>.Modal.Style, animated: Bool) {
+    init(containerSize: CGSize, style: ModalContainerScreenModal.Style, animated: Bool) {
 
         // Configure all properties so that they default to fullScreen/sheet animation.
         frame = CGRect(origin: .zero, size: containerSize)

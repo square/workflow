@@ -77,25 +77,25 @@ extension MainWorkflow {
 
 extension MainWorkflow {
 
-    typealias Rendering = AnyScreen
+    typealias Rendering = ModalContainerScreen<BackStackScreen>
 
     func render(state: MainWorkflow.State, context: RenderContext<MainWorkflow>) -> Rendering {
 
         switch state {
         case .authenticating:
-            let authenticationBackStackItems = AuthenticationWorkflow(
+            return AuthenticationWorkflow(
                 authenticationService: AuthenticationService())
                 .mapOutput({ output -> Action in
                     switch output {
                     case .authorized(session: let sessionToken):
                         return .authenticated(sessionToken: sessionToken)
                     }
-                })
-                .rendered(with: context)
-
-            return AnyScreen(BackStackScreen(items: authenticationBackStackItems))
+                }
+            )
+            .rendered(with: context)
         case .runningGame:
-            return AnyScreen(RunGameWorkflow().rendered(with: context))
+            return RunGameWorkflow()
+                .rendered(with: context)
         }
 
     }
