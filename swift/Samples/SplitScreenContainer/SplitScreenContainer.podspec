@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.source       = { git: 'Not Published', tag: "podify/#{s.version}" }
 
   # 1.7 is needed for `swift_versions` support
-  s.cocoapods_version = '>= 1.7.0.beta.1'
+  s.cocoapods_version = '>= 1.7.0'
 
   s.swift_versions = ['5.0']
   s.ios.deployment_target = '10.0'
