@@ -31,6 +31,7 @@ jobs:
         - Development-Unit-WorkflowTests
         - Development-Unit-WorkflowUITests
         - Development-Unit-SplitScreenTests
+        - Development-Unit-TabBarScreenTests
         - Development-Unit-TicTacToeTests
 
     steps:

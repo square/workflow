@@ -3,7 +3,7 @@ local_sources:
   - swift/Samples/SplitScreenContainer
   - swift/Samples/BackStackContainer
   - swift/Samples/ModalContainer
-  
+  - swift/Samples/TabBarContainer
 platforms:
   - ios
 podspec_paths:
