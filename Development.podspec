@@ -90,6 +90,31 @@ Pod::Spec.new do |s|
     }
   end
 
+  s.app_spec 'SampleTabBarScreen' do |app_spec|
+    app_spec.dependency 'TabBarContainer'
+    app_spec.source_files = 'swift/Samples/TabBarContainer/DemoApp/**/*.swift'
+
+    app_spec.scheme = {
+      environment_variables: snapshot_test_env
+    }
+  end
+
+  s.test_spec 'TabBarScreenTests' do |test_spec|
+    test_spec.dependency 'TabBarContainer'
+    test_spec.dependency 'Development/SampleTabBarScreen'
+    test_spec.app_host_name = 'Development/SampleTabBarScreen'
+    test_spec.requires_app_host = true
+    test_spec.source_files = 'swift/Samples/TabBarContainer/SnapshotTests/**/*.swift'
+
+    test_spec.framework = 'XCTest'
+
+    test_spec.dependency 'iOSSnapshotTestCase'
+
+    test_spec.scheme = { 
+      environment_variables: snapshot_test_env
+    }
+  end
+
   s.test_spec 'WorkflowTests' do |test_spec|
     test_spec.requires_app_host = true
     test_spec.source_files = 'swift/Workflow/Tests/**/*.swift'
