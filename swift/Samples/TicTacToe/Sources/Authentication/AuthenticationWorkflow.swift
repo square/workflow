@@ -17,6 +17,7 @@ import BackStackContainer
 import Workflow
 import WorkflowUI
 import ReactiveSwift
+import ModalContainer
 
 
 // MARK: Input and Output
@@ -172,7 +173,7 @@ extension AuthenticationWorkflow {
 
 extension AuthenticationWorkflow {
 
-    typealias Rendering = [BackStackScreen.Item]
+    typealias Rendering = ModalContainerScreen<BackStackScreen>
 
     func render(state: AuthenticationWorkflow.State, context: RenderContext<AuthenticationWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
@@ -225,7 +226,7 @@ extension AuthenticationWorkflow {
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))
         }
 
-        return backStackItems
+        return ModalContainerScreen(baseScreen: BackStackScreen(items: backStackItems), modals: [])
     }
 
     private func twoFactorScreen(error: AuthenticationService.AuthenticationError?, intermediateSession: String, sink: Sink<Action>) -> BackStackScreen.Item {
