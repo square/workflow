@@ -16,7 +16,7 @@
 import Workflow
 import WorkflowUI
 
-
+// some test comment
 struct ConfirmQuitScreen: Screen {
     
     let question: String
