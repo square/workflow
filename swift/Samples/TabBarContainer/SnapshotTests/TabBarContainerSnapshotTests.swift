@@ -46,7 +46,7 @@ class TabBarContainerSnapshotTests: FBSnapshotTestCase {
 
 
 fileprivate extension TabBarContainerSnapshotTests {
-    func makeTabBarScreen() -> TabBarScreen<FooScreen> {
+    func makeTabBarScreen() -> TabBarContainerScreen<FooScreen> {
         let fooScreen = FooScreen(
             title: "Foo Screen",
             backgroundColor: .red,
@@ -83,7 +83,7 @@ fileprivate extension TabBarContainerSnapshotTests {
             onSelect: { }
         )
         
-        return TabBarScreen(
+        return TabBarContainerScreen(
             currentScreen: fooScreen,
             barItems: [fooBarItem, bazBarItem],
             selectedIndex: 0

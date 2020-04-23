@@ -1,24 +1,27 @@
 import WorkflowUI
 
-public struct TabBarScreen<Content> {
-
-    public var currentScreen: Content
-    public var barItems: [BarItem]
+public struct TabBarContainerScreen {
+    public var screens: [TabScreen]
     public var selectedIndex: Int
 
-    public init(currentScreen: Content, barItems: [BarItem], selectedIndex: Int) {
-        precondition(barItems.indices.contains(selectedIndex), "selectedIndex \(selectedIndex) is invalid for items \(barItems)")
+    public init(screens: [TabScreen], selectedIndex: Int) {
+        precondition(
+            selectedIndex < screens.count,
+            "selectedIndex \(selectedIndex) is invalid for items \(screens)"
+        )
 
-        self.currentScreen = currentScreen
-        self.barItems = barItems
+        self.screens = screens
         self.selectedIndex = selectedIndex
     }
 
 }
 
-extension TabBarScreen: Screen where Content: Screen {
+extension TabBarContainerScreen: Screen {
     public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
-        return TabBarScreenContainerViewController.description(for: self, environment: environment)
+        return TabBarScreenContainerViewController.description(
+            for: self,
+            environment: environment
+        )
     }
 }
 
@@ -28,14 +31,17 @@ public struct BarItem {
     public var image: UIImage
     public var selectedImage: UIImage?
     public var badge: Badge
-    public var onSelect: () -> Void
 
-    public init(title: String, image: UIImage, selectedImage: UIImage? = nil, badge: Badge = .none, onSelect: @escaping () -> Void) {
+    public init(
+        title: String,
+        image: UIImage,
+        selectedImage: UIImage? = nil,
+        badge: Badge = .none
+    ) {
         self.title = title
         self.image = image
         self.selectedImage = selectedImage
         self.badge = badge
-        self.onSelect = onSelect
     }
 
 }
@@ -45,9 +51,9 @@ extension BarItem {
         case none
         case value(Int)
         case text(String)
-        
+
         internal var stringValue: String? {
-            switch self  {
+            switch self {
             case .none:
                 return nil
             case .value(let value):
