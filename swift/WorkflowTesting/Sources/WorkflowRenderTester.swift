@@ -184,7 +184,7 @@ public final class RenderTester<WorkflowType: Workflow> {
 
     /// Call `render` with a set of expectations. If the expectations have not been fulfilled, the test will fail.
     @discardableResult
-    public func render(with expectations: RenderExpectations<WorkflowType>, assertions: (WorkflowType.Rendering) -> Void, file: StaticString = #file, line: UInt = #line) -> RenderTester<WorkflowType> {
+    public func render(file: StaticString = #file, line: UInt = #line, with expectations: RenderExpectations<WorkflowType>, assertions: (WorkflowType.Rendering) -> Void) -> RenderTester<WorkflowType> {
 
         let testContext = RenderTestContext<WorkflowType>(
             state: state,
@@ -206,12 +206,12 @@ public final class RenderTester<WorkflowType: Workflow> {
     /// Convenience method for testing without creating an explicit RenderExpectation.
     @discardableResult
     public func render(
+        file: StaticString = #file, line: UInt = #line,
         expectedState: ExpectedState<WorkflowType>? = nil,
         expectedOutput: ExpectedOutput<WorkflowType>? = nil,
         expectedWorkers: [ExpectedWorker] = [],
         expectedWorkflows: [ExpectedWorkflow] = [],
-        assertions: (WorkflowType.Rendering) -> Void,
-        file: StaticString = #file, line: UInt = #line
+        assertions: (WorkflowType.Rendering) -> Void
     ) -> RenderTester<WorkflowType> {
 
         let expectations = RenderExpectations(
@@ -220,7 +220,7 @@ public final class RenderTester<WorkflowType: Workflow> {
             expectedWorkers: expectedWorkers,
             expectedWorkflows: expectedWorkflows)
 
-        return self.render(with: expectations, assertions: assertions, file: file, line: line)
+        return self.render(file: file, line: line, with: expectations, assertions: assertions)
     }
 
     /// Assert the internal state.

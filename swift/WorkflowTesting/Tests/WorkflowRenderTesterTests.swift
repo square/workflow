@@ -49,6 +49,14 @@ final class WorkflowRenderTesterTests: XCTestCase {
         XCTAssertTrue(testedAssertion)
     }
 
+    func test_simple_render() {
+        let renderTester = TestWorkflow(initialText: "initial").renderTester()
+
+        renderTester.render { screen in
+            XCTAssertEqual("initial", screen.text)
+        }
+    }
+
     func test_action() {
         let renderTester = TestWorkflow(initialText: "initial").renderTester()
 
