@@ -6,15 +6,19 @@ Fixes # (issue)
 
 ## Type of change
 
-Please select atleast one
+Please select at least one
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] API change this is not Backward compatible (fix or feature that would cause existing functionality to not work as expected or change the API contract)
 - [ ] This change requires a documentation update
 
-## Testing
+## Testing Checklist
 How was this change tested?
+
+- [ ] Unit Tests
+- [ ] UI Tests
+- [ ] Snapshot Tests (iOS only)
 
 ## Documentation
 
@@ -26,10 +30,7 @@ _Please enter any additional information that could be helpful for the reviewers
 
 ## Checklist:
 
-- [ ] I have run swiftformat or other relevant tools to follow style guidelines.
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
-- [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published 
-- [ ] I have attached screenshots for any UI changes. (Delete if not applicable)
 
