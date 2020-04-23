@@ -13,40 +13,27 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import Workflow
+import Foundation
 import WorkflowUI
-import ReactiveSwift
-import TabBarContainer
 
+public struct TabScreen {
+    public let barItem: BarItem
+    public let content: AnyScreen
+    public let onSelect: (() -> ())
 
-// MARK: Input and Output
-
-struct FooWorkflow: Workflow {
-
-    typealias Output = Never
-
+    public init<Content: Screen>(
+        barItem: BarItem,
+        content: Content,
+        onSelect: @escaping (() -> ())
+    ) {
+        self.barItem = barItem
+        self.content = AnyScreen(content)
+        self.onSelect = onSelect
+    }
 }
 
-
-// MARK: State and Initialization
-
-extension FooWorkflow {
-
-    typealias State = Void
-
-}
-
-// MARK: Rendering
-
-extension FooWorkflow {
-    typealias Rendering = FooScreen
-    
-    func render(state: FooWorkflow.State, context: RenderContext<FooWorkflow>) -> Rendering {
-        let fooScreen = FooScreen(
-            title: "Foo Screen",
-            backgroundColor: .red
-        )
-        
-        return fooScreen
+public extension Screen {
+    func tabScreen(barItem: BarItem, onSelect: @escaping (() -> ())) -> TabScreen {
+        .init(barItem: barItem, content: self, onSelect: onSelect)
     }
 }

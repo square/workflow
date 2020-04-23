@@ -16,17 +16,17 @@
 import Workflow
 import WorkflowUI
 
-internal final class TabBarScreenContainerViewController<Content: Screen>: ScreenViewController<TabBarScreen<Content>>, UITabBarDelegate {
+internal final class TabBarScreenContainerViewController: ScreenViewController<TabBarContainerScreen>, UITabBarDelegate {
     private var containerView: ContainerView
     private var contentViewController: DescribedViewController
     
     private let tabBar: UITabBar
     
-    required init(screen: TabBarScreen<Content>, environment: ViewEnvironment) {
+    required init(screen: TabBarContainerScreen, environment: ViewEnvironment) {
         self.containerView = ContainerView()
         
         self.contentViewController = DescribedViewController(
-            screen: screen.currentScreen,
+            screen: screen.screens[screen.selectedIndex].content,
             environment: environment
         )
         
@@ -36,42 +36,49 @@ internal final class TabBarScreenContainerViewController<Content: Screen>: Scree
         
         self.tabBar.delegate = self
     }
-
-    override internal func screenDidChange(from previousScreen: TabBarScreen<Content>, previousEnvironment: ViewEnvironment) {
+    
+    internal override func screenDidChange(from previousScreen: TabBarContainerScreen, previousEnvironment: ViewEnvironment) {
         update()
     }
-
+    
     private func update() {
-        contentViewController.update(screen: screen.currentScreen, environment: environment)
+        contentViewController.update(
+            screen: screen.screens[screen.selectedIndex].content,
+            environment: environment
+        )
         
         var selectedTabBarItem: UITabBarItem?
         
-        let tabBarItems = screen.barItems.enumerated().map { (index, barItem) -> UITabBarItem in
-            let tabBarItem = UITabBarItem(
-                title: barItem.title,
-                image: barItem.image,
-                selectedImage: barItem.selectedImage
-            )
-            
-            tabBarItem.badgeValue = barItem.badge.stringValue
-            
-            if index == screen.selectedIndex {
-                selectedTabBarItem = tabBarItem
+        let tabBarItems = screen
+            .screens
+            .map { $0.barItem }
+            .enumerated()
+            .map { (index, barItem) -> UITabBarItem in
+                let tabBarItem = UITabBarItem(
+                    title: barItem.title,
+                    image: barItem.image,
+                    selectedImage: barItem.selectedImage
+                )
+                
+                tabBarItem.badgeValue = barItem.badge.stringValue
+                
+                if index == screen.selectedIndex {
+                    selectedTabBarItem = tabBarItem
+                }
+                
+                return tabBarItem
             }
-            
-            return tabBarItem
-        }
         
         tabBar.setItems(tabBarItems, animated: false)
         tabBar.selectedItem = selectedTabBarItem
     }
-
-    override internal func viewDidLoad() {
+    
+    internal override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.addSubview(containerView)
         view.addSubview(tabBar)
-
+        
         addChild(contentViewController)
         containerView.contentView.addSubview(contentViewController.view)
         contentViewController.didMove(toParent: self)
@@ -84,7 +91,8 @@ internal final class TabBarScreenContainerViewController<Content: Screen>: Scree
         
         let tabBarHeight: CGFloat = 83
         
-        containerView.frame = view.bounds.inset(by:
+        containerView.frame = view.bounds.inset(
+            by:
             UIEdgeInsets(
                 top: 0,
                 left: 0,
@@ -104,19 +112,19 @@ internal final class TabBarScreenContainerViewController<Content: Screen>: Scree
     override var childForStatusBarStyle: UIViewController? {
         return contentViewController
     }
-
+    
     override var childForStatusBarHidden: UIViewController? {
         return contentViewController
     }
-
+    
     override var childForHomeIndicatorAutoHidden: UIViewController? {
         return contentViewController
     }
-
+    
     override var childForScreenEdgesDeferringSystemGestures: UIViewController? {
         return contentViewController
     }
-
+    
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return contentViewController.supportedInterfaceOrientations
     }
@@ -132,6 +140,6 @@ internal final class TabBarScreenContainerViewController<Content: Screen>: Scree
         
         precondition(items.indices.contains(selectedIndex), "selectedIndex \(selectedIndex) is invalid for items \(items)")
         
-        screen.barItems[selectedIndex].onSelect()
+        screen.screens[selectedIndex].onSelect()
     }
 }

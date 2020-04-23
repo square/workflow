@@ -46,56 +46,54 @@ class TabBarContainerSnapshotTests: FBSnapshotTestCase {
 
 
 fileprivate extension TabBarContainerSnapshotTests {
-    func makeTabBarScreen() -> TabBarScreen<FooScreen> {
-        let fooScreen = FooScreen(
+    func makeTabBarScreen() -> TabBarContainerScreen {
+        let fooScreen = TestScreen(
             title: "Foo Screen",
-            backgroundColor: .red,
-            viewTapped: { }
-        )
-        
-        let fooBarImage: UIImage
-        
-        if #available(iOS 13.0, *) {
-            fooBarImage = UIImage(systemName: "square") ?? UIImage()
-        } else {
-            fooBarImage = UIImage()
-        }
-        
-        let bazBarImage: UIImage
-        
-        if #available(iOS 13.0, *) {
-            bazBarImage = UIImage(systemName: "triangle") ?? UIImage()
-        } else {
-            bazBarImage = UIImage()
-        }
-        
-        let fooBarItem = BarItem(
+            backgroundColor: .red
+        ).tabScreen(barItem: .init(
             title: "Foo",
-            image: fooBarImage,
-            badge: .value(10),
-            onSelect: { }
-        )
+            image: fooImage,
+            badge: .value(10))) {
+            //Do nothing on select
+        }
         
-        let bazBarItem = BarItem(
+        let bazScreen = TestScreen(
+            title: "Baz Screen",
+            backgroundColor: .blue
+        ).tabScreen(barItem: .init(
             title: "Baz",
-            image: bazBarImage,
-            badge: .value(1),
-            onSelect: { }
-        )
+            image: bazImage,
+            badge: .value(1))) {
+            //Do nothing on select
+        }
         
-        return TabBarScreen(
-            currentScreen: fooScreen,
-            barItems: [fooBarItem, bazBarItem],
+        return TabBarContainerScreen(
+            screens: [fooScreen, bazScreen],
             selectedIndex: 0
         )
+    }
+    
+    var bazImage: UIImage {
+        if #available(iOS 13.0, *) {
+            return UIImage(systemName: "triangle") ?? UIImage()
+        } else {
+           return UIImage()
+        }
+    }
+    
+    var fooImage: UIImage {
+        if #available(iOS 13.0, *) {
+            return UIImage(systemName: "square") ?? UIImage()
+        } else {
+           return UIImage()
+        }
     }
 }
 
 
-fileprivate struct FooScreen: Screen {
+fileprivate struct TestScreen: Screen {
     let title: String
     let backgroundColor: UIColor
-    let viewTapped: () -> Void
 
     func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
         return FooScreenViewController.description(for: self, environment: environment)
@@ -103,12 +101,11 @@ fileprivate struct FooScreen: Screen {
 }
 
 
-fileprivate final class FooScreenViewController: ScreenViewController<FooScreen> {
+fileprivate final class FooScreenViewController: ScreenViewController<TestScreen> {
     
     private lazy var titleLabel: UILabel = .init()
-    private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     
-    required init(screen: FooScreen, environment: ViewEnvironment) {
+    required init(screen: TestScreen, environment: ViewEnvironment) {
         super.init(screen: screen, environment: environment)
         
         update(with: screen)
@@ -116,9 +113,6 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tapGestureRecognizer.addTarget(self, action: #selector(viewTapped))
-        view.addGestureRecognizer(tapGestureRecognizer)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .center
@@ -130,18 +124,13 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
             ])
     }
 
-    override func screenDidChange(from previousScreen: FooScreen, previousEnvironment: ViewEnvironment) {
+    override func screenDidChange(from previousScreen: TestScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
     
-    private func update(with screen: FooScreen) {
+    private func update(with screen: TestScreen) {
         view.backgroundColor = screen.backgroundColor
         titleLabel.text = screen.title
-    }
-    
-    @objc
-    private func viewTapped() {
-        screen.viewTapped()
     }
 }
 
