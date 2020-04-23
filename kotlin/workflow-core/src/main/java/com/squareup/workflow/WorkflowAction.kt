@@ -59,8 +59,8 @@ interface WorkflowAction<StateT, out OutputT : Any> {
 
   companion object {
     /**
-     * Returns a [WorkflowAction] that does nothing: no output will be emitted, and `render` will be
-     * called again with the same `state` as last time.
+     * Returns a [WorkflowAction] that does nothing: no output will be emitted, and
+     * the state will not change.
      *
      * Use this to, for example, ignore the output of a child workflow or worker.
      */
