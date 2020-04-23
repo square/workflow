@@ -21,8 +21,6 @@ import WorkflowUI
 // MARK: Input and Output
 
 struct LoginWorkflow: Workflow {
-    var error: AuthenticationService.AuthenticationError?
-
     enum Output {
         case login(email: String, password: String)
     }
@@ -78,15 +76,8 @@ extension LoginWorkflow {
     func render(state: LoginWorkflow.State, context: RenderContext<LoginWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
 
-        let title: String
-        if let authenticationError = error {
-            title = authenticationError.localizedDescription
-        } else {
-            title = "Welcome! Please log in to play TicTacToe!"
-        }
-
         return LoginScreen(
-            title: title,
+            title: "Welcome! Please log in to play TicTacToe!",
             email: state.email,
             onEmailChanged: { email in
                 sink.send(.emailUpdated(email))
