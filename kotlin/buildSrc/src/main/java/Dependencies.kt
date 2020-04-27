@@ -12,7 +12,7 @@ object Versions {
 
 @Suppress("unused")
 object Dependencies {
-  const val android_gradle_plugin = "com.android.tools.build:gradle:4.0.0-beta03"
+  const val android_gradle_plugin = "com.android.tools.build:gradle:4.0.0-beta05"
 
   object AndroidX {
     const val activity = "androidx.activity:activity:1.1.0"
