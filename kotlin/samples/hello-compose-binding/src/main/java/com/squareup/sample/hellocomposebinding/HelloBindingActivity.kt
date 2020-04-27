@@ -16,22 +16,74 @@
 package com.squareup.sample.hellocomposebinding
 
 import android.os.Bundle
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
+import androidx.compose.Composable
+import androidx.ui.core.Alignment
+import androidx.ui.core.Modifier
+import androidx.ui.core.setContent
+import androidx.ui.foundation.Clickable
+import androidx.ui.foundation.Text
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.wrapContentSize
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.ripple.ripple
 import com.squareup.workflow.ui.ViewRegistry
-import com.squareup.workflow.ui.WorkflowRunner
-import com.squareup.workflow.ui.setContentWorkflow
 
 private val viewRegistry = ViewRegistry(HelloBinding)
 
 class HelloBindingActivity : AppCompatActivity() {
+
+  private var hello = true
+  private val container by lazy { FrameLayout(this) }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentWorkflow(viewRegistry) {
-      WorkflowRunner.Config(
-          HelloWorkflow,
-          diagnosticListener = SimpleLoggingDiagnosticListener()
-      )
+    setContentView(container)
+
+    println("[onCreate] Calling initial updateView($hello)…")
+    updateView(hello) {
+      println("[onCreate] Handling click…")
+      onClick()
+    }
+  }
+
+  private fun onClick() {
+    hello = !hello
+    println("[onClick] Calling updateView($hello)…")
+    updateView(hello) {
+      println("[onClick] Handling click…")
+      onClick()
+    }
+  }
+
+  private fun updateView(
+    hello: Boolean,
+    onClick: () -> Unit
+  ) {
+    println("[updateView] Setting container content ($hello)…")
+    container.setContent {
+      println("[updateView] Calling Content($hello)…")
+      Content(hello) {
+        println("[updateView] Handling click…")
+        onClick()
+      }
+    }
+  }
+}
+
+@Composable fun Content(
+  hello: Boolean,
+  onClick: () -> Unit
+) {
+  println("[Content] composing ($hello)")
+  MaterialTheme {
+    Clickable(
+        modifier = Modifier.fillMaxSize()
+            .ripple(bounded = true),
+        onClick = onClick
+    ) {
+      Text(if (hello) "Hello" else "Goodbye", modifier = Modifier.wrapContentSize(Alignment.Center))
     }
   }
 }
