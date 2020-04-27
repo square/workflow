@@ -270,16 +270,14 @@ fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
         let sink = Sink<Action> { action in
             observer.send(value: AnyWorkflowAction(action))
         }
-        subscribe(signal: signal)
-        return sink
-    }
 
-    func subscribe<Action>(signal: Signal<Action, Never>) where Action : WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
         signal
             .take(during: lifetime)
             .observeValues { [weak self] action in
                 self?.apply(action: action)
             }
+
+        return sink
     }
 
     func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {

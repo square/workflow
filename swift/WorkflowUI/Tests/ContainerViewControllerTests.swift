@@ -135,13 +135,12 @@ fileprivate struct MockWorkflow: Workflow {
     }
 
     func render(state: State, context: RenderContext<MockWorkflow>) -> TestScreen {
-
-        context.subscribe(signal: subscription.map { output in
+        context.awaitResult(for: subscription.asWorker(key: "signal")) { output in
             return AnyWorkflowAction { state in
                 state = output
                 return output
             }
-        })
+        }
 
         return TestScreen(string: "\(state)")
     }
