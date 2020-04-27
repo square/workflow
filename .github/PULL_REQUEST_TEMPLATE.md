@@ -12,6 +12,7 @@ Please select at least one
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] API change this is not Backward compatible (fix or feature that would cause existing functionality to not work as expected or change the API contract)
 - [ ] This change requires a documentation update
+- [ ] Dependency update
 
 ## Testing Checklist
 How was this change tested?
@@ -24,7 +25,7 @@ How was this change tested?
 
 _Please list any documentation changes or additions. Please delete if not necessary._
 
-## Addtional Info
+## Additional Info
 
 _Please enter any additional information that could be helpful for the reviewers or just to document. Please delete if not necessary._
 
