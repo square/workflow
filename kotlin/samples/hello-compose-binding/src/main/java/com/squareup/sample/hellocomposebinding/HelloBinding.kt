@@ -16,12 +16,15 @@
 package com.squareup.sample.hellocomposebinding
 
 import androidx.compose.Composable
-import androidx.ui.core.Text
+import androidx.ui.core.Alignment
+import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
-import androidx.ui.layout.Center
+import androidx.ui.foundation.Text
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.wrapContentSize
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
-import androidx.ui.material.ripple.Ripple
+import androidx.ui.material.ripple.ripple
 import androidx.ui.tooling.preview.Preview
 import com.squareup.sample.hellocomposebinding.HelloWorkflow.Rendering
 import com.squareup.workflow.ui.compose.bindCompose
@@ -34,12 +37,12 @@ val HelloBinding = bindCompose<Rendering> { rendering, _ ->
 
 @Composable
 private fun DrawHelloRendering(rendering: Rendering) {
-  Ripple(bounded = true) {
-    Clickable(onClick = { rendering.onClick() }) {
-      Center {
-        Text(rendering.message)
-      }
-    }
+  Clickable(
+      modifier = Modifier.fillMaxSize()
+          .ripple(bounded = true),
+      onClick = { rendering.onClick() }
+  ) {
+    Text(rendering.message, modifier = Modifier.wrapContentSize(Alignment.Center))
   }
 }
 

@@ -23,9 +23,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.Composable
+import androidx.compose.StructurallyEqual
+import androidx.compose.mutableStateOf
 import androidx.ui.core.setContent
-import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.bindShowRendering
 import kotlin.reflect.KClass
 
@@ -74,13 +76,26 @@ internal class ComposeViewFactory<RenderingT : Any>(
     // There is currently no way to automatically generate an Android View directly from a
     // Composable function, so we need to use ViewGroup.setContent.
     val composeContainer = FrameLayout(contextForNewView)
+
+    // This model will be used to feed state updates into the composition.
+    val renderState = mutableStateOf<Pair<RenderingT, ViewEnvironment>?>(
+        value = null,
+        areEquivalent = StructurallyEqual
+    )
+
+    // Entry point to the composition.
+    composeContainer.setContent {
+      // Don't compose anything until we have the first value (which should happen in the initial
+      // frame).
+      val (rendering, environment) = renderState.value ?: return@setContent
+      showRendering(rendering, environment)
+    }
+
     composeContainer.bindShowRendering(
         initialRendering,
         initialViewEnvironment
     ) { rendering, environment ->
-      composeContainer.setContent {
-        showRendering(rendering, environment)
-      }
+      renderState.value = Pair(rendering, environment)
     }
     return composeContainer
   }
