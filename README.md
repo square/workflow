@@ -10,7 +10,7 @@ A unidirectional data flow library for Kotlin and Swift, emphasizing:
 * Composition and scaling.
 * Effortless separation of business and UI concerns.
 
-_**This project is currently experimental and the API subject to breaking changes without notice.**
+_**This project is currently in development and the API subject to breaking changes without notice.**
 Follow Square's engineering blog, [The Corner](https://developer.squareup.com/blog/), to see when
 this project becomes stable._
 
