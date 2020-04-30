@@ -4,7 +4,7 @@ import java.util.Locale.US
 import kotlin.reflect.full.declaredMembers
 
 object Versions {
-  const val compose = "0.1.0-dev09"
+  const val compose = "0.1.0-dev10"
   const val coroutines = "1.3.4"
   const val kotlin = "1.3.71"
   const val targetSdk = 29
