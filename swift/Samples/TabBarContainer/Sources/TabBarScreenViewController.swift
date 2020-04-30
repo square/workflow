@@ -17,14 +17,11 @@ import Workflow
 import WorkflowUI
 
 internal final class TabBarScreenContainerViewController: ScreenViewController<TabBarContainerScreen>, UITabBarDelegate {
-    private var containerView: ContainerView
     private var contentViewController: DescribedViewController
     
     private let tabBar: UITabBar
     
     required init(screen: TabBarContainerScreen, environment: ViewEnvironment) {
-        self.containerView = ContainerView()
-        
         self.contentViewController = DescribedViewController(
             screen: screen.screens[screen.selectedIndex].content,
             environment: environment
@@ -76,12 +73,11 @@ internal final class TabBarScreenContainerViewController: ScreenViewController<T
     internal override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubview(containerView)
-        view.addSubview(tabBar)
-        
         addChild(contentViewController)
-        containerView.contentView.addSubview(contentViewController.view)
+        view.addSubview(contentViewController.view)
         contentViewController.didMove(toParent: self)
+        
+        view.addSubview(tabBar)
         
         update()
     }
@@ -91,7 +87,7 @@ internal final class TabBarScreenContainerViewController: ScreenViewController<T
         
         let tabBarHeight: CGFloat = 83
         
-        containerView.frame = view.bounds.inset(
+        contentViewController.view.frame = view.bounds.inset(
             by:
             UIEdgeInsets(
                 top: 0,
