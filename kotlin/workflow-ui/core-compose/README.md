@@ -29,21 +29,28 @@ android {
     compose true
   }
   composeOptions {
+    kotlinCompilerVersion "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
     kotlinCompilerExtensionVersion "${compose_version}"
   }
 }
 ```
 
-To create a binding, call `bindCompose`. The lambda passed to `bindCompose` is a `@Composable`
+You may also need to set the Kotlin API version to 1.3:
+
+```groovy
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+  kotlinOptions.apiVersion = "1.3"
+}
+```
+
+To create a `ViewFactory`, call `bindCompose`. The lambda passed to `bindCompose` is a `@Composable`
 function.
 
 ```kotlin
 val HelloBinding = bindCompose<MyRendering> { rendering ->
   MaterialTheme {
     Clickable(onClick = { rendering.onClick() }) {
-      Center {
-        Text(rendering.message)
-      }
+      Text(rendering.message)
     }
   }
 }
@@ -57,5 +64,5 @@ val viewRegistry = ViewRegistry(HelloBinding)
 ```
 
 [1]: https://developer.android.com/jetpack/compose
-[2]: https://square.github.io/workflow/kotlin/api/workflow-ui-android/com.squareup.workflow.ui/-view-binding/
-[3]: https://square.github.io/workflow/kotlin/api/workflow-ui-android/com.squareup.workflow.ui/-view-registry/
+[2]: https://square.github.io/workflow/kotlin/api/workflow/com.squareup.workflow.ui/-view-factory/
+[3]: https://square.github.io/workflow/kotlin/api/workflow/com.squareup.workflow.ui/-view-registry/

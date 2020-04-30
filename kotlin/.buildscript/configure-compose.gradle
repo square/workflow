@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
+/*
+In addition applying this file, as of dev10 modules that use Compose also need to include this
+code snippet to avoid warnings about using compiler version 1.4 (this is because the compiler plugin
+is built against compiler source that is in a liminal state between 1.3 and 1.4, the warnings are
+safe to ignore and this suppresses them):
+
+tasks.withType<KotlinCompile>().configureEach {
+ kotlinOptions.apiVersion = "1.3"
+}
+*/
+
 android {
   buildFeatures {
     compose true
   }
   composeOptions {
+    kotlinCompilerVersion "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
     kotlinCompilerExtensionVersion Versions.compose
   }
 }
