@@ -29,7 +29,7 @@ struct MainWorkflow: Workflow {
 // MARK: State and Initialization
 
 extension MainWorkflow {
-    enum State {
+    enum State: Equatable {
         case authenticating
         case runningGame(sessionToken: String)
     }

@@ -29,7 +29,7 @@ struct RunGameWorkflow: Workflow {
 // MARK: State and Initialization
 
 extension RunGameWorkflow {
-    struct State {
+    struct State: Equatable {
         var playerX: String
         var playerO: String
         var step: Step

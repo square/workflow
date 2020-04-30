@@ -34,7 +34,7 @@ struct AuthenticationWorkflow: Workflow {
 // MARK: State and Initialization
 
 extension AuthenticationWorkflow {
-    enum State {
+    enum State: Equatable {
         case emailPassword
         case authenticationErrorAlert(error: AuthenticationService.AuthenticationError?)
         case authorizingEmailPassword(email: String, password: String)

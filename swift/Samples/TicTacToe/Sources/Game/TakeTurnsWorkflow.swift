@@ -29,7 +29,7 @@ struct TakeTurnsWorkflow: Workflow {
 // MARK: State and Initialization
 
 extension TakeTurnsWorkflow {
-    struct State {
+    struct State: Equatable {
         var board: Board
         var gameState: GameState
     }

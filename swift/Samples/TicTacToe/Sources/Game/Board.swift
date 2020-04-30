@@ -21,7 +21,7 @@ enum Player: Equatable {
     case o
 }
 
-struct Board {
+struct Board: Equatable {
     private(set) var rows: [[Cell]]
 
     enum Cell: Equatable {
