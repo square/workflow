@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 /*
  * Copyright 2019 Square Inc.
  *
@@ -24,10 +26,12 @@ java {
 }
 
 apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
-
 apply(from = rootProject.file(".buildscript/configure-android-defaults.gradle"))
 
 apply(from = rootProject.file(".buildscript/configure-compose.gradle"))
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions.apiVersion = "1.3"
+}
 
 dependencies {
   api(project(":workflow-ui:core-android"))
