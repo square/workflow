@@ -75,7 +75,7 @@ typealias ViewBindingInflater<BindingT> = (LayoutInflater, ViewGroup?, Boolean) 
  *     }
  *
  *     companion object : ViewFactory<Rendering> by bind(
- *         HelloGoodbyeLayoutBinding, ::HelloLayoutRunner
+ *         HelloGoodbyeLayoutBinding::inflate, ::HelloLayoutRunner
  *     )
  *   }
  *
