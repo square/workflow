@@ -85,6 +85,8 @@ jobs:
           - detekt
           # Build the JMH benchmarks to verify, but don't run them.
           - jmhJar
+          # Exercise Dokka
+          - dokka
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
