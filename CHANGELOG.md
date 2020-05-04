@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+## Version 0.27.0
+
+_2020-05-04_
+
+### Kotlin
+
+* Update Compose to dev10. (#1118)
+
+### Swift
+
+* Remove context.subscribe (#1111)
+
 ## Version 0.26.0
 
 _2020-04-17_
