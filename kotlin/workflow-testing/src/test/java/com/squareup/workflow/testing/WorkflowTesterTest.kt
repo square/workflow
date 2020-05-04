@@ -266,4 +266,14 @@ class WorkflowTesterTest {
       assertEquals("render", secondError.message)
     }
   }
+
+  @Test fun `empty lambda still executes the workflow`() {
+    var itLived = false
+    val workflow = Workflow.stateless<Unit, Nothing, Unit> {
+      itLived = true
+    }
+    workflow.testFromStart {
+    }
+    assertTrue(itLived)
+  }
 }
