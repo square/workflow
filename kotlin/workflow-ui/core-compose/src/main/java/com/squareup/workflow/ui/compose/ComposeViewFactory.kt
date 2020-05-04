@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.Composable
+import androidx.compose.Recomposer
 import androidx.compose.StructurallyEqual
 import androidx.compose.mutableStateOf
 import androidx.ui.core.setContent
@@ -84,7 +85,7 @@ internal class ComposeViewFactory<RenderingT : Any>(
     )
 
     // Entry point to the composition.
-    composeContainer.setContent {
+    composeContainer.setContent(Recomposer.current()) {
       // Don't compose anything until we have the first value (which should happen in the initial
       // frame).
       val (rendering, environment) = renderState.value ?: return@setContent

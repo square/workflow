@@ -15,8 +15,8 @@
  */
 package com.squareup.sample.hellocomposebinding
 
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.ui.test.android.AndroidComposeTestRule
 import androidx.ui.test.assertIsDisplayed
 import androidx.ui.test.doClick
 import androidx.ui.test.findByText
@@ -28,7 +28,7 @@ import org.junit.runner.RunWith
 class HelloBindingTest {
 
   // Launches the activity.
-  @Rule @JvmField val scenario = ActivityScenarioRule(HelloBindingActivity::class.java)
+  @Rule @JvmField val composeRule = AndroidComposeTestRule<HelloBindingActivity>()
 
   @Test fun togglesBetweenStates() {
     findByText("Hello")
