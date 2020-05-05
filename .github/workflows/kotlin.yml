@@ -63,7 +63,7 @@ jobs:
       ## Actual task
       - name: Assemble with gradle
         working-directory: ./kotlin
-        run: ./gradlew assemble --build-cache --no-daemon --stacktrace
+        run: ./gradlew assemble --build-cache --no-daemon --stacktrace --info
 
   # Runs all check tasks in parallel.
   check:
