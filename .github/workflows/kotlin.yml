@@ -14,12 +14,6 @@ on:
       - .github/workflows/kotlin.yml
       - kotlin/**
 
-env:
-  # Must use $HOME here, NOT a tilde, because of the order in which bash does expansion:
-  # Tilde happens before variables, so will be used literally, whereas $HOME will be
-  # recursively expanded.
-  GRADLE_CACHE_PATH: $HOME/.gradle/caches
-
 jobs:
   assemble:
     name: Assemble
@@ -38,7 +32,7 @@ jobs:
       - name: Cache gradle dependencies
         uses: actions/cache@v1
         with:
-          path: ${{ env.GRADLE_CACHE_PATH }}
+          path: ${{ env.HOME }}/.gradle/caches
           # Include the SHA in the hash so this step always adds a cache entry. If we didn't use the SHA, the artifacts
           # would only get cached once for each build config hash.
           # Don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
@@ -56,9 +50,9 @@ jobs:
       # and there's no way to modify the cache after the job that created it finishes.
       - name: Clean gradle build cache to assemble fresh
         run: |
-          ls -lhrt $GRADLE_CACHE_PATH || true
-          rm -rf $GRADLE_CACHE_PATH/build-cache-1
-          ls -lhrt $GRADLE_CACHE_PATH || true
+          ls -lhrt $HOME/.gradle/caches || true
+          rm -rf $HOME/.gradle/caches/build-cache-1
+          ls -lhrt $HOME/.gradle/caches || true
 
       ## Actual task
       - name: Assemble with gradle
@@ -98,7 +92,7 @@ jobs:
       - name: Cache build artifacts
         uses: actions/cache@v1
         with:
-          path: ${{ env.GRADLE_CACHE_PATH }}
+          path: ${{ env.HOME }}/.gradle/caches
           # Don't set restore-keys so cache is always only valid for the current build config.
           # Also don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
           key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/buildSrc/**') }}-${{ github.sha }}
@@ -134,7 +128,7 @@ jobs:
       - name: Cache build artifacts
         uses: actions/cache@v1
         with:
-          path: ${{ env.GRADLE_CACHE_PATH }}
+          path: ${{ env.HOME }}/.gradle/caches
           # Don't set restore-keys so cache is always only valid for the current build config.
           # Also don't use ${{ runner.os }} in the key so we don't re-assemble for UI tests.
           key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/buildSrc/**') }}-${{ github.sha }}
