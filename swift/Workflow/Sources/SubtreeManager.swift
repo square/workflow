@@ -419,7 +419,7 @@ extension WorkflowNode.SubtreeManager {
 
             if #available(iOS 12.0, *) {
                 let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                os_signpost(.begin, log: .worker, name: "Worker Created", signpostID: signpostID, "Worker: %{public}@", String(describing: W.self))
+                os_signpost(.begin, log: .worker, name: "Running", signpostID: signpostID, "Worker: %{public}@", String(describing: W.self))
             }
 
             signalProducer
@@ -432,17 +432,17 @@ extension WorkflowNode.SubtreeManager {
                     case .completed:
                         if #available(iOS 12.0, *) {
                             let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                            os_signpost(.end, log: .worker, name: "Worker Created", signpostID: signpostID)
+                            os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID)
                         }
                     case .interrupted:
                         if #available(iOS 12.0, *) {
                             let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                            os_signpost(.end, log: .worker, name: "Worker Created", signpostID: signpostID, "Interrupted")
+                            os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID, "Interrupted")
                         }
                     case .failed:
                         if #available(iOS 12.0, *) {
                             let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                            os_signpost(.end, log: .worker, name: "Worker Created", signpostID: signpostID, "Failed")
+                            os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID, "Failed")
                         }
                     }
                 }
