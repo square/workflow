@@ -7,36 +7,43 @@ let package = Package(
     name: "Workflow",
     platforms: [
         .iOS("10.0"),
-        .macOS("10.12")
+        .macOS("10.12"),
     ],
     products: [
         .library(
             name: "Workflow",
-            targets: ["Workflow"]),
+            targets: ["Workflow"]
+        ),
         .library(
             name: "WorkflowUI",
-            targets: ["WorkflowUI"]),
+            targets: ["WorkflowUI"]
+        ),
     ],
     dependencies: [
-        .package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", from: "6.0.0")
+        .package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", from: "6.0.0"),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.44.9"),
     ],
     targets: [
         .target(
             name: "Workflow",
             dependencies: ["ReactiveSwift"],
-            path: "swift/Workflow/Sources"),
+            path: "swift/Workflow/Sources"
+        ),
         .testTarget(
             name: "WorkflowTests",
             dependencies: ["Workflow"],
-            path: "swift/Workflow/Tests"),
+            path: "swift/Workflow/Tests"
+        ),
         .target(
             name: "WorkflowUI",
             dependencies: ["Workflow"],
-            path: "swift/WorkflowUI/Sources"),
+            path: "swift/WorkflowUI/Sources"
+        ),
         .testTarget(
             name: "WorkflowUITests",
             dependencies: ["WorkflowUI"],
-            path: "swift/WorkflowUI/Tests"),
+            path: "swift/WorkflowUI/Tests"
+        ),
     ],
     swiftLanguageVersions: [.v5]
 )
