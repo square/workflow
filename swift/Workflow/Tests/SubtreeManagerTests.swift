@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,66 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import ReactiveSwift
 import XCTest
 @testable import Workflow
-import ReactiveSwift
-
 
 final class SubtreeManagerTests: XCTestCase {
-
     func test_maintainsChildrenBetweenRenderPasses() {
         let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
         XCTAssertTrue(manager.childWorkflows.isEmpty)
 
         _ = manager.render { context -> TestViewModel in
-            return context.render(
+            context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.noAction })
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
         }
 
         XCTAssertEqual(manager.childWorkflows.count, 1)
         let child = manager.childWorkflows.values.first!
 
         _ = manager.render { context -> TestViewModel in
-            return context.render(
+            context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.noAction })
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
         }
 
         XCTAssertEqual(manager.childWorkflows.count, 1)
         XCTAssertTrue(manager.childWorkflows.values.first === child)
-
     }
 
     func test_removesUnusedChildrenAfterRenderPasses() {
         let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
         _ = manager.render { context -> TestViewModel in
-            return context.render(
+            context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.noAction })
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
         }
 
         XCTAssertEqual(manager.childWorkflows.count, 1)
 
         _ = manager.render { context -> Void in
-
         }
 
         XCTAssertTrue(manager.childWorkflows.isEmpty)
     }
 
     func test_emitsChildEvents() {
-
         let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
 
         var events: [AnyWorkflowAction<ParentWorkflow>] = []
 
         manager.onUpdate = {
             switch $0 {
-            case .update(let event, _):
+            case let .update(event, _):
                 events.append(event)
             default:
                 break
@@ -80,10 +79,11 @@ final class SubtreeManagerTests: XCTestCase {
         }
 
         let viewModel = manager.render { context -> TestViewModel in
-            return context.render(
+            context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.noAction })
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
         }
         manager.enableEvents()
 
@@ -93,11 +93,9 @@ final class SubtreeManagerTests: XCTestCase {
         RunLoop.current.run(until: Date().addingTimeInterval(0.1))
 
         XCTAssertEqual(events.count, 2)
-
     }
 
     func test_emitsChangeEvents() {
-
         let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
 
         var changeCount = 0
@@ -107,10 +105,11 @@ final class SubtreeManagerTests: XCTestCase {
         }
 
         let viewModel = manager.render { context -> TestViewModel in
-            return context.render(
+            context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.noAction })
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
         }
         manager.enableEvents()
 
@@ -121,19 +120,20 @@ final class SubtreeManagerTests: XCTestCase {
 
         XCTAssertEqual(changeCount, 2)
     }
-    
+
     func test_invalidatesContextAfterRender() {
         let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
-        
-        var escapingContext: RenderContext<ParentWorkflow>! = nil
-        
+
+        var escapingContext: RenderContext<ParentWorkflow>!
+
         _ = manager.render { context -> TestViewModel in
             XCTAssertTrue(context.isValid)
             escapingContext = context
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
-                outputMap: { _ in AnyWorkflowAction.noAction })
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
         }
         manager.enableEvents()
 
@@ -155,9 +155,7 @@ final class SubtreeManagerTests: XCTestCase {
                 return .notWorking
             }
 
-            func workflowDidChange(from previousWorkflow: WorkerWorkflow, state: inout WorkerWorkflow.State) {
-
-            }
+            func workflowDidChange(from previousWorkflow: WorkerWorkflow, state: inout WorkerWorkflow.State) {}
 
             func render(state: WorkerWorkflow.State, context: RenderContext<WorkerWorkflow>) -> Bool {
                 switch state {
@@ -167,10 +165,12 @@ final class SubtreeManagerTests: XCTestCase {
                     context.awaitResult(
                         for: ExpectingWorker(
                             startExpectation: startExpectation,
-                            endExpectation: endExpectation),
+                            endExpectation: endExpectation
+                        ),
                         outputMap: { output -> AnyWorkflowAction<WorkerWorkflow> in
-                            return AnyWorkflowAction.noAction
-                        })
+                            AnyWorkflowAction.noAction
+                        }
+                    )
                     return true
                 }
             }
@@ -182,7 +182,7 @@ final class SubtreeManagerTests: XCTestCase {
                 typealias Output = Void
 
                 func run() -> SignalProducer<Void, Never> {
-                    return SignalProducer<Void, Never>({ [weak startExpectation, weak endExpectation] (observer, lifetime) in
+                    return SignalProducer<Void, Never>({ [weak startExpectation, weak endExpectation] observer, lifetime in
                         lifetime.observeEnded {
                             endExpectation?.fulfill()
                         }
@@ -201,26 +201,30 @@ final class SubtreeManagerTests: XCTestCase {
         let endExpectation = XCTestExpectation()
         let manager = WorkflowNode<WorkerWorkflow>.SubtreeManager()
 
-        let isRunning = manager.render({ context -> Bool in
+        let isRunning = manager.render { context -> Bool in
             WorkerWorkflow(
                 startExpectation: startExpectation,
-                endExpectation: endExpectation)
-                .render(
-                    state: .working,
-                    context: context)
-        })
+                endExpectation: endExpectation
+            )
+            .render(
+                state: .working,
+                context: context
+            )
+        }
 
         XCTAssertEqual(true, isRunning)
         wait(for: [startExpectation], timeout: 1.0)
 
-        let isStillRunning = manager.render({ context -> Bool in
+        let isStillRunning = manager.render { context -> Bool in
             WorkerWorkflow(
                 startExpectation: startExpectation,
-                endExpectation: endExpectation)
-                .render(
-                    state: .notWorking,
-                    context: context)
-        })
+                endExpectation: endExpectation
+            )
+            .render(
+                state: .notWorking,
+                context: context
+            )
+        }
 
         XCTAssertFalse(isStillRunning)
         wait(for: [endExpectation], timeout: 1.0)
@@ -236,13 +240,12 @@ final class SubtreeManagerTests: XCTestCase {
                 return State()
             }
 
-            func workflowDidChange(from previousWorkflow: SubscribingWorkflow, state: inout SubscribingWorkflow.State) {
-            }
+            func workflowDidChange(from previousWorkflow: SubscribingWorkflow, state: inout SubscribingWorkflow.State) {}
 
             func render(state: SubscribingWorkflow.State, context: RenderContext<SubscribingWorkflow>) -> Bool {
                 if let signal = signal {
                     context.awaitResult(for: signal.asWorker(key: "signal")) { _ -> AnyWorkflowAction<SubscribingWorkflow> in
-                        return AnyWorkflowAction.noAction
+                        AnyWorkflowAction.noAction
                     }
                     return true
                 } else {
@@ -267,7 +270,8 @@ final class SubtreeManagerTests: XCTestCase {
                 signal: signal)
                 .render(
                     state: SubscribingWorkflow.State(),
-                    context: context)
+                    context: context
+                )
         }
         manager.enableEvents()
 
@@ -284,7 +288,8 @@ final class SubtreeManagerTests: XCTestCase {
                 signal: nil)
                 .render(
                     state: SubscribingWorkflow.State(),
-                    context: context)
+                    context: context
+                )
         }
         manager.enableEvents()
 
@@ -295,13 +300,12 @@ final class SubtreeManagerTests: XCTestCase {
     }
 }
 
-
-fileprivate struct TestViewModel {
+private struct TestViewModel {
     var onTap: () -> Void
     var onToggle: () -> Void
 }
 
-fileprivate struct ParentWorkflow: Workflow {
+private struct ParentWorkflow: Workflow {
     struct State {}
     typealias Event = TestWorkflow.Output
     typealias Output = Never
@@ -310,18 +314,14 @@ fileprivate struct ParentWorkflow: Workflow {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout State) {}
 
     func render(state: State, context: RenderContext<ParentWorkflow>) -> Never {
         fatalError()
     }
 }
 
-
-fileprivate struct TestWorkflow: Workflow {
-
+private struct TestWorkflow: Workflow {
     enum State {
         case foo
         case bar
@@ -355,17 +355,14 @@ fileprivate struct TestWorkflow: Workflow {
         return .foo
     }
 
-    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State) {}
 
     func render(state: State, context: RenderContext<TestWorkflow>) -> TestViewModel {
-
         let sink = context.makeSink(of: Event.self)
 
         return TestViewModel(
             onTap: { sink.send(.sendOutput) },
-            onToggle: { sink.send(.changeState) })
+            onToggle: { sink.send(.changeState) }
+        )
     }
-
 }

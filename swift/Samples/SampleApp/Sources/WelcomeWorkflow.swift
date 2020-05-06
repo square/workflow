@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import Workflow
 import WorkflowUI
-
 
 // MARK: Input and Output
 
@@ -25,11 +25,9 @@ struct WelcomeWorkflow: Workflow {
     }
 }
 
-
 // MARK: State and Initialization
 
 extension WelcomeWorkflow {
-
     struct State {
         var name: String
     }
@@ -38,27 +36,21 @@ extension WelcomeWorkflow {
         return State(name: "")
     }
 
-    func workflowDidChange(from previousWorkflow: WelcomeWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: WelcomeWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension WelcomeWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = WelcomeWorkflow
 
         case nameChanged(String)
         case login
 
         func apply(toState state: inout WelcomeWorkflow.State) -> WelcomeWorkflow.Output? {
-
             switch self {
-            case .nameChanged(let updatedName):
+            case let .nameChanged(updatedName):
                 state.name = updatedName
                 return nil
 
@@ -68,7 +60,6 @@ extension WelcomeWorkflow {
         }
     }
 }
-
 
 // MARK: Rendering
 
@@ -84,6 +75,7 @@ extension WelcomeWorkflow {
             },
             onLoginTapped: {
                 sink.send(.login)
-            })
+            }
+        )
     }
 }

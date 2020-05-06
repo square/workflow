@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-
 /// Sink is a type that receives incoming values (commonly events or `WorkflowAction`)
 ///
 /// Use `RenderContext.makeSink` to create instances.
 public struct Sink<Value> {
-
     private let onValue: (Value) -> Void
 
-        /// Initializes a new sink with the given closure.
+    /// Initializes a new sink with the given closure.
     public init(_ onValue: @escaping (Value) -> Void) {
         self.onValue = onValue
     }
@@ -59,5 +57,4 @@ public struct Sink<Value> {
             self.send(transform(value))
         }
     }
-
 }

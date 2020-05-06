@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import UIKit
 
-
 public final class TodoEditView: UIView, UITextViewDelegate {
-
     public var title: String {
         didSet {
             titleField.text = title
@@ -36,14 +35,14 @@ public final class TodoEditView: UIView, UITextViewDelegate {
     let titleField: UITextField
     let noteField: UITextView
 
-    public override init(frame: CGRect) {
-        title = ""
-        note = ""
-        onTitleChanged = { _ in }
-        onNoteChanged = { _ in }
+    override public init(frame: CGRect) {
+        self.title = ""
+        self.note = ""
+        self.onTitleChanged = { _ in }
+        self.onNoteChanged = { _ in }
 
-        titleField = UITextField(frame: .zero)
-        noteField = UITextView(frame: .zero)
+        self.titleField = UITextField(frame: .zero)
+        self.noteField = UITextView(frame: .zero)
 
         super.init(frame: frame)
 
@@ -67,7 +66,7 @@ public final class TodoEditView: UIView, UITextViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         let titleHeight: CGFloat = 44.0
@@ -80,8 +79,9 @@ public final class TodoEditView: UIView, UITextViewDelegate {
             x: bounds.minX,
             y: yOffset,
             width: bounds.maxX,
-            height: titleHeight)
-            .insetBy(dx: widthInset, dy: 0.0)
+            height: titleHeight
+        )
+        .insetBy(dx: widthInset, dy: 0.0)
 
         yOffset += titleHeight + spacing
 
@@ -89,8 +89,9 @@ public final class TodoEditView: UIView, UITextViewDelegate {
             x: bounds.minX,
             y: yOffset,
             width: bounds.maxX,
-            height: bounds.maxY - yOffset)
-            .insetBy(dx: widthInset, dy: 0.0)
+            height: bounds.maxY - yOffset
+        )
+        .insetBy(dx: widthInset, dy: 0.0)
     }
 
     @objc private func titleDidChange(sender: UITextField) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import ReactiveSwift
 
 /// Workers define a unit of asynchronous work.
@@ -24,10 +25,9 @@ import ReactiveSwift
 ///
 /// If there is not an existing worker of this type, the context will kick off the new worker (via `run`).
 public protocol Worker {
-
     /// The type of output events returned by this worker.
     associatedtype Output
-    
+
     /// Returns a signal producer to execute the work represented by this worker.
     func run() -> SignalProducer<Output, Never>
 
@@ -38,9 +38,7 @@ public protocol Worker {
 }
 
 extension Worker where Self: Equatable {
-
     public func isEquivalent(to otherWorker: Self) -> Bool {
         return self == otherWorker
     }
-
 }

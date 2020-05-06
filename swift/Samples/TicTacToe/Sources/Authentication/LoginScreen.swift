@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import Workflow
 import WorkflowUI
-
 
 struct LoginScreen: Screen {
     var title: String
@@ -28,19 +28,19 @@ struct LoginScreen: Screen {
     func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
         return ViewControllerDescription(
             build: { LoginViewController() },
-            update: { $0.update(with: self) })
+            update: { $0.update(with: self) }
+        )
     }
 }
 
-
-fileprivate final class LoginViewController: UIViewController {
+private final class LoginViewController: UIViewController {
     private let welcomeLabel: UILabel = UILabel(frame: .zero)
     private let emailField: UITextField = UITextField(frame: .zero)
     private let passwordField: UITextField = UITextField(frame: .zero)
     private let button: UIButton = UIButton(frame: .zero)
     private var onEmailChanged: (String) -> Void = { _ in }
     private var onPasswordChanged: (String) -> Void = { _ in }
-    private var onLoginTapped: () -> Void = { }
+    private var onLoginTapped: () -> Void = {}
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +61,7 @@ fileprivate final class LoginViewController: UIViewController {
         passwordField.backgroundColor = UIColor(white: 0.92, alpha: 1.0)
         passwordField.addTarget(self, action: #selector(textDidChange(sender:)), for: .editingChanged)
 
-        button.backgroundColor = UIColor(red: 41/255, green: 150/255, blue: 204/255, alpha: 1.0)
+        button.backgroundColor = UIColor(red: 41 / 255, green: 150 / 255, blue: 204 / 255, alpha: 1.0)
         button.setTitle("Login", for: .normal)
         button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)
 
@@ -82,14 +82,16 @@ fileprivate final class LoginViewController: UIViewController {
             x: view.bounds.origin.x,
             y: view.bounds.origin.y,
             width: view.bounds.size.width,
-            height: yOffset)
+            height: yOffset
+        )
 
         emailField.frame = CGRect(
             x: view.bounds.origin.x,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
 
         yOffset += height + inset
 
@@ -97,8 +99,9 @@ fileprivate final class LoginViewController: UIViewController {
             x: view.bounds.origin.x,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
 
         yOffset += height + inset
 
@@ -106,8 +109,9 @@ fileprivate final class LoginViewController: UIViewController {
             x: view.bounds.origin.x,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
     }
 
     func update(with screen: LoginScreen) {

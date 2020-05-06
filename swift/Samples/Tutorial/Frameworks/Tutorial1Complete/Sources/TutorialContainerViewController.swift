@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import UIKit
 import Workflow
 import WorkflowUI
-
 
 public final class TutorialContainerViewController: UIViewController {
     let containerViewController: UIViewController
 
     public init() {
         // Create a `ContainerViewController` with the `WelcomeWorkflow` as the root workflow
-        containerViewController = ContainerViewController(workflow: WelcomeWorkflow())
+        self.containerViewController = ContainerViewController(workflow: WelcomeWorkflow())
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -32,7 +32,7 @@ public final class TutorialContainerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .white
@@ -42,7 +42,7 @@ public final class TutorialContainerViewController: UIViewController {
         containerViewController.didMove(toParent: self)
     }
 
-    public override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         containerViewController.view.frame = view.bounds

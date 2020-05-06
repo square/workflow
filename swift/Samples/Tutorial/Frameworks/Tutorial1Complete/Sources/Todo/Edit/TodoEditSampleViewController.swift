@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import TutorialViews
 
+import TutorialViews
 
 final class TodoEditSampleViewController: UIViewController {
     let todoEditView: TodoEditView
 
     init() {
-        todoEditView = TodoEditView(frame: .zero)
+        self.todoEditView = TodoEditView(frame: .zero)
 
         super.init(nibName: nil, bundle: nil)
     }

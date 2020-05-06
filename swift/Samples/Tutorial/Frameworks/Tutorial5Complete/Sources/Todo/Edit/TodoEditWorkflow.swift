@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Workflow
-import WorkflowUI
+
 import BackStackContainer
 import ReactiveSwift
-
+import Workflow
+import WorkflowUI
 
 // MARK: Input and Output
 
 struct TodoEditWorkflow: Workflow {
-
     // The "Todo" passed from our parent.
     var initialTodo: TodoModel
 
@@ -32,11 +31,9 @@ struct TodoEditWorkflow: Workflow {
     }
 }
 
-
 // MARK: State and Initialization
 
 extension TodoEditWorkflow {
-
     struct State {
         // The workflow's copy of the Todo item. Changes are local to this workflow.
         var todo: TodoModel
@@ -47,24 +44,20 @@ extension TodoEditWorkflow {
     }
 
     func workflowDidChange(from previousWorkflow: TodoEditWorkflow, state: inout State) {
-
         // The `Todo` from our parent changed. Update our internal copy so we are starting from the same item.
         // The "correct" behavior depends on the business logic - would we only want to update if the
         // users hasn't changed the todo from the initial one? Or is it ok to delete whatever edits
         // were in progress if the state from the parent changes?
-        if previousWorkflow.initialTodo != self.initialTodo {
-            state.todo = self.initialTodo
+        if previousWorkflow.initialTodo != initialTodo {
+            state.todo = initialTodo
         }
     }
 }
 
-
 // MARK: Actions
 
 extension TodoEditWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = TodoEditWorkflow
 
         case titleChanged(String)
@@ -73,13 +66,11 @@ extension TodoEditWorkflow {
         case saveChanges
 
         func apply(toState state: inout TodoEditWorkflow.State) -> TodoEditWorkflow.Output? {
-
             switch self {
-
-            case .titleChanged(let title):
+            case let .titleChanged(title):
                 state.todo.title = title
 
-            case .noteChanged(let note):
+            case let .noteChanged(note):
                 state.todo.note = note
 
             case .discardChanges:
@@ -96,16 +87,11 @@ extension TodoEditWorkflow {
     }
 }
 
-
 // MARK: Workers
 
 extension TodoEditWorkflow {
-
     struct TodoEditWorker: Worker {
-
-        enum Output {
-
-        }
+        enum Output {}
 
         func run() -> SignalProducer<Output, Never> {
             fatalError()
@@ -114,15 +100,12 @@ extension TodoEditWorkflow {
         func isEquivalent(to otherWorker: TodoEditWorker) -> Bool {
             return true
         }
-
     }
-
 }
 
 // MARK: Rendering
 
 extension TodoEditWorkflow {
-
     typealias Rendering = BackStackScreen.Item
 
     func render(state: TodoEditWorkflow.State, context: RenderContext<TodoEditWorkflow>) -> Rendering {
@@ -137,7 +120,8 @@ extension TodoEditWorkflow {
             },
             onNoteChanged: { note in
                 sink.send(.noteChanged(note))
-            })
+            }
+        )
 
         let backStackItem = BackStackScreen.Item(
             key: "edit",
@@ -151,7 +135,10 @@ extension TodoEditWorkflow {
                     content: .text("Save"),
                     handler: {
                         sink.send(.saveChanges)
-                }))))
+                    }
+                ))
+            )
+        )
         return backStackItem
     }
 }

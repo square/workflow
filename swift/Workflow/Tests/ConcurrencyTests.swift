@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import XCTest
 @testable import Workflow
 
 import ReactiveSwift
 
-
 final class ConcurrencyTests: XCTestCase {
-
     // Applying an action from a sink must synchronously update the rendering.
     func test_sinkRenderLoopIsSynchronous() {
         let host = WorkflowHost(workflow: TestWorkflow())
 
         let expectation = XCTestExpectation()
         var first = true
-        var observedScreen: TestScreen? = nil
+        var observedScreen: TestScreen?
 
         let disposable = host.rendering.signal.observeValues { rendering in
             if first {
@@ -126,10 +125,10 @@ final class ConcurrencyTests: XCTestCase {
 
         // MANUAL TEST CASE: Uncomment to validate this fatal errors.
         // Calling `update` uses the original sink. This will fail with a fatalError as the sink was not redeclared.
-        //initialScreen.update()
+        // initialScreen.update()
 
         // If the sink *was* still valid, this would be correct. However, it should just fail and be `1` still.
-        //XCTAssertEqual(2, secondScreen.count)
+        // XCTAssertEqual(2, secondScreen.count)
         // Actual expected result, if we had not fatal errored.
         XCTAssertEqual(1, host.rendering.value.count)
 
@@ -143,8 +142,7 @@ final class ConcurrencyTests: XCTestCase {
                 return State(count: 0)
             }
 
-            func workflowDidChange(from previousWorkflow: OneShotWorkflow, state: inout State) {
-            }
+            func workflowDidChange(from previousWorkflow: OneShotWorkflow, state: inout State) {}
 
             enum Action: WorkflowAction {
                 typealias WorkflowType = OneShotWorkflow
@@ -213,7 +211,6 @@ final class ConcurrencyTests: XCTestCase {
     }
 
     func test_childWorkflowsAreSynchronous() {
-
         let host = WorkflowHost(workflow: ParentWorkflow())
 
         let initialScreen = host.rendering.value
@@ -234,8 +231,7 @@ final class ConcurrencyTests: XCTestCase {
                 return State(count: 0)
             }
 
-            func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout State) {
-            }
+            func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout State) {}
 
             enum Action: WorkflowAction {
                 typealias WorkflowType = ParentWorkflow
@@ -255,19 +251,18 @@ final class ConcurrencyTests: XCTestCase {
 
             func render(state: State, context: RenderContext<ParentWorkflow>) -> Rendering {
                 var childScreen = TestWorkflow(running: .idle, signal: TestSignal())
-                    .mapOutput({ output -> Action in
+                    .mapOutput { output -> Action in
                         switch output {
                         case .emit:
                             return .update
                         }
-                    })
+                    }
                     .rendered(with: context)
 
                 childScreen.count += state.count
                 return childScreen
             }
         }
-
     }
 
     // Signals are subscribed on a different scheduler than the UI scheduler,
@@ -278,7 +273,8 @@ final class ConcurrencyTests: XCTestCase {
         let host = WorkflowHost(
             workflow: TestWorkflow(
                 running: .signal,
-                signal: signal))
+                signal: signal
+            ))
 
         let expectation = XCTestExpectation()
         let disposable = host.rendering.signal.observeValues { rendering in
@@ -363,7 +359,6 @@ final class ConcurrencyTests: XCTestCase {
     // Because they are just backed by type, not the actual action, they send the actions appropriately.
     // (Thus, there is a single backing `TypedSink` for `AnyWorkflowAction`, but the correct action is applied.
     func test_multipleAnyWorkflowAction_sinksDontOverrideEachOther() {
-
         let host = WorkflowHost(workflow: AnyActionWorkflow())
 
         let initialScreen = host.rendering.value
@@ -392,12 +387,9 @@ final class ConcurrencyTests: XCTestCase {
                 return State(count: 0)
             }
 
-            func workflowDidChange(from previousWorkflow: AnyActionWorkflow, state: inout State) {
-
-            }
+            func workflowDidChange(from previousWorkflow: AnyActionWorkflow, state: inout State) {}
 
             enum FirstAction: WorkflowAction {
-
                 typealias WorkflowType = AnyActionWorkflow
                 case update
 
@@ -411,7 +403,6 @@ final class ConcurrencyTests: XCTestCase {
             }
 
             enum SecondAction: WorkflowAction {
-
                 typealias WorkflowType = AnyActionWorkflow
                 case update
 
@@ -429,10 +420,10 @@ final class ConcurrencyTests: XCTestCase {
                 var updateFirst: () -> Void
                 var updateSecond: () -> Void
             }
+
             typealias Rendering = TestScreen
 
             func render(state: State, context: RenderContext<AnyActionWorkflow>) -> Rendering {
-
                 let firstSink = context
                     .makeSink(
                         of: AnyWorkflowAction.self)
@@ -454,10 +445,10 @@ final class ConcurrencyTests: XCTestCase {
                     },
                     updateSecond: {
                         secondSink.send(.update)
-                    })
+                    }
+                )
             }
         }
-
     }
 
     /// Since event pipes are allowed to be reused, and shared for the same backing action type
@@ -469,7 +460,7 @@ final class ConcurrencyTests: XCTestCase {
     func test_eventPipesAreOnlyReusedForSameSource() {
         let host = WorkflowHost(workflow: SourceDifferentiatingWorkflow(step: .first))
 
-        //let initialScreen = host.rendering.value
+        // let initialScreen = host.rendering.value
         XCTAssertEqual(0, host.rendering.value.count)
 
         // Update to the second "step", which will cause a render update, with the sink not being declared.
@@ -480,7 +471,7 @@ final class ConcurrencyTests: XCTestCase {
         // MANUAL TEST CASE
         // This will fail, as the sink held by `initialScreen` has not be redeclared, even though the backing action is the same for the worker.
         // Uncomment to validate this test fails with a fatal error.
-        //initialScreen.update()
+        // initialScreen.update()
         XCTAssertEqual(0, host.rendering.value.count)
 
         struct SourceDifferentiatingWorkflow: Workflow {
@@ -500,8 +491,7 @@ final class ConcurrencyTests: XCTestCase {
                 return State(count: 0)
             }
 
-            func workflowDidChange(from previousWorkflow: SourceDifferentiatingWorkflow, state: inout State) {
-            }
+            func workflowDidChange(from previousWorkflow: SourceDifferentiatingWorkflow, state: inout State) {}
 
             enum Action: WorkflowAction {
                 typealias WorkflowType = SourceDifferentiatingWorkflow
@@ -534,7 +524,6 @@ final class ConcurrencyTests: XCTestCase {
             func render(state: State, context: RenderContext<SourceDifferentiatingWorkflow>) -> Rendering {
                 let update: () -> Void
                 switch step {
-
                 case .first:
                     let sink = context.makeSink(of: Action.self)
                     update = { sink.send(.update) }
@@ -550,7 +539,7 @@ final class ConcurrencyTests: XCTestCase {
         }
     }
 
-    // MARK - Test Types
+    // MARK: - Test Types
 
     fileprivate class TestSignal {
         let (signal, observer) = Signal<Int, Never>.pipe()
@@ -564,15 +553,12 @@ final class ConcurrencyTests: XCTestCase {
         }
     }
 
-
     fileprivate struct TestScreen {
         var count: Int
         var update: () -> Void
     }
 
-
     fileprivate struct TestWorkflow: Workflow {
-
         enum Output {
             case emit
         }
@@ -589,6 +575,7 @@ final class ConcurrencyTests: XCTestCase {
             case doubleSubscribing(secondSignal: TestSignal)
             case worker
         }
+
         var signal: TestSignal
 
         struct State: CustomStringConvertible {
@@ -602,11 +589,10 @@ final class ConcurrencyTests: XCTestCase {
         }
 
         func makeInitialState() -> State {
-            return State(count: 0, running: self.running, signal: self.signal)
+            return State(count: 0, running: running, signal: signal)
         }
 
-        func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State) {
-        }
+        func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State) {}
 
         enum Action: WorkflowAction {
             typealias WorkflowType = TestWorkflow
@@ -629,21 +615,20 @@ final class ConcurrencyTests: XCTestCase {
         typealias Rendering = TestScreen
 
         func render(state: State, context: RenderContext<TestWorkflow>) -> Rendering {
-
             switch state.running {
             case .idle:
                 break
             case .signal:
                 context.awaitResult(for: signal.signal.asWorker(key: "signal1")) { _ -> Action in
-                    return .update
+                    .update
                 }
 
-            case .doubleSubscribing(secondSignal: let signal2):
+            case let .doubleSubscribing(secondSignal: signal2):
                 context.awaitResult(for: signal2.signal.asWorker(key: "signal2")) { _ -> Action in
-                    return .secondUpdate
+                    .secondUpdate
                 }
                 context.awaitResult(for: signal.signal.asWorker(key: "signal1")) { _ -> Action in
-                    return .update
+                    .update
                 }
 
             case .worker:
@@ -654,7 +639,8 @@ final class ConcurrencyTests: XCTestCase {
 
             return TestScreen(
                 count: state.count,
-                update: { sink.send(.update) })
+                update: { sink.send(.update) }
+            )
         }
 
         struct TestWorker: Worker {

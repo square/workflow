@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import TutorialViews
 import Workflow
 import WorkflowUI
-import TutorialViews
-
 
 struct TodoEditScreen: Screen {
     // The title of this todo item.
@@ -32,7 +32,6 @@ struct TodoEditScreen: Screen {
         return TodoEditViewController.description(for: self, environment: environment)
     }
 }
-
 
 final class TodoEditViewController: ScreenViewController<TodoEditScreen> {
     // The `todoEditView` has all the logic for displaying the todo and editing.
@@ -68,5 +67,4 @@ final class TodoEditViewController: ScreenViewController<TodoEditScreen> {
         todoEditView.onTitleChanged = screen.onTitleChanged
         todoEditView.onNoteChanged = screen.onNoteChanged
     }
-
 }

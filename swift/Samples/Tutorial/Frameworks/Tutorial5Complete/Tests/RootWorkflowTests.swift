@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import XCTest
-@testable import Tutorial5
+
+import Workflow
 import WorkflowTesting
+import XCTest
 // Import `BackStackContainer` as testable so that the items in the `BackStackScreen` can be inspected.
 @testable import BackStackContainer
+@testable import Tutorial5
 // Import `WorkflowUI` as testable so that the wrappedScreen in `AnyScreen` can be accessed.
 @testable import WorkflowUI
-import Workflow
 
 class RootWorkflowTests: XCTestCase {
-
     func testWelcomeRendering() {
         RootWorkflow()
             // Start in the `.welcome` state
@@ -43,8 +43,10 @@ class RootWorkflowTests: XCTestCase {
                         rendering: WelcomeScreen(
                             name: "MyName",
                             onNameChanged: { _ in },
-                            onLoginTapped: {}))
-                    ],
+                            onLoginTapped: {}
+                        )
+                    ),
+                ],
                 // Now, validate that there is a single item in the BackStackScreen, which is our welcome screen.
                 assertions: { rendering in
                     XCTAssertEqual(1, rendering.items.count)
@@ -53,7 +55,8 @@ class RootWorkflowTests: XCTestCase {
                         return
                     }
                     XCTAssertEqual("MyName", welcomeScreen.name)
-                })
+                }
+            )
     }
 
     func testLogin() {
@@ -75,9 +78,11 @@ class RootWorkflowTests: XCTestCase {
                         rendering: WelcomeScreen(
                             name: "MyName",
                             onNameChanged: { _ in },
-                            onLoginTapped: {}),
+                            onLoginTapped: {}
+                        ),
                         // Simulate the `WelcomeWorkflow` sending an output of `.didLogin` as if the login button was tapped.
-                        output: .didLogin(name: "MyName"))
+                        output: .didLogin(name: "MyName")
+                    ),
                 ],
                 // Now, validate that there is a single item in the BackStackScreen, which is our welcome screen (prior to the output).
                 assertions: { rendering in
@@ -87,11 +92,11 @@ class RootWorkflowTests: XCTestCase {
                         return
                     }
                     XCTAssertEqual("MyName", welcomeScreen.name)
-            })
-        .assert(state: { state in
-            XCTAssertEqual(.todo(name: "MyName"), state)
+                }
+            )
+            .assert(state: { state in
+                XCTAssertEqual(.todo(name: "MyName"), state)
         })
-
     }
 
     func testAppFlow() {
@@ -189,21 +194,18 @@ class RootWorkflowTests: XCTestCase {
             // Save the changes by tapping the right bar button.
             // This also validates that the navigation bar was described as expected.
             switch backStack.items[2].barVisibility {
-
             case .hidden:
                 XCTFail("Expected a visible navigation bar")
 
-            case .visible(let barContent):
+            case let .visible(barContent):
                 switch barContent.rightItem {
-
                 case .none:
                     XCTFail("Expected a right bar button")
 
-                case .button(let button):
+                case let .button(button):
 
                     switch button.content {
-
-                    case .text(let text):
+                    case let .text(text):
                         XCTAssertEqual("Save", text)
 
                     case .icon:
@@ -231,9 +233,6 @@ class RootWorkflowTests: XCTestCase {
             }
             XCTAssertEqual(1, todoScreen.todoTitles.count)
             XCTAssertEqual("New Title", todoScreen.todoTitles[0])
-
         }
-
     }
-
 }

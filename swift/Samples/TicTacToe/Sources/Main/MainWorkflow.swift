@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Workflow
-import WorkflowUI
+
 import BackStackContainer
 import ModalContainer
-
+import Workflow
+import WorkflowUI
 
 // MARK: Input and Output
 
@@ -25,11 +25,9 @@ struct MainWorkflow: Workflow {
     typealias Output = Never
 }
 
-
 // MARK: State and Initialization
 
 extension MainWorkflow {
-
     enum State {
         case authenticating
         case runningGame(sessionToken: String)
@@ -39,27 +37,21 @@ extension MainWorkflow {
         return .authenticating
     }
 
-    func workflowDidChange(from previousWorkflow: MainWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: MainWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension MainWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = MainWorkflow
 
         case authenticated(sessionToken: String)
         case logout
 
         func apply(toState state: inout MainWorkflow.State) -> MainWorkflow.Output? {
-
             switch self {
-            case .authenticated(sessionToken: let sessionToken):
+            case let .authenticated(sessionToken: sessionToken):
                 state = .runningGame(sessionToken: sessionToken)
 
             case .logout:
@@ -67,36 +59,31 @@ extension MainWorkflow {
             }
 
             return nil
-
         }
     }
 }
 
-
 // MARK: Rendering
 
 extension MainWorkflow {
-
     typealias Rendering = ModalContainerScreen<BackStackScreen>
 
     func render(state: MainWorkflow.State, context: RenderContext<MainWorkflow>) -> Rendering {
-
         switch state {
         case .authenticating:
             return AuthenticationWorkflow(
                 authenticationService: AuthenticationService())
                 .mapOutput({ output -> Action in
                     switch output {
-                    case .authorized(session: let sessionToken):
+                    case let .authorized(session: sessionToken):
                         return .authenticated(sessionToken: sessionToken)
                     }
                 }
-            )
-            .rendered(with: context)
+                )
+                .rendered(with: context)
         case .runningGame:
             return RunGameWorkflow()
                 .rendered(with: context)
         }
-
     }
 }

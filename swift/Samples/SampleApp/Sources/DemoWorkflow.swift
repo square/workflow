@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import ReactiveSwift
 import Workflow
 import WorkflowUI
-import ReactiveSwift
-
 
 // MARK: Input and Output
 
@@ -26,11 +26,9 @@ struct DemoWorkflow: Workflow {
     typealias Output = Never
 }
 
-
 // MARK: State and Initialization
 
 extension DemoWorkflow {
-
     struct State {
         fileprivate var signal: TimerSignal
         var colorState: ColorState
@@ -59,21 +57,17 @@ extension DemoWorkflow {
             signal: TimerSignal(),
             colorState: .red,
             loadingState: .idle(title: "Not Loaded"),
-            subscriptionState: .not)
+            subscriptionState: .not
+        )
     }
 
-    func workflowDidChange(from previousWorkflow: DemoWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: DemoWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension DemoWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = DemoWorkflow
 
         case titleButtonTapped
@@ -83,7 +77,6 @@ extension DemoWorkflow {
         case refreshError(Error)
 
         func apply(toState state: inout DemoWorkflow.State) -> DemoWorkflow.Output? {
-
             switch self {
             case .titleButtonTapped:
                 switch state.colorState {
@@ -105,9 +98,9 @@ extension DemoWorkflow {
 
             case .refreshButtonTapped:
                 state.loadingState = .loading
-            case .refreshComplete(let message):
+            case let .refreshComplete(message):
                 state.loadingState = .idle(title: message)
-            case .refreshError(let error):
+            case let .refreshError(error):
                 state.loadingState = .idle(title: error.localizedDescription)
             }
             return nil
@@ -115,9 +108,7 @@ extension DemoWorkflow {
     }
 }
 
-
 // MARK: Workers
-
 
 struct RefreshWorker: Worker {
     enum Output {
@@ -134,7 +125,6 @@ struct RefreshWorker: Worker {
         return true
     }
 }
-
 
 // MARK: Rendering
 
@@ -157,7 +147,7 @@ extension DemoWorkflow {
         let refreshEnabled: Bool
 
         switch state.loadingState {
-        case .idle(title: let refreshTitle):
+        case let .idle(title: refreshTitle):
             refreshText = refreshTitle
             refreshEnabled = true
 
@@ -170,9 +160,9 @@ extension DemoWorkflow {
 
             context.awaitResult(for: RefreshWorker()) { output -> Action in
                 switch output {
-                case .success(let result):
+                case let .success(result):
                     return .refreshComplete(result)
-                case .error(let error):
+                case let .error(error):
                     return .refreshError(error)
                 }
             }
@@ -186,7 +176,7 @@ extension DemoWorkflow {
         case .subscribing:
             // Subscribe to the timer signal, simulating the title being tapped.
             context.awaitResult(for: state.signal.signal.asWorker(key: "Timer")) { _ -> Action in
-                return .titleButtonTapped
+                .titleButtonTapped
             }
             subscribeTitle = "Stop"
         }
@@ -208,12 +198,12 @@ extension DemoWorkflow {
             isRefreshEnabled: refreshEnabled,
             onRefreshTap: {
                 sink.send(.refreshButtonTapped)
-            })
+            }
+        )
     }
 }
 
-
-fileprivate class TimerSignal {
+private class TimerSignal {
     let signal: Signal<Void, Never>
     let observer: Signal<Void, Never>.Observer
     let timer: Timer

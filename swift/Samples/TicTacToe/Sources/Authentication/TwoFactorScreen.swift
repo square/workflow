@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import WorkflowUI
 
+import WorkflowUI
 
 struct TwoFactorScreen: Screen {
     var title: String
@@ -25,8 +25,7 @@ struct TwoFactorScreen: Screen {
     }
 }
 
-
-fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorScreen> {
+private final class TwoFactorViewController: ScreenViewController<TwoFactorScreen> {
     let titleLabel: UILabel
     let twoFactorField: UITextField
     let button: UIButton
@@ -49,7 +48,7 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
         twoFactorField.placeholder = "one time token"
         twoFactorField.backgroundColor = UIColor(white: 0.92, alpha: 1.0)
 
-        button.backgroundColor = UIColor(red: 41/255, green: 150/255, blue: 204/255, alpha: 1.0)
+        button.backgroundColor = UIColor(red: 41 / 255, green: 150 / 255, blue: 204 / 255, alpha: 1.0)
         button.setTitle("Login", for: .normal)
         button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)
 
@@ -70,14 +69,16 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
             x: view.bounds.origin.x,
             y: view.bounds.origin.y,
             width: view.bounds.size.width,
-            height: yOffset)
+            height: yOffset
+        )
 
         twoFactorField.frame = CGRect(
             x: view.bounds.origin.x,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
 
         yOffset += height + inset
 
@@ -85,8 +86,9 @@ fileprivate final class TwoFactorViewController: ScreenViewController<TwoFactorS
             x: view.bounds.origin.x,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
     }
 
     override func screenDidChange(from previousScreen: TwoFactorScreen, previousEnvironment: ViewEnvironment) {

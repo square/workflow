@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import WorkflowUI
 
+import WorkflowUI
 
 struct GamePlayScreen: Screen {
     var gameState: GameState
@@ -28,7 +28,6 @@ struct GamePlayScreen: Screen {
     }
 }
 
-
 final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
     let titleLabel: UILabel
     let cells: [[UIButton]]
@@ -37,9 +36,9 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
         self.titleLabel = UILabel(frame: .zero)
         var cells: [[UIButton]] = []
 
-        for _ in 0..<3 {
+        for _ in 0 ..< 3 {
             var row: [UIButton] = []
-            for _ in 0..<3 {
+            for _ in 0 ..< 3 {
                 row.append(UIButton(frame: .zero))
             }
             cells.append(row)
@@ -88,7 +87,8 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
             x: bounds.origin.x,
             y: bounds.origin.y,
             width: bounds.size.width,
-            height: 44.0)
+            height: 44.0
+        )
 
         var yOffset = (view.bounds.height - boardLength) / 2.0
         for row in cells {
@@ -98,7 +98,8 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
                     x: xOffset,
                     y: yOffset,
                     width: cellLength,
-                    height: cellLength)
+                    height: cellLength
+                )
 
                 xOffset += inset + cellLength
             }
@@ -113,8 +114,7 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
     private func update(with screen: GamePlayScreen) {
         let title: String
         switch screen.gameState {
-
-        case .ongoing(turn: let turn):
+        case let .ongoing(turn: turn):
             switch turn {
             case .x:
                 title = "\(screen.playerX), place your 🙅"
@@ -125,7 +125,7 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
         case .tie:
             title = "It's a Tie!"
 
-        case .win(let player):
+        case let .win(player):
             switch player {
             case .x:
                 title = "The 🙅's have it, \(screen.playerX) wins!"
@@ -135,13 +135,13 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
         }
         titleLabel.text = title
 
-        for row in 0..<3 {
+        for row in 0 ..< 3 {
             let cols = screen.board[row]
-            for col in 0..<3 {
+            for col in 0 ..< 3 {
                 switch cols[col] {
                 case .empty:
                     cells[row][col].setTitle("", for: .normal)
-                case .taken(let player):
+                case let .taken(player):
                     switch player {
                     case .x:
                         cells[row][col].setTitle("🙅", for: .normal)
@@ -154,9 +154,9 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
     }
 
     @objc private func buttonPressed(sender: UIButton) {
-        for row in 0..<3 {
+        for row in 0 ..< 3 {
             let cols = cells[row]
-            for col in 0..<3 {
+            for col in 0 ..< 3 {
                 if cols[col] == sender {
                     screen.onSelected(row, col)
                     return

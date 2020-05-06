@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,37 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import XCTest
 @testable import Workflow
 
 import ReactiveSwift
 
-
 final class WorkflowNodeTests: XCTestCase {
-
     func test_rendersSimpleWorkflow() {
         let node = WorkflowNode(workflow: SimpleWorkflow(string: "Foo"))
         XCTAssertEqual(node.render(), "ooF")
     }
 
     func test_rendersNestedWorkflows() {
-
         let node = WorkflowNode(
             workflow: CompositeWorkflow(
                 a: SimpleWorkflow(string: "Hello"),
-                b: SimpleWorkflow(string: "World")))
+                b: SimpleWorkflow(string: "World")
+            ))
 
         XCTAssertEqual(node.render().aRendering, "olleH")
         XCTAssertEqual(node.render().bRendering, "dlroW")
     }
 
     func test_childWorkflowsEmitOutputEvents() {
-
         typealias WorkflowType = CompositeWorkflow<EventEmittingWorkflow, SimpleWorkflow>
 
         let workflow = CompositeWorkflow(
             a: EventEmittingWorkflow(string: "Hello"),
-            b: SimpleWorkflow(string: "World"))
+            b: SimpleWorkflow(string: "World")
+        )
 
         let node = WorkflowNode(workflow: workflow)
 
@@ -69,12 +68,12 @@ final class WorkflowNodeTests: XCTestCase {
     }
 
     func test_childWorkflowsEmitStateChangeEvents() {
-
         typealias WorkflowType = CompositeWorkflow<StateTransitioningWorkflow, SimpleWorkflow>
 
         let workflow = CompositeWorkflow(
             a: StateTransitioningWorkflow(),
-            b: SimpleWorkflow(string: "World"))
+            b: SimpleWorkflow(string: "World")
+        )
 
         let node = WorkflowNode(workflow: workflow)
 
@@ -106,12 +105,12 @@ final class WorkflowNodeTests: XCTestCase {
     }
 
     func test_debugUpdateInfo() {
-
         typealias WorkflowType = CompositeWorkflow<EventEmittingWorkflow, SimpleWorkflow>
 
         let workflow = CompositeWorkflow(
             a: EventEmittingWorkflow(string: "Hello"),
-            b: SimpleWorkflow(string: "World"))
+            b: SimpleWorkflow(string: "World")
+        )
 
         let node = WorkflowNode(workflow: workflow)
 
@@ -138,18 +137,18 @@ final class WorkflowNodeTests: XCTestCase {
 
         /// Test the shape of the emitted debug info
         switch debugInfo.kind {
-        case .childDidUpdate(_):
+        case .childDidUpdate:
             XCTFail()
-        case .didUpdate(let source):
+        case let .didUpdate(source):
             switch source {
             case .external, .worker:
                 XCTFail()
-            case .subtree(let childInfo):
+            case let .subtree(childInfo):
                 XCTAssert(childInfo.workflowType == "\(EventEmittingWorkflow.self)")
                 switch childInfo.kind {
-                case .childDidUpdate(_):
+                case .childDidUpdate:
                     XCTFail()
-                case .didUpdate(let source):
+                case let .didUpdate(source):
                     switch source {
                     case .external:
                         break
@@ -157,20 +156,17 @@ final class WorkflowNodeTests: XCTestCase {
                         XCTFail()
                     }
                 }
-
             }
-
         }
-
     }
 
     func test_debugTreeSnapshots() {
-
         typealias WorkflowType = CompositeWorkflow<EventEmittingWorkflow, SimpleWorkflow>
 
         let workflow = CompositeWorkflow(
             a: EventEmittingWorkflow(string: "Hello"),
-            b: SimpleWorkflow(string: "World"))
+            b: SimpleWorkflow(string: "World")
+        )
         let node = WorkflowNode(workflow: workflow)
         _ = node.render() // the debug snapshow always reflects the tree after the latest render pass
 
@@ -184,39 +180,39 @@ final class WorkflowNodeTests: XCTestCase {
                     key: "a",
                     snapshot: WorkflowHierarchyDebugSnapshot(
                         workflowType: "\(EventEmittingWorkflow.self)",
-                        stateDescription: "\(EventEmittingWorkflow.State())")),
+                        stateDescription: "\(EventEmittingWorkflow.State())"
+                    )
+                ),
                 WorkflowHierarchyDebugSnapshot.Child(
                     key: "b",
                     snapshot: WorkflowHierarchyDebugSnapshot(
                         workflowType: "\(SimpleWorkflow.self)",
-                        stateDescription: "\(SimpleWorkflow.State())"))
-            ])
+                        stateDescription: "\(SimpleWorkflow.State())"
+                    )
+                ),
+            ]
+        )
 
         XCTAssertEqual(snapshot, expectedSnapshot)
-
     }
 
     func test_handlesRepeatedWorkerOutputs() {
-
         struct WF: Workflow {
-
             struct State {}
 
             typealias Output = Int
-            
+
             typealias Rendering = Void
 
             func makeInitialState() -> WF.State {
                 return State()
             }
 
-            func workflowDidChange(from previousWorkflow: WF, state: inout WF.State) {
+            func workflowDidChange(from previousWorkflow: WF, state: inout WF.State) {}
 
-            }
-
-            func render(state: WF.State, context: RenderContext<WF>) -> Void {
+            func render(state: WF.State, context: RenderContext<WF>) {
                 context.awaitResult(for: TestWorker()) { output in
-                    return AnyWorkflowAction(sendingOutput: output)
+                    AnyWorkflowAction(sendingOutput: output)
                 }
             }
         }
@@ -227,12 +223,12 @@ final class WorkflowNodeTests: XCTestCase {
             }
 
             func run() -> SignalProducer<Int, Never> {
-                return SignalProducer{ observer, lifetime in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+                return SignalProducer { observer, lifetime in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         observer.send(value: 1)
                         observer.send(value: 2)
                         observer.sendCompleted()
-                    })
+                    }
                 }
             }
         }
@@ -258,20 +254,17 @@ final class WorkflowNodeTests: XCTestCase {
 
         XCTAssertEqual(outputs, [1, 2])
     }
-
 }
 
 /// Renders two child state machines of types `A` and `B`.
-fileprivate struct CompositeWorkflow<A, B>: Workflow where
+private struct CompositeWorkflow<A, B>: Workflow where
     A: Workflow,
     B: Workflow {
-
     var a: A
     var b: B
 }
 
 extension CompositeWorkflow {
-
     struct State {}
 
     struct Rendering {
@@ -292,9 +285,9 @@ extension CompositeWorkflow {
 
         func apply(toState state: inout CompositeWorkflow<A, B>.State) -> CompositeWorkflow<A, B>.Output? {
             switch self {
-            case .a(let childOutput):
+            case let .a(childOutput):
                 return .childADidSomething(childOutput)
-            case .b(let childOutput):
+            case let .b(childOutput):
                 return .childBDidSomething(childOutput)
             }
         }
@@ -304,39 +297,33 @@ extension CompositeWorkflow {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: CompositeWorkflow<A, B>, state: inout State) {
-
-    }
-
-
+    func workflowDidChange(from previousWorkflow: CompositeWorkflow<A, B>, state: inout State) {}
 
     func render(state: State, context: RenderContext<CompositeWorkflow<A, B>>) -> Rendering {
-
-
         return Rendering(
             aRendering: a
                 .mapOutput { Event.a($0) }
                 .rendered(with: context, key: "a"),
             bRendering: b
                 .mapOutput { Event.b($0) }
-                .rendered(with: context, key: "b"))
+                .rendered(with: context, key: "b")
+        )
     }
-
 }
 
 extension CompositeWorkflow.Rendering: Equatable where A.Rendering: Equatable, B.Rendering: Equatable {
-    fileprivate static func ==(lhs: CompositeWorkflow.Rendering, rhs: CompositeWorkflow.Rendering) -> Bool {
+    fileprivate static func == (lhs: CompositeWorkflow.Rendering, rhs: CompositeWorkflow.Rendering) -> Bool {
         return lhs.aRendering == rhs.aRendering
             && lhs.bRendering == rhs.bRendering
     }
 }
 
 extension CompositeWorkflow.Output: Equatable where A.Output: Equatable, B.Output: Equatable {
-    fileprivate static func ==(lhs: CompositeWorkflow.Output, rhs: CompositeWorkflow.Output) -> Bool {
+    fileprivate static func == (lhs: CompositeWorkflow.Output, rhs: CompositeWorkflow.Output) -> Bool {
         switch (lhs, rhs) {
-        case (.childADidSomething(let l), .childADidSomething(let r)):
+        case let (.childADidSomething(l), .childADidSomething(r)):
             return l == r
-        case (.childBDidSomething(let l), .childBDidSomething(let r)):
+        case let (.childBDidSomething(l), .childBDidSomething(r)):
             return l == r
         default:
             return false
@@ -345,7 +332,7 @@ extension CompositeWorkflow.Output: Equatable where A.Output: Equatable, B.Outpu
 }
 
 /// Has no state or output, simply renders a reversed string
-fileprivate struct SimpleWorkflow: Workflow {
+private struct SimpleWorkflow: Workflow {
     var string: String
 
     struct State {}
@@ -354,27 +341,20 @@ fileprivate struct SimpleWorkflow: Workflow {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: SimpleWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: SimpleWorkflow, state: inout State) {}
 
     func render(state: State, context: RenderContext<SimpleWorkflow>) -> String {
         return String(string.reversed())
     }
-
 }
 
-
 /// Renders to a model that contains a callback, which in turn sends an output event.
-fileprivate struct EventEmittingWorkflow: Workflow {
+private struct EventEmittingWorkflow: Workflow {
     var string: String
 }
 
 extension EventEmittingWorkflow {
-
-    struct State {
-
-    }
+    struct State {}
 
     struct Rendering {
         var someoneTappedTheButton: () -> Void
@@ -401,25 +381,19 @@ extension EventEmittingWorkflow {
         case helloWorld
     }
 
-    func workflowDidChange(from previousWorkflow: EventEmittingWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: EventEmittingWorkflow, state: inout State) {}
 
     func render(state: State, context: RenderContext<EventEmittingWorkflow>) -> Rendering {
-
-
         let sink = context.makeSink(of: Event.self)
 
         return Rendering(someoneTappedTheButton: { sink.send(.tapped) })
     }
 }
 
-
 /// Renders to a model that contains a callback, which in turn sends an output event.
-fileprivate struct StateTransitioningWorkflow: Workflow {
-
+private struct StateTransitioningWorkflow: Workflow {
     typealias State = Bool
-    
+
     typealias Output = Never
 
     struct Rendering {
@@ -431,17 +405,15 @@ fileprivate struct StateTransitioningWorkflow: Workflow {
         return false
     }
 
-    func workflowDidChange(from previousWorkflow: StateTransitioningWorkflow, state: inout Bool) {
-        
-    }
+    func workflowDidChange(from previousWorkflow: StateTransitioningWorkflow, state: inout Bool) {}
 
     func render(state: State, context: RenderContext<StateTransitioningWorkflow>) -> Rendering {
-
         let sink = context.makeSink(of: Event.self)
 
         return Rendering(
             toggle: { sink.send(.toggle) },
-            currentValue: state)
+            currentValue: state
+        )
     }
 
     enum Event: WorkflowAction {
@@ -457,12 +429,10 @@ fileprivate struct StateTransitioningWorkflow: Workflow {
             return nil
         }
     }
-
-
 }
 
 #if compiler(>=5.0)
 // Never gains Equatable and Hashable conformance in Swift 5
 #else
-extension Never: Equatable {}
+    extension Never: Equatable {}
 #endif

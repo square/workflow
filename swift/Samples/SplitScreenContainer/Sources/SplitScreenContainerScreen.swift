@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import WorkflowUI
 
+import WorkflowUI
 
 /// A `SplitScreenContainerScreen` displays two screens side by side with a separator in between.
 public struct SplitScreenContainerScreen<LeadingScreenType: Screen, TrailingScreenType: Screen>: Screen {
-
     /// The screen displayed leading the separator.
     public let leadingScreen: LeadingScreenType
 
@@ -27,7 +26,7 @@ public struct SplitScreenContainerScreen<LeadingScreenType: Screen, TrailingScre
 
     /// The ratio of `leadingScreen`'s width relative to that of `trailingScreen`. Defaults to `.third`.
     public let ratio: CGFloat
-    
+
     /// The color of the `separatorView` displayed between `leadingScreen`'s and `trailingScreen`'s views.
     public let separatorColor: UIColor
 
@@ -51,7 +50,6 @@ public struct SplitScreenContainerScreen<LeadingScreenType: Screen, TrailingScre
     public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
         return SplitScreenContainerViewController.description(for: self, environment: environment)
     }
-
 }
 
 public extension CGFloat {

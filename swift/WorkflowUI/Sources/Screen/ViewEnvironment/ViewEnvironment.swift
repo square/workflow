@@ -1,19 +1,18 @@
 /*
-* Copyright 2012 Square Inc.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
+ * Copyright 2020 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /// ViewEnvironment acts as a container for values to flow down the view-side
 /// of a rendering tree (as opposed to being passed down through Workflows).
@@ -23,7 +22,6 @@
 /// the environment of its two children according to which position they’re
 /// appearing in).
 public struct ViewEnvironment {
-
     /// An empty view environment. This should only be used when setting up a
     /// root workflow into a root ContainerViewController or when writing tests.
     /// In other scenarios, containers should pass down the ViewEnvironment
@@ -35,7 +33,7 @@ public struct ViewEnvironment {
 
     /// Private empty initializer to make the `empty` environment explicit.
     private init() {
-        storage = [:]
+        self.storage = [:]
     }
 
     /// Get or set for the given ViewEnvironmentKey.
@@ -44,7 +42,6 @@ public struct ViewEnvironment {
     /// environment value. See documentation for ViewEnvironmentKey for a
     /// usage example.
     public subscript<Key>(key: Key.Type) -> Key.Value where Key: ViewEnvironmentKey {
-
         get {
             if let value = storage[ObjectIdentifier(key)] as? Key.Value {
                 return value
@@ -56,7 +53,6 @@ public struct ViewEnvironment {
         set {
             storage[ObjectIdentifier(key)] = newValue
         }
-
     }
 
     /// Returns a new ViewEnvironment with the given value set for the given
@@ -93,5 +89,4 @@ public struct ViewEnvironment {
         newEnvironment[keyPath: keyPath] = value
         return newEnvironment
     }
-
 }

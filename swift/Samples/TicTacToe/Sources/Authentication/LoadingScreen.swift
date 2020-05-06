@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import WorkflowUI
 
+import WorkflowUI
 
 struct LoadingScreen: Screen {
     func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
@@ -22,8 +22,7 @@ struct LoadingScreen: Screen {
     }
 }
 
-
-fileprivate final class LoadingScreenViewController: ScreenViewController<LoadingScreen> {
+private final class LoadingScreenViewController: ScreenViewController<LoadingScreen> {
     let loadingLabel: UILabel
 
     required init(screen: LoadingScreen, environment: ViewEnvironment) {

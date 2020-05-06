@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import Workflow
 import WorkflowUI
-
 
 struct CrossFadeScreen: Screen {
     var baseScreen: AnyScreen
@@ -36,7 +36,7 @@ struct CrossFadeScreen: Screen {
     }
 
     fileprivate func isEquivalent(to otherScreen: CrossFadeScreen) -> Bool {
-        return self.key == otherScreen.key
+        return key == otherScreen.key
     }
 
     func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
@@ -44,12 +44,11 @@ struct CrossFadeScreen: Screen {
     }
 }
 
-
-fileprivate final class CrossFadeContainerViewController: ScreenViewController<CrossFadeScreen> {
+private final class CrossFadeContainerViewController: ScreenViewController<CrossFadeScreen> {
     var childViewController: DescribedViewController
 
     required init(screen: CrossFadeScreen, environment: ViewEnvironment) {
-        childViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
+        self.childViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
         super.init(screen: screen, environment: environment)
     }
 
@@ -87,8 +86,8 @@ fileprivate final class CrossFadeContainerViewController: ScreenViewController<C
                     oldChild.willMove(toParent: nil)
                     oldChild.view.removeFromSuperview()
                     oldChild.removeFromParent()
-                })
+                }
+            )
         }
     }
-
 }

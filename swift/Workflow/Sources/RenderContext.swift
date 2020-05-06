@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import ReactiveSwift
 
 /// `RenderContext` is the composition point for the workflow tree.
@@ -46,9 +47,8 @@ import ReactiveSwift
 /// The infrastructure then performs a render pass on the child to obtain its
 /// `Rendering` value, which is then returned to the caller.
 public class RenderContext<WorkflowType: Workflow>: RenderContextType {
+    private(set) var isValid = true
 
-    private (set) var isValid = true
-    
     // Ensure that this class can never be initialized externally
     private init() {}
 
@@ -63,7 +63,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
     /// - Parameter key: A string that uniquely identifies this child.
     ///
     /// - Returns: The `Rendering` result of the child's `render` method.
-    public func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child : Workflow, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+    public func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child: Workflow, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
         fatalError()
     }
 
@@ -71,14 +71,14 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
-    public func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+    public func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
         fatalError()
     }
-    
+
     final func invalidate() {
         isValid = false
     }
-    
+
     // API to allow custom context implementations to power a render context
     static func make<T: RenderContextType>(implementation: T) -> RenderContext<WorkflowType> where T.WorkflowType == WorkflowType {
         return ConcreteRenderContext(implementation)
@@ -87,7 +87,6 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
     // Private subclass that forwards render calls to a wrapped implementation. This is the only `RenderContext` class
     // that is ever instantiated.
     private final class ConcreteRenderContext<T: RenderContextType>: RenderContext where WorkflowType == T.WorkflowType {
-
         let implementation: T
 
         init(_ implementation: T) {
@@ -95,30 +94,27 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
             super.init()
         }
 
-        override func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where WorkflowType == Action.WorkflowType, Child : Workflow, Action : WorkflowAction {
+        override func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where WorkflowType == Action.WorkflowType, Child: Workflow, Action: WorkflowAction {
             assertStillValid()
             return implementation.render(workflow: workflow, key: key, outputMap: outputMap)
         }
 
-        override func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where WorkflowType == Action.WorkflowType, Action : WorkflowAction {
+        override func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where WorkflowType == Action.WorkflowType, Action: WorkflowAction {
             return implementation.makeSink(of: actionType)
         }
 
-        override func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
+        override func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
             assertStillValid()
             implementation.awaitResult(for: worker, outputMap: outputMap)
         }
-        
+
         private func assertStillValid() {
             assert(isValid, "A `RenderContext` instance was used outside of the workflow's `render` method. It is a programmer error to capture a context in a closure or otherwise cause it to be used outside of the `render` method.")
         }
-
     }
-
 }
 
-
-internal protocol RenderContextType: class {
+internal protocol RenderContextType: AnyObject {
     associatedtype WorkflowType: Workflow
 
     func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child: Workflow, Action: WorkflowAction, Action.WorkflowType == WorkflowType
@@ -126,35 +122,29 @@ internal protocol RenderContextType: class {
     func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
     func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
-    
 }
 
-
 extension RenderContext {
-
     public func makeSink<Event>(of eventType: Event.Type, onEvent: @escaping (Event, inout WorkflowType.State) -> WorkflowType.Output?) -> Sink<Event> {
         return makeSink(of: AnyWorkflowAction.self)
             .contraMap { event in
-                return AnyWorkflowAction<WorkflowType> { state in
-                    return onEvent(event, &state)
+                AnyWorkflowAction<WorkflowType> { state in
+                    onEvent(event, &state)
                 }
             }
     }
-
 }
 
 extension RenderContext {
-
-    public func awaitResult<W>(for worker: W) where W : Worker, W.Output : WorkflowAction, WorkflowType == W.Output.WorkflowType {
+    public func awaitResult<W>(for worker: W) where W: Worker, W.Output: WorkflowAction, WorkflowType == W.Output.WorkflowType {
         awaitResult(for: worker, outputMap: { $0 })
     }
 
     public func awaitResult<W>(for worker: W, onOutput: @escaping (W.Output, inout WorkflowType.State) -> WorkflowType.Output?) where W: Worker {
         awaitResult(for: worker) { output in
-            return AnyWorkflowAction<WorkflowType> { state in
-                return onOutput(output, &state)
+            AnyWorkflowAction<WorkflowType> { state in
+                onOutput(output, &state)
             }
         }
     }
-
 }

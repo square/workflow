@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import Workflow
 import WorkflowUI
-
 
 // MARK: Input and Output
 
@@ -27,29 +27,21 @@ struct ReversingWorkflow: Workflow {
     var text: String
 }
 
-
 // MARK: State and Initialization
 
 extension ReversingWorkflow {
-
-    struct State {
-
-    }
+    struct State {}
 
     func makeInitialState() -> ReversingWorkflow.State {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: ReversingWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: ReversingWorkflow, state: inout State) {}
 }
-
 
 // MARK: Rendering
 
 extension ReversingWorkflow {
-
     func render(state: ReversingWorkflow.State, context: RenderContext<ReversingWorkflow>) -> String {
         return String(text.reversed())
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Workflow
-import WorkflowUI
+
 import BackStackContainer
 import ModalContainer
-
+import Workflow
+import WorkflowUI
 
 // MARK: Input and Output
 
@@ -25,11 +25,9 @@ struct RunGameWorkflow: Workflow {
     typealias Output = Never
 }
 
-
 // MARK: State and Initialization
 
 extension RunGameWorkflow {
-
     struct State {
         var playerX: String
         var playerO: String
@@ -46,18 +44,13 @@ extension RunGameWorkflow {
         return State(playerX: "X", playerO: "O", step: .newGame)
     }
 
-    func workflowDidChange(from previousWorkflow: RunGameWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: RunGameWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension RunGameWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = RunGameWorkflow
 
         case updatePlayerX(String)
@@ -67,12 +60,11 @@ extension RunGameWorkflow {
         case confirmQuit
 
         func apply(toState state: inout RunGameWorkflow.State) -> RunGameWorkflow.Output? {
-
             switch self {
-            case .updatePlayerX(let name):
+            case let .updatePlayerX(name):
                 state.playerX = name
 
-            case .updatePlayerO(let name):
+            case let .updatePlayerO(name):
                 state.playerO = name
 
             case .startGame:
@@ -80,10 +72,9 @@ extension RunGameWorkflow {
 
             case .back:
                 state.step = .newGame
-            
+
             case .confirmQuit:
                 state.step = .maybeQuit
-                
             }
 
             return nil
@@ -91,23 +82,23 @@ extension RunGameWorkflow {
     }
 }
 
-
 // MARK: Rendering
 
 extension RunGameWorkflow {
-
     typealias Rendering = ModalContainerScreen<BackStackScreen>
 
     func render(state: RunGameWorkflow.State, context: RenderContext<RunGameWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
         var modals: [ModalContainerScreenModal] = []
-        
+
         var backStackItems: [BackStackScreen.Item] = [BackStackScreen.Item(
             screen: newGameScreen(
                 sink: sink,
                 playerX: state.playerX,
-                playerO: state.playerO),
-            barVisibility: .hidden)]
+                playerO: state.playerO
+            ),
+            barVisibility: .hidden
+        )]
 
         switch state.step {
         case .newGame:
@@ -116,8 +107,9 @@ extension RunGameWorkflow {
         case .playing:
             let takeTurnsScreen = TakeTurnsWorkflow(
                 playerX: state.playerX,
-                playerO: state.playerO)
-                .rendered(with: context)
+                playerO: state.playerO
+            )
+            .rendered(with: context)
             backStackItems.append(BackStackScreen.Item(
                 screen: takeTurnsScreen,
                 barVisibility: .visible(BackStackScreen.BarContent(
@@ -129,13 +121,14 @@ extension RunGameWorkflow {
                     ))
                 ))
             ))
-            
+
         case .maybeQuit:
-            
+
             let takeTurnsScreen = TakeTurnsWorkflow(
                 playerX: state.playerX,
-                playerO: state.playerO)
-                .rendered(with: context)
+                playerO: state.playerO
+            )
+            .rendered(with: context)
             backStackItems.append(BackStackScreen.Item(
                 screen: takeTurnsScreen,
                 barVisibility: .visible(BackStackScreen.BarContent(
@@ -147,20 +140,20 @@ extension RunGameWorkflow {
                     ))
                 ))
             ))
-            
+
             let confirmQuitScreen = ConfirmQuitWorkflow()
-                .mapOutput( { output -> Action in
+                .mapOutput { output -> Action in
                     switch output {
                     case .cancel:
                         return .startGame
                     case .confirm:
                         return .back
                     }
-                })
+                }
                 .rendered(with: context)
             modals.append(ModalContainerScreenModal(screen: AnyScreen(confirmQuitScreen), style: .fullScreen, key: "0", animated: true))
         }
-        
+
         let modalContainerScreen = ModalContainerScreen(baseScreen: BackStackScreen(items: backStackItems), modals: modals)
 
         return modalContainerScreen // this is the base screen. Render all of the pieces of the backstack.
@@ -175,12 +168,13 @@ extension RunGameWorkflow {
                 case .startGame:
                     sink.send(.startGame)
 
-                case .playerXChanged(let name):
+                case let .playerXChanged(name):
                     sink.send(.updatePlayerX(name))
 
-                case .playerOChanged(let name):
+                case let .playerOChanged(name):
                     sink.send(.updatePlayerO(name))
                 }
-            })
+            }
+        )
     }
 }

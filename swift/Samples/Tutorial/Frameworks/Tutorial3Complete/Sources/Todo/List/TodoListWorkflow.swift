@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Workflow
-import WorkflowUI
+
 import BackStackContainer
 import ReactiveSwift
-
+import Workflow
+import WorkflowUI
 
 // MARK: Input and Output
 
 struct TodoListWorkflow: Workflow {
-
     // The name is an input.
     var name: String
 
@@ -31,11 +30,9 @@ struct TodoListWorkflow: Workflow {
     }
 }
 
-
 // MARK: State and Initialization
 
 extension TodoListWorkflow {
-
     struct State {
         var todos: [TodoModel]
         var step: Step
@@ -49,25 +46,23 @@ extension TodoListWorkflow {
 
     func makeInitialState() -> TodoListWorkflow.State {
         return State(
-            todos: [TodoModel(
-                title: "Take the cat for a walk",
-                note: "Cats really need their outside sunshine time. Don't forget to walk Charlie. Hamilton is less excited about the prospect.")
+            todos: [
+                TodoModel(
+                    title: "Take the cat for a walk",
+                    note: "Cats really need their outside sunshine time. Don't forget to walk Charlie. Hamilton is less excited about the prospect."
+                ),
             ],
-            step: .list)
+            step: .list
+        )
     }
 
-    func workflowDidChange(from previousWorkflow: TodoListWorkflow, state: inout State) {
-    }
-
+    func workflowDidChange(from previousWorkflow: TodoListWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension TodoListWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = TodoListWorkflow
 
         case onBack
@@ -76,14 +71,12 @@ extension TodoListWorkflow {
         case saveChanges(todo: TodoModel, index: Int)
 
         func apply(toState state: inout TodoListWorkflow.State) -> TodoListWorkflow.Output? {
-
             switch self {
-
             case .onBack:
                 // When a `.onBack` action is received, emit a `.back` output
                 return .back
 
-            case .selectTodo(index: let index):
+            case let .selectTodo(index: index):
                 // When a todo item is selected, edit it.
                 state.step = .edit(index: index)
                 return nil
@@ -93,28 +86,22 @@ extension TodoListWorkflow {
                 state.step = .list
                 return nil
 
-            case .saveChanges(todo: let todo, index: let index):
+            case let .saveChanges(todo: todo, index: index):
                 // When changes are saved, update the state of that `todo` item and return to the list.
                 state.todos[index] = todo
 
                 state.step = .list
                 return nil
             }
-
         }
     }
 }
 
-
 // MARK: Workers
 
 extension TodoListWorkflow {
-
     struct TodoListWorker: Worker {
-
-        enum Output {
-
-        }
+        enum Output {}
 
         func run() -> SignalProducer<Output, Never> {
             fatalError()
@@ -123,31 +110,28 @@ extension TodoListWorkflow {
         func isEquivalent(to otherWorker: TodoListWorker) -> Bool {
             return true
         }
-
     }
-
 }
 
 // MARK: Rendering
 
 extension TodoListWorkflow {
-
     typealias Rendering = [BackStackScreen.Item]
 
     func render(state: TodoListWorkflow.State, context: RenderContext<TodoListWorkflow>) -> Rendering {
-
         // Define a sink to be able to send actions.
         let sink = context.makeSink(of: Action.self)
 
         let titles = state.todos.map { (todoModel) -> String in
-            return todoModel.title
+            todoModel.title
         }
         let todoListScreen = TodoListScreen(
             todoTitles: titles,
             onTodoSelected: { index in
                 // Send the `selectTodo` action when a todo is selected in the UI.
                 sink.send(.selectTodo(index: index))
-        })
+            }
+        )
 
         let todoListItem = BackStackScreen.Item(
             key: "list",
@@ -158,29 +142,30 @@ extension TodoListWorkflow {
                     // When the left button is tapped, send the .onBack action.
                     sink.send(.onBack)
                 })),
-                rightItem: .none))
+                rightItem: .none
+            )
+        )
 
         switch state.step {
         case .list:
             // On the "list" step, return just the list screen.
             return [todoListItem]
 
-        case .edit(index: let index):
+        case let .edit(index: index):
             // On the "edit" step, return both the list and edit screens.
             let todoEditItem = TodoEditWorkflow(
                 initialTodo: state.todos[index])
-                .mapOutput({ output -> Action in
+                .mapOutput { output -> Action in
                     switch output {
-
                     case .discard:
                         // Send the discardChanges action when the discard output is received.
                         return .discardChanges
 
-                    case .save(let todo):
+                    case let .save(todo):
                         // Send the saveChanges action when the save output is received.
                         return .saveChanges(todo: todo, index: index)
                     }
-                })
+                }
                 .rendered(with: context)
 
             return [todoListItem, todoEditItem]

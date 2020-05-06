@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import ReactiveSwift
 
 /// Defines a node in the workflow tree.
@@ -51,7 +52,6 @@ import ReactiveSwift
 /// ```
 ///
 public protocol Workflow: AnyWorkflowConvertible {
-
     /// Defines the state that is managed by this workflow.
     associatedtype State
 
@@ -82,28 +82,20 @@ public protocol Workflow: AnyWorkflowConvertible {
     ///                      then used to invoke `context.render(_ workflow:)`, which returns the child's `Rendering`
     ///                      type after creating or updating the nested workflow.
     func render(state: State, context: RenderContext<Self>) -> Rendering
-
 }
-
 
 /// When State is Void, provide empty `makeInitialState` and `workflowDidChange`
 /// implementations, making a “stateless workflow”.
 extension Workflow where State == Void {
-
     public func makeInitialState() -> State {
         return ()
     }
 
-    public func workflowDidChange(from previousWorkflow: Self, state: inout State) {
-    }
-
+    public func workflowDidChange(from previousWorkflow: Self, state: inout State) {}
 }
 
-
 extension Workflow {
-
     public func asAnyWorkflow() -> AnyWorkflow<Rendering, Output> {
         return AnyWorkflow(self)
     }
-
 }

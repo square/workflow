@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Workflow
 
+import Workflow
 
 /// A set of expectations for use with the `WorkflowRenderTester`. All of the expectations must be fulfilled
 /// for a `render` test to pass.
@@ -28,15 +28,14 @@ public struct RenderExpectations<WorkflowType: Workflow> {
         expectedState: ExpectedState<WorkflowType>? = nil,
         expectedOutput: ExpectedOutput<WorkflowType>? = nil,
         expectedWorkers: [ExpectedWorker] = [],
-        expectedWorkflows: [ExpectedWorkflow] = []) {
-
+        expectedWorkflows: [ExpectedWorkflow] = []
+    ) {
         self.expectedState = expectedState
         self.expectedOutput = expectedOutput
         self.expectedWorkers = expectedWorkers
         self.expectedWorkflows = expectedWorkflows
     }
 }
-
 
 public struct ExpectedOutput<WorkflowType: Workflow> {
     let output: WorkflowType.Output
@@ -48,12 +47,11 @@ public struct ExpectedOutput<WorkflowType: Workflow> {
     }
 
     public init<Output>(output: Output) where Output == WorkflowType.Output, Output: Equatable {
-        self.init(output: output, isEquivalent: { (expected, actual) in
-            return expected == actual
+        self.init(output: output, isEquivalent: { expected, actual in
+            expected == actual
         })
     }
 }
-
 
 public struct ExpectedState<WorkflowType: Workflow> {
     let state: WorkflowType.State
@@ -67,12 +65,11 @@ public struct ExpectedState<WorkflowType: Workflow> {
     }
 
     public init<State>(state: State) where WorkflowType.State == State, State: Equatable {
-        self.init(state: state, isEquivalent: { (expected, actual) in
-            return expected == actual
+        self.init(state: state, isEquivalent: { expected, actual in
+            expected == actual
         })
     }
 }
-
 
 public struct ExpectedWorker {
     let worker: Any
@@ -86,7 +83,7 @@ public struct ExpectedWorker {
     }
 
     func isEquivalent<WorkerType: Worker>(to actual: WorkerType) -> Bool {
-        guard let expectedWorker = self.worker as? WorkerType else {
+        guard let expectedWorker = worker as? WorkerType else {
             return false
         }
 
@@ -101,7 +98,6 @@ public struct ExpectedWorker {
         return outputMap(output)
     }
 }
-
 
 public struct ExpectedWorkflow {
     let workflowType: Any.Type

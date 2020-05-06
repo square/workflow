@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import WorkflowTesting
 import XCTest
 @testable import Tutorial5
-import WorkflowTesting
-
 
 class TodoListWorkflowTests: XCTestCase {
-
     func testActions() {
         TodoListWorkflow
             .Action
@@ -36,7 +35,7 @@ class TodoListWorkflowTests: XCTestCase {
             .send(action: .selectTodo(index: 7)) { output in
                 // The `.selectTodo` action should emit a `.selectTodo` output.
                 switch output {
-                case .selectTodo(let index)?:
+                case let .selectTodo(index)?:
                     XCTAssertEqual(7, index)
                 default:
                     XCTFail("Expected an output of `.selectTodo`")
@@ -46,11 +45,10 @@ class TodoListWorkflowTests: XCTestCase {
                 // The`.new` action should emit a `.newTodo` output.
                 switch output {
                 case .newTodo?:
-                break // Expected
+                    break // Expected
                 default:
                     XCTFail("Expected an output of `.newTodo`")
                 }
             }
     }
-
 }

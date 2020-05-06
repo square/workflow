@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Workflow
-import WorkflowUI
+
 import BackStackContainer
 import ReactiveSwift
-
+import Workflow
+import WorkflowUI
 
 // MARK: Input and Output
 
@@ -29,11 +29,9 @@ struct TodoWorkflow: Workflow {
     }
 }
 
-
 // MARK: State and Initialization
 
 extension TodoWorkflow {
-
     struct State: Equatable {
         var todos: [TodoModel]
         var step: Step
@@ -47,25 +45,23 @@ extension TodoWorkflow {
 
     func makeInitialState() -> TodoWorkflow.State {
         return State(
-            todos: [TodoModel(
-                title: "Take the cat for a walk",
-                note: "Cats really need their outside sunshine time. Don't forget to walk Charlie. Hamilton is less excited about the prospect.")
+            todos: [
+                TodoModel(
+                    title: "Take the cat for a walk",
+                    note: "Cats really need their outside sunshine time. Don't forget to walk Charlie. Hamilton is less excited about the prospect."
+                ),
             ],
-            step: .list)
+            step: .list
+        )
     }
 
-    func workflowDidChange(from previousWorkflow: TodoWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: TodoWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension TodoWorkflow {
-
     enum ListAction: WorkflowAction {
-
         typealias WorkflowType = TodoWorkflow
 
         case back
@@ -73,19 +69,19 @@ extension TodoWorkflow {
         case newTodo
 
         func apply(toState state: inout TodoWorkflow.State) -> TodoWorkflow.Output? {
-
             switch self {
             case .back:
                 return .back
 
-            case .editTodo(index: let index):
+            case let .editTodo(index: index):
                 state.step = .edit(index: index)
 
             case .newTodo:
                 // Append a new todo model to the end of the list.
                 state.todos.append(TodoModel(
                     title: "New Todo",
-                    note: ""))
+                    note: ""
+                ))
             }
 
             return nil
@@ -93,7 +89,6 @@ extension TodoWorkflow {
     }
 
     enum EditAction: WorkflowAction {
-
         typealias WorkflowType = TodoWorkflow
 
         case discardChanges
@@ -105,13 +100,11 @@ extension TodoWorkflow {
             }
 
             switch self {
-
             case .discardChanges:
                 state.step = .list
 
-            case .saveChanges(index: let index, todo: let updatedTodo):
+            case let .saveChanges(index: index, todo: updatedTodo):
                 state.todos[index] = updatedTodo
-
             }
             // Return to the list view for either a discard or save action.
             state.step = .list
@@ -121,16 +114,11 @@ extension TodoWorkflow {
     }
 }
 
-
 // MARK: Workers
 
 extension TodoWorkflow {
-
     struct TodoWorker: Worker {
-
-        enum Output {
-
-        }
+        enum Output {}
 
         func run() -> SignalProducer<Output, Never> {
             fatalError()
@@ -139,61 +127,55 @@ extension TodoWorkflow {
         func isEquivalent(to otherWorker: TodoWorker) -> Bool {
             return true
         }
-
     }
-
 }
 
 // MARK: Rendering
 
 extension TodoWorkflow {
-
     typealias Rendering = [BackStackScreen.Item]
 
     func render(state: TodoWorkflow.State, context: RenderContext<TodoWorkflow>) -> Rendering {
-
         let todoListItem = TodoListWorkflow(
             name: name,
-            todos: state.todos)
-            .mapOutput({ output -> ListAction in
-                switch output {
+            todos: state.todos
+        )
+        .mapOutput { output -> ListAction in
+            switch output {
+            case .back:
+                return .back
 
-                case .back:
-                    return .back
+            case let .selectTodo(index: index):
+                return .editTodo(index: index)
 
-                case .selectTodo(index: let index):
-                    return .editTodo(index: index)
-
-                case .newTodo:
-                    return .newTodo
-                }
-            })
-            .rendered(with: context)
+            case .newTodo:
+                return .newTodo
+            }
+        }
+        .rendered(with: context)
 
         switch state.step {
-
         case .list:
             // Return only the list item.
             return [todoListItem]
 
-        case .edit(index: let index):
+        case let .edit(index: index):
 
             let todoEditItem = TodoEditWorkflow(
                 initialTodo: state.todos[index])
-                .mapOutput({ output -> EditAction in
+                .mapOutput { output -> EditAction in
                     switch output {
                     case .discard:
                         return .discardChanges
 
-                    case .save(let updatedTodo):
+                    case let .save(updatedTodo):
                         return .saveChanges(index: index, todo: updatedTodo)
                     }
-                })
+                }
                 .rendered(with: context)
 
             // Return both the list item and edit.
             return [todoListItem, todoEditItem]
         }
-
     }
 }

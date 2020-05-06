@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import WorkflowTesting
 import XCTest
 @testable import Tutorial5
-import WorkflowTesting
-
 
 class TodoEditWorkflowTests: XCTestCase {
-
     func testAction() {
         TodoEditWorkflow
             .Action
@@ -61,7 +60,7 @@ class TodoEditWorkflowTests: XCTestCase {
             // Send a `.saveChanges` action, which will emit a `.save` output with the updated todo model.
             .send(action: .saveChanges) { output in
                 switch output {
-                case .save(let todo)?:
+                case let .save(todo)?:
                     XCTAssertEqual("Updated Title", todo.title)
                     XCTAssertEqual("Updated Note", todo.note)
                 default:
@@ -92,5 +91,4 @@ class TodoEditWorkflowTests: XCTestCase {
         XCTAssertEqual("New Title", state.todo.title)
         XCTAssertEqual("New Note", state.todo.note)
     }
-
 }
