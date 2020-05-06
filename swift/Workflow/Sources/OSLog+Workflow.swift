@@ -16,7 +16,82 @@
 
 import os.signpost
 
-extension OSLog {
+fileprivate extension OSLog {
     static let workflow = OSLog(subsystem: "com.squareup.Workflow", category: "Workflow")
     static let worker = OSLog(subsystem: "com.squareup.Workflow", category: "Worker")
+}
+
+// MARK: -
+
+final class WorkflowLogger {
+    // MARK: Workflows
+
+    static func logWorkflowStarted<WorkflowType>(ref: WorkflowNode<WorkflowType>) {
+        if #available(iOS 12.0, macOS 10.14, *) {
+            let signpostID = OSSignpostID(log: .workflow, object: ref)
+            os_signpost(.begin, log: .workflow, name: "Alive", signpostID: signpostID,
+                        "Workflow: %{public}@", String(describing: WorkflowType.self))
+        }
+    }
+
+    static func logWorkflowFinished<WorkflowType>(ref: WorkflowNode<WorkflowType>) {
+        if #available(iOS 12.0, macOS 10.14, *) {
+            let signpostID = OSSignpostID(log: .workflow, object: ref)
+            os_signpost(.end, log: .workflow, name: "Alive", signpostID: signpostID)
+        }
+    }
+
+    static func logSinkEvent<Action>(ref: AnyObject, action: Action) {
+        if #available(iOS 12.0, macOS 10.14, *) {
+            let signpostID = OSSignpostID(log: .workflow, object: ref)
+            os_signpost(.event, log: .workflow, name: "Sink Event", signpostID: signpostID,
+                        "Event: %@", String(describing: action))
+        }
+    }
+
+    // MARK: Rendering
+
+    static func logWorkflowStartedRendering<WorkflowType>(ref: WorkflowNode<WorkflowType>) {
+        if #available(iOS 12.0, macOS 10.14, *) {
+            let signpostID = OSSignpostID(log: .workflow, object: ref)
+            os_signpost(.begin, log: .workflow, name: "Render", signpostID: signpostID,
+                        "Render Workflow: %{public}@", String(describing: WorkflowType.self))
+        }
+    }
+
+    static func logWorkflowFinishedRendering<WorkflowType>(ref: WorkflowNode<WorkflowType>) {
+        if #available(iOS 12.0, macOS 10.14, *) {
+            let signpostID = OSSignpostID(log: .workflow, object: ref)
+            os_signpost(.end, log: .workflow, name: "Render", signpostID: signpostID)
+        }
+    }
+
+    // MARK: - Workers
+
+    static func logWorkerStartedRunning<WorkerType>(ref: AnyObject, workerType: WorkerType.Type) {
+        if #available(iOS 12.0, macOS 10.14, *) {
+            let signpostID = OSSignpostID(log: .worker, object: ref)
+            os_signpost(.begin, log: .worker, name: "Running", signpostID: signpostID,
+                        "Worker: %{public}@", String(describing: WorkerType.self))
+        }
+    }
+
+    static func logWorkerFinishedRunning(ref: AnyObject, status: StaticString? = nil) {
+        if #available(iOS 12.0, macOS 10.14, *) {
+            let signpostID = OSSignpostID(log: .worker, object: ref)
+            if let status = status {
+                os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID, status)
+            } else {
+                os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID)
+            }
+        }
+    }
+
+    static func logWorkerOutput<Output>(ref: AnyObject, output: Output) {
+        if #available(iOS 12.0, macOS 10.14, *) {
+            let signpostID = OSSignpostID(log: .worker, object: ref)
+            os_signpost(.event, log: .worker, name: "Worker Event", signpostID: signpostID,
+                        "Event: %@", String(describing: output))
+        }
+    }
 }

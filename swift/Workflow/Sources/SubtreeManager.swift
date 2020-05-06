@@ -16,7 +16,6 @@
 
 import Dispatch
 import ReactiveSwift
-import os.signpost
 
 extension WorkflowNode {
     /// Manages the subtree of a workflow. Specifically, this type encapsulates the logic required to update and manage
@@ -208,10 +207,7 @@ extension WorkflowNode.SubtreeManager {
             let signpostRef = NSObject()
 
             let sink = Sink<Action> { action in
-                if #available(iOS 12.0, *) {
-                    let signpostID = OSSignpostID(log: .workflow, object: signpostRef)
-                    os_signpost(.event, log: .workflow, name: "Sink Event", signpostID: signpostID, "Event: %@", String(describing: action))
-                }
+                WorkflowLogger.logSinkEvent(ref: signpostRef, action: action)
 
                 reusableSink.handle(action: action)
             }
@@ -416,11 +412,7 @@ extension WorkflowNode.SubtreeManager {
             super.init(eventPipe: eventPipe)
 
             let signpostRef = NSObject()
-
-            if #available(iOS 12.0, *) {
-                let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                os_signpost(.begin, log: .worker, name: "Running", signpostID: signpostID, "Worker: %{public}@", String(describing: W.self))
-            }
+            WorkflowLogger.logWorkerStartedRunning(ref: signpostRef, workerType: W.self)
 
             signalProducer
                 .take(during: lifetime)
@@ -428,27 +420,15 @@ extension WorkflowNode.SubtreeManager {
                 .start { [weak self] event in
                     switch event {
                     case .value(let output):
-                        if #available(iOS 12.0, *) {
-                            let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                            os_signpost(.event, log: .worker, name: "Worker Event", signpostID: signpostID, "Event: %@", String(describing: output))
-                        }
+                        WorkflowLogger.logWorkerOutput(ref: signpostRef, output: output)
 
                         self?.handle(output: output)
                     case .completed:
-                        if #available(iOS 12.0, *) {
-                            let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                            os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID)
-                        }
+                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef)
                     case .interrupted:
-                        if #available(iOS 12.0, *) {
-                            let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                            os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID, "Interrupted")
-                        }
+                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Interrupted")
                     case .failed:
-                        if #available(iOS 12.0, *) {
-                            let signpostID = OSSignpostID(log: .worker, object: signpostRef)
-                            os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID, "Failed")
-                        }
+                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Failed")
                     }
                 }
         }
