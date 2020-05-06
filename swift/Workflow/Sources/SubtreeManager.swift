@@ -452,6 +452,11 @@ extension WorkflowNode.SubtreeManager {
                 .start { [weak self] event in
                     switch event {
                     case .value(let output):
+                        if #available(iOS 12.0, *) {
+                            let signpostID = OSSignpostID(log: .worker, object: signpostRef)
+                            os_signpost(.event, log: .worker, name: "Worker Event", signpostID: signpostID, "Event: %@", String(describing: output))
+                        }
+
                         self?.handle(output: output)
                     case .completed:
                         if #available(iOS 12.0, *) {
