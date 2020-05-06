@@ -3,7 +3,6 @@
 import Workflow
 import WorkflowUI
 
-
 struct ___VARIABLE_productName___Screen: Screen {
     // This should contain all data to display in the UI
 
@@ -15,9 +14,7 @@ struct ___VARIABLE_productName___Screen: Screen {
     }
 }
 
-
 final class ___VARIABLE_productName___ViewController: ScreenViewController<___VARIABLE_productName___Screen> {
-
     required init(screen: ___VARIABLE_productName___Screen, environment: ViewEnvironment) {
         super.init(screen: screen, environment: environment)
         update(with: screen, environment: environment)
@@ -30,5 +27,4 @@ final class ___VARIABLE_productName___ViewController: ScreenViewController<___VA
     private func update(with screen: ___VARIABLE_productName___Screen, environment: ViewEnvironment) {
         /// Update UI
     }
-
 }

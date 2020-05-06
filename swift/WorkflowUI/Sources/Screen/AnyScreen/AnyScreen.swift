@@ -16,30 +16,28 @@
 
 #if canImport(UIKit)
 
-import UIKit
+    import UIKit
 
-public struct AnyScreen: Screen {
+    public struct AnyScreen: Screen {
+        /// The original screen, retained for debugging
+        internal let wrappedScreen: Screen
 
-    /// The original screen, retained for debugging
-    internal let wrappedScreen: Screen
+        /// Stored getter for the wrapped screen’s view controller description
+        private let _viewControllerDescription: (ViewEnvironment) -> ViewControllerDescription
 
-    /// Stored getter for the wrapped screen’s view controller description
-    private let _viewControllerDescription: (ViewEnvironment) -> ViewControllerDescription
-
-    public init<T: Screen>(_ screen: T) {
-        if let anyScreen = screen as? AnyScreen {
-            self = anyScreen
-            return
+        public init<T: Screen>(_ screen: T) {
+            if let anyScreen = screen as? AnyScreen {
+                self = anyScreen
+                return
+            }
+            self.wrappedScreen = screen
+            self._viewControllerDescription = screen.viewControllerDescription(environment:)
         }
-        self.wrappedScreen = screen
-        self._viewControllerDescription = screen.viewControllerDescription(environment:)
-    }
 
-    public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
-        // Passed straight through
-        return _viewControllerDescription(environment)
+        public func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+            // Passed straight through
+            return _viewControllerDescription(environment)
+        }
     }
-
-}
 
 #endif

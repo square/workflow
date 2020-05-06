@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 import BackStackContainer
+import ModalContainer
+import ReactiveSwift
 import Workflow
 import WorkflowUI
-import ReactiveSwift
-import ModalContainer
-
 
 // MARK: Input and Output
 
@@ -30,11 +29,9 @@ struct AuthenticationWorkflow: Workflow {
     }
 }
 
-
 // MARK: State and Initialization
 
 extension AuthenticationWorkflow {
-
     enum State {
         case emailPassword(AuthenticationService.AuthenticationError?)
         case authorizingEmailPassword(email: String, password: String)
@@ -46,18 +43,13 @@ extension AuthenticationWorkflow {
         return .emailPassword(nil)
     }
 
-    func workflowDidChange(from previousWorkflow: AuthenticationWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: AuthenticationWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension AuthenticationWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = AuthenticationWorkflow
 
         case back
@@ -67,9 +59,7 @@ extension AuthenticationWorkflow {
         case authenticationError(AuthenticationService.AuthenticationError)
 
         func apply(toState state: inout AuthenticationWorkflow.State) -> AuthenticationWorkflow.Output? {
-
             switch self {
-
             case .back:
                 switch state {
                 case .twoFactor:
@@ -79,20 +69,20 @@ extension AuthenticationWorkflow {
                     fatalError("Unexpected back in state \(state)")
                 }
 
-            case .login(email: let email, password: let password):
+            case let .login(email: email, password: password):
                 state = .authorizingEmailPassword(email: email, password: password)
 
-            case .verifySecondFactor(intermediateSession: let intermediateSession, twoFactorCode: let twoFactorCode):
+            case let .verifySecondFactor(intermediateSession: intermediateSession, twoFactorCode: twoFactorCode):
                 state = .authorizingTwoFactor(twoFactorCode: twoFactorCode, intermediateSession: intermediateSession)
 
-            case .authenticationSucceeded(response: let response):
+            case let .authenticationSucceeded(response: response):
                 if response.secondFactorRequired {
                     state = .twoFactor(intermediateSession: response.token, authenticationError: nil)
                 } else {
                     return .authorized(session: response.token)
                 }
 
-            case .authenticationError(let error):
+            case let .authenticationError(error):
                 switch state {
                 case .authorizingEmailPassword:
                     state = .emailPassword(error)
@@ -102,20 +92,16 @@ extension AuthenticationWorkflow {
                 default:
                     fatalError("Unexpected authentication error in state \(state)")
                 }
-
             }
             return nil
         }
     }
 }
 
-
 // MARK: Workers
 
 extension AuthenticationWorkflow {
-
     struct AuthorizingEmailPasswordWorker: Worker {
-
         typealias Output = Action
 
         var authenticationService: AuthenticationService
@@ -125,9 +111,9 @@ extension AuthenticationWorkflow {
         func run() -> SignalProducer<Output, Never> {
             return authenticationService
                 .login(email: email, password: password)
-                .map({ response -> Action in
-                    return .authenticationSucceeded(response: response)
-                })
+                .map { response -> Action in
+                    .authenticationSucceeded(response: response)
+                }
                 .flatMapError {
                     SignalProducer(value: .authenticationError($0))
                 }
@@ -135,13 +121,11 @@ extension AuthenticationWorkflow {
 
         func isEquivalent(to otherWorker: AuthorizingEmailPasswordWorker) -> Bool {
             return email == otherWorker.email
-            && password == otherWorker.password
+                && password == otherWorker.password
         }
-
     }
 
     struct AuthorizingTwoFactorWorker: Worker {
-
         typealias Output = Action
 
         var authenticationService: AuthenticationService
@@ -152,27 +136,26 @@ extension AuthenticationWorkflow {
             return authenticationService
                 .secondFactor(
                     token: intermediateToken,
-                    secondFactor: twoFactorCode)
+                    secondFactor: twoFactorCode
+                )
                 .map {
                     .authenticationSucceeded(response: $0)
                 }
                 .flatMapError {
                     SignalProducer(value: .authenticationError($0))
-            }
+                }
         }
 
         func isEquivalent(to otherWorker: AuthenticationWorkflow.AuthorizingTwoFactorWorker) -> Bool {
             return intermediateToken == otherWorker.intermediateToken
-            && twoFactorCode == otherWorker.twoFactorCode
+                && twoFactorCode == otherWorker.twoFactorCode
         }
     }
-
 }
 
 // MARK: Rendering
 
 extension AuthenticationWorkflow {
-
     typealias Rendering = ModalContainerScreen<BackStackScreen>
 
     func render(state: AuthenticationWorkflow.State, context: RenderContext<AuthenticationWorkflow>) -> Rendering {
@@ -188,39 +171,42 @@ extension AuthenticationWorkflow {
             authenticationError = nil
         }
 
-        let loginScreen = LoginWorkflow(error: authenticationError).mapOutput({ output -> Action in
+        let loginScreen = LoginWorkflow(error: authenticationError).mapOutput { output -> Action in
             switch output {
-            case .login(email: let email, password: let password):
+            case let .login(email: email, password: password):
                 return .login(email: email, password: password)
             }
-        }).rendered(with: context)
+        }.rendered(with: context)
         backStackItems.append(BackStackScreen.Item(screen: loginScreen, barVisibility: .hidden))
 
         switch state {
         case .emailPassword:
             break
 
-        case .authorizingEmailPassword(email: let email, password: let password):
+        case let .authorizingEmailPassword(email: email, password: password):
             context.awaitResult(for: AuthorizingEmailPasswordWorker(
                 authenticationService: authenticationService,
                 email: email,
-                password: password))
+                password: password
+            ))
 
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))
 
-        case .twoFactor(intermediateSession: let intermediateSession, authenticationError: let authenticationError):
+        case let .twoFactor(intermediateSession: intermediateSession, authenticationError: authenticationError):
             backStackItems.append(twoFactorScreen(
                 error: authenticationError,
                 intermediateSession: intermediateSession,
-                sink: sink))
+                sink: sink
+            ))
 
-        case .authorizingTwoFactor(twoFactorCode: let twoFactorCode, intermediateSession: let intermediateSession):
+        case let .authorizingTwoFactor(twoFactorCode: twoFactorCode, intermediateSession: intermediateSession):
 
             context.awaitResult(
                 for: AuthorizingTwoFactorWorker(
                     authenticationService: authenticationService,
                     intermediateToken: intermediateSession,
-                    twoFactorCode: twoFactorCode))
+                    twoFactorCode: twoFactorCode
+                ))
 
             backStackItems.append(twoFactorScreen(error: nil, intermediateSession: intermediateSession, sink: sink))
             backStackItems.append(BackStackScreen.Item(screen: LoadingScreen(), barVisibility: .hidden))
@@ -242,8 +228,10 @@ extension AuthenticationWorkflow {
             onLoginTapped: { twoFactorCode in
                 sink.send(.verifySecondFactor(
                     intermediateSession: intermediateSession,
-                    twoFactorCode: twoFactorCode))
-        })
+                    twoFactorCode: twoFactorCode
+                ))
+            }
+        )
 
         return BackStackScreen.Item(
             screen: twoFactorScreen,
@@ -252,6 +240,8 @@ extension AuthenticationWorkflow {
                     content: .text("Cancel"),
                     handler: {
                         sink.send(.back)
-                })))))
+                    }
+                ))))
+        )
     }
 }

@@ -16,34 +16,34 @@
 
 #if canImport(UIKit)
 
-import Foundation
-import Workflow
+    import Foundation
+    import Workflow
 
-extension ContainerViewController {
-    public convenience init<W: AnyWorkflowConvertible>(
-        workflow: W,
-        rootViewEnvironment: ViewEnvironment = .empty
-    ) where W.Rendering == ScreenType, W.Output == Output {
-        self.init(workflow: WrapperWorkflow(workflow), rootViewEnvironment: rootViewEnvironment)
-    }
-}
-
-fileprivate struct WrapperWorkflow<Rendering, Output>: Workflow {
-    typealias State = Void
-    typealias Output = Output
-    typealias Rendering = Rendering
-
-    var wrapped: AnyWorkflow<Rendering, Output>
-
-    init<W: AnyWorkflowConvertible>(_ wrapped: W) where W.Output == Output, W.Rendering == Rendering {
-        self.wrapped = wrapped.asAnyWorkflow()
+    extension ContainerViewController {
+        public convenience init<W: AnyWorkflowConvertible>(
+            workflow: W,
+            rootViewEnvironment: ViewEnvironment = .empty
+        ) where W.Rendering == ScreenType, W.Output == Output {
+            self.init(workflow: WrapperWorkflow(workflow), rootViewEnvironment: rootViewEnvironment)
+        }
     }
 
-    func render(state: State, context: RenderContext<WrapperWorkflow>) -> Rendering {
-        return wrapped
-            .mapOutput { AnyWorkflowAction(sendingOutput: $0) }
-            .rendered(with: context)
+    fileprivate struct WrapperWorkflow<Rendering, Output>: Workflow {
+        typealias State = Void
+        typealias Output = Output
+        typealias Rendering = Rendering
+
+        var wrapped: AnyWorkflow<Rendering, Output>
+
+        init<W: AnyWorkflowConvertible>(_ wrapped: W) where W.Output == Output, W.Rendering == Rendering {
+            self.wrapped = wrapped.asAnyWorkflow()
+        }
+
+        func render(state: State, context: RenderContext<WrapperWorkflow>) -> Rendering {
+            return wrapped
+                .mapOutput { AnyWorkflowAction(sendingOutput: $0) }
+                .rendered(with: context)
+        }
     }
-}
 
 #endif

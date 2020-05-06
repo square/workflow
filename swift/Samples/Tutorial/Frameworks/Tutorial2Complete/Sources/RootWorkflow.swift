@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Workflow
-import WorkflowUI
 import BackStackContainer
 import ReactiveSwift
-
+import Workflow
+import WorkflowUI
 
 // MARK: Input and Output
 
 struct RootWorkflow: Workflow {
-
-    enum Output {
-
-    }
+    enum Output {}
 }
-
 
 // MARK: State and Initialization
 
 extension RootWorkflow {
-
     // The state is an enum, and can either be on the welcome screen or the todo list.
     // When on the todo list, it also includes the name provided on the welcome screen
     enum State {
@@ -46,27 +40,21 @@ extension RootWorkflow {
         return .welcome
     }
 
-    func workflowDidChange(from previousWorkflow: RootWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: RootWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension RootWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = RootWorkflow
 
         case login(name: String)
         case logout
 
         func apply(toState state: inout RootWorkflow.State) -> RootWorkflow.Output? {
-
             switch self {
-            case .login(name: let name):
+            case let .login(name: name):
                 // When the `login` action is received, change the state to `todo`.
                 state = .todo(name: name)
             case .logout:
@@ -74,21 +62,15 @@ extension RootWorkflow {
                 state = .welcome
             }
             return nil
-
         }
     }
 }
 
-
 // MARK: Workers
 
 extension RootWorkflow {
-
     struct RootWorker: Worker {
-
-        enum Output {
-
-        }
+        enum Output {}
 
         func run() -> SignalProducer<Output, Never> {
             fatalError()
@@ -97,15 +79,12 @@ extension RootWorkflow {
         func isEquivalent(to otherWorker: RootWorker) -> Bool {
             return true
         }
-
     }
-
 }
 
 // MARK: Rendering
 
 extension RootWorkflow {
-
     typealias Rendering = BackStackScreen
 
     func render(state: RootWorkflow.State, context: RenderContext<RootWorkflow>) -> Rendering {
@@ -116,20 +95,21 @@ extension RootWorkflow {
         var backStackItems: [BackStackScreen.Item] = []
 
         let welcomeScreen = WelcomeWorkflow()
-            .mapOutput({ output -> Action in
+            .mapOutput { output -> Action in
                 switch output {
                 // When `WelcomeWorkflow` emits `didLogin`, turn it into our `login` action.
-                case .didLogin(name: let name):
+                case let .didLogin(name: name):
                     return .login(name: name)
                 }
-            })
+            }
             .rendered(with: context)
 
         let welcomeBackStackItem = BackStackScreen.Item(
             key: "welcome",
             screen: welcomeScreen,
             // Hide the navigation bar.
-            barVisibility: .hidden)
+            barVisibility: .hidden
+        )
 
         // Always add the welcome back stack item.
         backStackItems.append(welcomeBackStackItem)
@@ -141,7 +121,7 @@ extension RootWorkflow {
             break
 
         // When the state is `.todo`, defer to the TodoListWorkflow.
-        case .todo(name: let name):
+        case let .todo(name: name):
 
             let todoListScreen = TodoListWorkflow()
                 .rendered(with: context)
@@ -156,7 +136,9 @@ extension RootWorkflow {
                     leftItem: .button(.back(handler: {
                         sink.send(.logout)
                     })),
-                    rightItem: .none))
+                    rightItem: .none
+                )
+            )
 
             // Add the TodoListScreen to our BackStackItems.
             backStackItems.append(todoListBackStackItem)

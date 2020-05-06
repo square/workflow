@@ -15,12 +15,11 @@
  */
 import TutorialViews
 
-
 final class TodoEditSampleViewController: UIViewController {
     let todoEditView: TodoEditView
 
     init() {
-        todoEditView = TodoEditView(frame: .zero)
+        self.todoEditView = TodoEditView(frame: .zero)
 
         super.init(nibName: nil, bundle: nil)
     }

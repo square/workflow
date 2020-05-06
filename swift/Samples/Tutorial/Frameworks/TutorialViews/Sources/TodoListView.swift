@@ -15,7 +15,6 @@
  */
 import UIKit
 
-
 public final class TodoListView: UIView, UITableViewDelegate, UITableViewDataSource {
     public var todoList: [String] {
         didSet {
@@ -28,11 +27,11 @@ public final class TodoListView: UIView, UITableViewDelegate, UITableViewDataSou
     let titleLabel: UILabel
     let tableView: UITableView
 
-    public override init(frame: CGRect) {
-        todoList = []
-        onTodoSelected = { _ in }
-        titleLabel = UILabel(frame: .zero)
-        tableView = UITableView()
+    override public init(frame: CGRect) {
+        self.todoList = []
+        self.onTodoSelected = { _ in }
+        self.titleLabel = UILabel(frame: .zero)
+        self.tableView = UITableView()
 
         super.init(frame: frame)
 
@@ -55,14 +54,15 @@ public final class TodoListView: UIView, UITableViewDelegate, UITableViewDataSou
 
     // MARK: UIView
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         titleLabel.frame = CGRect(
             x: bounds.minX,
             y: bounds.minY,
             width: bounds.maxX,
-            height: 44.0)
+            height: 44.0
+        )
 
         let yOffset = titleLabel.frame.maxY + 8.0
 
@@ -70,7 +70,8 @@ public final class TodoListView: UIView, UITableViewDelegate, UITableViewDataSou
             x: bounds.minX,
             y: yOffset,
             width: bounds.maxX,
-            height: bounds.maxY - yOffset)
+            height: bounds.maxY - yOffset
+        )
     }
 
     // MARK: UITableViewDelegate, UITableViewDataSource
@@ -92,5 +93,4 @@ public final class TodoListView: UIView, UITableViewDelegate, UITableViewDataSou
 
         onTodoSelected(indexPath.row)
     }
-
 }

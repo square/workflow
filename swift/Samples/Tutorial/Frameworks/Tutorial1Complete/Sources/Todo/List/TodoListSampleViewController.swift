@@ -15,12 +15,11 @@
  */
 import TutorialViews
 
-
 final class TodoListSampleViewController: UIViewController {
     let todoListView: TodoListView
 
     init() {
-        todoListView = TodoListView(frame: .zero)
+        self.todoListView = TodoListView(frame: .zero)
 
         super.init(nibName: nil, bundle: nil)
     }

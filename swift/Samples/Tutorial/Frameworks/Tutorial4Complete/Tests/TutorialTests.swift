@@ -15,9 +15,8 @@
  */
 import XCTest
 
-
 final class TutorialTests: XCTestCase {
     func testPlaceholder() {
-        XCTAssertEqual(1, 1, "Placeholder test");
+        XCTAssertEqual(1, 1, "Placeholder test")
     }
 }

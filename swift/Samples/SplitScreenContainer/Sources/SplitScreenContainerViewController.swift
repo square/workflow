@@ -18,7 +18,7 @@ import WorkflowUI
 
 internal final class SplitScreenContainerViewController<LeadingScreenType: Screen, TrailingScreenType: Screen>: ScreenViewController<SplitScreenContainerViewController.ContainerScreen> {
     internal typealias ContainerScreen = SplitScreenContainerScreen<LeadingScreenType, TrailingScreenType>
-    
+
     private var leadingContentViewController: DescribedViewController
     private lazy var leadingContainerView: ContainerView = .init()
 
@@ -26,16 +26,16 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
 
     private var trailingContentViewController: DescribedViewController
     private lazy var trailingContainerView: ContainerView = .init()
-    
+
     private var needsAnimatedLayout = false
 
     required init(screen: ContainerScreen, environment: ViewEnvironment) {
-        leadingContentViewController = DescribedViewController(
+        self.leadingContentViewController = DescribedViewController(
             screen: screen.leadingScreen,
             environment: environment
                 .setting(keyPath: \.splitScreenPosition, to: .leading)
         )
-        trailingContentViewController = DescribedViewController(
+        self.trailingContentViewController = DescribedViewController(
             screen: screen.trailingScreen,
             environment: environment
                 .setting(keyPath: \.splitScreenPosition, to: .trailing)
@@ -55,7 +55,7 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
 
     private func update(with screen: ContainerScreen) {
         separatorView.backgroundColor = screen.separatorColor
-        
+
         leadingContentViewController.update(
             screen: screen.leadingScreen,
             environment: environment
@@ -66,10 +66,9 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
             environment: environment
                 .setting(keyPath: \.splitScreenPosition, to: .trailing)
         )
-        
-        //Intentional force of layout pass after updating the child view controllers
-        view.layoutIfNeeded()
 
+        // Intentional force of layout pass after updating the child view controllers
+        view.layoutIfNeeded()
 
         if needsAnimatedLayout {
             needsAnimatedLayout = false
@@ -83,11 +82,11 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
 
     override internal func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.addSubview(leadingContainerView)
         view.addSubview(separatorView)
         view.addSubview(trailingContainerView)
-        
+
         addChild(leadingContentViewController)
         leadingContainerView.contentView.addSubview(leadingContentViewController.view)
         leadingContentViewController.didMove(toParent: self)
@@ -98,25 +97,25 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
 
         update(with: screen)
     }
-    
-    internal override func viewDidLayoutSubviews() {
+
+    override internal func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
+
         let distance = view.bounds.width * screen.ratio
-        
+
         let (firstSlice, trailingRect) = view.bounds.divided(atDistance: distance, from: .minXEdge)
-        
+
         let (leadingRect, separatorRect) = firstSlice.divided(atDistance: distance - screen.separatorWidth, from: .minXEdge)
 
-        leadingContainerView.frame = isLayoutDirectionRightToLeft ? trailingRect: leadingRect
-        
+        leadingContainerView.frame = isLayoutDirectionRightToLeft ? trailingRect : leadingRect
+
         separatorView.frame = separatorRect
-        
+
         trailingContainerView.frame = isLayoutDirectionRightToLeft ? leadingRect : trailingRect
     }
 }
 
-fileprivate extension UIViewController {
+private extension UIViewController {
     var isLayoutDirectionRightToLeft: Bool {
         if #available(iOS 10.0, *) {
             return traitCollection.layoutDirection == .rightToLeft

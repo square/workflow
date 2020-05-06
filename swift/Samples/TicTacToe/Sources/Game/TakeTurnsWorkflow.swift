@@ -16,7 +16,6 @@
 import Workflow
 import WorkflowUI
 
-
 // MARK: Input and Output
 
 struct TakeTurnsWorkflow: Workflow {
@@ -26,11 +25,9 @@ struct TakeTurnsWorkflow: Workflow {
     typealias Output = Never
 }
 
-
 // MARK: State and Initialization
 
 extension TakeTurnsWorkflow {
-
     struct State {
         var board: Board
         var gameState: GameState
@@ -40,28 +37,22 @@ extension TakeTurnsWorkflow {
         return State(board: Board(), gameState: .ongoing(turn: .x))
     }
 
-    func workflowDidChange(from previousWorkflow: TakeTurnsWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: TakeTurnsWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension TakeTurnsWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = TakeTurnsWorkflow
 
         case selected(row: Int, col: Int)
 
         func apply(toState state: inout TakeTurnsWorkflow.State) -> TakeTurnsWorkflow.Output? {
-
             switch state.gameState {
-            case .ongoing(turn: let turn):
+            case let .ongoing(turn: turn):
                 switch self {
-                case .selected(row: let row, col: let col):
+                case let .selected(row: row, col: col):
                     if !state.board.isEmpty(row: row, col: col) {
                         return nil
                     }
@@ -89,11 +80,9 @@ extension TakeTurnsWorkflow {
     }
 }
 
-
 // MARK: Rendering
 
 extension TakeTurnsWorkflow {
-
     typealias Rendering = GamePlayScreen
 
     func render(state: TakeTurnsWorkflow.State, context: RenderContext<TakeTurnsWorkflow>) -> Rendering {
@@ -106,6 +95,7 @@ extension TakeTurnsWorkflow {
             board: state.board.rows,
             onSelected: { row, col in
                 sink.send(.selected(row: row, col: col))
-            })
+            }
+        )
     }
 }

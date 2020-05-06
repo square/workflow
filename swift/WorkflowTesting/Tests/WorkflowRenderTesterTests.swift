@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import XCTest
 import ReactiveSwift
 import Workflow
 import WorkflowTesting
-
+import XCTest
 
 final class WorkflowRenderTesterTests: XCTestCase {
     func test_assertState() {
@@ -41,11 +40,13 @@ final class WorkflowRenderTesterTests: XCTestCase {
                 expectedState: ExpectedState(
                     state: TestWorkflow.State(
                         text: "initial",
-                        substate: .idle))),
+                        substate: .idle
+                    ))),
             assertions: { screen in
                 XCTAssertEqual("initial", screen.text)
                 testedAssertion = true
-        })
+            }
+        )
         XCTAssertTrue(testedAssertion)
     }
 
@@ -65,11 +66,13 @@ final class WorkflowRenderTesterTests: XCTestCase {
                 expectedState: ExpectedState(
                     state: TestWorkflow.State(
                         text: "initial",
-                        substate: .waiting))),
+                        substate: .waiting
+                    ))),
             assertions: { screen in
                 XCTAssertEqual("initial", screen.text)
                 screen.tapped()
-        })
+            }
+        )
     }
 
     func test_output() {
@@ -80,7 +83,8 @@ final class WorkflowRenderTesterTests: XCTestCase {
                     expectedOutput: ExpectedOutput(output: .success)),
                 assertions: { rendering in
                     rendering.tapped()
-            })
+                }
+            )
     }
 
     func test_workers() {
@@ -88,24 +92,28 @@ final class WorkflowRenderTesterTests: XCTestCase {
             .renderTester(
                 initialState: TestWorkflow.State(
                     text: "otherText",
-                    substate: .waiting))
+                    substate: .waiting
+                ))
 
         let expectedWorker = ExpectedWorker(worker: TestWorker(text: "otherText"))
 
         renderTester.render(
             with: RenderExpectations(
                 expectedState: nil,
-                expectedWorkers: [expectedWorker]),
+                expectedWorkers: [expectedWorker]
+            ),
             assertions: { screen in
                 XCTAssertEqual("otherText", screen.text)
-            })
+            }
+        )
     }
 
     func test_workerOutput() {
         let renderTester = TestWorkflow(initialText: "initial")
             .renderTester(initialState: TestWorkflow.State(
                 text: "otherText",
-                substate: .waiting))
+                substate: .waiting
+            ))
 
         let expectedWorker = ExpectedWorker(worker: TestWorker(text: "otherText"), output: .success)
         let expectedState = ExpectedState<TestWorkflow>(state: TestWorkflow.State(text: "otherText", substate: .idle))
@@ -113,26 +121,32 @@ final class WorkflowRenderTesterTests: XCTestCase {
         renderTester.render(
             with: RenderExpectations(
                 expectedState: expectedState,
-                expectedWorkers: [expectedWorker]),
+                expectedWorkers: [expectedWorker]
+            ),
             assertions: { screen in
                 XCTAssertEqual("otherText", screen.text)
-            })
+            }
+        )
     }
 
     func test_childWorkflow() {
         // Test the child independently from the parent.
         ChildWorkflow(text: "hello")
             .renderTester()
-            .render(with: RenderExpectations<ChildWorkflow>(
-                expectedOutput: ExpectedOutput(output: .success),
-                expectedWorkers: [
-                    ExpectedWorker(
-                        worker: TestWorker(text: "hello"),
-                        output: .success)
-                    ]),
-                    assertions: { rendering in
-                        XCTAssertEqual("olleh", rendering)
-                })
+            .render(
+                with: RenderExpectations<ChildWorkflow>(
+                    expectedOutput: ExpectedOutput(output: .success),
+                    expectedWorkers: [
+                        ExpectedWorker(
+                            worker: TestWorker(text: "hello"),
+                            output: .success
+                        ),
+                    ]
+                ),
+                assertions: { rendering in
+                    XCTAssertEqual("olleh", rendering)
+                }
+            )
 
         // Test the parent simulating the behavior of the child. The worker would run, but because the child is simulated, does not run.
         ParentWorkflow(initialText: "hello")
@@ -142,11 +156,13 @@ final class WorkflowRenderTesterTests: XCTestCase {
                     ExpectedWorkflow(
                         type: ChildWorkflow.self,
                         rendering: "olleh",
-                        output: nil)
-                    ]),
+                        output: nil
+                    ),
+                ]),
                 assertions: { rendering in
                     XCTAssertEqual("olleh", rendering)
-                })
+                }
+            )
     }
 
     func test_childWorkflowOutput() {
@@ -159,13 +175,16 @@ final class WorkflowRenderTesterTests: XCTestCase {
                     ExpectedWorkflow(
                         type: ChildWorkflow.self,
                         rendering: "olleh",
-                        output: .failure)],
+                        output: .failure
+                    ),
+                ],
                 assertions: { rendering in
                     XCTAssertEqual("olleh", rendering)
-            })
-        .assert{ state in
-            XCTAssertEqual("Failed", state.text)
-        }
+                }
+            )
+            .assert { state in
+                XCTAssertEqual("Failed", state.text)
+            }
     }
 
     func test_implict_expectations() {
@@ -175,16 +194,17 @@ final class WorkflowRenderTesterTests: XCTestCase {
                 expectedState: ExpectedState<TestWorkflow>(
                     state: TestWorkflow.State(
                         text: "hello",
-                        substate: .idle)),
+                        substate: .idle
+                    )),
                 expectedOutput: nil,
                 expectedWorkers: [],
                 expectedWorkflows: [],
                 assertions: { rendering in
                     XCTAssertEqual("hello", rendering.text)
-            })
+                }
+            )
     }
 }
-
 
 private struct TestWorkflow: Workflow {
     /// Input
@@ -208,8 +228,7 @@ private struct TestWorkflow: Workflow {
         return State(text: initialText, substate: .idle)
     }
 
-    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout TestWorkflow.State) {
-    }
+    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout TestWorkflow.State) {}
 
     func render(state: State, context: RenderContext<TestWorkflow>) -> TestScreen {
         let sink = context.makeSink(of: Action.self)
@@ -219,7 +238,7 @@ private struct TestWorkflow: Workflow {
             break
         case .waiting:
             context.awaitResult(for: TestWorker(text: state.text)) { output -> Action in
-                return .asyncSuccess
+                .asyncSuccess
             }
         }
 
@@ -227,7 +246,8 @@ private struct TestWorkflow: Workflow {
             text: state.text,
             tapped: {
                 sink.send(.tapped)
-            })
+            }
+        )
     }
 }
 
@@ -239,7 +259,6 @@ extension TestWorkflow {
         case asyncSuccess
 
         func apply(toState state: inout TestWorkflow.State) -> TestWorkflow.Output? {
-
             switch self {
             case .tapped:
                 state.substate = .waiting
@@ -252,8 +271,7 @@ extension TestWorkflow {
     }
 }
 
-
-fileprivate struct OutputWorkflow: Workflow {
+private struct OutputWorkflow: Workflow {
     enum Output {
         case success
         case failure
@@ -265,8 +283,7 @@ fileprivate struct OutputWorkflow: Workflow {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: OutputWorkflow, state: inout OutputWorkflow.State) {
-    }
+    func workflowDidChange(from previousWorkflow: OutputWorkflow, state: inout OutputWorkflow.State) {}
 
     enum Action: WorkflowAction {
         typealias WorkflowType = OutputWorkflow
@@ -292,8 +309,7 @@ fileprivate struct OutputWorkflow: Workflow {
     }
 }
 
-
-fileprivate struct TestWorker: Worker {
+private struct TestWorker: Worker {
     var text: String
 
     enum Output {
@@ -310,14 +326,12 @@ fileprivate struct TestWorker: Worker {
     }
 }
 
-
-fileprivate struct TestScreen {
+private struct TestScreen {
     var text: String
     var tapped: () -> Void
 }
 
-
-fileprivate struct ParentWorkflow: Workflow {
+private struct ParentWorkflow: Workflow {
     typealias Output = Never
 
     var initialText: String
@@ -330,8 +344,7 @@ fileprivate struct ParentWorkflow: Workflow {
         return State(text: initialText)
     }
 
-    func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout ParentWorkflow.State) {
-    }
+    func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout ParentWorkflow.State) {}
 
     enum Action: WorkflowAction {
         typealias WorkflowType = ParentWorkflow
@@ -341,7 +354,6 @@ fileprivate struct ParentWorkflow: Workflow {
 
         func apply(toState state: inout ParentWorkflow.State) -> Never? {
             switch self {
-
             case .childSuccess:
                 state.text = String(state.text.reversed())
 
@@ -355,20 +367,19 @@ fileprivate struct ParentWorkflow: Workflow {
 
     func render(state: ParentWorkflow.State, context: RenderContext<ParentWorkflow>) -> String {
         return ChildWorkflow(text: state.text)
-            .mapOutput({ output -> Action in
+            .mapOutput { output -> Action in
                 switch output {
                 case .success:
                     return .childSuccess
                 case .failure:
                     return .childFailure
                 }
-            })
+            }
             .rendered(with: context)
     }
 }
 
-
-fileprivate struct ChildWorkflow: Workflow {
+private struct ChildWorkflow: Workflow {
     enum Output: Equatable {
         case success
         case failure
@@ -376,22 +387,21 @@ fileprivate struct ChildWorkflow: Workflow {
 
     var text: String
 
-    struct State {
-    }
+    struct State {}
 
     func makeInitialState() -> ChildWorkflow.State {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: ChildWorkflow, state: inout ChildWorkflow.State) {
-    }
+    func workflowDidChange(from previousWorkflow: ChildWorkflow, state: inout ChildWorkflow.State) {}
 
     func render(state: ChildWorkflow.State, context: RenderContext<ChildWorkflow>) -> String {
         context.awaitResult(
             for: TestWorker(text: text),
             onOutput: { (output, state) -> Output in
-                return .success
-            })
+                .success
+            }
+        )
 
         return String(text.reversed())
     }

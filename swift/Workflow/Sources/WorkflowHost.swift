@@ -17,7 +17,6 @@ import ReactiveSwift
 
 /// Defines a type that receives debug information about a running workflow hierarchy.
 public protocol WorkflowDebugger {
-
     /// Called once when the workflow hierarchy initializes.
     ///
     /// - Parameter snapshot: Debug information about the workflow hierarchy.
@@ -32,7 +31,6 @@ public protocol WorkflowDebugger {
 
 /// Manages an active workflow hierarchy.
 public final class WorkflowHost<WorkflowType: Workflow> {
-
     private let debugger: WorkflowDebugger?
 
     private let (outputEvent, outputEventObserver) = Signal<WorkflowType.Output, Never>.pipe()
@@ -55,16 +53,15 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
         self.rootNode = WorkflowNode(workflow: workflow)
 
-        self.mutableRendering = MutableProperty(self.rootNode.render())
+        self.mutableRendering = MutableProperty(rootNode.render())
         self.rendering = Property(mutableRendering)
-        self.rootNode.enableEvents()
+        rootNode.enableEvents()
 
-        debugger?.didEnterInitialState(snapshot: self.rootNode.makeDebugSnapshot())
+        debugger?.didEnterInitialState(snapshot: rootNode.makeDebugSnapshot())
 
         rootNode.onOutput = { [weak self] output in
             self?.handle(output: output)
         }
-
     }
 
     /// Update the input for the workflow. Will cause a render pass.
@@ -76,7 +73,9 @@ public final class WorkflowHost<WorkflowType: Workflow> {
             outputEvent: nil,
             debugInfo: WorkflowUpdateDebugInfo(
                 workflowType: "\(WorkflowType.self)",
-                kind: .didUpdate(source: .external)))
+                kind: .didUpdate(source: .external)
+            )
+        )
         handle(output: output)
     }
 
@@ -89,7 +88,8 @@ public final class WorkflowHost<WorkflowType: Workflow> {
 
         debugger?.didUpdate(
             snapshot: rootNode.makeDebugSnapshot(),
-            updateInfo: output.debugInfo)
+            updateInfo: output.debugInfo
+        )
 
         rootNode.enableEvents()
     }
@@ -98,5 +98,4 @@ public final class WorkflowHost<WorkflowType: Workflow> {
     public var output: Signal<WorkflowType.Output, Never> {
         return outputEvent
     }
-
 }

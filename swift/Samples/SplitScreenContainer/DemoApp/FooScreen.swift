@@ -16,7 +16,6 @@
 import Workflow
 import WorkflowUI
 
-
 struct FooScreen: Screen {
     let title: String
     let backgroundColor: UIColor
@@ -27,28 +26,26 @@ struct FooScreen: Screen {
     }
 }
 
-
-fileprivate final class FooScreenViewController: ScreenViewController<FooScreen> {
-    
+private final class FooScreenViewController: ScreenViewController<FooScreen> {
     private lazy var titleLabel: UILabel = .init()
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
-    
+
     required init(screen: FooScreen, environment: ViewEnvironment) {
         super.init(screen: screen, environment: environment)
-        
+
         update(with: screen)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         tapGestureRecognizer.addTarget(self, action: #selector(viewTapped))
         view.addGestureRecognizer(tapGestureRecognizer)
-        
+
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .center
         view.addSubview(titleLabel)
-        
+
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -58,15 +55,14 @@ fileprivate final class FooScreenViewController: ScreenViewController<FooScreen>
     override func screenDidChange(from previousScreen: FooScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
-    
+
     private func update(with screen: FooScreen) {
         view.backgroundColor = screen.backgroundColor
         titleLabel.text = screen.title
     }
-    
+
     @objc
     private func viewTapped() {
         screen.viewTapped()
     }
 }
-

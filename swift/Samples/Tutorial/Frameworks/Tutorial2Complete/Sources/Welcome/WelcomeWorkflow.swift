@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import ReactiveSwift
 import Workflow
 import WorkflowUI
-import ReactiveSwift
-
 
 // MARK: Input and Output
 
@@ -26,11 +25,9 @@ struct WelcomeWorkflow: Workflow {
     }
 }
 
-
 // MARK: State and Initialization
 
 extension WelcomeWorkflow {
-
     struct State {
         var name: String
     }
@@ -39,27 +36,21 @@ extension WelcomeWorkflow {
         return State(name: "")
     }
 
-    func workflowDidChange(from previousWorkflow: WelcomeWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: WelcomeWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension WelcomeWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = WelcomeWorkflow
 
         case nameChanged(name: String)
         case didLogin
 
         func apply(toState state: inout WelcomeWorkflow.State) -> WelcomeWorkflow.Output? {
-
             switch self {
-            case .nameChanged(name: let name):
+            case let .nameChanged(name: name):
                 // Update our state with the updated name.
                 state.name = name
                 // Return `nil` for the output, we want to handle this action only at the level of this workflow.
@@ -73,16 +64,11 @@ extension WelcomeWorkflow {
     }
 }
 
-
 // MARK: Workers
 
 extension WelcomeWorkflow {
-
     struct WelcomeWorker: Worker {
-
-        enum Output {
-
-        }
+        enum Output {}
 
         func run() -> SignalProducer<Output, Never> {
             fatalError()
@@ -91,9 +77,7 @@ extension WelcomeWorkflow {
         func isEquivalent(to otherWorker: WelcomeWorker) -> Bool {
             return true
         }
-
     }
-
 }
 
 // MARK: Rendering
@@ -102,7 +86,6 @@ extension WelcomeWorkflow {
     typealias Rendering = WelcomeScreen
 
     func render(state: WelcomeWorkflow.State, context: RenderContext<WelcomeWorkflow>) -> Rendering {
-
         // Create a "sink" of type `Action`. A sink is what we use to send actions to the workflow.
         let sink = context.makeSink(of: Action.self)
 
@@ -110,10 +93,11 @@ extension WelcomeWorkflow {
             name: state.name,
             onNameChanged: { name in
                 sink.send(.nameChanged(name: name))
-        },
+            },
             onLoginTapped: {
                 // Whenever the login button is tapped, emit the `.didLogin` action.
                 sink.send(.didLogin)
-        })
+            }
+        )
     }
 }

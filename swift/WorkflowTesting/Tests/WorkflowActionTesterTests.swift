@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import XCTest
 import ReactiveSwift
 import Workflow
+import XCTest
 @testable import WorkflowTesting
 
 final class WorkflowActionTesterTests: XCTestCase {
-
     func test_stateTransitions() {
         TestAction
             .tester(withState: false)
@@ -42,10 +41,9 @@ final class WorkflowActionTesterTests: XCTestCase {
             .tester(withState: true)
         XCTAssertEqual(state, tester.state)
     }
-
 }
 
-fileprivate enum TestAction: WorkflowAction {
+private enum TestAction: WorkflowAction {
     case toggleTapped
     case exitTapped
 
@@ -62,8 +60,7 @@ fileprivate enum TestAction: WorkflowAction {
     }
 }
 
-fileprivate struct TestWorkflow: Workflow {
-
+private struct TestWorkflow: Workflow {
     typealias State = Bool
 
     enum Output {
@@ -74,12 +71,9 @@ fileprivate struct TestWorkflow: Workflow {
         return true
     }
 
-    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout Bool) {
+    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout Bool) {}
 
-    }
-
-    func render(state: Bool, context: RenderContext<TestWorkflow>) -> Void {
+    func render(state: Bool, context: RenderContext<TestWorkflow>) {
         return ()
     }
-
 }

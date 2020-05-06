@@ -15,7 +15,6 @@
  */
 import ReactiveSwift
 
-
 final class AuthenticationService {
     static let delayMS: TimeInterval = 0.750
     static let weakToken = "Need a second factor there, friend"
@@ -27,11 +26,13 @@ final class AuthenticationService {
             if email.contains("2fa") {
                 return SignalProducer(value: AuthenticationResponse(
                     token: AuthenticationService.weakToken,
-                    secondFactorRequired: true))
+                    secondFactorRequired: true
+                ))
                     .delay(AuthenticationService.delayMS, on: QueueScheduler.main)
             } else {
                 return SignalProducer(value: AuthenticationResponse(
-                    token: AuthenticationService.realToken, secondFactorRequired: false))
+                    token: AuthenticationService.realToken, secondFactorRequired: false
+                ))
                     .delay(AuthenticationService.delayMS, on: QueueScheduler.main)
             }
         } else {
@@ -50,12 +51,12 @@ final class AuthenticationService {
         } else {
             return SignalProducer(value: AuthenticationResponse(
                 token: AuthenticationService.realToken,
-                secondFactorRequired: false))
+                secondFactorRequired: false
+            ))
                 .delay(AuthenticationService.delayMS, on: QueueScheduler.main)
         }
     }
 }
-
 
 extension AuthenticationService {
     enum AuthenticationError: Error {

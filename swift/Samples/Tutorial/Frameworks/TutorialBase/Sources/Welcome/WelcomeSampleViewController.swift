@@ -15,12 +15,11 @@
  */
 import TutorialViews
 
-
 final class WelcomeSampleViewController: UIViewController {
     let welcomeView: WelcomeView
 
     init() {
-        welcomeView = WelcomeView(frame: .zero)
+        self.welcomeView = WelcomeView(frame: .zero)
         super.init(nibName: nil, bundle: nil)
     }
 

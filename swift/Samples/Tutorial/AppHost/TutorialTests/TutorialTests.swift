@@ -16,6 +16,5 @@
 import XCTest
 
 class TutorialTests: XCTestCase {
-    func testExample() {
-    }
+    func testExample() {}
 }

@@ -15,7 +15,6 @@
  */
 import WorkflowUI
 
-
 struct NewGameScreen: Screen {
     var playerX: String
     var playerO: String
@@ -31,7 +30,6 @@ struct NewGameScreen: Screen {
         return NewGameViewController.description(for: self, environment: environment)
     }
 }
-
 
 final class NewGameViewController: ScreenViewController<NewGameScreen> {
     let playerXLabel: UILabel
@@ -62,7 +60,7 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
         playerOField.backgroundColor = UIColor(white: 0.92, alpha: 1.0)
         playerOField.addTarget(self, action: #selector(onTextChanged(sender:)), for: .editingChanged)
 
-        startGameButton.backgroundColor = UIColor(red: 41/255, green: 150/255, blue: 204/255, alpha: 1.0)
+        startGameButton.backgroundColor = UIColor(red: 41 / 255, green: 150 / 255, blue: 204 / 255, alpha: 1.0)
         startGameButton.setTitle("Let's Play!", for: .normal)
         startGameButton.addTarget(self, action: #selector(startPressed(sender:)), for: .touchUpInside)
 
@@ -82,39 +80,45 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
 
         let xSize = playerXLabel.sizeThatFits(CGSize(
             width: view.bounds.size.width,
-            height: height))
+            height: height
+        ))
 
         playerXLabel.frame = CGRect(
             x: view.bounds.origin.x,
             y: yOffset,
             width: xSize.width,
-            height: height)
+            height: height
+        )
 
         playerXField.frame = CGRect(
             x: view.bounds.origin.x + xSize.width,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
+            height: height
+        )
         .insetBy(dx: inset, dy: 0.0)
 
         yOffset += height + inset
 
         let oSize = playerOLabel.sizeThatFits(CGSize(
             width: view.bounds.size.width,
-            height: height))
+            height: height
+        ))
 
         playerOLabel.frame = CGRect(
             x: view.bounds.origin.x,
             y: yOffset,
             width: oSize.width,
-            height: height)
+            height: height
+        )
 
         playerOField.frame = CGRect(
             x: view.bounds.origin.x + oSize.width,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
 
         yOffset += height + inset
 
@@ -122,11 +126,11 @@ final class NewGameViewController: ScreenViewController<NewGameScreen> {
             x: view.bounds.origin.x,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
 
         yOffset += height + inset
-
     }
 
     override func screenDidChange(from previousScreen: NewGameScreen, previousEnvironment: ViewEnvironment) {

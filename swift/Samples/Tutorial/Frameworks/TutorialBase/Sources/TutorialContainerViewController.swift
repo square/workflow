@@ -17,13 +17,12 @@ import UIKit
 import Workflow
 import WorkflowUI
 
-
 public final class TutorialContainerViewController: UIViewController {
     let containerViewController: UIViewController
 
     public init() {
         // Show one of the sample view controllers, to demonstrate the provided views:
-        containerViewController = WelcomeSampleViewController()
+        self.containerViewController = WelcomeSampleViewController()
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -32,7 +31,7 @@ public final class TutorialContainerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .white
@@ -42,7 +41,7 @@ public final class TutorialContainerViewController: UIViewController {
         containerViewController.didMove(toParent: self)
     }
 
-    public override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         containerViewController.view.frame = view.bounds

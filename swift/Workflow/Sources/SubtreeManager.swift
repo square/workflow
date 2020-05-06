@@ -17,30 +17,27 @@ import Dispatch
 import ReactiveSwift
 
 extension WorkflowNode {
-
     /// Manages the subtree of a workflow. Specifically, this type encapsulates the logic required to update and manage
     /// the lifecycle of nested workflows across multiple render passes.
     internal final class SubtreeManager {
-
-        internal var onUpdate: ((Output) -> Void)? = nil
+        internal var onUpdate: ((Output) -> Void)?
 
         /// Sinks from the outside world (i.e. UI)
         private var eventPipes: [EventPipe] = []
 
         /// Reusable sinks from the previous render pass
-        private var previousSinks: [ObjectIdentifier:AnyReusableSink] = [:]
+        private var previousSinks: [ObjectIdentifier: AnyReusableSink] = [:]
 
         /// The current array of children
-        private (set) internal var childWorkflows: [ChildKey:AnyChildWorkflow] = [:]
+        internal private(set) var childWorkflows: [ChildKey: AnyChildWorkflow] = [:]
 
         /// The current array of workers
-        private (set) internal var childWorkers: [AnyChildWorker] = []
+        internal private(set) var childWorkers: [AnyChildWorker] = []
 
         init() {}
 
         /// Performs an update pass using the given closure.
         func render<Rendering>(_ actions: (RenderContext<WorkflowType>) -> Rendering) -> Rendering {
-
             /// Invalidate the previous action handlers.
             for eventPipe in eventPipes {
                 eventPipe.invalidate()
@@ -50,30 +47,31 @@ extension WorkflowNode {
             let context = Context(
                 previousSinks: previousSinks,
                 originalChildWorkflows: childWorkflows,
-                originalChildWorkers: childWorkers)
+                originalChildWorkers: childWorkers
+            )
 
             let wrapped = RenderContext.make(implementation: context)
 
             /// Pass the context into the closure to allow a render to take place
             let rendering = actions(wrapped)
-            
+
             wrapped.invalidate()
 
             /// After the render is complete, assign children using *only the children that were used during the render
             /// pass.* This means that any pre-existing children that were *not* used during the render pass are removed
             /// as a result of this call to `render`.
-            self.childWorkflows = context.usedChildWorkflows
-            self.childWorkers = context.usedChildWorkers
+            childWorkflows = context.usedChildWorkflows
+            childWorkers = context.usedChildWorkers
 
             /// Captured the reusable sinks from this render pass.
-            self.previousSinks = context.sinkStore.usedSinks
+            previousSinks = context.sinkStore.usedSinks
 
             /// Capture all the pipes to be enabled after render completes.
-            self.eventPipes = context.eventPipes
-            self.eventPipes.append(contentsOf: context.sinkStore.eventPipes)
+            eventPipes = context.eventPipes
+            eventPipes.append(contentsOf: context.sinkStore.eventPipes)
 
             /// Set all event pipes to `pending`.
-            self.eventPipes.forEach { $0.setPending() }
+            eventPipes.forEach { $0.setPending() }
 
             /// Return the rendered result
             return rendering
@@ -83,76 +81,69 @@ extension WorkflowNode {
         /// be called. If is an error to call this twice without generating a new rendering.
         func enableEvents() {
             /// Check for queued events. If there are any, apply the first and yield to the next render loop.
-            let queuedEvents = self.eventPipes.compactMap { pipe in
+            let queuedEvents = eventPipes.compactMap { pipe in
                 pipe.pendingOutput()
             }
             if queuedEvents.count > 0 {
-                self.handle(output: queuedEvents[0])
+                handle(output: queuedEvents[0])
                 return
             }
 
             /// Enable all action pipes.
-            for eventPipe in self.eventPipes {
+            for eventPipe in eventPipes {
                 eventPipe.enable { [weak self] output in
                     self?.handle(output: output)
                 }
             }
 
             /// Enable all child workflows.
-            for child in self.childWorkflows {
+            for child in childWorkflows {
                 child.value.enableEvents()
             }
-
         }
 
         func makeDebugSnapshot() -> [WorkflowHierarchyDebugSnapshot.Child] {
             return childWorkflows
                 .sorted(by: { (lhs, rhs) -> Bool in
-                    return lhs.key.key < rhs.key.key
+                    lhs.key.key < rhs.key.key
                 })
                 .map {
                     WorkflowHierarchyDebugSnapshot.Child(
                         key: $0.key.key,
-                        snapshot: $0.value.makeDebugSnapshot())
+                        snapshot: $0.value.makeDebugSnapshot()
+                    )
                 }
         }
 
         private func handle(output: Output) {
             onUpdate?(output)
         }
-
-
     }
-
 }
 
 extension WorkflowNode.SubtreeManager {
-
     enum Output {
         case update(AnyWorkflowAction<WorkflowType>, source: WorkflowUpdateDebugInfo.Source)
         case childDidUpdate(WorkflowUpdateDebugInfo)
     }
-
 }
 
 // MARK: - Render Context
 
 extension WorkflowNode.SubtreeManager {
-
     /// The workflow context implementation used by the subtree manager.
     fileprivate final class Context: RenderContextType {
+        internal private(set) var eventPipes: [EventPipe]
 
-        private (set) internal var eventPipes: [EventPipe]
+        internal private(set) var sinkStore: SinkStore
 
-        private (set) internal var sinkStore: SinkStore
-        
-        private let originalChildWorkflows: [ChildKey:AnyChildWorkflow]
-        private (set) internal var usedChildWorkflows: [ChildKey:AnyChildWorkflow]
+        private let originalChildWorkflows: [ChildKey: AnyChildWorkflow]
+        internal private(set) var usedChildWorkflows: [ChildKey: AnyChildWorkflow]
 
         private let originalChildWorkers: [AnyChildWorker]
-        private (set) internal var usedChildWorkers: [AnyChildWorker]
+        internal private(set) var usedChildWorkers: [AnyChildWorker]
 
-        internal init(previousSinks: [ObjectIdentifier:AnyReusableSink], originalChildWorkflows: [ChildKey:AnyChildWorkflow], originalChildWorkers: [AnyChildWorker]) {
+        internal init(previousSinks: [ObjectIdentifier: AnyReusableSink], originalChildWorkflows: [ChildKey: AnyChildWorkflow], originalChildWorkers: [AnyChildWorker]) {
             self.eventPipes = []
 
             self.sinkStore = SinkStore(previousSinks: previousSinks)
@@ -164,8 +155,7 @@ extension WorkflowNode.SubtreeManager {
             self.usedChildWorkers = []
         }
 
-        func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child : Workflow, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-
+        func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child: Workflow, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
             /// A unique key used to identify this child workflow
             let childKey = ChildKey(childType: Child.self, key: key)
 
@@ -177,11 +167,10 @@ extension WorkflowNode.SubtreeManager {
 
             let child: ChildWorkflow<Child>
             let eventPipe = EventPipe()
-            self.eventPipes.append(eventPipe)
+            eventPipes.append(eventPipe)
 
             /// See if we can
             if let existing = originalChildWorkflows[childKey] {
-
                 /// Cast the untyped child into a specific typed child. Because our children are keyed by their workflow
                 /// type, this should never fail.
                 guard let existing = existing as? ChildWorkflow<Child> else {
@@ -192,7 +181,8 @@ extension WorkflowNode.SubtreeManager {
                 existing.update(
                     workflow: workflow,
                     outputMap: { AnyWorkflowAction(outputMap($0)) },
-                    eventPipe: eventPipe)
+                    eventPipe: eventPipe
+                )
                 child = existing
             } else {
                 /// We could not find an existing child matching the given child key, so we will generate a new child.
@@ -200,7 +190,8 @@ extension WorkflowNode.SubtreeManager {
                 child = ChildWorkflow<Child>(
                     workflow: workflow,
                     outputMap: { AnyWorkflowAction(outputMap($0)) },
-                    eventPipe: eventPipe)
+                    eventPipe: eventPipe
+                )
             }
 
             /// Store the resolved child in `used`. This allows us to a) hold on to any used children after this render
@@ -209,8 +200,7 @@ extension WorkflowNode.SubtreeManager {
             return child.render()
         }
 
-        func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-
+        func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, WorkflowType == Action.WorkflowType {
             let reusableSink = sinkStore.findOrCreate(actionType: Action.self)
 
             let sink = Sink<Action> { action in
@@ -220,11 +210,10 @@ extension WorkflowNode.SubtreeManager {
             return sink
         }
 
-        func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W : Worker, Action : WorkflowAction, WorkflowType == Action.WorkflowType {
-
+        func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
             let outputMap = { AnyWorkflowAction(outputMap($0)) }
             let eventPipe = EventPipe()
-            self.eventPipes.append(eventPipe)
+            eventPipes.append(eventPipe)
 
             if let existingWorker = originalChildWorkers
                 .compactMap({ $0 as? ChildWorker<W> })
@@ -236,28 +225,23 @@ extension WorkflowNode.SubtreeManager {
                 usedChildWorkers.append(newChildWorker)
             }
         }
-        
     }
-
 }
-
 
 // MARK: - Reusable Sink
 
 extension WorkflowNode.SubtreeManager {
-
     fileprivate struct SinkStore {
-
         var eventPipes: [EventPipe] {
             return usedSinks.values.map { reusableSink -> EventPipe in
                 reusableSink.eventPipe
             }
         }
 
-        private var previousSinks: [ObjectIdentifier:AnyReusableSink]
-        private (set) var usedSinks: [ObjectIdentifier:AnyReusableSink]
+        private var previousSinks: [ObjectIdentifier: AnyReusableSink]
+        private(set) var usedSinks: [ObjectIdentifier: AnyReusableSink]
 
-        init(previousSinks: [ObjectIdentifier:AnyReusableSink]) {
+        init(previousSinks: [ObjectIdentifier: AnyReusableSink]) {
             self.previousSinks = previousSinks
             self.usedSinks = [:]
         }
@@ -283,21 +267,18 @@ extension WorkflowNode.SubtreeManager {
 
             return reusableSink
         }
-
     }
 
     /// Type-erased base class for reusable sinks.
     fileprivate class AnyReusableSink {
-
         var eventPipe: EventPipe
 
         init() {
-            eventPipe = EventPipe()
+            self.eventPipe = EventPipe()
         }
     }
 
     fileprivate final class ReusableSink<Action: WorkflowAction>: AnyReusableSink where Action.WorkflowType == WorkflowType {
-
         func handle(action: Action) {
             let output = Output.update(AnyWorkflowAction(action), source: .external)
 
@@ -306,12 +287,10 @@ extension WorkflowNode.SubtreeManager {
     }
 }
 
-
 // MARK: - EventPipe
 
 extension WorkflowNode.SubtreeManager {
     fileprivate final class EventPipe {
-
         var validationState: ValidationState
         enum ValidationState {
             case preparing
@@ -331,7 +310,6 @@ extension WorkflowNode.SubtreeManager {
             }
 
             switch validationState {
-
             case .preparing:
                 fatalError("Sink sent an action inside `render`. Sinks are not valid until `render` has completed.")
 
@@ -341,7 +319,7 @@ extension WorkflowNode.SubtreeManager {
             case .queued:
                 fatalError("Action sent to pipe while already in the `queueing` state.")
 
-            case .valid(handler: let handler):
+            case let .valid(handler: handler):
                 handler(event)
 
             case .invalid:
@@ -357,7 +335,7 @@ extension WorkflowNode.SubtreeManager {
         }
 
         func pendingOutput() -> Output? {
-            if case .queued(let output) = validationState {
+            if case let .queued(output) = validationState {
                 return output
             } else {
                 return nil
@@ -380,9 +358,7 @@ extension WorkflowNode.SubtreeManager {
 // MARK: - ChildKey
 
 extension WorkflowNode.SubtreeManager {
-    
     struct ChildKey: Hashable {
-
         var childType: Any.Type
         var key: String
 
@@ -390,24 +366,22 @@ extension WorkflowNode.SubtreeManager {
             self.childType = childType
             self.key = key
         }
-        
+
         func hash(into hasher: inout Hasher) {
             hasher.combine(ObjectIdentifier(childType))
             hasher.combine(key)
         }
-        
-        static func ==(lhs: ChildKey, rhs: ChildKey) -> Bool {
+
+        static func == (lhs: ChildKey, rhs: ChildKey) -> Bool {
             return lhs.childType == rhs.childType
                 && lhs.key == rhs.key
         }
     }
-
 }
 
 // MARK: - Workers
 
 extension WorkflowNode.SubtreeManager {
-
     /// Abstract base class for running children in the subtree.
     internal class AnyChildWorker {
         fileprivate var eventPipe: EventPipe
@@ -418,7 +392,6 @@ extension WorkflowNode.SubtreeManager {
     }
 
     fileprivate final class ChildWorker<W: Worker>: AnyChildWorker {
-
         let worker: W
 
         let signalProducer: SignalProducer<W.Output, Never>
@@ -449,22 +422,18 @@ extension WorkflowNode.SubtreeManager {
         private func handle(output: W.Output) {
             let output = Output.update(
                 outputMap(output),
-                source: .worker)
+                source: .worker
+            )
             eventPipe.handle(event: output)
         }
-
     }
-
 }
-
 
 // MARK: - Child Workflows
 
 extension WorkflowNode.SubtreeManager {
-
     /// Abstract base class for running children in the subtree.
     internal class AnyChildWorkflow {
-
         fileprivate var eventPipe: EventPipe
 
         fileprivate init(eventPipe: EventPipe) {
@@ -478,16 +447,14 @@ extension WorkflowNode.SubtreeManager {
         func makeDebugSnapshot() -> WorkflowHierarchyDebugSnapshot {
             fatalError()
         }
-        
     }
 
     fileprivate final class ChildWorkflow<W: Workflow>: AnyChildWorkflow {
-
         private let node: WorkflowNode<W>
         private var outputMap: (W.Output) -> AnyWorkflowAction<WorkflowType>
-        
+
         private let (lifetime, token) = Lifetime.make()
-        
+
         init(workflow: W, outputMap: @escaping (W.Output) -> AnyWorkflowAction<WorkflowType>, eventPipe: EventPipe) {
             self.outputMap = outputMap
             self.node = WorkflowNode<W>(workflow: workflow)
@@ -497,33 +464,32 @@ extension WorkflowNode.SubtreeManager {
             node.onOutput = { [weak self] output in
                 self?.handle(workflowOutput: output)
             }
-
         }
 
         override func enableEvents() {
-            self.node.enableEvents()
+            node.enableEvents()
         }
-        
+
         func render() -> W.Rendering {
             return node.render()
         }
-        
+
         func update(workflow: W, outputMap: @escaping (W.Output) -> AnyWorkflowAction<WorkflowType>, eventPipe: EventPipe) {
             self.outputMap = outputMap
             self.eventPipe = eventPipe
-            self.node.update(workflow: workflow)
+            node.update(workflow: workflow)
         }
 
         private func handle(workflowOutput: WorkflowNode<W>.Output) {
-
             let output: Output
 
             if let outputEvent = workflowOutput.outputEvent {
                 output = Output.update(
-                        outputMap(outputEvent),
-                        source: .subtree(workflowOutput.debugInfo))
+                    outputMap(outputEvent),
+                    source: .subtree(workflowOutput.debugInfo)
+                )
             } else {
-                output =  Output.childDidUpdate(workflowOutput.debugInfo)
+                output = Output.childDidUpdate(workflowOutput.debugInfo)
             }
 
             eventPipe.handle(event: output)
@@ -532,8 +498,5 @@ extension WorkflowNode.SubtreeManager {
         override func makeDebugSnapshot() -> WorkflowHierarchyDebugSnapshot {
             return node.makeDebugSnapshot()
         }
-        
     }
-    
-    
 }

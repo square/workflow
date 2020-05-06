@@ -16,7 +16,6 @@
 import Workflow
 import WorkflowUI
 
-
 struct BarScreen: Screen {
     let title: String
     let backgroundColors: [UIColor]
@@ -27,64 +26,61 @@ struct BarScreen: Screen {
     }
 }
 
-
-fileprivate final class BarScreenViewController: ScreenViewController<BarScreen> {
-    
+private final class BarScreenViewController: ScreenViewController<BarScreen> {
     private lazy var titleLabel: UILabel = .init()
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     private var gradientLayer: CAGradientLayer?
-    
+
     required init(screen: BarScreen, environment: ViewEnvironment) {
         super.init(screen: screen, environment: environment)
-        
+
         update(with: screen)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tapGestureRecognizer.addTarget(self, action: #selector(viewTapped))
         view.addGestureRecognizer(tapGestureRecognizer)
-        
+
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .center
         titleLabel.textColor = .white
         view.addSubview(titleLabel)
-        
+
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
-        
+
         updateGradient(for: view, colors: screen.backgroundColors)
     }
 
     override func screenDidChange(from previousScreen: BarScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
-    
+
     private func update(with screen: BarScreen) {
         titleLabel.text = screen.title
-        
+
         updateGradient(for: view, colors: screen.backgroundColors)
     }
-    
+
     private func updateGradient(for targetView: UIView, colors: [UIColor]) {
         let newGradientLayer = CAGradientLayer()
 
         newGradientLayer.frame = targetView.bounds
-        newGradientLayer.colors = colors.map({ $0.cgColor })
+        newGradientLayer.colors = colors.map { $0.cgColor }
 
         targetView.layer.insertSublayer(newGradientLayer, at: 0)
-    
+
         gradientLayer?.removeFromSuperlayer()
-        
+
         gradientLayer = newGradientLayer
     }
-    
+
     @objc
     private func viewTapped() {
         screen.viewTapped()
     }
 }
-

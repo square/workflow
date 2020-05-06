@@ -3,8 +3,7 @@ import Workflow
 import WorkflowUI
 
 /// Container for showing workflow screens modally over a base screen.
-internal final class ModalContainerViewController<ModalScreen : Screen>: ScreenViewController <ModalContainerScreen<ModalScreen>> {
-
+internal final class ModalContainerViewController<ModalScreen: Screen>: ScreenViewController<ModalContainerScreen<ModalScreen>> {
     var baseScreenViewController: DescribedViewController
 
     private var presentedScreens: [ModallyPresentedScreen] = []
@@ -18,7 +17,7 @@ internal final class ModalContainerViewController<ModalScreen : Screen>: ScreenV
     }
 
     required init(screen: ModalContainerScreen<ModalScreen>, environment: ViewEnvironment) {
-        baseScreenViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
+        self.baseScreenViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
         super.init(screen: screen, environment: environment)
     }
 
@@ -160,7 +159,7 @@ internal final class ModalContainerViewController<ModalScreen : Screen>: ScreenV
             modal.viewController.view.accessibilityViewIsModal = false
         }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -196,12 +195,12 @@ internal final class ModalContainerViewController<ModalScreen : Screen>: ScreenV
         return topmostScreenViewController
     }
 
-    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return topmostScreenViewController?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
     }
 }
 
-fileprivate struct ModallyPresentedScreen {
+private struct ModallyPresentedScreen {
     var viewController: DescribedViewController
     var style: ModalContainerScreenModal.Style
     var key: AnyHashable
@@ -227,14 +226,13 @@ extension ModalContainerScreenModal {
     }
 }
 
-fileprivate struct ModalIdentifier: Hashable {
+private struct ModalIdentifier: Hashable {
     var style: ModalContainerScreenModal.Style
     var key: AnyHashable
     var animated: Bool
 }
 
-fileprivate struct ModalDisplayInfo {
-
+private struct ModalDisplayInfo {
     var frame: CGRect
     var alpha: CGFloat
     var transform: CGAffineTransform
@@ -248,7 +246,6 @@ fileprivate struct ModalDisplayInfo {
     var animationOptions: UIView.AnimationOptions
 
     init(containerSize: CGSize, style: ModalContainerScreenModal.Style, animated: Bool) {
-
         // Configure all properties so that they default to fullScreen/sheet animation.
         frame = CGRect(origin: .zero, size: containerSize)
         alpha = 1.0
@@ -277,7 +274,7 @@ fileprivate struct ModalDisplayInfo {
             // Clear the default fullscreen animation configuration.
             if !animated {
                 duration = 0
-                animationOptions = UIView.AnimationOptions.init(rawValue: 0)
+                animationOptions = UIView.AnimationOptions(rawValue: 0)
                 incomingInitialFrame = frame
                 outgoingFinalFrame = frame
             }
@@ -297,7 +294,7 @@ fileprivate struct ModalDisplayInfo {
             frame = CGRect(origin: popOverOrigin, size: popoverSize)
 
             duration = 0.1
-            animationOptions = UIView.AnimationOptions.init(rawValue: 0)
+            animationOptions = UIView.AnimationOptions(rawValue: 0)
 
             // Do not animate frame.
             incomingInitialFrame = frame

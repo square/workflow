@@ -15,7 +15,6 @@
  */
 import UIKit
 
-
 public final class WelcomeView: UIView {
     public var name: String {
         didSet {
@@ -30,15 +29,14 @@ public final class WelcomeView: UIView {
     let nameField: UITextField
     let button: UIButton
 
-    public override init(frame: CGRect) {
-
+    override public init(frame: CGRect) {
         self.name = ""
         self.onNameChanged = { _ in }
         self.onLoginTapped = {}
 
-        welcomeLabel = UILabel(frame: .zero)
-        nameField = UITextField(frame: .zero)
-        button = UIButton(frame: .zero)
+        self.welcomeLabel = UILabel(frame: .zero)
+        self.nameField = UITextField(frame: .zero)
+        self.button = UIButton(frame: .zero)
 
         super.init(frame: frame)
 
@@ -61,7 +59,7 @@ public final class WelcomeView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         let inset: CGFloat = 12.0
@@ -72,22 +70,25 @@ public final class WelcomeView: UIView {
             x: bounds.origin.x,
             y: bounds.origin.y,
             width: bounds.size.width,
-            height: yOffset)
+            height: yOffset
+        )
 
         nameField.frame = CGRect(
             x: bounds.origin.x,
             y: yOffset,
             width: bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
 
         yOffset += height + inset
         button.frame = CGRect(
             x: bounds.origin.x,
             y: yOffset,
             width: bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
     }
 
     @objc private func textDidChange(sender: UITextField) {

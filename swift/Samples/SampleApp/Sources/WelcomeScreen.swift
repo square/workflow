@@ -16,7 +16,6 @@
 import Workflow
 import WorkflowUI
 
-
 struct WelcomeScreen: Screen {
     var name: String
     var onNameChanged: (String) -> Void
@@ -27,16 +26,15 @@ struct WelcomeScreen: Screen {
     }
 }
 
-
-fileprivate final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
+private final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
     let welcomeLabel: UILabel
     let nameField: UITextField
     let button: UIButton
 
     required init(screen: WelcomeScreen, environment: ViewEnvironment) {
-        welcomeLabel = UILabel(frame: .zero)
-        nameField = UITextField(frame: .zero)
-        button = UIButton(frame: .zero)
+        self.welcomeLabel = UILabel(frame: .zero)
+        self.nameField = UITextField(frame: .zero)
+        self.button = UIButton(frame: .zero)
         super.init(screen: screen, environment: environment)
 
         update(with: screen)
@@ -51,7 +49,7 @@ fileprivate final class WelcomeViewController: ScreenViewController<WelcomeScree
         nameField.backgroundColor = UIColor(white: 0.92, alpha: 1.0)
         nameField.addTarget(self, action: #selector(textDidChange(sender:)), for: .editingChanged)
 
-        button.backgroundColor = UIColor(red: 41/255, green: 150/255, blue: 204/255, alpha: 1.0)
+        button.backgroundColor = UIColor(red: 41 / 255, green: 150 / 255, blue: 204 / 255, alpha: 1.0)
         button.setTitle("Login", for: .normal)
         button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)
 
@@ -71,22 +69,25 @@ fileprivate final class WelcomeViewController: ScreenViewController<WelcomeScree
             x: view.bounds.origin.x,
             y: view.bounds.origin.y,
             width: view.bounds.size.width,
-            height: yOffset)
+            height: yOffset
+        )
 
         nameField.frame = CGRect(
             x: view.bounds.origin.x,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
 
         yOffset += height + inset
         button.frame = CGRect(
             x: view.bounds.origin.x,
             y: yOffset,
             width: view.bounds.size.width,
-            height: height)
-            .insetBy(dx: inset, dy: 0.0)
+            height: height
+        )
+        .insetBy(dx: inset, dy: 0.0)
     }
 
     override func screenDidChange(from previousScreen: WelcomeScreen, previousEnvironment: ViewEnvironment) {

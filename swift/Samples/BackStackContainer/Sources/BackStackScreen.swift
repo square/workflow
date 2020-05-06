@@ -15,7 +15,6 @@
  */
 import WorkflowUI
 
-
 public struct BackStackScreen: Screen {
     var items: [Item]
 
@@ -74,7 +73,6 @@ extension BackStackScreen {
     }
 }
 
-
 extension BackStackScreen {
     public enum BarVisibility {
         case hidden
@@ -102,10 +100,8 @@ extension BackStackScreen {
         public init(title: String, leftItem: BarButtonItem = .none, rightItem: BarButtonItem = .none) {
             self.init(title: .text(title), leftItem: leftItem, rightItem: rightItem)
         }
-
     }
 }
-
 
 extension BackStackScreen.BarContent {
     public enum Title {

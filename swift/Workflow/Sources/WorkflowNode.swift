@@ -17,20 +17,18 @@ import ReactiveSwift
 
 /// Manages a running workflow.
 final class WorkflowNode<WorkflowType: Workflow> {
-
     /// Holds the current state of the workflow
     private var state: WorkflowType.State
 
     /// Holds the current workflow.
     private var workflow: WorkflowType
 
-    var onOutput: ((Output) -> Void)? = nil
+    var onOutput: ((Output) -> Void)?
 
     /// Manages the children of this workflow, including diffs during/after render passes.
     private let subtreeManager = SubtreeManager()
-    
+
     init(workflow: WorkflowType) {
-        
         /// Get the initial state
         self.workflow = workflow
         self.state = workflow.makeInitialState()
@@ -38,16 +36,14 @@ final class WorkflowNode<WorkflowType: Workflow> {
         subtreeManager.onUpdate = { [weak self] output in
             self?.handle(subtreeOutput: output)
         }
-
     }
 
     /// Handles an event produced by the subtree manager
     private func handle(subtreeOutput: SubtreeManager.Output) {
-
         let output: Output
 
         switch subtreeOutput {
-        case .update(let event, let source):
+        case let .update(event, source):
             /// Apply the update to the current state
             let outputEvent = event.apply(toState: &state)
 
@@ -56,14 +52,18 @@ final class WorkflowNode<WorkflowType: Workflow> {
                 outputEvent: outputEvent,
                 debugInfo: WorkflowUpdateDebugInfo(
                     workflowType: "\(WorkflowType.self)",
-                    kind: .didUpdate(source: source)))
+                    kind: .didUpdate(source: source)
+                )
+            )
 
-        case .childDidUpdate(let debugInfo):
+        case let .childDidUpdate(debugInfo):
             output = Output(
-                    outputEvent: nil,
-                    debugInfo: WorkflowUpdateDebugInfo(
-                        workflowType: "\(WorkflowType.self)",
-                        kind: .childDidUpdate(debugInfo)))
+                outputEvent: nil,
+                debugInfo: WorkflowUpdateDebugInfo(
+                    workflowType: "\(WorkflowType.self)",
+                    kind: .childDidUpdate(debugInfo)
+                )
+            )
         }
 
         onOutput?(output)
@@ -71,10 +71,11 @@ final class WorkflowNode<WorkflowType: Workflow> {
 
     func render() -> WorkflowType.Rendering {
         return subtreeManager.render { context in
-            return workflow
+            workflow
                 .render(
                     state: state,
-                    context: context)
+                    context: context
+                )
         }
     }
 
@@ -92,16 +93,14 @@ final class WorkflowNode<WorkflowType: Workflow> {
         return WorkflowHierarchyDebugSnapshot(
             workflowType: "\(WorkflowType.self)",
             stateDescription: "\(state)",
-            children: subtreeManager.makeDebugSnapshot())
+            children: subtreeManager.makeDebugSnapshot()
+        )
     }
-    
 }
 
 extension WorkflowNode {
-
     struct Output {
         var outputEvent: WorkflowType.Output?
         var debugInfo: WorkflowUpdateDebugInfo
     }
-
 }

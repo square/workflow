@@ -16,95 +16,93 @@
 
 #if canImport(UIKit)
 
-import UIKit
+    import UIKit
 
+    public final class DescribedViewController: UIViewController {
+        var currentViewController: UIViewController
 
-public final class DescribedViewController: UIViewController {
+        public init(description: ViewControllerDescription) {
+            self.currentViewController = description.buildViewController()
+            super.init(nibName: nil, bundle: nil)
+        }
 
-    var currentViewController: UIViewController
+        public convenience init<S: Screen>(screen: S, environment: ViewEnvironment) {
+            self.init(description: screen.viewControllerDescription(environment: environment))
+        }
 
-    public init(description: ViewControllerDescription) {
-        currentViewController = description.buildViewController()
-        super.init(nibName: nil, bundle: nil)
-    }
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) is unavailable")
+        }
 
-    public convenience init<S: Screen>(screen: S, environment: ViewEnvironment) {
-        self.init(description: screen.viewControllerDescription(environment: environment))
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) is unavailable")
-    }
-
-    public func update(description: ViewControllerDescription) {
-        if description.canUpdate(viewController: currentViewController) {
-            description.update(viewController: currentViewController)
-        } else {
-            if isViewLoaded {
-                currentViewController.willMove(toParent: nil)
-                currentViewController.view.removeFromSuperview()
-                currentViewController.removeFromParent()
-            }
-            currentViewController = description.buildViewController()
-            if isViewLoaded {
-                addChild(currentViewController)
-                view.addSubview(currentViewController.view)
-                currentViewController.view.frame = view.bounds
-                currentViewController.didMove(toParent: self)
-                preferredContentSize = currentViewController.preferredContentSize
+        public func update(description: ViewControllerDescription) {
+            if description.canUpdate(viewController: currentViewController) {
+                description.update(viewController: currentViewController)
+            } else {
+                if isViewLoaded {
+                    currentViewController.willMove(toParent: nil)
+                    currentViewController.view.removeFromSuperview()
+                    currentViewController.removeFromParent()
+                }
+                currentViewController = description.buildViewController()
+                if isViewLoaded {
+                    addChild(currentViewController)
+                    view.addSubview(currentViewController.view)
+                    currentViewController.view.frame = view.bounds
+                    currentViewController.didMove(toParent: self)
+                    preferredContentSize = currentViewController.preferredContentSize
+                }
             }
         }
+
+        public func update<S: Screen>(screen: S, environment: ViewEnvironment) {
+            update(description: screen.viewControllerDescription(environment: environment))
+        }
+
+        override public func viewDidLoad() {
+            super.viewDidLoad()
+
+            addChild(currentViewController)
+            view.addSubview(currentViewController.view)
+            currentViewController.didMove(toParent: self)
+            preferredContentSize = currentViewController.preferredContentSize
+        }
+
+        override public func viewDidLayoutSubviews() {
+            super.viewDidLayoutSubviews()
+            currentViewController.view.frame = view.bounds
+        }
+
+        override public var childForStatusBarStyle: UIViewController? {
+            return currentViewController
+        }
+
+        override public var childForStatusBarHidden: UIViewController? {
+            return currentViewController
+        }
+
+        override public var childForHomeIndicatorAutoHidden: UIViewController? {
+            return currentViewController
+        }
+
+        override public var childForScreenEdgesDeferringSystemGestures: UIViewController? {
+            return currentViewController
+        }
+
+        override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+            return currentViewController.supportedInterfaceOrientations
+        }
+
+        override public func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+            super.preferredContentSizeDidChange(forChildContentContainer: container)
+
+            guard
+                (container as? UIViewController) == currentViewController,
+                container.preferredContentSize != preferredContentSize
+            else { return }
+
+            preferredContentSize = container.preferredContentSize
+        }
     }
-
-    public func update<S: Screen>(screen: S, environment: ViewEnvironment) {
-        update(description: screen.viewControllerDescription(environment: environment))
-    }
-
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-
-        addChild(currentViewController)
-        view.addSubview(currentViewController.view)
-        currentViewController.didMove(toParent: self)
-        preferredContentSize = currentViewController.preferredContentSize
-    }
-
-    public override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        currentViewController.view.frame = view.bounds
-    }
-
-    public override var childForStatusBarStyle: UIViewController? {
-        return currentViewController
-    }
-
-    public override var childForStatusBarHidden: UIViewController? {
-        return currentViewController
-    }
-
-    public override var childForHomeIndicatorAutoHidden: UIViewController? {
-        return currentViewController
-    }
-
-    public override var childForScreenEdgesDeferringSystemGestures: UIViewController? {
-        return currentViewController
-    }
-
-    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return currentViewController.supportedInterfaceOrientations
-    }
-
-    public override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        super.preferredContentSizeDidChange(forChildContentContainer: container)
-
-        guard
-            (container as? UIViewController) == currentViewController,
-            container.preferredContentSize != preferredContentSize
-        else { return }
-
-        preferredContentSize = container.preferredContentSize
-    }
-}
 
 #endif

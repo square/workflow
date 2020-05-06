@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 public struct WorkflowUpdateDebugInfo: Codable, Equatable {
     public var workflowType: String
     public var kind: Kind
@@ -33,7 +32,6 @@ extension WorkflowUpdateDebugInfo {
 }
 
 extension WorkflowUpdateDebugInfo.Kind: Codable {
-
     enum CodingKeys: String, CodingKey {
         case type
         case source
@@ -44,10 +42,10 @@ extension WorkflowUpdateDebugInfo.Kind: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
-        case .didUpdate(let source):
+        case let .didUpdate(source):
             try container.encode("didUpdate", forKey: .type)
             try container.encode(source, forKey: .source)
-        case .childDidUpdate(let info):
+        case let .childDidUpdate(info):
             try container.encode("childDidUpdate", forKey: .type)
             try container.encode(info, forKey: .childUpdate)
         }
@@ -71,7 +69,6 @@ extension WorkflowUpdateDebugInfo.Kind: Codable {
             throw MalformedDataError()
         }
     }
-
 }
 
 extension WorkflowUpdateDebugInfo {
@@ -83,7 +80,6 @@ extension WorkflowUpdateDebugInfo {
 }
 
 extension WorkflowUpdateDebugInfo.Source: Codable {
-
     enum CodingKeys: String, CodingKey {
         case type
         case debugInfo
@@ -97,7 +93,7 @@ extension WorkflowUpdateDebugInfo.Source: Codable {
             try container.encode("external", forKey: .type)
         case .worker:
             try container.encode("worker", forKey: .type)
-        case .subtree(let debugInfo):
+        case let .subtree(debugInfo):
             try container.encode("subtree", forKey: .type)
             try container.encode(debugInfo, forKey: .debugInfo)
         }
@@ -122,12 +118,9 @@ extension WorkflowUpdateDebugInfo.Source: Codable {
             throw MalformedDataError()
         }
     }
-
 }
 
-
 public struct WorkflowHierarchyDebugSnapshot: Codable, Equatable {
-
     public var workflowType: String
     public var stateDescription: String
     public var children: [Child]
@@ -137,11 +130,9 @@ public struct WorkflowHierarchyDebugSnapshot: Codable, Equatable {
         self.stateDescription = stateDescription
         self.children = children
     }
-
 }
 
 extension WorkflowHierarchyDebugSnapshot {
-
     public struct Child: Codable, Equatable {
         public var key: String
         public var snapshot: WorkflowHierarchyDebugSnapshot
@@ -151,5 +142,4 @@ extension WorkflowHierarchyDebugSnapshot {
             self.snapshot = snapshot
         }
     }
-
 }

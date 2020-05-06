@@ -15,7 +15,6 @@
  */
 import WorkflowUI
 
-
 public final class BackStackContainer: ScreenViewController<BackStackScreen>, UINavigationControllerDelegate {
     private let navController: UINavigationController
 
@@ -27,7 +26,7 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
         update(with: screen)
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         navController.delegate = self
@@ -36,13 +35,13 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
         navController.didMove(toParent: self)
     }
 
-    public override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         navController.view.frame = view.bounds
     }
 
-    public override func screenDidChange(from previousScreen: BackStackScreen, previousEnvironment: ViewEnvironment) {
+    override public func screenDidChange(from previousScreen: BackStackScreen, previousEnvironment: ViewEnvironment) {
         update(with: screen)
     }
 
@@ -55,7 +54,7 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
     // MARK: - Private Methods
 
     private func update(with screen: BackStackScreen) {
-        var existingViewControllers: [ScreenWrapperViewController] = self.navController.viewControllers as! [ScreenWrapperViewController]
+        var existingViewControllers: [ScreenWrapperViewController] = navController.viewControllers as! [ScreenWrapperViewController]
         var updatedViewControllers: [ScreenWrapperViewController] = []
 
         for item in screen.items {
@@ -68,7 +67,6 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
             } else {
                 updatedViewControllers.append(ScreenWrapperViewController(item: item, environment: environment))
             }
-
         }
 
         navController.setViewControllers(updatedViewControllers, animated: true)
@@ -89,6 +87,5 @@ public final class BackStackContainer: ScreenViewController<BackStackScreen>, UI
             hidden = false
         }
         navController.setNavigationBarHidden(hidden, animated: animated)
-
     }
 }

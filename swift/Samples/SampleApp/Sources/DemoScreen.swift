@@ -16,7 +16,6 @@
 import Workflow
 import WorkflowUI
 
-
 struct DemoScreen: Screen {
     let title: String
     let color: UIColor
@@ -34,19 +33,17 @@ struct DemoScreen: Screen {
     }
 }
 
-
-fileprivate final class DemoViewController: ScreenViewController<DemoScreen> {
-
+private final class DemoViewController: ScreenViewController<DemoScreen> {
     private let titleButton: UIButton
     private let subscribeButton: UIButton
     private let statusLabel: UILabel
     private let refreshButton: UIButton
 
     required init(screen: DemoScreen, environment: ViewEnvironment) {
-        titleButton = UIButton(frame: .zero)
-        subscribeButton = UIButton(frame: .zero)
-        statusLabel = UILabel(frame: .zero)
-        refreshButton = UIButton(frame: .zero)
+        self.titleButton = UIButton(frame: .zero)
+        self.subscribeButton = UIButton(frame: .zero)
+        self.statusLabel = UILabel(frame: .zero)
+        self.refreshButton = UIButton(frame: .zero)
         super.init(screen: screen, environment: environment)
 
         update(with: screen)
@@ -79,7 +76,7 @@ fileprivate final class DemoViewController: ScreenViewController<DemoScreen> {
         var (top, bottom) = view.bounds.divided(atDistance: view.bounds.height / 2, from: CGRectEdge.minYEdge)
 
         top.size.height -= (height / 2.0)
-        bottom.origin.y += (height)
+        bottom.origin.y += height
         bottom.size.height -= (height / 2.0)
 
         titleButton.frame = top
@@ -88,7 +85,8 @@ fileprivate final class DemoViewController: ScreenViewController<DemoScreen> {
             x: 0.0,
             y: top.maxY,
             width: top.size.width,
-            height: height)
+            height: height
+        )
 
         let yOffset = bottom.midY - (height / 2.0)
 
@@ -96,14 +94,16 @@ fileprivate final class DemoViewController: ScreenViewController<DemoScreen> {
             x: bottom.origin.x,
             y: yOffset,
             width: bottom.size.width,
-            height: height)
+            height: height
+        )
         .insetBy(dx: inset, dy: 0.0)
 
         statusLabel.frame = CGRect(
             x: refreshButton.frame.origin.x,
             y: yOffset - height,
             width: refreshButton.frame.size.width,
-            height: height)
+            height: height
+        )
     }
 
     override func screenDidChange(from previousScreen: DemoScreen, previousEnvironment: ViewEnvironment) {
@@ -121,10 +121,11 @@ fileprivate final class DemoViewController: ScreenViewController<DemoScreen> {
 
         refreshButton.isEnabled = screen.isRefreshEnabled
         refreshButton.backgroundColor = UIColor(
-            red: 41/255,
-            green: 150/255,
-            blue: 204/255,
-            alpha: screen.isRefreshEnabled ? 1.0 : 0.5)
+            red: 41 / 255,
+            green: 150 / 255,
+            blue: 204 / 255,
+            alpha: screen.isRefreshEnabled ? 1.0 : 0.5
+        )
     }
 
     @objc private func titleButtonPressed(sender: UIButton) {

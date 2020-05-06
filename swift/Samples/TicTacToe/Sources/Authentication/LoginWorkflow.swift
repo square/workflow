@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import ReactiveSwift
 import Workflow
 import WorkflowUI
-import ReactiveSwift
 
 // MARK: Input and Output
 
@@ -27,11 +27,9 @@ struct LoginWorkflow: Workflow {
     }
 }
 
-
 // MARK: State and Initialization
 
 extension LoginWorkflow {
-
     struct State {
         var email: String
         var password: String
@@ -41,18 +39,13 @@ extension LoginWorkflow {
         return State(email: "", password: "")
     }
 
-    func workflowDidChange(from previousWorkflow: LoginWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: LoginWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension LoginWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = LoginWorkflow
 
         case emailUpdated(String)
@@ -60,12 +53,11 @@ extension LoginWorkflow {
         case login
 
         func apply(toState state: inout LoginWorkflow.State) -> LoginWorkflow.Output? {
-
             switch self {
-            case .emailUpdated(let email):
+            case let .emailUpdated(email):
                 state.email = email
 
-            case .passwordUpdated(let password):
+            case let .passwordUpdated(password):
                 state.password = password
 
             case .login:
@@ -77,11 +69,9 @@ extension LoginWorkflow {
     }
 }
 
-
 // MARK: Rendering
 
 extension LoginWorkflow {
-
     typealias Rendering = LoginScreen
 
     func render(state: LoginWorkflow.State, context: RenderContext<LoginWorkflow>) -> Rendering {
@@ -106,7 +96,7 @@ extension LoginWorkflow {
             },
             onLoginTapped: {
                 sink.send(.login)
-            })
-
+            }
+        )
     }
 }

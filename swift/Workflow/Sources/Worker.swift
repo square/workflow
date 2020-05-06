@@ -24,10 +24,9 @@ import ReactiveSwift
 ///
 /// If there is not an existing worker of this type, the context will kick off the new worker (via `run`).
 public protocol Worker {
-
     /// The type of output events returned by this worker.
     associatedtype Output
-    
+
     /// Returns a signal producer to execute the work represented by this worker.
     func run() -> SignalProducer<Output, Never>
 
@@ -38,9 +37,7 @@ public protocol Worker {
 }
 
 extension Worker where Self: Equatable {
-
     public func isEquivalent(to otherWorker: Self) -> Bool {
         return self == otherWorker
     }
-
 }

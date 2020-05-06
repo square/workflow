@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import TutorialViews
 import Workflow
 import WorkflowUI
-import TutorialViews
-
 
 struct WelcomeScreen: Screen {
     /// The current name that has been entered.
@@ -31,9 +30,7 @@ struct WelcomeScreen: Screen {
     }
 }
 
-
 final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
-
     var welcomeView: WelcomeView
 
     required init(screen: WelcomeScreen, environment: ViewEnvironment) {
@@ -64,5 +61,4 @@ final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
         welcomeView.onNameChanged = screen.onNameChanged
         welcomeView.onLoginTapped = screen.onLoginTapped
     }
-
 }

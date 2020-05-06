@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import TutorialViews
 import Workflow
 import WorkflowUI
-import TutorialViews
-
 
 struct TodoListScreen: Screen {
     // The titles of the todo items
@@ -29,7 +28,6 @@ struct TodoListScreen: Screen {
         return TodoListViewController.description(for: self, environment: environment)
     }
 }
-
 
 final class TodoListViewController: ScreenViewController<TodoListScreen> {
     let todoListView: TodoListView
@@ -61,5 +59,4 @@ final class TodoListViewController: ScreenViewController<TodoListScreen> {
         todoListView.todoList = screen.todoTitles
         todoListView.onTodoSelected = screen.onTodoSelected
     }
-
 }

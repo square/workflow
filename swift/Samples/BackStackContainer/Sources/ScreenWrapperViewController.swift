@@ -15,7 +15,6 @@
  */
 import WorkflowUI
 
-
 /**
  Wrapper view controller for being hosted in a backstack. Handles updating the bar button items.
  */
@@ -66,7 +65,7 @@ final class ScreenWrapperViewController: UIViewController {
     private func update(barVisibility: BackStackScreen.BarVisibility) {
         navigationItem.setHidesBackButton(true, animated: false)
 
-        guard case .visible(let barContent) = barVisibility else {
+        guard case let .visible(barContent) = barVisibility else {
             return
         }
 
@@ -76,13 +75,12 @@ final class ScreenWrapperViewController: UIViewController {
                 navigationItem.setLeftBarButton(nil, animated: true)
             }
 
-        case .button(let button):
+        case let .button(button):
             if let leftItem = navigationItem.leftBarButtonItem as? CallbackBarButtonItem {
                 leftItem.update(with: button)
             } else {
                 navigationItem.setLeftBarButton(CallbackBarButtonItem(button: button), animated: true)
             }
-
         }
 
         switch barContent.rightItem {
@@ -91,7 +89,7 @@ final class ScreenWrapperViewController: UIViewController {
                 navigationItem.setRightBarButton(nil, animated: true)
             }
 
-        case .button(let button):
+        case let .button(button):
             if let rightItem = navigationItem.rightBarButtonItem as? CallbackBarButtonItem {
                 rightItem.update(with: button)
             } else {
@@ -103,18 +101,16 @@ final class ScreenWrapperViewController: UIViewController {
         switch barContent.title {
         case .none:
             title = ""
-        case .text(let text):
+        case let .text(text):
             title = text
         }
         navigationItem.title = title
-
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
 
 final class CallbackBarButtonItem: UIBarButtonItem {
     var handler: () -> Void
@@ -133,17 +129,15 @@ final class CallbackBarButtonItem: UIBarButtonItem {
     }
 
     func update(with button: BackStackScreen.BarContent.Button) {
-
         switch button.content {
-
-        case .text(let title):
+        case let .text(title):
             self.title = title
 
-        case .icon(let image):
+        case let .icon(image):
             self.image = image
         }
 
-        self.handler = button.handler
+        handler = button.handler
     }
 
     @objc private func onTapped() {

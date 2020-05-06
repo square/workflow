@@ -16,7 +16,6 @@
 import Workflow
 import WorkflowUI
 
-
 struct CrossFadeScreen: Screen {
     var baseScreen: AnyScreen
     var key: AnyHashable
@@ -36,7 +35,7 @@ struct CrossFadeScreen: Screen {
     }
 
     fileprivate func isEquivalent(to otherScreen: CrossFadeScreen) -> Bool {
-        return self.key == otherScreen.key
+        return key == otherScreen.key
     }
 
     func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
@@ -44,12 +43,11 @@ struct CrossFadeScreen: Screen {
     }
 }
 
-
-fileprivate final class CrossFadeContainerViewController: ScreenViewController<CrossFadeScreen> {
+private final class CrossFadeContainerViewController: ScreenViewController<CrossFadeScreen> {
     var childViewController: DescribedViewController
 
     required init(screen: CrossFadeScreen, environment: ViewEnvironment) {
-        childViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
+        self.childViewController = DescribedViewController(screen: screen.baseScreen, environment: environment)
         super.init(screen: screen, environment: environment)
     }
 
@@ -87,8 +85,8 @@ fileprivate final class CrossFadeContainerViewController: ScreenViewController<C
                     oldChild.willMove(toParent: nil)
                     oldChild.view.removeFromSuperview()
                     oldChild.removeFromParent()
-                })
+                }
+            )
         }
     }
-
 }

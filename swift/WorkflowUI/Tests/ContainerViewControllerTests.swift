@@ -16,135 +16,124 @@
 
 #if canImport(UIKit)
 
-import XCTest
+    import XCTest
 
-import ReactiveSwift
-import Workflow
-@testable import WorkflowUI
+    import ReactiveSwift
+    import Workflow
+    @testable import WorkflowUI
 
+    fileprivate struct TestScreen: Screen {
+        var string: String
 
-fileprivate struct TestScreen: Screen {
-    var string: String
-
-    func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
-        return TestScreenViewController.description(for: self, environment: environment)
-    }
-}
-
-fileprivate final class TestScreenViewController: ScreenViewController<TestScreen> {
-    var onScreenChange: (() -> Void)? = nil
-
-    override func screenDidChange(from previousScreen: TestScreen, previousEnvironment: ViewEnvironment) {
-        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
-        onScreenChange?()
-    }
-}
-
-
-class ContainerViewControllerTests: XCTestCase {
-
-    func test_initialization_renders_workflow() {
-        let (signal, _) = Signal<Int, Never>.pipe()
-        let workflow = MockWorkflow(subscription: signal)
-        let container = ContainerViewController(workflow: workflow)
-
-        withExtendedLifetime(container) {
-            let vc = container.rootViewController.currentViewController as! TestScreenViewController
-            XCTAssertEqual("0", vc.screen.string)
+        func viewControllerDescription(environment: ViewEnvironment) -> ViewControllerDescription {
+            return TestScreenViewController.description(for: self, environment: environment)
         }
     }
 
-    func test_workflow_update_causes_rerender() {
-        let (signal, observer) = Signal<Int, Never>.pipe()
-        let workflow = MockWorkflow(subscription: signal)
-        let container = ContainerViewController(workflow: workflow)
+    fileprivate final class TestScreenViewController: ScreenViewController<TestScreen> {
+        var onScreenChange: (() -> Void)?
 
-        withExtendedLifetime(container) {
+        override func screenDidChange(from previousScreen: TestScreen, previousEnvironment: ViewEnvironment) {
+            super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
+            onScreenChange?()
+        }
+    }
 
-            let expectation = XCTestExpectation(description: "View Controller updated")
+    class ContainerViewControllerTests: XCTestCase {
+        func test_initialization_renders_workflow() {
+            let (signal, _) = Signal<Int, Never>.pipe()
+            let workflow = MockWorkflow(subscription: signal)
+            let container = ContainerViewController(workflow: workflow)
 
-            let vc = container.rootViewController.currentViewController as! TestScreenViewController
-            vc.onScreenChange = {
+            withExtendedLifetime(container) {
+                let vc = container.rootViewController.currentViewController as! TestScreenViewController
+                XCTAssertEqual("0", vc.screen.string)
+            }
+        }
+
+        func test_workflow_update_causes_rerender() {
+            let (signal, observer) = Signal<Int, Never>.pipe()
+            let workflow = MockWorkflow(subscription: signal)
+            let container = ContainerViewController(workflow: workflow)
+
+            withExtendedLifetime(container) {
+                let expectation = XCTestExpectation(description: "View Controller updated")
+
+                let vc = container.rootViewController.currentViewController as! TestScreenViewController
+                vc.onScreenChange = {
+                    expectation.fulfill()
+                }
+
+                observer.send(value: 2)
+
+                wait(for: [expectation], timeout: 1.0)
+
+                XCTAssertEqual("2", vc.screen.string)
+            }
+        }
+
+        func test_workflow_output_causes_container_output() {
+            let (signal, observer) = Signal<Int, Never>.pipe()
+            let workflow = MockWorkflow(subscription: signal)
+            let container = ContainerViewController(workflow: workflow)
+
+            let expectation = XCTestExpectation(description: "Output")
+
+            let disposable = container.output.observeValues { value in
+                XCTAssertEqual(3, value)
                 expectation.fulfill()
             }
 
-            observer.send(value: 2)
+            observer.send(value: 3)
 
             wait(for: [expectation], timeout: 1.0)
 
-            XCTAssertEqual("2", vc.screen.string)
-        }
-    }
-
-    func test_workflow_output_causes_container_output() {
-
-        let (signal, observer) = Signal<Int, Never>.pipe()
-        let workflow = MockWorkflow(subscription: signal)
-        let container = ContainerViewController(workflow: workflow)
-
-        let expectation = XCTestExpectation(description: "Output")
-
-        let disposable = container.output.observeValues { value in
-            XCTAssertEqual(3, value)
-            expectation.fulfill()
+            disposable?.dispose()
         }
 
-        observer.send(value: 3)
+        func test_container_with_anyworkflow() {
+            let (signal, observer) = Signal<Int, Never>.pipe()
+            let workflow = MockWorkflow(subscription: signal)
+            let container = ContainerViewController(workflow: workflow.asAnyWorkflow())
 
-        wait(for: [expectation], timeout: 1.0)
+            let expectation = XCTestExpectation(description: "Output")
 
-        disposable?.dispose()
-    }
-
-    func test_container_with_anyworkflow() {
-
-        let (signal, observer) = Signal<Int, Never>.pipe()
-        let workflow = MockWorkflow(subscription: signal)
-        let container = ContainerViewController(workflow: workflow.asAnyWorkflow())
-
-        let expectation = XCTestExpectation(description: "Output")
-
-        let disposable = container.output.observeValues { value in
-            XCTAssertEqual(3, value)
-            expectation.fulfill()
-        }
-
-        observer.send(value: 3)
-
-        wait(for: [expectation], timeout: 1.0)
-
-        disposable?.dispose()
-    }
-}
-
-
-fileprivate struct MockWorkflow: Workflow {
-
-    var subscription: Signal<Int, Never>
-
-    typealias State = Int
-
-    typealias Output = Int
-
-    func makeInitialState() -> State {
-        return 0
-    }
-
-    func workflowDidChange(from previousWorkflow: MockWorkflow, state: inout State) {
-
-    }
-
-    func render(state: State, context: RenderContext<MockWorkflow>) -> TestScreen {
-        context.awaitResult(for: subscription.asWorker(key: "signal")) { output in
-            return AnyWorkflowAction { state in
-                state = output
-                return output
+            let disposable = container.output.observeValues { value in
+                XCTAssertEqual(3, value)
+                expectation.fulfill()
             }
-        }
 
-        return TestScreen(string: "\(state)")
+            observer.send(value: 3)
+
+            wait(for: [expectation], timeout: 1.0)
+
+            disposable?.dispose()
+        }
     }
 
-}
+    fileprivate struct MockWorkflow: Workflow {
+        var subscription: Signal<Int, Never>
+
+        typealias State = Int
+
+        typealias Output = Int
+
+        func makeInitialState() -> State {
+            return 0
+        }
+
+        func workflowDidChange(from previousWorkflow: MockWorkflow, state: inout State) {}
+
+        func render(state: State, context: RenderContext<MockWorkflow>) -> TestScreen {
+            context.awaitResult(for: subscription.asWorker(key: "signal")) { output in
+                AnyWorkflowAction { state in
+                    state = output
+                    return output
+                }
+            }
+
+            return TestScreen(string: "\(state)")
+        }
+    }
 
 #endif

@@ -51,7 +51,6 @@ import ReactiveSwift
 /// ```
 ///
 public protocol Workflow: AnyWorkflowConvertible {
-
     /// Defines the state that is managed by this workflow.
     associatedtype State
 
@@ -82,28 +81,20 @@ public protocol Workflow: AnyWorkflowConvertible {
     ///                      then used to invoke `context.render(_ workflow:)`, which returns the child's `Rendering`
     ///                      type after creating or updating the nested workflow.
     func render(state: State, context: RenderContext<Self>) -> Rendering
-
 }
-
 
 /// When State is Void, provide empty `makeInitialState` and `workflowDidChange`
 /// implementations, making a “stateless workflow”.
 extension Workflow where State == Void {
-
     public func makeInitialState() -> State {
         return ()
     }
 
-    public func workflowDidChange(from previousWorkflow: Self, state: inout State) {
-    }
-
+    public func workflowDidChange(from previousWorkflow: Self, state: inout State) {}
 }
 
-
 extension Workflow {
-
     public func asAnyWorkflow() -> AnyWorkflow<Rendering, Output> {
         return AnyWorkflow(self)
     }
-
 }

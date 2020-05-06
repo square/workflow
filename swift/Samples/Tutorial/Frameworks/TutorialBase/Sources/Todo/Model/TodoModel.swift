@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 struct TodoModel: Equatable {
     var title: String
     var note: String

@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import ReactiveSwift
 import Workflow
 import WorkflowUI
-import ReactiveSwift
-
 
 // MARK: Input and Output
 
@@ -24,11 +23,9 @@ struct RootWorkflow: Workflow {
     typealias Output = Never
 }
 
-
 // MARK: State and Initialization
 
 extension RootWorkflow {
-
     enum State {
         case welcome
         case demo(name: String)
@@ -38,26 +35,20 @@ extension RootWorkflow {
         return .welcome
     }
 
-    func workflowDidChange(from previousWorkflow: RootWorkflow, state: inout State) {
-
-    }
+    func workflowDidChange(from previousWorkflow: RootWorkflow, state: inout State) {}
 }
-
 
 // MARK: Actions
 
 extension RootWorkflow {
-
     enum Action: WorkflowAction {
-
         typealias WorkflowType = RootWorkflow
 
         case login(name: String)
 
         func apply(toState state: inout RootWorkflow.State) -> RootWorkflow.Output? {
-
             switch self {
-            case .login(name: let name):
+            case let .login(name: name):
                 state = .demo(name: name)
             }
 
@@ -65,7 +56,6 @@ extension RootWorkflow {
         }
     }
 }
-
 
 // MARK: Rendering
 
@@ -77,15 +67,15 @@ extension RootWorkflow {
         case .welcome:
             return CrossFadeScreen(
                 base: WelcomeWorkflow()
-                    .mapOutput({ output -> Action in
+                    .mapOutput { output -> Action in
                         switch output {
-                        case .login(name: let name):
+                        case let .login(name: name):
                             return .login(name: name)
                         }
-                    })
+                    }
                     .rendered(with: context))
 
-        case .demo(name: let name):
+        case let .demo(name: name):
             return CrossFadeScreen(
                 base: DemoWorkflow(name: name)
                     .rendered(with: context))

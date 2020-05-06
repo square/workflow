@@ -1,9 +1,7 @@
 import WorkflowUI
 
 /// A `ModalContainerScreen` displays a base screen and optionally one or more modals on top of it.
-public struct ModalContainerScreen<BaseScreen: Screen>: Screen
-{
-
+public struct ModalContainerScreen<BaseScreen: Screen>: Screen {
     /// The base screen to show underneath any modally presented screens.
     public let baseScreen: BaseScreen
 
@@ -22,7 +20,6 @@ public struct ModalContainerScreen<BaseScreen: Screen>: Screen
 
 /// Represents a single screen to be displayed modally
 public struct ModalContainerScreenModal {
-
     public enum Style: Equatable {
         // full screen modal presentation
         case fullScreen
@@ -32,7 +29,7 @@ public struct ModalContainerScreenModal {
 
     /// The screen to be displayed
     public var screen: AnyScreen
-    
+
     /// A bool used to specify whether presentation should be animated
     public var animated: Bool
 
