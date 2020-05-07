@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import AlertContainer
 import BackStackContainer
 import ModalContainer
 import Workflow
@@ -85,11 +86,12 @@ extension RunGameWorkflow {
 // MARK: Rendering
 
 extension RunGameWorkflow {
-    typealias Rendering = ModalContainerScreen<BackStackScreen>
+    typealias Rendering = AlertContainerScreen<ModalContainerScreen<BackStackScreen>>
 
     func render(state: RunGameWorkflow.State, context: RenderContext<RunGameWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
         var modals: [ModalContainerScreenModal] = []
+        var alert: Alert?
 
         var backStackItems: [BackStackScreen.Item] = [BackStackScreen.Item(
             screen: newGameScreen(
@@ -141,22 +143,23 @@ extension RunGameWorkflow {
                 ))
             ))
 
-            let confirmQuitScreen = ConfirmQuitWorkflow()
+            let (confirmQuitScreen, confirmQuitAlert) = ConfirmQuitWorkflow()
                 .mapOutput { output -> Action in
                     switch output {
                     case .cancel:
                         return .startGame
-                    case .confirm:
+                    case .quit:
                         return .back
                     }
                 }
                 .rendered(with: context)
+            alert = confirmQuitAlert
             modals.append(ModalContainerScreenModal(screen: AnyScreen(confirmQuitScreen), style: .fullScreen, key: "0", animated: true))
         }
 
         let modalContainerScreen = ModalContainerScreen(baseScreen: BackStackScreen(items: backStackItems), modals: modals)
 
-        return modalContainerScreen // this is the base screen. Render all of the pieces of the backstack.
+        return AlertContainerScreen(baseScreen: modalContainerScreen, alert: alert)
     }
 
     private func newGameScreen(sink: Sink<Action>, playerX: String, playerO: String) -> NewGameScreen {

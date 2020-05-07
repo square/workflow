@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import AlertContainer
 import BackStackContainer
 import ModalContainer
 import Workflow
@@ -66,7 +67,7 @@ extension MainWorkflow {
 // MARK: Rendering
 
 extension MainWorkflow {
-    typealias Rendering = ModalContainerScreen<BackStackScreen>
+    typealias Rendering = AlertContainerScreen<ModalContainerScreen<BackStackScreen>>
 
     func render(state: MainWorkflow.State, context: RenderContext<MainWorkflow>) -> Rendering {
         switch state {
@@ -81,9 +82,9 @@ extension MainWorkflow {
                 }
                 )
                 .rendered(with: context)
+
         case .runningGame:
-            return RunGameWorkflow()
-                .rendered(with: context)
+            return RunGameWorkflow().rendered(with: context)
         }
     }
 }
