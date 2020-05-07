@@ -1,6 +1,6 @@
 --indent 4
 
---exclude Pods
+--exclude Pods,swift/Tooling,**Dummy.swift
 
 --wraparguments before-first
 --importgrouping testable-bottom
