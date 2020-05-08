@@ -76,14 +76,10 @@ final class WorkflowLogger {
         }
     }
 
-    static func logWorkerFinishedRunning(ref: AnyObject, status: StaticString? = nil) {
+    static func logWorkerFinishedRunning(ref: AnyObject, status: StaticString) {
         if #available(iOS 12.0, macOS 10.14, *) {
             let signpostID = OSSignpostID(log: .worker, object: ref)
-            if let status = status {
-                os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID, status)
-            } else {
-                os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID)
-            }
+            os_signpost(.end, log: .worker, name: "Running", signpostID: signpostID, status)
         }
     }
 

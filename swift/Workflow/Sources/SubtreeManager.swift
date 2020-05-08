@@ -424,7 +424,7 @@ extension WorkflowNode.SubtreeManager {
 
                         self?.handle(output: output)
                     case .completed:
-                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef)
+                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Completed")
                     case .interrupted:
                         WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Interrupted")
                     case .failed:
