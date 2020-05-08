@@ -41,11 +41,11 @@ final class WorkflowLogger {
         }
     }
 
-    static func logSinkEvent<Action>(ref: AnyObject, action: Action) {
+    static func logSinkEvent<Action: WorkflowAction>(ref: AnyObject, action: Action) {
         if #available(iOS 12.0, macOS 10.14, *) {
             let signpostID = OSSignpostID(log: .workflow, object: ref)
             os_signpost(.event, log: .workflow, name: "Sink Event", signpostID: signpostID,
-                        "Event: %@", String(describing: action))
+                        "Event for workflow: %{public}@", String(describing: Action.WorkflowType.self))
         }
     }
 
@@ -87,11 +87,11 @@ final class WorkflowLogger {
         }
     }
 
-    static func logWorkerOutput<Output>(ref: AnyObject, output: Output) {
+    static func logWorkerOutput<WorkerType: Worker>(ref: AnyObject, workerType: WorkerType.Type) {
         if #available(iOS 12.0, macOS 10.14, *) {
             let signpostID = OSSignpostID(log: .worker, object: ref)
             os_signpost(.event, log: .worker, name: "Worker Event", signpostID: signpostID,
-                        "Event: %@", String(describing: output))
+                        "Event: %{public}@", String(describing: WorkerType.self))
         }
     }
 }

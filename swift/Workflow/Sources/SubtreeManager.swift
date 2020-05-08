@@ -420,7 +420,7 @@ extension WorkflowNode.SubtreeManager {
                 .start { [weak self] event in
                     switch event {
                     case .value(let output):
-                        WorkflowLogger.logWorkerOutput(ref: signpostRef, output: output)
+                        WorkflowLogger.logWorkerOutput(ref: signpostRef, workerType: W.self)
 
                         self?.handle(output: output)
                     case .completed:
