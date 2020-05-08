@@ -32,13 +32,14 @@ dependencies {
   compileOnly(Dependencies.AndroidX.viewbinding)
 
   api(project(":workflow-core"))
+  // Needs to be API for the WorkflowDiagnosticListener argument to WorkflowRunner.Config.
+  api(project(":workflow-runtime"))
   api(project(":workflow-ui:core-common"))
 
   api(Dependencies.AndroidX.transition)
   api(Dependencies.Kotlin.Stdlib.jdk6)
   api(Dependencies.RxJava2.rxjava2)
 
-  implementation(project(":workflow-runtime"))
   implementation(Dependencies.AndroidX.activity)
   implementation(Dependencies.AndroidX.fragment)
   implementation(Dependencies.AndroidX.Lifecycle.reactivestreams)
