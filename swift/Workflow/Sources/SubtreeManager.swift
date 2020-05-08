@@ -204,7 +204,11 @@ extension WorkflowNode.SubtreeManager {
         func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, WorkflowType == Action.WorkflowType {
             let reusableSink = sinkStore.findOrCreate(actionType: Action.self)
 
+            let signpostRef = SignpostRef()
+
             let sink = Sink<Action> { action in
+                WorkflowLogger.logSinkEvent(ref: signpostRef, action: action)
+
                 reusableSink.handle(action: action)
             }
 
@@ -407,11 +411,25 @@ extension WorkflowNode.SubtreeManager {
             self.outputMap = outputMap
             super.init(eventPipe: eventPipe)
 
+            let signpostRef = SignpostRef()
+            WorkflowLogger.logWorkerStartedRunning(ref: signpostRef, workerType: W.self)
+
             signalProducer
                 .take(during: lifetime)
                 .observe(on: QueueScheduler.workflowExecution)
-                .startWithValues { [weak self] output in
-                    self?.handle(output: output)
+                .start { [weak self] event in
+                    switch event {
+                    case .value(let output):
+                        WorkflowLogger.logWorkerOutput(ref: signpostRef, workerType: W.self)
+
+                        self?.handle(output: output)
+                    case .completed:
+                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Completed")
+                    case .interrupted:
+                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Interrupted")
+                    case .failed:
+                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Failed")
+                    }
                 }
         }
 

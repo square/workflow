@@ -34,9 +34,15 @@ final class WorkflowNode<WorkflowType: Workflow> {
         self.workflow = workflow
         self.state = workflow.makeInitialState()
 
+        WorkflowLogger.logWorkflowStarted(ref: self)
+
         subtreeManager.onUpdate = { [weak self] output in
             self?.handle(subtreeOutput: output)
         }
+    }
+
+    deinit {
+        WorkflowLogger.logWorkflowFinished(ref: self)
     }
 
     /// Handles an event produced by the subtree manager
@@ -71,6 +77,12 @@ final class WorkflowNode<WorkflowType: Workflow> {
     }
 
     func render() -> WorkflowType.Rendering {
+        WorkflowLogger.logWorkflowStartedRendering(ref: self)
+
+        defer {
+            WorkflowLogger.logWorkflowFinishedRendering(ref: self)
+        }
+
         return subtreeManager.render { context in
             workflow
                 .render(
