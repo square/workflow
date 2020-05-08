@@ -23,6 +23,11 @@ fileprivate extension OSLog {
 
 // MARK: -
 
+/// Simple class that can be used to create signpost IDs based on an object pointer.
+final class SignpostRef {
+    init() {}
+}
+
 final class WorkflowLogger {
     // MARK: Workflows
 

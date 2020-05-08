@@ -204,7 +204,7 @@ extension WorkflowNode.SubtreeManager {
         func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, WorkflowType == Action.WorkflowType {
             let reusableSink = sinkStore.findOrCreate(actionType: Action.self)
 
-            let signpostRef = NSObject()
+            let signpostRef = SignpostRef()
 
             let sink = Sink<Action> { action in
                 WorkflowLogger.logSinkEvent(ref: signpostRef, action: action)
@@ -411,7 +411,7 @@ extension WorkflowNode.SubtreeManager {
             self.outputMap = outputMap
             super.init(eventPipe: eventPipe)
 
-            let signpostRef = NSObject()
+            let signpostRef = SignpostRef()
             WorkflowLogger.logWorkerStartedRunning(ref: signpostRef, workerType: W.self)
 
             signalProducer
