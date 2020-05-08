@@ -78,26 +78,30 @@ internal class ComposeViewFactory<RenderingT : Any>(
     // Composable function, so we need to use ViewGroup.setContent.
     val composeContainer = FrameLayout(contextForNewView)
 
-    // This model will be used to feed state updates into the composition.
+    // Create a single MutableState to feed state updates into the composition.
+    // We could also have two separate MutableStates, but using a Pair both makes it clear and
+    // enforces that both values are always updated together.
     val renderState = mutableStateOf<Pair<RenderingT, ViewEnvironment>?>(
+        // This will be updated immediately by bindShowRendering below.
         value = null,
         areEquivalent = StructurallyEqual
     )
 
-    // Entry point to the composition.
-    composeContainer.setContent(Recomposer.current()) {
-      // Don't compose anything until we have the first value (which should happen in the initial
-      // frame).
-      val (rendering, environment) = renderState.value ?: return@setContent
-      showRendering(rendering, environment)
-    }
-
+    // Update the state whenever a new rendering is emitted.
     composeContainer.bindShowRendering(
         initialRendering,
         initialViewEnvironment
     ) { rendering, environment ->
+      // This will be called synchronously before bindShowRendering returns.
       renderState.value = Pair(rendering, environment)
     }
+
+    // Entry point to the world of Compose.
+    composeContainer.setContent(Recomposer.current()) {
+      val (rendering, environment) = renderState.value!!
+      showRendering(rendering, environment)
+    }
+
     return composeContainer
   }
 }
