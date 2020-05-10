@@ -29,6 +29,4 @@ android {
 
 dependencies {
   implementation(project(":workflow-ui:core-android"))
-
-  implementation(Dependencies.RxJava2.rxjava2)
 }

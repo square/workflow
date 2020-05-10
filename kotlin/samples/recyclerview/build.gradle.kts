@@ -33,5 +33,4 @@ dependencies {
   implementation(Dependencies.AndroidX.recyclerview)
   implementation(Dependencies.Kotlin.Coroutines.android)
   implementation(Dependencies.Kotlin.Coroutines.core)
-  implementation(Dependencies.RxJava2.rxjava2)
 }

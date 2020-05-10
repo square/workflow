@@ -43,7 +43,6 @@ dependencies {
   implementation(Dependencies.Kotlin.Coroutines.rx2)
   implementation(Dependencies.okio)
   implementation(Dependencies.rxandroid2)
-  implementation(Dependencies.RxJava2.rxjava2)
   implementation(Dependencies.timber)
 
   testImplementation(Dependencies.Test.junit)

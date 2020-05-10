@@ -22,15 +22,12 @@ dependencies {
   implementation(project(":workflow-ui:backstack-common"))
   implementation(project(":workflow-ui:modal-common"))
   implementation(project(":workflow-core"))
-  implementation(project(":workflow-rx2"))
 
   implementation(Dependencies.Kotlin.Stdlib.jdk6)
-  implementation(Dependencies.RxJava2.rxjava2)
 
   testImplementation(Dependencies.Kotlin.Test.jdk)
   testImplementation(Dependencies.Test.hamcrestCore)
   testImplementation(Dependencies.Test.junit)
   testImplementation(Dependencies.Test.truth)
-  testImplementation(Dependencies.RxJava2.extensions)
   testImplementation(project(":workflow-testing"))
 }

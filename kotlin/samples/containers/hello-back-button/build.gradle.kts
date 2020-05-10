@@ -30,6 +30,4 @@ android {
 dependencies {
   implementation(project(":samples:containers:android"))
   implementation(project(":workflow-ui:core-android"))
-
-  implementation(Dependencies.RxJava2.rxjava2)
 }
