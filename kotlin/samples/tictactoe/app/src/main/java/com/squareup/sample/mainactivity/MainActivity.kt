@@ -17,6 +17,7 @@ package com.squareup.sample.mainactivity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.test.espresso.IdlingResource
 import com.squareup.sample.authworkflow.AuthViewFactories
 import com.squareup.sample.container.SampleContainers
@@ -29,12 +30,11 @@ import com.squareup.workflow.ui.backstack.BackStackContainer
 import com.squareup.workflow.ui.modal.AlertContainer
 import com.squareup.workflow.ui.plus
 import com.squareup.workflow.ui.setContentWorkflow
-import io.reactivex.disposables.Disposables
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
-  private var loggingSub = Disposables.disposed()
-
   private lateinit var component: MainComponent
 
   /** Exposed for use by espresso tests. */
@@ -67,15 +67,14 @@ class MainActivity : AppCompatActivity() {
         onResult = { finish() }
     )
 
-    loggingSub = workflowRunner.renderings.subscribe { Timber.d("rendering: %s", it) }
+    lifecycleScope.launch {
+      workflowRunner.renderings.collect {
+        Timber.d("rendering: %s", it)
+      }
+    }
   }
 
   override fun onRetainCustomNonConfigurationInstance(): Any = component
-
-  override fun onDestroy() {
-    loggingSub.dispose()
-    super.onDestroy()
-  }
 
   private companion object {
     val viewRegistry = SampleContainers +

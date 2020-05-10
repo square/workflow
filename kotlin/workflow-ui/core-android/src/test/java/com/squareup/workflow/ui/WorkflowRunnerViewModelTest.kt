@@ -16,25 +16,35 @@ import com.squareup.workflow.stateless
 import com.squareup.workflow.ui.WorkflowRunner.Config
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.junit.After
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class WorkflowRunnerViewModelTest {
 
-  private val scope = CoroutineScope(Unconfined)
+  private val testScope = CoroutineScope(Unconfined)
+  private val runnerScope = testScope + Job(parent = testScope.coroutineContext[Job]!!)
+
+  @After fun tearDown() {
+    testScope.cancel()
+  }
 
   @Test fun snapshotUpdatedOnHostEmission() {
     val snapshot1 = Snapshot.of("one")
@@ -43,10 +53,11 @@ class WorkflowRunnerViewModelTest {
     val snapshotsFlow = flow { snapshotsChannel.consumeEach { emit(it) } }
     val session = WorkflowSession(
         renderingsAndSnapshots = snapshotsFlow,
-        outputs = emptyFlow()
+        // Outputs should never complete, it can only fail.
+        outputs = flowNever()
     )
 
-    val runner = WorkflowRunnerViewModel(scope, session)
+    val runner = WorkflowRunnerViewModel(runnerScope, session)
 
     assertThat(runner.getLastSnapshotForTest()).isEqualTo(Snapshot.EMPTY)
 
@@ -59,29 +70,34 @@ class WorkflowRunnerViewModelTest {
 
   @Test fun hostCancelledOnResultAndNoSooner() {
     var cancelled = false
-    scope.coroutineContext[Job]!!.invokeOnCompletion { e ->
+    runnerScope.coroutineContext[Job]!!.invokeOnCompletion { e ->
       if (e is CancellationException) {
         cancelled = true
       } else throw AssertionError(
           "Expected ${CancellationException::class.java.simpleName}", e
       )
     }
+    val outputChannel = Channel<String>(1)
     val session = WorkflowSession<String, Nothing>(
         renderingsAndSnapshots = emptyFlow(),
-        outputs = flowOf("fnord")
+        outputs = outputChannel.consumeAsFlow()
     )
-    val runner = WorkflowRunnerViewModel(scope, session)
+    val runner = WorkflowRunnerViewModel(runnerScope, session)
+    val tester = testScope.async { runner.awaitResult() }
 
     assertThat(cancelled).isFalse()
-    val tester = runner.result.test()
+    assertThat(tester.isActive).isTrue()
+
+    outputChannel.offer("fnord")
+
     assertThat(cancelled).isTrue()
-    tester.assertComplete()
-    assertThat(tester.values()).isEqualTo(listOf("fnord"))
+    assertThat(tester.isCompleted).isTrue()
+    assertThat(tester.getCompleted()).isEqualTo("fnord")
   }
 
   @Test fun hostCancelledOnCleared() {
     var cancelled = false
-    scope.coroutineContext[Job]!!.invokeOnCompletion { e ->
+    runnerScope.coroutineContext[Job]!!.invokeOnCompletion { e ->
       if (e is CancellationException) {
         cancelled = true
       } else throw AssertionError(
@@ -90,16 +106,20 @@ class WorkflowRunnerViewModelTest {
     }
     val session = WorkflowSession<Nothing, Nothing>(
         renderingsAndSnapshots = emptyFlow(),
-        outputs = emptyFlow()
+        // Outputs should never complete, it can only fail.
+        outputs = flowNever()
     )
-    val runner = WorkflowRunnerViewModel(scope, session)
+    val runner = WorkflowRunnerViewModel(runnerScope, session)
+    @Suppress("IMPLICIT_NOTHING_AS_TYPE_PARAMETER")
+    val tester = testScope.async { runner.awaitResult() }
 
     assertThat(cancelled).isFalse()
-    val tester = runner.result.test()
     runner.clearForTest()
     assertThat(cancelled).isTrue()
-    tester.assertComplete()
-    tester.assertNoValues()
+    assertThat(tester.isCancelled)
+    assertThat(tester.getCompletionExceptionOrNull())
+        .isInstanceOf(CancellationException::class.java)
+    assertThat(tester.getCompletionCauseOrNull()).isNull()
   }
 
   @Test fun resultDelivered() {
@@ -111,27 +131,29 @@ class WorkflowRunnerViewModelTest {
         }
         .run()
 
-    val tester = runner.result.test()
+    val tester = testScope.async { runner.awaitResult() }
 
-    tester.assertNotComplete()
+    assertThat(tester.isActive).isTrue()
     runBlocking { outputs.send("fnord") }
-    tester.assertComplete()
-    assertThat(tester.values()).isEqualTo(listOf("fnord"))
+    assertThat(tester.isCompleted).isTrue()
+    assertThat(tester.getCompleted()).isEqualTo("fnord")
   }
 
-  @Test fun resultEmptyOnCleared() {
+  @Test fun resultCancelledOnCleared() {
     val runner = Workflow
         .stateless<Unit, String, Unit> {
           runningWorker(flowNever<String>().asWorker()) { action { setOutput(it) } }
         }
         .run()
 
-    val tester = runner.result.test()
+    val tester = testScope.async { runner.awaitResult() }
 
-    tester.assertNotComplete()
+    assertThat(tester.isActive).isTrue()
     runner.clearForTest()
-    tester.assertComplete()
-    tester.assertNoValues()
+    assertThat(tester.isCancelled).isTrue()
+    assertThat(tester.getCompletionExceptionOrNull())
+        .isInstanceOf(CancellationException::class.java)
+    assertThat(tester.getCompletionCauseOrNull()).isNull()
   }
 
   private fun <O : Any, R : Any> Workflow<Unit, O, R>.run(): WorkflowRunnerViewModel<O> {
@@ -165,4 +187,8 @@ class WorkflowRunnerViewModelTest {
   private fun <T> flowNever(): Flow<T> {
     return flow { suspendCancellableCoroutine { } }
   }
+
+  private fun <T> Deferred<T>.getCompletionCauseOrNull() =
+    generateSequence(getCompletionExceptionOrNull()) { it.cause }
+        .firstOrNull { it !is CancellationException }
 }

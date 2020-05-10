@@ -21,11 +21,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.ui.WorkflowRunner.Config
-import io.reactivex.Flowable
 
 /**
  * A [Fragment] that can run a workflow. Subclasses implement [onCreateWorkflow]
- * to configure themselves with a [Workflow], [ViewRegistry] and [inputs][Flowable].
+ * to configure themselves with a [Workflow], [ViewRegistry] and [inputs][Config.props].
  *
  * For a workflow with no inputs, or a static configuration, that's as simple as:
  *

@@ -24,21 +24,23 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.WorkflowSession
 import com.squareup.workflow.launchWorkflowIn
 import com.squareup.workflow.ui.WorkflowRunner.Config
-import io.reactivex.Maybe
-import io.reactivex.Observable
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
-import java.util.concurrent.CancellationException
 
 internal class WorkflowRunnerViewModel<OutputT : Any>(
   private val scope: CoroutineScope,
-  session: WorkflowSession<OutputT, Any>
+  private val session: WorkflowSession<OutputT, Any>
 ) : ViewModel(), WorkflowRunner<OutputT>, SavedStateProvider {
 
   internal class Factory<PropsT, OutputT : Any>(
@@ -64,13 +66,11 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
     }
   }
 
-  @Suppress("EXPERIMENTAL_API_USAGE")
-  override val result: Maybe<out OutputT> = session.outputs.asObservable()
-      .firstElement()
-      .doAfterTerminate {
-        scope.cancel(CancellationException("WorkflowRunnerViewModel delivered result"))
-      }
-      .cache()
+  private val result = scope.async {
+    session.outputs.first()
+  }
+
+  override suspend fun awaitResult(): OutputT = result.await()
 
   init {
     @Suppress("EXPERIMENTAL_API_USAGE")
@@ -78,14 +78,20 @@ internal class WorkflowRunnerViewModel<OutputT : Any>(
         .map { it.snapshot }
         .onEach { lastSnapshot = it }
         .launchIn(scope)
+
+    // Cancel the entire workflow runtime after the first output is emitted.
+    // Use the Unconfined dispatcher to ensure the cancellation happens as immediately as possible.
+    scope.launch(Dispatchers.Unconfined) {
+      result.join()
+      scope.cancel(CancellationException("WorkflowRunnerViewModel delivered result"))
+    }
   }
 
   private var lastSnapshot: Snapshot = Snapshot.EMPTY
 
   @OptIn(ExperimentalCoroutinesApi::class)
-  override val renderings: Observable<out Any> = session.renderingsAndSnapshots
+  override val renderings: Flow<Any> = session.renderingsAndSnapshots
       .map { it.rendering }
-      .asObservable()
 
   override fun onCleared() {
     scope.cancel(CancellationException("WorkflowRunnerViewModel cleared."))

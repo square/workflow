@@ -37,6 +37,7 @@ dependencies {
   implementation(project(":workflow-tracing"))
 
   implementation(Dependencies.AndroidX.constraint_layout)
+  implementation(Dependencies.AndroidX.Lifecycle.ktx)
   implementation(Dependencies.okio)
   implementation(Dependencies.rxandroid2)
   implementation(Dependencies.Test.AndroidX.Espresso.idlingResource)
