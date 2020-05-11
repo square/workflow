@@ -38,15 +38,13 @@ dependencies {
 
   api(Dependencies.AndroidX.transition)
   api(Dependencies.Kotlin.Stdlib.jdk6)
-  api(Dependencies.RxJava2.rxjava2)
 
   implementation(Dependencies.AndroidX.activity)
   implementation(Dependencies.AndroidX.fragment)
-  implementation(Dependencies.AndroidX.Lifecycle.reactivestreams)
+  implementation(Dependencies.AndroidX.Lifecycle.ktx)
   implementation(Dependencies.AndroidX.savedstate)
   implementation(Dependencies.Kotlin.Coroutines.android)
   implementation(Dependencies.Kotlin.Coroutines.core)
-  implementation(Dependencies.Kotlin.Coroutines.rx2)
 
   testImplementation(Dependencies.Test.junit)
   testImplementation(Dependencies.Test.truth)

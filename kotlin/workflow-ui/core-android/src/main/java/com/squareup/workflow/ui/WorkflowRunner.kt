@@ -19,14 +19,11 @@ package com.squareup.workflow.ui
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.toLiveData
+import androidx.lifecycle.lifecycleScope
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner.Config
-import io.reactivex.Maybe
-import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -39,21 +36,22 @@ import kotlinx.coroutines.flow.flowOf
  * or subclass [WorkflowFragment] rather than instantiate a [WorkflowRunner] directly.
  */
 interface WorkflowRunner<out OutputT : Any> {
-  /**
-   * Provides the first (and only) [OutputT] value emitted by the workflow, or
-   * nothing if it is canceled before emitting.
-   *
-   * The output of the root workflow is treated as a result code, handy for use
-   * as a sign that the host Activity or Fragment should be finished. Thus, once
-   * a value is emitted the workflow is ended its output value is reported through
-   * this field.
-   */
-  val result: Maybe<out OutputT>
 
   /**
    * A stream of the rendering values emitted by the running [Workflow].
    */
-  val renderings: Observable<out Any>
+  val renderings: Flow<Any>
+
+  /**
+   * Returns the first (and only) [OutputT] value emitted by the workflow. Throws the cancellation
+   * exception if the workflow was cancelled before emitting.
+   *
+   * The output of the root workflow is treated as a result code, handy for use
+   * as a sign that the host Activity or Fragment should be finished. Thus, once
+   * a value is emitted the workflow is ended and its output value is reported through
+   * this field.
+   */
+  suspend fun awaitResult(): OutputT
 
   /**
    * @param diagnosticListener If non-null, will receive all diagnostic events from the workflow
@@ -161,9 +159,9 @@ fun <PropsT, OutputT : Any> FragmentActivity.setContentWorkflow(
     start(runner.renderings, viewEnvironment)
   }
 
-  runner.result.toFlowable()
-      .toLiveData()
-      .observe(this, Observer { result -> onResult(result) })
+  lifecycleScope.launchWhenStarted {
+    onResult(runner.awaitResult())
+  }
 
   this.setContentView(layout)
 

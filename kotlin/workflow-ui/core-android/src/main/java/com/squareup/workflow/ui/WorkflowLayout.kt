@@ -25,8 +25,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import io.reactivex.Observable
-import io.reactivex.disposables.SerialDisposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 /**
  * A view that can be driven by a [WorkflowRunner]. In most cases you'll use
@@ -49,7 +54,7 @@ class WorkflowLayout(
    * making that view the only child of this one.
    */
   fun start(
-    renderings: Observable<out Any>,
+    renderings: Flow<Any>,
     registry: ViewRegistry
   ) {
     start(renderings, ViewEnvironment(registry))
@@ -61,7 +66,7 @@ class WorkflowLayout(
    * making that view the only child of this one.
    */
   fun start(
-    renderings: Observable<out Any>,
+    renderings: Flow<Any>,
     environment: ViewEnvironment
   ) {
     val hintsWithDefaults = environment.withDefaultViewFactories()
@@ -133,18 +138,22 @@ class WorkflowLayout(
    * Subscribes [update] to [source] only while this [View] is attached to a window.
    */
   private fun <S : Any> View.takeWhileAttached(
-    source: Observable<S>,
+    source: Flow<S>,
     update: (S) -> Unit
   ) {
     val listener = object : OnAttachStateChangeListener {
-      var sub = SerialDisposable()
+      val scope = CoroutineScope(Dispatchers.Main.immediate)
+      var job: Job? = null
 
+      @OptIn(ExperimentalCoroutinesApi::class)
       override fun onViewAttachedToWindow(v: View?) {
-        sub.replace(source.subscribe { screen -> update(screen) })
+        job = source.onEach { screen -> update(screen) }
+            .launchIn(scope)
       }
 
       override fun onViewDetachedFromWindow(v: View?) {
-        sub.dispose()
+        job?.cancel()
+        job = null
       }
     }
 

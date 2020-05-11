@@ -22,6 +22,7 @@ object Dependencies {
     const val gridlayout = "androidx.gridlayout:gridlayout:1.0.0"
 
     object Lifecycle {
+      const val ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
       const val reactivestreams = "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.2.0"
     }
 
