@@ -37,5 +37,4 @@ dependencies {
   implementation(project(":workflow-ui:core-android"))
 
   implementation(Dependencies.AndroidX.recyclerview)
-  implementation(Dependencies.RxJava2.rxjava2)
 }

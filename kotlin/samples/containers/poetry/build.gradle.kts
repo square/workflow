@@ -32,17 +32,14 @@ dependencies {
 
   api(Dependencies.AndroidX.transition)
   api(Dependencies.Kotlin.Stdlib.jdk6)
-  api(Dependencies.RxJava2.rxjava2)
 
   implementation(project(":samples:containers:android"))
   implementation(project(":workflow-runtime"))
   implementation(Dependencies.AndroidX.appcompat)
-  implementation(Dependencies.AndroidX.Lifecycle.reactivestreams)
   implementation(Dependencies.AndroidX.recyclerview)
   implementation(Dependencies.AndroidX.savedstate)
   implementation(Dependencies.Kotlin.Coroutines.android)
   implementation(Dependencies.Kotlin.Coroutines.core)
-  implementation(Dependencies.Kotlin.Coroutines.rx2)
   implementation(Dependencies.timber)
 
   testImplementation(Dependencies.Test.junit)

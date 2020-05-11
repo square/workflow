@@ -22,12 +22,10 @@ plugins {
 dependencies {
   implementation(project(":workflow-ui:core-common"))
   implementation(project(":workflow-core"))
-  implementation(project(":workflow-rx2"))
 
   implementation(Dependencies.Kotlin.Serialization.kaml)
   implementation(Dependencies.Kotlin.Serialization.runtime)
   implementation(Dependencies.Kotlin.Stdlib.jdk8)
-  implementation(Dependencies.RxJava2.rxjava2)
 
   testImplementation(project(":workflow-testing"))
   testImplementation(Dependencies.Kotlin.Test.jdk)

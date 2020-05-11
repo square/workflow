@@ -27,6 +27,5 @@ dependencies {
   testImplementation(Dependencies.Test.hamcrestCore)
   testImplementation(Dependencies.Test.junit)
   testImplementation(Dependencies.Test.truth)
-  testImplementation(Dependencies.RxJava2.extensions)
   testImplementation(project(":workflow-testing"))
 }
