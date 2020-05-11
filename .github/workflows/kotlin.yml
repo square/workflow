@@ -65,6 +65,12 @@ jobs:
         working-directory: ./kotlin
         run: ./gradlew assemble --build-cache --no-daemon --stacktrace
 
+      # This should ideally be done in the Check job below, but until gradle caching is fixed we
+      # need to do it after assembling. See https://github.com/square/workflow/issues/1152.
+      - name: Run dokka to validate kdoc
+        working-directory: ./kotlin
+        run: ./gradlew dokka siteDokka --build-cache --no-daemon --stacktrace
+
   # Runs all check tasks in parallel.
   check:
     name: Check
