@@ -163,7 +163,7 @@ extension WorkflowNode.SubtreeManager {
             /// If the key already exists in `used`, than a workflow of the same type has been rendered multiple times
             /// during this render pass with the same key. This is not allowed.
             guard usedChildWorkflows[childKey] == nil else {
-                fatalError("Child workflows of the same type must be given unique keys. Duplicate workflows of type \(Child.self) were encountered with the key \"\(key)\"")
+                fatalError("Child workflows of the same type must be given unique keys. Duplicate workflows of type \(Child.self) were encountered with the key \"\(key)\" in \(WorkflowType.self)")
             }
 
             let child: ChildWorkflow<Child>
@@ -316,19 +316,19 @@ extension WorkflowNode.SubtreeManager {
 
             switch validationState {
             case .preparing:
-                fatalError("Sink sent an action inside `render`. Sinks are not valid until `render` has completed.")
+                fatalError("[\(WorkflowType.self)] Sink sent an action inside `render`. Sinks are not valid until `render` has completed.")
 
             case .pending:
                 validationState = .queued(event)
 
             case .queued:
-                fatalError("Action sent to pipe while already in the `queueing` state.")
+                fatalError("[\(WorkflowType.self)] Action sent to pipe while already in the `queueing` state.")
 
             case let .valid(handler: handler):
                 handler(event)
 
             case .invalid:
-                fatalError("Sink sent an action after it was invalidated. Sinks can only be used for a single valid `Rendering`.")
+                fatalError("[\(WorkflowType.self)] Sink sent an action after it was invalidated. Sinks can only be used for a single valid `Rendering`.")
             }
         }
 
