@@ -15,9 +15,6 @@
  */
 package com.squareup.workflow.ui
 
-import android.content.Context
-import android.view.View
-import android.view.ViewGroup
 import kotlin.reflect.KClass
 
 /**
@@ -42,18 +39,15 @@ internal class CompositeViewRegistry private constructor(
 
   override val keys: Set<KClass<*>> get() = registriesByKey.keys
 
-  override fun <RenderingT : Any> buildView(
-    initialRendering: RenderingT,
-    initialViewEnvironment: ViewEnvironment,
-    contextForNewView: Context,
-    container: ViewGroup?
-  ): View {
-    val registry = registriesByKey[initialRendering::class]
-        ?: throw IllegalArgumentException(
-            "A ${ViewFactory::class.java.name} should have been registered " +
-                "to display $initialRendering."
-        )
-    return registry.buildView(initialRendering, initialViewEnvironment, contextForNewView, container)
+  override fun <RenderingT : Any> getFactoryFor(
+    renderingType: KClass<out RenderingT>
+  ): ViewFactory<RenderingT> = getRegistryFor(renderingType).getFactoryFor(renderingType)
+
+  private fun getRegistryFor(renderingType: KClass<out Any>): ViewRegistry {
+    return requireNotNull(registriesByKey[renderingType]) {
+      "A ${ViewFactory::class.java.name} should have been registered " +
+          "to display a $renderingType."
+    }
   }
 
   companion object {

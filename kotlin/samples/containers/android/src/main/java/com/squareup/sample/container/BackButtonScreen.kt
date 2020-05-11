@@ -20,6 +20,7 @@ import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.bindShowRendering
+import com.squareup.workflow.ui.buildView
 import com.squareup.workflow.ui.getShowRendering
 
 /**

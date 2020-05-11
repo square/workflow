@@ -15,9 +15,6 @@
  */
 package com.squareup.workflow.ui
 
-import android.content.Context
-import android.view.View
-import android.view.ViewGroup
 import kotlin.reflect.KClass
 
 /**
@@ -35,34 +32,18 @@ internal class BindingViewRegistry private constructor(
             check(keys.size == bindings.size) {
               "${bindings.map { it.type }} must not have duplicate entries."
             }
-          }
+          } as Map<KClass<*>, ViewFactory<*>>
   )
 
   override val keys: Set<KClass<*>> get() = bindings.keys
 
-  override fun <RenderingT : Any> buildView(
-    initialRendering: RenderingT,
-    initialViewEnvironment: ViewEnvironment,
-    contextForNewView: Context,
-    container: ViewGroup?
-  ): View {
+  override fun <RenderingT : Any> getFactoryFor(
+    renderingType: KClass<out RenderingT>
+  ): ViewFactory<RenderingT> {
     @Suppress("UNCHECKED_CAST")
-    return (bindings[initialRendering::class] as? ViewFactory<RenderingT>)
-        ?.buildView(
-            initialRendering,
-            initialViewEnvironment,
-            contextForNewView,
-            container
-        )
-        ?.apply {
-          checkNotNull(getRendering<RenderingT>()) {
-            "View.bindShowRendering should have been called for $this, typically by the " +
-                "${ViewFactory::class.java.name} that created it."
-          }
-        }
-        ?: throw IllegalArgumentException(
-            "A ${ViewFactory::class.java.name} should have been registered " +
-                "to display $initialRendering."
-        )
+    return requireNotNull(bindings[renderingType] as? ViewFactory<RenderingT>) {
+      "A ${ViewFactory::class.java.name} should have been registered " +
+          "to display a $renderingType."
+    }
   }
 }
