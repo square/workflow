@@ -4,7 +4,6 @@ import java.util.Locale.US
 import kotlin.reflect.full.declaredMembers
 
 object Versions {
-  const val compose = "0.1.0-dev10"
   const val coroutines = "1.3.4"
   const val kotlin = "1.3.71"
   const val targetSdk = 29
@@ -36,14 +35,6 @@ object Dependencies {
     const val savedstate = "androidx.savedstate:savedstate:1.0.0"
     const val transition = "androidx.transition:transition:1.3.1"
     const val viewbinding = "androidx.databinding:viewbinding:3.6.2"
-  }
-
-  object Compose {
-    const val foundation = "androidx.ui:ui-foundation:${Versions.compose}"
-    const val layout = "androidx.ui:ui-layout:${Versions.compose}"
-    const val material = "androidx.ui:ui-material:${Versions.compose}"
-    const val test = "androidx.ui:ui-test:${Versions.compose}"
-    const val tooling = "androidx.ui:ui-tooling:${Versions.compose}"
   }
 
   const val cycler = "com.squareup.cycler:cycler:0.1.3"

@@ -115,7 +115,6 @@ tasks.register<DokkaTask>("siteDokka") {
       "backstack-common",
       "core-android",
       "core-common",
-      "core-compose",
       "legacy-workflow-core",
       "legacy-workflow-rx2",
       "legacy-workflow-test",

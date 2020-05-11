@@ -30,7 +30,6 @@ include(
     ":samples:dungeon:common",
     ":samples:dungeon:timemachine",
     ":samples:dungeon:timemachine-shakeable",
-    ":samples:hello-compose-binding",
     ":samples:hello-terminal:hello-terminal-app",
     ":samples:hello-terminal:terminal-workflow",
     ":samples:hello-terminal:todo-terminal-app",
@@ -50,7 +49,6 @@ include(
     ":workflow-ui:backstack-common",
     ":workflow-ui:backstack-android",
     ":workflow-ui:core-common",
-    ":workflow-ui:core-compose",
     ":workflow-ui:core-android",
     ":workflow-ui:modal-common",
     ":workflow-ui:modal-android"
