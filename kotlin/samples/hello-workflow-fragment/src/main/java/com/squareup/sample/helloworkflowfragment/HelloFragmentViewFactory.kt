@@ -16,26 +16,13 @@
 package com.squareup.sample.helloworkflowfragment
 
 import android.annotation.SuppressLint
-import android.view.View
-import android.widget.TextView
+import com.squareup.sample.helloworkflowfragment.databinding.HelloGoodbyeLayoutBinding
 import com.squareup.workflow.ui.LayoutRunner
-import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewFactory
-import com.squareup.workflow.ui.ViewEnvironment
 
-class HelloFragmentLayoutRunner(view: View) : LayoutRunner<HelloWorkflow.Rendering> {
-  private val messageView = view.findViewById<TextView>(R.id.hello_message)
-
-  @SuppressLint("SetTextI18n")
-  override fun showRendering(
-    rendering: HelloWorkflow.Rendering,
-    viewEnvironment: ViewEnvironment
-  ) {
-    messageView.text = rendering.message + " Fragment!"
-    messageView.setOnClickListener { rendering.onClick() }
+val HelloFragmentViewFactory: ViewFactory<HelloWorkflow.Rendering> =
+  LayoutRunner.bind(HelloGoodbyeLayoutBinding::inflate) { rendering, _ ->
+    @SuppressLint("SetTextI18n")
+    helloMessage.text = rendering.message + " Fragment!"
+    helloMessage.setOnClickListener { rendering.onClick() }
   }
-
-  companion object : ViewFactory<HelloWorkflow.Rendering> by bind(
-      R.layout.hello_goodbye_layout, ::HelloFragmentLayoutRunner
-  )
-}

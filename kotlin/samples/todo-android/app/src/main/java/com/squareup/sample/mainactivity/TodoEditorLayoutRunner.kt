@@ -16,34 +16,34 @@
 package com.squareup.sample.mainactivity
 
 import android.view.View
-import android.widget.EditText
-import androidx.appcompat.widget.Toolbar
-import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoRendering
+import com.squareup.sample.todo.databinding.TodoEditorLayoutBinding
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
-import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.backPressedHandler
 import com.squareup.workflow.ui.backstack.BackStackConfig
 import com.squareup.workflow.ui.backstack.BackStackConfig.Other
 
-internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<TodoRendering> {
+internal class TodoEditorLayoutRunner(
+  private val binding: TodoEditorLayoutBinding
+) : LayoutRunner<TodoRendering> {
 
-  private val toolbar = view.findViewById<Toolbar>(R.id.todo_editor_toolbar)
-  private val titleText = view.findViewById<EditText>(R.id.todo_title)
-  private val itemContainer = ItemListView.fromLinearLayout(view, R.id.item_container)
+  private val itemListView = ItemListView.fromLinearLayout(binding.itemContainer)
 
   init {
-    toolbar.setOnClickListener {
-      titleText.visibility = View.VISIBLE
-      titleText.requestFocus()
-      titleText.showSoftKeyboard()
-    }
+    with(binding) {
+      todoEditorToolbar.setOnClickListener {
+        todoTitle.visibility = View.VISIBLE
+        todoTitle.requestFocus()
+        todoTitle.showSoftKeyboard()
+      }
 
-    @Suppress("UsePropertyAccessSyntax")
-    titleText.setOnFocusChangeListener { _, hasFocus ->
-      if (!hasFocus) titleText.visibility = View.GONE
+      @Suppress("UsePropertyAccessSyntax")
+      todoTitle.setOnFocusChangeListener { _, hasFocus ->
+        if (!hasFocus) todoTitle.visibility = View.GONE
+      }
     }
   }
 
@@ -51,31 +51,33 @@ internal class TodoEditorLayoutRunner(private val view: View) : LayoutRunner<Tod
     rendering: TodoRendering,
     viewEnvironment: ViewEnvironment
   ) {
-    toolbar.title = rendering.list.title
-    titleText.text.replace(0, titleText.text.length, rendering.list.title)
-    itemContainer.setRows(rendering.list.rows.map { Pair(it.done, it.text) })
+    with(binding) {
+      todoEditorToolbar.title = rendering.list.title
+      todoTitle.text.replace(0, todoTitle.text.length, rendering.list.title)
+      itemListView.setRows(rendering.list.rows.map { Pair(it.done, it.text) })
 
-    if (viewEnvironment[BackStackConfig] == Other) {
-      toolbar.setNavigationOnClickListener { rendering.onGoBackClicked() }
-      view.backPressedHandler = { rendering.onGoBackClicked() }
-    } else {
-      toolbar.navigationIcon = null
-    }
+      if (viewEnvironment[BackStackConfig] == Other) {
+        todoEditorToolbar.setNavigationOnClickListener { rendering.onGoBackClicked() }
+        root.backPressedHandler = { rendering.onGoBackClicked() }
+      } else {
+        todoEditorToolbar.navigationIcon = null
+      }
 
-    titleText.setTextChangedListener { rendering.onTitleChanged(it) }
+      todoTitle.setTextChangedListener { rendering.onTitleChanged(it) }
 
-    itemContainer.onDoneClickedListener = { index ->
-      rendering.onDoneClicked(index)
-    }
-    itemContainer.onTextChangedListener = { index, text ->
-      rendering.onTextChanged(index, text)
-    }
-    itemContainer.onDeleteClickedListener = { index ->
-      rendering.onDeleteClicked(index)
+      itemListView.onDoneClickedListener = { index ->
+        rendering.onDoneClicked(index)
+      }
+      itemListView.onTextChangedListener = { index, text ->
+        rendering.onTextChanged(index, text)
+      }
+      itemListView.onDeleteClickedListener = { index ->
+        rendering.onDeleteClicked(index)
+      }
     }
   }
 
   companion object : ViewFactory<TodoRendering> by bind(
-      R.layout.todo_editor_layout, ::TodoEditorLayoutRunner
+      TodoEditorLayoutBinding::inflate, ::TodoEditorLayoutRunner
   )
 }

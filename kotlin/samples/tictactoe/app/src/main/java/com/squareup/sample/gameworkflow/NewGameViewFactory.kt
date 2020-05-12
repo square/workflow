@@ -15,37 +15,19 @@
  */
 package com.squareup.sample.gameworkflow
 
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import com.squareup.sample.tictactoe.R
+import com.squareup.sample.tictactoe.databinding.NewGameLayoutBinding
 import com.squareup.workflow.ui.LayoutRunner
-import com.squareup.workflow.ui.LayoutRunner.Companion.bind
 import com.squareup.workflow.ui.ViewFactory
-import com.squareup.workflow.ui.ViewEnvironment
 import com.squareup.workflow.ui.backPressedHandler
 
-internal class NewGameLayoutRunner(private val view: View) : LayoutRunner<NewGameScreen> {
-
-  private val playerX: EditText = view.findViewById(R.id.player_X)
-  private val playerO: EditText = view.findViewById(R.id.player_O)
-  private val button: Button = view.findViewById(R.id.start_game)
-
-  override fun showRendering(
-    rendering: NewGameScreen,
-    viewEnvironment: ViewEnvironment
-  ) {
+internal val NewGameViewFactory: ViewFactory<NewGameScreen> =
+  LayoutRunner.bind(NewGameLayoutBinding::inflate) { rendering, _ ->
     if (playerX.text.isBlank()) playerX.setText(rendering.defaultNameX)
     if (playerO.text.isBlank()) playerO.setText(rendering.defaultNameO)
 
-    button.setOnClickListener {
+    startGame.setOnClickListener {
       rendering.onStartGame(playerX.text.toString(), playerO.text.toString())
     }
 
-    view.backPressedHandler = { rendering.onCancel() }
+    root.backPressedHandler = { rendering.onCancel() }
   }
-
-  companion object : ViewFactory<NewGameScreen> by bind(
-      R.layout.new_game_layout, ::NewGameLayoutRunner
-  )
-}

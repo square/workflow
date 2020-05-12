@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     val viewRegistry =
       ViewRegistry(
           TodoEditorLayoutRunner,
-          TodoListsLayoutRunner,
+          TodoListsViewFactory,
           MasterDetailContainer,
           BackStackContainer
       )

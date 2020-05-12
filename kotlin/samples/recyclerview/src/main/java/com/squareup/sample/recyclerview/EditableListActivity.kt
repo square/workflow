@@ -27,7 +27,7 @@ import timber.log.Timber.DebugTree
 
 private val viewRegistry = ViewRegistry(
     AddRowContainer,
-    BaseScreenLayoutRunner,
+    BaseScreenViewFactory,
     ChooseRowTypeViewFactory,
     EditableListLayoutRunner
 )
