@@ -151,3 +151,9 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
           script: ./gradlew connectedCheck --build-cache --no-daemon --stacktrace
+
+      - name: Upload results
+        uses: actions/upload-artifact@v2
+        with:
+          name: insrumentation-test-results
+          path: ./**/build/reports/androidTests/connected/**
