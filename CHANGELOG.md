@@ -1,6 +1,25 @@
 Change Log
 ==========
 
+## Version 0.28.0
+
+_2020-05-12_
+
+### Kotlin
+
+* Breaking: Simplify `ViewRegistry` to act more like a simple map of rendering type to `ViewFactory`. (#1148)
+* Extracted Compose support into [square/workflow-kotlin-compose](https://github.com/square/workflow-kotlin-compose). (#1147)
+  * Artifacts for Compose support will be released separately from now on, which allows us to keep them
+    updated more frequently as the Workflow library stabilizes.
+* Remove RxJava2 dependency from Workflow Android UI integration. (#1150)
+* Fix: Make `workflow-ui-android-core` declare `workflow-runtime` as `api` instead of `implementation` dependency. (#1144)
+* Fix: Move `WorkflowFragment` initialization to `onViewStateRestored`. (#1133 – thanks @ychescale9!)
+* Upgrade coroutines library to 1.3.6. (#1151)
+
+### Swift
+
+* Add os_signpost logs for `render()` and `Workflow` and`Worker` lifecycle. (#1134)
+
 ## Version 0.27.1
 
 _2020-05-11_
