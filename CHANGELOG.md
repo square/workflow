@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+## Version 0.27.1
+
+_2020-05-11_
+
+### Kotlin
+
+* Add insecure checksums gradle flag to fix Nexus release. (#1156)
+
+### Swift
+
+* Kotlin-only release, no changes.
+
 ## Version 0.27.0
 
 _2020-05-04_
