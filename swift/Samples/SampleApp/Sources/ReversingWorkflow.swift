@@ -23,20 +23,9 @@ import WorkflowUI
 struct ReversingWorkflow: Workflow {
     typealias Rendering = String
     typealias Output = Never
+    typealias State = Void
 
     var text: String
-}
-
-// MARK: State and Initialization
-
-extension ReversingWorkflow {
-    struct State {}
-
-    func makeInitialState() -> ReversingWorkflow.State {
-        return State()
-    }
-
-    func workflowDidChange(from previousWorkflow: ReversingWorkflow, state: inout State) {}
 }
 
 // MARK: Rendering

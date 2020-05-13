@@ -17,15 +17,7 @@
 import WorkflowUI
 
 public final class BackStackContainer<Content: Screen>: ScreenViewController<BackStackScreen<Content>>, UINavigationControllerDelegate {
-    private let navController: UINavigationController
-
-    public required init(screen: BackStackScreen<Content>, environment: ViewEnvironment) {
-        self.navController = UINavigationController()
-
-        super.init(screen: screen, environment: environment)
-
-        update(with: screen)
-    }
+    private let navController = UINavigationController()
 
     override public func viewDidLoad() {
         super.viewDidLoad()
@@ -43,18 +35,8 @@ public final class BackStackContainer<Content: Screen>: ScreenViewController<Bac
     }
 
     override public func screenDidChange(from previousScreen: BackStackScreen<Content>, previousEnvironment: ViewEnvironment) {
-        update(with: screen)
-    }
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
 
-    // MARK: - UINavigationControllerDelegate
-
-    public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        setNavigationBarVisibility(with: screen, animated: animated)
-    }
-
-    // MARK: - Private Methods
-
-    private func update(with screen: BackStackScreen<Content>) {
         var existingViewControllers: [ScreenWrapperViewController<Content>] = navController.viewControllers as! [ScreenWrapperViewController<Content>]
         var updatedViewControllers: [ScreenWrapperViewController<Content>] = []
 
@@ -72,6 +54,14 @@ public final class BackStackContainer<Content: Screen>: ScreenViewController<Bac
 
         navController.setViewControllers(updatedViewControllers, animated: true)
     }
+
+    // MARK: - UINavigationControllerDelegate
+
+    public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        setNavigationBarVisibility(with: screen, animated: animated)
+    }
+
+    // MARK: - Private Methods
 
     private func setNavigationBarVisibility(with screen: BackStackScreen<Content>, animated: Bool) {
         guard let topScreen = screen.items.last else {

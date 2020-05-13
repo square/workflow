@@ -59,10 +59,7 @@ internal final class AlertContainerViewController<AlertScreen: Screen>: ScreenVi
 
     override func screenDidChange(from previousScreen: AlertContainerScreen<AlertScreen>, previousEnvironment: ViewEnvironment) {
         super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
-        update()
-    }
 
-    func update() {
         baseScreenViewController.update(screen: screen.baseScreen, environment: environment)
 
         if let alert = screen.alert {

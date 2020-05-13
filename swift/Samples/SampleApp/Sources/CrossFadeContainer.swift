@@ -67,6 +67,8 @@ private final class CrossFadeContainerViewController: ScreenViewController<Cross
     }
 
     override func screenDidChange(from previousScreen: CrossFadeScreen, previousEnvironment: ViewEnvironment) {
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
+
         if screen.isEquivalent(to: previousScreen) {
             childViewController.update(screen: screen.baseScreen, environment: environment)
         } else {

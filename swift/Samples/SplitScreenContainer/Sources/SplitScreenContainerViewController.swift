@@ -45,6 +45,8 @@ internal final class SplitScreenContainerViewController<LeadingScreenType: Scree
     }
 
     override internal func screenDidChange(from previousScreen: ContainerScreen, previousEnvironment: ViewEnvironment) {
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
+
         if screen.ratio != previousScreen.ratio {
             needsAnimatedLayout = true
         }

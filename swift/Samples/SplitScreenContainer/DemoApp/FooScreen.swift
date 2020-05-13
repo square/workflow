@@ -31,12 +31,6 @@ private final class FooScreenViewController: ScreenViewController<FooScreen> {
     private lazy var titleLabel: UILabel = .init()
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
 
-    required init(screen: FooScreen, environment: ViewEnvironment) {
-        super.init(screen: screen, environment: environment)
-
-        update(with: screen)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -54,10 +48,8 @@ private final class FooScreenViewController: ScreenViewController<FooScreen> {
     }
 
     override func screenDidChange(from previousScreen: FooScreen, previousEnvironment: ViewEnvironment) {
-        update(with: screen)
-    }
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
 
-    private func update(with screen: FooScreen) {
         view.backgroundColor = screen.backgroundColor
         titleLabel.text = screen.title
     }

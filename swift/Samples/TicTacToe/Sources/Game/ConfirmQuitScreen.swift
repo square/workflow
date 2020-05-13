@@ -34,15 +34,9 @@ final class ConfirmQuitViewController: ScreenViewController<ConfirmQuitScreen> {
     private var onQuitTapped: () -> Void = {}
     private var onCancelTapped: () -> Void = {}
 
-    required init(screen: ConfirmQuitScreen, environment: ViewEnvironment) {
-        super.init(screen: screen, environment: environment)
-    }
-
     override func screenDidChange(from previousScreen: ConfirmQuitScreen, previousEnvironment: ViewEnvironment) {
-        update(with: screen, environment: environment)
-    }
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
 
-    private func update(with screen: ConfirmQuitScreen, environment: ViewEnvironment) {
         /// Update UI
         questionLabel.text = screen.question
         onQuitTapped = screen.onQuitTapped

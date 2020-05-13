@@ -32,12 +32,6 @@ private final class BarScreenViewController: ScreenViewController<BarScreen> {
     private lazy var tapGestureRecognizer: UITapGestureRecognizer = .init()
     private var gradientLayer: CAGradientLayer?
 
-    required init(screen: BarScreen, environment: ViewEnvironment) {
-        super.init(screen: screen, environment: environment)
-
-        update(with: screen)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -58,10 +52,8 @@ private final class BarScreenViewController: ScreenViewController<BarScreen> {
     }
 
     override func screenDidChange(from previousScreen: BarScreen, previousEnvironment: ViewEnvironment) {
-        update(with: screen)
-    }
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
 
-    private func update(with screen: BarScreen) {
         titleLabel.text = screen.title
 
         updateGradient(for: view, colors: screen.backgroundColors)

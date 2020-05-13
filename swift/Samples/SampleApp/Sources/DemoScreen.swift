@@ -35,20 +35,10 @@ struct DemoScreen: Screen {
 }
 
 private final class DemoViewController: ScreenViewController<DemoScreen> {
-    private let titleButton: UIButton
-    private let subscribeButton: UIButton
-    private let statusLabel: UILabel
-    private let refreshButton: UIButton
-
-    required init(screen: DemoScreen, environment: ViewEnvironment) {
-        self.titleButton = UIButton(frame: .zero)
-        self.subscribeButton = UIButton(frame: .zero)
-        self.statusLabel = UILabel(frame: .zero)
-        self.refreshButton = UIButton(frame: .zero)
-        super.init(screen: screen, environment: environment)
-
-        update(with: screen)
-    }
+    private let titleButton = UIButton(frame: .zero)
+    private let subscribeButton = UIButton(frame: .zero)
+    private let statusLabel = UILabel(frame: .zero)
+    private let refreshButton = UIButton(frame: .zero)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,10 +98,8 @@ private final class DemoViewController: ScreenViewController<DemoScreen> {
     }
 
     override func screenDidChange(from previousScreen: DemoScreen, previousEnvironment: ViewEnvironment) {
-        update(with: screen)
-    }
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
 
-    private func update(with screen: DemoScreen) {
         titleButton.setTitle(screen.title, for: .normal)
         titleButton.backgroundColor = screen.color
 

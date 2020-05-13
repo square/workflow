@@ -23,13 +23,7 @@ struct LoadingScreen: Screen {
 }
 
 private final class LoadingScreenViewController: ScreenViewController<LoadingScreen> {
-    let loadingLabel: UILabel
-
-    required init(screen: LoadingScreen, environment: ViewEnvironment) {
-        self.loadingLabel = UILabel(frame: .zero)
-
-        super.init(screen: screen, environment: environment)
-    }
+    let loadingLabel = UILabel(frame: .zero)
 
     override func viewDidLoad() {
         super.viewDidLoad()
