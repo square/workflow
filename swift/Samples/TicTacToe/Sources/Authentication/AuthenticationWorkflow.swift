@@ -45,8 +45,6 @@ extension AuthenticationWorkflow {
     func makeInitialState() -> AuthenticationWorkflow.State {
         return .emailPassword
     }
-
-    func workflowDidChange(from previousWorkflow: AuthenticationWorkflow, state: inout State) {}
 }
 
 // MARK: Actions

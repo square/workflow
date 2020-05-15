@@ -44,8 +44,6 @@ extension ConfirmQuitWorkflow {
     func makeInitialState() -> ConfirmQuitWorkflow.State {
         return State(step: .confirmOnce)
     }
-
-    func workflowDidChange(from previousWorkflow: ConfirmQuitWorkflow, state: inout State) {}
 }
 
 // MARK: Actions

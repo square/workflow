@@ -40,8 +40,6 @@ final class WorkflowHostTests: XCTestCase {
             return State()
         }
 
-        func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State) {}
-
         typealias Rendering = Int
 
         func render(state: State, context: RenderContext<TestWorkflow>) -> Rendering {

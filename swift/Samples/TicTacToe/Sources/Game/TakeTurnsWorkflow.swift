@@ -37,8 +37,6 @@ extension TakeTurnsWorkflow {
     func makeInitialState() -> TakeTurnsWorkflow.State {
         return State(board: Board(), gameState: .ongoing(turn: .x))
     }
-
-    func workflowDidChange(from previousWorkflow: TakeTurnsWorkflow, state: inout State) {}
 }
 
 // MARK: Actions

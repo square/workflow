@@ -229,8 +229,6 @@ private struct TestWorkflow: Workflow {
         return State(text: initialText, substate: .idle)
     }
 
-    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout TestWorkflow.State) {}
-
     func render(state: State, context: RenderContext<TestWorkflow>) -> TestScreen {
         let sink = context.makeSink(of: Action.self)
 
@@ -283,8 +281,6 @@ private struct OutputWorkflow: Workflow {
     func makeInitialState() -> OutputWorkflow.State {
         return State()
     }
-
-    func workflowDidChange(from previousWorkflow: OutputWorkflow, state: inout OutputWorkflow.State) {}
 
     enum Action: WorkflowAction {
         typealias WorkflowType = OutputWorkflow
@@ -345,8 +341,6 @@ private struct ParentWorkflow: Workflow {
         return State(text: initialText)
     }
 
-    func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout ParentWorkflow.State) {}
-
     enum Action: WorkflowAction {
         typealias WorkflowType = ParentWorkflow
 
@@ -393,8 +387,6 @@ private struct ChildWorkflow: Workflow {
     func makeInitialState() -> ChildWorkflow.State {
         return State()
     }
-
-    func workflowDidChange(from previousWorkflow: ChildWorkflow, state: inout ChildWorkflow.State) {}
 
     func render(state: ChildWorkflow.State, context: RenderContext<ChildWorkflow>) -> String {
         context.awaitResult(

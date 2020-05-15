@@ -208,8 +208,6 @@ final class WorkflowNodeTests: XCTestCase {
                 return State()
             }
 
-            func workflowDidChange(from previousWorkflow: WF, state: inout WF.State) {}
-
             func render(state: WF.State, context: RenderContext<WF>) {
                 context.awaitResult(for: TestWorker()) { output in
                     AnyWorkflowAction(sendingOutput: output)
@@ -297,8 +295,6 @@ extension CompositeWorkflow {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: CompositeWorkflow<A, B>, state: inout State) {}
-
     func render(state: State, context: RenderContext<CompositeWorkflow<A, B>>) -> Rendering {
         return Rendering(
             aRendering: a
@@ -341,8 +337,6 @@ private struct SimpleWorkflow: Workflow {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: SimpleWorkflow, state: inout State) {}
-
     func render(state: State, context: RenderContext<SimpleWorkflow>) -> String {
         return String(string.reversed())
     }
@@ -381,8 +375,6 @@ extension EventEmittingWorkflow {
         case helloWorld
     }
 
-    func workflowDidChange(from previousWorkflow: EventEmittingWorkflow, state: inout State) {}
-
     func render(state: State, context: RenderContext<EventEmittingWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Event.self)
 
@@ -404,8 +396,6 @@ private struct StateTransitioningWorkflow: Workflow {
     func makeInitialState() -> Bool {
         return false
     }
-
-    func workflowDidChange(from previousWorkflow: StateTransitioningWorkflow, state: inout Bool) {}
 
     func render(state: State, context: RenderContext<StateTransitioningWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Event.self)

@@ -60,8 +60,6 @@ extension DemoWorkflow {
             subscriptionState: .not
         )
     }
-
-    func workflowDidChange(from previousWorkflow: DemoWorkflow, state: inout State) {}
 }
 
 // MARK: Actions

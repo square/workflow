@@ -155,8 +155,6 @@ final class SubtreeManagerTests: XCTestCase {
                 return .notWorking
             }
 
-            func workflowDidChange(from previousWorkflow: WorkerWorkflow, state: inout WorkerWorkflow.State) {}
-
             func render(state: WorkerWorkflow.State, context: RenderContext<WorkerWorkflow>) -> Bool {
                 switch state {
                 case .notWorking:
@@ -240,8 +238,6 @@ final class SubtreeManagerTests: XCTestCase {
                 return State()
             }
 
-            func workflowDidChange(from previousWorkflow: SubscribingWorkflow, state: inout SubscribingWorkflow.State) {}
-
             func render(state: SubscribingWorkflow.State, context: RenderContext<SubscribingWorkflow>) -> Bool {
                 if let signal = signal {
                     context.awaitResult(for: signal.asWorker(key: "signal")) { _ -> AnyWorkflowAction<SubscribingWorkflow> in
@@ -314,8 +310,6 @@ private struct ParentWorkflow: Workflow {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout State) {}
-
     func render(state: State, context: RenderContext<ParentWorkflow>) -> Never {
         fatalError()
     }
@@ -354,8 +348,6 @@ private struct TestWorkflow: Workflow {
     func makeInitialState() -> State {
         return .foo
     }
-
-    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State) {}
 
     func render(state: State, context: RenderContext<TestWorkflow>) -> TestViewModel {
         let sink = context.makeSink(of: Event.self)

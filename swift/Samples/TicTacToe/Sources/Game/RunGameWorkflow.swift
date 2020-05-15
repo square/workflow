@@ -44,8 +44,6 @@ extension RunGameWorkflow {
     func makeInitialState() -> RunGameWorkflow.State {
         return State(playerX: "X", playerO: "O", step: .newGame)
     }
-
-    func workflowDidChange(from previousWorkflow: RunGameWorkflow, state: inout State) {}
 }
 
 // MARK: Actions
