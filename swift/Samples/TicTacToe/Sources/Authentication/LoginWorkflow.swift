@@ -37,8 +37,6 @@ extension LoginWorkflow {
     func makeInitialState() -> LoginWorkflow.State {
         return State(email: "", password: "")
     }
-
-    func workflowDidChange(from previousWorkflow: LoginWorkflow, state: inout State) {}
 }
 
 // MARK: Actions

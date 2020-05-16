@@ -122,8 +122,6 @@
             return 0
         }
 
-        func workflowDidChange(from previousWorkflow: MockWorkflow, state: inout State) {}
-
         func render(state: State, context: RenderContext<MockWorkflow>) -> TestScreen {
             context.awaitResult(for: subscription.asWorker(key: "signal")) { output in
                 AnyWorkflowAction { state in

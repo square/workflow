@@ -142,8 +142,6 @@ final class ConcurrencyTests: XCTestCase {
                 return State(count: 0)
             }
 
-            func workflowDidChange(from previousWorkflow: OneShotWorkflow, state: inout State) {}
-
             enum Action: WorkflowAction {
                 typealias WorkflowType = OneShotWorkflow
 
@@ -230,8 +228,6 @@ final class ConcurrencyTests: XCTestCase {
             func makeInitialState() -> State {
                 return State(count: 0)
             }
-
-            func workflowDidChange(from previousWorkflow: ParentWorkflow, state: inout State) {}
 
             enum Action: WorkflowAction {
                 typealias WorkflowType = ParentWorkflow
@@ -387,8 +383,6 @@ final class ConcurrencyTests: XCTestCase {
                 return State(count: 0)
             }
 
-            func workflowDidChange(from previousWorkflow: AnyActionWorkflow, state: inout State) {}
-
             enum FirstAction: WorkflowAction {
                 typealias WorkflowType = AnyActionWorkflow
                 case update
@@ -491,8 +485,6 @@ final class ConcurrencyTests: XCTestCase {
                 return State(count: 0)
             }
 
-            func workflowDidChange(from previousWorkflow: SourceDifferentiatingWorkflow, state: inout State) {}
-
             enum Action: WorkflowAction {
                 typealias WorkflowType = SourceDifferentiatingWorkflow
 
@@ -591,8 +583,6 @@ final class ConcurrencyTests: XCTestCase {
         func makeInitialState() -> State {
             return State(count: 0, running: running, signal: signal)
         }
-
-        func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout State) {}
 
         enum Action: WorkflowAction {
             typealias WorkflowType = TestWorkflow

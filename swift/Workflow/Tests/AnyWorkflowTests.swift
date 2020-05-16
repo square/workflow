@@ -49,8 +49,6 @@ extension PassthroughWorkflow {
         return State()
     }
 
-    func workflowDidChange(from previousWorkflow: PassthroughWorkflow<Rendering>, state: inout State) {}
-
     func render(state: State, context: RenderContext<PassthroughWorkflow<Rendering>>) -> Rendering {
         return child.rendered(with: context)
     }
@@ -67,8 +65,6 @@ extension SimpleWorkflow {
     func makeInitialState() -> State {
         return State()
     }
-
-    func workflowDidChange(from previousWorkflow: SimpleWorkflow, state: inout State) {}
 
     func render(state: State, context: RenderContext<SimpleWorkflow>) -> String {
         return String(string.reversed())

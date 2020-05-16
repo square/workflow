@@ -32,8 +32,6 @@ extension DemoWorkflow {
     func makeInitialState() -> State {
         return 1
     }
-
-    func workflowDidChange(from previousWorkflow: DemoWorkflow, state: inout State) {}
 }
 
 // MARK: Actions

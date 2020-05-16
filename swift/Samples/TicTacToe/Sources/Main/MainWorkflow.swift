@@ -37,8 +37,6 @@ extension MainWorkflow {
     func makeInitialState() -> MainWorkflow.State {
         return .authenticating
     }
-
-    func workflowDidChange(from previousWorkflow: MainWorkflow, state: inout State) {}
 }
 
 // MARK: Actions

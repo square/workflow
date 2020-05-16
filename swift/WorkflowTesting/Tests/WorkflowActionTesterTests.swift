@@ -72,8 +72,6 @@ private struct TestWorkflow: Workflow {
         return true
     }
 
-    func workflowDidChange(from previousWorkflow: TestWorkflow, state: inout Bool) {}
-
     func render(state: Bool, context: RenderContext<TestWorkflow>) {
         return ()
     }
