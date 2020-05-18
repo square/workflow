@@ -84,19 +84,19 @@ extension RunGameWorkflow {
 // MARK: Rendering
 
 extension RunGameWorkflow {
-    typealias Rendering = AlertContainerScreen<ModalContainerScreen<BackStackScreen>>
+    typealias Rendering = AlertContainerScreen<ModalContainerScreen<BackStackScreen<AnyScreen>>>
 
     func render(state: RunGameWorkflow.State, context: RenderContext<RunGameWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
         var modals: [ModalContainerScreenModal] = []
         var alert: Alert?
 
-        var backStackItems: [BackStackScreen.Item] = [BackStackScreen.Item(
-            screen: newGameScreen(
+        var backStackItems: [BackStackScreen<AnyScreen>.Item] = [BackStackScreen.Item(
+            screen: AnyScreen(newGameScreen(
                 sink: sink,
                 playerX: state.playerX,
                 playerO: state.playerO
-            ),
+            )),
             barVisibility: .hidden
         )]
 
@@ -111,7 +111,7 @@ extension RunGameWorkflow {
             )
             .rendered(with: context)
             backStackItems.append(BackStackScreen.Item(
-                screen: takeTurnsScreen,
+                screen: AnyScreen(takeTurnsScreen),
                 barVisibility: .visible(BackStackScreen.BarContent(
                     leftItem: BackStackScreen.BarContent.BarButtonItem.button(BackStackScreen.BarContent.Button(
                         content: .text("Quit"),
@@ -130,7 +130,7 @@ extension RunGameWorkflow {
             )
             .rendered(with: context)
             backStackItems.append(BackStackScreen.Item(
-                screen: takeTurnsScreen,
+                screen: AnyScreen(takeTurnsScreen),
                 barVisibility: .visible(BackStackScreen.BarContent(
                     leftItem: BackStackScreen.BarContent.BarButtonItem.button(BackStackScreen.BarContent.Button(
                         content: .text("Quit"),

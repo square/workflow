@@ -161,12 +161,12 @@ extension AuthenticationWorkflow {
 // MARK: Rendering
 
 extension AuthenticationWorkflow {
-    typealias Rendering = AlertContainerScreen<ModalContainerScreen<BackStackScreen>>
+    typealias Rendering = AlertContainerScreen<ModalContainerScreen<BackStackScreen<AnyScreen>>>
 
     func render(state: AuthenticationWorkflow.State, context: RenderContext<AuthenticationWorkflow>) -> Rendering {
         let sink = context.makeSink(of: Action.self)
 
-        var backStackItems: [BackStackScreen.Item] = []
+        var backStackItems: [BackStackScreen<AnyScreen>.Item] = []
         var modals: [ModalContainerScreenModal] = []
         var alert: Alert?
 
@@ -176,7 +176,7 @@ extension AuthenticationWorkflow {
                 return .login(email: email, password: password)
             }
         }.rendered(with: context)
-        backStackItems.append(BackStackScreen.Item(screen: loginScreen, barVisibility: .hidden))
+        backStackItems.append(BackStackScreen.Item(screen: AnyScreen(loginScreen), barVisibility: .hidden))
 
         switch state {
         case .emailPassword:
@@ -233,7 +233,7 @@ extension AuthenticationWorkflow {
         )
     }
 
-    private func twoFactorScreen(error: AuthenticationService.AuthenticationError?, intermediateSession: String, sink: Sink<Action>) -> BackStackScreen.Item {
+    private func twoFactorScreen(error: AuthenticationService.AuthenticationError?, intermediateSession: String, sink: Sink<Action>) -> BackStackScreen<AnyScreen>.Item {
         let title: String
         if let authenticationError = error {
             title = authenticationError.localizedDescription
@@ -252,7 +252,7 @@ extension AuthenticationWorkflow {
         )
 
         return BackStackScreen.Item(
-            screen: twoFactorScreen,
+            screen: AnyScreen(twoFactorScreen),
             barVisibility: .visible(BackStackScreen.BarContent(
                 leftItem: BackStackScreen.BarContent.BarButtonItem.button(BackStackScreen.BarContent.Button(
                     content: .text("Cancel"),

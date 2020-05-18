@@ -65,7 +65,7 @@ extension MainWorkflow {
 // MARK: Rendering
 
 extension MainWorkflow {
-    typealias Rendering = AlertContainerScreen<ModalContainerScreen<BackStackScreen>>
+    typealias Rendering = AlertContainerScreen<ModalContainerScreen<BackStackScreen<AnyScreen>>>
 
     func render(state: MainWorkflow.State, context: RenderContext<MainWorkflow>) -> Rendering {
         switch state {

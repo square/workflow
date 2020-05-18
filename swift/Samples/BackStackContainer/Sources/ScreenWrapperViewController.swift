@@ -19,16 +19,14 @@ import WorkflowUI
 /**
  Wrapper view controller for being hosted in a backstack. Handles updating the bar button items.
  */
-final class ScreenWrapperViewController: UIViewController {
+final class ScreenWrapperViewController<ScreenType: Screen>: UIViewController {
     let key: AnyHashable
-    let screenType: Any.Type
     let environment: ViewEnvironment
 
     let contentViewController: DescribedViewController
 
-    init(item: BackStackScreen.Item, environment: ViewEnvironment) {
+    init(item: BackStackScreen<ScreenType>.Item, environment: ViewEnvironment) {
         self.key = item.key
-        self.screenType = item.screenType
         self.environment = environment
         self.contentViewController = DescribedViewController(screen: item.screen, environment: environment)
 
@@ -53,17 +51,17 @@ final class ScreenWrapperViewController: UIViewController {
         contentViewController.view.frame = view.bounds
     }
 
-    func update(item: BackStackScreen.Item, environment: ViewEnvironment) {
+    func update(item: BackStackScreen<ScreenType>.Item, environment: ViewEnvironment) {
         contentViewController.update(screen: item.screen, environment: environment)
         update(barVisibility: item.barVisibility)
     }
 
-    func matches(item: BackStackScreen.Item) -> Bool {
+    func matches(item: BackStackScreen<ScreenType>.Item) -> Bool {
         return item.key == key
-            && item.screenType == screenType
+            && type(of: item.screen) == ScreenType.self
     }
 
-    private func update(barVisibility: BackStackScreen.BarVisibility) {
+    private func update(barVisibility: BackStackScreen<ScreenType>.BarVisibility) {
         navigationItem.setHidesBackButton(true, animated: false)
 
         guard case let .visible(barContent) = barVisibility else {
@@ -113,35 +111,39 @@ final class ScreenWrapperViewController: UIViewController {
     }
 }
 
-final class CallbackBarButtonItem: UIBarButtonItem {
-    var handler: () -> Void
+// MARK: -
 
-    init(button: BackStackScreen.BarContent.Button) {
-        self.handler = {}
+extension ScreenWrapperViewController {
+    final class CallbackBarButtonItem: UIBarButtonItem {
+        var handler: () -> Void
 
-        super.init()
-        self.target = self
-        self.action = #selector(onTapped)
-        update(with: button)
-    }
+        init(button: BackStackScreen<ScreenType>.BarContent.Button) {
+            self.handler = {}
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func update(with button: BackStackScreen.BarContent.Button) {
-        switch button.content {
-        case let .text(title):
-            self.title = title
-
-        case let .icon(image):
-            self.image = image
+            super.init()
+            self.target = self
+            self.action = #selector(onTapped)
+            update(with: button)
         }
 
-        handler = button.handler
-    }
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
 
-    @objc private func onTapped() {
-        handler()
+        func update(with button: BackStackScreen<ScreenType>.BarContent.Button) {
+            switch button.content {
+            case let .text(title):
+                self.title = title
+
+            case let .icon(image):
+                self.image = image
+            }
+
+            handler = button.handler
+        }
+
+        @objc private func onTapped() {
+            handler()
+        }
     }
 }
