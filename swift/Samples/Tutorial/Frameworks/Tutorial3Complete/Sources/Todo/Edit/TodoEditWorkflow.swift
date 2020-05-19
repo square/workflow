@@ -106,7 +106,7 @@ extension TodoEditWorkflow {
 // MARK: Rendering
 
 extension TodoEditWorkflow {
-    typealias Rendering = BackStackScreen.Item
+    typealias Rendering = BackStackScreen<AnyScreen>.Item
 
     func render(state: TodoEditWorkflow.State, context: RenderContext<TodoEditWorkflow>) -> Rendering {
         // The sink is used to send actions back to this workflow.
@@ -125,13 +125,13 @@ extension TodoEditWorkflow {
 
         let backStackItem = BackStackScreen.Item(
             key: "edit",
-            screen: todoEditScreen,
-            barContent: BackStackScreen.BarContent(
+            screen: todoEditScreen.asAnyScreen(),
+            barContent: .init(
                 title: "Edit",
                 leftItem: .button(.back(handler: {
                     sink.send(.discardChanges)
                 })),
-                rightItem: .button(BackStackScreen.BarContent.Button(
+                rightItem: .button(.init(
                     content: .text("Save"),
                     handler: {
                         sink.send(.saveChanges)

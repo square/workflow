@@ -133,7 +133,7 @@ extension TodoWorkflow {
 // MARK: Rendering
 
 extension TodoWorkflow {
-    typealias Rendering = [BackStackScreen.Item]
+    typealias Rendering = [BackStackScreen<AnyScreen>.Item]
 
     func render(state: TodoWorkflow.State, context: RenderContext<TodoWorkflow>) -> Rendering {
         let todoListItem = TodoListWorkflow(
