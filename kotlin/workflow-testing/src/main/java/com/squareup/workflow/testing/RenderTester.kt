@@ -62,11 +62,12 @@ fun <PropsT, StateT, OutputT : Any, RenderingT>
  * [verifyAction][RenderTestResult.verifyAction] or
  * [verifyActionResult][RenderTestResult.verifyActionResult].
  *
- * - All workflows and workers that are rendered/ran by this workflow must be specified.
+ * - All workflows that are rendered/ran by this workflow must be specified.
+ * - Workers are optionally specified. Specified workers must run. Unexpected workers on a render
+ *   pass do not cause a test failure.
  * - It is an error if more than one workflow or worker specifies an output.
  * - It is a test failure if any workflows or workers that were expected were not ran.
- * - It is a test failure if the workflow tried to run any workflows or workers that were not
- *   expected.
+ * - It is a test failure if the workflow tried to run any workflows that were not expected.
  * - It is a test failure if no workflow or workflow emitted an output, no rendering event was
  *   invoked, and any of the action verification methods on [RenderTestResult] is called.
  *
@@ -235,8 +236,8 @@ interface RenderTester<PropsT, StateT, OutputT : Any, RenderingT> {
    * Execute the workflow's `render` method and run [block] to perform assertions on and send events
    * to the resulting rendering.
    *
-   * All workflows and workers rendered/ran by the workflow must be specified before calling this
-   * method.
+   * All workflows rendered/ran by the workflow must be specified before calling this
+   * method. Workers are optionally specified.
    *
    * @param block Passed the result of the render pass to perform assertions on.
    * If no child workflow or worker was configured to emit an output, may also invoke one of the
