@@ -75,6 +75,24 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
+    /// Execute a side-effect action.
+    ///
+    /// Note that it is a programmer error to run two side-effects with the same `key`
+    /// during the same render pass.
+    ///
+    /// `action` will be executed the first time a side-effect is run with a given `key`.
+    /// `runSideEffect` calls with a given `key` on subsequent renders are ignored.
+    ///
+    /// If after a render pass, a side-effect with a `key` that was previously used is not used,
+    /// it's lifetime ends and the `Lifetime` object's `onEnded` closure will be called.
+    ///
+    /// - Parameters:
+    ///   - key: represents the block of work that needs to be executed.
+    ///   - action: a block of work that will be executed.
+    public func runSideEffect(key: AnyHashable, action: (Lifetime) -> Void) {
+        fatalError()
+    }
+
     final func invalidate() {
         isValid = false
     }
@@ -103,6 +121,11 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
             return implementation.makeSink(of: actionType)
         }
 
+        override func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void) {
+            assertStillValid()
+            implementation.runSideEffect(key: key, action: action)
+        }
+
         override func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
             assertStillValid()
             implementation.awaitResult(for: worker, outputMap: outputMap)
@@ -122,6 +145,8 @@ internal protocol RenderContextType: AnyObject {
     func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
     func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
+
+    func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void)
 }
 
 extension RenderContext {

@@ -75,6 +75,7 @@ extension WorkflowUpdateDebugInfo {
     public indirect enum Source: Equatable {
         case external
         case worker
+        case sideEffect
         case subtree(WorkflowUpdateDebugInfo)
     }
 }
@@ -96,6 +97,8 @@ extension WorkflowUpdateDebugInfo.Source: Codable {
         case let .subtree(debugInfo):
             try container.encode("subtree", forKey: .type)
             try container.encode(debugInfo, forKey: .debugInfo)
+        case .sideEffect:
+            try container.encode("side-effect", forKey: .type)
         }
     }
 
@@ -114,6 +117,8 @@ extension WorkflowUpdateDebugInfo.Source: Codable {
         case "subtree":
             let debugInfo = try container.decode(WorkflowUpdateDebugInfo.self, forKey: .debugInfo)
             self = .subtree(debugInfo)
+        case "side-effect":
+            self = .sideEffect
         default:
             throw MalformedDataError()
         }
