@@ -40,4 +40,11 @@
         }
     }
 
+    extension Screen {
+        /// Wraps the screen in an AnyScreen
+        public func asAnyScreen() -> AnyScreen {
+            AnyScreen(self)
+        }
+    }
+
 #endif

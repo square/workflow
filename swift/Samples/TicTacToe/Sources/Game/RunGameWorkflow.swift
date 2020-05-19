@@ -92,11 +92,11 @@ extension RunGameWorkflow {
         var alert: Alert?
 
         var backStackItems: [BackStackScreen<AnyScreen>.Item] = [BackStackScreen.Item(
-            screen: AnyScreen(newGameScreen(
+            screen: newGameScreen(
                 sink: sink,
                 playerX: state.playerX,
                 playerO: state.playerO
-            )),
+            ).asAnyScreen(),
             barVisibility: .hidden
         )]
 
@@ -111,7 +111,7 @@ extension RunGameWorkflow {
             )
             .rendered(with: context)
             backStackItems.append(BackStackScreen.Item(
-                screen: AnyScreen(takeTurnsScreen),
+                screen: takeTurnsScreen.asAnyScreen(),
                 barVisibility: .visible(BackStackScreen.BarContent(
                     leftItem: BackStackScreen.BarContent.BarButtonItem.button(BackStackScreen.BarContent.Button(
                         content: .text("Quit"),
@@ -130,7 +130,7 @@ extension RunGameWorkflow {
             )
             .rendered(with: context)
             backStackItems.append(BackStackScreen.Item(
-                screen: AnyScreen(takeTurnsScreen),
+                screen: takeTurnsScreen.asAnyScreen(),
                 barVisibility: .visible(BackStackScreen.BarContent(
                     leftItem: BackStackScreen.BarContent.BarButtonItem.button(BackStackScreen.BarContent.Button(
                         content: .text("Quit"),

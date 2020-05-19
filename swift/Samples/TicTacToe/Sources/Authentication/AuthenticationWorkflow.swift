@@ -176,7 +176,7 @@ extension AuthenticationWorkflow {
                 return .login(email: email, password: password)
             }
         }.rendered(with: context)
-        backStackItems.append(BackStackScreen.Item(screen: AnyScreen(loginScreen), barVisibility: .hidden))
+        backStackItems.append(BackStackScreen.Item(screen: loginScreen.asAnyScreen(), barVisibility: .hidden))
 
         switch state {
         case .emailPassword:
@@ -252,7 +252,7 @@ extension AuthenticationWorkflow {
         )
 
         return BackStackScreen.Item(
-            screen: AnyScreen(twoFactorScreen),
+            screen: twoFactorScreen.asAnyScreen(),
             barVisibility: .visible(BackStackScreen.BarContent(
                 leftItem: BackStackScreen.BarContent.BarButtonItem.button(BackStackScreen.BarContent.Button(
                     content: .text("Cancel"),
