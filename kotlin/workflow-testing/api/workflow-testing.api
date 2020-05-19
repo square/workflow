@@ -29,8 +29,10 @@ public final class com/squareup/workflow/testing/RenderTester$DefaultImpls {
 public final class com/squareup/workflow/testing/RenderTesterKt {
 	public static final fun expectWorker (Lcom/squareup/workflow/testing/RenderTester;Lcom/squareup/workflow/Worker;Ljava/lang/String;Lcom/squareup/workflow/testing/EmittedOutput;)Lcom/squareup/workflow/testing/RenderTester;
 	public static synthetic fun expectWorker$default (Lcom/squareup/workflow/testing/RenderTester;Lcom/squareup/workflow/Worker;Ljava/lang/String;Lcom/squareup/workflow/testing/EmittedOutput;ILjava/lang/Object;)Lcom/squareup/workflow/testing/RenderTester;
-	public static final fun renderTester (Lcom/squareup/workflow/StatefulWorkflow;Ljava/lang/Object;Ljava/lang/Object;)Lcom/squareup/workflow/testing/RenderTester;
-	public static final fun renderTester (Lcom/squareup/workflow/Workflow;Ljava/lang/Object;)Lcom/squareup/workflow/testing/RenderTester;
+	public static final fun renderTester (Lcom/squareup/workflow/StatefulWorkflow;Ljava/lang/Object;Ljava/lang/Object;Z)Lcom/squareup/workflow/testing/RenderTester;
+	public static final fun renderTester (Lcom/squareup/workflow/Workflow;Ljava/lang/Object;Z)Lcom/squareup/workflow/testing/RenderTester;
+	public static synthetic fun renderTester$default (Lcom/squareup/workflow/StatefulWorkflow;Ljava/lang/Object;Ljava/lang/Object;ZILjava/lang/Object;)Lcom/squareup/workflow/testing/RenderTester;
+	public static synthetic fun renderTester$default (Lcom/squareup/workflow/Workflow;Ljava/lang/Object;ZILjava/lang/Object;)Lcom/squareup/workflow/testing/RenderTester;
 }
 
 public final class com/squareup/workflow/testing/WorkerSink : com/squareup/workflow/Worker {

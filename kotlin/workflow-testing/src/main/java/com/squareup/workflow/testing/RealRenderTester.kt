@@ -31,6 +31,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
   private val workflow: StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>,
   private val props: PropsT,
   private val state: StateT,
+  private val allowUnexpectedWorkers: Boolean,
   private val expectations: MutableList<Expectation<*>> = mutableListOf(),
   private val consumedExpectations: MutableList<Expectation<*>> = mutableListOf(),
   private var childWillEmitOutput: Boolean = false,
@@ -117,10 +118,7 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     key: String,
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT {
-    fun describeWorkflow() = "child workflow ${child::class.java.name}" +
-        key.takeUnless { it.isEmpty() }
-            ?.let { " with key \"$it\"" }
-            .orEmpty()
+    fun describeWorkflow() = "child workflow ${child::class.java.name}${key.withKey()}"
 
     val expected = consumeExpectation<ExpectedWorkflow<*, *>>(
         predicate = { it.workflowType.isInstance(child) && it.key == key },
@@ -147,15 +145,18 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     key: String,
     handler: (T) -> WorkflowAction<StateT, OutputT>
   ) {
+    fun describeWorker() = "worker $worker${key.withKey()}"
+
     val expected = consumeExpectation<ExpectedWorker<*>?>(
         predicate = { it!!.matchesWhen(worker) && it.key == key },
-        description = {
-          "worker $worker" +
-              key.takeUnless { it.isEmpty() }
-                  ?.let { " with key \"$it\"" }
-                  .orEmpty()
-        },
-        onNoExpectationsMatched = { null }
+        description = ::describeWorker,
+        onNoExpectationsMatched = {
+          if (allowUnexpectedWorkers) {
+            null
+          } else {
+            throw AssertionError("Tried to render unexpected ${describeWorker()}.")
+          }
+        }
     ) ?: return
 
     if (expected.output != null) {
@@ -222,7 +223,8 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
       expectations = ArrayList(expectations),
       // Don't care about consumed expectations.
       childWillEmitOutput = childWillEmitOutput,
-      processedAction = processedAction
+      processedAction = processedAction,
+      allowUnexpectedWorkers = allowUnexpectedWorkers
   )
 
   private fun checkNoOutputs(newExpectation: Expectation<*>? = null) {
@@ -233,4 +235,9 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
           expectationsWithOutputs.joinToString(separator = "\n") { "  $it" }
     }
   }
+
+  private fun String.withKey() =
+    this.takeUnless { it.isEmpty() }
+        ?.let { " with key \"$it\"" }
+        .orEmpty()
 }

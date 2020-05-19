@@ -29,12 +29,14 @@ import kotlin.reflect.KClass
  */
 @Suppress("UNCHECKED_CAST")
 fun <PropsT, OutputT : Any, RenderingT> Workflow<PropsT, OutputT, RenderingT>.renderTester(
-  props: PropsT
+  props: PropsT,
+  allowUnexpectedWorkers: Boolean = true
 ): RenderTester<PropsT, *, OutputT, RenderingT> {
   val statefulWorkflow = asStatefulWorkflow() as StatefulWorkflow<PropsT, Any?, OutputT, RenderingT>
   return statefulWorkflow.renderTester(
       props = props,
-      initialState = statefulWorkflow.initialState(props, null)
+      initialState = statefulWorkflow.initialState(props, null),
+      allowUnexpectedWorkers = allowUnexpectedWorkers
   ) as RenderTester<PropsT, Nothing, OutputT, RenderingT>
 }
 
@@ -47,15 +49,16 @@ fun <PropsT, OutputT : Any, RenderingT> Workflow<PropsT, OutputT, RenderingT>.re
 fun <PropsT, StateT, OutputT : Any, RenderingT>
     StatefulWorkflow<PropsT, StateT, OutputT, RenderingT>.renderTester(
   props: PropsT,
-  initialState: StateT
+  initialState: StateT,
+  allowUnexpectedWorkers: Boolean = true
 ): RenderTester<PropsT, StateT, OutputT, RenderingT> =
 /* ktlint-enable parameter-list-wrapping */
-  RealRenderTester(this, props, initialState)
+  RealRenderTester(this, props, initialState, allowUnexpectedWorkers)
 
 /**
- * The props must be specified, the initial state may be specified, and then all child workflows
- * and workers that are expected to run, and any outputs from them, must be specified with
- * [expectWorkflow] and [expectWorker] calls. Then call [render] and perform any assertions on the
+ * The props must be specified, the initial state may be specified. Child workflows must be
+ * specified with [expectWorkflow], but workers are optionally specified with [expectWorker] unless
+ * configured otherwise, see [renderTester]. Then call [render] and perform any assertions on the
  * rendering. An event may also be sent to the rendering if no workflows or workers emitted an
  * output. Lastly, the [RenderTestResult] returned by `render` may be used to assert on the
  * [WorkflowAction]s processed to handle events or outputs by calling
