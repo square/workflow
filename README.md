@@ -124,6 +124,14 @@ higher-level integrations with UI frameworks.
   </tr>
 </table>
 
+#### Jetpack Compose support
+
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is the new (under-development,
+pre-release) UI toolkit for Android. It is comparable to SwiftUI for iOS. The main UI artifacts in
+this repository support standard Android Views, but various types of Compose integrations are
+provided in the sidecar repository **[square/workflow-kotlin-compose](https://github.com/square/workflow-kotlin-compose)**.
+See that repo for usage info and documentation.
+
 ## Resources
 
 * [Square Workflow – Droidcon NYC 2019](https://www.droidcon.com/media-detail?video=362741019) ([slides](https://docs.google.com/presentation/d/19-DkVCn-XawssyHQ_cboIX_s-Lf6rNg-ryAehA9xBVs))
