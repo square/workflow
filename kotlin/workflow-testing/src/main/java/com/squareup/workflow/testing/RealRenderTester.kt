@@ -117,13 +117,16 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     key: String,
     handler: (ChildOutputT) -> WorkflowAction<StateT, OutputT>
   ): ChildRenderingT {
-    val expected = consumeExpectedChildWorkflow<ExpectedWorkflow<*, *>>(
+    fun describeWorkflow() = "child workflow ${child::class.java.name}" +
+        key.takeUnless { it.isEmpty() }
+            ?.let { " with key \"$it\"" }
+            .orEmpty()
+
+    val expected = consumeExpectation<ExpectedWorkflow<*, *>>(
         predicate = { it.workflowType.isInstance(child) && it.key == key },
-        description = {
-          "child workflow ${child::class.java.name}" +
-              key.takeUnless { it.isEmpty() }
-                  ?.let { " with key \"$it\"" }
-                  .orEmpty()
+        description = ::describeWorkflow,
+        onNoExpectationsMatched = {
+          throw AssertionError("Tried to render unexpected ${describeWorkflow()}.")
         }
     )
 
@@ -144,17 +147,18 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     key: String,
     handler: (T) -> WorkflowAction<StateT, OutputT>
   ) {
-    val expected = consumeExpectedWorker<ExpectedWorker<*>>(
-        predicate = { it.matchesWhen(worker) && it.key == key },
+    val expected = consumeExpectation<ExpectedWorker<*>?>(
+        predicate = { it!!.matchesWhen(worker) && it.key == key },
         description = {
           "worker $worker" +
               key.takeUnless { it.isEmpty() }
                   ?.let { " with key \"$it\"" }
                   .orEmpty()
-        }
-    )
+        },
+        onNoExpectationsMatched = { null }
+    ) ?: return
 
-    if (expected?.output != null) {
+    if (expected.output != null) {
       check(processedAction == null)
       @Suppress("UNCHECKED_CAST")
       processedAction = handler(expected.output.output as T)
@@ -187,48 +191,24 @@ internal class RealRenderTester<PropsT, StateT, OutputT : Any, RenderingT>(
     }
   }
 
-  private inline fun <reified T : ExpectedWorkflow<*, *>> consumeExpectedChildWorkflow(
+  private inline fun <reified T : Expectation<*>?> consumeExpectation(
     predicate: (T) -> Boolean,
-    description: () -> String
+    description: () -> String,
+    onNoExpectationsMatched: () -> T
   ): T {
     val matchedExpectations = expectations.filterIsInstance<T>()
         .filter(predicate)
-    val expected = matchedExpectations.singleOrNull()
-        ?: run {
-          throw when {
-            matchedExpectations.isEmpty() -> AssertionError(
-                "Tried to render unexpected ${description()}."
-            )
-            else -> AssertionError(
-                "Multiple expectations matched ${description()}:\n" +
-                    matchedExpectations.joinToString(separator = "\n") { "  $it" }
-            )
-          }
-        }
-
-    // Move the workflow to the consumed list.
-    expectations -= expected
-    consumedExpectations += expected
-
-    return expected
-  }
-
-  private inline fun <reified T : ExpectedWorker<*>> consumeExpectedWorker(
-    predicate: (T) -> Boolean,
-    description: () -> String
-  ): T? {
-    val matchedExpectations = expectations.filterIsInstance<T>()
-        .filter(predicate)
     return when (matchedExpectations.size) {
+      0 -> onNoExpectationsMatched()
       1 -> {
-        val expected = matchedExpectations[0]
-        // Move the workflow to the consumed list.
-        expectations -= expected
-        consumedExpectations += expected
-
-        expected
+        matchedExpectations[0].also {
+          // it can't be null, even if T is nullable, because expectations doesn't contain nulls.
+          it as Expectation<*>
+          // Move the workflow to the consumed list.
+          expectations -= it
+          consumedExpectations += it
+        }
       }
-      0 -> null
       else -> throw AssertionError(
           "Multiple expectations matched ${description()}:\n" +
               matchedExpectations.joinToString(separator = "\n") { "  $it" }
