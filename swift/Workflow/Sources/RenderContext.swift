@@ -75,6 +75,10 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
+    func runSideEffect(key: AnyHashable, action: (Lifetime) -> Void) {
+        fatalError()
+    }
+
     final func invalidate() {
         isValid = false
     }
@@ -103,6 +107,11 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
             return implementation.makeSink(of: actionType)
         }
 
+        override func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void) {
+            assertStillValid()
+            implementation.runSideEffect(key: key, action: action)
+        }
+
         override func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
             assertStillValid()
             implementation.awaitResult(for: worker, outputMap: outputMap)
@@ -122,6 +131,8 @@ internal protocol RenderContextType: AnyObject {
     func makeSink<Action>(of actionType: Action.Type) -> Sink<Action> where Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
     func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
+
+    func runSideEffect(key: AnyHashable, action: (_ lifetime: Lifetime) -> Void)
 }
 
 extension RenderContext {
