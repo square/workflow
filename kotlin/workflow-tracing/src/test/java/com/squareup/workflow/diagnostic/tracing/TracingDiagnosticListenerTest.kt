@@ -32,8 +32,10 @@ import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.yield
 import okio.Buffer
 import okio.buffer
 import okio.source
@@ -72,6 +74,10 @@ class TracingDiagnosticListenerTest {
       provideLogger("", workflowScope, type) { encoder }
     }
     val props = (0..100).asFlow()
+        // Real use cases almost never feed a firehose of changing root props, they change rarely if
+        // at all, and almost certainly allow processing of dispatched coroutines in between. This
+        // yield represents that more accurately.
+        .onEach { yield() }
     val renderings = launchWorkflowIn(scope, TestWorkflow(), props) { session ->
       session.diagnosticListener = listener
       session.renderingsAndSnapshots.map { it.rendering }
