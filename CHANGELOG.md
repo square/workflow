@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+## Version 0.28.1
+
+_2020-05-20_
+
+### Kotlin
+
+Swift-only release; no changes.
+
+### Swift
+
+* Fix: Added missing libswiftos.dylib to the test target (#1175)
+
 ## Version 0.28.0
 
 _2020-05-12_
@@ -18,7 +30,7 @@ _2020-05-12_
 
 ### Swift
 
-* Add os_signpost logs for `render()` and `Workflow` and`Worker` lifecycle. (#1134)
+* Add os_signpost logs for `render()` and `Workflow` and `Worker` lifecycle. (#1134)
 
 ## Version 0.27.1
 
