@@ -21,6 +21,7 @@ Pod::Spec.new do |s|
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'swift/WorkflowUI/Tests/**/*.swift'
     test_spec.framework = 'XCTest'
+    test_spec.library = 'swiftos'
   end
-
 end
+
