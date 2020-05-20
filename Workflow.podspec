@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'Workflow'
-  s.version      = '0.28.0'
+  s.version      = '0.28.1'
   s.summary      = 'Reactive application architecture'
   s.homepage     = 'https://www.github.com/square/workflow'
   s.license      = 'Apache License, Version 2.0'
@@ -23,5 +23,5 @@ Pod::Spec.new do |s|
     test_spec.framework = 'XCTest'
     test_spec.library = 'swiftos'
   end
-
 end
+

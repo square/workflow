@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = 'WorkflowSwiftUI'
-    s.version      = '0.28.0'
+    s.version      = '0.28.1'
     s.summary      = 'Infrastructure for Workflow-powered SwiftUI'
     s.homepage     = 'https://www.github.com/square/workflow'
     s.license      = 'Apache License, Version 2.0'
