@@ -7,7 +7,7 @@ _2020-05-20_
 
 ### Kotlin
 
-Swift-only release; no changes.
+* Swift-only release; no changes.
 
 ### Swift
 
