@@ -23,8 +23,7 @@ Pod::Spec.new do |s|
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'swift/WorkflowTesting/Tests/**/*.swift'
     test_spec.framework = 'XCTest'
-    test_spec.library = 'swiftDispatch'
-    test_spec.library = 'swiftFoundation'
+    test_spec.libraries = 'swiftDispatch', 'swiftFoundation', 'swiftos'
   end
-
 end
+
