@@ -29,25 +29,12 @@ struct GamePlayScreen: Screen {
 }
 
 final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
-    let titleLabel: UILabel
-    let cells: [[UIButton]]
-
-    required init(screen: GamePlayScreen, environment: ViewEnvironment) {
-        self.titleLabel = UILabel(frame: .zero)
-        var cells: [[UIButton]] = []
-
-        for _ in 0 ..< 3 {
-            var row: [UIButton] = []
-            for _ in 0 ..< 3 {
-                row.append(UIButton(frame: .zero))
-            }
-            cells.append(row)
+    let titleLabel: UILabel = UILabel(frame: .zero)
+    let cells: [[UIButton]] = {
+        (0 ..< 3).map { _ in
+            (0 ..< 3).map { _ in UIButton(frame: .zero) }
         }
-
-        self.cells = cells
-        super.init(screen: screen, environment: environment)
-        update(with: screen)
-    }
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,10 +95,8 @@ final class GamePlayViewController: ScreenViewController<GamePlayScreen> {
     }
 
     override func screenDidChange(from previousScreen: GamePlayScreen, previousEnvironment: ViewEnvironment) {
-        update(with: screen)
-    }
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
 
-    private func update(with screen: GamePlayScreen) {
         let title: String
         switch screen.gameState {
         case let .ongoing(turn: turn):

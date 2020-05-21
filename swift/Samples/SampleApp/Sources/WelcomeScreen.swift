@@ -28,18 +28,9 @@ struct WelcomeScreen: Screen {
 }
 
 private final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
-    let welcomeLabel: UILabel
-    let nameField: UITextField
-    let button: UIButton
-
-    required init(screen: WelcomeScreen, environment: ViewEnvironment) {
-        self.welcomeLabel = UILabel(frame: .zero)
-        self.nameField = UITextField(frame: .zero)
-        self.button = UIButton(frame: .zero)
-        super.init(screen: screen, environment: environment)
-
-        update(with: screen)
-    }
+    let welcomeLabel = UILabel(frame: .zero)
+    let nameField = UITextField(frame: .zero)
+    let button = UIButton(frame: .zero)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,10 +83,8 @@ private final class WelcomeViewController: ScreenViewController<WelcomeScreen> {
     }
 
     override func screenDidChange(from previousScreen: WelcomeScreen, previousEnvironment: ViewEnvironment) {
-        update(with: screen)
-    }
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
 
-    private func update(with screen: WelcomeScreen) {
         nameField.text = screen.name
     }
 

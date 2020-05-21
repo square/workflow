@@ -72,12 +72,14 @@ extension RootWorkflow {
                             return .login(name: name)
                         }
                     }
-                    .rendered(with: context))
+                    .rendered(with: context)
+            )
 
         case let .demo(name: name):
             return CrossFadeScreen(
                 base: DemoWorkflow(name: name)
-                    .rendered(with: context))
+                    .rendered(with: context)
+            )
         }
     }
 }

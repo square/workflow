@@ -38,10 +38,8 @@ internal final class ModalContainerViewController<ModalScreen: Screen>: ScreenVi
     }
 
     override func screenDidChange(from previousScreen: ModalContainerScreen<ModalScreen>, previousEnvironment: ViewEnvironment) {
-        update()
-    }
+        super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
 
-    func update() {
         baseScreenViewController.update(screen: screen.baseScreen, environment: environment)
 
         // Sort our existing modals into keyed buckets. This will typically contain a single view controller
