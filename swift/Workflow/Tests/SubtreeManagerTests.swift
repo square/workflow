@@ -316,7 +316,9 @@ final class SubtreeManagerTests: XCTestCase {
         let sideEffectKey = manager.sideEffectLifetimes.values.first!
 
         _ = manager.render { context -> TestViewModel in
-            context.runSideEffect(key: "helloWorld") { _ in }
+            context.runSideEffect(key: "helloWorld") { _ in
+                XCTFail("Unexpected SideEffect execution")
+            }
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
@@ -360,6 +362,43 @@ final class SubtreeManagerTests: XCTestCase {
 
         XCTAssertEqual(manager.sideEffectLifetimes.count, 0)
         wait(for: [lifetimeEndedExpectation], timeout: 1)
+    }
+
+    func test_verifySideEffectsWithDifferentKeysAreExecuted() {
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        XCTAssertTrue(manager.sideEffectLifetimes.isEmpty)
+
+        let firstSideEffectExecutedExpectation = expectation(description: "FirstSideEffect")
+        _ = manager.render { context -> TestViewModel in
+            context.runSideEffect(key: "key-1") { _ in
+                firstSideEffectExecutedExpectation.fulfill()
+            }
+            return context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
+        }
+
+        wait(for: [firstSideEffectExecutedExpectation], timeout: 1)
+        XCTAssertEqual(manager.sideEffectLifetimes.count, 1)
+        XCTAssertEqual(manager.sideEffectLifetimes.keys.first, "key-1")
+
+        let secondSideEffectExecutedExpectation = expectation(description: "SecondSideEffect")
+        _ = manager.render { context -> TestViewModel in
+            context.runSideEffect(key: "key-2") { _ in
+                secondSideEffectExecutedExpectation.fulfill()
+            }
+            return context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
+        }
+
+        wait(for: [secondSideEffectExecutedExpectation], timeout: 1)
+        XCTAssertEqual(manager.sideEffectLifetimes.count, 1)
+        XCTAssertEqual(manager.sideEffectLifetimes.keys.first, "key-2")
     }
 }
 

@@ -557,6 +557,7 @@ extension WorkflowNode.SubtreeManager {
         }
 
         deinit {
+            // Explicitly end the lifetime in case someone retained it from outside
             lifetime.end()
         }
     }
