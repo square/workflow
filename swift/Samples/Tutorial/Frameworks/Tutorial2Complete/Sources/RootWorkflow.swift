@@ -86,14 +86,14 @@ extension RootWorkflow {
 // MARK: Rendering
 
 extension RootWorkflow {
-    typealias Rendering = BackStackScreen
+    typealias Rendering = BackStackScreen<AnyScreen>
 
     func render(state: RootWorkflow.State, context: RenderContext<RootWorkflow>) -> Rendering {
         // Create a sink to handle the back action from the TodoListWorkflow to logout.
         let sink = context.makeSink(of: Action.self)
 
         // Our list of back stack items. Will always include the "WelcomeScreen".
-        var backStackItems: [BackStackScreen.Item] = []
+        var backStackItems: [BackStackScreen<AnyScreen>.Item] = []
 
         let welcomeScreen = WelcomeWorkflow()
             .mapOutput { output -> Action in
@@ -107,7 +107,7 @@ extension RootWorkflow {
 
         let welcomeBackStackItem = BackStackScreen.Item(
             key: "welcome",
-            screen: welcomeScreen,
+            screen: welcomeScreen.asAnyScreen(),
             // Hide the navigation bar.
             barVisibility: .hidden
         )
@@ -129,9 +129,9 @@ extension RootWorkflow {
 
             let todoListBackStackItem = BackStackScreen.Item(
                 key: "todoList",
-                screen: todoListScreen,
+                screen: todoListScreen.asAnyScreen(),
                 // Specify the title, back button, and right button.
-                barContent: BackStackScreen.BarContent(
+                barContent: .init(
                     title: "Welcome \(name)",
                     // When `back` is pressed, emit the .logout action to return to the welcome screen.
                     leftItem: .button(.back(handler: {

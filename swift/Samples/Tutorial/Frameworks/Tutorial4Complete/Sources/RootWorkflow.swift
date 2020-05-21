@@ -86,13 +86,13 @@ extension RootWorkflow {
 // MARK: Rendering
 
 extension RootWorkflow {
-    typealias Rendering = BackStackScreen
+    typealias Rendering = BackStackScreen<AnyScreen>
 
     func render(state: RootWorkflow.State, context: RenderContext<RootWorkflow>) -> Rendering {
         // Delete the `let sink = context.makeSink(of: ...) as we no longer need a sink.
 
         // Our list of back stack items. Will always include the "WelcomeScreen".
-        var backStackItems: [BackStackScreen.Item] = []
+        var backStackItems: [BackStackScreen<AnyScreen>.Item] = []
 
         let welcomeScreen = WelcomeWorkflow()
             .mapOutput { output -> Action in
@@ -106,7 +106,7 @@ extension RootWorkflow {
 
         let welcomeBackStackItem = BackStackScreen.Item(
             key: "welcome",
-            screen: welcomeScreen,
+            screen: welcomeScreen.asAnyScreen(),
             // Hide the navigation bar.
             barVisibility: .hidden
         )

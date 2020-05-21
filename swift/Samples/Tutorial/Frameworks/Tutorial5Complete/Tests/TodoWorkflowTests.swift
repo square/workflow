@@ -17,6 +17,7 @@
 import BackStackContainer
 import WorkflowTesting
 import XCTest
+import Workflow
 @testable import Tutorial5
 
 class TodoWorkflowTests: XCTestCase {
@@ -39,7 +40,7 @@ class TodoWorkflowTests: XCTestCase {
                             screen: TodoListScreen(
                                 todoTitles: ["Title"],
                                 onTodoSelected: { _ in }
-                            )),
+                            ).asAnyScreen()),
                         // Simulate selecting the first todo:
                         output: TodoListWorkflow.Output.selectTodo(index: 0)
                     ),
@@ -81,7 +82,7 @@ class TodoWorkflowTests: XCTestCase {
                             screen: TodoListScreen(
                                 todoTitles: ["Title"],
                                 onTodoSelected: { _ in }
-                            ))
+                            ).asAnyScreen())
                     ),
                     // Expect the TodoEditWorkflow. Additionally, simulate it emitting an output of ".save" to update the state.
                     ExpectedWorkflow(
@@ -91,7 +92,7 @@ class TodoWorkflowTests: XCTestCase {
                             note: "Note",
                             onTitleChanged: { _ in },
                             onNoteChanged: { _ in }
-                        )),
+                        ).asAnyScreen()),
                         output: TodoEditWorkflow.Output.save(TodoModel(
                             title: "Updated Title",
                             note: "Updated Note"

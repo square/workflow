@@ -116,7 +116,7 @@ extension TodoListWorkflow {
 // MARK: Rendering
 
 extension TodoListWorkflow {
-    typealias Rendering = [BackStackScreen.Item]
+    typealias Rendering = [BackStackScreen<AnyScreen>.Item]
 
     func render(state: TodoListWorkflow.State, context: RenderContext<TodoListWorkflow>) -> Rendering {
         // Define a sink to be able to send actions.
@@ -135,8 +135,8 @@ extension TodoListWorkflow {
 
         let todoListItem = BackStackScreen.Item(
             key: "list",
-            screen: todoListScreen,
-            barContent: BackStackScreen.BarContent(
+            screen: todoListScreen.asAnyScreen(),
+            barContent: .init(
                 title: "Welcome \(name)",
                 leftItem: .button(.back(handler: {
                     // When the left button is tapped, send the .onBack action.
