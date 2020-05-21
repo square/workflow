@@ -42,7 +42,9 @@ final class WorkflowRenderTesterTests: XCTestCase {
                     state: TestWorkflow.State(
                         text: "initial",
                         substate: .idle
-                    ))),
+                    )
+                )
+            ),
             assertions: { screen in
                 XCTAssertEqual("initial", screen.text)
                 testedAssertion = true
@@ -68,11 +70,24 @@ final class WorkflowRenderTesterTests: XCTestCase {
                     state: TestWorkflow.State(
                         text: "initial",
                         substate: .waiting
-                    ))),
+                    )
+                )
+            ),
             assertions: { screen in
                 XCTAssertEqual("initial", screen.text)
                 screen.tapped()
             }
+        )
+    }
+
+    func test_sideEffects() {
+        let renderTester = SideEffectWorkflow().renderTester()
+
+        renderTester.render(
+            with: RenderExpectations(expectedSideEffects: [
+                ExpectedSideEffect(key: TestSideEffectKey()),
+            ]),
+            assertions: { _ in }
         )
     }
 
@@ -81,7 +96,8 @@ final class WorkflowRenderTesterTests: XCTestCase {
             .renderTester()
             .render(
                 with: RenderExpectations(
-                    expectedOutput: ExpectedOutput(output: .success)),
+                    expectedOutput: ExpectedOutput(output: .success)
+                ),
                 assertions: { rendering in
                     rendering.tapped()
                 }
@@ -94,7 +110,8 @@ final class WorkflowRenderTesterTests: XCTestCase {
                 initialState: TestWorkflow.State(
                     text: "otherText",
                     substate: .waiting
-                ))
+                )
+            )
 
         let expectedWorker = ExpectedWorker(worker: TestWorker(text: "otherText"))
 
@@ -196,7 +213,8 @@ final class WorkflowRenderTesterTests: XCTestCase {
                     state: TestWorkflow.State(
                         text: "hello",
                         substate: .idle
-                    )),
+                    )
+                ),
                 expectedOutput: nil,
                 expectedWorkers: [],
                 expectedWorkflows: [],
@@ -303,6 +321,22 @@ private struct OutputWorkflow: Workflow {
         return TestScreen(text: "value", tapped: {
             sink.send(.emit)
         })
+    }
+}
+
+private struct TestSideEffectKey: Hashable {
+    let key: String = "Test Side Effect"
+}
+
+private struct SideEffectWorkflow: Workflow {
+    typealias State = Void
+
+    typealias Rendering = TestScreen
+
+    func render(state: State, context: RenderContext<SideEffectWorkflow>) -> TestScreen {
+        context.runSideEffect(key: TestSideEffectKey()) { _ in }
+
+        return TestScreen(text: "value", tapped: {})
     }
 }
 

@@ -22,6 +22,7 @@
     @testable import Workflow
 
     import ReactiveSwift
+    import class Workflow.Lifetime
     import XCTest
 
     extension Workflow {
@@ -207,6 +208,7 @@
             expectedOutput: ExpectedOutput<WorkflowType>? = nil,
             expectedWorkers: [ExpectedWorker] = [],
             expectedWorkflows: [ExpectedWorkflow] = [],
+            expectedSideEffects: [ExpectedSideEffect] = [],
             assertions: (WorkflowType.Rendering) -> Void
         ) -> RenderTester<WorkflowType> {
             let expectations = RenderExpectations(
@@ -230,7 +232,7 @@
     fileprivate final class RenderTestContext<T: Workflow>: RenderContextType {
         typealias WorkflowType = T
 
-        private var (lifetime, token) = Lifetime.make()
+        private var (lifetime, token) = ReactiveSwift.Lifetime.make()
 
         var state: WorkflowType.State
         var expectations: RenderExpectations<WorkflowType>
@@ -247,7 +249,7 @@
         func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child: Workflow, Action: WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
             guard let workflowIndex = expectations.expectedWorkflows.firstIndex(where: { expectedWorkflow -> Bool in
                 type(of: workflow) == expectedWorkflow.workflowType && key == expectedWorkflow.key
-        }) else {
+            }) else {
                 XCTFail("Unexpected child workflow of type \(workflow.self)", file: file, line: line)
                 fatalError()
             }
@@ -277,7 +279,7 @@
         func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, RenderTestContext<T>.WorkflowType == Action.WorkflowType {
             guard let workerIndex = expectations.expectedWorkers.firstIndex(where: { (expectedWorker) -> Bool in
                 expectedWorker.isEquivalent(to: worker)
-        }) else {
+            }) else {
                 XCTFail("Unexpected worker during render \(worker)", file: file, line: line)
                 return
             }
@@ -286,6 +288,17 @@
             if let action = expectedWorker.outputAction(outputMap: outputMap) {
                 apply(action: action)
             }
+        }
+
+        func runSideEffect(key: AnyHashable, action: (Lifetime) -> Void) {
+            guard let sideEffectIndex = expectations.expectedSideEffects.firstIndex(where: { (expectedSideEffect) -> Bool in
+                expectedSideEffect.key == key
+            }) else {
+                XCTFail("Unexpected side-effect during render \(key)", file: file, line: line)
+                return
+            }
+
+            expectations.expectedSideEffects.remove(at: sideEffectIndex)
         }
 
         private func apply<Action>(action: Action) where Action: WorkflowAction, Action.WorkflowType == WorkflowType {
@@ -317,15 +330,21 @@
                 XCTFail("Expected output of '\(outputExpectation.output)' but received none.", file: file, line: line)
             }
 
-            if expectations.expectedWorkers.count != 0 {
+            if !expectations.expectedWorkers.isEmpty {
                 for expectedWorker in expectations.expectedWorkers {
                     XCTFail("Expected worker \(expectedWorker.worker)", file: file, line: line)
                 }
             }
 
-            if expectations.expectedWorkflows.count != 0 {
+            if !expectations.expectedWorkflows.isEmpty {
                 for expectedWorkflow in expectations.expectedWorkflows {
                     XCTFail("Expected child workflow of type: \(expectedWorkflow.workflowType) key: \(expectedWorkflow.key)", file: file, line: line)
+                }
+            }
+
+            if !expectations.expectedSideEffects.isEmpty {
+                for expectedSideEffect in expectations.expectedSideEffects {
+                    XCTFail("Expected side-effect with key: \(expectedSideEffect.key)", file: file, line: line)
                 }
             }
         }

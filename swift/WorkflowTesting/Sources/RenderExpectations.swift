@@ -23,17 +23,20 @@ public struct RenderExpectations<WorkflowType: Workflow> {
     var expectedOutput: ExpectedOutput<WorkflowType>?
     var expectedWorkers: [ExpectedWorker]
     var expectedWorkflows: [ExpectedWorkflow]
+    var expectedSideEffects: [ExpectedSideEffect]
 
     public init(
         expectedState: ExpectedState<WorkflowType>? = nil,
         expectedOutput: ExpectedOutput<WorkflowType>? = nil,
         expectedWorkers: [ExpectedWorker] = [],
-        expectedWorkflows: [ExpectedWorkflow] = []
+        expectedWorkflows: [ExpectedWorkflow] = [],
+        expectedSideEffects: [ExpectedSideEffect] = []
     ) {
         self.expectedState = expectedState
         self.expectedOutput = expectedOutput
         self.expectedWorkers = expectedWorkers
         self.expectedWorkflows = expectedWorkflows
+        self.expectedSideEffects = expectedSideEffects
     }
 }
 
@@ -96,6 +99,14 @@ public struct ExpectedWorker {
         }
 
         return outputMap(output)
+    }
+}
+
+public struct ExpectedSideEffect {
+    let key: AnyHashable
+
+    public init(key: AnyHashable) {
+        self.key = key
     }
 }
 

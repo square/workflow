@@ -75,7 +75,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
-    func runSideEffect(key: AnyHashable, action: (Lifetime) -> Void) {
+    public func runSideEffect(key: AnyHashable, action: (Lifetime) -> Void) {
         fatalError()
     }
 
