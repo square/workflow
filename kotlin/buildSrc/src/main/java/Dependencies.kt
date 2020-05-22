@@ -5,13 +5,13 @@ import kotlin.reflect.full.declaredMembers
 
 object Versions {
   const val coroutines = "1.3.7"
-  const val kotlin = "1.3.71"
+  const val kotlin = "1.3.72"
   const val targetSdk = 29
 }
 
 @Suppress("unused")
 object Dependencies {
-  const val android_gradle_plugin = "com.android.tools.build:gradle:4.0.0-beta05"
+  const val android_gradle_plugin = "com.android.tools.build:gradle:4.0.0-rc01"
 
   object AndroidX {
     const val activity = "androidx.activity:activity:1.1.0"
