@@ -279,6 +279,7 @@ fun <T, PropsT, StateT, OutputT : Any, RenderingT>
     exceptionGuard.reportUncaught(throwable)
   }
 
+  // TODO(https://github.com/square/workflow/issues/1192) Migrate to renderWorkflowIn.
   val tester = launchWorkflowForTestFromStateIn(
       scope = CoroutineScope(Unconfined + context + uncaughtExceptionHandler),
       workflow = this@test,

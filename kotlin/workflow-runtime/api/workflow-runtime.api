@@ -1,6 +1,8 @@
 public final class com/squareup/workflow/LaunchWorkflowKt {
 	public static final fun launchWorkflowIn (Lkotlinx/coroutines/CoroutineScope;Lcom/squareup/workflow/Workflow;Lkotlinx/coroutines/flow/Flow;Lcom/squareup/workflow/Snapshot;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public static synthetic fun launchWorkflowIn$default (Lkotlinx/coroutines/CoroutineScope;Lcom/squareup/workflow/Workflow;Lkotlinx/coroutines/flow/Flow;Lcom/squareup/workflow/Snapshot;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun renderWorkflowIn (Lkotlinx/coroutines/CoroutineScope;Lcom/squareup/workflow/Workflow;Lkotlinx/coroutines/flow/StateFlow;Lcom/squareup/workflow/Snapshot;Lcom/squareup/workflow/diagnostic/WorkflowDiagnosticListener;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
+	public static synthetic fun renderWorkflowIn$default (Lkotlinx/coroutines/CoroutineScope;Lcom/squareup/workflow/Workflow;Lkotlinx/coroutines/flow/StateFlow;Lcom/squareup/workflow/Snapshot;Lcom/squareup/workflow/diagnostic/WorkflowDiagnosticListener;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/flow/StateFlow;
 }
 
 public final class com/squareup/workflow/RenderingAndSnapshot {

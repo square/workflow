@@ -21,25 +21,21 @@ import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.action
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.diagnostic.SimpleLoggingDiagnosticListener
-import com.squareup.workflow.diagnostic.andThen
-import com.squareup.workflow.internal.ZombieWorkflow.ChildSpec
-import com.squareup.workflow.internal.ZombieWorkflow.Spec
-import com.squareup.workflow.launchWorkflowIn
+import com.squareup.workflow.internal.WorkflowDiagnosticListenerIntegrationTest.ZombieWorkflow.ChildSpec
+import com.squareup.workflow.internal.WorkflowDiagnosticListenerIntegrationTest.ZombieWorkflow.Spec
 import com.squareup.workflow.renderChild
+import com.squareup.workflow.renderWorkflowIn
 import com.squareup.workflow.stateless
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.yield
-import kotlin.properties.Delegates.observable
+import kotlinx.coroutines.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -48,140 +44,128 @@ class WorkflowDiagnosticListenerIntegrationTest {
   private val listener = RecordingDiagnosticListener()
 
   @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-  @Test fun `workflow tree structure changes emit events in order`() {
-    val specChannel = Channel<Spec>()
-    var spec by observable<Spec?>(null) { _, _, newValue ->
-      newValue?.let { specChannel.offer(it) }
-    }
-
-    runBlocking {
-      val (session, workflowScope) = launchWorkflowIn(
-          scope = this,
-          workflow = ZombieWorkflow,
-          props = specChannel.consumeAsFlow()
-      ) { session ->
-        session.diagnosticListener = listener
-        return@launchWorkflowIn Pair(session, this)
-      }
-      val renderings = session.renderingsAndSnapshots
+  @Test fun `workflow tree structure changes emit events in order`() = runBlockingTest {
+    val spec = MutableStateFlow(Spec(state = "root state"))
+    val workflowScope = CoroutineScope(coroutineContext + Job(parent = coroutineContext[Job]))
+    val renderings =
+      renderWorkflowIn(workflowScope, ZombieWorkflow, spec, diagnosticListener = listener) {}
           .map { it.rendering }
           .produceIn(this)
 
-      yield()
-      assertEquals(listOf("onRuntimeStarted"), listener.consumeEventNames())
+    // Initial events.
+    advanceUntilIdle()
+    assertEquals(
+        listOf(
+            "onRuntimeStarted",
+            "onWorkflowStarted",
+            "onBeforeRenderPass",
+            "onBeforeWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onAfterRenderPass",
+            "onBeforeSnapshotPass",
+            "onAfterSnapshotPass"
+        ), listener.consumeEventNames()
+    )
+    assertEquals("state: initial state\n", renderings.receive())
 
-      spec = Spec(state = "root state")
+    // Update workflow state.
+    spec.value = spec.value.copy(state = "different state")
+    advanceUntilIdle()
+    assertEquals(
+        listOf(
+            "onPropsChanged",
+            "onBeforeRenderPass",
+            "onPropsChanged",
+            "onBeforeWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onAfterRenderPass",
+            "onBeforeSnapshotPass",
+            "onAfterSnapshotPass"
+        ), listener.consumeEventNames()
+    )
 
-      // Initial events.
-      assertEquals("state: initial state\n", renderings.receive())
-      assertEquals(
-          listOf(
-              "onWorkflowStarted",
-              "onBeforeRenderPass",
-              "onBeforeWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onAfterRenderPass",
-              "onBeforeSnapshotPass",
-              "onAfterSnapshotPass"
-          ), listener.consumeEventNames()
-      )
+    // Add a child.
+    spec.value = spec.value.copy(
+        children = listOf(
+            ChildSpec("child1", Spec("child state"))
+        )
+    )
+    advanceUntilIdle()
+    assertEquals(
+        listOf(
+            "onPropsChanged",
+            "onBeforeRenderPass",
+            "onPropsChanged",
+            "onBeforeWorkflowRendered",
+            "onWorkflowStarted",
+            "onBeforeWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onAfterRenderPass",
+            "onBeforeSnapshotPass",
+            "onAfterSnapshotPass"
+        ), listener.consumeEventNames()
+    )
 
-      // Update workflow state.
-      spec = spec?.copy(state = "different state")
-      yield()
-      assertEquals(
-          listOf(
-              "onPropsChanged",
-              "onBeforeRenderPass",
-              "onPropsChanged",
-              "onBeforeWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onAfterRenderPass",
-              "onBeforeSnapshotPass",
-              "onAfterSnapshotPass"
-          ), listener.consumeEventNames()
-      )
+    // Add a sibling.
+    spec.value = spec.value.copy(
+        children = spec.value.children + ChildSpec("child2", Spec("child2 state"))
+    )
+    advanceUntilIdle()
+    assertEquals(
+        listOf(
+            "onPropsChanged",
+            "onBeforeRenderPass",
+            "onPropsChanged",
+            "onBeforeWorkflowRendered",
+            "onBeforeWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onWorkflowStarted",
+            "onBeforeWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onAfterRenderPass",
+            "onBeforeSnapshotPass",
+            "onAfterSnapshotPass"
+        ), listener.consumeEventNames()
+    )
 
-      // Add a child.
-      spec = spec?.copy(
-          children = listOf(
-              ChildSpec("child1", Spec("child state"))
-          )
-      )
-      yield()
-      assertEquals(
-          listOf(
-              "onPropsChanged",
-              "onBeforeRenderPass",
-              "onPropsChanged",
-              "onBeforeWorkflowRendered",
-              "onWorkflowStarted",
-              "onBeforeWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onAfterRenderPass",
-              "onBeforeSnapshotPass",
-              "onAfterSnapshotPass"
-          ), listener.consumeEventNames()
-      )
+    // Remove a child.
+    spec.value = spec.value.copy(children = spec.value.children.takeLast(1))
+    advanceUntilIdle()
+    assertEquals(
+        listOf(
+            "onPropsChanged",
+            "onBeforeRenderPass",
+            "onPropsChanged",
+            "onBeforeWorkflowRendered",
+            "onBeforeWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onAfterWorkflowRendered",
+            "onWorkflowStopped",
+            "onAfterRenderPass",
+            "onBeforeSnapshotPass",
+            "onAfterSnapshotPass"
+        ), listener.consumeEventNames()
+    )
 
-      // Add a sibling.
-      spec = spec?.copy(
-          children = spec!!.children + ChildSpec("child2", Spec("child2 state"))
-      )
-      yield()
-      assertEquals(
-          listOf(
-              "onPropsChanged",
-              "onBeforeRenderPass",
-              "onPropsChanged",
-              "onBeforeWorkflowRendered",
-              "onBeforeWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onWorkflowStarted",
-              "onBeforeWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onAfterRenderPass",
-              "onBeforeSnapshotPass",
-              "onAfterSnapshotPass"
-          ), listener.consumeEventNames()
-      )
+    workflowScope.cancel()
+    advanceUntilIdle()
+    assertEquals(
+        listOf(
+            "onWorkflowStopped",
+            "onWorkflowStopped",
+            "onRuntimeStopped"
+        ), listener.consumeEventNames()
+    )
 
-      // Remove a child.
-      spec = spec?.copy(children = spec!!.children.takeLast(1))
-      yield()
-      assertEquals(
-          listOf(
-              "onPropsChanged",
-              "onBeforeRenderPass",
-              "onPropsChanged",
-              "onBeforeWorkflowRendered",
-              "onBeforeWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onAfterWorkflowRendered",
-              "onWorkflowStopped",
-              "onAfterRenderPass",
-              "onBeforeSnapshotPass",
-              "onAfterSnapshotPass"
-          ), listener.consumeEventNames()
-      )
-
-      workflowScope.cancel()
-      yield()
-      assertEquals(
-          listOf(
-              "onWorkflowStopped",
-              "onWorkflowStopped",
-              "onRuntimeStopped"
-          ), listener.consumeEventNames()
-      )
-    }
+    // Cleanup the renderings coroutine so runBlockingTest is happy.
+    renderings.cancel()
   }
 
   @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
   @Test fun `workflow updates emit events in order`() {
-    val propsChannel = Channel<String>(1).apply { offer("initial props") }
+    val props = MutableStateFlow("initial props")
     val channel = Channel<String>()
     val worker = channel.asWorker()
     fun action(value: String) = action<Nothing, String> { setOutput("output:$value") }
@@ -189,15 +173,10 @@ class WorkflowDiagnosticListenerIntegrationTest {
       runningWorker(worker, "key", ::action)
     }
 
-    runBlocking {
-      launchWorkflowIn(this, workflow, propsChannel.consumeAsFlow()) { session ->
-        session.diagnosticListener = listener
-            .andThen(SimpleLoggingDiagnosticListener())
-        session.renderingsAndSnapshots.launchIn(this)
-      }
-      yield()
-      yield()
-      yield()
+    runBlockingTest {
+      val workflowScope = CoroutineScope(coroutineContext + Job(parent = coroutineContext[Job]))
+      renderWorkflowIn(workflowScope, workflow, props, diagnosticListener = listener) {}
+      advanceUntilIdle()
       assertEquals(
           listOf(
               "onRuntimeStarted",
@@ -214,8 +193,7 @@ class WorkflowDiagnosticListenerIntegrationTest {
       )
 
       channel.send("foo")
-      yield()
-      yield()
+      advanceUntilIdle()
       assertEquals(
           listOf(
               "onWorkerOutput",
@@ -229,9 +207,8 @@ class WorkflowDiagnosticListenerIntegrationTest {
           ), listener.consumeEventNames()
       )
 
-      propsChannel.send("new props")
-      yield()
-      yield()
+      props.value = "new props"
+      advanceUntilIdle()
       assertEquals(
           listOf(
               "onPropsChanged",
@@ -245,8 +222,8 @@ class WorkflowDiagnosticListenerIntegrationTest {
           ), listener.consumeEventNames()
       )
 
-      coroutineContext.cancelChildren()
-      yield()
+      workflowScope.cancel()
+      advanceUntilIdle()
       assertEquals(
           listOf(
               "onWorkerStopped",
@@ -256,45 +233,45 @@ class WorkflowDiagnosticListenerIntegrationTest {
       )
     }
   }
-}
 
-/**
- * A workflow that just sets up children based on its [Spec] props.
- */
-private object ZombieWorkflow : StatefulWorkflow<Spec, String, Nothing, String>() {
+  /**
+   * A workflow that just sets up children based on its [Spec] props.
+   */
+  private object ZombieWorkflow : StatefulWorkflow<Spec, String, Nothing, String>() {
 
-  data class Spec(
-    val state: String,
-    val children: List<ChildSpec> = emptyList()
-  )
+    data class Spec(
+      val state: String,
+      val children: List<ChildSpec> = emptyList()
+    )
 
-  data class ChildSpec(
-    val key: String,
-    val spec: Spec
-  )
+    data class ChildSpec(
+      val key: String,
+      val spec: Spec
+    )
 
-  override fun initialState(
-    props: Spec,
-    snapshot: Snapshot?
-  ): String = "initial state"
+    override fun initialState(
+      props: Spec,
+      snapshot: Snapshot?
+    ): String = "initial state"
 
-  override fun onPropsChanged(
-    old: Spec,
-    new: Spec,
-    state: String
-  ): String = new.state
+    override fun onPropsChanged(
+      old: Spec,
+      new: Spec,
+      state: String
+    ): String = new.state
 
-  override fun render(
-    props: Spec,
-    state: String,
-    context: RenderContext<String, Nothing>
-  ): String {
-    val childRenderings = props.children.map { childSpec ->
-      "  ${childSpec.key}: " + context.renderChild(ZombieWorkflow, childSpec.spec, childSpec.key)
+    override fun render(
+      props: Spec,
+      state: String,
+      context: RenderContext<String, Nothing>
+    ): String {
+      val childRenderings = props.children.map { childSpec ->
+        "  ${childSpec.key}: " + context.renderChild(ZombieWorkflow, childSpec.spec, childSpec.key)
+      }
+
+      return "state: $state\n" + childRenderings.joinToString(separator = "\n")
     }
 
-    return "state: $state\n" + childRenderings.joinToString(separator = "\n")
+    override fun snapshotState(state: String): Snapshot = Snapshot.EMPTY
   }
-
-  override fun snapshotState(state: String): Snapshot = Snapshot.EMPTY
 }
