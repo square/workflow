@@ -141,7 +141,7 @@ public final class com/squareup/workflow/ui/WorkflowLayout : android/widget/Fram
 public abstract interface class com/squareup/workflow/ui/WorkflowRunner {
 	public static final field Companion Lcom/squareup/workflow/ui/WorkflowRunner$Companion;
 	public abstract fun awaitResult (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getRenderings ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getRenderings ()Lkotlinx/coroutines/flow/StateFlow;
 }
 
 public final class com/squareup/workflow/ui/WorkflowRunner$Companion {
@@ -154,10 +154,10 @@ public final class com/squareup/workflow/ui/WorkflowRunner$Companion {
 public final class com/squareup/workflow/ui/WorkflowRunner$Config {
 	public fun <init> (Lcom/squareup/workflow/Workflow;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/squareup/workflow/diagnostic/WorkflowDiagnosticListener;)V
 	public synthetic fun <init> (Lcom/squareup/workflow/Workflow;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/squareup/workflow/diagnostic/WorkflowDiagnosticListener;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Lcom/squareup/workflow/Workflow;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/squareup/workflow/diagnostic/WorkflowDiagnosticListener;)V
+	public fun <init> (Lcom/squareup/workflow/Workflow;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/squareup/workflow/diagnostic/WorkflowDiagnosticListener;)V
 	public final fun getDiagnosticListener ()Lcom/squareup/workflow/diagnostic/WorkflowDiagnosticListener;
 	public final fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
-	public final fun getProps ()Lkotlinx/coroutines/flow/Flow;
+	public final fun getProps ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun getWorkflow ()Lcom/squareup/workflow/Workflow;
 }
 

@@ -40,6 +40,9 @@ buildscript {
   }
 }
 
+// See https://stackoverflow.com/questions/25324880/detect-ide-environment-with-gradle
+val isRunningFromIde get() = project.properties["android.injected.invoked.from.ide"] == "true"
+
 subprojects {
   repositories {
     google()
@@ -62,7 +65,10 @@ subprojects {
 
   tasks.withType<KotlinCompile>() {
     kotlinOptions {
-      kotlinOptions.allWarningsAsErrors = true
+      // Allow warnings when running from IDE, makes it easier to experiment.
+      if (!isRunningFromIde) {
+        allWarningsAsErrors = true
+      }
 
       jvmTarget = "1.8"
 

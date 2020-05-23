@@ -5,11 +5,10 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.flow.reduce
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
@@ -43,9 +42,9 @@ class WorkerStressTest {
     }
 
     runBlocking {
-      val outputs = launchWorkflowIn(this, workflow, flowOf(Unit)) {
-        // Collect to a channel immediately so that we don't miss any outputs.
-        it.outputs.produceIn(this)
+      val outputs = Channel<Unit>()
+      renderWorkflowIn(workflow, this, MutableStateFlow(Unit)) {
+        outputs.send(it)
       }
 
       // This should just work, and the test will finish, but this is broken by
@@ -76,8 +75,9 @@ class WorkerStressTest {
     }
 
     runBlocking {
-      val outputs = launchWorkflowIn(this, workflow, flowOf(Unit)) {
-        it.outputs.produceIn(this)
+      val outputs = Channel<Int>()
+      renderWorkflowIn(workflow, this, MutableStateFlow(Unit)) {
+        outputs.send(it)
       }
       val sum = outputs.consumeAsFlow()
           .take(workers.size)

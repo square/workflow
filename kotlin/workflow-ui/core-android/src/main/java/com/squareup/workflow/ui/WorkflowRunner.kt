@@ -24,10 +24,12 @@ import androidx.lifecycle.lifecycleScope
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.ui.WorkflowRunner.Config
+import com.squareup.workflow.ui.WorkflowRunnerViewModel.SnapshotSaver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Uses a [Workflow] and a [ViewRegistry] to drive a [WorkflowLayout].
@@ -40,7 +42,8 @@ interface WorkflowRunner<out OutputT : Any> {
   /**
    * A stream of the rendering values emitted by the running [Workflow].
    */
-  val renderings: Flow<Any>
+  @OptIn(ExperimentalCoroutinesApi::class)
+  val renderings: StateFlow<Any>
 
   /**
    * Returns the first (and only) [OutputT] value emitted by the workflow. Throws the cancellation
@@ -57,9 +60,10 @@ interface WorkflowRunner<out OutputT : Any> {
    * @param diagnosticListener If non-null, will receive all diagnostic events from the workflow
    * runtime. See [com.squareup.workflow.WorkflowSession.diagnosticListener].
    */
+  @OptIn(ExperimentalCoroutinesApi::class)
   class Config<PropsT, OutputT : Any>(
     val workflow: Workflow<PropsT, OutputT, Any>,
-    val props: Flow<PropsT>,
+    val props: StateFlow<PropsT>,
     val dispatcher: CoroutineDispatcher,
     val diagnosticListener: WorkflowDiagnosticListener?
   ) {
@@ -72,7 +76,7 @@ interface WorkflowRunner<out OutputT : Any> {
       props: PropsT,
       dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
       diagnosticListener: WorkflowDiagnosticListener? = null
-    ) : this(workflow, flowOf(props), dispatcher, diagnosticListener)
+    ) : this(workflow, MutableStateFlow(props), dispatcher, diagnosticListener)
   }
 
   companion object {
@@ -103,7 +107,9 @@ interface WorkflowRunner<out OutputT : Any> {
       activity: FragmentActivity,
       configure: () -> Config<PropsT, OutputT>
     ): WorkflowRunner<OutputT> {
-      val factory = WorkflowRunnerViewModel.Factory(activity.savedStateRegistry, configure)
+      val factory = WorkflowRunnerViewModel.Factory(
+          SnapshotSaver.fromSavedStateRegistry(activity.savedStateRegistry), configure
+      )
 
       @Suppress("UNCHECKED_CAST")
       return ViewModelProvider(activity, factory)[WorkflowRunnerViewModel::class.java]
@@ -124,7 +130,9 @@ interface WorkflowRunner<out OutputT : Any> {
       fragment: Fragment,
       configure: () -> Config<PropsT, OutputT>
     ): WorkflowRunner<OutputT> {
-      val factory = WorkflowRunnerViewModel.Factory(fragment.savedStateRegistry, configure)
+      val factory = WorkflowRunnerViewModel.Factory(
+          SnapshotSaver.fromSavedStateRegistry(fragment.savedStateRegistry), configure
+      )
 
       @Suppress("UNCHECKED_CAST")
       return ViewModelProvider(fragment, factory)[WorkflowRunnerViewModel::class.java]

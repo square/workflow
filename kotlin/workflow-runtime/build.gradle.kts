@@ -56,6 +56,7 @@ dependencies {
   api(Dependencies.Kotlin.Stdlib.jdk6)
   api(Dependencies.Kotlin.Coroutines.core)
 
+  testImplementation(Dependencies.Kotlin.Coroutines.test)
   testImplementation(Dependencies.Kotlin.Test.jdk)
   testImplementation(Dependencies.Kotlin.reflect)
 
