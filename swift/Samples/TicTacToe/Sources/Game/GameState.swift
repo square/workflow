@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-enum GameState {
+enum GameState: Equatable {
     case ongoing(turn: Player)
     case win(Player)
     case tie
