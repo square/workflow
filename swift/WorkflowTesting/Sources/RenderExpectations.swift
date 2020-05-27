@@ -102,11 +102,11 @@ public struct ExpectedWorker {
     }
 }
 
-public struct ExpectedSideEffect {
-    let key: AnyHashable
+public struct ExpectedSideEffect: Equatable {
+    private let key: AnyHashable
 
-    public init(key: AnyHashable) {
-        self.key = key
+    public init<S: SideEffect>(sideEffect: S) {
+        self.key = sideEffect
     }
 }
 

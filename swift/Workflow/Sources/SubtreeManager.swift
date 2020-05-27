@@ -247,13 +247,12 @@ extension WorkflowNode.SubtreeManager {
             }
         }
 
-        func runSideEffect(key: AnyHashable, action: (Lifetime) -> Void) {
-            if let existingSideEffect = originalSideEffectLifetimes[key] {
-                usedSideEffectLifetimes[key] = existingSideEffect
+        func run<S>(sideEffect: S) where S: SideEffect {
+            if let existingSideEffect = originalSideEffectLifetimes[sideEffect] {
+                usedSideEffectLifetimes[sideEffect] = existingSideEffect
             } else {
-                let sideEffectLifetime = SideEffectLifetime()
-                action(sideEffectLifetime.lifetime)
-                usedSideEffectLifetimes[key] = sideEffectLifetime
+                let lifetime = sideEffect.run()
+                usedSideEffectLifetimes[sideEffect] = SideEffectLifetime(lifetime: lifetime)
             }
         }
     }
@@ -553,7 +552,11 @@ extension WorkflowNode.SubtreeManager {
         fileprivate let lifetime: Lifetime
 
         fileprivate init() {
-            self.lifetime = Lifetime()
+            self.lifetime = Lifetime {}
+        }
+
+        fileprivate init(lifetime: Lifetime) {
+            self.lifetime = lifetime
         }
 
         deinit {

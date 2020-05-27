@@ -14,30 +14,6 @@
  * limitations under the License.
  */
 
-import Foundation
-
-public final class Lifetime {
-    public init(action: @escaping () -> Void) {
-        onEnded(action)
-    }
-
-    public func onEnded(_ action: @escaping () -> Void) {
-        assert(!hasEnded, "Lifetime used after being ended.")
-        onEndedActions.append(action)
-    }
-
-    public private(set) var hasEnded: Bool = false
-    private var onEndedActions: [() -> Void] = []
-
-    deinit {
-        end()
-    }
-
-    func end() {
-        guard !hasEnded else {
-            return
-        }
-        hasEnded = true
-        onEndedActions.forEach { $0() }
-    }
+public protocol SideEffect: Hashable {
+    func run() -> Lifetime
 }

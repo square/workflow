@@ -16,28 +16,21 @@
 
 import Foundation
 
-public final class Lifetime {
-    public init(action: @escaping () -> Void) {
-        onEnded(action)
+struct SideEffectPerformer: SideEffect {
+    let key: AnyHashable
+    let action: (Lifetime) -> Void
+
+    func run() -> Lifetime {
+        let lifetime = Lifetime {}
+        action(lifetime)
+        return lifetime
     }
 
-    public func onEnded(_ action: @escaping () -> Void) {
-        assert(!hasEnded, "Lifetime used after being ended.")
-        onEndedActions.append(action)
+    static func == (lhs: SideEffectPerformer, rhs: SideEffectPerformer) -> Bool {
+        lhs.key == rhs.key
     }
 
-    public private(set) var hasEnded: Bool = false
-    private var onEndedActions: [() -> Void] = []
-
-    deinit {
-        end()
-    }
-
-    func end() {
-        guard !hasEnded else {
-            return
-        }
-        hasEnded = true
-        onEndedActions.forEach { $0() }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
     }
 }

@@ -15,6 +15,7 @@
  */
 
 import ReactiveSwift
+import class Workflow.Lifetime
 import XCTest
 @testable import Workflow
 
@@ -304,7 +305,7 @@ final class SubtreeManagerTests: XCTestCase {
         XCTAssertTrue(manager.sideEffectLifetimes.isEmpty)
 
         _ = manager.render { context -> TestViewModel in
-            context.runSideEffect(key: "helloWorld") { _ in }
+            context.run(sideEffect: TestSideEffect(lifetime: Lifetime()))
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
@@ -316,7 +317,7 @@ final class SubtreeManagerTests: XCTestCase {
         let sideEffectKey = manager.sideEffectLifetimes.values.first!
 
         _ = manager.render { context -> TestViewModel in
-            context.runSideEffect(key: "helloWorld") { _ in }
+            context.run(sideEffect: TestSideEffect(lifetime: Lifetime()))
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
@@ -334,13 +335,13 @@ final class SubtreeManagerTests: XCTestCase {
 
         let lifetimeEndedExpectation = expectation(description: "Lifetime Ended Expectations")
         _ = manager.render { context -> TestViewModel in
-            context.runSideEffect(key: "helloWorld") { lifetime in
-                lifetime.onEnded {
-                    // Capturing `lifetime` to make sure a retain-cycle will still trigger the `onEnded` block
-                    print("\(lifetime)")
-                    lifetimeEndedExpectation.fulfill()
-                }
+            let lifetime = Lifetime()
+            lifetime.onEnded {
+                // Capturing `lifetime` to make sure a retain-cycle will still trigger the `onEnded` block
+                print("\(lifetime)")
+                lifetimeEndedExpectation.fulfill()
             }
+            context.run(sideEffect: TestSideEffect(lifetime: lifetime))
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
@@ -361,6 +362,20 @@ final class SubtreeManagerTests: XCTestCase {
         XCTAssertEqual(manager.sideEffectLifetimes.count, 0)
         wait(for: [lifetimeEndedExpectation], timeout: 1)
     }
+}
+
+private struct TestSideEffect: SideEffect, Hashable {
+    let key: String = "Test Side Effect"
+    let lifetime: Lifetime
+    func run() -> Lifetime {
+        lifetime
+    }
+
+    static func == (lhs: TestSideEffect, rhs: TestSideEffect) -> Bool {
+        true
+    }
+
+    func hash(into hasher: inout Hasher) {}
 }
 
 private struct TestViewModel {

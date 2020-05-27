@@ -16,6 +16,7 @@
 
 import ReactiveSwift
 import Workflow
+import class Workflow.Lifetime
 import WorkflowTesting
 import XCTest
 
@@ -85,7 +86,7 @@ final class WorkflowRenderTesterTests: XCTestCase {
 
         renderTester.render(
             with: RenderExpectations(expectedSideEffects: [
-                ExpectedSideEffect(key: TestSideEffectKey()),
+                ExpectedSideEffect(sideEffect: TestSideEffect()),
             ]),
             assertions: { _ in }
         )
@@ -324,8 +325,11 @@ private struct OutputWorkflow: Workflow {
     }
 }
 
-private struct TestSideEffectKey: Hashable {
+struct TestSideEffect: SideEffect {
     let key: String = "Test Side Effect"
+    func run() -> Lifetime {
+        Lifetime {}
+    }
 }
 
 private struct SideEffectWorkflow: Workflow {
@@ -334,7 +338,7 @@ private struct SideEffectWorkflow: Workflow {
     typealias Rendering = TestScreen
 
     func render(state: State, context: RenderContext<SideEffectWorkflow>) -> TestScreen {
-        context.runSideEffect(key: TestSideEffectKey()) { _ in }
+        context.run(sideEffect: TestSideEffect())
 
         return TestScreen(text: "value", tapped: {})
     }

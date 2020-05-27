@@ -290,11 +290,10 @@
             }
         }
 
-        func runSideEffect(key: AnyHashable, action: (Lifetime) -> Void) {
-            guard let sideEffectIndex = expectations.expectedSideEffects.firstIndex(where: { (expectedSideEffect) -> Bool in
-                expectedSideEffect.key == key
-            }) else {
-                XCTFail("Unexpected side-effect during render \(key)", file: file, line: line)
+        func run<S>(sideEffect: S) where S: SideEffect {
+            guard let sideEffectIndex = expectations.expectedSideEffects.firstIndex(of: ExpectedSideEffect(sideEffect: sideEffect))
+            else {
+                XCTFail("Unexpected side-effect during render \(sideEffect)", file: file, line: line)
                 return
             }
 
@@ -344,7 +343,7 @@
 
             if !expectations.expectedSideEffects.isEmpty {
                 for expectedSideEffect in expectations.expectedSideEffects {
-                    XCTFail("Expected side-effect with key: \(expectedSideEffect.key)", file: file, line: line)
+                    XCTFail("Expected side-effect with key: \(expectedSideEffect)", file: file, line: line)
                 }
             }
         }
