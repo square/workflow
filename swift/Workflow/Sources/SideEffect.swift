@@ -15,5 +15,7 @@
  */
 
 public protocol SideEffect: Hashable {
-    func run() -> Lifetime
+    associatedtype Action: WorkflowAction
+
+    func run(sink: Sink<Action>) -> Lifetime
 }

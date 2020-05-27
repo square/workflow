@@ -30,7 +30,6 @@ struct DemoWorkflow: Workflow {
 
 extension DemoWorkflow {
     struct State {
-        fileprivate var signal: TimerSignal
         var colorState: ColorState
         var loadingState: LoadingState
         var subscriptionState: SubscriptionState
@@ -54,7 +53,6 @@ extension DemoWorkflow {
 
     func makeInitialState() -> DemoWorkflow.State {
         return State(
-            signal: TimerSignal(),
             colorState: .red,
             loadingState: .idle(title: "Not Loaded"),
             subscriptionState: .not
@@ -172,10 +170,17 @@ extension DemoWorkflow {
         case .not:
             subscribeTitle = "Subscribe"
         case .subscribing:
-            // Subscribe to the timer signal, simulating the title being tapped.
-            context.awaitResult(for: state.signal.signal.asWorker(key: "Timer")) { _ -> Action in
-                .titleButtonTapped
-            }
+            context.run(
+                sideEffect: SideEffectPerformer<Self, Action>(key: "Timer", action: { sink, lifetime in
+                    let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+                        sink.send(.titleButtonTapped)
+                    }
+
+                    lifetime.onEnded {
+                        timer.invalidate()
+                    }
+                })
+            )
             subscribeTitle = "Stop"
         }
 
@@ -201,20 +206,20 @@ extension DemoWorkflow {
     }
 }
 
-private class TimerSignal {
-    let signal: Signal<Void, Never>
-    let observer: Signal<Void, Never>.Observer
-    let timer: Timer
-
-    init() {
-        let (signal, observer) = Signal<Void, Never>.pipe()
-
-        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak observer] _ in
-            observer?.send(value: ())
-        }
-
-        self.signal = signal
-        self.observer = observer
-        self.timer = timer
-    }
-}
+// private class TimerSignal {
+//    let signal: Signal<Void, Never>
+//    let observer: Signal<Void, Never>.Observer
+//    let timer: Timer
+//
+//    init() {
+//        let (signal, observer) = Signal<Void, Never>.pipe()
+//
+//        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak observer] _ in
+//            observer?.send(value: ())
+//        }
+//
+//        self.signal = signal
+//        self.observer = observer
+//        self.timer = timer
+//    }
+// }

@@ -16,21 +16,26 @@
 
 import Foundation
 
-struct SideEffectPerformer: SideEffect {
+public struct SideEffectPerformer<WorkflowType, Action: WorkflowAction>: SideEffect where Action.WorkflowType == WorkflowType {
     let key: AnyHashable
-    let action: (Lifetime) -> Void
+    let action: (Sink<Action>, Lifetime) -> Void
 
-    func run() -> Lifetime {
+    public init(key: AnyHashable, action: @escaping (Sink<Action>, Lifetime) -> Void) {
+        self.key = key
+        self.action = action
+    }
+
+    public func run(sink: Sink<Action>) -> Lifetime {
         let lifetime = Lifetime {}
-        action(lifetime)
+        action(sink, lifetime)
         return lifetime
     }
 
-    static func == (lhs: SideEffectPerformer, rhs: SideEffectPerformer) -> Bool {
+    public static func == (lhs: SideEffectPerformer, rhs: SideEffectPerformer) -> Bool {
         lhs.key == rhs.key
     }
 
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(key)
     }
 }

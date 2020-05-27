@@ -107,7 +107,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
             return implementation.makeSink(of: actionType)
         }
 
-        override func run<S: SideEffect>(sideEffect: S) {
+        override func run<S: SideEffect>(sideEffect: S) where S.Action.WorkflowType == WorkflowType {
             assertStillValid()
             implementation.run(sideEffect: sideEffect)
         }
@@ -132,7 +132,7 @@ internal protocol RenderContextType: AnyObject {
 
     func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
-    func run<S: SideEffect>(sideEffect: S)
+    func run<S: SideEffect>(sideEffect: S) where S.Action.WorkflowType == WorkflowType
 }
 
 extension RenderContext {
