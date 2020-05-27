@@ -305,7 +305,7 @@ final class SubtreeManagerTests: XCTestCase {
         XCTAssertTrue(manager.sideEffectLifetimes.isEmpty)
 
         _ = manager.render { context -> TestViewModel in
-            context.run(sideEffect: TestSideEffect(lifetime: Lifetime()))
+            context.run(TestSideEffect(lifetime: Lifetime()))
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
@@ -317,7 +317,7 @@ final class SubtreeManagerTests: XCTestCase {
         let sideEffectKey = manager.sideEffectLifetimes.values.first!
 
         _ = manager.render { context -> TestViewModel in
-            context.run(sideEffect: TestSideEffect(lifetime: Lifetime()))
+            context.run(TestSideEffect(lifetime: Lifetime()))
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",
@@ -341,7 +341,7 @@ final class SubtreeManagerTests: XCTestCase {
                 print("\(lifetime)")
                 lifetimeEndedExpectation.fulfill()
             }
-            context.run(sideEffect: TestSideEffect(lifetime: lifetime))
+            context.run(TestSideEffect(lifetime: lifetime))
             return context.render(
                 workflow: TestWorkflow(),
                 key: "",

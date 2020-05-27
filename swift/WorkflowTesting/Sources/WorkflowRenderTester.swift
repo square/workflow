@@ -290,7 +290,7 @@
             }
         }
 
-        func run<S>(sideEffect: S) where S: SideEffect {
+        func run<S>(_ sideEffect: S) where S: SideEffect {
             guard let sideEffectIndex = expectations.expectedSideEffects.firstIndex(of: ExpectedSideEffect(sideEffect: sideEffect))
             else {
                 XCTFail("Unexpected side-effect during render \(sideEffect)", file: file, line: line)

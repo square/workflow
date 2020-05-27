@@ -218,7 +218,8 @@ extension AuthenticationWorkflow {
                     authenticationService: authenticationService,
                     intermediateToken: intermediateSession,
                     twoFactorCode: twoFactorCode
-                ))
+                )
+            )
 
             backStackItems.append(twoFactorScreen(error: nil, intermediateSession: intermediateSession, sink: sink))
             modals.append(ModalContainerScreenModal(screen: AnyScreen(LoadingScreen()), style: .fullScreen, key: "", animated: false))
@@ -226,7 +227,8 @@ extension AuthenticationWorkflow {
         return AlertContainerScreen(
             baseScreen: ModalContainerScreen(
                 baseScreen: BackStackScreen(
-                    items: backStackItems),
+                    items: backStackItems
+                ),
                 modals: modals
             ),
             alert: alert
@@ -259,7 +261,8 @@ extension AuthenticationWorkflow {
                     handler: {
                         sink.send(.back)
                     }
-                ))))
+                ))
+            ))
         )
     }
 }

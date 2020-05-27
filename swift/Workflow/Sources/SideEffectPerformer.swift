@@ -16,7 +16,7 @@
 
 import Foundation
 
-public struct SideEffectPerformer<WorkflowType, Action: WorkflowAction>: SideEffect where Action.WorkflowType == WorkflowType {
+public struct SideEffectPerformer<Action: WorkflowAction>: SideEffect {
     let key: AnyHashable
     let action: (Sink<Action>, Lifetime) -> Void
 

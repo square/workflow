@@ -170,16 +170,15 @@ extension DemoWorkflow {
         case .not:
             subscribeTitle = "Subscribe"
         case .subscribing:
-            context.run(
-                sideEffect: SideEffectPerformer<Self, Action>(key: "Timer", action: { sink, lifetime in
-                    let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-                        sink.send(.titleButtonTapped)
-                    }
+            context.run(SideEffectPerformer<Action>(key: "Timer") { sink, lifetime in
+                let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+                    sink.send(.titleButtonTapped)
+                }
 
-                    lifetime.onEnded {
-                        timer.invalidate()
-                    }
-                })
+                lifetime.onEnded {
+                    timer.invalidate()
+                }
+            }
             )
             subscribeTitle = "Stop"
         }

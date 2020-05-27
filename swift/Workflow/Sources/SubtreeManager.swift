@@ -247,7 +247,7 @@ extension WorkflowNode.SubtreeManager {
             }
         }
 
-        func run<S: SideEffect>(sideEffect: S) where S.Action.WorkflowType == WorkflowType {
+        func run<S: SideEffect>(_ sideEffect: S) where S.Action.WorkflowType == WorkflowType {
             let sink = makeSink(of: S.Action.self)
             if let existingSideEffect = originalSideEffectLifetimes[sideEffect] {
                 usedSideEffectLifetimes[sideEffect] = existingSideEffect
