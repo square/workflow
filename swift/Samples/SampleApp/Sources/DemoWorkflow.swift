@@ -204,21 +204,3 @@ extension DemoWorkflow {
         )
     }
 }
-
-// private class TimerSignal {
-//    let signal: Signal<Void, Never>
-//    let observer: Signal<Void, Never>.Observer
-//    let timer: Timer
-//
-//    init() {
-//        let (signal, observer) = Signal<Void, Never>.pipe()
-//
-//        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak observer] _ in
-//            observer?.send(value: ())
-//        }
-//
-//        self.signal = signal
-//        self.observer = observer
-//        self.timer = timer
-//    }
-// }
