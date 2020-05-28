@@ -53,6 +53,11 @@ extension Worker {
     }
 
     public func run(sink: Sink<Output>) -> Lifetime {
-        return Lifetime {}
+        let disposable = run().startWithValues { output in
+            sink.send(output)
+        }
+        return Lifetime {
+            disposable.dispose()
+        }
     }
 }

@@ -232,19 +232,7 @@ extension WorkflowNode.SubtreeManager {
         }
 
         func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
-            let outputMap = { AnyWorkflowAction(outputMap($0)) }
-            let eventPipe = EventPipe()
-            eventPipes.append(eventPipe)
-
-            if let existingWorker = originalChildWorkers
-                .compactMap({ $0 as? ChildWorker<W> })
-                .first(where: { $0.worker.isEquivalent(to: worker) }) {
-                existingWorker.update(outputMap: outputMap, eventPipe: eventPipe)
-                usedChildWorkers.append(existingWorker)
-            } else {
-                let newChildWorker = ChildWorker(worker: worker, outputMap: outputMap, eventPipe: eventPipe)
-                usedChildWorkers.append(newChildWorker)
-            }
+            run(worker.map(outputMap))
         }
 
         func run<S: SideEffect>(_ sideEffect: S) where S.Output: WorkflowAction, S.Output.WorkflowType == WorkflowType {

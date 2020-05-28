@@ -21,3 +21,25 @@ public protocol SideEffect {
 
     func isEquivalent(to otherSideEffect: Self) -> Bool
 }
+
+struct MappedSideEffect<WrappedSideEffect: SideEffect, Output>: SideEffect {
+    let wrapped: WrappedSideEffect
+    let mapping: (WrappedSideEffect.Output) -> Output
+
+    func run(sink: Sink<Output>) -> Lifetime {
+        let mappingSink = Sink<WrappedSideEffect.Output> {
+            sink.send(self.mapping($0))
+        }
+        return wrapped.run(sink: mappingSink)
+    }
+
+    func isEquivalent(to otherSideEffect: MappedSideEffect<WrappedSideEffect, Output>) -> Bool {
+        wrapped.isEquivalent(to: otherSideEffect.wrapped)
+    }
+}
+
+extension SideEffect {
+    func map<MapToOutput>(_ mapping: @escaping (Self.Output) -> MapToOutput) -> MappedSideEffect<Self, MapToOutput> {
+        MappedSideEffect<Self, MapToOutput>(wrapped: self, mapping: mapping)
+    }
+}
