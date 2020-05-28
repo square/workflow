@@ -75,7 +75,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
         fatalError()
     }
 
-    public func run<S: SideEffect>(_ sideEffect: S) {
+    public func run<S: SideEffect>(_ sideEffect: S) where S.Output: WorkflowAction, S.Output.WorkflowType == WorkflowType {
         fatalError()
     }
 
@@ -107,7 +107,7 @@ public class RenderContext<WorkflowType: Workflow>: RenderContextType {
             return implementation.makeSink(of: actionType)
         }
 
-        override func run<S: SideEffect>(_ sideEffect: S) where S.Action.WorkflowType == WorkflowType {
+        override func run<S: SideEffect>(_ sideEffect: S) where S.Output: WorkflowAction, S.Output.WorkflowType == WorkflowType {
             assertStillValid()
             implementation.run(sideEffect)
         }
@@ -132,7 +132,7 @@ internal protocol RenderContextType: AnyObject {
 
     func awaitResult<W, Action>(for worker: W, outputMap: @escaping (W.Output) -> Action) where W: Worker, Action: WorkflowAction, Action.WorkflowType == WorkflowType
 
-    func run<S: SideEffect>(_ sideEffect: S) where S.Action.WorkflowType == WorkflowType
+    func run<S: SideEffect>(_ sideEffect: S) where S.Output: WorkflowAction, S.Output.WorkflowType == WorkflowType
 }
 
 extension RenderContext {

@@ -36,7 +36,7 @@ extension WorkflowNode {
         internal private(set) var childWorkers: [AnyChildWorker] = []
 
         /// The current array of side-effects
-        internal private(set) var sideEffectLifetimes: [AnyHashable: SideEffectLifetime] = [:]
+        internal private(set) var sideEffectLifetimes: [SideEffectContainer] = []
 
         init() {}
 
@@ -149,14 +149,14 @@ extension WorkflowNode.SubtreeManager {
         private let originalChildWorkers: [AnyChildWorker]
         internal private(set) var usedChildWorkers: [AnyChildWorker]
 
-        private let originalSideEffectLifetimes: [AnyHashable: SideEffectLifetime]
-        internal private(set) var usedSideEffectLifetimes: [AnyHashable: SideEffectLifetime]
+        private let originalSideEffectLifetimes: [SideEffectContainer]
+        internal private(set) var usedSideEffectLifetimes: [SideEffectContainer]
 
         internal init(
             previousSinks: [ObjectIdentifier: AnyReusableSink],
             originalChildWorkflows: [ChildKey: AnyChildWorkflow],
             originalChildWorkers: [AnyChildWorker],
-            originalSideEffectLifetimes: [AnyHashable: SideEffectLifetime]
+            originalSideEffectLifetimes: [SideEffectContainer]
         ) {
             self.eventPipes = []
 
@@ -169,7 +169,7 @@ extension WorkflowNode.SubtreeManager {
             self.usedChildWorkers = []
 
             self.originalSideEffectLifetimes = originalSideEffectLifetimes
-            self.usedSideEffectLifetimes = [:]
+            self.usedSideEffectLifetimes = []
         }
 
         func render<Child, Action>(workflow: Child, key: String, outputMap: @escaping (Child.Output) -> Action) -> Child.Rendering where Child: Workflow, Action: WorkflowAction, WorkflowType == Action.WorkflowType {
@@ -247,13 +247,14 @@ extension WorkflowNode.SubtreeManager {
             }
         }
 
-        func run<S: SideEffect>(_ sideEffect: S) where S.Action.WorkflowType == WorkflowType {
-            let sink = makeSink(of: S.Action.self)
-            if let existingSideEffect = originalSideEffectLifetimes[sideEffect] {
-                usedSideEffectLifetimes[sideEffect] = existingSideEffect
+        func run<S: SideEffect>(_ sideEffect: S) where S.Output: WorkflowAction, S.Output.WorkflowType == WorkflowType {
+            let sink = makeSink(of: S.Output.self)
+
+            if let existingSideEffect = originalSideEffectLifetimes.first(where: { $0.doesContainSideEffect(sideEffect) }) {
+                usedSideEffectLifetimes.append(existingSideEffect)
             } else {
                 let lifetime = sideEffect.run(sink: sink)
-                usedSideEffectLifetimes[sideEffect] = SideEffectLifetime(lifetime: lifetime)
+                usedSideEffectLifetimes.append(SideEffectContainer(sideEffect: sideEffect, lifetime: SideEffectLifetime(lifetime: lifetime)))
             }
         }
     }
@@ -562,6 +563,22 @@ extension WorkflowNode.SubtreeManager {
 
         deinit {
             lifetime.end()
+        }
+    }
+
+    struct SideEffectContainer {
+        let doesContainSideEffect: (Any) -> Bool
+        let lifetime: SideEffectLifetime
+
+        init<S: SideEffect>(sideEffect: S, lifetime: SideEffectLifetime) {
+            self.doesContainSideEffect = { other in
+                guard let other = other as? S else {
+                    return false
+                }
+
+                return sideEffect.isEquivalent(to: other)
+            }
+            self.lifetime = lifetime
         }
     }
 }

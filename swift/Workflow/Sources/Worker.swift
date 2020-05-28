@@ -24,7 +24,7 @@ import ReactiveSwift
 /// If there is, and if the workers are 'equivalent', the context leaves the existing worker running.
 ///
 /// If there is not an existing worker of this type, the context will kick off the new worker (via `run`).
-public protocol Worker {
+public protocol Worker: SideEffect {
     /// The type of output events returned by this worker.
     associatedtype Output
 
@@ -40,5 +40,19 @@ public protocol Worker {
 extension Worker where Self: Equatable {
     public func isEquivalent(to otherWorker: Self) -> Bool {
         return self == otherWorker
+    }
+}
+
+extension Worker {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(Self.self))
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.isEquivalent(to: rhs)
+    }
+
+    public func run(sink: Sink<Output>) -> Lifetime {
+        return Lifetime {}
     }
 }

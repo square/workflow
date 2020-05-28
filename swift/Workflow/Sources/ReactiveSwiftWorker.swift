@@ -14,10 +14,5 @@
  * limitations under the License.
  */
 
-public protocol SideEffect {
-    associatedtype Output
-
-    func run(sink: Sink<Output>) -> Lifetime
-
-    func isEquivalent(to otherSideEffect: Self) -> Bool
-}
+import Foundation
+import ReactiveSwift

@@ -31,11 +31,7 @@ public struct SideEffectPerformer<Action: WorkflowAction>: SideEffect {
         return lifetime
     }
 
-    public static func == (lhs: SideEffectPerformer, rhs: SideEffectPerformer) -> Bool {
-        lhs.key == rhs.key
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(key)
+    public func isEquivalent(to otherSideEffect: SideEffectPerformer<Action>) -> Bool {
+        key == otherSideEffect.key
     }
 }
