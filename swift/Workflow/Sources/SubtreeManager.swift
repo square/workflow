@@ -32,9 +32,6 @@ extension WorkflowNode {
         /// The current array of children
         internal private(set) var childWorkflows: [ChildKey: AnyChildWorkflow] = [:]
 
-        /// The current array of workers
-        internal private(set) var childWorkers: [AnyChildWorker] = []
-
         /// The current array of side-effects
         internal private(set) var sideEffectLifetimes: [SideEffectContainer] = []
 
@@ -51,7 +48,6 @@ extension WorkflowNode {
             let context = Context(
                 previousSinks: previousSinks,
                 originalChildWorkflows: childWorkflows,
-                originalChildWorkers: childWorkers,
                 originalSideEffectLifetimes: sideEffectLifetimes
             )
 
@@ -66,7 +62,6 @@ extension WorkflowNode {
             /// pass.* This means that any pre-existing children that were *not* used during the render pass are removed
             /// as a result of this call to `render`.
             childWorkflows = context.usedChildWorkflows
-            childWorkers = context.usedChildWorkers
             sideEffectLifetimes = context.usedSideEffectLifetimes
 
             /// Captured the reusable sinks from this render pass.
@@ -146,16 +141,12 @@ extension WorkflowNode.SubtreeManager {
         private let originalChildWorkflows: [ChildKey: AnyChildWorkflow]
         internal private(set) var usedChildWorkflows: [ChildKey: AnyChildWorkflow]
 
-        private let originalChildWorkers: [AnyChildWorker]
-        internal private(set) var usedChildWorkers: [AnyChildWorker]
-
         private let originalSideEffectLifetimes: [SideEffectContainer]
         internal private(set) var usedSideEffectLifetimes: [SideEffectContainer]
 
         internal init(
             previousSinks: [ObjectIdentifier: AnyReusableSink],
             originalChildWorkflows: [ChildKey: AnyChildWorkflow],
-            originalChildWorkers: [AnyChildWorker],
             originalSideEffectLifetimes: [SideEffectContainer]
         ) {
             self.eventPipes = []
@@ -164,9 +155,6 @@ extension WorkflowNode.SubtreeManager {
 
             self.originalChildWorkflows = originalChildWorkflows
             self.usedChildWorkflows = [:]
-
-            self.originalChildWorkers = originalChildWorkers
-            self.usedChildWorkers = []
 
             self.originalSideEffectLifetimes = originalSideEffectLifetimes
             self.usedSideEffectLifetimes = []
@@ -395,70 +383,6 @@ extension WorkflowNode.SubtreeManager {
         static func == (lhs: ChildKey, rhs: ChildKey) -> Bool {
             return lhs.childType == rhs.childType
                 && lhs.key == rhs.key
-        }
-    }
-}
-
-// MARK: - Workers
-
-extension WorkflowNode.SubtreeManager {
-    /// Abstract base class for running children in the subtree.
-    internal class AnyChildWorker {
-        fileprivate var eventPipe: EventPipe
-
-        fileprivate init(eventPipe: EventPipe) {
-            self.eventPipe = eventPipe
-        }
-    }
-
-    fileprivate final class ChildWorker<W: Worker>: AnyChildWorker {
-        let worker: W
-
-        let signalProducer: SignalProducer<W.Output, Never>
-
-        private var outputMap: (W.Output) -> AnyWorkflowAction<WorkflowType>
-
-        private let (lifetime, token) = ReactiveSwift.Lifetime.make()
-
-        init(worker: W, outputMap: @escaping (W.Output) -> AnyWorkflowAction<WorkflowType>, eventPipe: EventPipe) {
-            self.worker = worker
-            self.signalProducer = worker.run()
-            self.outputMap = outputMap
-            super.init(eventPipe: eventPipe)
-
-            let signpostRef = SignpostRef()
-            WorkflowLogger.logWorkerStartedRunning(ref: signpostRef, workerType: W.self)
-
-            signalProducer
-                .take(during: lifetime)
-                .observe(on: QueueScheduler.workflowExecution)
-                .start { [weak self] event in
-                    switch event {
-                    case let .value(output):
-                        WorkflowLogger.logWorkerOutput(ref: signpostRef, workerType: W.self)
-
-                        self?.handle(output: output)
-                    case .completed:
-                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Completed")
-                    case .interrupted:
-                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Interrupted")
-                    case .failed:
-                        WorkflowLogger.logWorkerFinishedRunning(ref: signpostRef, status: "Failed")
-                    }
-                }
-        }
-
-        func update(outputMap: @escaping (W.Output) -> AnyWorkflowAction<WorkflowType>, eventPipe: EventPipe) {
-            self.outputMap = outputMap
-            self.eventPipe = eventPipe
-        }
-
-        private func handle(output: W.Output) {
-            let output = Output.update(
-                outputMap(output),
-                source: .worker
-            )
-            eventPipe.handle(event: output)
         }
     }
 }
