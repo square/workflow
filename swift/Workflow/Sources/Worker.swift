@@ -44,14 +44,6 @@ extension Worker where Self: Equatable {
 }
 
 extension Worker {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(Self.self))
-    }
-
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.isEquivalent(to: rhs)
-    }
-
     public func run(sink: Sink<Output>) -> Lifetime {
         let disposable = run().startWithValues { output in
             sink.send(output)
