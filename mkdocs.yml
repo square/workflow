@@ -27,12 +27,15 @@ copyright: 'Copyright &copy; 2019 Square, Inc.'
 theme:
   name: 'material'
   logo: images/icon-square.png
-  favicon: 'images/icon-square.png'
+  favicon: images/icon-square.png
+  icon:
+    repo: fontawesome/brands/github
   palette:
     primary: 'red'
     accent: 'pink'
-  feature:
-    tabs: true
+  features:
+    - tabs
+    - instant
 
 extra_css:
   - 'css/app.css'
@@ -55,9 +58,11 @@ markdown_extensions:
   - pymdownx.magiclink
   - pymdownx.smartsymbols
   - pymdownx.superfences
+  - pymdownx.tabbed
   - tables
 
 plugins:
+  - search
   - redirects:
       redirect_maps:
         # Redirect some of the most-visited pages from their old locations in case there are links
@@ -71,13 +76,11 @@ plugins:
 extra:
   # type is the name of the FontAwesome icon without the fa- prefix.
   social:
-    - type: globe
-      link: https://square.github.io/
-    - type: github-alt
+    - icon: fontawesome/brands/github-alt
       link: https://github.com/square
-    - type: twitter
+    - icon: fontawesome/brands/twitter
       link: https://twitter.com/squareeng
-    - type: linkedin
+    - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/joinsquare/
 
 nav:
