@@ -5,48 +5,51 @@
 `Workflow` is a protocol (in Swift) and interface (in Kotlin) that defines the contract for a single
 node in the workflow hierarchy.
 
-```Swift tab=
-public protocol Workflow: AnyWorkflowConvertible {
+=== "Swift"
+    ```Swift
+    public protocol Workflow: AnyWorkflowConvertible {
 
-    associatedtype State
+        associatedtype State
 
-    associatedtype Output = Never
+        associatedtype Output = Never
 
-    associatedtype Rendering
+        associatedtype Rendering
 
-    func makeInitialState() -> State
+        func makeInitialState() -> State
 
-    func workflowDidChange(from previousWorkflow: Self, state: inout State)
+        func workflowDidChange(from previousWorkflow: Self, state: inout State)
 
-    func render(state: State, context: RenderContext<Self>) -> Rendering
+        func render(state: State, context: RenderContext<Self>) -> Rendering
 
-}
+    }
 
-```
+    ```
 
-```Kotlin tab=
-abstract class StatefulWorkflow<in PropsT, StateT, out OutputT : Any, out RenderingT> : Workflow<PropsT, OutputT, RenderingT> {
+=== "Kotlin"
+    ```Kotlin
+    abstract class StatefulWorkflow<in PropsT, StateT, out OutputT : Any, out RenderingT> :
+        Workflow<PropsT, OutputT, RenderingT> {
 
-  abstract fun initialState(
-    props: PropsT,
-    initialSnapshot: Snapshot?
-  ): StateT
+      abstract fun initialState(
+        props: PropsT,
+        initialSnapshot: Snapshot?
+      ): StateT
 
-  open fun onPropsChanged(
-    old: PropsT,
-    new: PropsT,
-    state: StateT
-  ): StateT = state
+      open fun onPropsChanged(
+        old: PropsT,
+        new: PropsT,
+        state: StateT
+      ): StateT = state
 
-  abstract fun render(
-    props: PropsT,
-    state: StateT,
-    context: RenderContext<StateT, OutputT>
-  ): RenderingT
+      abstract fun render(
+        props: PropsT,
+        state: StateT,
+        context: RenderContext<StateT, OutputT>
+      ): RenderingT
 
-  abstract fun snapshotState(state: StateT): Snapshot
-}
-```
+      abstract fun snapshotState(state: StateT): Snapshot
+    }
+    ```
 
 ??? faq "Swift: What is `AnyWorkflowConvertible`?"
     When a protocol has an associated `Self` type, Swift requires the use of a [type-erasing wrapper](https://medium.com/swiftworld/swift-world-type-erasure-5b720bc0318a)
@@ -89,42 +92,44 @@ workflow is running.
 
 For example, a tic-tac-toe game might have a state like this:
 
-```Swift tab=
-struct State {
+=== "Swift"
+    ```Swift
+    struct State {
 
-    enum Player {
-        case x
-        case o
+        enum Player {
+            case x
+            case o
+        }
+
+        enum Space {
+            case unfilled
+            filled(Player)
+        }
+
+        // 3 rows * 3 columns = 9 spaces
+        var spaces: [Space] = Array(repeating: .unfilled, count: 9)
+        var currentTurn: Player = .x
     }
+    ```
 
-    enum Space {
-        case unfilled
-        filled(Player)
+=== "Kotlin"
+    ```Kotlin
+    data class State(
+      // 3 rows * 3 columns = 9 spaces
+      val spaces: List<Space> = List(9) { Unfilled },
+      val currentTurn: Player = X
+    ) {
+
+      enum class Player {
+        X, O
+      }
+
+      sealed class Space {
+        object Unfilled : Space()
+        data class Filled(val player: Player) : Space()
+      }
     }
-
-    // 3 rows * 3 columns = 9 spaces
-    var spaces: [Space] = Array(repeating: .unfilled, count: 9)
-    var currentTurn: Player = .x
-}
-```
-
-```Kotlin tab=
-data class State(
-  // 3 rows * 3 columns = 9 spaces
-  val spaces: List<Space> = List(9) { Unfilled },
-  val currentTurn: Player = X
-) {
-
-  enum class Player {
-    X, O
-  }
-
-  sealed class Space {
-    object Unfilled : Space()
-    data class Filled(val player: Player) : Space()
-  }
-}
-```
+    ```
 
 When the workflow is first started, it is queried for an initial state value. From that point
 forward, the workflow may advance to a new state as the result of events occurring from various
@@ -146,16 +151,18 @@ Kotlin, the `Workflow` interface defines a separate `PropsT` type parameter. (Th
 parameter is necessary due to Kotlin’s lack of the `Self` type that Swift workflow’s
 `workflowDidChange` method relies upon.)
 
-```Swift tab=
-TK
-```
+=== "Swift"
+    ```Swift
+    TK
+    ```
 
-```Kotlin tab=
-data class Props(
-  val playerXName: String
-  val playerOName: String
-)
-```
+=== "Kotlin"
+    ```Kotlin
+    data class Props(
+      val playerXName: String
+      val playerOName: String
+    )
+    ```
 
 ## Workflows are advanced by `WorkflowAction`s
 
@@ -208,20 +215,22 @@ events. The `RenderContext` has API to create an event handler, called a `Sink`,
 will advance the workflow by dispatching an action back to the workflow (for more on actions, see
 [below](#workflows-are-advanced-by-actions)).
 
-```Swift tab=
-func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
-    // Create a sink of our Action type so we can send actions back to the workflow.
-    let sink = context.makeSink(of: Action.self)
+=== "Swift"
+    ```Swift
+    func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
+        // Create a sink of our Action type so we can send actions back to the workflow.
+        let sink = context.makeSink(of: Action.self)
 
-    return DemoScreen(
-        title: "A nice title",
-        onTap: { sink.send(Action.refreshButtonTapped) }
-}
-```
+        return DemoScreen(
+            title: "A nice title",
+            onTap: { sink.send(Action.refreshButtonTapped) }
+    }
+    ```
 
-```Kotlin tab=
-TK
-```
+=== "Kotlin"
+    ```Kotlin
+    TK
+    ```
 
 ## Workflows form a hierarchy (they may have children)
 
