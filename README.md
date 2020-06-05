@@ -60,12 +60,6 @@ pod 'WorkflowUI'
 [![Maven Central](https://img.shields.io/maven-central/v/com.squareup.workflow/workflow-core-jvm.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.squareup.workflow%22)
 [![Kotlinlang slack](https://img.shields.io/static/v1?label=kotlinlang&message=squarelibraries&color=brightgreen&logo=slack)](https://kotlinlang.slack.com/archives/C5HT9AL7Q)
 
-#### Quick Start
-
-To get started with a fresh, barebones, Workflow-based Android app, we've created a template
-repository – just click "Use this template" to create a new repository with a simple but runnable
-app: [github.com/square/workflow-android-template](https://github.com/square/workflow-android-template)
-
 #### Maven Artifacts
 
 Artifacts are hosted on Maven Central. If you're using Gradle, ensure `mavenCentral()` appears in
