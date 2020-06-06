@@ -22,26 +22,28 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory
 import com.squareup.workflow.Worker
 import com.squareup.workflow.Workflow
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.launchWorkflowIn
+import com.squareup.workflow.renderWorkflowIn
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.selectUnbiased
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Hosts [Workflow]s that:
@@ -93,71 +95,70 @@ class TerminalWorkflowRunner(
   }
 }
 
-@Suppress("BlockingMethodInNonBlockingContext")
-@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 private suspend fun runTerminalWorkflow(
   workflow: TerminalWorkflow,
   screen: TerminalScreen,
   keyStrokes: Worker<KeyStroke>,
   resizes: ReceiveChannel<TerminalSize>
 ): ExitCode = coroutineScope {
-  var input = TerminalProps(screen.terminalSize.toSize(), keyStrokes)
-  val inputs = ConflatedBroadcastChannel(input)
+  suspendCancellableCoroutine<ExitCode> { continuation ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val props = MutableStateFlow(TerminalProps(screen.terminalSize.toSize(), keyStrokes))
+    val renderings = renderWorkflowIn(this, workflow, props) { exitCode ->
+      continuation.resume(exitCode)
+      // If we don't cancel the workflow runtime explicitly, coroutineScope will hang waiting for it
+      // to finish.
+      coroutineContext.cancelChildren(
+          CancellationException("TerminalWorkflowRunner completed with exit code $exitCode")
+      )
+    }.map { it.rendering }
 
-  // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically
-  // if there's an error.
-  @Suppress("DEPRECATION")
-  val result =
-    launchWorkflowIn(this, workflow, inputs.asFlow()) { session ->
-      val renderings = session.renderingsAndSnapshots.map { it.rendering }
-          .produceIn(this)
+    launch {
+      renderLoop(props, renderings, screen, resizes)
+    }
+  }
+}
 
-      launch {
-        while (true) {
-          val rendering = selectUnbiased<TerminalRendering> {
-            resizes.onReceive {
-              screen.doResizeIfNecessary()
-                  ?.let {
-                    // If the terminal was resized since the last iteration, we need to notify the
-                    // workflow.
-                    input = input.copy(size = it.toSize())
-                  }
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+private suspend fun renderLoop(
+  props: MutableStateFlow<TerminalProps>,
+  renderingsFlow: Flow<TerminalRendering>,
+  screen: TerminalScreen,
+  resizes: ReceiveChannel<TerminalSize>
+) = coroutineScope {
+  val renderings = renderingsFlow.produceIn(this)
 
-              // Publish config changes to the workflow.
-              inputs.send(input)
-
-              // Sending that new input invalidated the lastRendering, so we don't want to
-              // re-iterate until we have a new rendering with a fresh event handler. It also
-              // triggered a render pass, so we can just retrieve that immediately.
-              return@onReceive renderings.receive()
+  while (isActive) {
+    val rendering = selectUnbiased<TerminalRendering> {
+      resizes.onReceive {
+        screen.doResizeIfNecessary()
+            ?.let {
+              // If the terminal was resized since the last iteration, we need to notify the
+              // workflow.
+              props.value = props.value.copy(size = it.toSize())
             }
 
-            renderings.onReceive { it }
-          }
-
-          screen.clear()
-          screen.newTextGraphics()
-              .apply {
-                foregroundColor = rendering.textColor.toTextColor()
-                backgroundColor = rendering.backgroundColor.toTextColor()
-                rendering.text.lineSequence()
-                    .forEachIndexed { index, line ->
-                      putString(TOP_LEFT_CORNER.withRelativeRow(index), line)
-                    }
-              }
-
-          screen.refresh(COMPLETE)
-        }
+        // Sending that new input invalidated the lastRendering, so we don't want to
+        // re-iterate until we have a new rendering with a fresh event handler. It also
+        // triggered a render pass, so we can just retrieve that immediately.
+        return@onReceive renderings.receive()
       }
 
-      return@launchWorkflowIn async { session.outputs.first() }
+      renderings.onReceive { it }
     }
 
-  val exitCode = result.await()
-  // If we don't cancel the workflow runtime explicitly, coroutineScope will hang waiting for it to
-  // finish.
-  coroutineContext.cancelChildren(
-      CancellationException("TerminalWorkflowRunner completed with exit code $exitCode")
-  )
-  return@coroutineScope exitCode
+    screen.clear()
+    screen.newTextGraphics()
+        .apply {
+          foregroundColor = rendering.textColor.toTextColor()
+          backgroundColor = rendering.backgroundColor.toTextColor()
+          rendering.text.lineSequence()
+              .forEachIndexed { index, line ->
+                putString(TOP_LEFT_CORNER.withRelativeRow(index), line)
+              }
+        }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    screen.refresh(COMPLETE)
+  }
 }
