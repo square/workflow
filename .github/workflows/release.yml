@@ -14,7 +14,7 @@ env:
   PREFIX_FOR_TEST: ${{ github.event.client_payload.test_prefix }}
 
 jobs:
-  bump-master:
+  bump-trunk:
     runs-on: macos-latest
 
     steps:
@@ -27,16 +27,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Checkout Master
+    - name: Checkout Trunk
       uses: actions/checkout@v2
       with:
-        ref: ${{ env.PREFIX_FOR_TEST }}master
-        path: master
+        ref: ${{ env.PREFIX_FOR_TEST }}trunk
+        path: trunk
 
     - name: Setup Release Branch (major, minor)
       if: env.RELEASE_TYPE == 'major' || env.RELEASE_TYPE == 'minor'
       run: |
-        cp -R master release
+        cp -R trunk release
         cd release
         git checkout -b ${{ env.RELEASE_BRANCH }}
 
@@ -49,24 +49,24 @@ jobs:
 
     - name: Update Changelog
       run: |
-        cd master
+        cd trunk
         ../.buildscript/update_changelog.swift
         cd ../release
         ../.buildscript/update_changelog.swift
 
-    - name: Update Master Version (major, minor)
+    - name: Update Trunk Version (major, minor)
       if: env.RELEASE_TYPE == 'major' || env.RELEASE_TYPE == 'minor'
       run: |
-        cd master
+        cd trunk
         sed -i '' -e 's/VERSION_NAME=\(.*\)-SNAPSHOT/VERSION_NAME=${{ env.WORKFLOW_VERSION }}-SNAPSHOT/g' kotlin/gradle.properties
         ls Workflow*.podspec | xargs sed -i '' -e "s/ s.version\( *=\).*/ s.version\1 '${{ env.WORKFLOW_VERSION }}'/"
 
-    - name: Push changes to master
+    - name: Push changes to trunk
       env:
         GIT_USERNAME: ${{ github.actor }}
         GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        cd master
+        cd trunk
         git add -A . && git commit -m "Releasing ${{ env.WORKFLOW_VERSION }}" && git push -f
 
     - name: Push Release Branch

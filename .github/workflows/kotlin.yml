@@ -3,7 +3,7 @@ name: Kotlin CI
 on:
   push:
     branches:
-      - master
+      - trunk
     paths:
       # Rebuild when workflow configs change.
       - .github/workflows/kotlin.yml
