@@ -18,7 +18,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
   <com.squareup.workflow.ui.WorkflowViewStub
-      android:id="@+id/master_detail_single_stub"
+      android:id="@+id/overview_detail_single_stub"
       android:layout_width="match_parent"
       android:layout_height="match_parent"/>
 

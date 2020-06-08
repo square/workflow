@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.todo
 
-import com.squareup.sample.container.masterdetail.MasterDetailScreen
+import com.squareup.sample.container.overviewdetail.OverviewDetailScreen
 import com.squareup.sample.todo.TodoEditorOutput.Done
 import com.squareup.sample.todo.TodoEditorOutput.ListUpdated
 import com.squareup.sample.todo.TodoListsAppState.EditingList
@@ -42,11 +42,11 @@ sealed class TodoListsAppState {
 }
 
 /**
- * Renders a [TodoListsWorkflow] and a [TodoEditorWorkflow] in a master / detail
+ * Renders a [TodoListsWorkflow] and a [TodoEditorWorkflow] in a overview / detail
  * relationship. See details in the body of the [render] method.
  */
 object TodoListsAppWorkflow :
-    StatefulWorkflow<Unit, TodoListsAppState, Nothing, MasterDetailScreen>() {
+    StatefulWorkflow<Unit, TodoListsAppState, Nothing, OverviewDetailScreen>() {
   override fun initialState(
     props: Unit,
     snapshot: Snapshot?
@@ -81,7 +81,7 @@ object TodoListsAppWorkflow :
     props: Unit,
     state: TodoListsAppState,
     context: RenderContext<TodoListsAppState, Nothing>
-  ): MasterDetailScreen {
+  ): OverviewDetailScreen {
     val listOfLists: TodoListsScreen = context.renderChild(
         listsWorkflow,
         state.lists
@@ -89,16 +89,16 @@ object TodoListsAppWorkflow :
 
     return when (state) {
       // Nothing is selected. We rest in this state on a phone in portrait orientation.
-      // In a master detail layout, selectDefault can be called immediately, so that
+      // In a overview detail layout, selectDefault can be called immediately, so that
       // the detail panel is never seen to be empty.
-      is ShowingLists -> MasterDetailScreen(
-          masterRendering = BackStackScreen(listOfLists),
+      is ShowingLists -> OverviewDetailScreen(
+          overviewRendering = BackStackScreen(listOfLists),
           selectDefault = { context.actionSink.send(onListSelected(0)) }
       )
 
-      // We are editing a list. Notice that we always render the master pane -- the 
+      // We are editing a list. Notice that we always render the overview pane -- the
       // workflow has no knowledge of whether the view side is running in a single
-      // pane config or as a master / detail split view.
+      // pane config or as a overview / detail split view.
       //
       // Also notice that we update the TodoListsScreen rendering that we got from the
       // TodoListsWorkflow child to reflect the current selection. The child workflow has no
@@ -107,8 +107,8 @@ object TodoListsAppWorkflow :
       is EditingList -> context.renderChild(
           editorWorkflow, state.lists[state.editingIndex], handler = this::onEditOutput
       ).let { editScreen ->
-        MasterDetailScreen(
-            masterRendering = BackStackScreen(listOfLists.copy(selection = state.editingIndex)),
+        OverviewDetailScreen(
+            overviewRendering = BackStackScreen(listOfLists.copy(selection = state.editingIndex)),
             detailRendering = BackStackScreen(editScreen)
         )
       }

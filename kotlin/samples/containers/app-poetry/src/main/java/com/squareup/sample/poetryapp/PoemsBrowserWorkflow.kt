@@ -15,7 +15,7 @@
  */
 package com.squareup.sample.poetryapp
 
-import com.squareup.sample.container.masterdetail.MasterDetailScreen
+import com.squareup.sample.container.overviewdetail.OverviewDetailScreen
 import com.squareup.sample.poetry.PoemWorkflow
 import com.squareup.sample.poetry.model.Poem
 import com.squareup.workflow.RenderContext
@@ -28,7 +28,7 @@ import com.squareup.workflow.ui.backstack.BackStackScreen
 typealias SelectedPoem = Int
 
 object PoemsBrowserWorkflow :
-    StatefulWorkflow<List<Poem>, SelectedPoem, Nothing, MasterDetailScreen>() {
+    StatefulWorkflow<List<Poem>, SelectedPoem, Nothing, OverviewDetailScreen>() {
   override fun initialState(
     props: List<Poem>,
     snapshot: Snapshot?
@@ -41,16 +41,16 @@ object PoemsBrowserWorkflow :
     props: List<Poem>,
     state: SelectedPoem,
     context: RenderContext<SelectedPoem, Nothing>
-  ): MasterDetailScreen {
-    val poems: MasterDetailScreen =
+  ): OverviewDetailScreen {
+    val poems: OverviewDetailScreen =
       context.renderChild(PoemListWorkflow, props) { selected -> choosePoem(selected) }
           .copy(selection = state)
-          .let { MasterDetailScreen(BackStackScreen(it)) }
+          .let { OverviewDetailScreen(BackStackScreen(it)) }
 
     return if (state == -1) {
       poems
     } else {
-      val poem: MasterDetailScreen =
+      val poem: OverviewDetailScreen =
         context.renderChild(PoemWorkflow, props[state]) { clearSelection }
       poems + poem
     }

@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.container.masterdetail
+package com.squareup.sample.container.overviewdetail
 
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import com.squareup.sample.container.R
-import com.squareup.sample.container.masterdetail.MasterDetailConfig.Detail
-import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
-import com.squareup.sample.container.masterdetail.MasterDetailConfig.Single
+import com.squareup.sample.container.overviewdetail.OverviewDetailConfig.Detail
+import com.squareup.sample.container.overviewdetail.OverviewDetailConfig.Overview
+import com.squareup.sample.container.overviewdetail.OverviewDetailConfig.Single
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
@@ -29,29 +29,29 @@ import com.squareup.workflow.ui.WorkflowViewStub
 import com.squareup.workflow.ui.backstack.BackStackScreen
 
 /**
- * Displays [MasterDetailScreen] renderings in either split pane or single pane
+ * Displays [OverviewDetailScreen] renderings in either split pane or single pane
  * treatment, depending on the setup of the given [View]. The view must provide
- * either a single [WorkflowViewStub] with id [R.id.master_detail_single_stub],
- * or else two with ids [R.id.master_stub] and [R.id.detail_stub].
+ * either a single [WorkflowViewStub] with id [R.id.overview_detail_single_stub],
+ * or else two with ids [R.id.overview_stub] and [R.id.detail_stub].
  *
- * For single pane layouts, [MasterDetailScreen] is repackaged as a [BackStackScreen]
- * with [MasterDetailScreen.masterRendering] as the base of the stack.
+ * For single pane layouts, [OverviewDetailScreen] is repackaged as a [BackStackScreen]
+ * with [OverviewDetailScreen.overviewRendering] as the base of the stack.
  */
-class MasterDetailContainer(view: View) : LayoutRunner<MasterDetailScreen> {
+class OverviewDetailContainer(view: View) : LayoutRunner<OverviewDetailScreen> {
 
-  private val masterStub: WorkflowViewStub? = view.findViewById(R.id.master_stub)
+  private val overviewStub: WorkflowViewStub? = view.findViewById(R.id.overview_stub)
   private val detailStub: WorkflowViewStub? = view.findViewById(R.id.detail_stub)
-  private val singleStub: WorkflowViewStub? = view.findViewById(R.id.master_detail_single_stub)
+  private val singleStub: WorkflowViewStub? = view.findViewById(R.id.overview_detail_single_stub)
 
   init {
-    check((singleStub == null) xor (masterStub == null && detailStub == null)) {
-      "Layout must define only R.id.master_detail_single_stub, " +
-          "or else both R.id.master_stub and R.id.detail_stub"
+    check((singleStub == null) xor (overviewStub == null && detailStub == null)) {
+      "Layout must define only R.id.overview_detail_single_stub, " +
+          "or else both R.id.overview_stub and R.id.detail_stub"
     }
   }
 
   override fun showRendering(
-    rendering: MasterDetailScreen,
+    rendering: OverviewDetailScreen,
     viewEnvironment: ViewEnvironment
   ) {
     if (singleStub == null) renderSplitView(rendering, viewEnvironment)
@@ -59,22 +59,22 @@ class MasterDetailContainer(view: View) : LayoutRunner<MasterDetailScreen> {
   }
 
   private fun renderSplitView(
-    rendering: MasterDetailScreen,
+    rendering: OverviewDetailScreen,
     viewEnvironment: ViewEnvironment
   ) {
     if (rendering.detailRendering == null && rendering.selectDefault != null) {
       rendering.selectDefault!!.invoke()
     } else {
-      masterStub!!.update(
-          rendering.masterRendering,
-          viewEnvironment + (MasterDetailConfig to Master)
+      overviewStub!!.update(
+          rendering.overviewRendering,
+          viewEnvironment + (OverviewDetailConfig to Overview)
       )
       rendering.detailRendering
           ?.let { detail ->
             detailStub!!.actual.visibility = VISIBLE
             detailStub.update(
                 detail,
-                viewEnvironment + (MasterDetailConfig to Detail)
+                viewEnvironment + (OverviewDetailConfig to Detail)
             )
           }
           ?: run {
@@ -84,20 +84,20 @@ class MasterDetailContainer(view: View) : LayoutRunner<MasterDetailScreen> {
   }
 
   private fun renderSingleView(
-    rendering: MasterDetailScreen,
+    rendering: OverviewDetailScreen,
     viewEnvironment: ViewEnvironment,
     stub: WorkflowViewStub
   ) {
     val combined: BackStackScreen<*> = rendering.detailRendering
-        ?.let { rendering.masterRendering + it }
-        ?: rendering.masterRendering
+        ?.let { rendering.overviewRendering + it }
+        ?: rendering.overviewRendering
 
-    stub.update(combined, viewEnvironment + (MasterDetailConfig to Single))
+    stub.update(combined, viewEnvironment + (OverviewDetailConfig to Single))
   }
 
-  companion object : ViewFactory<MasterDetailScreen> by LayoutRunner.Binding(
-      type = MasterDetailScreen::class,
-      layoutId = R.layout.master_detail,
-      runnerConstructor = ::MasterDetailContainer
+  companion object : ViewFactory<OverviewDetailScreen> by LayoutRunner.Binding(
+      type = OverviewDetailScreen::class,
+      layoutId = R.layout.overview_detail,
+      runnerConstructor = ::OverviewDetailContainer
   )
 }

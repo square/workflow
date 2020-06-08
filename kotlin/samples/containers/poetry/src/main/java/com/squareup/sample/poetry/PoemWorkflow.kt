@@ -17,7 +17,7 @@
 
 package com.squareup.sample.poetry
 
-import com.squareup.sample.container.masterdetail.MasterDetailScreen
+import com.squareup.sample.container.overviewdetail.OverviewDetailScreen
 import com.squareup.sample.poetry.PoemWorkflow.Action.ClearSelection
 import com.squareup.sample.poetry.PoemWorkflow.Action.HandleStanzaListOutput
 import com.squareup.sample.poetry.PoemWorkflow.Action.SelectNext
@@ -39,10 +39,10 @@ import com.squareup.workflow.ui.backstack.BackStackScreen
 import com.squareup.workflow.ui.backstack.toBackStackScreen
 
 /**
- * Renders a [Poem] as a [MasterDetailScreen], whose master is a [StanzaListRendering]
+ * Renders a [Poem] as a [OverviewDetailScreen], whose overview is a [StanzaListRendering]
  * for the poem, and whose detail traverses through [StanzaRendering]s.
  */
-object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>() {
+object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, OverviewDetailScreen>() {
   object ClosePoem
 
   override fun initialState(
@@ -57,7 +57,7 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>
     props: Poem,
     state: Int,
     context: RenderContext<Int, ClosePoem>
-  ): MasterDetailScreen {
+  ): OverviewDetailScreen {
     val previousStanzas: List<StanzaRendering> =
       if (state == -1) emptyList()
       else props.stanzas.subList(0, state)
@@ -94,9 +94,9 @@ object PoemWorkflow : StatefulWorkflow<Poem, Int, ClosePoem, MasterDetailScreen>
           .let { BackStackScreen<Any>(it) }
 
     return stackedStanzas
-        ?.let { MasterDetailScreen(masterRendering = stanzaIndex, detailRendering = it) }
-        ?: MasterDetailScreen(
-            masterRendering = stanzaIndex,
+        ?.let { OverviewDetailScreen(overviewRendering = stanzaIndex, detailRendering = it) }
+        ?: OverviewDetailScreen(
+            overviewRendering = stanzaIndex,
             selectDefault = { context.actionSink.send(HandleStanzaListOutput(0)) }
         )
   }

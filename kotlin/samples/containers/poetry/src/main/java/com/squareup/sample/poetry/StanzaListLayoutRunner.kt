@@ -22,8 +22,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.sample.container.masterdetail.MasterDetailConfig
-import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
+import com.squareup.sample.container.overviewdetail.OverviewDetailConfig
+import com.squareup.sample.container.overviewdetail.OverviewDetailConfig.Overview
 import com.squareup.sample.container.poetry.R
 import com.squareup.workflow.ui.LayoutRunner
 import com.squareup.workflow.ui.LayoutRunner.Companion.bind
@@ -72,7 +72,7 @@ class StanzaListLayoutRunner(view: View) : LayoutRunner<StanzaListRendering> {
       parent: ViewGroup,
       viewType: Int
     ): ViewHolder {
-      val selectable = environment[MasterDetailConfig] == Master
+      val selectable = environment[OverviewDetailConfig] == Overview
       val layoutId = if (selectable) {
         R.layout.list_row_selectable
       } else {
