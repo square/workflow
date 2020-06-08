@@ -3,7 +3,7 @@ name: Swift CI
 on:
   push:
     branches:
-      - master
+      - trunk
       - '!gh-pages'
     paths:
       - '*.podspec'

@@ -13,7 +13,7 @@ and assign it to @bencochran or @aquageek.*
 ---
 1. Merge an update of [the change log](CHANGELOG.md) with the changes since the last release.
 
-1. Make sure you're on the `master` branch (or fix branch, e.g. `v0.1-fixes`).
+1. Make sure you're on the `trunk` branch (or fix branch, e.g. `v0.1-fixes`).
 
 1. Confirm that the kotlin build is green before committing any changes
    ```bash
@@ -58,7 +58,7 @@ and assign it to @bencochran or @aquageek.*
 
 1. Push your commits and tag:
    ```
-   git push origin master
+   git push origin trunk
    # or git push origin fix-branch
    git push origin v0.1.0
    ```
@@ -73,13 +73,13 @@ and assign it to @bencochran or @aquageek.*
    1. If this is a pre-release version, check the pre-release box.
    1. Hit "Publish release".
 
-1. If this was a fix release, merge changes to the master branch:
+1. If this was a fix release, merge changes to the trunk branch:
    ```bash
-   git checkout master
+   git checkout trunk
    git pull
    git merge --no-ff v0.1-fixes
-   # Resolve conflicts. Accept master's versions of gradle.properties and podspecs.
-   git push origin master
+   # Resolve conflicts. Accept trunk's versions of gradle.properties and podspecs.
+   git push origin trunk
    ```
 
 1. Publish the website. See below.

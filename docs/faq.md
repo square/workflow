@@ -26,7 +26,7 @@ navigation in apps with dozens or hundreds of screens.
 ## How do I get involved and/or contribute?
 
 - [Workflow is open source!](https://github.com/square/workflow)
-- See our [CONTRIBUTING](https://github.com/square/workflow/blob/master/CONTRIBUTING.md) doc to get
+- See our [CONTRIBUTING](https://github.com/square/workflow/blob/trunk/CONTRIBUTING.md) doc to get
   started.
 - Stay tuned! We're considering hosting a public Slack channel for open source contributors.
 
