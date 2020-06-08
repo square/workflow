@@ -1,0 +1,60 @@
+$dokka.format:gfm
+$dokka.linkExtension:md
+$dokka.location:com.squareup.workflow$asWorker(kotlinx.coroutines.Deferred((com.squareup.workflow.asWorker.OutputT)))com.squareup.workflow/kotlinx.coroutines.-deferred/as-worker.md
+$dokka.location:com.squareup.workflow$asWorker(kotlinx.coroutines.channels.BroadcastChannel((com.squareup.workflow.asWorker.OutputT)))com.squareup.workflow/kotlinx.coroutines.channels.-broadcast-channel/as-worker.md
+$dokka.location:com.squareup.workflow$asWorker(kotlinx.coroutines.channels.ReceiveChannel((com.squareup.workflow.asWorker.OutputT)), kotlin.Boolean)com.squareup.workflow/kotlinx.coroutines.channels.-receive-channel/as-worker.md
+$dokka.location:com.squareup.workflow$asWorker(kotlinx.coroutines.flow.Flow((com.squareup.workflow.asWorker.OutputT)))com.squareup.workflow/kotlinx.coroutines.flow.-flow/as-worker.md
+$dokka.location:com.squareup.workflow$parse(okio.ByteString, kotlin.Function1((okio.BufferedSource, com.squareup.workflow.parse.T)))com.squareup.workflow/okio.-byte-string/parse.md
+$dokka.location:com.squareup.workflow$readBooleanFromInt(okio.BufferedSource)com.squareup.workflow/okio.-buffered-source/read-boolean-from-int.md
+$dokka.location:com.squareup.workflow$readByteStringWithLength(okio.BufferedSource)com.squareup.workflow/okio.-buffered-source/read-byte-string-with-length.md
+$dokka.location:com.squareup.workflow$readEnumByOrdinal(okio.BufferedSource)com.squareup.workflow/okio.-buffered-source/read-enum-by-ordinal.md
+$dokka.location:com.squareup.workflow$readFloat(okio.BufferedSource)com.squareup.workflow/okio.-buffered-source/read-float.md
+$dokka.location:com.squareup.workflow$readList(okio.BufferedSource, kotlin.Function1((okio.BufferedSource, com.squareup.workflow.readList.T)))com.squareup.workflow/okio.-buffered-source/read-list.md
+$dokka.location:com.squareup.workflow$readNullable(okio.BufferedSource, kotlin.Function1((okio.BufferedSource, com.squareup.workflow.readNullable.T)))com.squareup.workflow/okio.-buffered-source/read-nullable.md
+$dokka.location:com.squareup.workflow$readOptionalEnumByOrdinal(okio.BufferedSource)com.squareup.workflow/okio.-buffered-source/read-optional-enum-by-ordinal.md
+$dokka.location:com.squareup.workflow$readOptionalUtf8WithLength(okio.BufferedSource)com.squareup.workflow/okio.-buffered-source/read-optional-utf8-with-length.md
+$dokka.location:com.squareup.workflow$readUtf8WithLength(okio.BufferedSource)com.squareup.workflow/okio.-buffered-source/read-utf8-with-length.md
+$dokka.location:com.squareup.workflow$writeBooleanAsInt(okio.BufferedSink, kotlin.Boolean)com.squareup.workflow/okio.-buffered-sink/write-boolean-as-int.md
+$dokka.location:com.squareup.workflow$writeByteStringWithLength(okio.BufferedSink, okio.ByteString)com.squareup.workflow/okio.-buffered-sink/write-byte-string-with-length.md
+$dokka.location:com.squareup.workflow$writeEnumByOrdinal(okio.BufferedSink, com.squareup.workflow.writeEnumByOrdinal.T)com.squareup.workflow/okio.-buffered-sink/write-enum-by-ordinal.md
+$dokka.location:com.squareup.workflow$writeFloat(okio.BufferedSink, kotlin.Float)com.squareup.workflow/okio.-buffered-sink/write-float.md
+$dokka.location:com.squareup.workflow$writeList(okio.BufferedSink, kotlin.collections.List((com.squareup.workflow.writeList.T)), kotlin.Function2((okio.BufferedSink, com.squareup.workflow.writeList.T, kotlin.Unit)))com.squareup.workflow/okio.-buffered-sink/write-list.md
+$dokka.location:com.squareup.workflow$writeNullable(okio.BufferedSink, com.squareup.workflow.writeNullable.T, kotlin.Function2((okio.BufferedSink, com.squareup.workflow.writeNullable.T, kotlin.Unit)))com.squareup.workflow/okio.-buffered-sink/write-nullable.md
+$dokka.location:com.squareup.workflow$writeOptionalEnumByOrdinal(okio.BufferedSink, com.squareup.workflow.writeOptionalEnumByOrdinal.T)com.squareup.workflow/okio.-buffered-sink/write-optional-enum-by-ordinal.md
+$dokka.location:com.squareup.workflow$writeOptionalUtf8WithLength(okio.BufferedSink, kotlin.String)com.squareup.workflow/okio.-buffered-sink/write-optional-utf8-with-length.md
+$dokka.location:com.squareup.workflow$writeUtf8WithLength(okio.BufferedSink, kotlin.String)com.squareup.workflow/okio.-buffered-sink/write-utf8-with-length.md
+$dokka.location:com.squareup.workflow.legacy$workflowType#kotlin.reflect.KClass((com.squareup.workflow.legacy.WorkflowPool.Launcher((com.squareup.workflow.legacy.workflowType.S, com.squareup.workflow.legacy.workflowType.E, com.squareup.workflow.legacy.workflowType.O))))com.squareup.workflow.legacy/kotlin.reflect.-k-class/workflow-type.md
+$dokka.location:com.squareup.workflow.rx2$asWorker(io.reactivex.Completable)com.squareup.workflow.rx2/io.reactivex.-completable/as-worker.md
+$dokka.location:com.squareup.workflow.rx2$asWorker(io.reactivex.Maybe((com.squareup.workflow.rx2.asWorker.T)))com.squareup.workflow.rx2/io.reactivex.-maybe/as-worker.md
+$dokka.location:com.squareup.workflow.rx2$asWorker(io.reactivex.Observable((com.squareup.workflow.rx2.asWorker.T)))com.squareup.workflow.rx2/io.reactivex.-observable/as-worker.md
+$dokka.location:com.squareup.workflow.rx2$asWorker(io.reactivex.Single((com.squareup.workflow.rx2.asWorker.T)))com.squareup.workflow.rx2/io.reactivex.-single/as-worker.md
+$dokka.location:com.squareup.workflow.rx2$asWorker(org.reactivestreams.Publisher((com.squareup.workflow.rx2.asWorker.T)))com.squareup.workflow.rx2/org.reactivestreams.-publisher/as-worker.md
+$dokka.location:com.squareup.workflow.ui$backPressedHandler#android.view.Viewcom.squareup.workflow.ui/android.view.-view/back-pressed-handler.md
+$dokka.location:com.squareup.workflow.ui$bindShowRendering(android.view.View, com.squareup.workflow.ui.bindShowRendering.RenderingT, com.squareup.workflow.ui.ViewEnvironment, kotlin.Function2((com.squareup.workflow.ui.bindShowRendering.RenderingT, com.squareup.workflow.ui.ViewEnvironment, kotlin.Unit)))com.squareup.workflow.ui/android.view.-view/bind-show-rendering.md
+$dokka.location:com.squareup.workflow.ui$canShowRendering(android.view.View, kotlin.Any)com.squareup.workflow.ui/android.view.-view/can-show-rendering.md
+$dokka.location:com.squareup.workflow.ui$environment#android.view.Viewcom.squareup.workflow.ui/android.view.-view/environment.md
+$dokka.location:com.squareup.workflow.ui$getRendering(android.view.View)com.squareup.workflow.ui/android.view.-view/get-rendering.md
+$dokka.location:com.squareup.workflow.ui$getShowRendering(android.view.View)com.squareup.workflow.ui/android.view.-view/get-show-rendering.md
+$dokka.location:com.squareup.workflow.ui$goTo(kotlin.collections.List((com.squareup.workflow.ui.goTo.T)), com.squareup.workflow.ui.goTo.T)com.squareup.workflow.ui/kotlin.collections.-list/go-to.md
+$dokka.location:com.squareup.workflow.ui$lifecycleOrNull(android.content.Context)com.squareup.workflow.ui/android.content.-context/lifecycle-or-null.md
+$dokka.location:com.squareup.workflow.ui$onBackPressedDispatcherOwnerOrNull(android.content.Context)com.squareup.workflow.ui/android.content.-context/on-back-pressed-dispatcher-owner-or-null.md
+$dokka.location:com.squareup.workflow.ui$setContentWorkflow(androidx.fragment.app.FragmentActivity, com.squareup.workflow.ui.ViewEnvironment, kotlin.Function0((com.squareup.workflow.ui.WorkflowRunner.Config((com.squareup.workflow.ui.setContentWorkflow.PropsT, com.squareup.workflow.ui.setContentWorkflow.OutputT)))), kotlin.Function1((com.squareup.workflow.ui.setContentWorkflow.OutputT, kotlin.Unit)))com.squareup.workflow.ui/androidx.fragment.app.-fragment-activity/set-content-workflow.md
+$dokka.location:com.squareup.workflow.ui$setContentWorkflow(androidx.fragment.app.FragmentActivity, com.squareup.workflow.ui.ViewEnvironment, kotlin.Function0((com.squareup.workflow.ui.WorkflowRunner.Config((com.squareup.workflow.ui.setContentWorkflow.PropsT, kotlin.Nothing)))))com.squareup.workflow.ui/androidx.fragment.app.-fragment-activity/set-content-workflow.md
+$dokka.location:com.squareup.workflow.ui$setContentWorkflow(androidx.fragment.app.FragmentActivity, com.squareup.workflow.ui.ViewRegistry, kotlin.Function0((com.squareup.workflow.ui.WorkflowRunner.Config((com.squareup.workflow.ui.setContentWorkflow.PropsT, com.squareup.workflow.ui.setContentWorkflow.OutputT)))), kotlin.Function1((com.squareup.workflow.ui.setContentWorkflow.OutputT, kotlin.Unit)))com.squareup.workflow.ui/androidx.fragment.app.-fragment-activity/set-content-workflow.md
+$dokka.location:com.squareup.workflow.ui$setContentWorkflow(androidx.fragment.app.FragmentActivity, com.squareup.workflow.ui.ViewRegistry, kotlin.Function0((com.squareup.workflow.ui.WorkflowRunner.Config((com.squareup.workflow.ui.setContentWorkflow.PropsT, kotlin.Nothing)))))com.squareup.workflow.ui/androidx.fragment.app.-fragment-activity/set-content-workflow.md
+$dokka.location:com.squareup.workflow.ui$showRendering(android.view.View, com.squareup.workflow.ui.showRendering.RenderingT, com.squareup.workflow.ui.ViewEnvironment)com.squareup.workflow.ui/android.view.-view/show-rendering.md
+$dokka.location:com.squareup.workflow.ui.backstack$toBackStackScreen(kotlin.collections.List((com.squareup.workflow.ui.backstack.toBackStackScreen.T)))com.squareup.workflow.ui.backstack/kotlin.collections.-list/to-back-stack-screen.md
+$dokka.location:com.squareup.workflow.ui.backstack$toBackStackScreenOrNull(kotlin.collections.List((com.squareup.workflow.ui.backstack.toBackStackScreenOrNull.T)))com.squareup.workflow.ui.backstack/kotlin.collections.-list/to-back-stack-screen-or-null.md
+com.squareup.tracing
+com.squareup.workflow
+com.squareup.workflow.diagnostic
+com.squareup.workflow.diagnostic.tracing
+com.squareup.workflow.legacy
+com.squareup.workflow.legacy.rx2
+com.squareup.workflow.legacy.test
+com.squareup.workflow.legacy.test.rx2
+com.squareup.workflow.rx2
+com.squareup.workflow.testing
+com.squareup.workflow.ui
+com.squareup.workflow.ui.backstack
+com.squareup.workflow.ui.modal
