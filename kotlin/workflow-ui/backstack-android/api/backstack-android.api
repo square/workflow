@@ -12,13 +12,15 @@ public final class com/squareup/workflow/ui/backstack/BackStackConfig$Companion 
 	public synthetic fun getDefault ()Ljava/lang/Object;
 }
 
-public class com/squareup/workflow/ui/backstack/BackStackContainer : android/widget/FrameLayout {
+public class com/squareup/workflow/ui/backstack/BackStackContainer : android/view/ViewGroup {
 	public static final field Companion Lcom/squareup/workflow/ui/backstack/BackStackContainer$Companion;
 	public fun <init> (Landroid/content/Context;)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;II)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected fun onLayout (ZIIII)V
+	protected fun onMeasure (II)V
 	protected fun onRestoreInstanceState (Landroid/os/Parcelable;)V
 	protected fun onSaveInstanceState ()Landroid/os/Parcelable;
 	protected fun performTransition (Landroid/view/View;Landroid/view/View;Z)V

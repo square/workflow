@@ -24,7 +24,6 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,9 +40,9 @@ import kotlinx.coroutines.flow.onEach
 class WorkflowLayout(
   context: Context,
   attributeSet: AttributeSet? = null
-) : FrameLayout(context, attributeSet) {
+) : ViewGroup(context, attributeSet) {
   private val showing: WorkflowViewStub = WorkflowViewStub(context).also {
-    addView(it, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+    addView(it, LayoutParams(MATCH_PARENT, MATCH_PARENT))
   }
 
   private var restoredChildState: SparseArray<Parcelable>? = null
@@ -101,6 +100,18 @@ class WorkflowLayout(
           super.onRestoreInstanceState(state.superState)
         }
         ?: super.onRestoreInstanceState(state)
+  }
+
+  override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+    showing.actual.layout(0, 0, measuredWidth, measuredHeight)
+  }
+
+  override fun onMeasure(
+    widthMeasureSpec: Int,
+    heightMeasureSpec: Int
+  ) {
+    showing.actual.measure(widthMeasureSpec, heightMeasureSpec)
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec)
   }
 
   private class SavedState : BaseSavedState {

@@ -25,7 +25,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import androidx.lifecycle.LifecycleObserver
@@ -46,10 +45,10 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
   attributeSet: AttributeSet? = null,
   defStyle: Int = 0,
   defStyleRes: Int = 0
-) : FrameLayout(context, attributeSet, defStyle, defStyleRes) {
+) : ViewGroup(context, attributeSet, defStyle, defStyleRes) {
 
   private val baseView: WorkflowViewStub = WorkflowViewStub(context).also {
-    addView(it, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+    addView(it, LayoutParams(MATCH_PARENT, MATCH_PARENT))
   }
 
   private var dialogs: List<DialogRef<ModalRenderingT>> = emptyList()
@@ -106,6 +105,18 @@ abstract class ModalContainer<ModalRenderingT : Any> @JvmOverloads constructor(
           super.onRestoreInstanceState(state.superState)
         }
         ?: super.onRestoreInstanceState(state)
+  }
+
+  override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+    baseView.actual.layout(0, 0, measuredWidth, measuredHeight)
+  }
+
+  override fun onMeasure(
+    widthMeasureSpec: Int,
+    heightMeasureSpec: Int
+  ) {
+    baseView.actual.measure(widthMeasureSpec, heightMeasureSpec)
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec)
   }
 
   internal data class KeyAndBundle(
