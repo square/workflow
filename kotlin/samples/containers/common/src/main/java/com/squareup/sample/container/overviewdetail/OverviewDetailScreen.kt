@@ -13,76 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.container.masterdetail
+package com.squareup.sample.container.overviewdetail
 
 import com.squareup.workflow.ui.backstack.BackStackScreen
 
 /**
- * Rendering type for master / detail containers, with [BackStackScreen] in both roles.
+ * Rendering type for overview / detail containers, with [BackStackScreen] in both roles.
  *
  * Containers may choose to display both children side by side in a split view, or concatenate them
- * (master + detail) in a single pane.
+ * (overview + detail) in a single pane.
  *
  * @param selectDefault optional function that a split view container may call to request
  * that a selection be made to fill a null [detailRendering].
  */
-class MasterDetailScreen private constructor(
-  val masterRendering: BackStackScreen<Any>,
+class OverviewDetailScreen private constructor(
+  val overviewRendering: BackStackScreen<Any>,
   val detailRendering: BackStackScreen<Any>? = null,
   val selectDefault: (() -> Unit)? = null
 ) {
   constructor(
-    masterRendering: BackStackScreen<Any>,
+    overviewRendering: BackStackScreen<Any>,
     detailRendering: BackStackScreen<Any>
-  ) : this(masterRendering, detailRendering, null)
+  ) : this(overviewRendering, detailRendering, null)
 
   /**
    * @param selectDefault optional function that a split view container may call to request
    * that a selection be made to fill a null [detailRendering].
    */
   constructor(
-    masterRendering: BackStackScreen<Any>,
+    overviewRendering: BackStackScreen<Any>,
     selectDefault: (() -> Unit)? = null
-  ) : this(masterRendering, null, selectDefault)
+  ) : this(overviewRendering, null, selectDefault)
 
-  operator fun component1(): BackStackScreen<Any> = masterRendering
+  operator fun component1(): BackStackScreen<Any> = overviewRendering
   operator fun component2(): BackStackScreen<Any>? = detailRendering
 
   /**
-   * Returns a new [MasterDetailScreen] appending the [masterRendering] and
+   * Returns a new [OverviewDetailScreen] appending the [overviewRendering] and
    * [detailRendering] of [other] to those of the receiver. If the new screen's
    * [detailRendering] is `null`, it will have the [selectDefault] function of [other].
    */
-  operator fun plus(other: MasterDetailScreen): MasterDetailScreen {
-    val newMaster = masterRendering + other.masterRendering
+  operator fun plus(other: OverviewDetailScreen): OverviewDetailScreen {
+    val newOverview = overviewRendering + other.overviewRendering
     val newDetail = detailRendering
         ?.let { it + other.detailRendering }
         ?: other.detailRendering
 
-    return if (newDetail == null) MasterDetailScreen(newMaster, other.selectDefault)
-    else MasterDetailScreen(newMaster, newDetail)
+    return if (newDetail == null) OverviewDetailScreen(newOverview, other.selectDefault)
+    else OverviewDetailScreen(newOverview, newDetail)
   }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (javaClass != other?.javaClass) return false
 
-    other as MasterDetailScreen
+    other as OverviewDetailScreen
 
-    return masterRendering == other.masterRendering &&
+    return overviewRendering == other.overviewRendering &&
         detailRendering == other.detailRendering &&
         selectDefault == other.selectDefault
   }
 
   override fun hashCode(): Int {
-    var result = masterRendering.hashCode()
+    var result = overviewRendering.hashCode()
     result = 31 * result + (detailRendering?.hashCode() ?: 0)
     result = 31 * result + (selectDefault?.hashCode() ?: 0)
     return result
   }
 
   override fun toString(): String {
-    return "MasterDetailScreen(masterRendering=$masterRendering, " +
+    return "OverviewDetailScreen(overviewRendering=$overviewRendering, " +
         "detailRendering=$detailRendering, " +
         "selectDefault=$selectDefault)"
   }

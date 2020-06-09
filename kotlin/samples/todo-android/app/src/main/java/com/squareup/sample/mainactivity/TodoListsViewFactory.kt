@@ -17,8 +17,8 @@ package com.squareup.sample.mainactivity
 
 import android.view.LayoutInflater
 import android.widget.TextView
-import com.squareup.sample.container.masterdetail.MasterDetailConfig
-import com.squareup.sample.container.masterdetail.MasterDetailConfig.Master
+import com.squareup.sample.container.overviewdetail.OverviewDetailConfig
+import com.squareup.sample.container.overviewdetail.OverviewDetailConfig.Overview
 import com.squareup.sample.todo.R
 import com.squareup.sample.todo.TodoList
 import com.squareup.sample.todo.TodoListsScreen
@@ -32,8 +32,8 @@ internal val TodoListsViewFactory: ViewFactory<TodoListsScreen> =
       addRow(
           index,
           list,
-          selectable = containerHints[MasterDetailConfig] == Master,
-          selected = index == rendering.selection && containerHints[MasterDetailConfig] == Master
+          selectable = containerHints[OverviewDetailConfig] == Overview,
+          selected = index == rendering.selection && containerHints[OverviewDetailConfig] == Overview
       ) { rendering.onRowClicked(index) }
     }
     pruneDeadRowsFrom(rendering.lists.size)

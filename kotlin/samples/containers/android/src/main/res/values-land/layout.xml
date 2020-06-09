@@ -15,5 +15,5 @@
   ~ limitations under the License.
   -->
 <resources>
-  <item name="master_detail" type="layout">@layout/master_detail_split</item>
+  <item name="overview_detail" type="layout">@layout/overview_detail_split</item>
 </resources>

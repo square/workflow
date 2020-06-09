@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.sample.container.masterdetail
+package com.squareup.sample.container.overviewdetail
 
 import com.squareup.workflow.ui.ViewEnvironmentKey
 
 /**
  * [com.squareup.workflow.ui.ViewEnvironment] value that informs views
- * whether they're children of a [MasterDetailContainer], and if so
+ * whether they're children of a [OverviewDetailContainer], and if so
  * in what configuration.
  */
-enum class MasterDetailConfig {
+enum class OverviewDetailConfig {
   /**
-   * There is no [MasterDetailContainer] above here.
+   * There is no [OverviewDetailContainer] above here.
    */
   None,
 
   /**
-   * Drawing on the master side of a master / detail split screen.
+   * Drawing on the overview side of a overview / detail split screen.
    */
-  Master,
+  Overview,
 
   /**
-   * Drawing on the detail side of a master / detail split screen.
+   * Drawing on the detail side of a overview / detail split screen.
    */
   Detail,
 
@@ -43,7 +43,7 @@ enum class MasterDetailConfig {
    */
   Single;
 
-  companion object : ViewEnvironmentKey<MasterDetailConfig>(MasterDetailConfig::class) {
+  companion object : ViewEnvironmentKey<OverviewDetailConfig>(OverviewDetailConfig::class) {
     override val default = None
   }
 }
