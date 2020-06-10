@@ -23,15 +23,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.FrameLayout
 import androidx.transition.Scene
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.squareup.workflow.ui.BuilderBinding
 import com.squareup.workflow.ui.Named
-import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewEnvironment
+import com.squareup.workflow.ui.ViewFactory
 import com.squareup.workflow.ui.ViewRegistry
 import com.squareup.workflow.ui.backstack.BackStackConfig.First
 import com.squareup.workflow.ui.backstack.BackStackConfig.Other
@@ -49,12 +48,24 @@ open class BackStackContainer @JvmOverloads constructor(
   attributeSet: AttributeSet? = null,
   defStyle: Int = 0,
   defStyleRes: Int = 0
-) : FrameLayout(context, attributeSet, defStyle, defStyleRes) {
+) : ViewGroup(context, attributeSet, defStyle, defStyleRes) {
 
   private val viewStateCache = ViewStateCache()
 
   private val currentView: View? get() = if (childCount > 0) getChildAt(0) else null
   private var currentRendering: BackStackScreen<Named<*>>? = null
+
+  override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+    currentView?.layout(0, 0, measuredWidth, measuredHeight)
+  }
+
+  override fun onMeasure(
+    widthMeasureSpec: Int,
+    heightMeasureSpec: Int
+  ) {
+    currentView?.measure(widthMeasureSpec, heightMeasureSpec)
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+  }
 
   protected fun update(
     newRendering: BackStackScreen<*>,

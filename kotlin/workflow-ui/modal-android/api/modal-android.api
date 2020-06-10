@@ -26,13 +26,15 @@ public final class com/squareup/workflow/ui/modal/BuildConfig {
 	public fun <init> ()V
 }
 
-public abstract class com/squareup/workflow/ui/modal/ModalContainer : android/widget/FrameLayout {
+public abstract class com/squareup/workflow/ui/modal/ModalContainer : android/view/ViewGroup {
 	public fun <init> (Landroid/content/Context;)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;II)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	protected abstract fun buildDialog (Ljava/lang/Object;Lcom/squareup/workflow/ui/ViewEnvironment;)Lcom/squareup/workflow/ui/modal/ModalContainer$DialogRef;
+	protected fun onLayout (ZIIII)V
+	protected fun onMeasure (II)V
 	protected fun onRestoreInstanceState (Landroid/os/Parcelable;)V
 	protected fun onSaveInstanceState ()Landroid/os/Parcelable;
 	protected final fun update (Lcom/squareup/workflow/ui/modal/HasModals;Lcom/squareup/workflow/ui/ViewEnvironment;)V
