@@ -106,6 +106,7 @@ private suspend fun runTerminalWorkflow(
 
   // Use the result as the parent Job of the runtime coroutine so it gets cancelled automatically
   // if there's an error.
+  @Suppress("DEPRECATION")
   val result =
     launchWorkflowIn(this, workflow, inputs.asFlow()) { session ->
       val renderings = session.renderingsAndSnapshots.map { it.rendering }

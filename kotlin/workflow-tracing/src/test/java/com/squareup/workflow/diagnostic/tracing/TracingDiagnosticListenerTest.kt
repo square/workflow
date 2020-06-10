@@ -22,23 +22,30 @@ import com.squareup.workflow.Snapshot
 import com.squareup.workflow.StatefulWorkflow
 import com.squareup.workflow.action
 import com.squareup.workflow.asWorker
-import com.squareup.workflow.launchWorkflowIn
+import com.squareup.workflow.renderWorkflowIn
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import okio.Buffer
 import okio.buffer
 import okio.source
+import kotlin.coroutines.coroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration
@@ -77,13 +84,18 @@ class TracingDiagnosticListenerTest {
         // Real use cases almost never feed a firehose of changing root props, they change rarely if
         // at all, and almost certainly allow processing of dispatched coroutines in between. This
         // yield represents that more accurately.
-        .onEach { yield() }
-    val renderings = launchWorkflowIn(scope, TestWorkflow(), props) { session ->
-      session.diagnosticListener = listener
-      session.renderingsAndSnapshots.map { it.rendering }
-    }
+        .onEach {
+          yield()
+          yield()
+        }
 
-    runBlocking {
+    runBlocking(scope.coroutineContext) {
+      val renderings = renderWorkflowIn(
+          TestWorkflow(), scope, props.stateIn(this),
+          diagnosticListener = listener,
+          onOutput = {}
+      ).map { it.rendering }
+
       renderings.takeWhile { it != "final" }
           .collect()
     }
@@ -96,9 +108,29 @@ class TracingDiagnosticListenerTest {
     assertEquals(expected.readUtf8(), buffer.readUtf8())
   }
 
+  /**
+   * TODO(https://github.com/square/workflow/issues/1191) Remove once stateIn ships.
+   */
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private suspend fun <T> Flow<T>.stateIn(scope: CoroutineScope): StateFlow<T> {
+    val stateFlow = CompletableDeferred<MutableStateFlow<T>>(parent = coroutineContext[Job])
+    scope.launch {
+      collect {
+        if (stateFlow.isCompleted) {
+          stateFlow.getCompleted().value = it
+        } else {
+          stateFlow.complete(MutableStateFlow(it))
+        }
+      }
+    }
+    return stateFlow.await()
+  }
+
   private inner class TestWorkflow : StatefulWorkflow<Int, String, String, String>() {
 
     private val channel = Channel<String>(UNLIMITED)
+
+    override fun toString(): String = "TestWorkflow"
 
     fun triggerWorker(value: String) {
       channel.offer(value)

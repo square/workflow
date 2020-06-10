@@ -26,6 +26,7 @@ import com.squareup.workflow.diagnostic.IdCounter
 import com.squareup.workflow.diagnostic.WorkflowDiagnosticListener
 import com.squareup.workflow.diagnostic.createId
 import com.squareup.workflow.internal.RealRenderContext.WorkerRunner
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -207,12 +208,12 @@ internal class WorkflowNode<PropsT, StateT, OutputT : Any, RenderingT>(
    * This must be called when the caller will no longer call [tick]. It is an error to call [tick]
    * after calling this method.
    */
-  fun cancel() {
+  fun cancel(cause: CancellationException? = null) {
     // No other cleanup work should be done in this function, since it will only be invoked when
     // this workflow is *directly* discarded by its parent (or the host).
     // If you need to do something whenever this workflow is torn down, add it to the
     // invokeOnCompletion handler for the Job above.
-    coroutineContext.cancel()
+    coroutineContext.cancel(cause)
   }
 
   /**
