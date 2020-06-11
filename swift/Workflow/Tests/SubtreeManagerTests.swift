@@ -263,11 +263,12 @@ final class SubtreeManagerTests: XCTestCase {
 
         let isSubscribing = manager.render { context -> Bool in
             SubscribingWorkflow(
-                signal: signal)
-                .render(
-                    state: SubscribingWorkflow.State(),
-                    context: context
-                )
+                signal: signal
+            )
+            .render(
+                state: SubscribingWorkflow.State(),
+                context: context
+            )
         }
         manager.enableEvents()
 
@@ -281,11 +282,12 @@ final class SubtreeManagerTests: XCTestCase {
 
         let isStillSubscribing = manager.render { context -> Bool in
             SubscribingWorkflow(
-                signal: nil)
-                .render(
-                    state: SubscribingWorkflow.State(),
-                    context: context
-                )
+                signal: nil
+            )
+            .render(
+                state: SubscribingWorkflow.State(),
+                context: context
+            )
         }
         manager.enableEvents()
 
@@ -293,6 +295,110 @@ final class SubtreeManagerTests: XCTestCase {
 
         observer.send(value: ())
         wait(for: [notEmittedExpectation], timeout: 1.0)
+    }
+
+    // MARK: - SideEffect
+
+    func test_maintainsSideEffectLifetimeBetweenRenderPasses() {
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        XCTAssertTrue(manager.sideEffectLifetimes.isEmpty)
+
+        _ = manager.render { context -> TestViewModel in
+            context.runSideEffect(key: "helloWorld") { _ in }
+            return context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
+        }
+
+        XCTAssertEqual(manager.sideEffectLifetimes.count, 1)
+        let sideEffectKey = manager.sideEffectLifetimes.values.first!
+
+        _ = manager.render { context -> TestViewModel in
+            context.runSideEffect(key: "helloWorld") { _ in
+                XCTFail("Unexpected SideEffect execution")
+            }
+            return context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
+        }
+
+        XCTAssertEqual(manager.sideEffectLifetimes.count, 1)
+        XCTAssertTrue(manager.sideEffectLifetimes.values.first === sideEffectKey)
+    }
+
+    func test_endsUnusedSideEffectLifetimeAfterRenderPasses() {
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        XCTAssertTrue(manager.sideEffectLifetimes.isEmpty)
+
+        let lifetimeEndedExpectation = expectation(description: "Lifetime Ended Expectations")
+        _ = manager.render { context -> TestViewModel in
+            context.runSideEffect(key: "helloWorld") { lifetime in
+                lifetime.onEnded {
+                    // Capturing `lifetime` to make sure a retain-cycle will still trigger the `onEnded` block
+                    print("\(lifetime)")
+                    lifetimeEndedExpectation.fulfill()
+                }
+            }
+            return context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
+        }
+
+        XCTAssertEqual(manager.sideEffectLifetimes.count, 1)
+
+        _ = manager.render { context -> TestViewModel in
+            context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
+        }
+
+        XCTAssertEqual(manager.sideEffectLifetimes.count, 0)
+        wait(for: [lifetimeEndedExpectation], timeout: 1)
+    }
+
+    func test_verifySideEffectsWithDifferentKeysAreExecuted() {
+        let manager = WorkflowNode<ParentWorkflow>.SubtreeManager()
+        XCTAssertTrue(manager.sideEffectLifetimes.isEmpty)
+
+        let firstSideEffectExecutedExpectation = expectation(description: "FirstSideEffect")
+        _ = manager.render { context -> TestViewModel in
+            context.runSideEffect(key: "key-1") { _ in
+                firstSideEffectExecutedExpectation.fulfill()
+            }
+            return context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
+        }
+
+        wait(for: [firstSideEffectExecutedExpectation], timeout: 1)
+        XCTAssertEqual(manager.sideEffectLifetimes.count, 1)
+        XCTAssertEqual(manager.sideEffectLifetimes.keys.first, "key-1")
+
+        let secondSideEffectExecutedExpectation = expectation(description: "SecondSideEffect")
+        _ = manager.render { context -> TestViewModel in
+            context.runSideEffect(key: "key-2") { _ in
+                secondSideEffectExecutedExpectation.fulfill()
+            }
+            return context.render(
+                workflow: TestWorkflow(),
+                key: "",
+                outputMap: { _ in AnyWorkflowAction.noAction }
+            )
+        }
+
+        wait(for: [secondSideEffectExecutedExpectation], timeout: 1)
+        XCTAssertEqual(manager.sideEffectLifetimes.count, 1)
+        XCTAssertEqual(manager.sideEffectLifetimes.keys.first, "key-2")
     }
 }
 
