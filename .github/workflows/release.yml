@@ -8,9 +8,7 @@ env:
   RELEASE_TYPE: ${{ github.event.client_payload.release_type }}
   WORKFLOW_VERSION: ${{ github.event.client_payload.workflow_version }}
   SWIFT_CHANGELOG: ${{ github.event.client_payload.swift_changelog }}
-  KOTLIN_CHANGELOG: ${{ github.event.client_payload.kotlin_changelog }}
   PUBLISH_SWIFT: ${{ github.event.client_payload.publish_swift }}
-  PUBLISH_KOTLIN: ${{ github.event.client_payload.publish_kotlin }}
   PREFIX_FOR_TEST: ${{ github.event.client_payload.test_prefix }}
 
 jobs:
@@ -58,7 +56,6 @@ jobs:
       if: env.RELEASE_TYPE == 'major' || env.RELEASE_TYPE == 'minor'
       run: |
         cd trunk
-        sed -i '' -e 's/VERSION_NAME=\(.*\)-SNAPSHOT/VERSION_NAME=${{ env.WORKFLOW_VERSION }}-SNAPSHOT/g' kotlin/gradle.properties
         ls Workflow*.podspec | xargs sed -i '' -e "s/ s.version\( *=\).*/ s.version\1 '${{ env.WORKFLOW_VERSION }}'/"
 
     - name: Push changes to trunk
@@ -72,17 +69,10 @@ jobs:
     - name: Push Release Branch
       run: |
         cd release
-        sed -i '' -e 's/VERSION_NAME=\(.*\)-SNAPSHOT/VERSION_NAME=${{ env.WORKFLOW_VERSION }}/g' kotlin/gradle.properties
-        sed -i '' -e 's/VERSION_NAME=\(.*\)/VERSION_NAME=${{ env.WORKFLOW_VERSION }}/g' kotlin/gradle.properties
         ls Workflow*.podspec | xargs sed -i '' -e "s/ s.version\( *=\).*/ s.version\1 '${{ env.WORKFLOW_VERSION }}'/"
         git add -A .; git commit -m "Releasing ${{ env.WORKFLOW_VERSION }}"
         git tag ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
         git push origin ${{ env.RELEASE_BRANCH }} ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
-
-    - name: Upload Kotlin Artifacts
-      if: env.PUBLISH_KOTLIN == 'true'
-      run: |
-        echo "TODO: Publish Kotlin Artifacts"
 
     - name: Push to Cocoapods
       if: env.PUBLISH_SWIFT == 'true'
@@ -90,16 +80,6 @@ jobs:
         echo "TODO: Push to Cocoapods"
 
       # Publish Documentation
-      # Gradle caches (keys must match those defined in kotlin.yml)
-      # Don't use the gradle wrapper cache, since there's only one job we're downloading the whole wrapper once either way.
-    - name: Cache gradle artifacts
-      uses: actions/cache@v1
-      with:
-        path: ~/.gradle/caches
-        key: gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/buildSrc/**') }}-${{ github.sha }}
-        restore-keys: |
-          gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle*') }}-
-
     # Swift caches (keys must match those defined in swift.yml)
     - name: Load gem cache
       uses: actions/cache@v1

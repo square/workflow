@@ -15,29 +15,11 @@ and assign it to @bencochran or @aquageek.*
 
 1. Make sure you're on the `trunk` branch (or fix branch, e.g. `v0.1-fixes`).
 
-1. Confirm that the kotlin build is green before committing any changes
-   ```bash
-   (cd kotlin && ./gradlew build connectedCheck)
-   ```
-
-1. In `kotlin/gradle.properties`, remove the `-SNAPSHOT` prefix from the `VERSION_NAME` property.
-   E.g. `VERSION_NAME=0.1.0`
-
 1. Create a commit and tag the commit with the version number:
    ```bash
    git commit -am "Releasing v0.1.0."
    git tag v0.1.0
    ```
-
-1. Upload the kotlin artifacts:
-   ```bash
-   (cd kotlin && ./gradlew clean build && ./gradlew uploadArchives --no-parallel --no-daemon)
-   ```
-
-   Disabling parallelism and daemon sharing is required by the vanniktech maven publish plugin.
-   Without those, the artifacts will be split across multiple (invalid) staging repositories.
-
-1. Close and release the staging repository at https://oss.sonatype.org.
 
 1. Publish to CocoaPods:
     ```bash
@@ -47,8 +29,6 @@ and assign it to @bencochran or @aquageek.*
     ```
 
 1. Bump the version
-   - **Kotlin:** Update the `VERSION_NAME` property in `kotlin/gradle.properties` to the new
-     snapshot version, e.g. `VERSION_NAME=0.2.0-SNAPSHOT`.
    - **Swift:** Update `s.version` in `*.podspec` to the new version, e.g. `0.2.0`.
 
 1. Commit the new snapshot version:

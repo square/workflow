@@ -2,7 +2,6 @@
 
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 [![CocoaPods compatible](https://img.shields.io/cocoapods/v/Workflow.svg)](https://cocoapods.org/pods/Workflow)
-[![Maven Central](https://img.shields.io/maven-central/v/com.squareup.workflow/workflow-core-jvm.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.squareup.workflow%22)
 
 A unidirectional data flow library for Kotlin and Swift, emphasizing:
 
@@ -56,75 +55,7 @@ pod 'WorkflowUI'
 
 ### Kotlin
 
-![Kotlin CI](https://github.com/square/workflow/workflows/Kotlin%20CI/badge.svg)
-[![Maven Central](https://img.shields.io/maven-central/v/com.squareup.workflow/workflow-core-jvm.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.squareup.workflow%22)
-[![Kotlinlang slack](https://img.shields.io/static/v1?label=kotlinlang&message=squarelibraries&color=brightgreen&logo=slack)](https://kotlinlang.slack.com/archives/C5HT9AL7Q)
-
-#### Maven Artifacts
-
-Artifacts are hosted on Maven Central. If you're using Gradle, ensure `mavenCentral()` appears in
-your `repositories` block, and then add dependencies on the following artifacts:
-
-<table>
-  <tr>
-    <th>Maven Coordinates</th>
-    <th>Depend on this if…</th>
-  </tr>
-  <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-core-jvm:x.y.z</code></td>
-    <td>You are writing a library module/project that uses Workflows, but you don't need to interact
-    with the runtime from the outside.</td>
-  </tr>
-  <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-rx2:x.y.z</code></td>
-    <td>You need to interact with RxJava2 from your Workflows.</td>
-  </tr>
-  <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-testing-jvm:x.y.z</code></td>
-    <td>You are writing tests. This should only be included as a test dependency.</td>
-  </tr>
-  <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-ui-core-android:x.y.z</code></td>
-    <td>You're writing an Android app that uses Workflows.</td>
-  </tr>
-  <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-ui-modal-android:x.y.z</code></td>
-    <td>Your Android app uses modals (popups).</td>
-  </tr>
-  <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-ui-backstack-android:x.y.z</code></td>
-    <td>Your android app uses backstacks.</td>
-  </tr>
-</table>
-
-#### Lower-level Artifacts
-
-Most code shouldn't need to depend on these directly. They should generally only be used to build
-higher-level integrations with UI frameworks.
-
-<table>
-  <tr>
-    <th>Maven Coordinates</th>
-    <th>Depend on this if…</th>
-  </tr>
-  <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-runtime-jvm:x.y.z</code></td>
-    <td>You need to interact directly with the runtime, i.e. streams of renderings and outputs.</td>
-  </tr>
-  <tr>
-    <td nowrap><code>com.squareup.workflow:workflow-ui-core-jvm:x.y.z</code></td>
-    <td>You are writing workflow-ui-android for another UI framework. Defines the core types used by
-    that artifact.</td>
-  </tr>
-</table>
-
-#### Jetpack Compose support
-
-[Jetpack Compose](https://developer.android.com/jetpack/compose) is the new (under-development,
-pre-release) UI toolkit for Android. It is comparable to SwiftUI for iOS. The main UI artifacts in
-this repository support standard Android Views, but various types of Compose integrations are
-provided in the sidecar repository **[square/workflow-kotlin-compose](https://github.com/square/workflow-kotlin-compose)**.
-See that repo for usage info and documentation.
+See the [square/workflow-kotlin](https://github.com/square/workflow-kotlin) repository.
 
 ## Resources
 
