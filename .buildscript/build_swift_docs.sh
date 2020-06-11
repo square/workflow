@@ -33,6 +33,8 @@ fi
 set -ex
 
 # Prepare the Xcode project.
+git clone https://github.com/square/workflow-swift.git
+cd workflow-swift
 bundle exec pod gen Development.podspec
 cd gen/Development
 
