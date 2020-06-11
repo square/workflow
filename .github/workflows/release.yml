@@ -7,8 +7,6 @@ on:
 env:
   RELEASE_TYPE: ${{ github.event.client_payload.release_type }}
   WORKFLOW_VERSION: ${{ github.event.client_payload.workflow_version }}
-  SWIFT_CHANGELOG: ${{ github.event.client_payload.swift_changelog }}
-  PUBLISH_SWIFT: ${{ github.event.client_payload.publish_swift }}
   PREFIX_FOR_TEST: ${{ github.event.client_payload.test_prefix }}
 
 jobs:
@@ -45,19 +43,6 @@ jobs:
         ref: ${{ env.RELEASE_BRANCH }}
         path: release
 
-    - name: Update Changelog
-      run: |
-        cd trunk
-        ../.buildscript/update_changelog.swift
-        cd ../release
-        ../.buildscript/update_changelog.swift
-
-    - name: Update Trunk Version (major, minor)
-      if: env.RELEASE_TYPE == 'major' || env.RELEASE_TYPE == 'minor'
-      run: |
-        cd trunk
-        ls Workflow*.podspec | xargs sed -i '' -e "s/ s.version\( *=\).*/ s.version\1 '${{ env.WORKFLOW_VERSION }}'/"
-
     - name: Push changes to trunk
       env:
         GIT_USERNAME: ${{ github.actor }}
@@ -73,11 +58,6 @@ jobs:
         git add -A .; git commit -m "Releasing ${{ env.WORKFLOW_VERSION }}"
         git tag ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
         git push origin ${{ env.RELEASE_BRANCH }} ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
-
-    - name: Push to Cocoapods
-      if: env.PUBLISH_SWIFT == 'true'
-      run: |
-        echo "TODO: Push to Cocoapods"
 
       # Publish Documentation
     # Swift caches (keys must match those defined in swift.yml)

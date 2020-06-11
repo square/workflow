@@ -1,5 +1,0 @@
-#!/bin/bash
-git diff --diff-filter=d --staged --name-only | grep -e '\.swift$' | while read line; do
-  swift run swiftformat "${line}" --quiet;
-  git add "$line";
-done
