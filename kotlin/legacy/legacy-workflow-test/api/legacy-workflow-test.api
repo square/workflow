@@ -1,9 +1,0 @@
-public final class com/squareup/workflow/legacy/test/Assertions {
-	public static final fun assertFinish (Lcom/squareup/workflow/legacy/rx2/Reactor;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V
-	public static final fun assertTransition (Lcom/squareup/workflow/legacy/rx2/Reactor;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V
-}
-
-public final class com/squareup/workflow/legacy/test/rx2/EventChannels {
-	public static final fun eventChannelOf ([Ljava/lang/Object;)Lcom/squareup/workflow/legacy/rx2/EventChannel;
-}
-
