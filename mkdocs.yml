@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-site_name: Workflow
+site_name: Square Workflow
 repo_name: Workflow
 repo_url: https://github.com/square/workflow
 site_description: "A library for making composable state machines, and UIs driven by those state machines."
