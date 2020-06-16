@@ -10,7 +10,7 @@ env:
   PREFIX_FOR_TEST: ${{ github.event.client_payload.test_prefix }}
 
 jobs:
-  bump-trunk:
+  bump-main:
     runs-on: macos-latest
 
     steps:
@@ -23,16 +23,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Checkout Trunk
+    - name: Checkout Main
       uses: actions/checkout@v2
       with:
-        ref: ${{ env.PREFIX_FOR_TEST }}trunk
-        path: trunk
+        ref: ${{ env.PREFIX_FOR_TEST }}main
+        path: main
 
     - name: Setup Release Branch (major, minor)
       if: env.RELEASE_TYPE == 'major' || env.RELEASE_TYPE == 'minor'
       run: |
-        cp -R trunk release
+        cp -R main release
         cd release
         git checkout -b ${{ env.RELEASE_BRANCH }}
 
@@ -43,12 +43,12 @@ jobs:
         ref: ${{ env.RELEASE_BRANCH }}
         path: release
 
-    - name: Push changes to trunk
+    - name: Push changes to main
       env:
         GIT_USERNAME: ${{ github.actor }}
         GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        cd trunk
+        cd main
         git add -A . && git commit -m "Releasing ${{ env.WORKFLOW_VERSION }}" && git push -f
 
     - name: Push Release Branch
