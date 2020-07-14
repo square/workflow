@@ -21,7 +21,7 @@
     
     
       
-        <title>Releasing workflow - Workflow</title>
+        <title>Releasing workflow - Square Workflow</title>
       
     
     
@@ -81,7 +81,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-header-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-header-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../images/icon-square.png" alt="logo">
 
@@ -93,7 +93,7 @@
       
         <div class="md-header-nav__ellipsis">
           <span class="md-header-nav__topic md-ellipsis">
-            Workflow
+            Square Workflow
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
@@ -240,12 +240,12 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../images/icon-square.png" alt="logo">
 
     </a>
-    Workflow
+    Square Workflow
   </label>
   
     <div class="md-nav__source">
@@ -781,13 +781,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#production-releases" class="md-nav__link">
-    Production Releases
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deploying-the-documentation-website" class="md-nav__link">
     Deploying the documentation website
   </a>
@@ -916,101 +909,6 @@
                 
                 
                 <h1 id="releasing-workflow">Releasing workflow<a class="headerlink" href="#releasing-workflow" title="Permanent link">&para;</a></h1>
-<h2 id="production-releases">Production Releases<a class="headerlink" href="#production-releases" title="Permanent link">&para;</a></h2>
-<hr />
-<p><strong><em>Before you begin:</em></strong> <em>Please make sure you are set up with 
-<a href="https://guides.cocoapods.org/making/getting-setup-with-trunk.html"><code>pod trunk</code></a> and your CocoaPods
-account is a contributor to both the Workflow and WorkflowUI pods. If you need to be added as a
-contributor, please <a href="https://github.com/square/workflow/issues/new">open a ticket requesting access</a>,
-and assign it to @bencochran or @aquageek.</em></p>
-<hr />
-<ol>
-<li>
-<p>Merge an update of <a href="../CHANGELOG/">the change log</a> with the changes since the last release.</p>
-</li>
-<li>
-<p>Make sure you&rsquo;re on the <code>trunk</code> branch (or fix branch, e.g. <code>v0.1-fixes</code>).</p>
-</li>
-<li>
-<p>Confirm that the kotlin build is green before committing any changes
-   <div class="highlight"><pre><span></span><code><span class="o">(</span><span class="nb">cd</span> kotlin <span class="o">&amp;&amp;</span> ./gradlew build connectedCheck<span class="o">)</span>
-</code></pre></div></p>
-</li>
-<li>
-<p>In <code>kotlin/gradle.properties</code>, remove the <code>-SNAPSHOT</code> prefix from the <code>VERSION_NAME</code> property.
-   E.g. <code>VERSION_NAME=0.1.0</code></p>
-</li>
-<li>
-<p>Create a commit and tag the commit with the version number:
-   <div class="highlight"><pre><span></span><code>git commit -am <span class="s2">&quot;Releasing v0.1.0.&quot;</span>
-git tag v0.1.0
-</code></pre></div></p>
-</li>
-<li>
-<p>Upload the kotlin artifacts:
-   <div class="highlight"><pre><span></span><code><span class="o">(</span><span class="nb">cd</span> kotlin <span class="o">&amp;&amp;</span> ./gradlew clean build <span class="o">&amp;&amp;</span> ./gradlew uploadArchives --no-parallel --no-daemon<span class="o">)</span>
-</code></pre></div></p>
-</li>
-</ol>
-<p>Disabling parallelism and daemon sharing is required by the vanniktech maven publish plugin.
-   Without those, the artifacts will be split across multiple (invalid) staging repositories.</p>
-<ol>
-<li>
-<p>Close and release the staging repository at <a href="https://oss.sonatype.org">https://oss.sonatype.org</a>.</p>
-</li>
-<li>
-<p>Publish to CocoaPods:
-    <div class="highlight"><pre><span></span><code>bundle <span class="nb">exec</span> pod trunk push Workflow.podspec
-bundle <span class="nb">exec</span> pod trunk push WorkflowTesting.podspec
-bundle <span class="nb">exec</span> pod trunk push WorkflowUI.podspec
-</code></pre></div></p>
-</li>
-<li>
-<p>Bump the version</p>
-</li>
-<li><strong>Kotlin:</strong> Update the <code>VERSION_NAME</code> property in <code>kotlin/gradle.properties</code> to the new
-     snapshot version, e.g. <code>VERSION_NAME=0.2.0-SNAPSHOT</code>.</li>
-<li>
-<p><strong>Swift:</strong> Update <code>s.version</code> in <code>*.podspec</code> to the new version, e.g. <code>0.2.0</code>.</p>
-</li>
-<li>
-<p>Commit the new snapshot version:
-   <div class="highlight"><pre><span></span><code>git commit -am &quot;Finish releasing v0.1.0.&quot;
-</code></pre></div></p>
-</li>
-<li>
-<p>Push your commits and tag:
-   <div class="highlight"><pre><span></span><code>git push origin trunk
-# or git push origin fix-branch
-git push origin v0.1.0
-</code></pre></div></p>
-</li>
-<li>
-<p>Create the release on GitHub:</p>
-</li>
-<li>Go to the <a href="https://github.com/square/workflow/releases">Releases</a> page for the GitHub
-      project.</li>
-<li>Click &ldquo;Draft a new release&rdquo;.</li>
-<li>Enter the tag name you just pushed.</li>
-<li>Title the release with the same name as the tag.</li>
-<li>Copy &amp; paste the changelog entry for this release into the description.</li>
-<li>If this is a pre-release version, check the pre-release box.</li>
-<li>
-<p>Hit &ldquo;Publish release&rdquo;.</p>
-</li>
-<li>
-<p>If this was a fix release, merge changes to the trunk branch:
-   <div class="highlight"><pre><span></span><code>git checkout trunk
-git pull
-git merge --no-ff v0.1-fixes
-<span class="c1"># Resolve conflicts. Accept trunk&#39;s versions of gradle.properties and podspecs.</span>
-git push origin trunk
-</code></pre></div></p>
-</li>
-<li>
-<p>Publish the website. See below.</p>
-</li>
-</ol>
 <h2 id="deploying-the-documentation-website">Deploying the documentation website<a class="headerlink" href="#deploying-the-documentation-website" title="Permanent link">&para;</a></h2>
 <p>Official Workflow documentation lives at <a href="https://squareup.github.io/workflow">https://squareup.github.io/workflow</a>. The website content
 consists of three parts:</p>
@@ -1044,15 +942,20 @@ already got Xcode, Ruby, and rubygems set up, install the rest of the dependenci
 brew install sourcedocs
 </code></pre></div>
 
-<p>If that succeeded, you need to generate an Xcode project before running Sourcedocs:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span> swift/Samples/SampleApp/
+<p>You will also need a checkout of the Swift repo:</p>
+<div class="highlight"><pre><span></span><code>git clone https://github.com/square/workflow-swift.git
+<span class="nb">cd</span> workflow-swift
+</code></pre></div>
+
+<p>Then generate an Xcode project before running Sourcedocs:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> Samples/SampleApp/
 bundle <span class="nb">exec</span> pod install
 <span class="c1"># If this is your first time running CocoaPods, that will fail and you&#39;ll need to run this instead:</span>
 <span class="c1">#bundle exec pod install --repo-update</span>
 </code></pre></div>
 
 <p>You can manually generate the docs to verify everything is working correctly by running:</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#cd swift/Samples/SampleApp/</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#cd Samples/SampleApp/</span>
 sourcedocs generate -- -scheme Workflow -workspace SampleApp.xcworkspace
 sourcedocs generate -- -scheme WorkflowUI -workspace SampleApp.xcworkspace
 sourcedocs generate -- -scheme WorkflowTesting -workspace SampleApp.xcworkspace

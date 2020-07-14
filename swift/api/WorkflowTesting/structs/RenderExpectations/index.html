@@ -21,7 +21,7 @@
     
     
       
-        <title>RenderExpectations - Workflow</title>
+        <title>RenderExpectations - Square Workflow</title>
       
     
     
@@ -81,7 +81,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-header-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-header-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../../../../../images/icon-square.png" alt="logo">
 
@@ -93,7 +93,7 @@
       
         <div class="md-header-nav__ellipsis">
           <span class="md-header-nav__topic md-ellipsis">
-            Workflow
+            Square Workflow
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
@@ -240,12 +240,12 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../../../../../images/icon-square.png" alt="logo">
 
     </a>
-    Workflow
+    Square Workflow
   </label>
   
     <div class="md-nav__source">
@@ -789,8 +789,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#initexpectedstateexpectedoutputexpectedworkersexpectedworkflows" class="md-nav__link">
-    init(expectedState:expectedOutput:expectedWorkers:expectedWorkflows:)
+  <a href="#initexpectedstateexpectedoutputexpectedworkflowsexpectedsideeffects" class="md-nav__link">
+    init(expectedState:expectedOutput:expectedWorkflows:expectedSideEffects:)
   </a>
   
 </li>
@@ -830,12 +830,12 @@
 for a <code>render</code> test to pass.</p>
 </blockquote>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="initexpectedstateexpectedoutputexpectedworkersexpectedworkflows"><code>init(expectedState:expectedOutput:expectedWorkers:expectedWorkflows:)</code><a class="headerlink" href="#initexpectedstateexpectedoutputexpectedworkersexpectedworkflows" title="Permanent link">&para;</a></h3>
+<h3 id="initexpectedstateexpectedoutputexpectedworkflowsexpectedsideeffects"><code>init(expectedState:expectedOutput:expectedWorkflows:expectedSideEffects:)</code><a class="headerlink" href="#initexpectedstateexpectedoutputexpectedworkflowsexpectedsideeffects" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span>
     <span class="n">expectedState</span><span class="p">:</span> <span class="n">ExpectedState</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">,</span>
     <span class="n">expectedOutput</span><span class="p">:</span> <span class="n">ExpectedOutput</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">,</span>
-    <span class="n">expectedWorkers</span><span class="p">:</span> <span class="p">[</span><span class="n">ExpectedWorker</span><span class="p">]</span> <span class="p">=</span> <span class="p">[],</span>
-    <span class="n">expectedWorkflows</span><span class="p">:</span> <span class="p">[</span><span class="n">ExpectedWorkflow</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span>
+    <span class="n">expectedWorkflows</span><span class="p">:</span> <span class="p">[</span><span class="n">ExpectedWorkflow</span><span class="p">]</span> <span class="p">=</span> <span class="p">[],</span>
+    <span class="n">expectedSideEffects</span><span class="p">:</span> <span class="p">[</span><span class="n">ExpectedSideEffect</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;]</span> <span class="p">=</span> <span class="p">[]</span>
 <span class="p">)</span>
 </code></pre></div>
                 

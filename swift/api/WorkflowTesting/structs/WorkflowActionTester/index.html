@@ -21,7 +21,7 @@
     
     
       
-        <title>WorkflowActionTester - Workflow</title>
+        <title>WorkflowActionTester - Square Workflow</title>
       
     
     
@@ -81,7 +81,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-header-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-header-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../../../../../images/icon-square.png" alt="logo">
 
@@ -93,7 +93,7 @@
       
         <div class="md-header-nav__ellipsis">
           <span class="md-header-nav__topic md-ellipsis">
-            Workflow
+            Square Workflow
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
@@ -240,12 +240,12 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../../../../../images/icon-square.png" alt="logo">
 
     </a>
-    Workflow
+    Square Workflow
   </label>
   
     <div class="md-nav__source">
@@ -789,11 +789,11 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#sendactionoutputassertions" class="md-nav__link">
-    send(action:outputAssertions:)
+  <a href="#sendaction" class="md-nav__link">
+    send(action:)
   </a>
   
-    <nav class="md-nav" aria-label="send(action:outputAssertions:)">
+    <nav class="md-nav" aria-label="send(action:)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -809,15 +809,42 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#assertstate_" class="md-nav__link">
-    assertState(_:)
+  <a href="#assertnooutputfileline" class="md-nav__link">
+    assertNoOutput(file:line:)
   </a>
   
-    <nav class="md-nav" aria-label="assertState(_:)">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifyoutputfileline_" class="md-nav__link">
+    verifyOutput(file:line:_:)
+  </a>
+  
+    <nav class="md-nav" aria-label="verifyOutput(file:line:_:)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifystate_" class="md-nav__link">
+    verifyState(_:)
+  </a>
+  
+    <nav class="md-nav" aria-label="verifyState(_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
     Parameters
   </a>
   
@@ -859,38 +886,50 @@
 </code></pre></div>
 
 <blockquote>
-<p>Testing helper that chains event sending and state/output assertions
+<p>Testing helper that chains action sending and state/output assertions
 to make tests easier to write.</p>
-<div class="highlight"><pre><span></span><code>reducer
+<div class="highlight"><pre><span></span><code>MyWorkflow.Action
     .tester(withState: .firstState)
-    .assertState { state in
-        XCTAssertEqual(.firstState, state)
-    }
-    .send(event: .exampleEvent) { output in
+    .send(action: .exampleAction)
+    .verifyOutput { output in
         XCTAssertEqual(.finished, output)
     }
-    .assertState { state in
+    .verifyState { state in
         XCTAssertEqual(.differentState, state)
     }
 </code></pre></div>
 
+<p>Or to assert that an action produces no output:</p>
+<div class="highlight"><pre><span></span><code>MyWorkflow.Action
+    .tester(withState: .firstState)
+    .send(action: .actionProducingNoOutput)
+    .assertNoOutput()
+    .verifyState { state in
+        XCTAssertEqual(.differentState, state)
+    }
+</code></pre></div>
+
+<p>If your State or Output are <code>Equatable</code>, you can use the convenience assertion methods:
+<div class="highlight"><pre><span></span><code>MyWorkflow.Action
+    .tester(withState: .firstState)
+    .send(action: .exampleAction)
+    .assert(output: .finished)
+    .assert(state: .differentState)
+</code></pre></div></p>
 </blockquote>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="sendactionoutputassertions"><code>send(action:outputAssertions:)</code><a class="headerlink" href="#sendactionoutputassertions" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span> <span class="n">outputAssertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">?)</span> <span class="p">-&gt;</span> <span class="nb">Void</span> <span class="p">=</span> <span class="p">{</span> <span class="kc">_</span> <span class="k">in</span> <span class="p">})</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
+<h3 id="sendaction"><code>send(action:)</code><a class="headerlink" href="#sendaction" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
 </code></pre></div>
 
 <blockquote>
-<p>Sends an event to the reducer.</p>
+<p>Sends an action to the reducer.</p>
 <ul>
 <li>
-<p>parameter event: The event to send.</p>
+<p>parameter action: The action to send.</p>
 </li>
 <li>
-<p>parameter outputAssertions: An optional closure that runs validations on the output generated by the reducer.</p>
-</li>
-<li>
-<p>returns: A new state tester containing the state after the update.</p>
+<p>returns: A new state tester containing the state and output (if any) after the update.</p>
 </li>
 </ul>
 </blockquote>
@@ -904,17 +943,61 @@ to make tests easier to write.</p>
 </thead>
 <tbody>
 <tr>
-<td>event</td>
-<td>The event to send.</td>
-</tr>
-<tr>
-<td>outputAssertions</td>
-<td>An optional closure that runs validations on the output generated by the reducer.</td>
+<td>action</td>
+<td>The action to send.</td>
 </tr>
 </tbody>
 </table>
-<h3 id="assertstate_"><code>assertState(_:)</code><a class="headerlink" href="#assertstate_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">assertState</span><span class="p">(</span><span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
+<h3 id="assertnooutputfileline"><code>assertNoOutput(file:line:)</code><a class="headerlink" href="#assertnooutputfileline" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">assertNoOutput</span><span class="p">(</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
+<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<blockquote>
+<p>Asserts that the action produced no output</p>
+<ul>
+<li>returns: A tester containing the current state and output.</li>
+</ul>
+</blockquote>
+<h3 id="verifyoutputfileline_"><code>verifyOutput(file:line:_:)</code><a class="headerlink" href="#verifyoutputfileline_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyOutput</span><span class="p">(</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
+    <span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<blockquote>
+<p>Invokes the given closure (which is intended to contain test assertions) with the produced output.
+If the previous action produced no output, the triggers a test failure and does not execute the closure.</p>
+<ul>
+<li>
+<p>parameter assertions: A closure that accepts a single output value.</p>
+</li>
+<li>
+<p>returns: A tester containing the current state and output.</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>assertions</td>
+<td>A closure that accepts a single output value.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="verifystate_"><code>verifyState(_:)</code><a class="headerlink" href="#verifystate_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyState</span><span class="p">(</span><span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
 </code></pre></div>
 
 <blockquote>
@@ -924,11 +1007,11 @@ to make tests easier to write.</p>
 <p>parameter assertions: A closure that accepts a single state value.</p>
 </li>
 <li>
-<p>returns: A tester containing the current state.</p>
+<p>returns: A tester containing the current state and output.</p>
 </li>
 </ul>
 </blockquote>
-<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>

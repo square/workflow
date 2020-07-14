@@ -21,7 +21,7 @@
     
     
       
-        <title>ContainerViewController - Workflow</title>
+        <title>ContainerViewController - Square Workflow</title>
       
     
     
@@ -81,7 +81,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-header-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-header-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../../../../../images/icon-square.png" alt="logo">
 
@@ -93,7 +93,7 @@
       
         <div class="md-header-nav__ellipsis">
           <span class="md-header-nav__topic md-ellipsis">
-            Workflow
+            Square Workflow
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
@@ -240,12 +240,12 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../../../../../images/icon-square.png" alt="logo">
 
     </a>
-    Workflow
+    Square Workflow
   </label>
   
     <div class="md-nav__source">
@@ -858,6 +858,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#updateworkflow" class="md-nav__link">
+    update(workflow:)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#initcoder" class="md-nav__link">
     init(coder:)
   </a>
@@ -905,7 +912,7 @@
                 
                 <p><strong>CLASS</strong></p>
 <h1 id="containerviewcontroller"><code>ContainerViewController</code><a class="headerlink" href="#containerviewcontroller" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">ContainerViewController</span><span class="p">&lt;</span><span class="n">Output</span><span class="p">,</span> <span class="n">ScreenType</span><span class="p">&gt;:</span> <span class="bp">UIViewController</span> <span class="k">where</span> <span class="n">ScreenType</span><span class="p">:</span> <span class="n">Screen</span>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">ContainerViewController</span><span class="p">&lt;</span><span class="n">ScreenType</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;:</span> <span class="bp">UIViewController</span> <span class="k">where</span> <span class="n">ScreenType</span><span class="p">:</span> <span class="n">Screen</span>
 </code></pre></div>
 
 <blockquote>
@@ -913,7 +920,7 @@
 </blockquote>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="output"><code>output</code><a class="headerlink" href="#output" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">let</span> <span class="nv">output</span><span class="p">:</span> <span class="n">Signal</span><span class="p">&lt;</span><span class="n">Output</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">var</span> <span class="nv">output</span><span class="p">:</span> <span class="n">Signal</span><span class="p">&lt;</span><span class="n">Output</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span>
 </code></pre></div>
 
 <blockquote>
@@ -945,9 +952,16 @@
 
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="initworkflowrootviewenvironment"><code>init(workflow:rootViewEnvironment:)</code><a class="headerlink" href="#initworkflowrootviewenvironment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">convenience</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">W</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">W</span><span class="p">,</span> <span class="n">rootViewEnvironment</span><span class="p">:</span> <span class="n">ViewEnvironment</span> <span class="p">=</span> <span class="p">.</span><span class="n">empty</span><span class="p">)</span> <span class="k">where</span> <span class="n">W</span><span class="p">.</span><span class="n">Rendering</span> <span class="p">==</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">W</span><span class="p">.</span><span class="n">Output</span> <span class="p">==</span> <span class="n">Output</span>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">W</span><span class="p">:</span> <span class="n">AnyWorkflowConvertible</span><span class="p">&gt;(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">W</span><span class="p">,</span> <span class="n">rootViewEnvironment</span><span class="p">:</span> <span class="n">ViewEnvironment</span> <span class="p">=</span> <span class="p">.</span><span class="n">empty</span><span class="p">)</span> <span class="k">where</span> <span class="n">W</span><span class="p">.</span><span class="n">Rendering</span> <span class="p">==</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">W</span><span class="p">.</span><span class="n">Output</span> <span class="p">==</span> <span class="n">Output</span>
 </code></pre></div>
 
+<h3 id="updateworkflow"><code>update(workflow:)</code><a class="headerlink" href="#updateworkflow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">&lt;</span><span class="n">W</span><span class="p">:</span> <span class="n">AnyWorkflowConvertible</span><span class="p">&gt;(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">W</span><span class="p">)</span> <span class="k">where</span> <span class="n">W</span><span class="p">.</span><span class="n">Rendering</span> <span class="p">==</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">W</span><span class="p">.</span><span class="n">Output</span> <span class="p">==</span> <span class="n">Output</span>
+</code></pre></div>
+
+<blockquote>
+<p>Updates the root Workflow in this container.</p>
+</blockquote>
 <h3 id="initcoder"><code>init(coder:)</code><a class="headerlink" href="#initcoder" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">required</span> <span class="kd">init</span><span class="p">?(</span><span class="n">coder</span> <span class="n">aDecoder</span><span class="p">:</span> <span class="bp">NSCoder</span><span class="p">)</span>
 </code></pre></div>

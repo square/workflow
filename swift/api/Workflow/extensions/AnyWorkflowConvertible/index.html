@@ -21,7 +21,7 @@
     
     
       
-        <title>AnyWorkflowConvertible - Workflow</title>
+        <title>AnyWorkflowConvertible - Square Workflow</title>
       
     
     
@@ -81,7 +81,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-header-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-header-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../../../../../images/icon-square.png" alt="logo">
 
@@ -93,7 +93,7 @@
       
         <div class="md-header-nav__ellipsis">
           <span class="md-header-nav__topic md-ellipsis">
-            Workflow
+            Square Workflow
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
@@ -240,12 +240,12 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="https://square.github.io/workflow/" title="Workflow" class="md-nav__button md-logo" aria-label="Workflow">
+    <a href="https://square.github.io/workflow/" title="Square Workflow" class="md-nav__button md-logo" aria-label="Square Workflow">
       
   <img src="../../../../../images/icon-square.png" alt="logo">
 
     </a>
-    Workflow
+    Square Workflow
   </label>
   
     <div class="md-nav__source">
@@ -803,11 +803,11 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#renderedwithkey" class="md-nav__link">
-    rendered(with:key:)
+  <a href="#renderedinkey" class="md-nav__link">
+    rendered(in:key:)
   </a>
   
-    <nav class="md-nav" aria-label="rendered(with:key:)">
+    <nav class="md-nav" aria-label="rendered(in:key:)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -823,18 +823,25 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#renderedwithkey_1" class="md-nav__link">
-    rendered(with:key:)
+  <a href="#renderedinkeyoutputmap" class="md-nav__link">
+    rendered(in:key:outputMap:)
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#renderedwithkey_2" class="md-nav__link">
-    rendered(with:key:)
+  <a href="#renderedinkey_1" class="md-nav__link">
+    rendered(in:key:)
   </a>
   
-    <nav class="md-nav" aria-label="rendered(with:key:)">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renderedinkey_2" class="md-nav__link">
+    rendered(in:key:)
+  </a>
+  
+    <nav class="md-nav" aria-label="rendered(in:key:)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -846,6 +853,41 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#runninginkeyoutputmap" class="md-nav__link">
+    running(in:key:outputMap:)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#runninginkey" class="md-nav__link">
+    running(in:key:)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renderedwithkey" class="md-nav__link">
+    rendered(with:key:)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renderedwithkey_1" class="md-nav__link">
+    rendered(with:key:)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renderedwithkey_2" class="md-nav__link">
+    rendered(with:key:)
+  </a>
   
 </li>
         
@@ -885,8 +927,8 @@
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">mapRendering</span><span class="p">&lt;</span><span class="n">NewRendering</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">transform</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Rendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">NewRendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">NewRendering</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;</span>
 </code></pre></div>
 
-<h3 id="renderedwithkey"><code>rendered(with:key:)</code><a class="headerlink" href="#renderedwithkey" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="n">with</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Output</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Output</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
+<h3 id="renderedinkey"><code>rendered(in:key:)</code><a class="headerlink" href="#renderedinkey" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Output</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Output</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
 </code></pre></div>
 
 <blockquote>
@@ -922,12 +964,16 @@ during the same render pass.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="renderedwithkey_1"><code>rendered(with:key:)</code><a class="headerlink" href="#renderedwithkey_1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="n">with</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Output</span> <span class="p">==</span> <span class="n">AnyWorkflowAction</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;</span>
+<h3 id="renderedinkeyoutputmap"><code>rendered(in:key:outputMap:)</code><a class="headerlink" href="#renderedinkeyoutputmap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">outputMap</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Action</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
 </code></pre></div>
 
-<h3 id="renderedwithkey_2"><code>rendered(with:key:)</code><a class="headerlink" href="#renderedwithkey_2" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">with</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span>
+<h3 id="renderedinkey_1"><code>rendered(in:key:)</code><a class="headerlink" href="#renderedinkey_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Output</span> <span class="p">==</span> <span class="n">AnyWorkflowAction</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h3 id="renderedinkey_2"><code>rendered(in:key:)</code><a class="headerlink" href="#renderedinkey_2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span>
 </code></pre></div>
 
 <blockquote>
@@ -963,6 +1009,25 @@ during the same render pass.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="runninginkeyoutputmap"><code>running(in:key:outputMap:)</code><a class="headerlink" href="#runninginkeyoutputmap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">running</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">outputMap</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Action</span><span class="p">)</span> <span class="k">where</span> <span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
+</code></pre></div>
+
+<h3 id="runninginkey"><code>running(in:key:)</code><a class="headerlink" href="#runninginkey" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">running</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="k">where</span> <span class="n">Parent</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">,</span> <span class="n">Output</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
+</code></pre></div>
+
+<h3 id="renderedwithkey"><code>rendered(with:key:)</code><a class="headerlink" href="#renderedwithkey" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="n">with</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Output</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Output</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
+</code></pre></div>
+
+<h3 id="renderedwithkey_1"><code>rendered(with:key:)</code><a class="headerlink" href="#renderedwithkey_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="n">with</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Output</span> <span class="p">==</span> <span class="n">AnyWorkflowAction</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h3 id="renderedwithkey_2"><code>rendered(with:key:)</code><a class="headerlink" href="#renderedwithkey_2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">with</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span>
+</code></pre></div>
                 
               
               
