@@ -54,6 +54,8 @@ xcuserdata/
 SampleApp.xcworkspace
 
 # Special Mkdocs files
+deploy-kotlin/
+deploy-swift/
 docs/kotlin/api/
 docs/swift/api/
 site/
