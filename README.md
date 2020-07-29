@@ -48,9 +48,7 @@ See the [square/workflow-kotlin](https://github.com/square/workflow-kotlin) repo
 ### Support & Contact
 
 Workflow maintainers hang out in the [#squarelibraries](https://kotlinlang.slack.com/messages/C5HT9AL7Q)
-channel on the [Kotlin Slack](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up?_ga=2.93235285.916482233.1570572671-654176432.1527183673)
-and the [#square-libraries-wtf](https://androidstudygroup.slack.com/messages/C03NYGB45) channel on
-the Android Study Group Slack.
+channel on the [Kotlin Slack](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up?_ga=2.93235285.916482233.1570572671-654176432.1527183673).
 
 ## Releasing and Deploying
 
