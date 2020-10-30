@@ -12,7 +12,7 @@ The Workflow infrastructure is split into several modules.
 ## `Workflow`
 
 The `Workflow` library contains the core types that are used to implement state-driven workflows,
-including the `Workflow` protocol and related indrastructure.
+including the `Workflow` protocol and related infrastructure.
 
 ## `WorkflowUI`
 
