@@ -113,7 +113,7 @@ nav:
       - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
       - 'WorkflowTesting ': 'swift/api/WorkflowTesting/README.md'
   - 'FAQ': faq.md
-  - 'Change Log ⏏': CHANGELOG.md
+  - 'Change Log': CHANGELOG.md
   - 'Contributing': CONTRIBUTING.md
   - 'Code of Conduct': CODE_OF_CONDUCT.md
 
