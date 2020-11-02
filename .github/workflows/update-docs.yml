@@ -1,0 +1,49 @@
+name: Publish Documentation Site
+
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      branch:
+        description: 'Branch'
+        default: 'main'
+        required: true
+
+jobs:
+  build-docs:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout Branch
+      uses: actions/checkout@v2.3.3
+      with:
+        ref: ${{ github.event.inputs.name }}
+        path: ${{ github.event.inputs.name }}
+
+    # Ruby Gems
+    - name: Load gem cache
+      uses: actions/cache@v2.1.2
+      with:
+        path: ${{ github.event.inputs.name }}/.bundle
+        key: gems-${{ hashFiles('Gemfile.lock') }}
+
+    - name: Set up Swift environment
+      run: |
+        # Set global bundle path so it gets used by build_swift_docs.sh running in the nested repo as well.
+        cd "${{ github.event.inputs.name }}"
+        bundle config --global path "$(pwd)/.bundle"
+        bundle check || bundle install
+        # Don't need to run pod gen, the website script does that itself.
+        brew install sourcedocs
+        sudo xcode-select -s /Applications/Xcode_11.4.app
+
+    # Docs dependencies
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
