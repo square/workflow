@@ -1,8 +1,9 @@
 name: Publish Documentation Site
 
 on:
+  push:
+    branches: [stromberg/manual-publish]
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
       branch:
         description: 'Branch'
