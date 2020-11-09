@@ -104,6 +104,8 @@ jobs:
 
     # Generate the mkdocs site
     - name: Generate site with mkdocs
+      env:
+        WORKFLOW_GOOGLE_ANALYTICS_KEY: ${{ secrets.WORKFLOW_GOOGLE_ANALYTICS_KEY }}
       run: |
         cd workflow
 
