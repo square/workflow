@@ -102,7 +102,7 @@ function buildSwiftDocs() {
 	local deployRef="$1"
 	local targetDir="$2"
 	local workingDir=deploy-swift
-	local workflowSchemes=(Workflow WorkflowUI WorkflowTesting)
+	local workflowSchemes=(Workflow WorkflowUI WorkflowTesting WorkflowReactiveSwift)
 
 	if [[ -z "$deployRef" ]]; then echo "buildSwiftDocs: Must pass deploy ref as first arg" >&2; exit 1; fi
 	if [[ -z "$targetDir" ]]; then echo "buildSwiftDocs: Must pass target dir as second arg" >&2; exit 1; fi
