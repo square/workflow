@@ -1,8 +1,6 @@
 name: Publish Documentation Site
 
 on:
-  push:
-    branches: [stromberg/manual-publish]
   workflow_dispatch:
     inputs:
       main-ref:
