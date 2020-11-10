@@ -122,8 +122,8 @@ jobs:
     - name: Commit updated docs
       run: |
         # Get the source repo SHAs
-        KOTLIN_REF=$(git --git-dir workflow-kotlin/.git log -1 --format='%H)
-        SWIFT_REF=$(git --git-dir workflow-swift/.git log -1 --format='%H)
+        KOTLIN_REF=$(git --git-dir workflow-kotlin/.git log -1 --format='%H')
+        SWIFT_REF=$(git --git-dir workflow-swift/.git log -1 --format='%H')
         
         cd workflow-publish
         git checkout -b ${{ github.event.inputs.docs-branch }}
