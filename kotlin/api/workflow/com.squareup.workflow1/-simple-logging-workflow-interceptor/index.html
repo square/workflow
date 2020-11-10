@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -844,15 +844,19 @@
 <tbody>
 <tr>
 <td><a href="log/">log</a></td>
-<td>Called by <a href="log-begin/">logBegin</a> and <a href="log-end/">logEnd</a> to display a log message.<code>open fun log(text:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td>Called by <a href="log-before-method/">logBeforeMethod</a> and <a href="log-after-method/">logAfterMethod</a> to display a log message.<code>open fun log(text:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
-<td><a href="log-begin/">logBegin</a></td>
-<td>Called with descriptions of every event. Default implementation just calls <a href="log/">log</a>.<code>open fun logBegin(text:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a href="log-after-method/">logAfterMethod</a></td>
+<td>Called with descriptions of every event. Default implementation just calls <a href="log/">log</a>.<code>open fun logAfterMethod(name:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, session: WorkflowSession):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
-<td><a href="log-end/">logEnd</a></td>
-<td>Called with descriptions of every event. Default implementation just calls <a href="log/">log</a>.<code>open fun logEnd(text:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a href="log-before-method/">logBeforeMethod</a></td>
+<td>Called with descriptions of every event. Default implementation just calls <a href="log/">log</a>.<code>open fun logBeforeMethod(name:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, session: WorkflowSession):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+</tr>
+<tr>
+<td><a href="log-error/">logError</a></td>
+<td><code>open fun logError(text:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
 <td><a href="on-initial-state/">onInitialState</a></td>

@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -933,7 +933,6 @@ that&rsquo;s it. To generate the docs manually, run:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span> kotlin
 ./gradlew dokka
 </code></pre></div>
-
 <h4 id="swift-sourcedocs">Swift: Sourcedocs<a class="headerlink" href="#swift-sourcedocs" title="Permanent link">&para;</a></h4>
 <p>Sourcedocs generates a Markdown site from Swift files. You need Ruby, rubygems,
 bundler (2.x), Xcode 10.2+, CocoaPods, and of course Sourcedocs itself, to run it. Assuming you&rsquo;ve
@@ -941,26 +940,22 @@ already got Xcode, Ruby, and rubygems set up, install the rest of the dependenci
 <div class="highlight"><pre><span></span><code>gem install bundler cocoapods
 brew install sourcedocs
 </code></pre></div>
-
 <p>You will also need a checkout of the Swift repo:</p>
 <div class="highlight"><pre><span></span><code>git clone https://github.com/square/workflow-swift.git
 <span class="nb">cd</span> workflow-swift
 </code></pre></div>
-
 <p>Then generate an Xcode project before running Sourcedocs:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span> Samples/SampleApp/
 bundle <span class="nb">exec</span> pod install
 <span class="c1"># If this is your first time running CocoaPods, that will fail and you&#39;ll need to run this instead:</span>
 <span class="c1">#bundle exec pod install --repo-update</span>
 </code></pre></div>
-
 <p>You can manually generate the docs to verify everything is working correctly by running:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">#cd Samples/SampleApp/</span>
 sourcedocs generate -- -scheme Workflow -workspace SampleApp.xcworkspace
 sourcedocs generate -- -scheme WorkflowUI -workspace SampleApp.xcworkspace
 sourcedocs generate -- -scheme WorkflowTesting -workspace SampleApp.xcworkspace
 </code></pre></div>
-
 <p>Note that currently sourcedocs only supports Xcode 10, if you run it with Xcode 11 you might see
 an error about Catalyst and only empty READMEs will get generated.</p>
 <h4 id="mkdocs">mkdocs<a class="headerlink" href="#mkdocs" title="Permanent link">&para;</a></h4>
@@ -968,15 +963,12 @@ an error about Catalyst and only empty READMEs will get generated.</p>
 set up, run:</p>
 <div class="highlight"><pre><span></span><code>pip install -r requirements.txt
 </code></pre></div>
-
 <p>Generate the site manually with:</p>
 <div class="highlight"><pre><span></span><code>mkdocs build
 </code></pre></div>
-
 <p>While you&rsquo;re working on the documentation files, you can run the site locally with:</p>
 <div class="highlight"><pre><span></span><code>mkdocs serve
 </code></pre></div>
-
 <h3 id="deploying-the-website-to-production">Deploying the website to production<a class="headerlink" href="#deploying-the-website-to-production" title="Permanent link">&para;</a></h3>
 <p><strong>Note: The documentation site is automatically built and deployed by a Github Workflow whenever a
 version tag is pushed. You only need these steps if you want to publish the site manually.</strong></p>
@@ -985,13 +977,11 @@ variable so that it will get added to the HTML. Get the key from one of the proj
 then add the following to your <code>.bashrc</code> and re-source it:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">WORKFLOW_GOOGLE_ANALYTICS_KEY</span><span class="o">=</span>UA-__________-1
 </code></pre></div>
-
 <p>Now you&rsquo;re ready to publish the site! Just choose a tag or SHA to deploy from, and run:</p>
 <div class="highlight"><pre><span></span><code>./deploy_website.sh TAG_OR_SHA
 <span class="c1"># For example:</span>
 <span class="c1">#./deploy_website.sh v0.18.0</span>
 </code></pre></div>
-
 <p>This will clone the repo to a temporary directory, checkout the right SHA, build Kotlin and Swift
 API docs, generate HTML, and push the newly-generated content to the <code>gh-pages</code> branch on GitHub.</p>
 <h3 id="validating-markdown">Validating Markdown<a class="headerlink" href="#validating-markdown" title="Permanent link">&para;</a></h3>
@@ -1000,11 +990,9 @@ we use consistent formatting. Lint errors will fail your PR builds, so to run lo
 <a href="https://github.com/markdownlint/markdownlint">markdownlint</a>:</p>
 <div class="highlight"><pre><span></span><code>gem install mdl
 </code></pre></div>
-
 <p>Run the linter using the <code>lint_docs.sh</code>:</p>
 <div class="highlight"><pre><span></span><code>./lint_docs.sh
 </code></pre></div>
-
 <p>Rules can be configured by editing <code>.markdownlint.rb</code>.</p>
 <hr />
 <h2 id="kotlin-notes">Kotlin Notes<a class="headerlink" href="#kotlin-notes" title="Permanent link">&para;</a></h2>
@@ -1012,7 +1000,6 @@ we use consistent formatting. Lint errors will fail your PR builds, so to run lo
 <p>To build and install the current version to your local Maven repository (<code>~/.m2</code>), run:</p>
 <div class="highlight"><pre><span></span><code>./gradlew clean installArchives
 </code></pre></div>
-
 <h3 id="deploying">Deploying<a class="headerlink" href="#deploying" title="Permanent link">&para;</a></h3>
 <h4 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h4>
 <p>In order to deploy artifacts to a Maven repository, you&rsquo;ll need to set 4 properties in your private
@@ -1022,13 +1009,11 @@ SNAPSHOT_REPOSITORY_URL=&lt;url of snapshot repository
 SONATYPE_NEXUS_USERNAME=&lt;username&gt;
 SONATYPE_NEXUS_PASSWORD=&lt;password&gt;
 </code></pre></div>
-
 <h4 id="snapshot-releases">Snapshot Releases<a class="headerlink" href="#snapshot-releases" title="Permanent link">&para;</a></h4>
 <p>Double-check that <code>gradle.properties</code> correctly contains the <code>-SNAPSHOT</code> suffix, then upload
 snapshot artifacts to Sonatype just like you would for a production release:</p>
 <div class="highlight"><pre><span></span><code>./gradlew clean build <span class="o">&amp;&amp;</span> ./gradlew uploadArchives --no-parallel --no-daemon
 </code></pre></div>
-
 <p>You can verify the artifacts are available by visiting
 <a href="https://oss.sonatype.org/content/repositories/snapshots/com/squareup/workflow/">https://oss.sonatype.org/content/repositories/snapshots/com/squareup/workflow/</a>.</p>
                 

@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -794,6 +794,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -816,8 +823,11 @@
                 
                 <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">RenderingAndSnapshot</a></p>
 <h1 id="renderingandsnapshot">RenderingAndSnapshot<a class="headerlink" href="#renderingandsnapshot" title="Permanent link">&para;</a></h1>
-<p><code>data class RenderingAndSnapshot&lt;out RenderingT&gt;</code></p>
+<p><code>class RenderingAndSnapshot&lt;out RenderingT&gt;</code></p>
 <p>Tuple of rendering and snapshot used by <a href="../render-workflow-in/">renderWorkflowIn</a>.</p>
+<p>Note that this class keeps the default identity equality
+implementation it inherits from <code>Any</code>, rather than comparing
+its <a href="rendering/">rendering</a> or <a href="snapshot/">snapshot</a>.</p>
 <h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -849,6 +859,25 @@
 <tr>
 <td><a href="snapshot/">snapshot</a></td>
 <td><code>val snapshot:</code><a href="../-tree-snapshot/"><code>TreeSnapshot</code></a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="component1/">component1</a></td>
+<td><code>operator fun component1(): RenderingT</code></td>
+</tr>
+<tr>
+<td><a href="component2/">component2</a></td>
+<td><code>operator fun component2():</code><a href="../-tree-snapshot/"><code>TreeSnapshot</code></a></td>
 </tr>
 </tbody>
 </table>

@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -793,8 +793,9 @@
                 <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.ui</a> / <a href="../">WorkflowViewStub</a> / <a href="./">setVisibility</a></p>
 <h1 id="setvisibility">setVisibility<a class="headerlink" href="#setvisibility" title="Permanent link">&para;</a></h1>
 <p><code>fun setVisibility(visibility:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<p>Sets the visibility of this stub as usual, and also that of <a href="../actual/">actual</a>.
-Any new views created by <a href="../update/">update</a> will be assigned this visibility.</p>
+<p>Sets the visibility of <a href="../actual/">actual</a>. If <a href="../updates-visibility/">updatesVisibility</a> is true, the visibility of
+new views created by <a href="../update/">update</a> will copied from <a href="../actual/">actual</a>. (Bear in mind that the initial
+value of <a href="../actual/">actual</a> is this stub.)</p>
                 
               
               

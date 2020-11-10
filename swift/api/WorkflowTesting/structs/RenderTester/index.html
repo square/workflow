@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -897,8 +897,6 @@
 <h1 id="rendertester"><code>RenderTester</code><a class="headerlink" href="#rendertester" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Testing helper for validating the behavior of calls to <code>render</code>.</p>
 <p>Usage: <code>expect</code> workflows and side effects then validate with a call to <code>render</code> and
 the resulting <code>RenderTesterResult</code>.
@@ -908,13 +906,13 @@ Side-effects may be performed against the rendering to validate the behavior of 
     .renderTester(initialState: TestWorkflow.State())
     .expect(
         worker: TestWorker(),
-        output: TestWorker.Output.success
+        producingOutput: TestWorker.Output.success
     )
     .expectWorkflow(
         type: ChildWorkflow.self,
         key: &quot;key&quot;,
         rendering: &quot;rendering&quot;,
-        output: ChildWorkflow.Output.success
+        producingOutput: ChildWorkflow.Output.success
     )
     .render { rendering in
         XCTAssertEqual(&quot;expected text on rendering&quot;, rendering.text)
@@ -922,7 +920,6 @@ Side-effects may be performed against the rendering to validate the behavior of 
     .assert(state: TestWorkflow.State())
     .assert(output: TestWorkflow.Output.finished)
 </code></pre></div>
-
 <p>Validating the rendering only from the initial state provided by the workflow:
 <div class="highlight"><pre><span></span><code>workflow
     .renderTester()
@@ -966,11 +963,10 @@ Side-effects may be performed against the rendering to validate the behavior of 
     .expectWorkflow(
         type: ChildWorkflow.self,
         rendering: &quot;rendering&quot;,
-        output: ChildWorkflow.Output.success
+        producingOutput: ChildWorkflow.Output.success
     )
     .render { _ in }
 </code></pre></div></p>
-</blockquote>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="expectworkflowtypekeyproducingrenderingproducingoutputfilelineassertions"><code>expectWorkflow(type:key:producingRendering:producingOutput:file:line:assertions:)</code><a class="headerlink" href="#expectworkflowtypekeyproducingrenderingproducingoutputfilelineassertions" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">expectWorkflow</span><span class="p">&lt;</span><span class="n">ExpectedWorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span>
@@ -982,8 +978,6 @@ Side-effects may be performed against the rendering to validate the behavior of 
     <span class="n">assertions</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">ExpectedWorkflowType</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span> <span class="p">=</span> <span class="p">{</span> <span class="kc">_</span> <span class="k">in</span> <span class="p">}</span>
 <span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Expect the given workflow type in the next rendering.</p>
 <ul>
 <li>Parameters:</li>
@@ -993,7 +987,6 @@ Side-effects may be performed against the rendering to validate the behavior of 
 <li>output: An output that should be returned after the workflow of this type is rendered, if any.</li>
 <li>assertions: Additional assertions for the given workflow, if any. You may use this to assert the properties of the requested workflow are as expected.</li>
 </ul>
-</blockquote>
 <h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -1031,13 +1024,10 @@ Side-effects may be performed against the rendering to validate the behavior of 
     <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
 <span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Expect a side-effect for the given key.</p>
 <ul>
 <li>Parameter key: The key to expect.</li>
 </ul>
-</blockquote>
 <h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -1060,15 +1050,12 @@ Side-effects may be performed against the rendering to validate the behavior of 
     <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
 <span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">ActionType</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">ActionType</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
 </code></pre></div>
-
-<blockquote>
 <p>Expect a side-effect for the given key, and produce the given action when it is requested.</p>
 <ul>
 <li>Parameters:</li>
 <li>key: The key to expect.</li>
 <li>action: The action to produce when this side-effect is requested.</li>
 </ul>
-</blockquote>
 <h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -1094,8 +1081,6 @@ Side-effects may be performed against the rendering to validate the behavior of 
     <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
 <span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Render the workflow under test. At this point, you should have set up all expectations.</p>
 <p>The given <code>assertions</code> closure will be called with the produced rendering, allowing you to assert its properties or
 perform actions on it (such as closures that are wired up to a <code>Sink</code> inside the workflow.</p>
@@ -1104,7 +1089,6 @@ perform actions on it (such as closures that are wired up to a <code>Sink</code>
 <li>assertions: A closure called with the produced rendering for verification</li>
 <li>Returns: A <code>RenderTesterResult</code> that can be used to verify expected resulting state or outputs.</li>
 </ul>
-</blockquote>
 <h4 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
 <table>
 <thead>

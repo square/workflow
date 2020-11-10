@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -825,7 +825,6 @@ you want child renderings to be displayed. E.g.:</p>
             /&gt;
        …
 </code></pre></div>
-
 <p>Then in your <a href="../../-layout-runner/">LayoutRunner</a>,</p>
 <ul>
 <li>pull the view out with <a href="#">findViewById</a> like any other view</li>
@@ -848,9 +847,12 @@ you want child renderings to be displayed. E.g.:</p>
       }
     }
 </code></pre></div>
-
 <p><strong>NB</strong>: If you&rsquo;re using a stub in a <code>RelativeLayout</code> or <code>ConstraintLayout</code>, relationships
 should be tied to the stub&rsquo;s <code>app:inflatedId</code>, not its <code>android:id</code>.</p>
+<p>Use <a href="../updates-visibility/">updatesVisibility</a> and <a href="../set-background/">setBackground</a> for more control of how <a href="../update/">update</a>
+effects the visibility and backgrounds of created views.</p>
+<p>Use <a href="../replace-old-view-in-parent/">replaceOldViewInParent</a> to customize replacing <a href="../actual/">actual</a> with a new view, e.g.
+for animated transitions.</p>
                 
               
               

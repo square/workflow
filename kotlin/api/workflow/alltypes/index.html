@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -857,8 +857,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#comsquareupworkflow1uibuilderbinding" class="md-nav__link">
-    com.squareup.workflow1.ui.BuilderBinding
+  <a href="#comsquareupworkflow1uibuilderviewfactory" class="md-nav__link">
+    com.squareup.workflow1.ui.BuilderViewFactory
   </a>
   
 </li>
@@ -894,6 +894,20 @@
           <li class="md-nav__item">
   <a href="#androidcontentcontext" class="md-nav__link">
     android.content.Context
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comsquareupworkflow1uidecorativeviewfactory" class="md-nav__link">
+    com.squareup.workflow1.ui.DecorativeViewFactory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#androidwidgetedittext" class="md-nav__link">
+    android.widget.EditText
   </a>
   
 </li>
@@ -992,6 +1006,13 @@
           <li class="md-nav__item">
   <a href="#comsquareupworkflow1uinamed" class="md-nav__link">
     com.squareup.workflow1.ui.Named
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comsquareupworkflow1uinamedviewfactory" class="md-nav__link">
+    com.squareup.workflow1.ui.NamedViewFactory
   </a>
   
 </li>
@@ -1387,7 +1408,7 @@ a <code>render</code> function.</p>
 <p>| (extensions in package com.squareup.workflow1)</p>
 <h5 id="okiobufferedsource"><a href="../com.squareup.workflow1/okio.-buffered-source/">okio.BufferedSource</a><a class="headerlink" href="#okiobufferedsource" title="Permanent link">&para;</a></h5>
 <p>|</p>
-<h5 id="comsquareupworkflow1uibuilderbinding"><a href="../com.squareup.workflow1.ui/-builder-binding/">com.squareup.workflow1.ui.BuilderBinding</a><a class="headerlink" href="#comsquareupworkflow1uibuilderbinding" title="Permanent link">&para;</a></h5>
+<h5 id="comsquareupworkflow1uibuilderviewfactory"><a href="../com.squareup.workflow1.ui/-builder-view-factory/">com.squareup.workflow1.ui.BuilderViewFactory</a><a class="headerlink" href="#comsquareupworkflow1uibuilderviewfactory" title="Permanent link">&para;</a></h5>
 <p>A <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> that allows a <a href="../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need
 to be generated from code. (Use <a href="../com.squareup.workflow1.ui/-layout-runner/">LayoutRunner</a> to work with XML layout resources.)</p>
 <p>| (extensions in package com.squareup.workflow1)</p>
@@ -1402,6 +1423,14 @@ than just being of the same type.</p>
 <h5 id="ioreactivexcompletable"><a href="../com.squareup.workflow1.rx2/io.reactivex.-completable/">io.reactivex.Completable</a><a class="headerlink" href="#ioreactivexcompletable" title="Permanent link">&para;</a></h5>
 <p>| (extensions in package com.squareup.workflow1.ui)</p>
 <h5 id="androidcontentcontext"><a href="../com.squareup.workflow1.ui/android.content.-context/">android.content.Context</a><a class="headerlink" href="#androidcontentcontext" title="Permanent link">&para;</a></h5>
+<p>|</p>
+<h5 id="comsquareupworkflow1uidecorativeviewfactory"><a href="../com.squareup.workflow1.ui/-decorative-view-factory/">com.squareup.workflow1.ui.DecorativeViewFactory</a><a class="headerlink" href="#comsquareupworkflow1uidecorativeviewfactory" title="Permanent link">&para;</a></h5>
+<p>A <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> for <a href="../com.squareup.workflow1.ui/-decorative-view-factory/#OuterT">OuterT</a> that delegates view construction responsibilities
+to the factory registered for <a href="../com.squareup.workflow1.ui/-decorative-view-factory/#InnerT">InnerT</a>. Makes it convenient for <a href="../com.squareup.workflow1.ui/-decorative-view-factory/#OuterT">OuterT</a> to wrap
+instances of <a href="../com.squareup.workflow1.ui/-decorative-view-factory/#InnerT">InnerT</a> to add information or behavior, without requiring wasteful wrapping
+in the view system.</p>
+<p>| (extensions in package com.squareup.workflow1.ui)</p>
+<h5 id="androidwidgetedittext"><a href="../com.squareup.workflow1.ui/android.widget.-edit-text/">android.widget.EditText</a><a class="headerlink" href="#androidwidgetedittext" title="Permanent link">&para;</a></h5>
 <p>|</p>
 <h5 id="comsquareupworkflow1experimentalworkflowapi"><a href="../com.squareup.workflow1/-experimental-workflow-api/">com.squareup.workflow1.ExperimentalWorkflowApi</a><a class="headerlink" href="#comsquareupworkflow1experimentalworkflowapi" title="Permanent link">&para;</a></h5>
 <p>Marks Workflow APIs that are extremely likely to change in future versions, rely themselves on
@@ -1427,7 +1456,7 @@ class, but different <a href="../com.squareup.workflow1/-impostor-workflow/real-
 <h5 id="comsquareupworkflow1uilayoutrunner"><a href="../com.squareup.workflow1.ui/-layout-runner/">com.squareup.workflow1.ui.LayoutRunner</a><a class="headerlink" href="#comsquareupworkflow1uilayoutrunner" title="Permanent link">&para;</a></h5>
 <p>A delegate that implements a <a href="../com.squareup.workflow1.ui/-layout-runner/show-rendering/">showRendering</a> method to be called when a workflow rendering
 of type <a href="../com.squareup.workflow1.ui/-layout-runner/#RenderingT">RenderingT</a> is ready to be displayed in a view inflated from a layout resource
-by a <a href="../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a>. (Use <a href="../com.squareup.workflow1.ui/-builder-binding/">BuilderBinding</a> if you want to build views from code rather
+by a <a href="../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a>. (Use <a href="../com.squareup.workflow1.ui/-builder-view-factory/">BuilderViewFactory</a> if you want to build views from code rather
 than layouts.)</p>
 <p>|</p>
 <h5 id="comsquareupworkflow1lifecycleworker"><a href="../com.squareup.workflow1/-lifecycle-worker/">com.squareup.workflow1.LifecycleWorker</a><a class="headerlink" href="#comsquareupworkflow1lifecycleworker" title="Permanent link">&para;</a></h5>
@@ -1452,6 +1481,10 @@ window. Provides compatibility with <a href="../com.squareup.workflow1.ui/androi
 by more than just their type. Instances are <a href="../com.squareup.workflow1.ui/compatible/">compatible</a> if they have the same name
 and have <a href="../com.squareup.workflow1.ui/-named/wrapped/">compatible</a> fields.</p>
 <p>|</p>
+<h5 id="comsquareupworkflow1uinamedviewfactory"><a href="../com.squareup.workflow1.ui/-named-view-factory/">com.squareup.workflow1.ui.NamedViewFactory</a><a class="headerlink" href="#comsquareupworkflow1uinamedviewfactory" title="Permanent link">&para;</a></h5>
+<p><a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> that allows views to display instances of <a href="../com.squareup.workflow1.ui/-named/">Named</a>. Delegates
+to the factory for <a href="../com.squareup.workflow1.ui/-named/wrapped/">Named.wrapped</a>.</p>
+<p>|</p>
 <h5 id="comsquareupworkflow1noopworkflowinterceptor"><a href="../com.squareup.workflow1/-noop-workflow-interceptor/">com.squareup.workflow1.NoopWorkflowInterceptor</a><a class="headerlink" href="#comsquareupworkflow1noopworkflowinterceptor" title="Permanent link">&para;</a></h5>
 <p>A <a href="../com.squareup.workflow1/-workflow-interceptor/">WorkflowInterceptor</a> that does not intercept anything.</p>
 <p>| (extensions in package com.squareup.workflow1.rx2)</p>
@@ -1475,7 +1508,7 @@ unit tests catch side effects being incorrectly performed directly in the render
 <h5 id="comsquareupworkflow1testingrendertester"><a href="../com.squareup.workflow1.testing/-render-tester/">com.squareup.workflow1.testing.RenderTester</a><a class="headerlink" href="#comsquareupworkflow1testingrendertester" title="Permanent link">&para;</a></h5>
 <p>The props must be specified, the initial state may be specified, and then all child workflows
 and workers that are expected to run, and any outputs from them, must be specified with
-<a href="../com.squareup.workflow1.testing/-render-tester/expect-workflow/">expectWorkflow</a> and <a href="../com.squareup.workflow1.testing/expect-worker/">expectWorker</a> calls. Then call <a href="../com.squareup.workflow1.testing/-render-tester/render/">render</a> and perform any assertions on the
+<a href="#">expectWorkflow</a> and <a href="../com.squareup.workflow1.testing/expect-worker/">expectWorker</a> calls. Then call <a href="../com.squareup.workflow1.testing/-render-tester/render/">render</a> and perform any assertions on the
 rendering. An event may also be sent to the rendering if no workflows or workers emitted an
 output. Lastly, the <a href="../com.squareup.workflow1.testing/-render-test-result/">RenderTestResult</a> returned by <code>render</code> may be used to assert on the
 <a href="../com.squareup.workflow1/-workflow-action/">WorkflowAction</a>s processed to handle events or outputs by calling
@@ -1548,7 +1581,7 @@ and <a href="../com.squareup.workflow1.ui/-view-environment-key/default/">defaul
 <h5 id="comsquareupworkflow1uiviewfactory"><a href="../com.squareup.workflow1.ui/-view-factory/">com.squareup.workflow1.ui.ViewFactory</a><a class="headerlink" href="#comsquareupworkflow1uiviewfactory" title="Permanent link">&para;</a></h5>
 <p>Factory for <a href="#">View</a> instances that can show renderings of type<a href="../com.squareup.workflow1.ui/-view-factory/#RenderingT">RenderingT</a>.
 Use <a href="../com.squareup.workflow1.ui/-layout-runner/bind/">LayoutRunner.bind</a> to work with XML layout resources, or
-<a href="../com.squareup.workflow1.ui/-builder-binding/">BuilderBinding</a> to create views from code.</p>
+<a href="../com.squareup.workflow1.ui/-builder-view-factory/">BuilderViewFactory</a> to create views from code.</p>
 <p>|</p>
 <h5 id="comsquareupworkflow1uiviewregistry"><a href="../com.squareup.workflow1.ui/-view-registry/">com.squareup.workflow1.ui.ViewRegistry</a><a class="headerlink" href="#comsquareupworkflow1uiviewregistry" title="Permanent link">&para;</a></h5>
 <p>A collection of <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a>s that can be used to display the stream of renderings

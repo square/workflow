@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -837,17 +837,12 @@
 <h1 id="viewcontrollerdescription"><code>ViewControllerDescription</code><a class="headerlink" href="#viewcontrollerdescription" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">ViewControllerDescription</span>
 </code></pre></div>
-
-<blockquote>
 <p>A ViewControllerDescription acts as a recipe for building and updating a
 specific UIViewController.</p>
-</blockquote>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="inittypebuildupdate"><code>init(type:build:update:)</code><a class="headerlink" href="#inittypebuildupdate" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">VC</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">&gt;(</span><span class="n">type</span><span class="p">:</span> <span class="n">VC</span><span class="p">.</span><span class="kr">Type</span> <span class="p">=</span> <span class="n">VC</span><span class="p">.</span><span class="kc">self</span><span class="p">,</span> <span class="n">build</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="n">VC</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">VC</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
 </code></pre></div>
-
-<blockquote>
 <p>Constructs a view controller description by providing a closure used to
 build and update a specific view controller type.</p>
 <ul>
@@ -859,7 +854,6 @@ build and update a specific view controller type.</p>
 <li>build: Closure that produces a new instance of the view controller</li>
 <li>update: Closure that updates the given view controller</li>
 </ul>
-</blockquote>
 <h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <table>
 <thead>

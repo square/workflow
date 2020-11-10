@@ -855,8 +855,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -1050,7 +1050,6 @@
 
 <span class="p">}</span>
 </code></pre></div>
-
 <p>A type conforming to <code>Workflow</code> represents a single node in the workflow tree. It should contain any
 values that must be provided by its parent (who is generally responsible for creating child
 workflows).</p>
@@ -1064,7 +1063,6 @@ workflow, for display). This type is very commonly a view model, or <code>Screen
 <code>render(state:context:)</code> method has a couple of parameters, so we’ll work through them one by one.</p>
 <div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">DemoWorkflow</span><span class="p">&gt;)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span>
 </code></pre></div>
-
 <h3 id="state"><code>state</code><a class="headerlink" href="#state" title="Permanent link">&para;</a></h3>
 <p>Contains a value of type <code>State</code> to provide access to the current state. Any time the state of
 workflow changes, <code>render</code> is called again to take into account the change in state.</p>
@@ -1082,7 +1080,6 @@ into a view controller:</p>
         <span class="k">return</span> <span class="n">DemoScreen</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="s">&quot;A nice title&quot;</span><span class="p">)</span>
     <span class="p">}</span>
 </code></pre></div>
-
 <h2 id="actions-or-things-that-advance-a-workflow">Actions, or “Things that advance a workflow”<a class="headerlink" href="#actions-or-things-that-advance-a-workflow" title="Permanent link">&para;</a></h2>
 <p>So far we have only covered workflows that perform simple tasks like generate strings or simple
 screens with no actions. If our workflows take on a complicated roles like generating view models,
@@ -1109,7 +1106,6 @@ happens (that your workflow cares about), it should be modeled as an action.</p>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-
 <h2 id="the-update-cycle">The Update Cycle<a class="headerlink" href="#the-update-cycle" title="Permanent link">&para;</a></h2>
 <p>Every time a new action is received, it is applied to the current state of the workflow. If your
 workflow does more than simply render values, the action&rsquo;s <code>apply</code> is the method where the logic lives.</p>
@@ -1131,7 +1127,6 @@ model to send that event back to the workflow:</p>
         <span class="n">onTap</span><span class="p">:</span> <span class="p">{</span> <span class="n">sink</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">Action</span><span class="p">.</span><span class="n">refreshButtonTapped</span><span class="p">)</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-
 <h2 id="state_1">State<a class="headerlink" href="#state_1" title="Permanent link">&para;</a></h2>
 <p>Some workflows do not need state at all – they simply render values based on the values they were
 initialized with. But for more complicated workflows, state management is critical. For example, a
@@ -1155,7 +1150,6 @@ future (transition state).</p>
     <span class="c1">/// ...</span>
 <span class="p">}</span>
 </code></pre></div>
-
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Workflows (and their <code>State</code>) should always be implemented through value types (structs and
@@ -1186,7 +1180,6 @@ method that that returns a Reactive Swift <code>SignalProducer</code>. When this
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-
 <p>Because a Worker is a declarative representation of work, it also needs to define an <code>isEquivalent</code>
 to guarantee that we are not running more than one at the same time. For the simple example above,
 it is always considered equivalent as we want only one of this type of worker running at a time.</p>
@@ -1205,7 +1198,6 @@ something like:</p>
         <span class="p">}</span>
     <span class="p">}</span>
 </code></pre></div>
-
 <p>When the context is told to await a result from a worker, the context will do the following:</p>
 <ul>
 <li>Check if there is already a worker running of the same type:</li>

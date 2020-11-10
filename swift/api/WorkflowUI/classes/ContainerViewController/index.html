@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -914,62 +914,44 @@
 <h1 id="containerviewcontroller"><code>ContainerViewController</code><a class="headerlink" href="#containerviewcontroller" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">ContainerViewController</span><span class="p">&lt;</span><span class="n">ScreenType</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;:</span> <span class="bp">UIViewController</span> <span class="k">where</span> <span class="n">ScreenType</span><span class="p">:</span> <span class="n">Screen</span>
 </code></pre></div>
-
-<blockquote>
 <p>Drives view controllers from a root Workflow.</p>
-</blockquote>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="output"><code>output</code><a class="headerlink" href="#output" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">var</span> <span class="nv">output</span><span class="p">:</span> <span class="n">Signal</span><span class="p">&lt;</span><span class="n">Output</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Emits output events from the bound workflow.</p>
-</blockquote>
 <h3 id="rootviewenvironment"><code>rootViewEnvironment</code><a class="headerlink" href="#rootviewenvironment" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">var</span> <span class="nv">rootViewEnvironment</span><span class="p">:</span> <span class="n">ViewEnvironment</span>
 </code></pre></div>
-
 <h3 id="childforstatusbarstyle"><code>childForStatusBarStyle</code><a class="headerlink" href="#childforstatusbarstyle" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="kd">public</span> <span class="kd">var</span> <span class="nv">childForStatusBarStyle</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">?</span>
 </code></pre></div>
-
 <h3 id="childforstatusbarhidden"><code>childForStatusBarHidden</code><a class="headerlink" href="#childforstatusbarhidden" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="kd">public</span> <span class="kd">var</span> <span class="nv">childForStatusBarHidden</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">?</span>
 </code></pre></div>
-
 <h3 id="childforhomeindicatorautohidden"><code>childForHomeIndicatorAutoHidden</code><a class="headerlink" href="#childforhomeindicatorautohidden" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="kd">public</span> <span class="kd">var</span> <span class="nv">childForHomeIndicatorAutoHidden</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">?</span>
 </code></pre></div>
-
 <h3 id="childforscreenedgesdeferringsystemgestures"><code>childForScreenEdgesDeferringSystemGestures</code><a class="headerlink" href="#childforscreenedgesdeferringsystemgestures" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="kd">public</span> <span class="kd">var</span> <span class="nv">childForScreenEdgesDeferringSystemGestures</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">?</span>
 </code></pre></div>
-
 <h3 id="supportedinterfaceorientations"><code>supportedInterfaceOrientations</code><a class="headerlink" href="#supportedinterfaceorientations" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="kd">public</span> <span class="kd">var</span> <span class="nv">supportedInterfaceOrientations</span><span class="p">:</span> <span class="n">UIInterfaceOrientationMask</span>
 </code></pre></div>
-
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="initworkflowrootviewenvironment"><code>init(workflow:rootViewEnvironment:)</code><a class="headerlink" href="#initworkflowrootviewenvironment" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">W</span><span class="p">:</span> <span class="n">AnyWorkflowConvertible</span><span class="p">&gt;(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">W</span><span class="p">,</span> <span class="n">rootViewEnvironment</span><span class="p">:</span> <span class="n">ViewEnvironment</span> <span class="p">=</span> <span class="p">.</span><span class="n">empty</span><span class="p">)</span> <span class="k">where</span> <span class="n">W</span><span class="p">.</span><span class="n">Rendering</span> <span class="p">==</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">W</span><span class="p">.</span><span class="n">Output</span> <span class="p">==</span> <span class="n">Output</span>
 </code></pre></div>
-
 <h3 id="updateworkflow"><code>update(workflow:)</code><a class="headerlink" href="#updateworkflow" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">&lt;</span><span class="n">W</span><span class="p">:</span> <span class="n">AnyWorkflowConvertible</span><span class="p">&gt;(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">W</span><span class="p">)</span> <span class="k">where</span> <span class="n">W</span><span class="p">.</span><span class="n">Rendering</span> <span class="p">==</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">W</span><span class="p">.</span><span class="n">Output</span> <span class="p">==</span> <span class="n">Output</span>
 </code></pre></div>
-
-<blockquote>
 <p>Updates the root Workflow in this container.</p>
-</blockquote>
 <h3 id="initcoder"><code>init(coder:)</code><a class="headerlink" href="#initcoder" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">required</span> <span class="kd">init</span><span class="p">?(</span><span class="n">coder</span> <span class="n">aDecoder</span><span class="p">:</span> <span class="bp">NSCoder</span><span class="p">)</span>
 </code></pre></div>
-
 <h3 id="viewdidload"><code>viewDidLoad()</code><a class="headerlink" href="#viewdidload" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span>
 </code></pre></div>
-
 <h3 id="viewdidlayoutsubviews"><code>viewDidLayoutSubviews()</code><a class="headerlink" href="#viewdidlayoutsubviews" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">viewDidLayoutSubviews</span><span class="p">()</span>
 </code></pre></div>

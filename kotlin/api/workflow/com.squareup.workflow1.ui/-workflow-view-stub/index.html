@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -852,7 +852,6 @@ you want child renderings to be displayed. E.g.:</p>
             /&gt;
        …
 </code></pre></div>
-
 <p>Then in your <a href="../-layout-runner/">LayoutRunner</a>,</p>
 <ul>
 <li>pull the view out with <a href="#">findViewById</a> like any other view</li>
@@ -875,9 +874,12 @@ you want child renderings to be displayed. E.g.:</p>
       }
     }
 </code></pre></div>
-
 <p><strong>NB</strong>: If you&rsquo;re using a stub in a <code>RelativeLayout</code> or <code>ConstraintLayout</code>, relationships
 should be tied to the stub&rsquo;s <code>app:inflatedId</code>, not its <code>android:id</code>.</p>
+<p>Use <a href="updates-visibility/">updatesVisibility</a> and <a href="set-background/">setBackground</a> for more control of how <a href="update/">update</a>
+effects the visibility and backgrounds of created views.</p>
+<p>Use <a href="replace-old-view-in-parent/">replaceOldViewInParent</a> to customize replacing <a href="actual/">actual</a> with a new view, e.g.
+for animated transitions.</p>
 <h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -908,11 +910,15 @@ should be tied to the stub&rsquo;s <code>app:inflatedId</code>, not its <code>an
 </tr>
 <tr>
 <td><a href="inflated-id/">inflatedId</a></td>
-<td>The id to be assigned to views created by <a href="update/">update</a>. If the inflated id is <a href="#">View.NO_ID</a> (its default value), new views keep their original ids.<code>var inflatedId:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a></td>
+<td>The id to be assigned to new views created by <a href="update/">update</a>. If the inflated id is <a href="#">View.NO_ID</a> (its default value), new views keep their original ids.<code>var inflatedId:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a></td>
 </tr>
 <tr>
 <td><a href="replace-old-view-in-parent/">replaceOldViewInParent</a></td>
 <td>Function called from <a href="update/">update</a> to replace this stub, or the current <a href="actual/">actual</a>, with a new view. Can be updated to provide custom transition effects.<code>var replaceOldViewInParent: (ViewGroup, View) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+</tr>
+<tr>
+<td><a href="updates-visibility/">updatesVisibility</a></td>
+<td>If true, the visibility of views created by <a href="update/">update</a> will be copied from that of <a href="actual/">actual</a>. Bear in mind that the initial value of <a href="actual/">actual</a> is this stub.<code>var updatesVisibility:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -926,12 +932,20 @@ should be tied to the stub&rsquo;s <code>app:inflatedId</code>, not its <code>an
 </thead>
 <tbody>
 <tr>
+<td><a href="get-visibility/">getVisibility</a></td>
+<td>Returns the visibility of <a href="actual/">actual</a>. (Bear in mind that the initial value of <a href="actual/">actual</a> is this stub.)<code>fun getVisibility():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a></td>
+</tr>
+<tr>
 <td><a href="set-background/">setBackground</a></td>
-<td>Sets the background of this stub as usual, and also that of <a href="actual/">actual</a>. Any new views created by <a href="update/">update</a> will be assigned this background.<code>fun setBackground(background: Drawable?):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td>Sets the background of this stub as usual, and also that of <a href="actual/">actual</a> if the given <a href="set-background/#com.squareup.workflow1.ui.WorkflowViewStub$setBackground(android.graphics.drawable.Drawable)/background">background</a> is not null. Any new views created by <a href="update/">update</a> will be assigned this background, again if it is not null.<code>fun setBackground(background: Drawable?):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+</tr>
+<tr>
+<td><a href="set-id/">setId</a></td>
+<td><code>fun setId(id:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
 <td><a href="set-visibility/">setVisibility</a></td>
-<td>Sets the visibility of this stub as usual, and also that of <a href="actual/">actual</a>. Any new views created by <a href="update/">update</a> will be assigned this visibility.<code>fun setVisibility(visibility:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td>Sets the visibility of <a href="actual/">actual</a>. If <a href="updates-visibility/">updatesVisibility</a> is true, the visibility of new views created by <a href="update/">update</a> will copied from <a href="actual/">actual</a>. (Bear in mind that the initial value of <a href="actual/">actual</a> is this stub.)<code>fun setVisibility(visibility:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
 <td><a href="update/">update</a></td>

@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -831,32 +831,24 @@
 <h1 id="viewenvironment"><code>ViewEnvironment</code><a class="headerlink" href="#viewenvironment" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">ViewEnvironment</span>
 </code></pre></div>
-
-<blockquote>
 <p>ViewEnvironment acts as a container for values to flow down the view-side
 of a rendering tree (as opposed to being passed down through Workflows).</p>
 <p>This will often be used by containers to let their children know in what
 context they’re appearing (for example, a split screen container may set
 the environment of its two children according to which position they’re
 appearing in).</p>
-</blockquote>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="settingkeyto"><code>setting(key:to:)</code><a class="headerlink" href="#settingkeyto" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setting</span><span class="p">&lt;</span><span class="n">Key</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span> <span class="n">Key</span><span class="p">.</span><span class="kr">Type</span><span class="p">,</span> <span class="n">to</span> <span class="n">value</span><span class="p">:</span> <span class="n">Key</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewEnvironment</span> <span class="k">where</span> <span class="n">Key</span><span class="p">:</span> <span class="n">ViewEnvironmentKey</span>
 </code></pre></div>
-
-<blockquote>
 <p>Returns a new ViewEnvironment with the given value set for the given
 environment key.</p>
 <p>This is provided as a convenience for modifying the environment while
 passing it down to children screens without the need for an intermediate
 mutable value. It is functionally equivalent to the subscript setter.</p>
-</blockquote>
 <h3 id="settingkeypathto"><code>setting(keyPath:to:)</code><a class="headerlink" href="#settingkeypathto" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setting</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">keyPath</span><span class="p">:</span> <span class="n">WritableKeyPath</span><span class="p">&lt;</span><span class="n">ViewEnvironment</span><span class="p">,</span> <span class="n">Value</span><span class="p">&gt;,</span> <span class="n">to</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewEnvironment</span>
 </code></pre></div>
-
-<blockquote>
 <p>Returns a new ViewEnvironment with the given value set for the given
 key path.</p>
 <p>This is provided as a convenience for modifying the environment while
@@ -868,7 +860,6 @@ newEnvironment.someProperty = 42
 and
 <div class="highlight"><pre><span></span><code>let newEnvironment = environment.setting(\.someProperty, to: 42)
 </code></pre></div></p>
-</blockquote>
                 
               
               

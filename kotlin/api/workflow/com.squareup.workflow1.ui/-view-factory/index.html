@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -826,7 +826,7 @@
 <p><code>@WorkflowUiExperimentalApi interface ViewFactory&lt;in RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></p>
 <p>Factory for <a href="#">View</a> instances that can show renderings of type<a href="./#RenderingT">RenderingT</a>.
 Use <a href="../-layout-runner/bind/">LayoutRunner.bind</a> to work with XML layout resources, or
-<a href="../-builder-binding/">BuilderBinding</a> to create views from code.</p>
+<a href="../-builder-view-factory/">BuilderViewFactory</a> to create views from code.</p>
 <p>Sets of bindings are gathered in <a href="../-view-registry/">ViewRegistry</a> instances.</p>
 <h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
 <table>
@@ -868,8 +868,16 @@ Use <a href="../-layout-runner/bind/">LayoutRunner.bind</a> to work with XML lay
 </thead>
 <tbody>
 <tr>
-<td><a href="../-builder-binding/">BuilderBinding</a></td>
-<td>A <a href="./">ViewFactory</a> that allows a <a href="../-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>class BuilderBinding&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="./"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
+<td><a href="../-builder-view-factory/">BuilderViewFactory</a></td>
+<td>A <a href="./">ViewFactory</a> that allows a <a href="../-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>class BuilderViewFactory&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="./"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
+</tr>
+<tr>
+<td><a href="../-decorative-view-factory/">DecorativeViewFactory</a></td>
+<td>A <a href="./">ViewFactory</a> for <a href="../-decorative-view-factory/#OuterT">OuterT</a> that delegates view construction responsibilities to the factory registered for <a href="../-decorative-view-factory/#InnerT">InnerT</a>. Makes it convenient for <a href="../-decorative-view-factory/#OuterT">OuterT</a> to wrap instances of <a href="../-decorative-view-factory/#InnerT">InnerT</a> to add information or behavior, without requiring wasteful wrapping in the view system.<code>class DecorativeViewFactory&lt;OuterT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>, InnerT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="./"><code>ViewFactory</code></a><code>&lt;OuterT&gt;</code></td>
+</tr>
+<tr>
+<td><a href="../-named-view-factory/">NamedViewFactory</a></td>
+<td><a href="./">ViewFactory</a> that allows views to display instances of <a href="../-named/">Named</a>. Delegates to the factory for <a href="../-named/wrapped/">Named.wrapped</a>.<code>object NamedViewFactory :</code><a href="./"><code>ViewFactory</code></a><code>&lt;</code><a href="../-named/"><code>Named</code></a><code>&lt;*&gt;&gt;</code></td>
 </tr>
 </tbody>
 </table>

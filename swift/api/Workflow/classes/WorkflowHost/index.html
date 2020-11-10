@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -871,39 +871,27 @@
 <h1 id="workflowhost"><code>WorkflowHost</code><a class="headerlink" href="#workflowhost" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">WorkflowHost</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Manages an active workflow hierarchy.</p>
-</blockquote>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="rendering"><code>rendering</code><a class="headerlink" href="#rendering" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">let</span> <span class="nv">rendering</span><span class="p">:</span> <span class="n">Property</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Represents the <code>Rendering</code> produced by the root workflow in the hierarchy. New <code>Rendering</code> values are produced
 as state transitions occur within the hierarchy.</p>
-</blockquote>
 <h3 id="output"><code>output</code><a class="headerlink" href="#output" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">var</span> <span class="nv">output</span><span class="p">:</span> <span class="n">Signal</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>A signal containing output events emitted by the root workflow in the hierarchy.</p>
-</blockquote>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="initworkflowdebugger"><code>init(workflow:debugger:)</code><a class="headerlink" href="#initworkflowdebugger" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">,</span> <span class="n">debugger</span><span class="p">:</span> <span class="n">WorkflowDebugger</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">)</span>
 </code></pre></div>
-
-<blockquote>
 <p>Initializes a new host with the given workflow at the root.</p>
 <ul>
 <li>Parameter workflow: The root workflow in the hierarchy</li>
 <li>Parameter debugger: An optional debugger. If provided, the host will notify the debugger of updates
                       to the workflow hierarchy as state transitions occur.</li>
 </ul>
-</blockquote>
 <h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -926,10 +914,7 @@ as state transitions occur within the hierarchy.</p>
 <h3 id="updateworkflow"><code>update(workflow:)</code><a class="headerlink" href="#updateworkflow" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">)</span>
 </code></pre></div>
-
-<blockquote>
 <p>Update the input for the workflow. Will cause a render pass.</p>
-</blockquote>
                 
               
               

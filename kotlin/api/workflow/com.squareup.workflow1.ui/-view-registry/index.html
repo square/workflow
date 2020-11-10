@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -843,11 +843,11 @@ from a workflow tree.</p>
 <p>Two concrete <a href="../-view-factory/">ViewFactory</a> implementations are provided:</p>
 <ul>
 <li>
-<p><a href="../-layout-runner/-binding/">LayoutRunner.Binding</a>, allowing the easy pairing of Android XML layout resources with
-    <a href="../-layout-runner/">LayoutRunner</a>s to drive them.</p>
+<p>The various <a href="../-layout-runner/bind/">bind</a> methods on <a href="../-layout-runner/">LayoutRunner</a> allow easy use of
+    Android XML layout resources and <a href="#">AndroidX ViewBinding</a>.</p>
 </li>
 <li>
-<p><a href="../-builder-binding/">BuilderBinding</a>, which can build views from code.</p>
+<p><a href="../-builder-view-factory/">BuilderViewFactory</a> allows views to be built from code.</p>
 </li>
 </ul>
 <p>Registries can be assembled via concatenation, making it easy to snap together screen sets.
@@ -863,10 +863,8 @@ For example:</p>
     val ApplicationViewFactories = ViewRegistry(ApplicationLayoutRunner) +
         AuthViewFactories + TicTacToeViewFactories
 </code></pre></div>
-
 <p>In the above example, note that the <code>companion object</code>s of the various <a href="../-layout-runner/">LayoutRunner</a> classes
-honor a convention of implementing <a href="../-view-factory/">ViewFactory</a>, in aid of this kind of assembly. See the
-class doc on <a href="../-layout-runner/">LayoutRunner</a> for details.</p>
+honor a convention of implementing <a href="../-view-factory/">ViewFactory</a>, in aid of this kind of assembly.</p>
 <h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -909,10 +907,6 @@ class doc on <a href="../-layout-runner/">LayoutRunner</a> for details.</p>
 <tr>
 <td><a href="get-factory-for/">getFactoryFor</a></td>
 <td>This method is not for general use, use <a href="../-workflow-view-stub/">WorkflowViewStub</a> instead.<code>abstract fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; getFactoryFor(renderingType:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;out RenderingT&gt;):</code><a href="../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
-</tr>
-<tr>
-<td><a href="has-view-been-bound/">hasViewBeenBound</a></td>
-<td>This method is not for general use, it&rsquo;s called by <a href="../build-view/">buildView</a> to validate views returned by <a href="../-view-factory/">ViewFactory</a>s.<code>open fun hasViewBeenBound(view: View):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a></td>
 </tr>
 </tbody>
 </table>

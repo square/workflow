@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -816,8 +816,8 @@
                 
                 <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">runningWorker</a></p>
 <h1 id="runningworker">runningWorker<a class="headerlink" href="#runningworker" title="Permanent link">&para;</a></h1>
-<p><code>fun &lt;PropsT, StateT, OutputT&gt;</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;PropsT, StateT, OutputT&gt;.runningWorker(worker:</code><a href="../-worker/"><code>Worker</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt;, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= ""):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<p>Ensures a <a href="../-worker/">Worker</a> that never emits anything is running. Since <a href="./#com.squareup.workflow1$runningWorker(com.squareup.workflow1.BaseRenderContext((com.squareup.workflow1.runningWorker.PropsT, com.squareup.workflow1.runningWorker.StateT, com.squareup.workflow1.runningWorker.OutputT)), com.squareup.workflow1.Worker((kotlin.Nothing)), kotlin.String)/worker">worker</a> can&rsquo;t emit anything,
+<p><code>fun &lt;reified W :</code><a href="../-worker/"><code>Worker</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt;, PropsT, StateT, OutputT&gt;</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;PropsT, StateT, OutputT&gt;.runningWorker(worker: W, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= ""):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
+<p>Ensures a <a href="../-worker/">Worker</a> that never emits anything is running. Since <a href="./#com.squareup.workflow1$runningWorker(com.squareup.workflow1.BaseRenderContext((com.squareup.workflow1.runningWorker.PropsT, com.squareup.workflow1.runningWorker.StateT, com.squareup.workflow1.runningWorker.OutputT)), com.squareup.workflow1.runningWorker.W, kotlin.String)/worker">worker</a> can&rsquo;t emit anything,
 it can&rsquo;t trigger any <a href="../-workflow-action/">WorkflowAction</a>s.</p>
 <p>A simple way to create workers that don&rsquo;t output anything is using <a href="../-worker/create-side-effect/">Worker.createSideEffect</a>.</p>
 <h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>

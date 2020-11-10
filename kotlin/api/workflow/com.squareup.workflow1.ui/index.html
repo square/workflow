@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -857,20 +857,28 @@
 <td>A function passed to <a href="android.view.-view/back-pressed-handler/">View.backPressedHandler</a>, to be called if the back button is pressed while that view is attached to a window.<code>typealias BackPressHandler = () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
-<td><a href="-builder-binding/">BuilderBinding</a></td>
-<td>A <a href="-view-factory/">ViewFactory</a> that allows a <a href="-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need to be generated from code. (Use <a href="-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>class BuilderBinding&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
+<td><a href="-builder-view-factory/">BuilderViewFactory</a></td>
+<td>A <a href="-view-factory/">ViewFactory</a> that allows a <a href="-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need to be generated from code. (Use <a href="-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>class BuilderViewFactory&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
 </tr>
 <tr>
 <td><a href="-compatible/">Compatible</a></td>
 <td>Implemented by objects whose <a href="compatible/">compatibility</a> requires more nuance than just being of the same type.<code>interface Compatible</code></td>
 </tr>
 <tr>
+<td><a href="-decorative-view-factory/">DecorativeViewFactory</a></td>
+<td>A <a href="-view-factory/">ViewFactory</a> for <a href="-decorative-view-factory/#OuterT">OuterT</a> that delegates view construction responsibilities to the factory registered for <a href="-decorative-view-factory/#InnerT">InnerT</a>. Makes it convenient for <a href="-decorative-view-factory/#OuterT">OuterT</a> to wrap instances of <a href="-decorative-view-factory/#InnerT">InnerT</a> to add information or behavior, without requiring wasteful wrapping in the view system.<code>class DecorativeViewFactory&lt;OuterT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>, InnerT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="-view-factory/"><code>ViewFactory</code></a><code>&lt;OuterT&gt;</code></td>
+</tr>
+<tr>
 <td><a href="-layout-runner/">LayoutRunner</a></td>
-<td>A delegate that implements a <a href="-layout-runner/show-rendering/">showRendering</a> method to be called when a workflow rendering of type <a href="-layout-runner/#RenderingT">RenderingT</a> is ready to be displayed in a view inflated from a layout resource by a <a href="-view-registry/">ViewRegistry</a>. (Use <a href="-builder-binding/">BuilderBinding</a> if you want to build views from code rather than layouts.)<code>interface LayoutRunner&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
+<td>A delegate that implements a <a href="-layout-runner/show-rendering/">showRendering</a> method to be called when a workflow rendering of type <a href="-layout-runner/#RenderingT">RenderingT</a> is ready to be displayed in a view inflated from a layout resource by a <a href="-view-registry/">ViewRegistry</a>. (Use <a href="-builder-view-factory/">BuilderViewFactory</a> if you want to build views from code rather than layouts.)<code>interface LayoutRunner&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
 </tr>
 <tr>
 <td><a href="-named/">Named</a></td>
 <td>Allows renderings that do not implement <a href="-compatible/">Compatible</a> themselves to be distinguished by more than just their type. Instances are <a href="compatible/">compatible</a> if they have the same name and have <a href="-named/wrapped/">compatible</a> fields.<code>data class Named&lt;W :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="-compatible/"><code>Compatible</code></a></td>
+</tr>
+<tr>
+<td><a href="-named-view-factory/">NamedViewFactory</a></td>
+<td><a href="-view-factory/">ViewFactory</a> that allows views to display instances of <a href="-named/">Named</a>. Delegates to the factory for <a href="-named/wrapped/">Named.wrapped</a>.<code>object NamedViewFactory :</code><a href="-view-factory/"><code>ViewFactory</code></a><code>&lt;</code><a href="-named/"><code>Named</code></a><code>&lt;*&gt;&gt;</code></td>
 </tr>
 <tr>
 <td><a href="-show-rendering-tag/">ShowRenderingTag</a></td>
@@ -890,7 +898,7 @@
 </tr>
 <tr>
 <td><a href="-view-factory/">ViewFactory</a></td>
-<td>Factory for <a href="#">View</a> instances that can show renderings of type<a href="-view-factory/#RenderingT">RenderingT</a>. Use <a href="-layout-runner/bind/">LayoutRunner.bind</a> to work with XML layout resources, or <a href="-builder-binding/">BuilderBinding</a> to create views from code.<code>interface ViewFactory&lt;in RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
+<td>Factory for <a href="#">View</a> instances that can show renderings of type<a href="-view-factory/#RenderingT">RenderingT</a>. Use <a href="-layout-runner/bind/">LayoutRunner.bind</a> to work with XML layout resources, or <a href="-builder-view-factory/">BuilderViewFactory</a> to create views from code.<code>interface ViewFactory&lt;in RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
 </tr>
 <tr>
 <td><a href="-view-registry/">ViewRegistry</a></td>
@@ -952,6 +960,10 @@
 </tr>
 <tr>
 <td><a href="android.view.-view/">android.view.View</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="android.widget.-edit-text/">android.widget.EditText</a></td>
 <td></td>
 </tr>
 <tr>

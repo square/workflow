@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -824,6 +824,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#constructors" class="md-nav__link">
+    Constructors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#functions" class="md-nav__link">
     Functions
   </a>
@@ -864,10 +871,10 @@
                 
                 <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.testing</a> / <a href="./">RenderTester</a></p>
 <h1 id="rendertester">RenderTester<a class="headerlink" href="#rendertester" title="Permanent link">&para;</a></h1>
-<p><code>interface RenderTester&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></p>
+<p><code>abstract class RenderTester&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></p>
 <p>The props must be specified, the initial state may be specified, and then all child workflows
 and workers that are expected to run, and any outputs from them, must be specified with
-<a href="expect-workflow/">expectWorkflow</a> and <a href="../expect-worker/">expectWorker</a> calls. Then call <a href="render/">render</a> and perform any assertions on the
+<a href="#">expectWorkflow</a> and <a href="../expect-worker/">expectWorker</a> calls. Then call <a href="render/">render</a> and perform any assertions on the
 rendering. An event may also be sent to the rendering if no workflows or workers emitted an
 output. Lastly, the <a href="../-render-test-result/">RenderTestResult</a> returned by <code>render</code> may be used to assert on the
 <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a>s processed to handle events or outputs by calling
@@ -913,7 +920,6 @@ props containing &ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&
     assertThat(action).isEqualTo(Action.CompleteLogin(success = true))
   }
 </code></pre></div>
-
 <h3 id="rendering-event">Rendering event<a class="headerlink" href="#rendering-event" title="Permanent link">&para;</a></h3>
 <p>This is similar to the example above, but will test an event sent to the rendering instead.</p>
 <div class="highlight"><pre><span></span><code>workflow
@@ -939,7 +945,6 @@ props containing &ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&
     assertThat(action).isEqualTo(Action.CancelLogin)
   }
 </code></pre></div>
-
 <h3 id="verify-action-result">Verify action result<a class="headerlink" href="#verify-action-result" title="Permanent link">&para;</a></h3>
 <p>This test verifies the action <em>result</em> instead of the action itself. This technique is useful
 if the <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> is anonymous or inline.</p>
@@ -962,7 +967,6 @@ workflow
     assertThat(output).isNull()
   }
 </code></pre></div>
-
 <h3 id="too-many-outputs">Too many outputs<a class="headerlink" href="#too-many-outputs" title="Permanent link">&para;</a></h3>
 <p>This is an example of what <strong>not</strong> to do – this test will error out because a worker is emitting
 and output <em>and</em> a rendering event is sent.</p>
@@ -987,7 +991,6 @@ and output <em>and</em> a rendering event is sent.</p>
     // an output.
     rendering.onCancelClicked()
 </code></pre></div>
-
 <h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1007,6 +1010,21 @@ and output <em>and</em> a rendering event is sent.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="-init-/">&lt;init&gt;</a></td>
+<td>The props must be specified, the initial state may be specified, and then all child workflows and workers that are expected to run, and any outputs from them, must be specified with <a href="#">expectWorkflow</a> and <a href="../expect-worker/">expectWorker</a> calls. Then call <a href="render/">render</a> and perform any assertions on the rendering. An event may also be sent to the rendering if no workflows or workers emitted an output. Lastly, the <a href="../-render-test-result/">RenderTestResult</a> returned by <code>render</code> may be used to assert on the <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a>s processed to handle events or outputs by calling <a href="../-render-test-result/verify-action/">verifyAction</a> or <a href="../-render-test-result/verify-action-result/">verifyActionResult</a>.<code>RenderTester()</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1019,10 +1037,6 @@ and output <em>and</em> a rendering event is sent.</p>
 <tr>
 <td><a href="expect-side-effect/">expectSideEffect</a></td>
 <td>Specifies that this render pass is expected to run a side effect with a key that satisfies <a href="expect-side-effect/#com.squareup.workflow1.testing.RenderTester$expectSideEffect(kotlin.String, kotlin.Boolean, kotlin.Function1((kotlin.String, kotlin.Boolean)))/matcher">matcher</a>. This expectation is strict, and will fail if multiple side effects match.<code>abstract fun expectSideEffect(description:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, exactMatch:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a><code>= true, matcher: (key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a><code>):</code><a href="./"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></td>
-</tr>
-<tr>
-<td><a href="expect-workflow/">expectWorkflow</a></td>
-<td>Specifies that this render pass is expected to render a particular child workflow.<code>abstract fun expectWorkflow(description:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, exactMatch:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a><code>= true, matcher: (RenderChildInvocation) -&gt; ChildWorkflowMatch):</code><a href="./"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></td>
 </tr>
 <tr>
 <td><a href="render/">render</a></td>

@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -792,27 +792,41 @@
                 
                 <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.ui</a> / <a href="../">LayoutRunner</a> / <a href="./">bind</a></p>
 <h1 id="bind">bind<a class="headerlink" href="#bind" title="Permanent link">&para;</a></h1>
+<p><code>inline fun &lt;BindingT : ViewBinding, reified RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; bind(noinline bindingInflater:</code><a href="../../-view-binding-inflater/"><code>ViewBindingInflater</code></a><code>&lt;BindingT&gt;, crossinline showRendering: BindingT.(RenderingT,</code><a href="../../-view-environment/"><code>ViewEnvironment</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></p>
+<p>Creates a <a href="../../-view-factory/">ViewFactory</a> that <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function3((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, kotlin.Unit)))/bindingInflater">inflates</a> a <a href="#">ViewBinding</a> (<a href="./#BindingT">BindingT</a>)
+to show renderings of type <a href="./#RenderingT">RenderingT</a>, using <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function3((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, kotlin.Unit)))/showRendering">a lambda</a>.</p>
+<div class="highlight"><pre><span></span><code>    val HelloBinding: ViewFactory&lt;Rendering&gt; =
+      LayoutRunner.bind(HelloGoodbyeLayoutBinding::inflate) { rendering, viewEnvironment -&gt;
+        helloMessage.text = rendering.message
+        helloMessage.setOnClickListener { rendering.onClick(Unit) }
+      }
+</code></pre></div>
+<p>If you need to initialize your view before <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function3((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, kotlin.Unit)))/showRendering">showRendering</a> is called,
+implement <a href="../">LayoutRunner</a> and create a binding using the <code>bind</code> variant
+that accepts a <code>(ViewBinding) -&gt; LayoutRunner</code> function, below.</p>
+<p><code>inline fun &lt;BindingT : ViewBinding, reified RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; bind(noinline bindingInflater:</code><a href="../../-view-binding-inflater/"><code>ViewBindingInflater</code></a><code>&lt;BindingT&gt;, noinline constructor: (BindingT) -&gt;</code><a href="../"><code>LayoutRunner</code></a><code>&lt;RenderingT&gt;):</code><a href="../../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></p>
+<p>Creates a <a href="../../-view-factory/">ViewFactory</a> that <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function1((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT)))))/bindingInflater">inflates</a> a <a href="#">ViewBinding</a> (<a href="./#BindingT">BindingT</a>)
+to show renderings of type <a href="./#RenderingT">RenderingT</a>, using a <a href="../">LayoutRunner</a> created by <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function1((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT)))))/constructor">constructor</a>.
+Handy if you need to perform some set up before <a href="../show-rendering/">showRendering</a> is called.</p>
+<p>class HelloLayoutRunner(
+    private val binding: HelloGoodbyeLayoutBinding
+) : LayoutRunner {</p>
+<div class="highlight"><pre><span></span><code>    override fun showRendering(rendering: Rendering) {
+      binding.messageView.text = rendering.message
+      binding.messageView.setOnClickListener { rendering.onClick(Unit) }
+    }
+
+    companion object : ViewFactory&lt;Rendering&gt; by bind(
+        HelloGoodbyeLayoutBinding::inflate, ::HelloLayoutRunner
+    )
+</code></pre></div>
+<p>}</p>
+<p>If the view doesn&rsquo;t need to be initialized before <a href="../show-rendering/">showRendering</a> is called,
+use the variant above which just takes a lambda.</p>
 <p><code>inline fun &lt;reified RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; bind(@LayoutRes layoutId:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a><code>, noinline constructor: (View) -&gt;</code><a href="../"><code>LayoutRunner</code></a><code>&lt;RenderingT&gt;):</code><a href="../../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></p>
 <p>Creates a <a href="../../-view-factory/">ViewFactory</a> that inflates <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Int, kotlin.Function1((android.view.View, com.squareup.workflow1.ui.LayoutRunner((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT)))))/layoutId">layoutId</a> to show renderings of type <a href="./#RenderingT">RenderingT</a>,
-using a <a href="../">LayoutRunner</a> created by <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Int, kotlin.Function1((android.view.View, com.squareup.workflow1.ui.LayoutRunner((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT)))))/constructor">constructor</a>.</p>
-<p><code>inline fun &lt;BindingT : ViewBinding, reified RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; bind(noinline bindingInflater:</code><a href="../../-view-binding-inflater/"><code>ViewBindingInflater</code></a><code>&lt;BindingT&gt;, crossinline showRendering: BindingT.(RenderingT,</code><a href="../../-view-environment/"><code>ViewEnvironment</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></p>
-<p>Creates a <a href="../../-view-factory/">ViewFactory</a> that <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function3((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, kotlin.Unit)))/bindingInflater">inflates</a> a <a href="#">ViewBinding</a> (<a href="./#BindingT">BindingT</a>) to show
-renderings of type <a href="./#RenderingT">RenderingT</a>, using <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function3((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, kotlin.Unit)))/showRendering">showRendering</a>.</p>
-<div class="highlight"><pre><span></span><code>val HelloBinding: ViewFactory&lt;Rendering&gt; =
-  bindViewBinding(HelloGoodbyeLayoutBinding::inflate) { rendering, containerHints -&gt;
-    helloMessage.text = rendering.message
-    helloMessage.setOnClickListener { rendering.onClick(Unit) }
-  }
-</code></pre></div>
-
-<p>If you need to initialize your view before <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function3((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, kotlin.Unit)))/showRendering">showRendering</a> is called, create a <a href="../">LayoutRunner</a>
-and create a binding using <code>LayoutRunner.bind</code> instead.</p>
-<p><code>inline fun &lt;BindingT : ViewBinding, reified RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; bind(noinline bindingInflater:</code><a href="../../-view-binding-inflater/"><code>ViewBindingInflater</code></a><code>&lt;BindingT&gt;, noinline constructor: (BindingT) -&gt;</code><a href="../"><code>LayoutRunner</code></a><code>&lt;RenderingT&gt;):</code><a href="../../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></p>
-<p>Creates a <a href="../../-view-factory/">ViewFactory</a> that <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function1((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT)))))/bindingInflater">inflates</a> a <a href="./#BindingT">BindingT</a> to show renderings of
-type <a href="./#RenderingT">RenderingT</a>, using a <a href="../">LayoutRunner</a> created by <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Function3((android.view.LayoutInflater, android.view.ViewGroup, kotlin.Boolean, com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT)), kotlin.Function1((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.BindingT, com.squareup.workflow1.ui.LayoutRunner((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT)))))/constructor">constructor</a>.</p>
-<p>If the view doesn&rsquo;t need to be initialized before <a href="../show-rendering/">showRendering</a> is called,
-<a href="./">bind</a> can be used instead, which just takes a lambda instead requiring a whole
-<a href="../">LayoutRunner</a> class.</p>
+using a <a href="../">LayoutRunner</a> created by <a href="./#com.squareup.workflow1.ui.LayoutRunner.Companion$bind(kotlin.Int, kotlin.Function1((android.view.View, com.squareup.workflow1.ui.LayoutRunner((com.squareup.workflow1.ui.LayoutRunner.Companion.bind.RenderingT)))))/constructor">constructor</a>. Avoids any use of
+<a href="#">AndroidX ViewBinding</a>.</p>
                 
               
               

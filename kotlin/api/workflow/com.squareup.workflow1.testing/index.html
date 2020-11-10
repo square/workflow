@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -844,7 +844,7 @@
 </tr>
 <tr>
 <td><a href="-render-tester/">RenderTester</a></td>
-<td>The props must be specified, the initial state may be specified, and then all child workflows and workers that are expected to run, and any outputs from them, must be specified with <a href="-render-tester/expect-workflow/">expectWorkflow</a> and <a href="expect-worker/">expectWorker</a> calls. Then call <a href="-render-tester/render/">render</a> and perform any assertions on the rendering. An event may also be sent to the rendering if no workflows or workers emitted an output. Lastly, the <a href="-render-test-result/">RenderTestResult</a> returned by <code>render</code> may be used to assert on the <a href="../com.squareup.workflow1/-workflow-action/">WorkflowAction</a>s processed to handle events or outputs by calling <a href="-render-test-result/verify-action/">verifyAction</a> or <a href="-render-test-result/verify-action-result/">verifyActionResult</a>.<code>interface RenderTester&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></td>
+<td>The props must be specified, the initial state may be specified, and then all child workflows and workers that are expected to run, and any outputs from them, must be specified with <a href="#">expectWorkflow</a> and <a href="expect-worker/">expectWorker</a> calls. Then call <a href="-render-tester/render/">render</a> and perform any assertions on the rendering. An event may also be sent to the rendering if no workflows or workers emitted an output. Lastly, the <a href="-render-test-result/">RenderTestResult</a> returned by <code>render</code> may be used to assert on the <a href="../com.squareup.workflow1/-workflow-action/">WorkflowAction</a>s processed to handle events or outputs by calling <a href="-render-test-result/verify-action/">verifyAction</a> or <a href="-render-test-result/verify-action-result/">verifyActionResult</a>.<code>abstract class RenderTester&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></td>
 </tr>
 <tr>
 <td><a href="-render-test-result/">RenderTestResult</a></td>

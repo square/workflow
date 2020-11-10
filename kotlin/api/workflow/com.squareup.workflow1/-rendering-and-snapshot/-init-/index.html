@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -794,6 +794,9 @@
 <h1 id="init">&lt;init&gt;<a class="headerlink" href="#init" title="Permanent link">&para;</a></h1>
 <p><code>RenderingAndSnapshot(rendering: RenderingT, snapshot:</code><a href="../../-tree-snapshot/"><code>TreeSnapshot</code></a><code>)</code></p>
 <p>Tuple of rendering and snapshot used by <a href="../../render-workflow-in/">renderWorkflowIn</a>.</p>
+<p>Note that this class keeps the default identity equality
+implementation it inherits from <code>Any</code>, rather than comparing
+its <a href="../rendering/">rendering</a> or <a href="../snapshot/">snapshot</a>.</p>
                 
               
               

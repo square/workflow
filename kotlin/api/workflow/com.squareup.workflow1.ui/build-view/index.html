@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -822,8 +822,8 @@
 to <a href="../android.view.-view/show-rendering/">View.showRendering</a>.</p>
 <h3 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h3>
 <p><code>IllegalArgumentException</code> - if no factory can be find for type <a href="./#RenderingT">RenderingT</a></p>
-<p><code>IllegalStateException</code> - if <a href="../-view-registry/has-view-been-bound/">ViewRegistry.hasViewBeenBound</a> returns false (i.e. if the
-matching <a href="../-view-factory/">ViewFactory</a> fails to call <a href="../android.view.-view/bind-show-rendering/">View.bindShowRendering</a> when constructing the view)<code>@WorkflowUiExperimentalApi fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code><a href="../-view-registry/"><code>ViewRegistry</code></a><code>.buildView(initialRendering: RenderingT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, container: ViewGroup): View</code></p>
+<p><code>IllegalStateException</code> - if the matching <a href="../-view-factory/">ViewFactory</a> fails to call
+<a href="../android.view.-view/bind-show-rendering/">View.bindShowRendering</a> when constructing the view<code>@WorkflowUiExperimentalApi fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code><a href="../-view-registry/"><code>ViewRegistry</code></a><code>.buildView(initialRendering: RenderingT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, container: ViewGroup): View</code></p>
 <p>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> than to call this method directly.</p>
 <p>Creates a <a href="#">View</a> to display <a href="./#com.squareup.workflow1.ui$buildView(com.squareup.workflow1.ui.ViewRegistry, com.squareup.workflow1.ui.buildView.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, android.view.ViewGroup)/initialRendering">initialRendering</a>, which can be updated via calls
 to <a href="../android.view.-view/show-rendering/">View.showRendering</a>.</p>

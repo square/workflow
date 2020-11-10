@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -845,7 +845,6 @@ val otherSecondsWorker = millisWorker.transform {
 
 assert(secondsWorker.doesSameWorkAs(otherSecondsWorker))
 </code></pre></div>
-
 <h3 id="workers-from-different-sources-are-not-equivalent">Workers from different sources are not equivalent<a class="headerlink" href="#workers-from-different-sources-are-not-equivalent" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>val secondsWorker = millisWorker.transform {
   it.map { millis -&gt; millis / 1000 }.distinctUntilChanged()

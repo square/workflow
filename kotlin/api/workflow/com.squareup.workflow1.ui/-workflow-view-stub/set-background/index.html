@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -793,10 +793,9 @@
                 <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.ui</a> / <a href="../">WorkflowViewStub</a> / <a href="./">setBackground</a></p>
 <h1 id="setbackground">setBackground<a class="headerlink" href="#setbackground" title="Permanent link">&para;</a></h1>
 <p><code>fun setBackground(background: Drawable?):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<p>Sets the background of this stub as usual, and also that of <a href="../actual/">actual</a>.
-Any new views created by <a href="../update/">update</a> will be assigned this background.</p>
-<p>If the provided <a href="./#com.squareup.workflow1.ui.WorkflowViewStub$setBackground(android.graphics.drawable.Drawable)/background">background</a> is null, the background of <a href="../actual/">actual</a> will be left alone rather
-than being nullified.</p>
+<p>Sets the background of this stub as usual, and also that of <a href="../actual/">actual</a>
+if the given <a href="./#com.squareup.workflow1.ui.WorkflowViewStub$setBackground(android.graphics.drawable.Drawable)/background">background</a> is not null. Any new views created by <a href="../update/">update</a>
+will be assigned this background, again if it is not null.</p>
                 
               
               

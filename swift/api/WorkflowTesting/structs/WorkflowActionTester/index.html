@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -884,8 +884,6 @@
 <h1 id="workflowactiontester"><code>WorkflowActionTester</code><a class="headerlink" href="#workflowactiontester" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
 </code></pre></div>
-
-<blockquote>
 <p>Testing helper that chains action sending and state/output assertions
 to make tests easier to write.</p>
 <div class="highlight"><pre><span></span><code>MyWorkflow.Action
@@ -898,7 +896,6 @@ to make tests easier to write.</p>
         XCTAssertEqual(.differentState, state)
     }
 </code></pre></div>
-
 <p>Or to assert that an action produces no output:</p>
 <div class="highlight"><pre><span></span><code>MyWorkflow.Action
     .tester(withState: .firstState)
@@ -908,7 +905,6 @@ to make tests easier to write.</p>
         XCTAssertEqual(.differentState, state)
     }
 </code></pre></div>
-
 <p>If your State or Output are <code>Equatable</code>, you can use the convenience assertion methods:
 <div class="highlight"><pre><span></span><code>MyWorkflow.Action
     .tester(withState: .firstState)
@@ -916,13 +912,10 @@ to make tests easier to write.</p>
     .assert(output: .finished)
     .assert(state: .differentState)
 </code></pre></div></p>
-</blockquote>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="sendaction"><code>send(action:)</code><a class="headerlink" href="#sendaction" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Sends an action to the reducer.</p>
 <ul>
 <li>
@@ -932,7 +925,6 @@ to make tests easier to write.</p>
 <p>returns: A new state tester containing the state and output (if any) after the update.</p>
 </li>
 </ul>
-</blockquote>
 <h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -954,13 +946,10 @@ to make tests easier to write.</p>
     <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
 <span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Asserts that the action produced no output</p>
 <ul>
 <li>returns: A tester containing the current state and output.</li>
 </ul>
-</blockquote>
 <h3 id="verifyoutputfileline_"><code>verifyOutput(file:line:_:)</code><a class="headerlink" href="#verifyoutputfileline_" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyOutput</span><span class="p">(</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
@@ -968,8 +957,6 @@ to make tests easier to write.</p>
     <span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
 <span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Invokes the given closure (which is intended to contain test assertions) with the produced output.
 If the previous action produced no output, the triggers a test failure and does not execute the closure.</p>
 <ul>
@@ -980,7 +967,6 @@ If the previous action produced no output, the triggers a test failure and does 
 <p>returns: A tester containing the current state and output.</p>
 </li>
 </ul>
-</blockquote>
 <h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -999,8 +985,6 @@ If the previous action produced no output, the triggers a test failure and does 
 <h3 id="verifystate_"><code>verifyState(_:)</code><a class="headerlink" href="#verifystate_" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyState</span><span class="p">(</span><span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
 </code></pre></div>
-
-<blockquote>
 <p>Invokes the given closure (which is intended to contain test assertions) with the current state.</p>
 <ul>
 <li>
@@ -1010,7 +994,6 @@ If the previous action produced no output, the triggers a test failure and does 
 <p>returns: A tester containing the current state and output.</p>
 </li>
 </ul>
-</blockquote>
 <h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>

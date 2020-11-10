@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -861,7 +861,6 @@ call that service from a <a href="../-workflow/">Workflow</a>.</p>
   suspend fun getTime(timezone: String): Long
 }
 </code></pre></div>
-
 <p>The first step is to define a Worker that can call this service, and maybe an extension
 function on your service class:</p>
 <div class="highlight"><pre><span></span><code>fun TimeService.getTimeWorker(timezone: String): Worker&lt;Long&gt; = TimeWorker(timezone, this)
@@ -877,7 +876,6 @@ private class TimeWorker(
   }
 }
 </code></pre></div>
-
 <p>You also need to define how to determine if a previous Worker is already doing the same work.
 This will ensure that if the same request is made by the same <a href="../-workflow/">Workflow</a> in adjacent render
 passes, we&rsquo;ll keep the request alive from the first pass.</p>
@@ -885,14 +883,12 @@ passes, we&rsquo;ll keep the request alive from the first pass.</p>
   otherWorker is TimeWorker &amp;&amp;
     timezone == otherWorker.timezone
 </code></pre></div>
-
 <p>Now you can request the time from your <a href="../-workflow/">Workflow</a>:</p>
 <div class="highlight"><pre><span></span><code>class MyWorkflow(private val timeWorker: TimeWorker) {
   override fun render(…): Foo {
     context.onWorkerOutput(timeWorker) { time -&gt; emitOutput(&quot;The time is $time&quot;) }
   }
 </code></pre></div>
-
 <p>Alternatively, if the response is a unique type, unlikely to be shared by any other workers,
 you don&rsquo;t even need to create your own Worker class, you can use a builder, and the worker
 will automatically be distinguished by that response type:</p>
@@ -903,7 +899,6 @@ will automatically be distinguished by that response type:</p>
 fun TimeService.getTimeWorker(timezone: String): Worker&lt;TimeResponse&gt; =
   Worker.from { getTime(timezone).await()) }
 </code></pre></div>
-
 <p><strong>See Also</strong></p>
 <p><a href="create/">create</a></p>
 <p><a href="from/">from</a></p>

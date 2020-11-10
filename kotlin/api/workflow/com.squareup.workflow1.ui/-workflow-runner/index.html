@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -874,8 +874,8 @@ or subclass <a href="../-workflow-fragment/">WorkflowFragment</a> rather than in
 </thead>
 <tbody>
 <tr>
-<td><a href="await-result/">awaitResult</a></td>
-<td>Returns the first (and only) <a href="./#OutputT">OutputT</a> value emitted by the workflow. Throws the cancellation exception if the workflow was cancelled before emitting.<code>abstract suspend fun awaitResult(): OutputT</code></td>
+<td><a href="receive-output/">receiveOutput</a></td>
+<td>Returns the next <a href="./#OutputT">OutputT</a> value emitted by the workflow. Throws the cancellation exception if the workflow was cancelled before emitting.<code>abstract suspend fun receiveOutput(): OutputT</code></td>
 </tr>
 </tbody>
 </table>

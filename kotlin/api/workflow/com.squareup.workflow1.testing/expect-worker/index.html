@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -842,7 +842,7 @@ messages.<code>inline fun &lt;PropsT, StateT, OutputT, RenderingT, WorkerOutputT
 <p>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> with the given <a href="./#com.squareup.workflow1.testing$expectWorker(com.squareup.workflow1.testing.RenderTester((com.squareup.workflow1.testing.expectWorker.PropsT, com.squareup.workflow1.testing.expectWorker.StateT, com.squareup.workflow1.testing.expectWorker.OutputT, com.squareup.workflow1.testing.expectWorker.RenderingT)), kotlin.reflect.KClass((com.squareup.workflow1.testing.expectWorker.WorkerT)), kotlin.String, kotlin.Function1((com.squareup.workflow1.testing.expectWorker.WorkerT, kotlin.Unit)), com.squareup.workflow1.WorkflowOutput((com.squareup.workflow1.testing.expectWorker.WorkerOutputT)), kotlin.String)/workerClass">workerClass</a>. The
 worker&rsquo;s output type is not taken into consideration.</p>
 <h3 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h3>
-<p><code>workerClass</code> - The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> of the worker that is expected to be ran.</p>
+<p><code>workerClass</code> - The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> of the worker that is expected to be run.</p>
 <p><code>key</code> - The key passed to <a href="../../com.squareup.workflow1/running-worker/">runningWorker</a> when rendering
 this workflow.</p>
 <p><code>assertWorker</code> - A function that will be passed the actual worker that matches this
@@ -854,7 +854,7 @@ The <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> 
 messages.<code>fun &lt;PropsT, StateT, OutputT, RenderingT&gt;</code><a href="../-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.expectWorker(workerType:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html"><code>KType</code></a><code>, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", assertWorker: (</code><a href="../../com.squareup.workflow1/-worker/"><code>Worker</code></a><code>&lt;*&gt;) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}, output:</code><a href="../../com.squareup.workflow1/-workflow-output/"><code>WorkflowOutput</code></a><code>&lt;*&gt;? = null, description:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= ""):</code><a href="../-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></p>
 <p>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> whose <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> matches <a href="./#com.squareup.workflow1.testing$expectWorker(com.squareup.workflow1.testing.RenderTester((com.squareup.workflow1.testing.expectWorker.PropsT, com.squareup.workflow1.testing.expectWorker.StateT, com.squareup.workflow1.testing.expectWorker.OutputT, com.squareup.workflow1.testing.expectWorker.RenderingT)), kotlin.reflect.KType, kotlin.String, kotlin.Function1((com.squareup.workflow1.Worker((kotlin.Any)), kotlin.Unit)), com.squareup.workflow1.WorkflowOutput((kotlin.Any)), kotlin.String)/workerType">workerType</a>.</p>
 <h3 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h3>
-<p><code>workerType</code> - The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the <a href="../../com.squareup.workflow1/-worker/">Worker</a> that is expected to be ran. This will be compared
+<p><code>workerType</code> - The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the <a href="../../com.squareup.workflow1/-worker/">Worker</a> that is expected to be run. This will be compared
 against the concrete type of the worker that is passed to
 <a href="#">runningWorker</a>, but may be a supertype of that type. E.g.
 an expected worker type of <code>typeOf&lt;Worker&lt;Collection&lt;CharSequence&gt;&gt;&gt;()</code> will match a worker that

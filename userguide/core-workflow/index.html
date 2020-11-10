@@ -856,8 +856,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -1042,7 +1042,6 @@ node in the workflow hierarchy.</p>
 
 <span class="p">}</span>
 </code></pre></div>
-
 </div>
 <input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Kotlin</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="k">abstract</span> <span class="k">class</span> <span class="nc">StatefulWorkflow</span><span class="p">&lt;</span><span class="k">in</span> <span class="n">PropsT</span><span class="p">,</span> <span class="n">StateT</span><span class="p">,</span> <span class="k">out</span> <span class="n">OutputT</span> <span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="k">out</span> <span class="n">RenderingT</span><span class="p">&gt;</span> <span class="p">:</span>
@@ -1068,7 +1067,6 @@ node in the workflow hierarchy.</p>
   <span class="k">abstract</span> <span class="k">fun</span> <span class="nf">snapshotState</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">StateT</span><span class="p">):</span> <span class="n">Snapshot</span>
 <span class="p">}</span>
 </code></pre></div>
-
 </div>
 </div>
 <details class="faq"><summary>Swift: What is <code>AnyWorkflowConvertible</code>?</summary><p>When a protocol has an associated <code>Self</code> type, Swift requires the use of a <a href="https://medium.com/swiftworld/swift-world-type-erasure-5b720bc0318a">type-erasing wrapper</a>
@@ -1122,7 +1120,6 @@ workflow is running.</p>
     <span class="kd">var</span> <span class="nv">currentTurn</span><span class="p">:</span> <span class="n">Player</span> <span class="p">=</span> <span class="p">.</span><span class="n">x</span>
 <span class="p">}</span>
 </code></pre></div>
-
 </div>
 <input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Kotlin</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="k">data</span> <span class="k">class</span> <span class="nc">State</span><span class="p">(</span>
@@ -1141,7 +1138,6 @@ workflow is running.</p>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-
 </div>
 </div>
 <p>When the workflow is first started, it is queried for an initial state value. From that point
@@ -1164,7 +1160,6 @@ parameter is necessary due to Kotlin’s lack of the <code>Self</code> type that
 <div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">Swift</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="n">TK</span>
 </code></pre></div>
-
 </div>
 <input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Kotlin</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="k">data</span> <span class="k">class</span> <span class="nc">Props</span><span class="p">(</span>
@@ -1172,7 +1167,6 @@ parameter is necessary due to Kotlin’s lack of the <code>Self</code> type that
   <span class="k">val</span> <span class="py">playerOName</span><span class="p">:</span> <span class="n">String</span>
 <span class="p">)</span>
 </code></pre></div>
-
 </div>
 </div>
 <h2 id="workflows-are-advanced-by-workflowactions">Workflows are advanced by <code>WorkflowAction</code>s<a class="headerlink" href="#workflows-are-advanced-by-workflowactions" title="Permanent link">&para;</a></h2>
@@ -1224,12 +1218,10 @@ will advance the workflow by dispatching an action back to the workflow (for mor
         <span class="n">onTap</span><span class="p">:</span> <span class="p">{</span> <span class="n">sink</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">Action</span><span class="p">.</span><span class="n">refreshButtonTapped</span><span class="p">)</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-
 </div>
 <input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><label for="__tabbed_4_2">Kotlin</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="n">TK</span>
 </code></pre></div>
-
 </div>
 </div>
 <h2 id="workflows-form-a-hierarchy-they-may-have-children">Workflows form a hierarchy (they may have children)<a class="headerlink" href="#workflows-form-a-hierarchy-they-may-have-children" title="Permanent link">&para;</a></h2>

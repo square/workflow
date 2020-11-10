@@ -725,8 +725,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../../../CHANGELOG/" title="Change Log ⏏" class="md-nav__link">
-      Change Log ⏏
+    <a href="../../../../../../CHANGELOG/" title="Changelog" class="md-nav__link">
+      Changelog
     </a>
   </li>
 
@@ -815,8 +815,11 @@ has already been replaced, updates the replacement if it <a href="../../android.
 If the current replacement can&rsquo;t handle <a href="./#com.squareup.workflow1.ui.WorkflowViewStub$update(kotlin.Any, com.squareup.workflow1.ui.ViewEnvironment)/rendering">rendering</a>, a new view is put in its place.</p>
 <p>The <a href="#">id</a> of any view created by this method will be set to to <a href="../inflated-id/">inflatedId</a>,
 unless that value is <a href="#">View.NO_ID</a>.</p>
-<p>The <a href="../set-visibility/">visibility</a> of any view created by this method will be copied
-from <a href="#">getVisibility</a>.</p>
+<p>The <a href="../set-background/">background</a> of any view created by this method will be copied
+from <a href="#">getBackground</a>, if that value is non-null.</p>
+<p>If <a href="../updates-visibility/">updatesVisibility</a> is true, the <a href="../set-visibility/">visibility</a> of any view created by
+this method will be copied from <a href="../actual/">actual</a>. (Bear in mind that the initial value of
+<a href="../actual/">actual</a> is this stub.)</p>
 <h3 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h3>
 <p><code>IllegalArgumentException</code> - if no binding can be find for the type of <a href="./#com.squareup.workflow1.ui.WorkflowViewStub$update(kotlin.Any, com.squareup.workflow1.ui.ViewEnvironment)/rendering">rendering</a></p>
 <p><code>IllegalStateException</code> - if the matching
