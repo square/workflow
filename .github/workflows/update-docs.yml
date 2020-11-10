@@ -37,7 +37,7 @@ jobs:
         ref: ${{ github.event.inputs.kotlin-ref }}
         path: 'workflow-kotlin'
 
-    - name: Check out Swift ref
+    - name: Check out Swift repo
       uses: actions/checkout@v2.3.3
       with:
         repository: 'square/workflow-swift'
@@ -129,5 +129,5 @@ jobs:
         
         # Commit and push
         git add .
-        git commit -m "Update documentation"
+        git commit -m "Update documentation from square/workflow-kotlin@$(git --git-dir ../workflow-kotlin/.git log -1 --format='%H) and square/workflow-swift@$(git --git-dir ../workflow-swift/.git log -1 --format='%H)"
         git push origin HEAD:${{ github.event.inputs.docs-branch }}
