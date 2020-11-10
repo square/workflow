@@ -110,6 +110,7 @@ nav:
     - 'Kotlin': 'kotlin/api/workflow/index.md'
     - 'Swift API':
       - 'Workflow ': 'swift/api/Workflow/README.md'
+      - 'WorkflowReactiveSwift': 'swift/api/WorkflowReactiveSwift/README.md'
       - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
       - 'WorkflowTesting ': 'swift/api/WorkflowTesting/README.md'
   - 'FAQ': faq.md
