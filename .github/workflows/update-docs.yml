@@ -121,6 +121,10 @@ jobs:
 
     - name: Commit updated docs
       run: |
+        # Get the source repo SHAs
+        KOTLIN_REF=$(git --git-dir workflow-kotlin/.git log -1 --format='%H)
+        SWIFT_REF=$(git --git-dir workflow-swift/.git log -1 --format='%H)
+        
         cd workflow-publish
         git checkout -b ${{ github.event.inputs.docs-branch }}
         
@@ -129,5 +133,5 @@ jobs:
         
         # Commit and push
         git add .
-        git commit -m "Update documentation from square/workflow-kotlin@$(git --git-dir ../workflow-kotlin/.git log -1 --format='%H) and square/workflow-swift@$(git --git-dir ../workflow-swift/.git log -1 --format='%H)"
+        git commit -m "Update documentation from square/workflow-kotlin@$KOTLIN_REF and square/workflow-swift@$SWIFT_REF"
         git push origin HEAD:${{ github.event.inputs.docs-branch }}
