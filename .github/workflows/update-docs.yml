@@ -133,5 +133,5 @@ jobs:
         
         # Commit and push
         git add .
-        git commit -m "Update documentation from square/workflow-kotlin@$KOTLIN_REF and square/workflow-swift@$SWIFT_REF"
+        git commit -m "Update documentation" -m "Docs built from square/workflow-kotlin@$KOTLIN_REF and square/workflow-swift@$SWIFT_REF"
         git push origin HEAD:${{ github.event.inputs.docs-branch }}
