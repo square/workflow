@@ -36,7 +36,7 @@ func render() -> WorkflowType.Rendering {
 }
 ```
 
-The `SubtreeManager` instantiates a `Context` object (TODO: Explain what this does), wraps it in a `RenderContext` (TODO: Explain why), and invokes the closure that was passed in. This last step generates the `Rendering`. This `Rendering` then gets passed back up the call stack until it reaches the `WorkflowHost`.
+The `SubtreeManager` instantiates a `RenderContext` and invokes the closure that was passed in. This last step generates the `Rendering`. This `Rendering` then gets passed back up the call stack until it reaches the `WorkflowHost`.
 
 #### Composition
 
@@ -44,4 +44,5 @@ In cases where a `Workflow` has child `Workflow`s, the render sequence is simila
 
 ![nested workflow rendering sequence diagram](../images/swift/nested_workflow_rendering.png)
 
-Essentially, a `Workflow` containing child `Workflow`s calls `render(workflow:key:outputMap:)` on the `RenderContext` and passes the child `Workflow`. The context does some bookkeeping for the child `Workflow` (creating or updating a `ChildWorkflow<T>`) and then calls `render()`. `ChildWorkflow<T>.render()` calls `render()` on its `WorkflowNode` and we recurse back to step 2.
+Essentially, a `Workflow` containing child `Workflow`s calls `render(context:key:outputMap:)` on each child `Workflow` and passes in the `RenderContext`. The context does some bookkeeping for the child `Workflow` (creating or updating a `ChildWorkflow<T>`) and then calls `render()`. `ChildWorkflow<T>.render()` calls `render()` on its `WorkflowNode` and we recurse back to step 2.
+
