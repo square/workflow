@@ -1,0 +1,17 @@
+title Simple Workflow Rendering
+
+[->WorkflowHost: init(workflow:)
+WorkflowHost->+WorkflowNode: render()
+WorkflowNode->+SubtreeManager: render(callback:)
+SubtreeManager->SubtreeManager: create Context
+SubtreeManager->SubtreeManager: wrap in RenderContext
+SubtreeManager->WorkflowNode: callback(renderContext)
+activate WorkflowNode
+WorkflowNode->+Workflow: render(state:context:)
+Workflow-->-WorkflowNode: Rendering
+WorkflowNode-->SubtreeManager: Rendering
+deactivate WorkflowNode
+SubtreeManager-->-WorkflowNode: Rendering
+WorkflowNode-->-WorkflowHost: Rendering
+
+option footer=bar
