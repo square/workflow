@@ -444,9 +444,75 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Under the Hood: Implementation Notes
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
     <a href="./" title="Under the Hood: Implementation Notes" class="md-nav__link md-nav__link--active">
       Under the Hood: Implementation Notes
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#swift" class="md-nav__link">
+    Swift
+  </a>
+  
+    <nav class="md-nav" aria-label="Swift">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-render-loop" class="md-nav__link">
+    The Render loop
+  </a>
+  
+    <nav class="md-nav" aria-label="The Render loop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initial-pass" class="md-nav__link">
+    Initial pass
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composition" class="md-nav__link">
+    Composition
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -797,6 +863,56 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#swift" class="md-nav__link">
+    Swift
+  </a>
+  
+    <nav class="md-nav" aria-label="Swift">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-render-loop" class="md-nav__link">
+    The Render loop
+  </a>
+  
+    <nav class="md-nav" aria-label="The Render loop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initial-pass" class="md-nav__link">
+    Initial pass
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composition" class="md-nav__link">
+    Composition
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -816,7 +932,36 @@
                 
                 
                 <h1 id="implementation-notes">Implementation Notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h1>
-<p><em>Coming soon!</em></p>
+<p><em>Work in progress…</em></p>
+<h2 id="swift">Swift<a class="headerlink" href="#swift" title="Permanent link">&para;</a></h2>
+<h3 id="the-render-loop">The Render loop<a class="headerlink" href="#the-render-loop" title="Permanent link">&para;</a></h3>
+<h4 id="initial-pass">Initial pass<a class="headerlink" href="#initial-pass" title="Permanent link">&para;</a></h4>
+<p><img alt="workflow rendering sequence diagram" src="../../images/swift/workflow_rendering.png" /></p>
+<p>The root of your workflow hierarchy gets put into a <code>WorkflowHost</code> (if you&rsquo;re using <code>ContainerViewController</code> this is created for you). As part of its initializer, <code>WorkflowHost</code> creates a <code>WorkflowNode</code> that wraps the given root <code>Workflow</code> (and keeps track of the <code>Workflow</code>&lsquo;s <code>State</code>). It then calls <code>render()</code> on the node:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// WorkflowHost</span>
+<span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">,</span> <span class="n">debugger</span><span class="p">:</span> <span class="n">WorkflowDebugger</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kc">self</span><span class="p">.</span><span class="n">debugger</span> <span class="p">=</span> <span class="n">debugger</span>
+
+    <span class="kc">self</span><span class="p">.</span><span class="n">rootNode</span> <span class="p">=</span> <span class="n">WorkflowNode</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">workflow</span><span class="p">)</span>  <span class="c1">// 1. Create the node</span>
+
+    <span class="kc">self</span><span class="p">.</span><span class="n">mutableRendering</span> <span class="p">=</span> <span class="n">MutableProperty</span><span class="p">(</span><span class="kc">self</span><span class="p">.</span><span class="n">rootNode</span><span class="p">.</span><span class="n">render</span><span class="p">())</span>  <span class="c1">// 2. Call render()</span>
+</code></pre></div>
+<p><code>WorkflowNode</code> contains a <code>SubtreeManager</code>, whose primary purpose is to manage child workflows (more on this later). When <code>render()</code> gets invoked on the node, it calls <code>render</code> on the <code>SubtreeManager</code> and passes a closure that takes a <code>RenderContext</code> and returns a <code>Rendering</code> for the <code>Workflow</code> associated with the node.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// WorkflowNode</span>
+<span class="kd">func</span> <span class="nf">render</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">Rendering</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">subtreeManager</span><span class="p">.</span><span class="n">render</span> <span class="p">{</span> <span class="n">context</span> <span class="k">in</span>
+        <span class="k">return</span> <span class="n">workflow</span><span class="p">.</span><span class="n">render</span><span class="p">(</span>
+            <span class="n">state</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span>
+            <span class="n">context</span><span class="p">:</span> <span class="n">context</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The <code>SubtreeManager</code> instantiates a <code>RenderContext</code> and invokes the closure that was passed in. This last step generates the <code>Rendering</code>. This <code>Rendering</code> then gets passed back up the call stack until it reaches the <code>WorkflowHost</code>.</p>
+<h4 id="composition">Composition<a class="headerlink" href="#composition" title="Permanent link">&para;</a></h4>
+<p>In cases where a <code>Workflow</code> has child <code>Workflow</code>s, the render sequence is similar. The <a href="../tutorial/building-a-workflow/#the-render-context">tutorial</a> goes through this in more detail.</p>
+<p><img alt="nested workflow rendering sequence diagram" src="../../images/swift/nested_workflow_rendering.png" /></p>
+<p>Essentially, a <code>Workflow</code> containing child <code>Workflow</code>s calls <code>render(context:key:outputMap:)</code> on each child <code>Workflow</code> and passes in the <code>RenderContext</code>. The context does some bookkeeping for the child <code>Workflow</code> (creating or updating a <code>ChildWorkflow&lt;T&gt;</code>) and then calls <code>render()</code>. <code>ChildWorkflow&lt;T&gt;.render()</code> calls <code>render()</code> on its <code>WorkflowNode</code> and we recurse back to step 2.</p>
                 
               
               
