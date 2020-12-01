@@ -133,6 +133,7 @@ func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
     return DemoScreen(
         title: "A nice title",
         onTap: { sink.send(Action.refreshButtonTapped) }
+    )
 }
 ```
 
@@ -206,18 +207,18 @@ In order to start asynchronous work, the workflow requests it in the render meth
 something like:
 
 ```swift
-    public func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
-        RefreshWorker()
-            .mapOutput { output -> Action in
-                switch output {
-                case .success(let result):
-                    return Action.refreshComplete(result)
-                case .error(let error):
-                    return Action.refreshError(error)
-                }
+public func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
+    RefreshWorker()
+        .mapOutput { output -> Action in
+            switch output {
+            case .success(let result):
+                return Action.refreshComplete(result)
+            case .error(let error):
+                return Action.refreshError(error)
             }
-            .running(in: context)
-    }
+        }
+        .running(in: context)
+}
 ```
 
 When `running(in:)` is executed on a worker, the context will do the following:
