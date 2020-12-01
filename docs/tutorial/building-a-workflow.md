@@ -173,11 +173,11 @@ struct WelcomeFlowWorkflow: Workflow {
 ## Workers, or "Asynchronous work the workflow needs done"
 
 A workflow may need to do some amount of asynchronous work (such as a network request, reading from
-a sqlite database, etc). Workers provide a declarative interface to units of asynchronous work.
+a SQLite database, etc). Workers provide a declarative interface to units of asynchronous work.
 
-To do something asynchronously, we define a worker that has an Output type and defines a `run`
-method that that returns a Reactive Swift `SignalProducer`. When this worker will be run, the
-`SignalProducer` is subscribed to starting the async task.
+To do something asynchronously, we define a worker that has an `Output` type and defines a `run`
+method that that returns a Reactive Swift `SignalProducer`. When this worker is run, the
+`SignalProducer` is subscribed to, starting the async task.
 
 ```swift
 struct RefreshWorker: Worker {
@@ -207,20 +207,20 @@ something like:
 
 ```swift
     public func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
-
-        context.awaitResult(for: RefreshWorker()) { output -> Action in
-            switch output {
-            case .success(let result):
-                return Action.refreshComplete(result)
-            case .error(let error):
-                return Action.refreshError(error)
-
+        RefreshWorker()
+            .mapOutput { output -> Action in
+                switch output {
+                case .success(let result):
+                    return Action.refreshComplete(result)
+                case .error(let error):
+                    return Action.refreshError(error)
+                }
             }
-        }
+            .running(in: context)
     }
 ```
 
-When the context is told to await a result from a worker, the context will do the following:
+When `running(in:)` is executed on a worker, the context will do the following:
 
 - Check if there is already a worker running of the same type:
   - If there is not, or `isEquivalent` is false, call `run` on the worker and subscribe to the
