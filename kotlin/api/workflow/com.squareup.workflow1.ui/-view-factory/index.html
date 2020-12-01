@@ -836,10 +836,20 @@
                 <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">ViewFactory</a></p>
 <h1 id="viewfactory">ViewFactory<a class="headerlink" href="#viewfactory" title="Permanent link">&para;</a></h1>
 <p><code>@WorkflowUiExperimentalApi interface ViewFactory&lt;in RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></p>
-<p>Factory for <a href="#">View</a> instances that can show renderings of type<a href="./#RenderingT">RenderingT</a>.
-Use <a href="../-layout-runner/bind/">LayoutRunner.bind</a> to work with XML layout resources, or
-<a href="../-builder-view-factory/">BuilderViewFactory</a> to create views from code.</p>
-<p>Sets of bindings are gathered in <a href="../-view-registry/">ViewRegistry</a> instances.</p>
+<p>Factory for <a href="#">View</a> instances that can show renderings of type<a href="./#RenderingT">RenderingT</a>.</p>
+<p>Two concrete <a href="./">ViewFactory</a> implementations are provided:</p>
+<ul>
+<li>
+<p>The various <a href="../-layout-runner/bind/">bind</a> methods on <a href="../-layout-runner/">LayoutRunner</a> allow easy use of
+    Android XML layout resources and <a href="#">AndroidX ViewBinding</a>.</p>
+</li>
+<li>
+<p><a href="../-builder-view-factory/">BuilderViewFactory</a> allows views to be built from code.</p>
+</li>
+</ul>
+<p>It&rsquo;s simplest to have your rendering classes implement <a href="../-android-view-rendering/">AndroidViewRendering</a> to associate
+them with appropriate an appropriate <a href="./">ViewFactory</a>. For more flexibility, and to
+avoid coupling your workflow directly to the Android runtime, see <a href="../-view-registry/">ViewRegistry</a>.</p>
 <h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -881,7 +891,7 @@ Use <a href="../-layout-runner/bind/">LayoutRunner.bind</a> to work with XML lay
 <tbody>
 <tr>
 <td><a href="../-builder-view-factory/">BuilderViewFactory</a></td>
-<td>A <a href="./">ViewFactory</a> that allows a <a href="../-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>class BuilderViewFactory&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="./"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
+<td>A <a href="./">ViewFactory</a> that creates <a href="#">View</a>s that need to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>class BuilderViewFactory&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="./"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
 </tr>
 <tr>
 <td><a href="../-decorative-view-factory/">DecorativeViewFactory</a></td>

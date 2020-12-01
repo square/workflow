@@ -806,7 +806,7 @@
 <h1 id="init">&lt;init&gt;<a class="headerlink" href="#init" title="Permanent link">&para;</a></h1>
 <p><code>WorkflowFragment()</code></p>
 <p>A <a href="#">Fragment</a> that can run a workflow. Subclasses implement <a href="../on-create-workflow/">onCreateWorkflow</a>
-to configure themselves with a <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a>, <a href="../../-view-registry/">ViewRegistry</a> and <a href="../../-workflow-runner/-config/props/">inputs</a>.</p>
+to configure themselves with a <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a> and <a href="../../-workflow-runner/-config/props/">inputs</a>.</p>
 <p>For a workflow with no inputs, or a static configuration, that&rsquo;s as simple as:</p>
 <div class="highlight"><pre><span></span><code>    class HelloWorkflowFragment : WorkflowFragment&lt;Unit, Unit&gt;() {
       override fun onCreateWorkflow(): Config&lt;Unit, Unit&gt; {

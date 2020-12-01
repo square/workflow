@@ -804,7 +804,11 @@
                 
                 <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.ui</a> / <a href="../">ViewEnvironment</a> / <a href="./">&lt;init&gt;</a></p>
 <h1 id="init">&lt;init&gt;<a class="headerlink" href="#init" title="Permanent link">&para;</a></h1>
-<p><code>ViewEnvironment(registry:</code><a href="../../-view-registry/"><code>ViewRegistry</code></a><code>)</code></p>
+<p><code>ViewEnvironment(map:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><code>Map</code></a><code>&lt;</code><a href="../../-view-environment-key/"><code>ViewEnvironmentKey</code></a><code>&lt;*&gt;,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; = emptyMap())</code></p>
+<p>Immutable, append-only map of values that a parent view can pass down to
+its children via <a href="../../android.view.-view/show-rendering/">View.showRendering</a> et al.
+Allows container views to give descendants information about the context in which
+they&rsquo;re drawing.</p>
                 
               
               

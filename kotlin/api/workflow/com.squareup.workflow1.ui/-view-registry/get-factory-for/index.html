@@ -784,23 +784,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#exceptions" class="md-nav__link">
-    Exceptions
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -821,11 +804,10 @@
                 
                 <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.ui</a> / <a href="../">ViewRegistry</a> / <a href="./">getFactoryFor</a></p>
 <h1 id="getfactoryfor">getFactoryFor<a class="headerlink" href="#getfactoryfor" title="Permanent link">&para;</a></h1>
-<p><code>abstract fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; getFactoryFor(renderingType:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;out RenderingT&gt;):</code><a href="../../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></p>
+<p><code>abstract fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; getFactoryFor(renderingType:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;out RenderingT&gt;):</code><a href="../../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;?</code></p>
 <p>This method is not for general use, use <a href="../../-workflow-view-stub/">WorkflowViewStub</a> instead.</p>
-<p>Returns the <a href="../../-view-factory/">ViewFactory</a> that was registered for the given <a href="./#com.squareup.workflow1.ui.ViewRegistry$getFactoryFor(kotlin.reflect.KClass((com.squareup.workflow1.ui.ViewRegistry.getFactoryFor.RenderingT)))/renderingType">renderingType</a>.</p>
-<h3 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h3>
-<p><code>IllegalArgumentException</code> - if no factory can be found for type <a href="./#RenderingT">RenderingT</a></p>
+<p>Returns the <a href="../../-view-factory/">ViewFactory</a> that was registered for the given <a href="./#com.squareup.workflow1.ui.ViewRegistry$getFactoryFor(kotlin.reflect.KClass((com.squareup.workflow1.ui.ViewRegistry.getFactoryFor.RenderingT)))/renderingType">renderingType</a>, or null
+if none was found.</p>
                 
               
               

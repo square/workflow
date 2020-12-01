@@ -865,12 +865,16 @@
 </thead>
 <tbody>
 <tr>
+<td><a href="-android-view-rendering/">AndroidViewRendering</a></td>
+<td>Interface implemented by a rendering class to allow it to drive an Android UI via an appropriate <a href="-view-factory/">ViewFactory</a> implementation.<code>interface AndroidViewRendering&lt;V :</code><a href="-android-view-rendering/"><code>AndroidViewRendering</code></a><code>&lt;V&gt;&gt;</code></td>
+</tr>
+<tr>
 <td><a href="-back-press-handler/">BackPressHandler</a></td>
 <td>A function passed to <a href="android.view.-view/back-pressed-handler/">View.backPressedHandler</a>, to be called if the back button is pressed while that view is attached to a window.<code>typealias BackPressHandler = () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
 <td><a href="-builder-view-factory/">BuilderViewFactory</a></td>
-<td>A <a href="-view-factory/">ViewFactory</a> that allows a <a href="-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need to be generated from code. (Use <a href="-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>class BuilderViewFactory&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
+<td>A <a href="-view-factory/">ViewFactory</a> that creates <a href="#">View</a>s that need to be generated from code. (Use <a href="-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>class BuilderViewFactory&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
 </tr>
 <tr>
 <td><a href="-compatible/">Compatible</a></td>
@@ -910,19 +914,19 @@
 </tr>
 <tr>
 <td><a href="-view-factory/">ViewFactory</a></td>
-<td>Factory for <a href="#">View</a> instances that can show renderings of type<a href="-view-factory/#RenderingT">RenderingT</a>. Use <a href="-layout-runner/bind/">LayoutRunner.bind</a> to work with XML layout resources, or <a href="-builder-view-factory/">BuilderViewFactory</a> to create views from code.<code>interface ViewFactory&lt;in RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
+<td>Factory for <a href="#">View</a> instances that can show renderings of type<a href="-view-factory/#RenderingT">RenderingT</a>.<code>interface ViewFactory&lt;in RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
 </tr>
 <tr>
 <td><a href="-view-registry/">ViewRegistry</a></td>
-<td>A collection of <a href="-view-factory/">ViewFactory</a>s that can be used to display the stream of renderings from a workflow tree.<code>interface ViewRegistry</code></td>
+<td>The <a href="-view-environment/">ViewEnvironment</a> service that can be used to display the stream of renderings from a workflow tree as <a href="#">View</a> instances. This is the engine behind <a href="-android-view-rendering/">AndroidViewRendering</a>, <a href="-workflow-view-stub/">WorkflowViewStub</a> and <a href="-view-factory/">ViewFactory</a>. Most apps can ignore <a href="-view-registry/">ViewRegistry</a> as an implementation detail, by using <a href="-android-view-rendering/">AndroidViewRendering</a> to tie their rendering classes to view code.<code>interface ViewRegistry</code></td>
 </tr>
 <tr>
 <td><a href="-view-show-rendering/">ViewShowRendering</a></td>
-<td>Function attached to a view created by <a href="-view-registry/">ViewRegistry</a>, to allow it to respond to <a href="android.view.-view/show-rendering/">View.showRendering</a>.<code>typealias ViewShowRendering&lt;RenderingT&gt; = (RenderingT,</code><a href="-view-environment/"><code>ViewEnvironment</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td>Function attached to a view created by <a href="-view-factory/">ViewFactory</a>, to allow it to respond to <a href="android.view.-view/show-rendering/">View.showRendering</a>.<code>typealias ViewShowRendering&lt;RenderingT&gt; = (RenderingT,</code><a href="-view-environment/"><code>ViewEnvironment</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
 <td><a href="-workflow-fragment/">WorkflowFragment</a></td>
-<td>A <a href="#">Fragment</a> that can run a workflow. Subclasses implement <a href="-workflow-fragment/on-create-workflow/">onCreateWorkflow</a> to configure themselves with a <a href="../com.squareup.workflow1/-workflow/">Workflow</a>, <a href="-view-registry/">ViewRegistry</a> and <a href="-workflow-runner/-config/props/">inputs</a>.<code>abstract class WorkflowFragment&lt;PropsT, OutputT&gt; : Fragment</code></td>
+<td>A <a href="#">Fragment</a> that can run a workflow. Subclasses implement <a href="-workflow-fragment/on-create-workflow/">onCreateWorkflow</a> to configure themselves with a <a href="../com.squareup.workflow1/-workflow/">Workflow</a> and <a href="-workflow-runner/-config/props/">inputs</a>.<code>abstract class WorkflowFragment&lt;PropsT, OutputT&gt; : Fragment</code></td>
 </tr>
 <tr>
 <td><a href="-workflow-layout/">WorkflowLayout</a></td>

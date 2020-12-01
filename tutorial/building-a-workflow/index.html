@@ -1137,6 +1137,7 @@ model to send that event back to the workflow:</p>
     <span class="k">return</span> <span class="n">DemoScreen</span><span class="p">(</span>
         <span class="n">title</span><span class="p">:</span> <span class="s">&quot;A nice title&quot;</span><span class="p">,</span>
         <span class="n">onTap</span><span class="p">:</span> <span class="p">{</span> <span class="n">sink</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">Action</span><span class="p">.</span><span class="n">refreshButtonTapped</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="state_1">State<a class="headerlink" href="#state_1" title="Permanent link">&para;</a></h2>
@@ -1171,10 +1172,10 @@ a while and we are confident that you will see the benefits.</p>
 </div>
 <h2 id="workers-or-asynchronous-work-the-workflow-needs-done">Workers, or &ldquo;Asynchronous work the workflow needs done&rdquo;<a class="headerlink" href="#workers-or-asynchronous-work-the-workflow-needs-done" title="Permanent link">&para;</a></h2>
 <p>A workflow may need to do some amount of asynchronous work (such as a network request, reading from
-a sqlite database, etc). Workers provide a declarative interface to units of asynchronous work.</p>
-<p>To do something asynchronously, we define a worker that has an Output type and defines a <code>run</code>
-method that that returns a Reactive Swift <code>SignalProducer</code>. When this worker will be run, the
-<code>SignalProducer</code> is subscribed to starting the async task.</p>
+a SQLite database, etc). Workers provide a declarative interface to units of asynchronous work.</p>
+<p>To do something asynchronously, we define a worker that has an <code>Output</code> type and defines a <code>run</code>
+method that that returns a Reactive Swift <code>SignalProducer</code>. When this worker is run, the
+<code>SignalProducer</code> is subscribed to, starting the async task.</p>
 <div class="highlight"><pre><span></span><code><span class="kd">struct</span> <span class="nc">RefreshWorker</span><span class="p">:</span> <span class="n">Worker</span> <span class="p">{</span>
 
     <span class="kd">enum</span> <span class="nc">Output</span> <span class="p">{</span>
@@ -1197,20 +1198,20 @@ to guarantee that we are not running more than one at the same time. For the sim
 it is always considered equivalent as we want only one of this type of worker running at a time.</p>
 <p>In order to start asynchronous work, the workflow requests it in the render method, looking
 something like:</p>
-<div class="highlight"><pre><span></span><code>    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">DemoWorkflow</span><span class="p">&gt;)</span> <span class="p">-&gt;</span> <span class="n">DemoScreen</span> <span class="p">{</span>
-
-        <span class="n">context</span><span class="p">.</span><span class="n">awaitResult</span><span class="p">(</span><span class="k">for</span><span class="p">:</span> <span class="n">RefreshWorker</span><span class="p">())</span> <span class="p">{</span> <span class="n">output</span> <span class="p">-&gt;</span> <span class="n">Action</span> <span class="k">in</span>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">DemoWorkflow</span><span class="p">&gt;)</span> <span class="p">-&gt;</span> <span class="n">DemoScreen</span> <span class="p">{</span>
+    <span class="n">RefreshWorker</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">mapOutput</span> <span class="p">{</span> <span class="n">output</span> <span class="p">-&gt;</span> <span class="n">Action</span> <span class="k">in</span>
             <span class="k">switch</span> <span class="n">output</span> <span class="p">{</span>
             <span class="k">case</span> <span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="kd">let</span> <span class="nv">result</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">Action</span><span class="p">.</span><span class="n">refreshComplete</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
             <span class="k">case</span> <span class="p">.</span><span class="n">error</span><span class="p">(</span><span class="kd">let</span> <span class="nv">error</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">Action</span><span class="p">.</span><span class="n">refreshError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-
             <span class="p">}</span>
         <span class="p">}</span>
-    <span class="p">}</span>
+        <span class="p">.</span><span class="n">running</span><span class="p">(</span><span class="k">in</span><span class="p">:</span> <span class="n">context</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre></div>
-<p>When the context is told to await a result from a worker, the context will do the following:</p>
+<p>When <code>running(in:)</code> is executed on a worker, the context will do the following:</p>
 <ul>
 <li>Check if there is already a worker running of the same type:</li>
 <li>If there is not, or <code>isEquivalent</code> is false, call <code>run</code> on the worker and subscribe to the

@@ -820,6 +820,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#comsquareupworkflow1uiandroidviewrendering" class="md-nav__link">
+    com.squareup.workflow1.ui.AndroidViewRendering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#comsquareupworkflow1uibackpresshandler" class="md-nav__link">
     com.squareup.workflow1.ui.BackPressHandler
   </a>
@@ -1395,6 +1402,10 @@
 <h5 id="comsquareupworkflow1uimodalalertscreen"><a href="../com.squareup.workflow1.ui.modal/-alert-screen/">com.squareup.workflow1.ui.modal.AlertScreen</a><a class="headerlink" href="#comsquareupworkflow1uimodalalertscreen" title="Permanent link">&para;</a></h5>
 <p>Models a typical &ldquo;You sure about that?&rdquo; alert box.</p>
 <p>|</p>
+<h5 id="comsquareupworkflow1uiandroidviewrendering"><a href="../com.squareup.workflow1.ui/-android-view-rendering/">com.squareup.workflow1.ui.AndroidViewRendering</a><a class="headerlink" href="#comsquareupworkflow1uiandroidviewrendering" title="Permanent link">&para;</a></h5>
+<p>Interface implemented by a rendering class to allow it to drive an Android UI
+via an appropriate <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> implementation.</p>
+<p>|</p>
 <h5 id="comsquareupworkflow1uibackpresshandler"><a href="../com.squareup.workflow1.ui/-back-press-handler/">com.squareup.workflow1.ui.BackPressHandler</a><a class="headerlink" href="#comsquareupworkflow1uibackpresshandler" title="Permanent link">&para;</a></h5>
 <p>A function passed to <a href="../com.squareup.workflow1.ui/android.view.-view/back-pressed-handler/">View.backPressedHandler</a>, to be called if the back
 button is pressed while that view is attached to a window.</p>
@@ -1421,8 +1432,8 @@ a <code>render</code> function.</p>
 <h5 id="okiobufferedsource"><a href="../com.squareup.workflow1/okio.-buffered-source/">okio.BufferedSource</a><a class="headerlink" href="#okiobufferedsource" title="Permanent link">&para;</a></h5>
 <p>|</p>
 <h5 id="comsquareupworkflow1uibuilderviewfactory"><a href="../com.squareup.workflow1.ui/-builder-view-factory/">com.squareup.workflow1.ui.BuilderViewFactory</a><a class="headerlink" href="#comsquareupworkflow1uibuilderviewfactory" title="Permanent link">&para;</a></h5>
-<p>A <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> that allows a <a href="../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need
-to be generated from code. (Use <a href="../com.squareup.workflow1.ui/-layout-runner/">LayoutRunner</a> to work with XML layout resources.)</p>
+<p>A <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> that creates <a href="#">View</a>s that need to be generated from code.
+(Use <a href="../com.squareup.workflow1.ui/-layout-runner/">LayoutRunner</a> to work with XML layout resources.)</p>
 <p>| (extensions in package com.squareup.workflow1)</p>
 <h5 id="okiobytestring"><a href="../com.squareup.workflow1/okio.-byte-string/">okio.ByteString</a><a class="headerlink" href="#okiobytestring" title="Permanent link">&para;</a></h5>
 <p>| (extensions in package com.squareup.workflow1.ui)</p>
@@ -1591,16 +1602,16 @@ they&rsquo;re drawing.</p>
 and <a href="../com.squareup.workflow1.ui/-view-environment-key/default/">default</a> value.</p>
 <p>|</p>
 <h5 id="comsquareupworkflow1uiviewfactory"><a href="../com.squareup.workflow1.ui/-view-factory/">com.squareup.workflow1.ui.ViewFactory</a><a class="headerlink" href="#comsquareupworkflow1uiviewfactory" title="Permanent link">&para;</a></h5>
-<p>Factory for <a href="#">View</a> instances that can show renderings of type<a href="../com.squareup.workflow1.ui/-view-factory/#RenderingT">RenderingT</a>.
-Use <a href="../com.squareup.workflow1.ui/-layout-runner/bind/">LayoutRunner.bind</a> to work with XML layout resources, or
-<a href="../com.squareup.workflow1.ui/-builder-view-factory/">BuilderViewFactory</a> to create views from code.</p>
+<p>Factory for <a href="#">View</a> instances that can show renderings of type<a href="../com.squareup.workflow1.ui/-view-factory/#RenderingT">RenderingT</a>.</p>
 <p>|</p>
 <h5 id="comsquareupworkflow1uiviewregistry"><a href="../com.squareup.workflow1.ui/-view-registry/">com.squareup.workflow1.ui.ViewRegistry</a><a class="headerlink" href="#comsquareupworkflow1uiviewregistry" title="Permanent link">&para;</a></h5>
-<p>A collection of <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a>s that can be used to display the stream of renderings
-from a workflow tree.</p>
+<p>The <a href="../com.squareup.workflow1.ui/-view-environment/">ViewEnvironment</a> service that can be used to display the stream of renderings
+from a workflow tree as <a href="#">View</a> instances. This is the engine behind <a href="../com.squareup.workflow1.ui/-android-view-rendering/">AndroidViewRendering</a>,
+<a href="../com.squareup.workflow1.ui/-workflow-view-stub/">WorkflowViewStub</a> and <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a>. Most apps can ignore <a href="../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a> as an implementation
+detail, by using <a href="../com.squareup.workflow1.ui/-android-view-rendering/">AndroidViewRendering</a> to tie their rendering classes to view code.</p>
 <p>|</p>
 <h5 id="comsquareupworkflow1uiviewshowrendering"><a href="../com.squareup.workflow1.ui/-view-show-rendering/">com.squareup.workflow1.ui.ViewShowRendering</a><a class="headerlink" href="#comsquareupworkflow1uiviewshowrendering" title="Permanent link">&para;</a></h5>
-<p>Function attached to a view created by <a href="../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a>, to allow it
+<p>Function attached to a view created by <a href="../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a>, to allow it
 to respond to <a href="../com.squareup.workflow1.ui/android.view.-view/show-rendering/">View.showRendering</a>.</p>
 <p>|</p>
 <h5 id="comsquareupworkflow1uibackstackviewstatecache"><a href="../com.squareup.workflow1.ui.backstack/-view-state-cache/">com.squareup.workflow1.ui.backstack.ViewStateCache</a><a class="headerlink" href="#comsquareupworkflow1uibackstackviewstatecache" title="Permanent link">&para;</a></h5>
@@ -1626,7 +1637,7 @@ arbitrary asynchronous events from the outside world.</p>
 <p>|</p>
 <h5 id="comsquareupworkflow1uiworkflowfragment"><a href="../com.squareup.workflow1.ui/-workflow-fragment/">com.squareup.workflow1.ui.WorkflowFragment</a><a class="headerlink" href="#comsquareupworkflow1uiworkflowfragment" title="Permanent link">&para;</a></h5>
 <p>A <a href="#">Fragment</a> that can run a workflow. Subclasses implement <a href="../com.squareup.workflow1.ui/-workflow-fragment/on-create-workflow/">onCreateWorkflow</a>
-to configure themselves with a <a href="../com.squareup.workflow1/-workflow/">Workflow</a>, <a href="../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a> and <a href="../com.squareup.workflow1.ui/-workflow-runner/-config/props/">inputs</a>.</p>
+to configure themselves with a <a href="../com.squareup.workflow1/-workflow/">Workflow</a> and <a href="../com.squareup.workflow1.ui/-workflow-runner/-config/props/">inputs</a>.</p>
 <p>|</p>
 <h5 id="comsquareupworkflow1workflowidentifier"><a href="../com.squareup.workflow1/-workflow-identifier/">com.squareup.workflow1.WorkflowIdentifier</a><a class="headerlink" href="#comsquareupworkflow1workflowidentifier" title="Permanent link">&para;</a></h5>
 <p>Represents a <a href="../com.squareup.workflow1/-workflow/">Workflow</a>&lsquo;s &ldquo;identity&rdquo; and is used by the runtime to determine whether a workflow

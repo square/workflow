@@ -882,7 +882,7 @@ props containing &ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&
 <p>It checks that the rendering properties are expected and that the output handler for the
 <code>SubmitLoginWorker</code> returned the <code>CompleteLogin</code> action.</p>
 <div class="highlight"><pre><span></span><code>workflow
-  .renderTester(
+  .testRender(
     props = MyProps(…),
     initialState = MyState(…)
   )
@@ -907,7 +907,7 @@ props containing &ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&
 <h3 id="rendering-event">Rendering event<a class="headerlink" href="#rendering-event" title="Permanent link">&para;</a></h3>
 <p>This is similar to the example above, but will test an event sent to the rendering instead.</p>
 <div class="highlight"><pre><span></span><code>workflow
-  .renderTester(
+  .testRender(
     props = MyProps(…),
     initialState = MyState(…)
   )
@@ -936,7 +936,7 @@ if the <a href="../../../com.squareup.workflow1/-workflow-action/">WorkflowActio
 val previousState = …
 
 workflow
-  .renderTester(
+  .testRender(
     props = MyProps(…),
     initialState = currentState
   )
@@ -955,7 +955,7 @@ workflow
 <p>This is an example of what <strong>not</strong> to do – this test will error out because a worker is emitting
 and output <em>and</em> a rendering event is sent.</p>
 <div class="highlight"><pre><span></span><code>workflow
-  .renderTester(
+  .testRender(
     props = MyProps(…),
     initialState = MyState(…)
   )

@@ -836,31 +836,22 @@
                 <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">BuilderViewFactory</a></p>
 <h1 id="builderviewfactory">BuilderViewFactory<a class="headerlink" href="#builderviewfactory" title="Permanent link">&para;</a></h1>
 <p><code>@WorkflowUiExperimentalApi class BuilderViewFactory&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></p>
-<p>A <a href="../-view-factory/">ViewFactory</a> that allows a <a href="../-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need
-to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)</p>
-<p>Typical usage is to have a custom builder or view&rsquo;s <code>companion object</code> implement
-<a href="../-view-factory/">ViewFactory</a> by delegating to a <a href="./">BuilderViewFactory</a>, like this:</p>
-<div class="highlight"><pre><span></span><code>    class MyView(
-      context: Context
-    ) : FrameLayout(context, attributeSet) {
-      private fun update(rendering:  MyRendering) { ... }
-
-      companion object : ViewBuilder&lt;MyScreen&gt;
-      by BuilderBinding(
+<p>A <a href="../-view-factory/">ViewFactory</a> that creates <a href="#">View</a>s that need to be generated from code.
+(Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)</p>
+<div class="highlight"><pre><span></span><code>    data class MyView(): AndroidViewRendering&lt;MyView&gt; {
+      val viewFactory = BuilderBinding(
           type = MyScreen::class,
           viewConstructor = { initialRendering, _, context, _ -&gt;
-            MyView(context).apply {
+            MyFrame(context).apply {
               layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
               bindShowRendering(initialRendering, ::update)
             }
       )
     }
-</code></pre></div>
-<p>This pattern allows us to assemble a <a href="../-view-registry/">ViewRegistry</a> out of the
-custom classes themselves.</p>
-<div class="highlight"><pre><span></span><code>    val TicTacToeViewBuilders = ViewRegistry(
-        MyView, GamePlayLayoutRunner, GameOverLayoutRunner
-    )
+
+    private class MyFrame(context: Context) : FrameLayout(context, attributeSet) {
+      private fun update(rendering:  MyView) { ... }
+    }
 </code></pre></div>
 <h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
 <table>
@@ -873,7 +864,7 @@ custom classes themselves.</p>
 <tbody>
 <tr>
 <td><a href="-init-/">&lt;init&gt;</a></td>
-<td>A <a href="../-view-factory/">ViewFactory</a> that allows a <a href="../-view-registry/">ViewRegistry</a> to create <a href="#">View</a>s that need to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>BuilderViewFactory(type:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;RenderingT&gt;, viewConstructor: (initialRendering: RenderingT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, contextForNewView: Context, container: ViewGroup?) -&gt; View)</code></td>
+<td>A <a href="../-view-factory/">ViewFactory</a> that creates <a href="#">View</a>s that need to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>BuilderViewFactory(type:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;RenderingT&gt;, viewConstructor: (initialRendering: RenderingT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, contextForNewView: Context, container: ViewGroup?) -&gt; View)</code></td>
 </tr>
 </tbody>
 </table>

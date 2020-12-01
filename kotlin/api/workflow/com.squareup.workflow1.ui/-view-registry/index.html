@@ -850,33 +850,48 @@
                 <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">ViewRegistry</a></p>
 <h1 id="viewregistry">ViewRegistry<a class="headerlink" href="#viewregistry" title="Permanent link">&para;</a></h1>
 <p><code>@WorkflowUiExperimentalApi interface ViewRegistry</code></p>
-<p>A collection of <a href="../-view-factory/">ViewFactory</a>s that can be used to display the stream of renderings
-from a workflow tree.</p>
-<p>Two concrete <a href="../-view-factory/">ViewFactory</a> implementations are provided:</p>
-<ul>
-<li>
-<p>The various <a href="../-layout-runner/bind/">bind</a> methods on <a href="../-layout-runner/">LayoutRunner</a> allow easy use of
-    Android XML layout resources and <a href="#">AndroidX ViewBinding</a>.</p>
-</li>
-<li>
-<p><a href="../-builder-view-factory/">BuilderViewFactory</a> allows views to be built from code.</p>
-</li>
-</ul>
-<p>Registries can be assembled via concatenation, making it easy to snap together screen sets.
+<p>The <a href="../-view-environment/">ViewEnvironment</a> service that can be used to display the stream of renderings
+from a workflow tree as <a href="#">View</a> instances. This is the engine behind <a href="../-android-view-rendering/">AndroidViewRendering</a>,
+<a href="../-workflow-view-stub/">WorkflowViewStub</a> and <a href="../-view-factory/">ViewFactory</a>. Most apps can ignore <a href="./">ViewRegistry</a> as an implementation
+detail, by using <a href="../-android-view-rendering/">AndroidViewRendering</a> to tie their rendering classes to view code.</p>
+<p>To avoid that coupling between workflow code and the Android runtime, registries can
+be loaded with <a href="../-view-factory/">ViewFactory</a> instances at runtime, and provided as an optional parameter to
+<a href="../androidx.fragment.app.-fragment-activity/set-content-workflow/">Activity.setContentWorkflow</a> et al.
 For example:</p>
 <div class="highlight"><pre><span></span><code>    val AuthViewFactories = ViewRegistry(
-        AuthorizingLayoutRunner, LoginLayoutRunner, SecondFactorLayoutRunner
+      AuthorizingLayoutRunner, LoginLayoutRunner, SecondFactorLayoutRunner
     )
 
     val TicTacToeViewFactories = ViewRegistry(
-        NewGameLayoutRunner, GamePlayLayoutRunner, GameOverLayoutRunner
+      NewGameLayoutRunner, GamePlayLayoutRunner, GameOverLayoutRunner
     )
 
     val ApplicationViewFactories = ViewRegistry(ApplicationLayoutRunner) +
-        AuthViewFactories + TicTacToeViewFactories
+      AuthViewFactories + TicTacToeViewFactories
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+      super.onCreate(savedInstanceState)
+
+      setContentWorkflow(
+        registry = viewRegistry,
+        configure = {
+          WorkflowRunner.Config(rootWorkflow)
+        }
+      )
+    }
 </code></pre></div>
-<p>In the above example, note that the <code>companion object</code>s of the various <a href="../-layout-runner/">LayoutRunner</a> classes
-honor a convention of implementing <a href="../-view-factory/">ViewFactory</a>, in aid of this kind of assembly.</p>
+<p>In the above example, it is assumed that the <code>companion object</code>s of the various
+decoupled <a href="../-layout-runner/">LayoutRunner</a> classes honor a convention of implementing <a href="../-view-factory/">ViewFactory</a>, in
+aid of this kind of assembly.</p>
+<div class="highlight"><pre><span></span><code>    class GamePlayLayoutRunner(view: View) : LayoutRunner&lt;GameRendering&gt; {
+
+      // ...
+
+      companion object : ViewFactory&lt;GameRendering&gt; by LayoutRunner.bind(
+        R.layout.game_layout, ::GameLayoutRunner
+      )
+    }
+</code></pre></div>
 <h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -918,7 +933,7 @@ honor a convention of implementing <a href="../-view-factory/">ViewFactory</a>, 
 <tbody>
 <tr>
 <td><a href="get-factory-for/">getFactoryFor</a></td>
-<td>This method is not for general use, use <a href="../-workflow-view-stub/">WorkflowViewStub</a> instead.<code>abstract fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; getFactoryFor(renderingType:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;out RenderingT&gt;):</code><a href="../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></td>
+<td>This method is not for general use, use <a href="../-workflow-view-stub/">WorkflowViewStub</a> instead.<code>abstract fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; getFactoryFor(renderingType:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;out RenderingT&gt;):</code><a href="../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;?</code></td>
 </tr>
 </tbody>
 </table>
