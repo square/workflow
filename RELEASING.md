@@ -2,7 +2,7 @@
 
 ## Deploying the documentation website
 
-Official Workflow documentation lives at <https://squareup.github.io/workflow>. The website content
+Official Workflow documentation lives at <https://square.github.io/workflow>. The website content
 consists of three parts:
 
 1. Markdown documentation: Lives in the `docs/` folder, and consists of a set of hand-written
