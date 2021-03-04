@@ -867,7 +867,7 @@ as well as two extra parameters:</p>
 <h2 id="workflow-sessions">Workflow sessions<a class="headerlink" href="#workflow-sessions" title="Permanent link">&para;</a></h2>
 <p>A single workflow may be rendered by different parents at the same time, or the same parent at
 different, disjoint times. Each continuous sequence of renderings of a particular workflow type,
-with the same key passed to <a href="#">RenderContext.renderChild</a>, is called an &ldquo;session&rdquo; of that
+with the same key passed to <a href="../-base-render-context/render-child/">BaseRenderContext.renderChild</a>, is called an &ldquo;session&rdquo; of that
 workflow. The workflow&rsquo;s <a href="../-stateful-workflow/initial-state/">StatefulWorkflow.initialState</a> method will be called at the start of
 the session, and its state will be maintained by the runtime until the session is finished.
 Each session is identified by the <a href="-workflow-session/">WorkflowSession</a> object passed into the corresponding method
@@ -888,6 +888,10 @@ then starts again, the value will be different.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><a href="-render-context-interceptor/">RenderContextInterceptor</a></td>
+<td>Provides hooks for intercepting calls to a <a href="../-base-render-context/">BaseRenderContext</a>, to be used from <a href="on-render/">onRender</a>.<code>interface RenderContextInterceptor&lt;P, S, O&gt;</code></td>
+</tr>
 <tr>
 <td><a href="-workflow-session/">WorkflowSession</a></td>
 <td>Information about the session of a workflow in the runtime that a <a href="./">WorkflowInterceptor</a> method is intercepting.<code>interface WorkflowSession</code></td>
@@ -913,7 +917,7 @@ then starts again, the value will be different.</p>
 </tr>
 <tr>
 <td><a href="on-render/">onRender</a></td>
-<td>Intercepts calls to <a href="../-stateful-workflow/render/">StatefulWorkflow.render</a>.<code>open fun &lt;P, S, O, R&gt; onRender(props: P, state: S, context:</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;P, S, O&gt;, proceed: (P, S,</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;P, S, O&gt;) -&gt; R, session: WorkflowSession): R</code></td>
+<td>Intercepts calls to <a href="../-stateful-workflow/render/">StatefulWorkflow.render</a>.<code>open fun &lt;P, S, O, R&gt; onRender(renderProps: P, renderState: S, context:</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;P, S, O&gt;, proceed: (P, S, RenderContextInterceptor&lt;P, S, O&gt;?) -&gt; R, session: WorkflowSession): R</code></td>
 </tr>
 <tr>
 <td><a href="on-session-started/">onSessionStarted</a></td>

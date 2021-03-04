@@ -1056,27 +1056,27 @@ node in the workflow hierarchy.</p>
 </code></pre></div>
 </div>
 <input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Kotlin</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="k">abstract</span> <span class="k">class</span> <span class="nc">StatefulWorkflow</span><span class="p">&lt;</span><span class="k">in</span> <span class="n">PropsT</span><span class="p">,</span> <span class="n">StateT</span><span class="p">,</span> <span class="k">out</span> <span class="n">OutputT</span> <span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="k">out</span> <span class="n">RenderingT</span><span class="p">&gt;</span> <span class="p">:</span>
-    <span class="n">Workflow</span><span class="p">&lt;</span><span class="n">PropsT</span><span class="p">,</span> <span class="n">OutputT</span><span class="p">,</span> <span class="n">RenderingT</span><span class="p">&gt;</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">StatefulWorkflow</span><span class="o">&lt;</span><span class="k">in</span> <span class="n">PropsT</span><span class="p">,</span> <span class="n">StateT</span><span class="p">,</span> <span class="k">out</span> <span class="n">OutputT</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">,</span> <span class="k">out</span> <span class="n">RenderingT</span><span class="o">&gt;</span> <span class="p">:</span>
+    <span class="n">Workflow</span><span class="o">&lt;</span><span class="n">PropsT</span><span class="p">,</span> <span class="n">OutputT</span><span class="p">,</span> <span class="n">RenderingT</span><span class="o">&gt;</span> <span class="p">{</span>
 
-  <span class="k">abstract</span> <span class="k">fun</span> <span class="nf">initialState</span><span class="p">(</span>
+  <span class="kd">abstract</span> <span class="kd">fun</span> <span class="nf">initialState</span><span class="p">(</span>
     <span class="n">props</span><span class="p">:</span> <span class="n">PropsT</span><span class="p">,</span>
-    <span class="n">initialSnapshot</span><span class="p">:</span> <span class="n">Snapshot</span><span class="p">?</span>
+    <span class="n">initialSnapshot</span><span class="p">:</span> <span class="n">Snapshot?</span>
   <span class="p">):</span> <span class="n">StateT</span>
 
-  <span class="k">open</span> <span class="k">fun</span> <span class="nf">onPropsChanged</span><span class="p">(</span>
+  <span class="kd">open</span> <span class="kd">fun</span> <span class="nf">onPropsChanged</span><span class="p">(</span>
     <span class="n">old</span><span class="p">:</span> <span class="n">PropsT</span><span class="p">,</span>
     <span class="n">new</span><span class="p">:</span> <span class="n">PropsT</span><span class="p">,</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">StateT</span>
-  <span class="p">):</span> <span class="n">StateT</span> <span class="p">=</span> <span class="n">state</span>
+  <span class="p">):</span> <span class="n">StateT</span> <span class="o">=</span> <span class="n">state</span>
 
-  <span class="k">abstract</span> <span class="k">fun</span> <span class="nf">render</span><span class="p">(</span>
+  <span class="kd">abstract</span> <span class="kd">fun</span> <span class="nf">render</span><span class="p">(</span>
     <span class="n">props</span><span class="p">:</span> <span class="n">PropsT</span><span class="p">,</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">StateT</span><span class="p">,</span>
-    <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">StateT</span><span class="p">,</span> <span class="n">OutputT</span><span class="p">&gt;</span>
+    <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="o">&lt;</span><span class="n">StateT</span><span class="p">,</span> <span class="n">OutputT</span><span class="o">&gt;</span>
   <span class="p">):</span> <span class="n">RenderingT</span>
 
-  <span class="k">abstract</span> <span class="k">fun</span> <span class="nf">snapshotState</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">StateT</span><span class="p">):</span> <span class="n">Snapshot</span>
+  <span class="kd">abstract</span> <span class="kd">fun</span> <span class="nf">snapshotState</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">StateT</span><span class="p">):</span> <span class="n">Snapshot</span>
 <span class="p">}</span>
 </code></pre></div>
 </div>
@@ -1134,19 +1134,19 @@ workflow is running.</p>
 </code></pre></div>
 </div>
 <input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Kotlin</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="k">data</span> <span class="k">class</span> <span class="nc">State</span><span class="p">(</span>
+<div class="highlight"><pre><span></span><code><span class="kd">data</span> <span class="kd">class</span> <span class="nc">State</span><span class="p">(</span>
   <span class="c1">// 3 rows * 3 columns = 9 spaces</span>
-  <span class="k">val</span> <span class="py">spaces</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Space</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">List</span><span class="p">(</span><span class="m">9</span><span class="p">)</span> <span class="p">{</span> <span class="n">Unfilled</span> <span class="p">},</span>
-  <span class="k">val</span> <span class="py">currentTurn</span><span class="p">:</span> <span class="n">Player</span> <span class="p">=</span> <span class="n">X</span>
+  <span class="kd">val</span> <span class="nv">spaces</span><span class="p">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Space</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="m">9</span><span class="p">)</span> <span class="p">{</span> <span class="n">Unfilled</span> <span class="p">},</span>
+  <span class="kd">val</span> <span class="nv">currentTurn</span><span class="p">:</span> <span class="n">Player</span> <span class="o">=</span> <span class="n">X</span>
 <span class="p">)</span> <span class="p">{</span>
 
-  <span class="k">enum</span> <span class="k">class</span> <span class="nc">Player</span> <span class="p">{</span>
+  <span class="kd">enum</span> <span class="kd">class</span> <span class="nc">Player</span> <span class="p">{</span>
     <span class="n">X</span><span class="p">,</span> <span class="n">O</span>
   <span class="p">}</span>
 
-  <span class="k">sealed</span> <span class="k">class</span> <span class="nc">Space</span> <span class="p">{</span>
-    <span class="k">object</span> <span class="nc">Unfilled</span> <span class="p">:</span> <span class="n">Space</span><span class="p">()</span>
-    <span class="k">data</span> <span class="k">class</span> <span class="nc">Filled</span><span class="p">(</span><span class="k">val</span> <span class="py">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="p">:</span> <span class="n">Space</span><span class="p">()</span>
+  <span class="kd">sealed</span> <span class="kd">class</span> <span class="nc">Space</span> <span class="p">{</span>
+    <span class="kd">object</span> <span class="nc">Unfilled</span> <span class="p">:</span> <span class="n">Space</span><span class="p">()</span>
+    <span class="kd">data</span> <span class="kd">class</span> <span class="nc">Filled</span><span class="p">(</span><span class="kd">val</span> <span class="nv">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="p">:</span> <span class="n">Space</span><span class="p">()</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1174,9 +1174,9 @@ parameter is necessary due to Kotlin’s lack of the <code>Self</code> type that
 </code></pre></div>
 </div>
 <input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">Kotlin</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="k">data</span> <span class="k">class</span> <span class="nc">Props</span><span class="p">(</span>
-  <span class="k">val</span> <span class="py">playerXName</span><span class="p">:</span> <span class="n">String</span>
-  <span class="k">val</span> <span class="py">playerOName</span><span class="p">:</span> <span class="n">String</span>
+<div class="highlight"><pre><span></span><code><span class="kd">data</span> <span class="kd">class</span> <span class="nc">Props</span><span class="p">(</span>
+  <span class="kd">val</span> <span class="nv">playerXName</span><span class="p">:</span> <span class="kt">String</span>
+  <span class="kd">val</span> <span class="nv">playerOName</span><span class="p">:</span> <span class="kt">String</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>

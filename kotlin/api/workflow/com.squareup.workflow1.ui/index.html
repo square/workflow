@@ -886,7 +886,7 @@
 </tr>
 <tr>
 <td><a href="-layout-runner/">LayoutRunner</a></td>
-<td>A delegate that implements a <a href="-layout-runner/show-rendering/">showRendering</a> method to be called when a workflow rendering of type <a href="-layout-runner/#RenderingT">RenderingT</a> is ready to be displayed in a view inflated from a layout resource by a <a href="-view-registry/">ViewRegistry</a>. (Use <a href="-builder-view-factory/">BuilderViewFactory</a> if you want to build views from code rather than layouts.)<code>interface LayoutRunner&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
+<td><code>interface LayoutRunner&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
 </tr>
 <tr>
 <td><a href="-named/">Named</a></td>
@@ -925,16 +925,20 @@
 <td>Function attached to a view created by <a href="-view-factory/">ViewFactory</a>, to allow it to respond to <a href="android.view.-view/show-rendering/">View.showRendering</a>.<code>typealias ViewShowRendering&lt;RenderingT&gt; = (RenderingT,</code><a href="-view-environment/"><code>ViewEnvironment</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
-<td><a href="-workflow-fragment/">WorkflowFragment</a></td>
-<td>A <a href="#">Fragment</a> that can run a workflow. Subclasses implement <a href="-workflow-fragment/on-create-workflow/">onCreateWorkflow</a> to configure themselves with a <a href="../com.squareup.workflow1/-workflow/">Workflow</a> and <a href="-workflow-runner/-config/props/">inputs</a>.<code>abstract class WorkflowFragment&lt;PropsT, OutputT&gt; : Fragment</code></td>
+<td><a href="-view-state-frame/">ViewStateFrame</a></td>
+<td>Used by containers like <code>BackStackContainer</code> and <code>ModalContainer</code> to record the <a href="-view-state-frame/view-state/">viewState</a> data for the view identified by <a href="-view-state-frame/key/">key</a>, which is expected to match the <code>toString()</code> of a <a href="-compatible/compatibility-key/">com.squareup.workflow1.ui.Compatible.compatibilityKey</a>.<code>class ViewStateFrame : Parcelable, SavedStateRegistryOwner,</code><a href="-workflow-lifecycle-owner/"><code>WorkflowLifecycleOwner</code></a></td>
+</tr>
+<tr>
+<td><a href="-workflow-android-x-support/">WorkflowAndroidXSupport</a></td>
+<td>Namespace for some helper functions for interacting with the AndroidX libraries.<code>object WorkflowAndroidXSupport</code></td>
 </tr>
 <tr>
 <td><a href="-workflow-layout/">WorkflowLayout</a></td>
-<td>A view that can be driven by a <a href="-workflow-runner/">WorkflowRunner</a>. In most cases you&rsquo;ll use <a href="androidx.fragment.app.-fragment-activity/set-content-workflow/">Activity.setContentWorkflow</a> or subclass <a href="-workflow-fragment/">WorkflowFragment</a> rather than manage this class directly.<code>class WorkflowLayout : FrameLayout</code></td>
+<td>A view that can be driven by a stream of renderings (and an optional <a href="-view-registry/">ViewRegistry</a>) passed to its <a href="-workflow-layout/start/">start</a> method.<code>class WorkflowLayout : FrameLayout</code></td>
 </tr>
 <tr>
-<td><a href="-workflow-runner/">WorkflowRunner</a></td>
-<td>Uses a <a href="../com.squareup.workflow1/-workflow/">Workflow</a> and a <a href="-view-registry/">ViewRegistry</a> to drive a <a href="-workflow-layout/">WorkflowLayout</a>.<code>interface WorkflowRunner&lt;out OutputT&gt;</code></td>
+<td><a href="-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a></td>
+<td>An extension of <a href="#">LifecycleOwner</a> that is always owned by a <a href="#">View</a>, is logically a child lifecycle of the next-nearest <a href="#">ViewTreeLifecycleOwner</a> above it (it mirrors its parent&rsquo;s lifecycle until it&rsquo;s destroyed), and can be <a href="-workflow-lifecycle-owner/destroy-on-detach/">asked to destroy</a> itself early.<code>interface WorkflowLifecycleOwner : LifecycleOwner</code></td>
 </tr>
 <tr>
 <td><a href="-workflow-view-stub/">WorkflowViewStub</a></td>
@@ -983,10 +987,6 @@
 <td></td>
 </tr>
 <tr>
-<td><a href="androidx.fragment.app.-fragment-activity/">androidx.fragment.app.FragmentActivity</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="okio.-byte-string/">okio.ByteString</a></td>
 <td></td>
 </tr>
@@ -1002,6 +1002,10 @@
 </thead>
 <tbody>
 <tr>
+<td><a href="-no%20name%20provided-/">&lt;no name provided&gt;</a></td>
+<td>A delegate that implements a <a href="android.view.-view/show-rendering/">showRendering</a> method to be called when a workflow rendering of type <a href="#">RenderingT</a> is ready to be displayed in a view inflated from a layout resource by a <a href="-view-registry/">ViewRegistry</a>. (Use <a href="-builder-view-factory/">BuilderViewFactory</a> if you want to build views from code rather than layouts.)<code>fun &lt;no name provided&gt;():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+</tr>
+<tr>
 <td><a href="build-view/">buildView</a></td>
 <td>It is usually more convenient to use <a href="-workflow-view-stub/">WorkflowViewStub</a> than to call this method directly.<code>fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code><a href="-view-registry/"><code>ViewRegistry</code></a><code>.buildView(initialRendering: RenderingT, initialViewEnvironment:</code><a href="-view-environment/"><code>ViewEnvironment</code></a><code>, contextForNewView: Context, container: ViewGroup? = null): View</code><br><code>fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code><a href="-view-registry/"><code>ViewRegistry</code></a><code>.buildView(initialRendering: RenderingT, initialViewEnvironment:</code><a href="-view-environment/"><code>ViewEnvironment</code></a><code>, container: ViewGroup): View</code></td>
 </tr>
@@ -1012,6 +1016,10 @@
 <tr>
 <td><a href="plus/">plus</a></td>
 <td><code>operator fun</code><a href="-view-registry/"><code>ViewRegistry</code></a><code>.plus(binding:</code><a href="-view-factory/"><code>ViewFactory</code></a><code>&lt;*&gt;):</code><a href="-view-registry/"><code>ViewRegistry</code></a><br><code>operator fun</code><a href="-view-registry/"><code>ViewRegistry</code></a><code>.plus(other:</code><a href="-view-registry/"><code>ViewRegistry</code></a><code>):</code><a href="-view-registry/"><code>ViewRegistry</code></a></td>
+</tr>
+<tr>
+<td><a href="render-workflow-in/">renderWorkflowIn</a></td>
+<td>An Android <code>ViewModel</code>-friendly wrapper for <a href="../com.squareup.workflow1/render-workflow-in/">com.squareup.workflow1.renderWorkflowIn</a>, for use with a <a href="render-workflow-in/#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((kotlin.Unit, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/workflow">workflow</a> that takes no input (that is, has <code>PropsT</code> set to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>).<code>fun &lt;OutputT, RenderingT&gt; renderWorkflowIn(workflow:</code><a href="../com.squareup.workflow1/-workflow/"><code>Workflow</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, OutputT, RenderingT&gt;, scope: CoroutineScope, savedStateHandle: SavedStateHandle? = null, interceptors:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><code>List</code></a><code>&lt;</code><a href="../com.squareup.workflow1/-workflow-interceptor/"><code>WorkflowInterceptor</code></a><code>&gt; = emptyList(), onOutput: suspend (OutputT) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}): StateFlow&lt;RenderingT&gt;</code><br>An Android <code>ViewModel</code>-friendly wrapper for <a href="../com.squareup.workflow1/render-workflow-in/">com.squareup.workflow1.renderWorkflowIn</a>, for use with a <a href="render-workflow-in/#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, com.squareup.workflow1.ui.renderWorkflowIn.PropsT, androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/workflow">workflow</a> that requires one input value (<a href="render-workflow-in/#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, com.squareup.workflow1.ui.renderWorkflowIn.PropsT, androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/prop">prop</a>) to run.<code>fun &lt;PropsT, OutputT, RenderingT&gt; renderWorkflowIn(workflow:</code><a href="../com.squareup.workflow1/-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;, scope: CoroutineScope, prop: PropsT, savedStateHandle: SavedStateHandle? = null, interceptors:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><code>List</code></a><code>&lt;</code><a href="../com.squareup.workflow1/-workflow-interceptor/"><code>WorkflowInterceptor</code></a><code>&gt; = emptyList(), onOutput: suspend (OutputT) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}): StateFlow&lt;RenderingT&gt;</code><br>An Android <code>ViewModel</code>-friendly wrapper for <a href="../com.squareup.workflow1/render-workflow-in/">com.squareup.workflow1.renderWorkflowIn</a>, for use with a <a href="render-workflow-in/#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, kotlinx.coroutines.flow.StateFlow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT)), androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/workflow">workflow</a> that requires input (<a href="render-workflow-in/#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, kotlinx.coroutines.flow.StateFlow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT)), androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/props">props</a>) to run.<code>fun &lt;PropsT, OutputT, RenderingT&gt; renderWorkflowIn(workflow:</code><a href="../com.squareup.workflow1/-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;, scope: CoroutineScope, props: StateFlow&lt;PropsT&gt;, savedStateHandle: SavedStateHandle? = null, interceptors:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><code>List</code></a><code>&lt;</code><a href="../com.squareup.workflow1/-workflow-interceptor/"><code>WorkflowInterceptor</code></a><code>&gt; = emptyList(), onOutput: suspend (OutputT) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}): StateFlow&lt;RenderingT&gt;</code></td>
 </tr>
 <tr>
 <td><a href="to-parcelable/">toParcelable</a></td>

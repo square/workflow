@@ -878,8 +878,8 @@ actions performed during the render (such as child workflow output being produce
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyState</span><span class="p">(</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
     <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
+    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>Allows for assertions against the resulting state.</p>
 <h3 id="assertnoactionfileline"><code>assertNoAction(file:line:)</code><a class="headerlink" href="#assertnoactionfileline" title="Permanent link">&para;</a></h3>
@@ -894,8 +894,8 @@ actions performed during the render (such as child workflow output being produce
     <span class="n">type</span><span class="p">:</span> <span class="n">ActionType</span><span class="p">.</span><span class="kr">Type</span> <span class="p">=</span> <span class="n">ActionType</span><span class="p">.</span><span class="kc">self</span><span class="p">,</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
     <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">ActionType</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">ActionType</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
+    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">ActionType</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">ActionType</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
 </code></pre></div>
 <p>Allows for assertions agains the resulting action</p>
 <h3 id="assertactionfileline"><code>assert(action:file:line:)</code><a class="headerlink" href="#assertactionfileline" title="Permanent link">&para;</a></h3>
@@ -917,8 +917,8 @@ actions performed during the render (such as child workflow output being produce
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyOutput</span><span class="p">(</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
     <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
+    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>Allows for assertions agains the resulting output</p>
                 

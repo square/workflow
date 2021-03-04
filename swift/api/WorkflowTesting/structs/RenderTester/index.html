@@ -1090,8 +1090,8 @@ Side-effects may be performed against the rendering to validate the behavior of 
 <h3 id="renderfilelineassertions"><code>render(file:line:assertions:)</code><a class="headerlink" href="#renderfilelineassertions" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
+    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>Render the workflow under test. At this point, you should have set up all expectations.</p>
 <p>The given <code>assertions</code> closure will be called with the produced rendering, allowing you to assert its properties or

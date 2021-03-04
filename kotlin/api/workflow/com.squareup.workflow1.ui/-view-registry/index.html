@@ -856,8 +856,8 @@ from a workflow tree as <a href="#">View</a> instances. This is the engine behin
 detail, by using <a href="../-android-view-rendering/">AndroidViewRendering</a> to tie their rendering classes to view code.</p>
 <p>To avoid that coupling between workflow code and the Android runtime, registries can
 be loaded with <a href="../-view-factory/">ViewFactory</a> instances at runtime, and provided as an optional parameter to
-<a href="../androidx.fragment.app.-fragment-activity/set-content-workflow/">Activity.setContentWorkflow</a> et al.
-For example:</p>
+<a href="../-workflow-layout/start/">WorkflowLayout.start</a>.</p>
+<p>For example:</p>
 <div class="highlight"><pre><span></span><code>    val AuthViewFactories = ViewRegistry(
       AuthorizingLayoutRunner, LoginLayoutRunner, SecondFactorLayoutRunner
     )

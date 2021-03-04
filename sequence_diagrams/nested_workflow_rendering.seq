@@ -1,0 +1,40 @@
+title Nested Workflow Rendering
+
+autonumber 1
+[->WorkflowHost: init(workflow:)
+WorkflowHost->+WorkflowNode: render()
+WorkflowNode->+SubtreeManager: render(callback:)
+SubtreeManager->+Context: init
+Context-->-SubtreeManager: Context
+SubtreeManager->SubtreeManager: wrap in RenderContext
+SubtreeManager->WorkflowNode: callback(renderContext)
+
+activate WorkflowNode
+
+WorkflowNode->+WorkflowA: render(state:context:)
+WorkflowA->+Context: render(workflow: WorkflowB(), key:outputMap:)
+
+alt ChildWorkflow<WorkflowB> exists
+    Context->ChildWorkflow<WorkflowB>: update()
+else ChildWorkflow<WorkflowB> doesn't exist
+    Context->ChildWorkflow<WorkflowB>: init()
+end
+
+Context->+ChildWorkflow<WorkflowB>: render()
+participant "WorkflowNode " as WorkflowNode2
+"ChildWorkflow<WorkflowB>"->ref over WorkflowNode2: render()
+    This is recursive. We go
+    back to step 2 to render
+    any child workflows.
+end ref -->"ChildWorkflow<WorkflowB>": Rendering
+"ChildWorkflow<WorkflowB>"-->-Context: WorkflowB.Rendering
+
+Context-->-WorkflowA: Rendering
+WorkflowA-->-WorkflowNode: Rendering
+WorkflowNode-->SubtreeManager: Rendering
+deactivate WorkflowNode
+
+SubtreeManager-->-WorkflowNode: Rendering
+WorkflowNode-->-WorkflowHost: Rendering
+
+option footer=bar
