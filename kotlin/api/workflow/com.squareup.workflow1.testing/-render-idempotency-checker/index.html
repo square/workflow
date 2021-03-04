@@ -837,7 +837,7 @@ will be played back, in order, to their renderChild calls.</p>
 <tbody>
 <tr>
 <td><a href="on-render/">onRender</a></td>
-<td>Intercepts calls to <a href="../../com.squareup.workflow1/-stateful-workflow/render/">StatefulWorkflow.render</a>.<code>fun &lt;P, S, O, R&gt; onRender(props: P, state: S, context:</code><a href="../../com.squareup.workflow1/-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;P, S, O&gt;, proceed: (P, S,</code><a href="../../com.squareup.workflow1/-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;P, S, O&gt;) -&gt; R, session: WorkflowSession): R</code></td>
+<td>Intercepts calls to <a href="../../com.squareup.workflow1/-stateful-workflow/render/">StatefulWorkflow.render</a>.<code>fun &lt;P, S, O, R&gt; onRender(renderProps: P, renderState: S, context:</code><a href="../../com.squareup.workflow1/-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;P, S, O&gt;, proceed: (P, S, RenderContextInterceptor&lt;P, S, O&gt;?) -&gt; R, session: WorkflowSession): R</code></td>
 </tr>
 </tbody>
 </table>

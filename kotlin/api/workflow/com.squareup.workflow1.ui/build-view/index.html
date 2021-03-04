@@ -834,6 +834,13 @@
 to <a href="../android.view.-view/show-rendering/">View.showRendering</a>. Prefers entries found via <a href="../-view-registry/get-factory-for/">ViewRegistry.getFactoryFor</a>.
 If that returns null, falls back to the factory provided by the rendering&rsquo;s
 implementation of <a href="../-android-view-rendering/view-factory/">AndroidViewRendering.viewFactory</a>, if there is one.</p>
+<p>The returned view will have a <a href="../-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> set on it. The returned view msut EITHER:</p>
+<ol>
+<li>Be attached at least once to ensure that the lifecycle eventually gets destroyed (because its
+    parent is destroyed), or</li>
+<li>Have its <a href="../-workflow-lifecycle-owner/destroy-on-detach/">WorkflowLifecycleOwner.destroyOnDetach</a> called, which will either schedule the
+    lifecycle to destroyed if the view is attached, or destroy it immediately if it&rsquo;s detached.</li>
+</ol>
 <h3 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h3>
 <p><code>IllegalArgumentException</code> - if no factory can be find for type <a href="./#RenderingT">RenderingT</a></p>
 <p><code>IllegalStateException</code> - if the matching <a href="../-view-factory/">ViewFactory</a> fails to call
@@ -841,6 +848,11 @@ implementation of <a href="../-android-view-rendering/view-factory/">AndroidView
 <p>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> than to call this method directly.</p>
 <p>Creates a <a href="#">View</a> to display <a href="./#com.squareup.workflow1.ui$buildView(com.squareup.workflow1.ui.ViewRegistry, com.squareup.workflow1.ui.buildView.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, android.view.ViewGroup)/initialRendering">initialRendering</a>, which can be updated via calls
 to <a href="../android.view.-view/show-rendering/">View.showRendering</a>.</p>
+<p>The returned view will have a <a href="../-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> set on it, the caller <em>must</em> ensure the
+view gets attached to a window at least once, and call its
+<a href="../-workflow-lifecycle-owner/destroy-on-detach/">WorkflowLifecycleOwner.destroyOnDetach</a> method before detaching the view for the final time
+when replacing with another built view. Failing to do this can result in memory and other
+resource leaks.</p>
 <h3 id="exceptions_1">Exceptions<a class="headerlink" href="#exceptions_1" title="Permanent link">&para;</a></h3>
 <p><code>IllegalArgumentException</code> - if no binding can be find for type <a href="./#RenderingT">RenderingT</a></p>
 <p><code>IllegalStateException</code> - if the matching <a href="../-view-factory/">ViewFactory</a> fails to call

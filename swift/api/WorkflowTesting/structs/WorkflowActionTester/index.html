@@ -966,8 +966,8 @@ to make tests easier to write.</p>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyOutput</span><span class="p">(</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
     <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
+    <span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>Invokes the given closure (which is intended to contain test assertions) with the produced output.
 If the previous action produced no output, the triggers a test failure and does not execute the closure.</p>
@@ -995,7 +995,7 @@ If the previous action produced no output, the triggers a test failure and does 
 </tbody>
 </table>
 <h3 id="verifystate_"><code>verifyState(_:)</code><a class="headerlink" href="#verifystate_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyState</span><span class="p">(</span><span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyState</span><span class="p">(</span><span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>Invokes the given closure (which is intended to contain test assertions) with the current state.</p>
 <ul>

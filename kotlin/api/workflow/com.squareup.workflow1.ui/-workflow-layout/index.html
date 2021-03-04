@@ -829,9 +829,12 @@
                 <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">WorkflowLayout</a></p>
 <h1 id="workflowlayout">WorkflowLayout<a class="headerlink" href="#workflowlayout" title="Permanent link">&para;</a></h1>
 <p><code>@WorkflowUiExperimentalApi class WorkflowLayout : FrameLayout</code></p>
-<p>A view that can be driven by a <a href="../-workflow-runner/">WorkflowRunner</a>. In most cases you&rsquo;ll use
-<a href="../androidx.fragment.app.-fragment-activity/set-content-workflow/">Activity.setContentWorkflow</a> or subclass <a href="../-workflow-fragment/">WorkflowFragment</a>
-rather than manage this class directly.</p>
+<p>A view that can be driven by a stream of renderings (and an optional <a href="../-view-registry/">ViewRegistry</a>)
+passed to its <a href="start/">start</a> method.</p>
+<p><a href="#">id</a> defaults to <a href="#">R.id.workflow_layout</a>, as a convenience to ensure that
+view persistence will work without requiring authors to be immersed in Android arcana.</p>
+<p>See <a href="../render-workflow-in/">com.squareup.workflow1.ui.renderWorkflowIn</a> for typical use
+with a <a href="../../com.squareup.workflow1/-workflow/">com.squareup.workflow1.Workflow</a>.</p>
 <h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -843,7 +846,7 @@ rather than manage this class directly.</p>
 <tbody>
 <tr>
 <td><a href="-init-/">&lt;init&gt;</a></td>
-<td>A view that can be driven by a <a href="../-workflow-runner/">WorkflowRunner</a>. In most cases you&rsquo;ll use <a href="../androidx.fragment.app.-fragment-activity/set-content-workflow/">Activity.setContentWorkflow</a> or subclass <a href="../-workflow-fragment/">WorkflowFragment</a> rather than manage this class directly.<code>WorkflowLayout(context: Context, attributeSet: AttributeSet? = null)</code></td>
+<td>A view that can be driven by a stream of renderings (and an optional <a href="../-view-registry/">ViewRegistry</a>) passed to its <a href="start/">start</a> method.<code>WorkflowLayout(context: Context, attributeSet: AttributeSet? = null)</code></td>
 </tr>
 </tbody>
 </table>

@@ -804,11 +804,11 @@
                 
                 <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1</a> / <a href="../">StatefulWorkflow</a> / <a href="./">render</a></p>
 <h1 id="render">render<a class="headerlink" href="#render" title="Permanent link">&para;</a></h1>
-<p><code>abstract fun render(props: PropsT, state: StateT, context: RenderContext&lt;PropsT, StateT, OutputT, RenderingT&gt;): RenderingT</code></p>
+<p><code>abstract fun render(renderProps: PropsT, renderState: StateT, context: RenderContext&lt;PropsT, StateT, OutputT, RenderingT&gt;): RenderingT</code></p>
 <p>Called at least once† any time one of the following things happens:</p>
 <ul>
-<li>This workflow&rsquo;s <a href="./#com.squareup.workflow1.StatefulWorkflow$render(com.squareup.workflow1.StatefulWorkflow.PropsT, com.squareup.workflow1.StatefulWorkflow.StateT, com.squareup.workflow1.StatefulWorkflow.RenderContext((com.squareup.workflow1.StatefulWorkflow.PropsT, com.squareup.workflow1.StatefulWorkflow.StateT, com.squareup.workflow1.StatefulWorkflow.OutputT, com.squareup.workflow1.StatefulWorkflow.RenderingT)))/props">props</a> changes (via the parent passing a different one in).</li>
-<li>This workflow&rsquo;s <a href="./#com.squareup.workflow1.StatefulWorkflow$render(com.squareup.workflow1.StatefulWorkflow.PropsT, com.squareup.workflow1.StatefulWorkflow.StateT, com.squareup.workflow1.StatefulWorkflow.RenderContext((com.squareup.workflow1.StatefulWorkflow.PropsT, com.squareup.workflow1.StatefulWorkflow.StateT, com.squareup.workflow1.StatefulWorkflow.OutputT, com.squareup.workflow1.StatefulWorkflow.RenderingT)))/state">state</a> changes.</li>
+<li>This workflow&rsquo;s <a href="./#com.squareup.workflow1.StatefulWorkflow$render(com.squareup.workflow1.StatefulWorkflow.PropsT, com.squareup.workflow1.StatefulWorkflow.StateT, com.squareup.workflow1.StatefulWorkflow.RenderContext((com.squareup.workflow1.StatefulWorkflow.PropsT, com.squareup.workflow1.StatefulWorkflow.StateT, com.squareup.workflow1.StatefulWorkflow.OutputT, com.squareup.workflow1.StatefulWorkflow.RenderingT)))/renderProps">renderProps</a> changes (via the parent passing a different one in).</li>
+<li>This workflow&rsquo;s <a href="./#com.squareup.workflow1.StatefulWorkflow$render(com.squareup.workflow1.StatefulWorkflow.PropsT, com.squareup.workflow1.StatefulWorkflow.StateT, com.squareup.workflow1.StatefulWorkflow.RenderContext((com.squareup.workflow1.StatefulWorkflow.PropsT, com.squareup.workflow1.StatefulWorkflow.StateT, com.squareup.workflow1.StatefulWorkflow.OutputT, com.squareup.workflow1.StatefulWorkflow.RenderingT)))/renderState">renderState</a> changes.</li>
 <li>A descendant (immediate or transitive child) workflow:</li>
 <li>Changes its internal state.</li>
 <li>Emits an output.</li>

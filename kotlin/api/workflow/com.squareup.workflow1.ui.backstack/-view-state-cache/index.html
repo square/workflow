@@ -793,13 +793,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#types" class="md-nav__link">
-    Types
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#constructors" class="md-nav__link">
     Constructors
   </a>
@@ -809,13 +802,6 @@
         <li class="md-nav__item">
   <a href="#functions" class="md-nav__link">
     Functions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#companion-object-functions" class="md-nav__link">
-    Companion Object Functions
   </a>
   
 </li>
@@ -842,31 +828,9 @@
                 
                 <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui.backstack</a> / <a href="./">ViewStateCache</a></p>
 <h1 id="viewstatecache">ViewStateCache<a class="headerlink" href="#viewstatecache" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi class ViewStateCache : Parcelable</code></p>
+<p><code>@WorkflowUiExperimentalApi class ViewStateCache</code></p>
 <p>Handles persistence chores for container views that manage a set of <a href="../../com.squareup.workflow1.ui/-named/">Named</a> renderings,
 showing a view for one at a time &ndash; think back stacks or tab sets.</p>
-<p>This class implements <a href="#">Parcelable</a> so that it can be preserved from
-a container view&rsquo;s own <a href="#">View.saveHierarchyState</a> method. A simple container can
-return <a href="-saved-state/">SavedState</a> from that method rather than creating its own persistence class.</p>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Summary</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="-c-r-e-a-t-o-r/">CREATOR</a></td>
-<td><code>companion object CREATOR : Creator&lt;</code><a href="./"><code>ViewStateCache</code></a><code>&gt;</code></td>
-</tr>
-<tr>
-<td><a href="-saved-state/">SavedState</a></td>
-<td>Convenience for use in <a href="#">View.onSaveInstanceState</a> and <a href="#">View.onRestoreInstanceState</a> methods of container views that have no other state of their own to save.<code>class SavedState : BaseSavedState</code></td>
-</tr>
-</tbody>
-</table>
 <h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -892,43 +856,16 @@ return <a href="-saved-state/">SavedState</a> from that method rather than creat
 </thead>
 <tbody>
 <tr>
-<td><a href="describe-contents/">describeContents</a></td>
-<td><code>fun describeContents():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a></td>
+<td><a href="install-on-container/">installOnContainer</a></td>
+<td>Registers this <a href="./">ViewStateCache</a> to start listening for attach/detach and lifecycle events on <a href="install-on-container/#com.squareup.workflow1.ui.backstack.ViewStateCache$installOnContainer(android.view.View)/view">view</a> in order to dispatch the appropriate save/restore calls.<code>fun installOnContainer(view: View):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
 <td><a href="prune/">prune</a></td>
 <td>To be called when the set of hidden views changes but the visible view remains the same. Any cached view state held for renderings that are not <a href="../../com.squareup.workflow1.ui/compatible/">compatible</a> those in <a href="prune/#com.squareup.workflow1.ui.backstack.ViewStateCache$prune(kotlin.collections.Collection((com.squareup.workflow1.ui.Named((kotlin.Any)))))/retaining">retaining</a> will be dropped.<code>fun prune(retaining:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><code>Collection</code></a><code>&lt;</code><a href="../../com.squareup.workflow1.ui/-named/"><code>Named</code></a><code>&lt;*&gt;&gt;):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
-<td><a href="restore/">restore</a></td>
-<td>Replaces the state of the receiver with that of <a href="restore/#com.squareup.workflow1.ui.backstack.ViewStateCache$restore(com.squareup.workflow1.ui.backstack.ViewStateCache)/from">from</a>. Typical usage is to call this from a container view&rsquo;s <a href="#">View.onRestoreInstanceState</a>.<code>fun restore(from:</code><a href="./"><code>ViewStateCache</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
-</tr>
-<tr>
 <td><a href="update/">update</a></td>
-<td><code>fun update(retainedRenderings:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><code>Collection</code></a><code>&lt;</code><a href="../../com.squareup.workflow1.ui/-named/"><code>Named</code></a><code>&lt;*&gt;&gt;, oldViewMaybe: View?, newView: View):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
-</tr>
-<tr>
-<td><a href="write-to-parcel/">writeToParcel</a></td>
-<td><code>fun writeToParcel(parcel: Parcel, flags:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
-</tr>
-</tbody>
-</table>
-<h3 id="companion-object-functions">Companion Object Functions<a class="headerlink" href="#companion-object-functions" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Summary</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="create-from-parcel/">createFromParcel</a></td>
-<td><code>fun createFromParcel(parcel: Parcel):</code><a href="./"><code>ViewStateCache</code></a></td>
-</tr>
-<tr>
-<td><a href="new-array/">newArray</a></td>
-<td><code>fun newArray(size:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><code>Array</code></a><code>&lt;</code><a href="./"><code>ViewStateCache</code></a><code>?&gt;</code></td>
+<td><code>fun update(retainedHiddenRenderings:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><code>Collection</code></a><code>&lt;</code><a href="../../com.squareup.workflow1.ui/-named/"><code>Named</code></a><code>&lt;*&gt;&gt;, oldViewMaybe: View?, newView: View):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 </tbody>
 </table>
