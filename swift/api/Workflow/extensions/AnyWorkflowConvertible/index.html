@@ -902,6 +902,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ignoringoutput" class="md-nav__link">
+    ignoringOutput()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1040,6 +1047,13 @@ during the same render pass.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="ignoringoutput"><code>ignoringOutput()</code><a class="headerlink" href="#ignoringoutput" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">ignoringOutput</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">Rendering</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span>
+</code></pre></div>
+<p>Wraps this workflow in a workflow that ignores all outputs.</p>
+<ul>
+<li>Returns: An <code>AnyWorkflow</code> with the same rendering and no output.</li>
+</ul>
                 
               
               

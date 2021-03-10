@@ -925,20 +925,8 @@
 <td>Function attached to a view created by <a href="-view-factory/">ViewFactory</a>, to allow it to respond to <a href="android.view.-view/show-rendering/">View.showRendering</a>.<code>typealias ViewShowRendering&lt;RenderingT&gt; = (RenderingT,</code><a href="-view-environment/"><code>ViewEnvironment</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
 </tr>
 <tr>
-<td><a href="-view-state-frame/">ViewStateFrame</a></td>
-<td>Used by containers like <code>BackStackContainer</code> and <code>ModalContainer</code> to record the <a href="-view-state-frame/view-state/">viewState</a> data for the view identified by <a href="-view-state-frame/key/">key</a>, which is expected to match the <code>toString()</code> of a <a href="-compatible/compatibility-key/">com.squareup.workflow1.ui.Compatible.compatibilityKey</a>.<code>class ViewStateFrame : Parcelable, SavedStateRegistryOwner,</code><a href="-workflow-lifecycle-owner/"><code>WorkflowLifecycleOwner</code></a></td>
-</tr>
-<tr>
-<td><a href="-workflow-android-x-support/">WorkflowAndroidXSupport</a></td>
-<td>Namespace for some helper functions for interacting with the AndroidX libraries.<code>object WorkflowAndroidXSupport</code></td>
-</tr>
-<tr>
 <td><a href="-workflow-layout/">WorkflowLayout</a></td>
 <td>A view that can be driven by a stream of renderings (and an optional <a href="-view-registry/">ViewRegistry</a>) passed to its <a href="-workflow-layout/start/">start</a> method.<code>class WorkflowLayout : FrameLayout</code></td>
-</tr>
-<tr>
-<td><a href="-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a></td>
-<td>An extension of <a href="#">LifecycleOwner</a> that is always owned by a <a href="#">View</a>, is logically a child lifecycle of the next-nearest <a href="#">ViewTreeLifecycleOwner</a> above it (it mirrors its parent&rsquo;s lifecycle until it&rsquo;s destroyed), and can be <a href="-workflow-lifecycle-owner/destroy-on-detach/">asked to destroy</a> itself early.<code>interface WorkflowLifecycleOwner : LifecycleOwner</code></td>
 </tr>
 <tr>
 <td><a href="-workflow-view-stub/">WorkflowViewStub</a></td>

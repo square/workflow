@@ -821,6 +821,26 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#expectworkflowignoringoutputtypekeyproducingrenderingfilelineassertions" class="md-nav__link">
+    expectWorkflowIgnoringOutput(type:key:producingRendering:file:line:assertions:)
+  </a>
+  
+    <nav class="md-nav" aria-label="expectWorkflowIgnoringOutput(type:key:producingRendering:file:line:assertions:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#expectsideeffectkeyfileline" class="md-nav__link">
     expectSideEffect(key:file:line:)
   </a>
@@ -829,7 +849,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters_2" class="md-nav__link">
     Parameters
   </a>
   
@@ -849,7 +869,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     Parameters
   </a>
   
@@ -869,7 +889,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
+  <a href="#parameters_4" class="md-nav__link">
     Parameters
   </a>
   
@@ -1030,6 +1050,51 @@ Side-effects may be performed against the rendering to validate the behavior of 
 </tr>
 </tbody>
 </table>
+<h3 id="expectworkflowignoringoutputtypekeyproducingrenderingfilelineassertions"><code>expectWorkflowIgnoringOutput(type:key:producingRendering:file:line:assertions:)</code><a class="headerlink" href="#expectworkflowignoringoutputtypekeyproducingrenderingfilelineassertions" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">expectWorkflowIgnoringOutput</span><span class="p">&lt;</span><span class="n">ExpectedWorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span>
+    <span class="n">type</span><span class="p">:</span> <span class="n">ExpectedWorkflowType</span><span class="p">.</span><span class="kr">Type</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">producingRendering</span> <span class="n">rendering</span><span class="p">:</span> <span class="n">ExpectedWorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">,</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
+    <span class="n">assertions</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">ExpectedWorkflowType</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span> <span class="p">=</span> <span class="p">{</span> <span class="kc">_</span> <span class="k">in</span> <span class="p">}</span>
+<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
+</code></pre></div>
+<p>Expect the given workflow type in the next rendering, with its output being ignored by a call to <code>ignoringOutput()</code>.</p>
+<ul>
+<li>Parameters:</li>
+<li>type: The type of the expected workflow.</li>
+<li>key: The key of the expected workflow (if specified).</li>
+<li>rendering: The rendering result that should be returned when the workflow of this type is rendered.</li>
+<li>assertions: Additional assertions for the given workflow, if any. You may use this to assert the properties of the requested workflow are as expected.</li>
+</ul>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>The type of the expected workflow.</td>
+</tr>
+<tr>
+<td>key</td>
+<td>The key of the expected workflow (if specified).</td>
+</tr>
+<tr>
+<td>rendering</td>
+<td>The rendering result that should be returned when the workflow of this type is rendered.</td>
+</tr>
+<tr>
+<td>assertions</td>
+<td>Additional assertions for the given workflow, if any. You may use this to assert the properties of the requested workflow are as expected.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="expectsideeffectkeyfileline"><code>expectSideEffect(key:file:line:)</code><a class="headerlink" href="#expectsideeffectkeyfileline" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">expectSideEffect</span><span class="p">(</span>
     <span class="n">key</span><span class="p">:</span> <span class="n">AnyHashable</span><span class="p">,</span>
@@ -1040,7 +1105,7 @@ Side-effects may be performed against the rendering to validate the behavior of 
 <ul>
 <li>Parameter key: The key to expect.</li>
 </ul>
-<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
@@ -1068,7 +1133,7 @@ Side-effects may be performed against the rendering to validate the behavior of 
 <li>key: The key to expect.</li>
 <li>action: The action to produce when this side-effect is requested.</li>
 </ul>
-<h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
+<h4 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
@@ -1101,7 +1166,7 @@ perform actions on it (such as closures that are wired up to a <code>Sink</code>
 <li>assertions: A closure called with the produced rendering for verification</li>
 <li>Returns: A <code>RenderTesterResult</code> that can be used to verify expected resulting state or outputs.</li>
 </ul>
-<h4 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
+<h4 id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
