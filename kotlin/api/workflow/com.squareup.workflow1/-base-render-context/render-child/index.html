@@ -827,9 +827,9 @@
 <p><strong>Never call <a href="../../-stateful-workflow/render/">StatefulWorkflow.render</a> or <a href="../../-stateless-workflow/render/">StatelessWorkflow.render</a> directly, always do itthrough this context method.</strong></p>
 <ol>
 <li>If the child <em>wasn&rsquo;t</em> already running, it will be started either from
-    <a href="#">initialState</a> or its snapshot.</li>
+    <a href="../../-stateful-workflow/initial-state/">initialState</a> or its snapshot.</li>
 <li>If the child <em>was</em> already running, The workflow&rsquo;s
-    <a href="#">onInputChanged</a> method is invoked with the previous input
+    <a href="../../-stateful-workflow/on-props-changed/">onPropsChanged</a> method is invoked with the previous input
     and this one.</li>
 <li>The child&rsquo;s <code>render</code> method is invoked with <code>input</code> and the child&rsquo;s state.</li>
 </ol>
