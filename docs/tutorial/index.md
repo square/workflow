@@ -5,7 +5,9 @@
     [Tutorials](https://github.com/square/workflow/tree/main/swift/Samples/Tutorial#tutorial) in
     the repo.
 
-    This section will be restructured soon to incorporate that and Kotlin tutorials.
+    This section will be restructured soon to incorporate that and Kotlin tutorials. In the
+    meantime, check out [workflow-kotlin](https://github.com/square/workflow-kotlin/tree/main/samples)
+    for Kotlin examples.
 
 The Workflow infrastructure is split into several modules.
 
