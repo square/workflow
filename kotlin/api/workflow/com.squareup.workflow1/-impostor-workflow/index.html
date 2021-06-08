@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,15 +793,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    Properties
+  <a href="#functions" class="md-nav__link">
+    Functions
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    Functions
+  <a href="#properties" class="md-nav__link">
+    Properties
   </a>
   
 </li>
@@ -826,16 +826,13 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">ImpostorWorkflow</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">ImpostorWorkflow</a></p>
 <h1 id="impostorworkflow">ImpostorWorkflow<a class="headerlink" href="#impostorworkflow" title="Permanent link">&para;</a></h1>
-<p><code>@ExperimentalWorkflowApi interface ImpostorWorkflow</code></p>
-<p>Optional interface that <a href="../-workflow/">Workflow</a>s should implement if they need the runtime to consider their
-identity to include a child workflow&rsquo;s identity. Two <a href="./">ImpostorWorkflow</a>s with the same concrete
-class, but different <a href="real-identifier/">realIdentifier</a>s will be considered different workflows by the runtime.</p>
-<p>This is intended to be used for helper workflows that implement things like operators by wrapping
-and delegating to other workflows, and which need to be able to express that the identity of the
-operator workflow is derived from the identity of the wrapped workflow.</p>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<p>[jvm] @<a href="../-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  </p>
+<p>interface <a href="./">ImpostorWorkflow</a></p>
+<p>Optional interface that <a href="../-workflow/">Workflow</a>s should implement if they need the runtime to consider their identity to include a child workflow&rsquo;s identity. Two <a href="./">ImpostorWorkflow</a>s with the same concrete class, but different <a href="real-identifier/">realIdentifier</a>s will be considered different workflows by the runtime.</p>
+<p>This is intended to be used for helper workflows that implement things like operators by wrapping and delegating to other workflows, and which need to be able to express that the identity of the operator workflow is derived from the identity of the wrapped workflow.</p>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -845,12 +842,12 @@ operator workflow is derived from the identity of the wrapped workflow.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="real-identifier/">realIdentifier</a></td>
-<td>The <a href="../-workflow-identifier/">WorkflowIdentifier</a> of another workflow to be combined with the identifier of this workflow, as obtained by <a href="../identifier/">Workflow.identifier</a>.<code>abstract val realIdentifier:</code><a href="../-workflow-identifier/"><code>WorkflowIdentifier</code></a></td>
+<td><a name="com.squareup.workflow1/ImpostorWorkflow/describeRealIdentifier/#/PointingToDeclaration/"></a><a href="describe-real-identifier/">describeRealIdentifier</a></td>
+<td><a name="com.squareup.workflow1/ImpostorWorkflow/describeRealIdentifier/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="describe-real-identifier/">describeRealIdentifier</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>?  <br>More info  <br>Returns a string that describes how this workflow is related to <a href="real-identifier/">realIdentifier</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -860,8 +857,8 @@ operator workflow is derived from the identity of the wrapped workflow.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="describe-real-identifier/">describeRealIdentifier</a></td>
-<td>Returns a string that describes how this workflow is related to <a href="real-identifier/">realIdentifier</a>.<code>open fun describeRealIdentifier():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>?</code></td>
+<td><a name="com.squareup.workflow1/ImpostorWorkflow/realIdentifier/#/PointingToDeclaration/"></a><a href="real-identifier/">realIdentifier</a></td>
+<td><a name="com.squareup.workflow1/ImpostorWorkflow/realIdentifier/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="real-identifier/">realIdentifier</a>: <a href="../-workflow-identifier/">WorkflowIdentifier</a>The <a href="../-workflow-identifier/">WorkflowIdentifier</a> of another workflow to be combined with the identifier of this workflow, as obtained by <a href="../identifier/">Workflow.identifier</a>.   <br></td>
 </tr>
 </tbody>
 </table>

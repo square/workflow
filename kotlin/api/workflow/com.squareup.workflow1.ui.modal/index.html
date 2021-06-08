@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../" class="md-tabs__link">
+        <a href="../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" title="Kotlin" class="md-nav__link">
+    <a href="../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -781,6 +781,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -791,22 +793,9 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#package-comsquareupworkflow1uimodal" class="md-nav__link">
-    Package com.squareup.workflow1.ui.modal
-  </a>
-  
-    <nav class="md-nav" aria-label="Package com.squareup.workflow1.ui.modal">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#types" class="md-nav__link">
     Types
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -830,11 +819,9 @@
                   
                 
                 
-                  <h1>Index</h1>
-                
-                <p><a href="../">workflow</a> / <a href="./">com.squareup.workflow1.ui.modal</a></p>
-<h2 id="package-comsquareupworkflow1uimodal">Package com.squareup.workflow1.ui.modal<a class="headerlink" href="#package-comsquareupworkflow1uimodal" title="Permanent link">&para;</a></h2>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+                <p>//<a href="../../index.md">workflow</a>/<a href="./">com.squareup.workflow1.ui.modal</a></p>
+<h1 id="package-comsquareupworkflow1uimodal">Package com.squareup.workflow1.ui.modal<a class="headerlink" href="#package-comsquareupworkflow1uimodal" title="Permanent link">&para;</a></h1>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -844,28 +831,28 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-alert-container/">AlertContainer</a></td>
-<td>Renders the <a href="-alert-screen/">AlertScreen</a>s of an <a href="-alert-container-screen/">AlertContainerScreen</a> as <a href="#">AlertDialog</a>s.<code>class AlertContainer :</code><a href="-modal-container/"><code>ModalContainer</code></a><code>&lt;</code><a href="-alert-screen/"><code>AlertScreen</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainer///PointingToDeclaration/"></a><a href="-alert-container/">AlertContainer</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainer///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>class <a href="-alert-container/">AlertContainer</a>@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html">JvmOverloads</a>()constructor(<strong>context</strong>: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, <strong>attributeSet</strong>: <a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a>?, <strong>defStyle</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, <strong>defStyleRes</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, @<a href="https://developer.android.com/reference/kotlin/androidx/annotation/StyleRes.html">StyleRes</a>()<strong>dialogThemeResId</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>) : <a href="-modal-container/">ModalContainer</a><AlertScreen>   <br>More info  <br>Renders the AlertScreens of an AlertContainerScreen as <a href="https://developer.android.com/reference/kotlin/androidx/appcompat/app/AlertDialog.html">AlertDialog</a>s.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-alert-container-screen/">AlertContainerScreen</a></td>
-<td>May show a stack of <a href="-alert-screen/">AlertScreen</a> over a <a href="-alert-container-screen/beneath-modals/">beneathModals</a>.<code>data class AlertContainerScreen&lt;B :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="-has-modals/"><code>HasModals</code></a><code>&lt;B,</code><a href="-alert-screen/"><code>AlertScreen</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen///PointingToDeclaration/"></a><a href="-alert-container-screen/">AlertContainerScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>data class <a href="-alert-container-screen/">AlertContainerScreen</a>&lt;<a href="-alert-container-screen/">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(<strong>beneathModals</strong>: <a href="-alert-container-screen/">B</a>, <strong>modals</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="-alert-screen/">AlertScreen</a>&gt;) : <a href="-has-modals/">HasModals</a>&lt;<a href="-alert-container-screen/">B</a>, <a href="-alert-screen/">AlertScreen</a>&gt;   <br>More info  <br>May show a stack of <a href="-alert-screen/">AlertScreen</a> over a <a href="-alert-container-screen/beneath-modals/">beneathModals</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-alert-screen/">AlertScreen</a></td>
-<td>Models a typical &ldquo;You sure about that?&rdquo; alert box.<code>data class AlertScreen</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen///PointingToDeclaration/"></a><a href="-alert-screen/">AlertScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>data class <a href="-alert-screen/">AlertScreen</a>(<strong>buttons</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="-alert-screen/-button/">AlertScreen.Button</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;, <strong>message</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <strong>title</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <strong>cancelable</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, <strong>onEvent</strong>: (<a href="-alert-screen/-event/">AlertScreen.Event</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)  <br>More info  <br>Models a typical &ldquo;You sure about that?&rdquo; alert box.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-has-modals/">HasModals</a></td>
-<td>Interface implemented by screen classes that represent a stack of zero or more <a href="-has-modals/#M">modal</a> screens above a <a href="-has-modals/beneath-modals/">base screen</a>.<code>interface HasModals&lt;out B :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>, out M :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/HasModals///PointingToDeclaration/"></a><a href="-has-modals/">HasModals</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/HasModals///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>interface <a href="-has-modals/">HasModals</a><out <a href="-has-modals/index.md">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, out <a href="-has-modals/index.md">M</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>>  <br>More info  <br>Interface implemented by screen classes that represent a stack of zero or more <a href="-has-modals/">modal</a> screens above a <a href="-has-modals/beneath-modals/">base screen</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-modal-container/">ModalContainer</a></td>
-<td>Base class for containers that show <a href="-has-modals/modals/">HasModals.modals</a> in <a href="#">Dialog</a> windows.<code>abstract class ModalContainer&lt;ModalRenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; : FrameLayout</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/ModalContainer///PointingToDeclaration/"></a><a href="-modal-container/">ModalContainer</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/ModalContainer///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>abstract class <a href="-modal-container/">ModalContainer</a>&lt;<a href="-modal-container/">ModalRenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html">JvmOverloads</a>()constructor(<strong>context</strong>: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, <strong>attributeSet</strong>: <a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a>?, <strong>defStyle</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, <strong>defStyleRes</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>) : <a href="https://developer.android.com/reference/kotlin/android/widget/FrameLayout.html">FrameLayout</a>  <br>More info  <br>Base class for containers that show HasModals.modals in <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> windows.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-modal-view-container/">ModalViewContainer</a></td>
-<td>Container that shows <a href="-has-modals/modals/">HasModals.modals</a> as arbitrary views in a <a href="#">Dialog</a> window. Provides compatibility with <a href="../com.squareup.workflow1.ui/android.view.-view/back-pressed-handler/">View.backPressedHandler</a>.<code>open class ModalViewContainer :</code><a href="-modal-container/"><code>ModalContainer</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/ModalViewContainer///PointingToDeclaration/"></a><a href="-modal-view-container/">ModalViewContainer</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/ModalViewContainer///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>open class <a href="-modal-view-container/">ModalViewContainer</a>@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html">JvmOverloads</a>()constructor(<strong>context</strong>: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, <strong>attributeSet</strong>: <a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a>?, <strong>defStyle</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, <strong>defStyleRes</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>) : <a href="-modal-container/">ModalContainer</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;   <br>More info  <br>Container that shows HasModals.modals as arbitrary views in a <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> window.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

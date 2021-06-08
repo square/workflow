@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,8 +793,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    Properties
+  <a href="#types" class="md-nav__link">
+    Types
   </a>
   
 </li>
@@ -807,15 +807,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#companion-object-functions" class="md-nav__link">
-    Companion Object Functions
+  <a href="#properties" class="md-nav__link">
+    Properties
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#extension-functions" class="md-nav__link">
-    Extension Functions
+  <a href="#extensions" class="md-nav__link">
+    Extensions
   </a>
   
 </li>
@@ -840,12 +840,11 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">Snapshot</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">Snapshot</a></p>
 <h1 id="snapshot">Snapshot<a class="headerlink" href="#snapshot" title="Permanent link">&para;</a></h1>
-<p><code>class Snapshot</code></p>
-<p>A lazy wrapper of <a href="#">ByteString</a>. Allows <a href="../-workflow/">Workflow</a>s to capture their state frequently, without
-worrying about performing unnecessary serialization work.</p>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<p>[jvm] class <a href="./">Snapshot</a></p>
+<p>A lazy wrapper of ByteString. Allows <a href="../-workflow/">Workflow</a>s to capture their state frequently, without worrying about performing unnecessary serialization work.</p>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -855,12 +854,12 @@ worrying about performing unnecessary serialization work.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="bytes/">bytes</a></td>
-<td><code>val bytes: ByteString</code></td>
+<td><a name="com.squareup.workflow1/Snapshot.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1/Snapshot.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -870,20 +869,20 @@ worrying about performing unnecessary serialization work.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="equals/">equals</a></td>
-<td>Compares <code>Snapshot</code>s by comparing their <a href="bytes/">bytes</a>.<code>fun equals(other:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>?):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a></td>
+<td><a name="com.squareup.workflow1/Snapshot/equals/#kotlin.Any?/PointingToDeclaration/"></a><a href="equals/">equals</a></td>
+<td><a name="com.squareup.workflow1/Snapshot/equals/#kotlin.Any?/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open operator override fun <a href="equals/">equals</a>(other: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br>More info  <br>Compares Snapshots by comparing their <a href="bytes/">bytes</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="hash-code/">hashCode</a></td>
-<td>Calculates hashcode using <a href="bytes/">bytes</a>.<code>fun hashCode():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a></td>
+<td><a name="com.squareup.workflow1/Snapshot/hashCode/#/PointingToDeclaration/"></a><a href="hash-code/">hashCode</a></td>
+<td><a name="com.squareup.workflow1/Snapshot/hashCode/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="hash-code/">hashCode</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>  <br>More info  <br>Calculates hashcode using <a href="bytes/">bytes</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="to-string/">toString</a></td>
-<td>Returns a <code>String</code> describing the <a href="bytes/">bytes</a> of this <code>Snapshot</code>.<code>fun toString():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a></td>
+<td><a name="com.squareup.workflow1/Snapshot/toString/#/PointingToDeclaration/"></a><a href="to-string/">toString</a></td>
+<td><a name="com.squareup.workflow1/Snapshot/toString/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="to-string/">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>  <br>More info  <br>Returns a String describing the <a href="bytes/">bytes</a> of this Snapshot.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="companion-object-functions">Companion Object Functions<a class="headerlink" href="#companion-object-functions" title="Permanent link">&para;</a></h3>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -893,16 +892,12 @@ worrying about performing unnecessary serialization work.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="of/">of</a></td>
-<td><code>fun of(string:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>):</code><a href="./"><code>Snapshot</code></a><br><code>fun of(byteString: ByteString):</code><a href="./"><code>Snapshot</code></a><br><code>fun of(lazy: () -&gt; ByteString):</code><a href="./"><code>Snapshot</code></a><br><code>fun of(integer:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a><code>):</code><a href="./"><code>Snapshot</code></a></td>
-</tr>
-<tr>
-<td><a href="write/">write</a></td>
-<td>Create a snapshot by writing to a nice ergonomic <a href="#">BufferedSink</a>.<code>fun write(lazy: (BufferedSink) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="./"><code>Snapshot</code></a></td>
+<td><a name="com.squareup.workflow1/Snapshot/bytes/#/PointingToDeclaration/"></a><a href="bytes/">bytes</a></td>
+<td><a name="com.squareup.workflow1/Snapshot/bytes/#/PointingToDeclaration/"></a> [jvm] val <a href="bytes/">bytes</a>: ByteString   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="extension-functions">Extension Functions<a class="headerlink" href="#extension-functions" title="Permanent link">&para;</a></h3>
+<h2 id="extensions">Extensions<a class="headerlink" href="#extensions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -912,8 +907,8 @@ worrying about performing unnecessary serialization work.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="../../com.squareup.workflow1.ui/to-parcelable/">toParcelable</a></td>
-<td><code>fun &lt;T : Parcelable&gt;</code><a href="./"><code>Snapshot</code></a><code>.toParcelable(): T?</code></td>
+<td><a name="com.squareup.workflow1.ui//toParcelable/com.squareup.workflow1.Snapshot#/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.ui/to-parcelable/">toParcelable</a></td>
+<td><a name="com.squareup.workflow1.ui//toParcelable/com.squareup.workflow1.Snapshot#/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>inline fun &lt;<a href="../../com.squareup.workflow1.ui/to-parcelable/">T</a> : <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a>&gt; <a href="./#1370838055%2FExtensions%2F576965167">Snapshot</a>.<a href="../../com.squareup.workflow1.ui/to-parcelable/">toParcelable</a>(): <a href="../../com.squareup.workflow1.ui/to-parcelable/">T</a>?  <br><br><br></td>
 </tr>
 </tbody>
 </table>

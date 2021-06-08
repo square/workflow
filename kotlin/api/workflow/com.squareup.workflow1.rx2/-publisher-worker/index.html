@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -806,13 +806,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#extension-functions" class="md-nav__link">
-    Extension Functions
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -833,30 +826,28 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.rx2</a> / <a href="./">PublisherWorker</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.rx2</a>/<a href="./">PublisherWorker</a></p>
 <h1 id="publisherworker">PublisherWorker<a class="headerlink" href="#publisherworker" title="Permanent link">&para;</a></h1>
-<p><code>abstract class PublisherWorker&lt;out OutputT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="../../com.squareup.workflow1/-worker/"><code>Worker</code></a><code>&lt;OutputT&gt;</code></p>
-<p>An convenience implementation of <a href="../../com.squareup.workflow1/-worker/">Worker</a> that is expressed in terms of Reactive Streams&rsquo;
-<a href="#">Publisher</a> instead of <a href="#">Flow</a>.</p>
-<p>If you&rsquo;re using RxJava, <a href="#">Flowable</a> is a <a href="#">Publisher</a>.</p>
-<p>Subclassing this is equivalent to just implementing <a href="../../com.squareup.workflow1/-worker/run/">Worker.run</a> directly and calling <a href="#">asFlow</a>
-on your <a href="#">Publisher</a>.</p>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<p>[jvm] abstract class <a href="./">PublisherWorker</a><out <a href="index.md">OutputT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>> : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">OutputT</a>&gt; </p>
+<p>An convenience implementation of <a href="../../com.squareup.workflow1/-worker/">Worker</a> that is expressed in terms of Reactive Streams&rsquo; Publisher instead of Flow.</p>
+<p>If you&rsquo;re using RxJava, Flowable is a Publisher.</p>
+<p>Subclassing this is equivalent to just implementing <a href="../../com.squareup.workflow1/-worker/run/">Worker.run</a> directly and calling asFlow on your Publisher.</p>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>An convenience implementation of <a href="../../com.squareup.workflow1/-worker/">Worker</a> that is expressed in terms of Reactive Streams&rsquo; <a href="#">Publisher</a> instead of <a href="#">Flow</a>.<code>PublisherWorker()</code></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/PublisherWorker/#/PointingToDeclaration/"></a><a href="-publisher-worker/">PublisherWorker</a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/PublisherWorker/#/PointingToDeclaration/"></a> [jvm] fun <a href="-publisher-worker/">PublisherWorker</a>()   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -866,31 +857,16 @@ on your <a href="#">Publisher</a>.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="run/">run</a></td>
-<td>Returns a <a href="#">Flow</a> to execute the work represented by this worker.<code>fun run(): Flow&lt;OutputT&gt;</code></td>
+<td><a name="com.squareup.workflow1/Worker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a></td>
+<td><a name="com.squareup.workflow1/Worker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="run-publisher/">runPublisher</a></td>
-<td>Returns a <a href="#">Flowable</a> to execute the work represented by this worker.<code>abstract fun runPublisher(): Publisher&lt;out OutputT&gt;</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="extension-functions">Extension Functions<a class="headerlink" href="#extension-functions" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Summary</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="../../com.squareup.workflow1.testing/test/">test</a></td>
-<td>Test a <a href="../../com.squareup.workflow1/-worker/">Worker</a> by defining assertions on its output within <a href="../../com.squareup.workflow1.testing/test/#com.squareup.workflow1.testing$test(com.squareup.workflow1.Worker((com.squareup.workflow1.testing.test.T)), kotlin.Long, kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.testing.WorkerTester((com.squareup.workflow1.testing.test.T)), kotlin.Unit)))/block">block</a>.<code>fun &lt;T&gt;</code><a href="../../com.squareup.workflow1/-worker/"><code>Worker</code></a><code>&lt;T&gt;.test(timeoutMs:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html"><code>Long</code></a><code>= DEFAULT_TIMEOUT_MS, block: suspend</code><a href="../../com.squareup.workflow1.testing/-worker-tester/"><code>WorkerTester</code></a><code>&lt;T&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/run/#/PointingToDeclaration/"></a><a href="run/">run</a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/run/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>override fun <a href="run/">run</a>(): Flow&lt;<a href="./">OutputT</a>&gt;  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../../com.squareup.workflow1/transform/">transform</a></td>
-<td>Returns a <a href="../../com.squareup.workflow1/-worker/">Worker</a> that transforms this <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lsquo;s <a href="#">Flow</a> by calling <a href="../../com.squareup.workflow1/transform/#com.squareup.workflow1$transform(com.squareup.workflow1.Worker((com.squareup.workflow1.transform.T)), kotlin.Function1((kotlinx.coroutines.flow.Flow((com.squareup.workflow1.transform.T)), kotlinx.coroutines.flow.Flow((com.squareup.workflow1.transform.R)))))/transform">transform</a>.<code>fun &lt;T, R&gt;</code><a href="../../com.squareup.workflow1/-worker/"><code>Worker</code></a><code>&lt;T&gt;.transform(transform: (Flow&lt;T&gt;) -&gt; Flow&lt;R&gt;):</code><a href="../../com.squareup.workflow1/-worker/"><code>Worker</code></a><code>&lt;R&gt;</code></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/runPublisher/#/PointingToDeclaration/"></a><a href="run-publisher/">runPublisher</a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/runPublisher/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="run-publisher/">runPublisher</a>(): Publisher<out <a href="index.md">OutputT</a>>  <br>More info  <br>Returns a Flowable to execute the work represented by this worker.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

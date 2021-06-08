@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -797,18 +797,12 @@
     Expecting impostor workflows
   </a>
   
-    <nav class="md-nav" aria-label="Expecting impostor workflows">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -817,18 +811,26 @@
     Expecting impostor workflows
   </a>
   
-    <nav class="md-nav" aria-label="Expecting impostor workflows">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#expecting-impostor-workflows_2" class="md-nav__link">
+    Expecting impostor workflows
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
   
 </li>
       
@@ -852,87 +854,166 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.testing</a> / <a href="./">expectWorkflow</a></p>
+                <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.testing</a>/<a href="./">expectWorkflow</a></p>
 <h1 id="expectworkflow">expectWorkflow<a class="headerlink" href="#expectworkflow" title="Permanent link">&para;</a></h1>
-<p><code>@ExperimentalWorkflowApi inline fun &lt;ChildRenderingT, PropsT, StateT, OutputT, RenderingT&gt;</code><a href="../-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.expectWorkflow(identifier:</code><a href="../../com.squareup.workflow1/-workflow-identifier/"><code>WorkflowIdentifier</code></a><code>, rendering: ChildRenderingT, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", description:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", noinline assertProps: (props:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>?) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}):</code><a href="../-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;</code>
-<code>@ExperimentalWorkflowApi fun &lt;ChildOutputT, ChildRenderingT, PropsT, StateT, OutputT, RenderingT&gt;</code><a href="../-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.expectWorkflow(identifier:</code><a href="../../com.squareup.workflow1/-workflow-identifier/"><code>WorkflowIdentifier</code></a><code>, rendering: ChildRenderingT, output:</code><a href="../../com.squareup.workflow1/-workflow-output/"><code>WorkflowOutput</code></a><code>&lt;ChildOutputT&gt;?, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", description:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", assertProps: (props:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>?) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}):</code><a href="../-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></p>
+<p>[jvm]<br />
+Content<br />
+@<a href="../../com.squareup.workflow1/-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  </p>
+<p>inline fun &lt;<a href="./">ChildRenderingT</a>, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../-render-tester/">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">expectWorkflow</a>(identifier: <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>, rendering: <a href="./">ChildRenderingT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, noinline assertProps: (props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="../-render-tester/">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Specifies that this render pass is expected to render a particular child workflow.</p>
-<p>Workflow identifiers are compared taking the type hierarchy into account. When a workflow is
-rendered, it will match any expectation that specifies the type of that workflow, or any of
-its supertypes. This means that if you have a workflow that is split into an interface and a
-concrete class, your render tests can pass the class of the interface to this method instead of
-the actual class that implements it.</p>
+<p>Workflow identifiers are compared taking the type hierarchy into account. When a workflow is rendered, it will match any expectation that specifies the type of that workflow, or any of its supertypes. This means that if you have a workflow that is split into an interface and a concrete class, your render tests can pass the class of the interface to this method instead of the actual class that implements it.</p>
 <h2 id="expecting-impostor-workflows">Expecting impostor workflows<a class="headerlink" href="#expecting-impostor-workflows" title="Permanent link">&para;</a></h2>
-<p>If the workflow-under-test renders an
-<a href="../../com.squareup.workflow1/-impostor-workflow/">ImpostorWorkflow</a>, the match will not be performed
-using the impostor type, but rather the
-<a href="../../com.squareup.workflow1/-workflow-identifier/get-real-identifier-type/">real identifier</a> of the impostor&rsquo;s
-<a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>. This will be the last identifier in the chain of impostor workflows&rsquo;
-<a href="../../com.squareup.workflow1/-impostor-workflow/real-identifier/">realIdentifier</a>s.</p>
-<p>A workflow that is wrapped multiple times by various operators will be matched on the upstream
-workflow, so for example the following expectation would succeed:</p>
-<div class="highlight"><pre><span></span><code>val workflow = Workflow.stateless&lt;…&gt; {
-  renderChild(
-    childWorkflow.mapRendering { … }
-      .mapOutput { … }
-  )
-}
-
-workflow.testRender(…)
-  .expectWorkflow(childWorkflow::class, …)
-</code></pre></div>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>identifier</code> - The <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a> of the expected workflow. May identify any supertype
-of the actual rendered workflow, e.g. if the workflow type is an interface and the
-workflow-under-test injects a fake.</p>
-<p><code>rendering</code> - The rendering to return from
-<a href="#">renderChild</a> when this workflow is rendered.</p>
-<p><code>key</code> - The key passed to <a href="#">renderChild</a>
-when rendering this workflow.</p>
-<p><code>assertProps</code> - A function that performs assertions on the props passed to
-<a href="#">renderChild</a>.</p>
-<p><code>output</code> - If non-null, <a href="../../com.squareup.workflow1/-workflow-output/value/">WorkflowOutput.value</a> will be &ldquo;emitted&rdquo; when this workflow is
-rendered. The <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> used to handle this output can be verified using methods on
-<a href="../-render-test-result/">RenderTestResult</a>.</p>
-<p><code>description</code> - Optional string that will be used to describe this expectation in error
-messages.<code>inline fun &lt;ChildPropsT, ChildOutputT, ChildRenderingT, PropsT, StateT, OutputT, RenderingT&gt;</code><a href="../-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.expectWorkflow(workflowType:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;out</code><a href="../../com.squareup.workflow1/-workflow/"><code>Workflow</code></a><code>&lt;ChildPropsT, ChildOutputT, ChildRenderingT&gt;&gt;, rendering: ChildRenderingT, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", crossinline assertProps: (props: ChildPropsT) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}, output:</code><a href="../../com.squareup.workflow1/-workflow-output/"><code>WorkflowOutput</code></a><code>&lt;ChildOutputT&gt;? = null, description:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= ""):</code><a href="../-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></p>
+<p>If the workflow-under-test renders an <a href="../../com.squareup.workflow1/-impostor-workflow/">ImpostorWorkflow</a>, the match will not be performed using the impostor type, but rather the <a href="../../com.squareup.workflow1/-workflow-identifier/get-real-identifier-type/">real identifier</a> of the impostor&rsquo;s <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>. This will be the last identifier in the chain of impostor workflows&rsquo; <a href="../../com.squareup.workflow1/-impostor-workflow/real-identifier/">realIdentifier</a>s.</p>
+<p>A workflow that is wrapped multiple times by various operators will be matched on the upstream workflow, so for example the following expectation would succeed:</p>
+<p>val workflow = Workflow.stateless&lt;…&gt; {<br />
+  renderChild(<br />
+    childWorkflow.mapRendering { … }<br />
+      .mapOutput { … }<br />
+  )<br />
+}  </p>
+<p>workflow.testRender(…)<br />
+  .expectWorkflow(childWorkflow::class, …)</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>identifier</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>The <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a> of the expected workflow. May identify any supertype of the actual rendered workflow, e.g. if the workflow type is an interface and the workflow-under-test injects a fake.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>rendering</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>The rendering to return from com.squareup.workflow1.RenderContext.renderChild when this workflow is rendered.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>The key passed to com.squareup.workflow1.RenderContext.renderChild when rendering this workflow.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>assertProps</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>A function that performs assertions on the props passed to com.squareup.workflow1.RenderContext.renderChild.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>output</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>If non-null, <a href="../../com.squareup.workflow1/-workflow-output/value/">WorkflowOutput.value</a> will be &ldquo;emitted&rdquo; when this workflow is rendered. The <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> used to handle this output can be verified using methods on <a href="../-render-test-result/">RenderTestResult</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>description</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>Optional string that will be used to describe this expectation in error messages.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[jvm]<br />
+Content<br />
+@<a href="../../com.squareup.workflow1/-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  </p>
+<p>fun &lt;<a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../-render-tester/">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">expectWorkflow</a>(identifier: <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>, rendering: <a href="./">ChildRenderingT</a>, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="./">ChildOutputT</a>&gt;?, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, assertProps: (props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="../-render-tester/">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Specifies that this render pass is expected to render a particular child workflow.</p>
-<p>Workflow identifiers are compared taking the type hierarchy into account. When a workflow is
-rendered, it will match any expectation that specifies the type of that workflow, or any of
-its supertypes. This means that if you have a workflow that is split into an interface and a
-concrete class, your render tests can pass the class of the interface to this method instead of
-the actual class that implements it.</p>
+<p>Workflow identifiers are compared taking the type hierarchy into account. When a workflow is rendered, it will match any expectation that specifies the type of that workflow, or any of its supertypes. This means that if you have a workflow that is split into an interface and a concrete class, your render tests can pass the class of the interface to this method instead of the actual class that implements it.</p>
 <h2 id="expecting-impostor-workflows_1">Expecting impostor workflows<a class="headerlink" href="#expecting-impostor-workflows_1" title="Permanent link">&para;</a></h2>
-<p>If the workflow-under-test renders an
-<a href="../../com.squareup.workflow1/-impostor-workflow/">ImpostorWorkflow</a>, the match will not be performed
-using the impostor type, but rather the
-<a href="../../com.squareup.workflow1/-workflow-identifier/get-real-identifier-type/">real identifier</a> of the impostor&rsquo;s
-<a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>. This will be the last identifier in the chain of impostor workflows&rsquo;
-<a href="../../com.squareup.workflow1/-impostor-workflow/real-identifier/">realIdentifier</a>s.</p>
-<p>A workflow that is wrapped multiple times by various operators will be matched on the upstream
-workflow, so for example the following expectation would succeed:</p>
-<div class="highlight"><pre><span></span><code>val workflow = Workflow.stateless&lt;…&gt; {
-  renderChild(childWorkflow.mapRendering { … })
-}
-
-workflow.testRender(…)
-  .expectWorkflow(childWorkflow::class, …)
-</code></pre></div>
-<h3 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h3>
-<p><code>workflowType</code> - The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> of the expected workflow. May also be any of the supertypes
-of the expected workflow, e.g. if the workflow type is an interface and the workflow-under-test
-injects a fake.</p>
-<p><code>rendering</code> - The rendering to return from
-<a href="#">renderChild</a> when this workflow is rendered.</p>
-<p><code>key</code> - The key passed to <a href="#">renderChild</a>
-when rendering this workflow.</p>
-<p><code>assertProps</code> - A function that performs assertions on the props passed to
-<a href="#">renderChild</a>.</p>
-<p><code>output</code> - If non-null, <a href="../../com.squareup.workflow1/-workflow-output/value/">WorkflowOutput.value</a> will be &ldquo;emitted&rdquo; when this workflow is
-rendered. The <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> used to handle this output can be verified using methods on
-<a href="../-render-test-result/">RenderTestResult</a>.</p>
-<p><code>description</code> - Optional string that will be used to describe this expectation in error
-messages.</p>
+<p>If the workflow-under-test renders an <a href="../../com.squareup.workflow1/-impostor-workflow/">ImpostorWorkflow</a>, the match will not be performed using the impostor type, but rather the <a href="../../com.squareup.workflow1/-workflow-identifier/get-real-identifier-type/">real identifier</a> of the impostor&rsquo;s <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>. This will be the last identifier in the chain of impostor workflows&rsquo; <a href="../../com.squareup.workflow1/-impostor-workflow/real-identifier/">realIdentifier</a>s.</p>
+<p>A workflow that is wrapped multiple times by various operators will be matched on the upstream workflow, so for example the following expectation would succeed:</p>
+<p>val workflow = Workflow.stateless&lt;…&gt; {<br />
+  renderChild(<br />
+    childWorkflow.mapRendering { … }<br />
+      .mapOutput { … }<br />
+  )<br />
+}  </p>
+<p>workflow.testRender(…)<br />
+  .expectWorkflow(childWorkflow::class, …)</p>
+<h2 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>identifier</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>The <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a> of the expected workflow. May identify any supertype of the actual rendered workflow, e.g. if the workflow type is an interface and the workflow-under-test injects a fake.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>rendering</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>The rendering to return from com.squareup.workflow1.RenderContext.renderChild when this workflow is rendered.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>The key passed to com.squareup.workflow1.RenderContext.renderChild when rendering this workflow.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>assertProps</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>A function that performs assertions on the props passed to com.squareup.workflow1.RenderContext.renderChild.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>output</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>If non-null, <a href="../../com.squareup.workflow1/-workflow-output/value/">WorkflowOutput.value</a> will be &ldquo;emitted&rdquo; when this workflow is rendered. The <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> used to handle this output can be verified using methods on <a href="../-render-test-result/">RenderTestResult</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>description</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><br><br>Optional string that will be used to describe this expectation in error messages.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../-render-tester/">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">expectWorkflow</a>(workflowType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;out <a href="../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt;&gt;, rendering: <a href="./">ChildRenderingT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline assertProps: (<a href="./">ChildPropsT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="./">ChildOutputT</a>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="../-render-tester/">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;<br />
+More info  </p>
+<p>Specifies that this render pass is expected to render a particular child workflow.</p>
+<p>Workflow identifiers are compared taking the type hierarchy into account. When a workflow is rendered, it will match any expectation that specifies the type of that workflow, or any of its supertypes. This means that if you have a workflow that is split into an interface and a concrete class, your render tests can pass the class of the interface to this method instead of the actual class that implements it.</p>
+<h2 id="expecting-impostor-workflows_2">Expecting impostor workflows<a class="headerlink" href="#expecting-impostor-workflows_2" title="Permanent link">&para;</a></h2>
+<p>If the workflow-under-test renders an <a href="../../com.squareup.workflow1/-impostor-workflow/">ImpostorWorkflow</a>, the match will not be performed using the impostor type, but rather the <a href="../../com.squareup.workflow1/-workflow-identifier/get-real-identifier-type/">real identifier</a> of the impostor&rsquo;s <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>. This will be the last identifier in the chain of impostor workflows&rsquo; <a href="../../com.squareup.workflow1/-impostor-workflow/real-identifier/">realIdentifier</a>s.</p>
+<p>A workflow that is wrapped multiple times by various operators will be matched on the upstream workflow, so for example the following expectation would succeed:</p>
+<p>val workflow = Workflow.stateless&lt;…&gt; {<br />
+  renderChild(childWorkflow.mapRendering { … })<br />
+}  </p>
+<p>workflow.testRender(…)<br />
+  .expectWorkflow(childWorkflow::class, …)</p>
+<h2 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a>workflowType</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a><br><br>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> of the expected workflow. May also be any of the supertypes of the expected workflow, e.g. if the workflow type is an interface and the workflow-under-test injects a fake.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a>rendering</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a><br><br>The rendering to return from com.squareup.workflow1.RenderContext.renderChild when this workflow is rendered.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a><br><br>The key passed to com.squareup.workflow1.RenderContext.renderChild when rendering this workflow.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a>assertProps</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a><br><br>A function that performs assertions on the props passed to com.squareup.workflow1.RenderContext.renderChild.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a>output</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a><br><br>If non-null, <a href="../../com.squareup.workflow1/-workflow-output/value/">WorkflowOutput.value</a> will be &ldquo;emitted&rdquo; when this workflow is rendered. The <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> used to handle this output can be verified using methods on <a href="../-render-test-result/">RenderTestResult</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a>description</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KClass[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a><br><br>Optional string that will be used to describe this expectation in error messages.<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               

@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../" class="md-tabs__link">
+        <a href="../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" title="Kotlin" class="md-nav__link">
+    <a href="../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -781,6 +781,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -791,29 +793,16 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#package-comsquareupworkflow1rx2" class="md-nav__link">
-    Package com.squareup.workflow1.rx2
-  </a>
-  
-    <nav class="md-nav" aria-label="Package com.squareup.workflow1.rx2">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#types" class="md-nav__link">
     Types
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#extensions-for-external-classes" class="md-nav__link">
-    Extensions for External Classes
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -837,11 +826,9 @@
                   
                 
                 
-                  <h1>Index</h1>
-                
-                <p><a href="../">workflow</a> / <a href="./">com.squareup.workflow1.rx2</a></p>
-<h2 id="package-comsquareupworkflow1rx2">Package com.squareup.workflow1.rx2<a class="headerlink" href="#package-comsquareupworkflow1rx2" title="Permanent link">&para;</a></h2>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+                <p>//<a href="../../index.md">workflow</a>/<a href="./">com.squareup.workflow1.rx2</a></p>
+<h1 id="package-comsquareupworkflow1rx2">Package com.squareup.workflow1.rx2<a class="headerlink" href="#package-comsquareupworkflow1rx2" title="Permanent link">&para;</a></h1>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -851,12 +838,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-publisher-worker/">PublisherWorker</a></td>
-<td>An convenience implementation of <a href="../com.squareup.workflow1/-worker/">Worker</a> that is expressed in terms of Reactive Streams&rsquo; <a href="#">Publisher</a> instead of <a href="#">Flow</a>.<code>abstract class PublisherWorker&lt;out OutputT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="../com.squareup.workflow1/-worker/"><code>Worker</code></a><code>&lt;OutputT&gt;</code></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker///PointingToDeclaration/"></a><a href="-publisher-worker/">PublisherWorker</a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract class <a href="-publisher-worker/">PublisherWorker</a><out <a href="-publisher-worker/index.md">OutputT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>> : <a href="../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="-publisher-worker/">OutputT</a>&gt;   <br>More info  <br>An convenience implementation of <a href="../com.squareup.workflow1/-worker/">Worker</a> that is expressed in terms of Reactive Streams&rsquo; Publisher instead of Flow.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="extensions-for-external-classes">Extensions for External Classes<a class="headerlink" href="#extensions-for-external-classes" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -866,24 +853,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="io.reactivex.-completable/">io.reactivex.Completable</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="io.reactivex.-maybe/">io.reactivex.Maybe</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="io.reactivex.-observable/">io.reactivex.Observable</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="io.reactivex.-single/">io.reactivex.Single</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="org.reactivestreams.-publisher/">org.reactivestreams.Publisher</a></td>
-<td></td>
+<td><a name="com.squareup.workflow1.rx2//asWorker/io.reactivex.Completable#/PointingToDeclaration/"></a><a href="as-worker/">asWorker</a></td>
+<td><a name="com.squareup.workflow1.rx2//asWorker/io.reactivex.Completable#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun Completable.<a href="as-worker/">asWorker</a>(): <a href="../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;  <br>More info  <br>Creates a <a href="../com.squareup.workflow1/-worker/">Worker</a> from this Completable.  <br><br><br>[jvm]  <br>Content  <br>inline fun &lt;<a href="as-worker/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Maybe<out <a href="as-worker.md">T</a>?>.<a href="as-worker/">asWorker</a>(): <a href="../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="as-worker/">T</a>&gt;  <br>More info  <br>Creates a <a href="../com.squareup.workflow1/-worker/">Worker</a> from this Maybe.  <br><br><br>[jvm]  <br>Content  <br>inline fun &lt;<a href="as-worker/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Observable<out <a href="as-worker.md">T</a>?>.<a href="as-worker/">asWorker</a>(): <a href="../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="as-worker/">T</a>&gt;  <br>More info  <br>Creates a <a href="../com.squareup.workflow1/-worker/">Worker</a> from this Observable.  <br><br><br>[jvm]  <br>Content  <br>inline fun &lt;<a href="as-worker/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Single<out <a href="as-worker.md">T</a>?>.<a href="as-worker/">asWorker</a>(): <a href="../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="as-worker/">T</a>&gt;  <br>More info  <br>Creates a <a href="../com.squareup.workflow1/-worker/">Worker</a> from this Single.  <br><br><br>[jvm]  <br>Content  <br>inline fun &lt;<a href="as-worker/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Publisher<out <a href="as-worker.md">T</a>?>.<a href="as-worker/">asWorker</a>(): <a href="../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="as-worker/">T</a>&gt;  <br>More info  <br>Creates a <a href="../com.squareup.workflow1/-worker/">Worker</a> from this Publisher (Flowable is a Publisher).  <br><br><br></td>
 </tr>
 </tbody>
 </table>

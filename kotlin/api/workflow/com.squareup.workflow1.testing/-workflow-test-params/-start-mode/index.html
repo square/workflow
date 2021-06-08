@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -799,6 +799,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#inheritors" class="md-nav__link">
+    Inheritors
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -819,18 +826,14 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.testing</a> / <a href="../">WorkflowTestParams</a> / <a href="./">StartMode</a></p>
+                <p>//<a href="../../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">WorkflowTestParams</a>/<a href="./">StartMode</a></p>
 <h1 id="startmode">StartMode<a class="headerlink" href="#startmode" title="Permanent link">&para;</a></h1>
-<p><code>sealed class StartMode&lt;out StateT&gt;</code></p>
+<p>[jvm] sealed class <a href="./">StartMode</a><out <a href="index.md">StateT</a>></p>
 <p>Defines how to start the workflow for tests.</p>
 <p>See the documentation on individual cases for more information:</p>
-<ul>
-<li><a href="-start-fresh/">StartFresh</a></li>
-<li><a href="-start-from-workflow-snapshot/">StartFromWorkflowSnapshot</a></li>
-<li><a href="-start-from-complete-snapshot/">StartFromCompleteSnapshot</a></li>
-<li><a href="-start-from-state/">StartFromState</a></li>
-</ul>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<ul><li>[StartFresh](-start-fresh/index.md)</li><li>[StartFromWorkflowSnapshot](-start-from-workflow-snapshot/index.md)</li><li>[StartFromCompleteSnapshot](-start-from-complete-snapshot/index.md)</li><li>[StartFromState](-start-from-state/index.md)</li></ul>
+
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -840,20 +843,42 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-start-fresh/">StartFresh</a></td>
-<td>Starts the workflow from its initial state (as specified by <a href="../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a null snapshot.<code>object StartFresh : StartMode&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFresh///PointingToDeclaration/"></a><a href="-start-fresh/">StartFresh</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFresh///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-start-fresh/">StartFresh</a> : <a href="./">WorkflowTestParams.StartMode</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;   <br>More info  <br>Starts the workflow from its initial state (as specified by <a href="../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a null snapshot.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-start-from-complete-snapshot/">StartFromCompleteSnapshot</a></td>
-<td>Starts the workflow from its initial state (as specified by <a href="../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a non-null snapshot. Only applies to <a href="../../../com.squareup.workflow1/-stateless-workflow/">StatefulWorkflow</a>s.<code>class StartFromCompleteSnapshot : StartMode&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromCompleteSnapshot///PointingToDeclaration/"></a><a href="-start-from-complete-snapshot/">StartFromCompleteSnapshot</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromCompleteSnapshot///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>class <a href="-start-from-complete-snapshot/">StartFromCompleteSnapshot</a>(<strong>snapshot</strong>: <a href="../../../com.squareup.workflow1/-tree-snapshot/">TreeSnapshot</a>) : <a href="./">WorkflowTestParams.StartMode</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;   <br>More info  <br>Starts the workflow from its initial state (as specified by <a href="../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a non-null snapshot.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-start-from-state/">StartFromState</a></td>
-<td>Starts the workflow from an exact state. Only applies to <a href="../../../com.squareup.workflow1/-stateless-workflow/">StatefulWorkflow</a>s.<code>class StartFromState&lt;StateT&gt; : StartMode&lt;StateT&gt;</code></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromState///PointingToDeclaration/"></a><a href="-start-from-state/">StartFromState</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromState///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>class <a href="-start-from-state/">StartFromState</a>&lt;<a href="-start-from-state/">StateT</a>&gt;(<strong>state</strong>: <a href="-start-from-state/">StateT</a>) : <a href="./">WorkflowTestParams.StartMode</a>&lt;<a href="-start-from-state/">StateT</a>&gt;   <br>More info  <br>Starts the workflow from an exact state.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-start-from-workflow-snapshot/">StartFromWorkflowSnapshot</a></td>
-<td>Starts the workflow from its initial state (as specified by <a href="../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a non-null snapshot.  Only applies to <a href="../../../com.squareup.workflow1/-stateless-workflow/">StatefulWorkflow</a>s.<code>class StartFromWorkflowSnapshot : StartMode&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot///PointingToDeclaration/"></a><a href="-start-from-workflow-snapshot/">StartFromWorkflowSnapshot</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>class <a href="-start-from-workflow-snapshot/">StartFromWorkflowSnapshot</a>(<strong>snapshot</strong>: <a href="../../../com.squareup.workflow1/-snapshot/">Snapshot</a>) : <a href="./">WorkflowTestParams.StartMode</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;   <br>More info  <br>Starts the workflow from its initial state (as specified by <a href="../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a non-null snapshot.  <br><br><br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="inheritors">Inheritors<a class="headerlink" href="#inheritors" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFresh///PointingToDeclaration/"></a><a href="-start-fresh/">WorkflowTestParams.StartMode</a></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot///PointingToDeclaration/"></a><a href="-start-from-workflow-snapshot/">WorkflowTestParams.StartMode</a></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromCompleteSnapshot///PointingToDeclaration/"></a><a href="-start-from-complete-snapshot/">WorkflowTestParams.StartMode</a></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromState///PointingToDeclaration/"></a><a href="-start-from-state/">WorkflowTestParams.StartMode</a></td>
 </tr>
 </tbody>
 </table>

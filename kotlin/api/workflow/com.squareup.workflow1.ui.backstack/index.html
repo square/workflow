@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../" class="md-tabs__link">
+        <a href="../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" title="Kotlin" class="md-nav__link">
+    <a href="../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -781,6 +781,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -791,29 +793,16 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#package-comsquareupworkflow1uibackstack" class="md-nav__link">
-    Package com.squareup.workflow1.ui.backstack
-  </a>
-  
-    <nav class="md-nav" aria-label="Package com.squareup.workflow1.ui.backstack">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#types" class="md-nav__link">
     Types
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#extensions-for-external-classes" class="md-nav__link">
-    Extensions for External Classes
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -837,11 +826,9 @@
                   
                 
                 
-                  <h1>Index</h1>
-                
-                <p><a href="../">workflow</a> / <a href="./">com.squareup.workflow1.ui.backstack</a></p>
-<h2 id="package-comsquareupworkflow1uibackstack">Package com.squareup.workflow1.ui.backstack<a class="headerlink" href="#package-comsquareupworkflow1uibackstack" title="Permanent link">&para;</a></h2>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+                <p>//<a href="../../index.md">workflow</a>/<a href="./">com.squareup.workflow1.ui.backstack</a></p>
+<h1 id="package-comsquareupworkflow1uibackstack">Package com.squareup.workflow1.ui.backstack<a class="headerlink" href="#package-comsquareupworkflow1uibackstack" title="Permanent link">&para;</a></h1>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -851,24 +838,24 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-back-stack-config/">BackStackConfig</a></td>
-<td>Informs views whether they&rsquo;re children of a <a href="-back-stack-container/">BackStackContainer</a>, and if so whether they&rsquo;re the <a href="-back-stack-config/-first/">first frame</a> or <a href="-back-stack-config/-other/">not</a>.<code>enum class BackStackConfig</code></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig///PointingToDeclaration/"></a><a href="-back-stack-config/">BackStackConfig</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>enum <a href="-back-stack-config/">BackStackConfig</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a>&lt;<a href="-back-stack-config/">BackStackConfig</a>&gt;   <br>More info  <br>Informs views whether they&rsquo;re children of a <a href="-back-stack-container/">BackStackContainer</a>, and if so whether they&rsquo;re the <a href="-back-stack-config/-first/">first frame</a> or <a href="-back-stack-config/-other/">not</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-back-stack-container/">BackStackContainer</a></td>
-<td>A container view that can display a stream of <a href="-back-stack-screen/">BackStackScreen</a> instances.<code>open class BackStackContainer : FrameLayout</code></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackContainer///PointingToDeclaration/"></a><a href="-back-stack-container/">BackStackContainer</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackContainer///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>open class <a href="-back-stack-container/">BackStackContainer</a>@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html">JvmOverloads</a>()constructor(<strong>context</strong>: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, <strong>attributeSet</strong>: <a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a>?, <strong>defStyle</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, <strong>defStyleRes</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>) : <a href="https://developer.android.com/reference/kotlin/android/widget/FrameLayout.html">FrameLayout</a>  <br>More info  <br>A container view that can display a stream of BackStackScreen instances.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-back-stack-screen/">BackStackScreen</a></td>
-<td>Represents an active screen (<a href="-back-stack-screen/top/">top</a>), and a set of previously visited screens to which we may return (<a href="-back-stack-screen/back-stack/">backStack</a>). By rendering the entire history we allow the UI to do things like maintain cached view state, implement drag-back gestures without waiting for the workflow, etc.<code>class BackStackScreen&lt;StackedT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackScreen///PointingToDeclaration/"></a><a href="-back-stack-screen/">BackStackScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackScreen///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>class <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="-back-stack-screen/">StackedT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(<strong>bottom</strong>: <a href="-back-stack-screen/">StackedT</a>, <strong>rest</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="-back-stack-screen/">StackedT</a>&gt;)  <br>More info  <br>Represents an active screen (<a href="-back-stack-screen/top/">top</a>), and a set of previously visited screens to which we may return (<a href="-back-stack-screen/back-stack/">backStack</a>).  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-view-state-cache/">ViewStateCache</a></td>
-<td>Handles persistence chores for container views that manage a set of <a href="../com.squareup.workflow1.ui/-named/">Named</a> renderings, showing a view for one at a time &ndash; think back stacks or tab sets.<code>class ViewStateCache : Parcelable</code></td>
+<td><a name="com.squareup.workflow1.ui.backstack/ViewStateCache///PointingToDeclaration/"></a><a href="-view-state-cache/">ViewStateCache</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/ViewStateCache///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>class <a href="-view-state-cache/">ViewStateCache</a> : <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a>  <br>More info  <br>Handles persistence chores for container views that manage a set of Named renderings, showing a view for one at a time &ndash; think back stacks or tab sets.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="extensions-for-external-classes">Extensions for External Classes<a class="headerlink" href="#extensions-for-external-classes" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -878,8 +865,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="kotlin.collections.-list/">kotlin.collections.List</a></td>
-<td></td>
+<td><a name="com.squareup.workflow1.ui.backstack//toBackStackScreen/kotlin.collections.List[TypeParam(bounds=[kotlin.Any])]#/PointingToDeclaration/"></a><a href="to-back-stack-screen/">toBackStackScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack//toBackStackScreen/kotlin.collections.List[TypeParam(bounds=[kotlin.Any])]#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>fun &lt;<a href="to-back-stack-screen/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="to-back-stack-screen/">T</a>&gt;.<a href="to-back-stack-screen/">toBackStackScreen</a>(): <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="to-back-stack-screen/">T</a>&gt;  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.backstack//toBackStackScreenOrNull/kotlin.collections.List[TypeParam(bounds=[kotlin.Any])]#/PointingToDeclaration/"></a><a href="to-back-stack-screen-or-null/">toBackStackScreenOrNull</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack//toBackStackScreenOrNull/kotlin.collections.List[TypeParam(bounds=[kotlin.Any])]#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>fun &lt;<a href="to-back-stack-screen-or-null/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="to-back-stack-screen-or-null/">T</a>&gt;.<a href="to-back-stack-screen-or-null/">toBackStackScreenOrNull</a>(): <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="to-back-stack-screen-or-null/">T</a>&gt;?  <br><br><br></td>
 </tr>
 </tbody>
 </table>

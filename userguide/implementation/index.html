@@ -212,7 +212,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../kotlin/api/workflow/" class="md-tabs__link">
+        <a href="../../kotlin/api/workflow/index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -709,7 +709,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../kotlin/api/workflow/" title="Kotlin" class="md-nav__link">
+    <a href="../../kotlin/api/workflow/index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -937,7 +937,10 @@
 <h3 id="the-render-loop">The Render loop<a class="headerlink" href="#the-render-loop" title="Permanent link">&para;</a></h3>
 <h4 id="initial-pass">Initial pass<a class="headerlink" href="#initial-pass" title="Permanent link">&para;</a></h4>
 <p><img alt="workflow rendering sequence diagram" src="../../images/swift/workflow_rendering.png" /></p>
-<p>The root of your workflow hierarchy gets put into a <code>WorkflowHost</code> (if you&rsquo;re using <code>ContainerViewController</code> this is created for you). As part of its initializer, <code>WorkflowHost</code> creates a <code>WorkflowNode</code> that wraps the given root <code>Workflow</code> (and keeps track of the <code>Workflow</code>&lsquo;s <code>State</code>). It then calls <code>render()</code> on the node:</p>
+<p>The root of your workflow hierarchy gets put into a <code>WorkflowHost</code> (if you&rsquo;re using
+<code>ContainerViewController</code> this is created for you). As part of its initializer, <code>WorkflowHost</code>
+creates a <code>WorkflowNode</code> that wraps the given root <code>Workflow</code> (and keeps track of the <code>Workflow</code>&lsquo;s
+<code>State</code>). It then calls <code>render()</code> on the node:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// WorkflowHost</span>
 <span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">,</span> <span class="n">debugger</span><span class="p">:</span> <span class="n">WorkflowDebugger</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="p">{</span>
     <span class="kc">self</span><span class="p">.</span><span class="n">debugger</span> <span class="p">=</span> <span class="n">debugger</span>
@@ -946,7 +949,10 @@
 
     <span class="kc">self</span><span class="p">.</span><span class="n">mutableRendering</span> <span class="p">=</span> <span class="n">MutableProperty</span><span class="p">(</span><span class="kc">self</span><span class="p">.</span><span class="n">rootNode</span><span class="p">.</span><span class="n">render</span><span class="p">())</span>  <span class="c1">// 2. Call render()</span>
 </code></pre></div>
-<p><code>WorkflowNode</code> contains a <code>SubtreeManager</code>, whose primary purpose is to manage child workflows (more on this later). When <code>render()</code> gets invoked on the node, it calls <code>render</code> on the <code>SubtreeManager</code> and passes a closure that takes a <code>RenderContext</code> and returns a <code>Rendering</code> for the <code>Workflow</code> associated with the node.</p>
+<p><code>WorkflowNode</code> contains a <code>SubtreeManager</code>, whose primary purpose is to manage child workflows
+(more on this later). When <code>render()</code> gets invoked on the node, it calls <code>render</code> on the
+<code>SubtreeManager</code> and passes a closure that takes a <code>RenderContext</code> and returns a <code>Rendering</code> for
+the <code>Workflow</code> associated with the node.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// WorkflowNode</span>
 <span class="kd">func</span> <span class="nf">render</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">Rendering</span> <span class="p">{</span>
     <span class="k">return</span> <span class="n">subtreeManager</span><span class="p">.</span><span class="n">render</span> <span class="p">{</span> <span class="n">context</span> <span class="k">in</span>
@@ -957,11 +963,17 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>The <code>SubtreeManager</code> instantiates a <code>RenderContext</code> and invokes the closure that was passed in. This last step generates the <code>Rendering</code>. This <code>Rendering</code> then gets passed back up the call stack until it reaches the <code>WorkflowHost</code>.</p>
+<p>The <code>SubtreeManager</code> instantiates a <code>RenderContext</code> and invokes the closure that was passed in.
+This last step generates the <code>Rendering</code>. This <code>Rendering</code> then gets passed back up the call stack
+until it reaches the <code>WorkflowHost</code>.</p>
 <h4 id="composition">Composition<a class="headerlink" href="#composition" title="Permanent link">&para;</a></h4>
-<p>In cases where a <code>Workflow</code> has child <code>Workflow</code>s, the render sequence is similar. The <a href="../tutorial/building-a-workflow/#the-render-context">tutorial</a> goes through this in more detail.</p>
+<p>In cases where a <code>Workflow</code> has child <code>Workflow</code>s, the render sequence is similar. The [tutorial]
+(../tutorial/building-a-workflow/#the-render-context) goes through this in more detail.</p>
 <p><img alt="nested workflow rendering sequence diagram" src="../../images/swift/nested_workflow_rendering.png" /></p>
-<p>Essentially, a <code>Workflow</code> containing child <code>Workflow</code>s calls <code>render(context:key:outputMap:)</code> on each child <code>Workflow</code> and passes in the <code>RenderContext</code>. The context does some bookkeeping for the child <code>Workflow</code> (creating or updating a <code>ChildWorkflow&lt;T&gt;</code>) and then calls <code>render()</code>. <code>ChildWorkflow&lt;T&gt;.render()</code> calls <code>render()</code> on its <code>WorkflowNode</code> and we recurse back to step 2.</p>
+<p>Essentially, a <code>Workflow</code> containing child <code>Workflow</code>s calls <code>render(context:key:outputMap:)</code> on
+each child <code>Workflow</code> and passes in the <code>RenderContext</code>. The context does some bookkeeping for the
+child <code>Workflow</code> (creating or updating a <code>ChildWorkflow&lt;T&gt;</code>) and then calls <code>render()</code>.
+<code>ChildWorkflow&lt;T&gt;.render()</code> calls <code>render()</code> on its <code>WorkflowNode</code> and we recurse back to step 2.</p>
                 
               
               

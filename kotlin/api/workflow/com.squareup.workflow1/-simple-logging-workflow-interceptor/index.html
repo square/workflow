@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -826,26 +826,26 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">SimpleLoggingWorkflowInterceptor</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">SimpleLoggingWorkflowInterceptor</a></p>
 <h1 id="simpleloggingworkflowinterceptor">SimpleLoggingWorkflowInterceptor<a class="headerlink" href="#simpleloggingworkflowinterceptor" title="Permanent link">&para;</a></h1>
-<p><code>open class SimpleLoggingWorkflowInterceptor :</code><a href="../-workflow-interceptor/"><code>WorkflowInterceptor</code></a></p>
-<p>A <a href="../-workflow-interceptor/">WorkflowInterceptor</a> that just prints all method calls using <a href="log/">log</a>.</p>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<p>[jvm] open class <a href="./">SimpleLoggingWorkflowInterceptor</a> : <a href="../-workflow-interceptor/">WorkflowInterceptor</a></p>
+<p>A <a href="../-workflow-interceptor/">WorkflowInterceptor</a> that just prints all method calls using log.</p>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>A <a href="../-workflow-interceptor/">WorkflowInterceptor</a> that just prints all method calls using <a href="log/">log</a>.<code>SimpleLoggingWorkflowInterceptor()</code></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/SimpleLoggingWorkflowInterceptor/#/PointingToDeclaration/"></a><a href="-simple-logging-workflow-interceptor/">SimpleLoggingWorkflowInterceptor</a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/SimpleLoggingWorkflowInterceptor/#/PointingToDeclaration/"></a> [jvm] fun <a href="-simple-logging-workflow-interceptor/">SimpleLoggingWorkflowInterceptor</a>()   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -855,40 +855,24 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="log/">log</a></td>
-<td>Called by <a href="log-before-method/">logBeforeMethod</a> and <a href="log-after-method/">logAfterMethod</a> to display a log message.<code>open fun log(text:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onInitialState/#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.Snapshot?#kotlin.Function2[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.Snapshot?,TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a><a href="on-initial-state/">onInitialState</a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onInitialState/#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.Snapshot?#kotlin.Function2[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.Snapshot?,TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun &lt;<a href="on-initial-state/">P</a>, <a href="on-initial-state/">S</a>&gt; <a href="on-initial-state/">onInitialState</a>(props: <a href="on-initial-state/">P</a>, snapshot: <a href="../-snapshot/">Snapshot</a>?, proceed: (<a href="on-initial-state/">P</a>, <a href="../-snapshot/">Snapshot</a>?) -&gt; <a href="on-initial-state/">S</a>, session: <a href="../-workflow-interceptor/-workflow-session/">WorkflowInterceptor.WorkflowSession</a>): <a href="on-initial-state/">S</a>  <br>More info  <br>Intercepts calls to <a href="../-stateful-workflow/initial-state/">StatefulWorkflow.initialState</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="log-after-method/">logAfterMethod</a></td>
-<td>Called with descriptions of every event. Default implementation just calls <a href="log/">log</a>.<code>open fun logAfterMethod(name:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, session: WorkflowSession, vararg extras:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><code>Pair</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>?&gt;):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onPropsChanged/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#kotlin.Function3[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a><a href="on-props-changed/">onPropsChanged</a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onPropsChanged/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#kotlin.Function3[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun &lt;<a href="on-props-changed/">P</a>, <a href="on-props-changed/">S</a>&gt; <a href="on-props-changed/">onPropsChanged</a>(old: <a href="on-props-changed/">P</a>, new: <a href="on-props-changed/">P</a>, state: <a href="on-props-changed/">S</a>, proceed: (<a href="on-props-changed/">P</a>, <a href="on-props-changed/">P</a>, <a href="on-props-changed/">S</a>) -&gt; <a href="on-props-changed/">S</a>, session: <a href="../-workflow-interceptor/-workflow-session/">WorkflowInterceptor.WorkflowSession</a>): <a href="on-props-changed/">S</a>  <br>More info  <br>Intercepts calls to <a href="../-stateful-workflow/on-props-changed/">StatefulWorkflow.onPropsChanged</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="log-before-method/">logBeforeMethod</a></td>
-<td>Called with descriptions of every event. Default implementation just calls <a href="log/">log</a>.<code>open fun logBeforeMethod(name:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, session: WorkflowSession, vararg extras:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><code>Pair</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>?&gt;):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onRender/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.BaseRenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function3[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]?,TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a><a href="on-render/">onRender</a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onRender/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.BaseRenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function3[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]?,TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun &lt;<a href="on-render/">P</a>, <a href="on-render/">S</a>, <a href="on-render/">O</a>, <a href="on-render/">R</a>&gt; <a href="on-render/">onRender</a>(renderProps: <a href="on-render/">P</a>, renderState: <a href="on-render/">S</a>, context: <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="on-render/">P</a>, <a href="on-render/">S</a>, <a href="on-render/">O</a>&gt;, proceed: (<a href="on-render/">P</a>, <a href="on-render/">S</a>, <a href="../-workflow-interceptor/-render-context-interceptor/">WorkflowInterceptor.RenderContextInterceptor</a>&lt;<a href="on-render/">P</a>, <a href="on-render/">S</a>, <a href="on-render/">O</a>&gt;?) -&gt; <a href="on-render/">R</a>, session: <a href="../-workflow-interceptor/-workflow-session/">WorkflowInterceptor.WorkflowSession</a>): <a href="on-render/">R</a>  <br>More info  <br>Intercepts calls to <a href="../-stateful-workflow/render/">StatefulWorkflow.render</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="log-error/">logError</a></td>
-<td><code>open fun logError(text:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onSessionStarted/#kotlinx.coroutines.CoroutineScope#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a><a href="on-session-started/">onSessionStarted</a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onSessionStarted/#kotlinx.coroutines.CoroutineScope#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="on-session-started/">onSessionStarted</a>(workflowScope: CoroutineScope, session: <a href="../-workflow-interceptor/-workflow-session/">WorkflowInterceptor.WorkflowSession</a>)  <br>More info  <br>Called when the session is starting, before <a href="on-initial-state/">onInitialState</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="on-initial-state/">onInitialState</a></td>
-<td>Intercepts calls to <a href="../-stateful-workflow/initial-state/">StatefulWorkflow.initialState</a>.<code>open fun &lt;P, S&gt; onInitialState(props: P, snapshot:</code><a href="../-snapshot/"><code>Snapshot</code></a><code>?, proceed: (P,</code><a href="../-snapshot/"><code>Snapshot</code></a><code>?) -&gt; S, session: WorkflowSession): S</code></td>
-</tr>
-<tr>
-<td><a href="on-props-changed/">onPropsChanged</a></td>
-<td>Intercepts calls to <a href="../-stateful-workflow/on-props-changed/">StatefulWorkflow.onPropsChanged</a>.<code>open fun &lt;P, S&gt; onPropsChanged(old: P, new: P, state: S, proceed: (P, P, S) -&gt; S, session: WorkflowSession): S</code></td>
-</tr>
-<tr>
-<td><a href="on-render/">onRender</a></td>
-<td>Intercepts calls to <a href="../-stateful-workflow/render/">StatefulWorkflow.render</a>.<code>open fun &lt;P, S, O, R&gt; onRender(renderProps: P, renderState: S, context:</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;P, S, O&gt;, proceed: (P, S, RenderContextInterceptor&lt;P, S, O&gt;?) -&gt; R, session: WorkflowSession): R</code></td>
-</tr>
-<tr>
-<td><a href="on-session-started/">onSessionStarted</a></td>
-<td>Called when the session is starting, before <a href="../-workflow-interceptor/on-initial-state/">onInitialState</a>.<code>open fun onSessionStarted(workflowScope: CoroutineScope, session: WorkflowSession):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
-</tr>
-<tr>
-<td><a href="on-snapshot-state/">onSnapshotState</a></td>
-<td>Intercepts calls to <a href="../-stateful-workflow/snapshot-state/">StatefulWorkflow.snapshotState</a>.<code>open fun &lt;S&gt; onSnapshotState(state: S, proceed: (S) -&gt;</code><a href="../-snapshot/"><code>Snapshot</code></a><code>?, session: WorkflowSession):</code><a href="../-snapshot/"><code>Snapshot</code></a><code>?</code></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onSnapshotState/#TypeParam(bounds=[kotlin.Any?])#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.Snapshot?]#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a><a href="on-snapshot-state/">onSnapshotState</a></td>
+<td><a name="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/onSnapshotState/#TypeParam(bounds=[kotlin.Any?])#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.Snapshot?]#com.squareup.workflow1.WorkflowInterceptor.WorkflowSession/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun &lt;<a href="on-snapshot-state/">S</a>&gt; <a href="on-snapshot-state/">onSnapshotState</a>(state: <a href="on-snapshot-state/">S</a>, proceed: (<a href="on-snapshot-state/">S</a>) -&gt; <a href="../-snapshot/">Snapshot</a>?, session: <a href="../-workflow-interceptor/-workflow-session/">WorkflowInterceptor.WorkflowSession</a>): <a href="../-snapshot/">Snapshot</a>?  <br>More info  <br>Intercepts calls to <a href="../-stateful-workflow/snapshot-state/">StatefulWorkflow.snapshotState</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

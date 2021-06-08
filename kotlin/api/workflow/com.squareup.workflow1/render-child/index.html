@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -802,15 +802,23 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">renderChild</a></p>
+                <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">renderChild</a></p>
 <h1 id="renderchild">renderChild<a class="headerlink" href="#renderchild" title="Permanent link">&para;</a></h1>
-<p><code>fun &lt;PropsT, StateT, OutputT, ChildOutputT, ChildRenderingT&gt;</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;PropsT, StateT, OutputT&gt;.renderChild(child:</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, ChildOutputT, ChildRenderingT&gt;, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", handler: (ChildOutputT) -&gt;</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;): ChildRenderingT</code></p>
-<p>Convenience alias of <a href="#">RenderContext.renderChild</a> for workflows that don&rsquo;t take props.</p>
-<p><code>fun &lt;PropsT, ChildPropsT, StateT, OutputT, ChildRenderingT&gt;</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;PropsT, StateT, OutputT&gt;.renderChild(child:</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;ChildPropsT,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>, ChildRenderingT&gt;, props: ChildPropsT, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= ""): ChildRenderingT</code></p>
-<p>Convenience alias of <a href="#">RenderContext.renderChild</a> for workflows that don&rsquo;t emit output.</p>
-<p><code>fun &lt;PropsT, StateT, OutputT, ChildRenderingT&gt;</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;PropsT, StateT, OutputT&gt;.renderChild(child:</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>, ChildRenderingT&gt;, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= ""): ChildRenderingT</code></p>
-<p>Convenience alias of <a href="#">RenderContext.renderChild</a> for children that don&rsquo;t take props or emit
-output.</p>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt; <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="./">renderChild</a>(child: <a href="../-workflow/">Workflow</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt;, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, handler: (<a href="./">ChildOutputT</a>) -&gt; <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;): <a href="./">ChildRenderingT</a><br />
+More info  </p>
+<p>Convenience alias of RenderContext.renderChild for workflows that don&rsquo;t take props.</p>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">PropsT</a>, <a href="./">ChildPropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">ChildRenderingT</a>&gt; <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="./">renderChild</a>(child: <a href="../-workflow/">Workflow</a>&lt;<a href="./">ChildPropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, <a href="./">ChildRenderingT</a>&gt;, props: <a href="./">ChildPropsT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">ChildRenderingT</a><br />
+More info  </p>
+<p>Convenience alias of RenderContext.renderChild for workflows that don&rsquo;t emit output.</p>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">ChildRenderingT</a>&gt; <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="./">renderChild</a>(child: <a href="../-workflow/">Workflow</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, <a href="./">ChildRenderingT</a>&gt;, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">ChildRenderingT</a><br />
+More info  </p>
+<p>Convenience alias of RenderContext.renderChild for children that don&rsquo;t take props or emit output.</p>
                 
               
               

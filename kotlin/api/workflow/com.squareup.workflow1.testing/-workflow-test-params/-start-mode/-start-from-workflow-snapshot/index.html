@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../../" class="md-tabs__link">
+        <a href="../../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -833,36 +833,43 @@
                   
                 
                 
-                <p><a href="../../../../">workflow</a> / <a href="../../../">com.squareup.workflow1.testing</a> / <a href="../../">WorkflowTestParams</a> / <a href="../">StartMode</a> / <a href="./">StartFromWorkflowSnapshot</a></p>
+                <p>//<a href="../../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1.testing</a>/<a href="../../">WorkflowTestParams</a>/<a href="../">StartMode</a>/<a href="./">StartFromWorkflowSnapshot</a></p>
 <h1 id="startfromworkflowsnapshot">StartFromWorkflowSnapshot<a class="headerlink" href="#startfromworkflowsnapshot" title="Permanent link">&para;</a></h1>
-<p><code>class StartFromWorkflowSnapshot : StartMode&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt;</code></p>
-<p>Starts the workflow from its initial state (as specified by
-<a href="../../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a non-null
-snapshot.  Only applies to <a href="../../../../com.squareup.workflow1/-stateless-workflow/">StatefulWorkflow</a>s.</p>
-<p>This differs from <a href="../-start-from-complete-snapshot/">StartFromCompleteSnapshot</a> because it represents only the snapshot for
-the root workflow, without any of the snapshots of its children or other bookkeeping data
-added by the workflow runtime.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>snapshot</code> - A <a href="../../../../com.squareup.workflow1/-snapshot/">Snapshot</a> that can be directly parsed by a workflow&rsquo;s <code>initialState</code>
-method. For workflow trees, this is only the snapshot of the <em>root</em> workflow, as returned by
-<a href="../../../../com.squareup.workflow1/-stateful-workflow/snapshot-state/">snapshotState</a>. To test with a
-complete snapshot of the entire workflow tree, use <a href="../-start-from-complete-snapshot/">StartFromCompleteSnapshot</a>.</p>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<p>[jvm] class <a href="./">StartFromWorkflowSnapshot</a>(<strong>snapshot</strong>: <a href="../../../../com.squareup.workflow1/-snapshot/">Snapshot</a>) : <a href="../">WorkflowTestParams.StartMode</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt; </p>
+<p>Starts the workflow from its initial state (as specified by <a href="../../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a non-null snapshot.  Only applies to <a href="../../../../com.squareup.workflow1/-stateless-workflow/">StatefulWorkflow</a>s.</p>
+<p>This differs from <a href="../-start-from-complete-snapshot/">StartFromCompleteSnapshot</a> because it represents only the snapshot for the root workflow, without any of the snapshots of its children or other bookkeeping data added by the workflow runtime.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>Starts the workflow from its initial state (as specified by <a href="../../../../com.squareup.workflow1/-stateful-workflow/initial-state/">initial state</a>), with a non-null snapshot.  Only applies to <a href="../../../../com.squareup.workflow1/-stateless-workflow/">StatefulWorkflow</a>s.<code>StartFromWorkflowSnapshot(snapshot:</code><a href="../../../../com.squareup.workflow1/-snapshot/"><code>Snapshot</code></a><code>)</code></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot///PointingToDeclaration/"></a>snapshot</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot///PointingToDeclaration/"></a><br><br>A <a href="../../../../com.squareup.workflow1/-snapshot/">Snapshot</a> that can be directly parsed by a workflow&rsquo;s initialState method. For workflow trees, this is only the snapshot of the <em>root</em> workflow, as returned by <a href="../../../../com.squareup.workflow1/-stateful-workflow/snapshot-state/">snapshotState</a>. To test with a complete snapshot of the entire workflow tree, use <a href="../-start-from-complete-snapshot/">StartFromCompleteSnapshot</a>.<br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot/StartFromWorkflowSnapshot/#com.squareup.workflow1.Snapshot/PointingToDeclaration/"></a><a href="-start-from-workflow-snapshot/">StartFromWorkflowSnapshot</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot/StartFromWorkflowSnapshot/#com.squareup.workflow1.Snapshot/PointingToDeclaration/"></a> [jvm] fun <a href="-start-from-workflow-snapshot/">StartFromWorkflowSnapshot</a>(snapshot: <a href="../../../../com.squareup.workflow1/-snapshot/">Snapshot</a>)A <a href="../../../../com.squareup.workflow1/-snapshot/">Snapshot</a> that can be directly parsed by a workflow&rsquo;s initialState method.   <br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -872,8 +879,8 @@ complete snapshot of the entire workflow tree, use <a href="../-start-from-compl
 </thead>
 <tbody>
 <tr>
-<td><a href="snapshot/">snapshot</a></td>
-<td>A <a href="../../../../com.squareup.workflow1/-snapshot/">Snapshot</a> that can be directly parsed by a workflow&rsquo;s <code>initialState</code> method. For workflow trees, this is only the snapshot of the <em>root</em> workflow, as returned by <a href="../../../../com.squareup.workflow1/-stateful-workflow/snapshot-state/">snapshotState</a>. To test with a complete snapshot of the entire workflow tree, use <a href="../-start-from-complete-snapshot/">StartFromCompleteSnapshot</a>.<code>val snapshot:</code><a href="../../../../com.squareup.workflow1/-snapshot/"><code>Snapshot</code></a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot/snapshot/#/PointingToDeclaration/"></a><a href="snapshot/">snapshot</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot/snapshot/#/PointingToDeclaration/"></a> [jvm] val <a href="snapshot/">snapshot</a>: <a href="../../../../com.squareup.workflow1/-snapshot/">Snapshot</a>A <a href="../../../../com.squareup.workflow1/-snapshot/">Snapshot</a> that can be directly parsed by a workflow&rsquo;s initialState method.   <br></td>
 </tr>
 </tbody>
 </table>

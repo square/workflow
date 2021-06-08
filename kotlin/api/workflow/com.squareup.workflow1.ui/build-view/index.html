@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,16 +793,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#exceptions" class="md-nav__link">
-    Exceptions
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#throws" class="md-nav__link">
+    Throws
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#exceptions_1" class="md-nav__link">
-    Exceptions
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -826,25 +832,50 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">buildView</a></p>
+                <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">buildView</a></p>
 <h1 id="buildview">buildView<a class="headerlink" href="#buildview" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code><a href="../-view-registry/"><code>ViewRegistry</code></a><code>.buildView(initialRendering: RenderingT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, contextForNewView: Context, container: ViewGroup? = null): View</code></p>
-<p>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> than to call this method directly.</p>
-<p>Creates a <a href="#">View</a> to display <a href="./#com.squareup.workflow1.ui$buildView(com.squareup.workflow1.ui.ViewRegistry, com.squareup.workflow1.ui.buildView.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, android.content.Context, android.view.ViewGroup)/initialRendering">initialRendering</a>, which can be updated via calls
-to <a href="../android.view.-view/show-rendering/">View.showRendering</a>. Prefers entries found via <a href="../-view-registry/get-factory-for/">ViewRegistry.getFactoryFor</a>.
-If that returns null, falls back to the factory provided by the rendering&rsquo;s
-implementation of <a href="../-android-view-rendering/view-factory/">AndroidViewRendering.viewFactory</a>, if there is one.</p>
-<h3 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h3>
-<p><code>IllegalArgumentException</code> - if no factory can be find for type <a href="./#RenderingT">RenderingT</a></p>
-<p><code>IllegalStateException</code> - if the matching <a href="../-view-factory/">ViewFactory</a> fails to call
-<a href="../android.view.-view/bind-show-rendering/">View.bindShowRendering</a> when constructing the view<code>@WorkflowUiExperimentalApi fun &lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code><a href="../-view-registry/"><code>ViewRegistry</code></a><code>.buildView(initialRendering: RenderingT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, container: ViewGroup): View</code></p>
-<p>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> than to call this method directly.</p>
-<p>Creates a <a href="#">View</a> to display <a href="./#com.squareup.workflow1.ui$buildView(com.squareup.workflow1.ui.ViewRegistry, com.squareup.workflow1.ui.buildView.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, android.view.ViewGroup)/initialRendering">initialRendering</a>, which can be updated via calls
-to <a href="../android.view.-view/show-rendering/">View.showRendering</a>.</p>
-<h3 id="exceptions_1">Exceptions<a class="headerlink" href="#exceptions_1" title="Permanent link">&para;</a></h3>
-<p><code>IllegalArgumentException</code> - if no binding can be find for type <a href="./#RenderingT">RenderingT</a></p>
-<p><code>IllegalStateException</code> - if the matching <a href="../-view-factory/">ViewFactory</a> fails to call
-<a href="../android.view.-view/bind-show-rendering/">View.bindShowRendering</a> when constructing the view</p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="../-view-registry/">ViewRegistry</a>.<a href="./">buildView</a>(initialRendering: <a href="./">RenderingT</a>, initialViewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>, contextForNewView: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, container: <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>? = null, initializeView: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = { showFirstRendering<RenderingT>() }): <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><br />
+More info  </p>
+<p>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> or <a href="../-decorative-view-factory/">DecorativeViewFactory</a> than to call this method directly.</p>
+<p>Finds a <a href="../-view-factory/">ViewFactory</a> to create a <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> to display <a href="./">initialRendering</a>. The new view can be updated via calls to <a href="../show-rendering/">View.showRendering</a> &ndash; that is, it is guaranteed that <a href="../bind-show-rendering/">bindShowRendering</a> has been called on this view.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>androidJvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.ui//buildView/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?#kotlin.Function1[android.view.View,kotlin.Unit]/PointingToDeclaration/"></a>initializeView</td>
+<td><a name="com.squareup.workflow1.ui//buildView/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?#kotlin.Function1[android.view.View,kotlin.Unit]/PointingToDeclaration/"></a><br><br>Optional function invoked immediately after the <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> is created (that is, immediately after the call to <a href="../-view-factory/build-view/">ViewFactory.buildView</a>). <a href="../show-rendering/">showRendering</a>, <a href="../get-rendering/">getRendering</a> and <a href="../environment/">environment</a> are all available when this is called. Defaults to a call to <a href="../show-first-rendering/">View.showFirstRendering</a>.<br><br></td>
+</tr>
+</tbody>
+</table>
+<h4 id="throws">Throws<a class="headerlink" href="#throws" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.ui//buildView/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?#kotlin.Function1[android.view.View,kotlin.Unit]/PointingToDeclaration/"></a><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/index.html">kotlin.IllegalArgumentException</a></td>
+<td><a name="com.squareup.workflow1.ui//buildView/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?#kotlin.Function1[android.view.View,kotlin.Unit]/PointingToDeclaration/"></a><br><br>if no factory can be find for type <a href="./">RenderingT</a><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//buildView/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?#kotlin.Function1[android.view.View,kotlin.Unit]/PointingToDeclaration/"></a><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-state-exception/index.html">kotlin.IllegalStateException</a></td>
+<td><a name="com.squareup.workflow1.ui//buildView/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?#kotlin.Function1[android.view.View,kotlin.Unit]/PointingToDeclaration/"></a><br><br>if the matching <a href="../-view-factory/">ViewFactory</a> fails to call <a href="../bind-show-rendering/">View.bindShowRendering</a> when constructing the view<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               

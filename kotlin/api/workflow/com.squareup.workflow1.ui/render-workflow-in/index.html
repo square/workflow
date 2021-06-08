@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,9 +793,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#return" class="md-nav__link">
+    Return
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#return_1" class="md-nav__link">
+    Return
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -803,6 +823,19 @@
   <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#return_2" class="md-nav__link">
+    Return
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -833,166 +866,288 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">renderWorkflowIn</a></p>
+                <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">renderWorkflowIn</a></p>
 <h1 id="renderworkflowin">renderWorkflowIn<a class="headerlink" href="#renderworkflowin" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi fun &lt;OutputT, RenderingT&gt; renderWorkflowIn(workflow:</code><a href="../../com.squareup.workflow1/-workflow/"><code>Workflow</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, OutputT, RenderingT&gt;, scope: CoroutineScope, savedStateHandle: SavedStateHandle? = null, interceptors:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><code>List</code></a><code>&lt;</code><a href="../../com.squareup.workflow1/-workflow-interceptor/"><code>WorkflowInterceptor</code></a><code>&gt; = emptyList(), onOutput: suspend (OutputT) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}): StateFlow&lt;RenderingT&gt;</code></p>
-<p>An Android <code>ViewModel</code>-friendly wrapper for <a href="../../com.squareup.workflow1/render-workflow-in/">com.squareup.workflow1.renderWorkflowIn</a>,
-for use with a <a href="./#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((kotlin.Unit, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/workflow">workflow</a> that takes no input (that is, has <code>PropsT</code> set to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>).</p>
-<div class="highlight"><pre><span></span><code>    @OptIn(WorkflowUiExperimentalApi::class)
-    class HelloWorkflowActivity : AppCompatActivity() {
-      override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun &lt;<a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="./">renderWorkflowIn</a>(workflow: Workflow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;, scope: CoroutineScope, savedStateHandle: <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/SavedStateHandle.html">SavedStateHandle</a>? = null, interceptors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><WorkflowInterceptor> = emptyList(), onOutput: suspend (<a href="./">OutputT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): StateFlow&lt;<a href="./">RenderingT</a>&gt;<br />
+More info  </p>
+<p>An Android ViewModel-friendly wrapper for com.squareup.workflow1.renderWorkflowIn, for use with a <a href="./">workflow</a> that takes no input (that is, has PropsT set to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>).</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>@OptIn(WorkflowUiExperimentalApi::class)
+class HelloWorkflowActivity : AppCompatActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        val model: HelloViewModel by viewModels()
-        setContentView(
-          WorkflowLayout(this).apply { start(model.renderings) }
-        )
-      }
-    }
+    val model: HelloViewModel by viewModels()
+    setContentView(
+      WorkflowLayout(this).apply { start(model.renderings) }
+    )
+  }
+}
 
-    class HelloViewModel(savedState: SavedStateHandle) : ViewModel() {
-      @OptIn(WorkflowUiExperimentalApi::class)
-      val renderings: StateFlow&lt;HelloRendering&gt; = renderWorkflowIn(
-        workflow = HelloWorkflow,
-        scope = this.viewModelScope,
-        savedStateHandle = savedState
-      )
-    }
+class HelloViewModel(savedState: SavedStateHandle) : ViewModel() {
+  @OptIn(WorkflowUiExperimentalApi::class)
+  val renderings: StateFlow&lt;HelloRendering&gt; = renderWorkflowIn(
+    workflow = HelloWorkflow,
+    scope = this.viewModelScope,
+    savedStateHandle = savedState
+  )
+}
 </code></pre></div>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>workflow</code> - The root workflow to render.</p>
-<p><code>scope</code> - The <a href="#">CoroutineScope</a> in which to launch the workflow runtime, typically from
-the androidx <code>ViewModel.viewModelScope</code> extension. Any exceptions thrown
-in any workflows, after the initial render pass, will be handled by this scope, and cancelling
-this scope will cancel the workflow runtime and any running workers. Note that any dispatcher
-in this scope will <em>not</em> be used to execute the very first render pass.</p>
-<p><code>savedStateHandle</code> - Used to restore workflow state in a new process. Typically this is the
-<code>savedState: SavedStateHandle</code> constructor parameter of an
-androidx <a href="#">ViewModel</a>.</p>
-<p><code>interceptors</code> - An optional list of <a href="../../com.squareup.workflow1/-workflow-interceptor/">WorkflowInterceptor</a>s that will wrap every workflow rendered by the runtime.
-Interceptors will be invoked in 0-to-<code>length</code> order: the interceptor at index 0 will process the
-workflow first, then the interceptor at index 1, etc.</p>
-<p><code>onOutput</code> - A function that will be called whenever the root workflow emits an <a href="./#OutputT">OutputT</a>. This is a suspend
-function, and is invoked synchronously within the runtime: if it suspends, the workflow runtime
-will effectively be paused until it returns. This means that it will propagate backpressure if
-used to forward outputs to a <a href="#">Flow</a>
-or <a href="#">Channel</a>, for example.</p>
-<p><strong>Return</strong>
-A <a href="#">StateFlow</a> of <a href="./#RenderingT">RenderingT</a>s that will emit any time the root workflow creates a new
-rendering.</p>
-<p><code>@WorkflowUiExperimentalApi fun &lt;PropsT, OutputT, RenderingT&gt; renderWorkflowIn(workflow:</code><a href="../../com.squareup.workflow1/-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;, scope: CoroutineScope, prop: PropsT, savedStateHandle: SavedStateHandle? = null, interceptors:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><code>List</code></a><code>&lt;</code><a href="../../com.squareup.workflow1/-workflow-interceptor/"><code>WorkflowInterceptor</code></a><code>&gt; = emptyList(), onOutput: suspend (OutputT) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}): StateFlow&lt;RenderingT&gt;</code></p>
-<p>An Android <code>ViewModel</code>-friendly wrapper for <a href="../../com.squareup.workflow1/render-workflow-in/">com.squareup.workflow1.renderWorkflowIn</a>,
-for use with a <a href="./#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, com.squareup.workflow1.ui.renderWorkflowIn.PropsT, androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/workflow">workflow</a> that requires one input value (<a href="./#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, com.squareup.workflow1.ui.renderWorkflowIn.PropsT, androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/prop">prop</a>) to run.</p>
-<div class="highlight"><pre><span></span><code>    @OptIn(WorkflowUiExperimentalApi::class)
-    class HelloNameWorkflowActivity : AppCompatActivity() {
-      override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+</td></tr></table>
+<h4 id="return">Return<a class="headerlink" href="#return" title="Permanent link">&para;</a></h4>
+<p>A StateFlow of <a href="./">RenderingT</a>s that will emit any time the root workflow creates a new rendering.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>androidJvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>workflow</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The root workflow to render.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>scope</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The CoroutineScope in which to launch the workflow runtime, typically from the androidx ViewModel.viewModelScope extension. Any exceptions thrown in any workflows, after the initial render pass, will be handled by this scope, and cancelling this scope will cancel the workflow runtime and any running workers. Note that any dispatcher in this scope will <em>not</em> be used to execute the very first render pass.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>savedStateHandle</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>Used to restore workflow state in a new process. Typically this is the savedState: SavedStateHandle constructor parameter of an androidx <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>interceptors</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>An optional list of WorkflowInterceptors that will wrap every workflow rendered by the runtime. Interceptors will be invoked in 0-to-length order: the interceptor at index 0 will process the workflow first, then the interceptor at index 1, etc.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>onOutput</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[kotlin.Unit,TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>A function that will be called whenever the root workflow emits an <a href="./">OutputT</a>. This is a suspend function, and is invoked synchronously within the runtime: if it suspends, the workflow runtime will effectively be paused until it returns. This means that it will propagate backpressure if used to forward outputs to a Flow or Channel, for example.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun &lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="./">renderWorkflowIn</a>(workflow: Workflow&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;, scope: CoroutineScope, prop: <a href="./">PropsT</a>, savedStateHandle: <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/SavedStateHandle.html">SavedStateHandle</a>? = null, interceptors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><WorkflowInterceptor> = emptyList(), onOutput: suspend (<a href="./">OutputT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): StateFlow&lt;<a href="./">RenderingT</a>&gt;<br />
+More info  </p>
+<p>An Android ViewModel-friendly wrapper for com.squareup.workflow1.renderWorkflowIn, for use with a <a href="./">workflow</a> that requires one input value (<a href="./">prop</a>) to run.</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>@OptIn(WorkflowUiExperimentalApi::class)
+class HelloNameWorkflowActivity : AppCompatActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        val model: HelloNameViewModel by viewModels()
-        setContentView(
-          WorkflowLayout(this).apply { start(model.renderings) }
-        )
-      }
-    }
+    val model: HelloNameViewModel by viewModels()
+    setContentView(
+      WorkflowLayout(this).apply { start(model.renderings) }
+    )
+  }
+}
 
-    class HelloNameViewModel(savedState: SavedStateHandle) : ViewModel() {
-      @OptIn(WorkflowUiExperimentalApi::class)
-      val renderings: StateFlow&lt;HelloRendering&gt; = renderWorkflowIn(
-        workflow = HelloNameWorkflow,
-        scope = this.viewModelScope,
-        savedStateHandle = savedState,
-        prop = &quot;Your name here!&quot;
-      )
-    }
+class HelloNameViewModel(savedState: SavedStateHandle) : ViewModel() {
+  @OptIn(WorkflowUiExperimentalApi::class)
+  val renderings: StateFlow&lt;HelloRendering&gt; = renderWorkflowIn(
+    workflow = HelloNameWorkflow,
+    scope = this.viewModelScope,
+    savedStateHandle = savedState,
+    prop = &quot;Your name here!&quot;
+  )
+}
 </code></pre></div>
-<h3 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h3>
-<p><code>workflow</code> - The root workflow to render.</p>
-<p><code>scope</code> - The <a href="#">CoroutineScope</a> in which to launch the workflow runtime, typically from
-the androidx <code>ViewModel.viewModelScope</code> extension. Any exceptions thrown
-in any workflows, after the initial render pass, will be handled by this scope, and cancelling
-this scope will cancel the workflow runtime and any running workers. Note that any dispatcher
-in this scope will <em>not</em> be used to execute the very first render pass.</p>
-<p><code>prop</code> - Specifies the sole <a href="./#PropsT">PropsT</a> value to use to render the root workflow. To allow updates,
-use the <a href="../../com.squareup.workflow1/render-workflow-in/">renderWorkflowIn</a> overload with a <code>props:</code><a href="#">StateFlow</a><code>&lt;PropsT&gt;</code> argument
-instead of this one.</p>
-<p><code>savedStateHandle</code> - Used to restore workflow state in a new process. Typically this is the
-<code>savedState: SavedStateHandle</code> constructor parameter of an
-androidx <a href="#">ViewModel</a>.</p>
-<p><code>interceptors</code> - An optional list of <a href="../../com.squareup.workflow1/-workflow-interceptor/">WorkflowInterceptor</a>s that will wrap every workflow rendered by the runtime.
-Interceptors will be invoked in 0-to-<code>length</code> order: the interceptor at index 0 will process the
-workflow first, then the interceptor at index 1, etc.</p>
-<p><code>onOutput</code> - A function that will be called whenever the root workflow emits an <a href="./#OutputT">OutputT</a>. This is a suspend
-function, and is invoked synchronously within the runtime: if it suspends, the workflow runtime
-will effectively be paused until it returns. This means that it will propagate backpressure if
-used to forward outputs to a <a href="#">Flow</a>
-or <a href="#">Channel</a>, for example.</p>
-<p><strong>Return</strong>
-A <a href="#">StateFlow</a> of <a href="./#RenderingT">RenderingT</a>s that will emit any time the root workflow creates a new
-rendering.</p>
-<p><code>@WorkflowUiExperimentalApi fun &lt;PropsT, OutputT, RenderingT&gt; renderWorkflowIn(workflow:</code><a href="../../com.squareup.workflow1/-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;, scope: CoroutineScope, props: StateFlow&lt;PropsT&gt;, savedStateHandle: SavedStateHandle? = null, interceptors:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><code>List</code></a><code>&lt;</code><a href="../../com.squareup.workflow1/-workflow-interceptor/"><code>WorkflowInterceptor</code></a><code>&gt; = emptyList(), onOutput: suspend (OutputT) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}): StateFlow&lt;RenderingT&gt;</code></p>
-<p>An Android <code>ViewModel</code>-friendly wrapper for <a href="../../com.squareup.workflow1/render-workflow-in/">com.squareup.workflow1.renderWorkflowIn</a>,
-for use with a <a href="./#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, kotlinx.coroutines.flow.StateFlow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT)), androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/workflow">workflow</a> that requires input (<a href="./#com.squareup.workflow1.ui$renderWorkflowIn(com.squareup.workflow1.Workflow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT, com.squareup.workflow1.ui.renderWorkflowIn.OutputT, com.squareup.workflow1.ui.renderWorkflowIn.RenderingT)), kotlinx.coroutines.CoroutineScope, kotlinx.coroutines.flow.StateFlow((com.squareup.workflow1.ui.renderWorkflowIn.PropsT)), androidx.lifecycle.SavedStateHandle, kotlin.collections.List((com.squareup.workflow1.WorkflowInterceptor)), kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.ui.renderWorkflowIn.OutputT, kotlin.Unit)))/props">props</a>) to run.</p>
-<p>For example, for a workflow that uses <a href="#">android.content.Intent</a> as its <code>PropsT</code> type,
-you could do something like this:</p>
-<div class="highlight"><pre><span></span><code>    @OptIn(WorkflowUiExperimentalApi::class)
-    class HelloIntentsWorkflowActivity : AppCompatActivity() {
+</td></tr></table>
+<h4 id="return_1">Return<a class="headerlink" href="#return_1" title="Permanent link">&para;</a></h4>
+<p>A StateFlow of <a href="./">RenderingT</a>s that will emit any time the root workflow creates a new rendering.</p>
+<h2 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h2>
+<p>androidJvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>workflow</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The root workflow to render.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>scope</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The CoroutineScope in which to launch the workflow runtime, typically from the androidx ViewModel.viewModelScope extension. Any exceptions thrown in any workflows, after the initial render pass, will be handled by this scope, and cancelling this scope will cancel the workflow runtime and any running workers. Note that any dispatcher in this scope will <em>not</em> be used to execute the very first render pass.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>prop</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>Specifies the sole <a href="./">PropsT</a> value to use to render the root workflow. To allow updates, use the renderWorkflowIn overload with a props: StateFlow<PropsT> argument instead of this one.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>savedStateHandle</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>Used to restore workflow state in a new process. Typically this is the savedState: SavedStateHandle constructor parameter of an androidx <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>interceptors</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>An optional list of WorkflowInterceptors that will wrap every workflow rendered by the runtime. Interceptors will be invoked in 0-to-length order: the interceptor at index 0 will process the workflow first, then the interceptor at index 1, etc.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>onOutput</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#TypeParam(bounds=[kotlin.Any?])#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>A function that will be called whenever the root workflow emits an <a href="./">OutputT</a>. This is a suspend function, and is invoked synchronously within the runtime: if it suspends, the workflow runtime will effectively be paused until it returns. This means that it will propagate backpressure if used to forward outputs to a Flow or Channel, for example.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun &lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="./">renderWorkflowIn</a>(workflow: Workflow&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;, scope: CoroutineScope, props: StateFlow&lt;<a href="./">PropsT</a>&gt;, savedStateHandle: <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/SavedStateHandle.html">SavedStateHandle</a>? = null, interceptors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><WorkflowInterceptor> = emptyList(), onOutput: suspend (<a href="./">OutputT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): StateFlow&lt;<a href="./">RenderingT</a>&gt;<br />
+More info  </p>
+<p>An Android ViewModel-friendly wrapper for com.squareup.workflow1.renderWorkflowIn, for use with a <a href="./">workflow</a> that requires input (<a href="./">props</a>) to run.</p>
+<p>For example, for a workflow that uses <a href="https://developer.android.com/reference/kotlin/android/content/Intent.html">android.content.Intent</a> as its PropsT type, you could do something like this:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>@OptIn(WorkflowUiExperimentalApi::class)
+class HelloIntentsWorkflowActivity : AppCompatActivity() {
 
-      override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        val model: HelloIntentsViewModel by viewModels()
-        model.intents.value = intent
+    val model: HelloIntentsViewModel by viewModels()
+    model.intents.value = intent
 
-        setContentView(
-          WorkflowLayout(this).apply { start(model.renderings) }
-        )
-      }
+    setContentView(
+      WorkflowLayout(this).apply { start(model.renderings) }
+    )
+  }
 
-      override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
+  override fun onNewIntent(intent: Intent) {
+    super.onNewIntent(intent)
 
-        val model: HelloIntentsViewModel by viewModels()
-        model.intents.value = intent
-      }
-    }
+    val model: HelloIntentsViewModel by viewModels()
+    model.intents.value = intent
+  }
+}
 
-    class HelloIntentsViewModel(savedState: SavedStateHandle) : ViewModel() {
-      val intents = MutableStateFlow(Intent())
+class HelloIntentsViewModel(savedState: SavedStateHandle) : ViewModel() {
+  val intents = MutableStateFlow(Intent())
 
-      @OptIn(WorkflowUiExperimentalApi::class)
-      val renderings: StateFlow&lt;HelloRendering&gt; = renderWorkflowIn(
-        workflow = HelloWorkflow,
-        scope = this.viewModelScope,
-        savedStateHandle = savedState,
-        props = intents
-      )
-    }
+  @OptIn(WorkflowUiExperimentalApi::class)
+  val renderings: StateFlow&lt;HelloRendering&gt; = renderWorkflowIn(
+    workflow = HelloWorkflow,
+    scope = this.viewModelScope,
+    savedStateHandle = savedState,
+    props = intents
+  )
+}
 </code></pre></div>
-<h3 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h3>
-<p><code>workflow</code> - The root workflow to render.</p>
-<p><code>scope</code> - The <a href="#">CoroutineScope</a> in which to launch the workflow runtime, typically from
-the androidx <code>ViewModel.viewModelScope</code> extension. Any exceptions thrown
-in any workflows, after the initial render pass, will be handled by this scope, and cancelling
-this scope will cancel the workflow runtime and any running workers. Note that any dispatcher
-in this scope will <em>not</em> be used to execute the very first render pass.</p>
-<p><code>props</code> - Specifies the initial <a href="./#PropsT">PropsT</a> to use to render the root workflow, and will cause a re-render
-when new props are emitted. If this flow completes <em>after</em> emitting at least one value, the
-runtime will <em>not</em> fail or stop, it will continue running with the last-emitted input.
-To only pass a single props value, simply create a <a href="#">MutableStateFlow</a> with the value.</p>
-<p><code>savedStateHandle</code> - Used to restore workflow state in a new process. Typically this is the
-<code>savedState: SavedStateHandle</code> constructor parameter of an
-androidx <a href="#">ViewModel</a>.</p>
-<p><code>interceptors</code> - An optional list of <a href="../../com.squareup.workflow1/-workflow-interceptor/">WorkflowInterceptor</a>s that will wrap every workflow rendered by the runtime.
-Interceptors will be invoked in 0-to-<code>length</code> order: the interceptor at index 0 will process the
-workflow first, then the interceptor at index 1, etc.</p>
-<p><code>onOutput</code> - A function that will be called whenever the root workflow emits an <a href="./#OutputT">OutputT</a>. This is a suspend
-function, and is invoked synchronously within the runtime: if it suspends, the workflow runtime
-will effectively be paused until it returns. This means that it will propagate backpressure if
-used to forward outputs to a <a href="#">Flow</a>
-or <a href="#">Channel</a>, for example.</p>
-<p><strong>Return</strong>
-A <a href="#">StateFlow</a> of <a href="./#RenderingT">RenderingT</a>s that will emit any time the root workflow creates a new
-rendering.</p>
+</td></tr></table>
+<h4 id="return_2">Return<a class="headerlink" href="#return_2" title="Permanent link">&para;</a></h4>
+<p>A StateFlow of <a href="./">RenderingT</a>s that will emit any time the root workflow creates a new rendering.</p>
+<h2 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h2>
+<p>androidJvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>workflow</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The root workflow to render.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>scope</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The CoroutineScope in which to launch the workflow runtime, typically from the androidx ViewModel.viewModelScope extension. Any exceptions thrown in any workflows, after the initial render pass, will be handled by this scope, and cancelling this scope will cancel the workflow runtime and any running workers. Note that any dispatcher in this scope will <em>not</em> be used to execute the very first render pass.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>props</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>Specifies the initial <a href="./">PropsT</a> to use to render the root workflow, and will cause a re-render when new props are emitted. If this flow completes <em>after</em> emitting at least one value, the runtime will <em>not</em> fail or stop, it will continue running with the last-emitted input. To only pass a single props value, simply create a MutableStateFlow with the value.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>savedStateHandle</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>Used to restore workflow state in a new process. Typically this is the savedState: SavedStateHandle constructor parameter of an androidx <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>interceptors</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>An optional list of WorkflowInterceptors that will wrap every workflow rendered by the runtime. Interceptors will be invoked in 0-to-length order: the interceptor at index 0 will process the workflow first, then the interceptor at index 1, etc.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>onOutput</td>
+<td><a name="com.squareup.workflow1.ui//renderWorkflowIn/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlinx.coroutines.CoroutineScope#kotlinx.coroutines.flow.StateFlow[TypeParam(bounds=[kotlin.Any?])]#androidx.lifecycle.SavedStateHandle?#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>A function that will be called whenever the root workflow emits an <a href="./">OutputT</a>. This is a suspend function, and is invoked synchronously within the runtime: if it suspends, the workflow runtime will effectively be paused until it returns. This means that it will propagate backpressure if used to forward outputs to a Flow or Channel, for example.<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               
