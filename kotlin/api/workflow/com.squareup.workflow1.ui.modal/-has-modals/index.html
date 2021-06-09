@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -826,14 +826,13 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui.modal</a> / <a href="./">HasModals</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.modal</a>/<a href="./">HasModals</a></p>
 <h1 id="hasmodals">HasModals<a class="headerlink" href="#hasmodals" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi interface HasModals&lt;out B :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>, out M :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;</code></p>
-<p>Interface implemented by screen classes that represent a stack of
-zero or more <a href="./#M">modal</a> screens above a <a href="beneath-modals/">base screen</a>.</p>
-<p>Use of this interface allows platform specific containers to share base classes,
-like <code>ModalContainer</code> in the <code>workflow-ui:core-android</code> module.</p>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<p>[jvm] @<a href="../../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
+<p>interface <a href="./">HasModals</a><out <a href="index.md">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, out <a href="index.md">M</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>></p>
+<p>Interface implemented by screen classes that represent a stack of zero or more <a href="./">modal</a> screens above a <a href="beneath-modals/">base screen</a>.</p>
+<p>Use of this interface allows platform specific containers to share base classes, like ModalContainer in the workflow-ui:core-android module.</p>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -843,27 +842,25 @@ like <code>ModalContainer</code> in the <code>workflow-ui:core-android</code> mo
 </thead>
 <tbody>
 <tr>
-<td><a href="beneath-modals/">beneathModals</a></td>
-<td><code>abstract val beneathModals: B</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/HasModals/beneathModals/#/PointingToDeclaration/"></a><a href="beneath-modals/">beneathModals</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/HasModals/beneathModals/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="beneath-modals/">beneathModals</a>: <a href="./">B</a>   <br></td>
 </tr>
 <tr>
-<td><a href="modals/">modals</a></td>
-<td><code>abstract val modals:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><code>List</code></a><code>&lt;M&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/HasModals/modals/#/PointingToDeclaration/"></a><a href="modals/">modals</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/HasModals/modals/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="modals/">modals</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="./">M</a>&gt;   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="inheritors">Inheritors<a class="headerlink" href="#inheritors" title="Permanent link">&para;</a></h3>
+<h2 id="inheritors">Inheritors<a class="headerlink" href="#inheritors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Name</th>
-<th>Summary</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="../-alert-container-screen/">AlertContainerScreen</a></td>
-<td>May show a stack of <a href="../-alert-screen/">AlertScreen</a> over a <a href="../-alert-container-screen/beneath-modals/">beneathModals</a>.<code>data class AlertContainerScreen&lt;B :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="./"><code>HasModals</code></a><code>&lt;B,</code><a href="../-alert-screen/"><code>AlertScreen</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen///PointingToDeclaration/"></a><a href="../-alert-container-screen/">AlertContainerScreen</a></td>
 </tr>
 </tbody>
 </table>

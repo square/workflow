@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,13 +793,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#types" class="md-nav__link">
-    Types
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#constructors" class="md-nav__link">
     Constructors
   </a>
@@ -807,8 +800,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    Properties
+  <a href="#types" class="md-nav__link">
+    Types
   </a>
   
 </li>
@@ -816,6 +809,13 @@
         <li class="md-nav__item">
   <a href="#functions" class="md-nav__link">
     Functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
   </a>
   
 </li>
@@ -840,30 +840,27 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui.modal</a> / <a href="./">AlertScreen</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.modal</a>/<a href="./">AlertScreen</a></p>
 <h1 id="alertscreen">AlertScreen<a class="headerlink" href="#alertscreen" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi data class AlertScreen</code></p>
+<p>[jvm] @<a href="../../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
+<p>data class <a href="./">AlertScreen</a>(<strong>buttons</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="-button/">AlertScreen.Button</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;, <strong>message</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <strong>title</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <strong>cancelable</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, <strong>onEvent</strong>: (<a href="-event/">AlertScreen.Event</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)</p>
 <p>Models a typical &ldquo;You sure about that?&rdquo; alert box.</p>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-button/">Button</a></td>
-<td><code>enum class Button</code></td>
-</tr>
-<tr>
-<td><a href="-event/">Event</a></td>
-<td><code>sealed class Event</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/AlertScreen/#kotlin.collections.Map[com.squareup.workflow1.ui.modal.AlertScreen.Button,kotlin.String]#kotlin.String#kotlin.String#kotlin.Boolean#kotlin.Function1[com.squareup.workflow1.ui.modal.AlertScreen.Event,kotlin.Unit]/PointingToDeclaration/"></a><a href="-alert-screen/">AlertScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/AlertScreen/#kotlin.collections.Map[com.squareup.workflow1.ui.modal.AlertScreen.Button,kotlin.String]#kotlin.String#kotlin.String#kotlin.Boolean#kotlin.Function1[com.squareup.workflow1.ui.modal.AlertScreen.Event,kotlin.Unit]/PointingToDeclaration/"></a> [jvm] fun <a href="-alert-screen/">AlertScreen</a>(buttons: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="-button/">AlertScreen.Button</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt; = emptyMap(), message: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, title: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, cancelable: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true, onEvent: (<a href="-event/">AlertScreen.Event</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -873,12 +870,16 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>Models a typical &ldquo;You sure about that?&rdquo; alert box.<code>AlertScreen(buttons:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><code>Map</code></a><code>&lt;Button,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>&gt; = emptyMap(), message:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", title:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", cancelable:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a><code>= true, onEvent: (Event) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>)</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen.Button///PointingToDeclaration/"></a><a href="-button/">Button</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen.Button///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>enum <a href="-button/">Button</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a>&lt;<a href="-button/">AlertScreen.Button</a>&gt;   <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen.Event///PointingToDeclaration/"></a><a href="-event/">Event</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen.Event///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>sealed class <a href="-event/">Event</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -888,28 +889,16 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="buttons/">buttons</a></td>
-<td><code>val buttons:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><code>Map</code></a><code>&lt;Button,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/equals/#kotlin.Any?/PointingToDeclaration/"></a><a href="equals/">equals</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/equals/#kotlin.Any?/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open operator override fun <a href="equals/">equals</a>(other: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="cancelable/">cancelable</a></td>
-<td><code>val cancelable:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a></td>
-</tr>
-<tr>
-<td><a href="message/">message</a></td>
-<td><code>val message:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a></td>
-</tr>
-<tr>
-<td><a href="on-event/">onEvent</a></td>
-<td><code>val onEvent: (Event) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
-</tr>
-<tr>
-<td><a href="title/">title</a></td>
-<td><code>val title:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/hashCode/#/PointingToDeclaration/"></a><a href="hash-code/">hashCode</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/hashCode/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="hash-code/">hashCode</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -919,12 +908,24 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="equals/">equals</a></td>
-<td><code>fun equals(other:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>?):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/buttons/#/PointingToDeclaration/"></a><a href="buttons/">buttons</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/buttons/#/PointingToDeclaration/"></a> [jvm] val <a href="buttons/">buttons</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="-button/">AlertScreen.Button</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;   <br></td>
 </tr>
 <tr>
-<td><a href="hash-code/">hashCode</a></td>
-<td><code>fun hashCode():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/cancelable/#/PointingToDeclaration/"></a><a href="cancelable/">cancelable</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/cancelable/#/PointingToDeclaration/"></a> [jvm] val <a href="cancelable/">cancelable</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true   <br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/message/#/PointingToDeclaration/"></a><a href="message/">message</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/message/#/PointingToDeclaration/"></a> [jvm] val <a href="message/">message</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>   <br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/onEvent/#/PointingToDeclaration/"></a><a href="on-event/">onEvent</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/onEvent/#/PointingToDeclaration/"></a> [jvm] val <a href="on-event/">onEvent</a>: (<a href="-event/">AlertScreen.Event</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>   <br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/title/#/PointingToDeclaration/"></a><a href="title/">title</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertScreen/title/#/PointingToDeclaration/"></a> [jvm] val <a href="title/">title</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>   <br></td>
 </tr>
 </tbody>
 </table>

@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../../" class="md-tabs__link">
+        <a href="../../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -802,20 +802,15 @@
                   
                 
                 
-                <p><a href="../../../../">workflow</a> / <a href="../../../">com.squareup.workflow1</a> / <a href="../../">WorkflowInterceptor</a> / <a href="../">RenderContextInterceptor</a> / <a href="./">onRunningSideEffect</a></p>
+                <p>//<a href="../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1</a>/<a href="../../">WorkflowInterceptor</a>/<a href="../">RenderContextInterceptor</a>/<a href="./">onRunningSideEffect</a></p>
 <h1 id="onrunningsideeffect">onRunningSideEffect<a class="headerlink" href="#onrunningsideeffect" title="Permanent link">&para;</a></h1>
-<p><code>open fun onRunningSideEffect(key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, sideEffect: suspend () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, proceed: (key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, sideEffect: suspend () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<p>Intercepts calls to <a href="../../../-base-render-context/running-side-effect/">BaseRenderContext.runningSideEffect</a>, allowing the
-interceptor to wrap or replace the <a href="./#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRunningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), kotlin.Function2((kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), )))/sideEffect">sideEffect</a> and its <a href="./#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRunningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), kotlin.Function2((kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), )))/key">key</a>. This could
-be used to prevent a side effect from running, or to augment it with
-further effects.</p>
-<p>The <a href="./#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRunningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), kotlin.Function2((kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), )))/sideEffect">sideEffect</a> function will perform the actual suspending side effect, and only
-return when the side effect is complete – this may be far in the future. This means
-the interceptor can be notified when the side effect <em>ends</em> by simply running code
-after <a href="./#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRunningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), kotlin.Function2((kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), )))/sideEffect">sideEffect</a> returns or throws.</p>
-<p>The interceptor may run <a href="./#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRunningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), kotlin.Function2((kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), )))/sideEffect">sideEffect</a> in a different <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a>, e.g to change
-its dispatcher or name, but should take care to use the original <a href="#">Job</a>, or otherwise
-ensure that the structured concurrency contract is not broken.</p>
+<p>[jvm]<br />
+Content<br />
+open fun <a href="./">onRunningSideEffect</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, sideEffect: suspend () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, proceed: (key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, sideEffect: suspend () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<br />
+More info  </p>
+<p>Intercepts calls to <a href="../../../-base-render-context/running-side-effect/">BaseRenderContext.runningSideEffect</a>, allowing the interceptor to wrap or replace the <a href="./">sideEffect</a> and its <a href="./">key</a>. This could be used to prevent a side effect from running, or to augment it with further effects.</p>
+<p>The <a href="./">sideEffect</a> function will perform the actual suspending side effect, and only return when the side effect is complete – this may be far in the future. This means the interceptor can be notified when the side effect <em>ends</em> by simply running code after <a href="./">sideEffect</a> returns or throws.</p>
+<p>The interceptor may run <a href="./">sideEffect</a> in a different <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a>, e.g to change its dispatcher or name, but should take care to use the original Job, or otherwise ensure that the structured concurrency contract is not broken.</p>
                 
               
               

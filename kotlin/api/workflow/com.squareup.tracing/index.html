@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../" class="md-tabs__link">
+        <a href="../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" title="Kotlin" class="md-nav__link">
+    <a href="../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -781,6 +781,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -791,22 +793,9 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#package-comsquareuptracing" class="md-nav__link">
-    Package com.squareup.tracing
-  </a>
-  
-    <nav class="md-nav" aria-label="Package com.squareup.tracing">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#types" class="md-nav__link">
     Types
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -830,11 +819,9 @@
                   
                 
                 
-                  <h1>Index</h1>
-                
-                <p><a href="../">workflow</a> / <a href="./">com.squareup.tracing</a></p>
-<h2 id="package-comsquareuptracing">Package com.squareup.tracing<a class="headerlink" href="#package-comsquareuptracing" title="Permanent link">&para;</a></h2>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+                <p>//<a href="../../index.md">workflow</a>/<a href="./">com.squareup.tracing</a></p>
+<h1 id="package-comsquareuptracing">Package com.squareup.tracing<a class="headerlink" href="#package-comsquareuptracing" title="Permanent link">&para;</a></h1>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -844,16 +831,20 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-trace-encoder/">TraceEncoder</a></td>
-<td>Encodes and writes <a href="-trace-event/">trace events</a> to an Okio <a href="#">BufferedSink</a>.<code>class TraceEncoder :</code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html"><code>Closeable</code></a></td>
+<td><a name="com.squareup.tracing/TimeMark///PointingToDeclaration/"></a><a href="-time-mark/">TimeMark</a></td>
+<td><a name="com.squareup.tracing/TimeMark///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>interface <a href="-time-mark/">TimeMark</a>  <br>More info  <br>Interface that represents a time point.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-trace-event/">TraceEvent</a></td>
-<td>Represents a single event in a trace.<code>sealed class TraceEvent</code></td>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a><a href="-trace-encoder/">TraceEncoder</a></td>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>class <a href="-trace-encoder/">TraceEncoder</a>(<strong>scope</strong>: CoroutineScope, <strong>start</strong>: <a href="-time-mark/">TimeMark</a>, <strong>ioDispatcher</strong>: CoroutineDispatcher, <strong>sinkProvider</strong>: () -&gt; BufferedSink) : <a href="https://developer.android.com/reference/kotlin/java/io/Closeable.html">Closeable</a>  <br>More info  <br>Encodes and writes <a href="-trace-event/">trace events</a> to an Okio BufferedSink.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-trace-logger/">TraceLogger</a></td>
-<td><a href="-trace-logger/log/">Logs</a> <a href="-trace-event/">TraceEvent</a>s to a <a href="-trace-encoder/">TraceEncoder</a> under a given process and thread name.<code>interface TraceLogger</code></td>
+<td><a name="com.squareup.tracing/TraceEvent///PointingToDeclaration/"></a><a href="-trace-event/">TraceEvent</a></td>
+<td><a name="com.squareup.tracing/TraceEvent///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>sealed class <a href="-trace-event/">TraceEvent</a>  <br>More info  <br>Represents a single event in a trace.  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.tracing/TraceLogger///PointingToDeclaration/"></a><a href="-trace-logger/">TraceLogger</a></td>
+<td><a name="com.squareup.tracing/TraceLogger///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>interface <a href="-trace-logger/">TraceLogger</a>  <br>More info  <br><a href="-trace-logger/log/">Logs</a><a href="-trace-event/">TraceEvent</a>s to a <a href="-trace-encoder/">TraceEncoder</a> under a given process and thread name.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

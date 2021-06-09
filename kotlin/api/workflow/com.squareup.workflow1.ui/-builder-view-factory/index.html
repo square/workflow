@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -800,15 +800,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    Properties
+  <a href="#functions" class="md-nav__link">
+    Functions
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    Functions
+  <a href="#properties" class="md-nav__link">
+    Properties
   </a>
   
 </li>
@@ -833,42 +833,56 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">BuilderViewFactory</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">BuilderViewFactory</a></p>
 <h1 id="builderviewfactory">BuilderViewFactory<a class="headerlink" href="#builderviewfactory" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi class BuilderViewFactory&lt;RenderingT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="../-view-factory/"><code>ViewFactory</code></a><code>&lt;RenderingT&gt;</code></p>
-<p>A <a href="../-view-factory/">ViewFactory</a> that creates <a href="#">View</a>s that need to be generated from code.
-(Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)</p>
-<div class="highlight"><pre><span></span><code>    data class MyView(): AndroidViewRendering&lt;MyView&gt; {
-      val viewFactory = BuilderBinding(
-          type = MyScreen::class,
-          viewConstructor = { initialRendering, _, context, _ -&gt;
-            MyFrame(context).apply {
-              layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-              bindShowRendering(initialRendering, ::update)
-            }
-      )
-    }
+<p>[androidJvm] @WorkflowUiExperimentalApi()  </p>
+<p>class <a href="./">BuilderViewFactory</a>&lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(<strong>type</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;<a href="./">RenderingT</a>&gt;, <strong>viewConstructor</strong>: (<a href="./">RenderingT</a>, initialViewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>, contextForNewView: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, container: <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>?) -&gt; <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>) : <a href="../-view-factory/">ViewFactory</a>&lt;<a href="./">RenderingT</a>&gt; </p>
+<p>A <a href="../-view-factory/">ViewFactory</a> that creates <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>s that need to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>data class MyView(): AndroidViewRendering&lt;MyView&gt; {
+  val viewFactory = BuilderViewFactory(
+      type = MyScreen::class,
+      viewConstructor = { initialRendering, _, context, _ -&gt;
+        MyFrame(context).apply {
+          layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+          bindShowRendering(initialRendering, ::update)
+        }
+  )
+}
 
-    private class MyFrame(context: Context) : FrameLayout(context, attributeSet) {
-      private fun update(rendering:  MyView) { ... }
-    }
+private class MyFrame(context: Context) : FrameLayout(context, attributeSet) {
+  private fun update(rendering:  MyView) { ... }
+}
 </code></pre></div>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+</td></tr></table>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>A <a href="../-view-factory/">ViewFactory</a> that creates <a href="#">View</a>s that need to be generated from code. (Use <a href="../-layout-runner/">LayoutRunner</a> to work with XML layout resources.)<code>BuilderViewFactory(type:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;RenderingT&gt;, viewConstructor: (initialRendering: RenderingT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, contextForNewView: Context, container: ViewGroup?) -&gt; View)</code></td>
+<td><a name="com.squareup.workflow1.ui/BuilderViewFactory/BuilderViewFactory/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]#kotlin.Function4[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,android.content.Context,android.view.ViewGroup?,android.view.View]/PointingToDeclaration/"></a><a href="-builder-view-factory/">BuilderViewFactory</a></td>
+<td><a name="com.squareup.workflow1.ui/BuilderViewFactory/BuilderViewFactory/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]#kotlin.Function4[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,android.content.Context,android.view.ViewGroup?,android.view.View]/PointingToDeclaration/"></a> [androidJvm] fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-builder-view-factory/">BuilderViewFactory</a>(type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;<a href="./">RenderingT</a>&gt;, viewConstructor: (<a href="./">RenderingT</a>, initialViewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>, contextForNewView: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, container: <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>?) -&gt; <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>)   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -878,12 +892,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="type/">type</a></td>
-<td><code>val type:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;RenderingT&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui/BuilderViewFactory/buildView/#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?/PointingToDeclaration/"></a><a href="build-view/">buildView</a></td>
+<td><a name="com.squareup.workflow1.ui/BuilderViewFactory/buildView/#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>open override fun <a href="build-view/">buildView</a>(initialRendering: <a href="./">RenderingT</a>, initialViewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>, contextForNewView: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, container: <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>?): <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>  <br>More info  <br>Returns a View ready to display <a href="build-view/">initialRendering</a> (and any succeeding values) via <a href="../show-rendering/">View.showRendering</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -893,8 +907,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="build-view/">buildView</a></td>
-<td>Returns a View ready to display <a href="../-view-factory/build-view/#com.squareup.workflow1.ui.ViewFactory$buildView(com.squareup.workflow1.ui.ViewFactory.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, android.content.Context, android.view.ViewGroup)/initialRendering">initialRendering</a> (and any succeeding values) via <a href="../android.view.-view/show-rendering/">View.showRendering</a>.<code>fun buildView(initialRendering: RenderingT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, contextForNewView: Context, container: ViewGroup?): View</code></td>
+<td><a name="com.squareup.workflow1.ui/BuilderViewFactory/type/#/PointingToDeclaration/"></a><a href="type/">type</a></td>
+<td><a name="com.squareup.workflow1.ui/BuilderViewFactory/type/#/PointingToDeclaration/"></a> [androidJvm] open override val <a href="type/">type</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;<a href="./">RenderingT</a>&gt;   <br></td>
 </tr>
 </tbody>
 </table>

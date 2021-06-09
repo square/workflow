@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -797,39 +797,33 @@
     Examples
   </a>
   
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#constructors" class="md-nav__link">
     Constructors
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    Properties
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#functions" class="md-nav__link">
     Functions
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
   
 </li>
       
@@ -853,140 +847,203 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">DecorativeViewFactory</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">DecorativeViewFactory</a></p>
 <h1 id="decorativeviewfactory">DecorativeViewFactory<a class="headerlink" href="#decorativeviewfactory" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi class DecorativeViewFactory&lt;OuterT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>, InnerT :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="../-view-factory/"><code>ViewFactory</code></a><code>&lt;OuterT&gt;</code></p>
-<p>A <a href="../-view-factory/">ViewFactory</a> for <a href="./#OuterT">OuterT</a> that delegates view construction responsibilities
-to the factory registered for <a href="./#InnerT">InnerT</a>. Makes it convenient for <a href="./#OuterT">OuterT</a> to wrap
-instances of <a href="./#InnerT">InnerT</a> to add information or behavior, without requiring wasteful wrapping
-in the view system.</p>
+<p>[androidJvm] @WorkflowUiExperimentalApi()  </p>
+<p>class <a href="./">DecorativeViewFactory</a>&lt;<a href="./">OuterT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, <a href="./">InnerT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(<strong>type</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;<a href="./">OuterT</a>&gt;, <strong>map</strong>: (<a href="./">OuterT</a>, <a href="../-view-environment/">ViewEnvironment</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html">Pair</a>&lt;<a href="./">InnerT</a>, <a href="../-view-environment/">ViewEnvironment</a>&gt;, <strong>initializeView</strong>: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, <strong>doShowRendering</strong>: (view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, <a href="../#1074174269%2FClasslikes%2F576965167">ViewShowRendering</a>&lt;<a href="./">InnerT</a>&gt;, <a href="./">OuterT</a>, env: <a href="../-view-environment/">ViewEnvironment</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>) : <a href="../-view-factory/">ViewFactory</a>&lt;<a href="./">OuterT</a>&gt; </p>
+<p>A <a href="../-view-factory/">ViewFactory</a> for <a href="./">OuterT</a> that delegates view construction responsibilities to the factory registered for <a href="./">InnerT</a>. Makes it convenient for <a href="./">OuterT</a> to wrap instances of <a href="./">InnerT</a> to add information or behavior, without requiring wasteful wrapping in the view system.</p>
+<p>One general note: when creating a wrapper rendering, you&rsquo;re very likely to want it to implement Compatible, to ensure that checks made to update or replace a view are based on the wrapped item. Each example below illustrates this.</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<p>To make one rendering type an &ldquo;alias&rdquo; for another &ndash; that is, to use the same <a href="../-view-factory/">ViewFactory</a>
-to display it &ndash; provide nothing but a single-arg mapping function:</p>
-<div class="highlight"><pre><span></span><code>    class OriginalRendering(val data: String)
-    class AliasRendering(val similarData: String)
+<p>To make one rendering type an &ldquo;alias&rdquo; for another &ndash; that is, to use the same <a href="../-view-factory/">ViewFactory</a> to display it &ndash; provide nothing but a single-arg mapping function:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>class OriginalRendering(val data: String)
+class AliasRendering(val similarData: String) : Compatible {
+  override val compatibilityKey: String = Compatible.keyFor(wrapped)
+}
 
-    object DecorativeViewFactory : ViewFactory&lt;AliasRendering&gt;
-    by DecorativeViewFactory(
-      type = AliasRendering::class, map = { alias -&gt; OriginalRendering(alias.similarData) }
-    )
+object DecorativeViewFactory : ViewFactory&lt;AliasRendering&gt;
+by DecorativeViewFactory(
+  type = AliasRendering::class, map = { alias -&gt; OriginalRendering(alias.similarData) }
+)
 </code></pre></div>
+</td></tr></table>
 <p>To make a decorator type that adds information to the <a href="../-view-environment/">ViewEnvironment</a>:</p>
-<div class="highlight"><pre><span></span><code>    class NeutronFlowPolarity(val reversed) {
-      companion object : ViewEnvironmentKey&lt;NeutronFlowPolarity&gt;(NeutronFlowPolarity::class) {
-        override val default: NeutronFlowPolarity = NeutronFlowPolarity(reversed = false)
-      }
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>class NeutronFlowPolarity(val reversed: Boolean) {
+  companion object : ViewEnvironmentKey&lt;NeutronFlowPolarity&gt;(NeutronFlowPolarity::class) {
+    override val default: NeutronFlowPolarity = NeutronFlowPolarity(reversed = false)
+  }
+}
+
+class NeutronFlowPolarityOverride&lt;W&gt;(
+  val wrapped: W,
+  val polarity: NeutronFlowPolarity
+) : Compatible {
+  override val compatibilityKey: String = Compatible.keyFor(wrapped)
+}
+
+object NeutronFlowPolarityViewFactory : ViewFactory&lt;NeutronFlowPolarityOverride&lt;*&gt;&gt;
+by DecorativeViewFactory(
+    type = NeutronFlowPolarityOverride::class,
+    map = { override, env -&gt;
+      Pair(override.wrapped, env + (NeutronFlowPolarity to override.polarity))
     }
-
-    class NeutronFlowPolarityOverride&lt;W&gt;(
-      val wrapped: W,
-      val polarity: NeutronFlowPolarity
-    )
-
-    object NeutronFlowPolarityViewFactory : ViewFactory&lt;NeutronFlowPolarityOverride&lt;*&gt;&gt;
-    by DecorativeViewFactory(
-        type = NeutronFlowPolarityOverride::class,
-        map = { override, env -&gt;
-          Pair(override.wrapped, env + (NeutronFlowPolarity to override.polarity))
-        }
-    )
+)
 </code></pre></div>
-<p>To make a decorator type that customizes <a href="#">View</a> initialization:</p>
-<div class="highlight"><pre><span></span><code>    class WithTutorialTips&lt;W&gt;(val wrapped: W)
+</td></tr></table>
+<p>To make a decorator type that customizes <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> initialization:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>class WithTutorialTips&lt;W&gt;(val wrapped: W) : Compatible {
+  override val compatibilityKey: String = Compatible.keyFor(wrapped)
+}
 
-    object WithTutorialTipsViewFactory : ViewFactory&lt;WithTutorialTips&lt;*&gt;&gt;
-    by DecorativeViewFactory(
-        type = WithTutorialTips::class,
-        map = { withTips -&gt; withTips.wrapped },
-        initView = { _, view -&gt; TutorialTipRunner.run(view) }
-    )
+object WithTutorialTipsViewFactory : ViewFactory&lt;WithTutorialTips&lt;*&gt;&gt;
+by DecorativeViewFactory(
+    type = WithTutorialTips::class,
+    map = { withTips -&gt; withTips.wrapped },
+    initializeView = {
+      TutorialTipRunner.run(this)
+      showFirstRendering&lt;WithTutorialTips&lt;*&gt;&gt;()
+    }
+)
 </code></pre></div>
-<p>To make a decorator type that adds pre- or post-processing to <a href="#">View</a> updates:</p>
-<div class="highlight"><pre><span></span><code>    class BackButtonScreen&lt;W : Any&gt;(
-       val wrapped: W,
-       val override: Boolean = false,
-       val onBackPressed: (() -&gt; Unit)? = null
-    )
+</td></tr></table>
+<p>To make a decorator type that adds pre- or post-processing to <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> updates:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>class BackButtonScreen&lt;W : Any&gt;(
+   val wrapped: W,
+   val override: Boolean = false,
+   val onBackPressed: (() -&gt; Unit)? = null
+) : Compatible {
+  override val compatibilityKey: String = Compatible.keyFor(wrapped)
+}
 
-    object BackButtonViewFactory : ViewFactory&lt;BackButtonScreen&lt;*&gt;&gt;
-    by DecorativeViewFactory(
-        type = BackButtonScreen::class,
-        map = { outer -&gt; outer.wrapped },
-        doShowRendering = { view, innerShowRendering, outerRendering, viewEnvironment -&gt;
-          if (!outerRendering.override) {
-            // Place our handler before invoking innerShowRendering, so that
-            // its later calls to view.backPressedHandler will take precedence
-            // over ours.
-            view.backPressedHandler = outerRendering.onBackPressed
-          }
+object BackButtonViewFactory : ViewFactory&lt;BackButtonScreen&lt;*&gt;&gt;
+by DecorativeViewFactory(
+    type = BackButtonScreen::class,
+    map = { outer -&gt; outer.wrapped },
+    doShowRendering = { view, innerShowRendering, outerRendering, viewEnvironment -&gt;
+      if (!outerRendering.override) {
+        // Place our handler before invoking innerShowRendering, so that
+        // its later calls to view.backPressedHandler will take precedence
+        // over ours.
+        view.backPressedHandler = outerRendering.onBackPressed
+      }
 
-          innerShowRendering.invoke(outerRendering.wrapped, viewEnvironment)
+      innerShowRendering.invoke(outerRendering.wrapped, viewEnvironment)
 
-          if (outerRendering.override) {
-            // Place our handler after invoking innerShowRendering, so that ours wins.
-            view.backPressedHandler = outerRendering.onBackPressed
-          }
-        })
+      if (outerRendering.override) {
+        // Place our handler after invoking innerShowRendering, so that ours wins.
+        view.backPressedHandler = outerRendering.onBackPressed
+      }
+    })
 </code></pre></div>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>map</code> - called to convert instances of <a href="./#OuterT">OuterT</a> to <a href="./#InnerT">InnerT</a>, and to
-allow <a href="../-view-environment/">ViewEnvironment</a> to be transformed.</p>
-<p><code>initView</code> - called after the <a href="../-view-factory/">ViewFactory</a> for <a href="./#InnerT">InnerT</a> has created a <a href="#">View</a>.
-Defaults to a no-op. Note that the <a href="../-view-environment/">ViewEnvironment</a> is accessible via <a href="../android.view.-view/environment/">View.environment</a>.</p>
-<p><code>doShowRendering</code> - called to apply the <a href="../-view-show-rendering/">ViewShowRendering</a> function for
-<a href="./#InnerT">InnerT</a>, allowing pre- and post-processing. Default implementation simply
-applies <a href="#">map</a> and makes the function call.</p>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+</td></tr></table>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>androidJvm  </p>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>Convenience constructor for cases requiring no changes to the <a href="../-view-environment/">ViewEnvironment</a>.<code>DecorativeViewFactory(type:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;OuterT&gt;, map: (OuterT) -&gt; InnerT, initView: (OuterT, View) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= { _, _ -&gt; }, doShowRendering: (view: View,</code><a href="../-view-show-rendering/"><code>ViewShowRendering</code></a><code>&lt;InnerT&gt;, outerRendering: OuterT, env:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a>` = { _, innerShowRendering, outerRendering, viewEnvironment -&gt;</td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory///PointingToDeclaration/"></a>map</td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory///PointingToDeclaration/"></a><br><br>called to convert instances of <a href="./">OuterT</a> to <a href="./">InnerT</a>, and to allow <a href="../-view-environment/">ViewEnvironment</a> to be transformed.<br><br></td>
 </tr>
 <tr>
-<td>innerShowRendering(map(outerRendering), viewEnvironment)</td>
-<td></td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory///PointingToDeclaration/"></a>initializeView</td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory///PointingToDeclaration/"></a><br><br>Optional function invoked immediately after the <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> is created (that is, immediately after the call to <a href="../-view-factory/build-view/">ViewFactory.buildView</a>). <a href="../show-rendering/">showRendering</a>, <a href="../get-rendering/">getRendering</a> and <a href="../environment/">environment</a> are all available when this is called. Defaults to a call to <a href="../show-first-rendering/">View.showFirstRendering</a>.<br><br></td>
 </tr>
 <tr>
-<td>})<code>&lt;br&gt;A [ViewFactory](../-view-factory/index.md) for [OuterT](index.md#OuterT) that delegates view construction responsibilities to the factory registered for [InnerT](index.md#InnerT). Makes it convenient for [OuterT](index.md#OuterT) to wrap instances of [InnerT](index.md#InnerT) to add information or behavior, without requiring wasteful wrapping in the view system.</code>DecorativeViewFactory(type: <code>[</code>KClass<code>](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html)</code><OuterT>, map: (OuterT, <code>[</code>ViewEnvironment<code>](../-view-environment/index.md)</code>) -&gt; <code>[</code>Pair<code>](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html)</code><InnerT, <code>[</code>ViewEnvironment<code>](../-view-environment/index.md)</code>>, initView: (OuterT, View) -&gt; <code>[</code>Unit<code>](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)</code> = { _, _ -&gt; }, doShowRendering: (view: View, <code>[</code>ViewShowRendering<code>](../-view-show-rendering.md)</code><InnerT>, outerRendering: OuterT, env: <code>[</code>ViewEnvironment<code>](../-view-environment/index.md)</code>) -&gt; <code>[</code>Unit<code>](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)</code> = { _, innerShowRendering, outerRendering, viewEnvironment -&gt;</td>
-<td></td>
-</tr>
-<tr>
-<td>val (innerRendering, processedEnv) = map(outerRendering, viewEnvironment)</td>
-<td></td>
-</tr>
-<tr>
-<td>innerShowRendering(innerRendering, processedEnv)</td>
-<td></td>
-</tr>
-<tr>
-<td>})`</td>
-<td></td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory///PointingToDeclaration/"></a>doShowRendering</td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory///PointingToDeclaration/"></a><br><br>called to apply the <a href="../#1074174269%2FClasslikes%2F576965167">ViewShowRendering</a> function for <a href="./">InnerT</a>, allowing pre- and post-processing. Default implementation simply uses map to extract the <a href="./">InnerT</a> instance from <a href="./">OuterT</a> and makes the function call.<br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="type/">type</a></td>
-<td><code>val type:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><code>KClass</code></a><code>&lt;OuterT&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory/DecorativeViewFactory/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]#kotlin.Function1[TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any])]#kotlin.Function1[android.view.View,kotlin.Unit]#kotlin.Function4[android.view.View,kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit],TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit]/PointingToDeclaration/"></a><a href="-decorative-view-factory/">DecorativeViewFactory</a></td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory/DecorativeViewFactory/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]#kotlin.Function1[TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any])]#kotlin.Function1[android.view.View,kotlin.Unit]#kotlin.Function4[android.view.View,kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit],TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit]/PointingToDeclaration/"></a> [androidJvm] fun &lt;<a href="./">OuterT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, <a href="./">InnerT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-decorative-view-factory/">DecorativeViewFactory</a>(type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;<a href="./">OuterT</a>&gt;, map: (<a href="./">OuterT</a>) -&gt; <a href="./">InnerT</a>, initializeView: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = { showFirstRendering<OuterT>() }, doShowRendering: (view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, <a href="../#1074174269%2FClasslikes%2F576965167">ViewShowRendering</a>&lt;<a href="./">InnerT</a>&gt;, <a href="./">OuterT</a>, env: <a href="../-view-environment/">ViewEnvironment</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = { _, innerShowRendering, outerRendering, viewEnvironment -&gt;<br>      innerShowRendering(map(outerRendering), viewEnvironment)<br>    })Convenience constructor for cases requiring no changes to the <a href="../-view-environment/">ViewEnvironment</a>.   <br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory/DecorativeViewFactory/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]#kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Pair[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment]]#kotlin.Function1[android.view.View,kotlin.Unit]#kotlin.Function4[android.view.View,kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit],TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit]/PointingToDeclaration/"></a><a href="-decorative-view-factory/">DecorativeViewFactory</a></td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory/DecorativeViewFactory/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]#kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Pair[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment]]#kotlin.Function1[android.view.View,kotlin.Unit]#kotlin.Function4[android.view.View,kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit],TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit]/PointingToDeclaration/"></a> [androidJvm] fun &lt;<a href="./">OuterT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, <a href="./">InnerT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-decorative-view-factory/">DecorativeViewFactory</a>(type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;<a href="./">OuterT</a>&gt;, map: (<a href="./">OuterT</a>, <a href="../-view-environment/">ViewEnvironment</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html">Pair</a>&lt;<a href="./">InnerT</a>, <a href="../-view-environment/">ViewEnvironment</a>&gt;, initializeView: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = { showFirstRendering<OuterT>() }, doShowRendering: (view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, <a href="../#1074174269%2FClasslikes%2F576965167">ViewShowRendering</a>&lt;<a href="./">InnerT</a>&gt;, <a href="./">OuterT</a>, env: <a href="../-view-environment/">ViewEnvironment</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = { _, innerShowRendering, outerRendering, viewEnvironment -&gt;<br>    val (innerRendering, processedEnv) = map(outerRendering, viewEnvironment)<br>    innerShowRendering(innerRendering, processedEnv)<br>  })called to convert instances of <a href="./">OuterT</a> to <a href="./">InnerT</a>, and to allow <a href="../-view-environment/">ViewEnvironment</a> to be transformed.   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -996,8 +1053,23 @@ applies <a href="#">map</a> and makes the function call.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="build-view/">buildView</a></td>
-<td>Returns a View ready to display <a href="../-view-factory/build-view/#com.squareup.workflow1.ui.ViewFactory$buildView(com.squareup.workflow1.ui.ViewFactory.RenderingT, com.squareup.workflow1.ui.ViewEnvironment, android.content.Context, android.view.ViewGroup)/initialRendering">initialRendering</a> (and any succeeding values) via <a href="../android.view.-view/show-rendering/">View.showRendering</a>.<code>fun buildView(initialRendering: OuterT, initialViewEnvironment:</code><a href="../-view-environment/"><code>ViewEnvironment</code></a><code>, contextForNewView: Context, container: ViewGroup?): View</code></td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory/buildView/#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?/PointingToDeclaration/"></a><a href="build-view/">buildView</a></td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory/buildView/#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>open override fun <a href="build-view/">buildView</a>(initialRendering: <a href="./">OuterT</a>, initialViewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>, contextForNewView: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, container: <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>?): <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>  <br>More info  <br>Returns a View ready to display <a href="build-view/">initialRendering</a> (and any succeeding values) via <a href="../show-rendering/">View.showRendering</a>.  <br><br><br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory/type/#/PointingToDeclaration/"></a><a href="type/">type</a></td>
+<td><a name="com.squareup.workflow1.ui/DecorativeViewFactory/type/#/PointingToDeclaration/"></a> [androidJvm] open override val <a href="type/">type</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;<a href="./">OuterT</a>&gt;   <br></td>
 </tr>
 </tbody>
 </table>

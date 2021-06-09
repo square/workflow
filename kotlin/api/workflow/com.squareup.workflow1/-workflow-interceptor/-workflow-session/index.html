@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -819,12 +819,12 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1</a> / <a href="../">WorkflowInterceptor</a> / <a href="./">WorkflowSession</a></p>
+                <p>//<a href="../../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">WorkflowInterceptor</a>/<a href="./">WorkflowSession</a></p>
 <h1 id="workflowsession">WorkflowSession<a class="headerlink" href="#workflowsession" title="Permanent link">&para;</a></h1>
-<p><code>@ExperimentalWorkflowApi interface WorkflowSession</code></p>
-<p>Information about the session of a workflow in the runtime that a <a href="../">WorkflowInterceptor</a> method
-is intercepting.</p>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<p>[jvm] @<a href="../../-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  </p>
+<p>interface <a href="./">WorkflowSession</a></p>
+<p>Information about the session of a workflow in the runtime that a <a href="../">WorkflowInterceptor</a> method is intercepting.</p>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -834,20 +834,20 @@ is intercepting.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="identifier/">identifier</a></td>
-<td>The <a href="../../-workflow-identifier/">WorkflowIdentifier</a> that represents the type of this workflow.<code>abstract val identifier:</code><a href="../../-workflow-identifier/"><code>WorkflowIdentifier</code></a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession/identifier/#/PointingToDeclaration/"></a><a href="identifier/">identifier</a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession/identifier/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="identifier/">identifier</a>: <a href="../../-workflow-identifier/">WorkflowIdentifier</a>The <a href="../../-workflow-identifier/">WorkflowIdentifier</a> that represents the type of this workflow.   <br></td>
 </tr>
 <tr>
-<td><a href="parent/">parent</a></td>
-<td>The parent <a href="./">WorkflowSession</a> of this workflow, or null if this is the root workflow.<code>abstract val parent: WorkflowSession?</code></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession/parent/#/PointingToDeclaration/"></a><a href="parent/">parent</a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession/parent/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="parent/">parent</a>: <a href="./">WorkflowInterceptor.WorkflowSession</a>?The parent <a href="./">WorkflowSession</a> of this workflow, or null if this is the root workflow.   <br></td>
 </tr>
 <tr>
-<td><a href="render-key/">renderKey</a></td>
-<td>The string key argument that was passed to <a href="../../-base-render-context/render-child/">BaseRenderContext.renderChild</a> to render this workflow.<code>abstract val renderKey:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession/renderKey/#/PointingToDeclaration/"></a><a href="render-key/">renderKey</a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession/renderKey/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="render-key/">renderKey</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>The string key argument that was passed to <a href="../../-base-render-context/render-child/">BaseRenderContext.renderChild</a> to render this workflow.   <br></td>
 </tr>
 <tr>
-<td><a href="session-id/">sessionId</a></td>
-<td>A unique value that identifies the currently-running session of this workflow in the runtime. See the documentation on <a href="../">WorkflowInterceptor</a> for more information about what this value represents.<code>abstract val sessionId:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html"><code>Long</code></a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession/sessionId/#/PointingToDeclaration/"></a><a href="session-id/">sessionId</a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession/sessionId/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="session-id/">sessionId</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>A unique value that identifies the currently-running session of this workflow in the runtime.   <br></td>
 </tr>
 </tbody>
 </table>

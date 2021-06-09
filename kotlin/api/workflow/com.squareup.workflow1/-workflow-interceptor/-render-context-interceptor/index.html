@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -819,46 +819,40 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1</a> / <a href="../">WorkflowInterceptor</a> / <a href="./">RenderContextInterceptor</a></p>
+                <p>//<a href="../../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">WorkflowInterceptor</a>/<a href="./">RenderContextInterceptor</a></p>
 <h1 id="rendercontextinterceptor">RenderContextInterceptor<a class="headerlink" href="#rendercontextinterceptor" title="Permanent link">&para;</a></h1>
-<p><code>interface RenderContextInterceptor&lt;P, S, O&gt;</code></p>
+<p>[jvm] interface <a href="./">RenderContextInterceptor</a>&lt;<a href="./">P</a>, <a href="./">S</a>, <a href="./">O</a>&gt;</p>
 <p>Provides hooks for intercepting calls to a <a href="../../-base-render-context/">BaseRenderContext</a>, to be used from <a href="../on-render/">onRender</a>.</p>
-<p>For use by <a href="../on-render/">onRender</a> methods that want to hook into action and
-side effect events. See documentation on methods for more information about the individual
-hooks:</p>
-<ul>
-<li><a href="on-action-sent/">RenderContextInterceptor.onActionSent</a></li>
-<li><a href="on-running-side-effect/">RenderContextInterceptor.onRunningSideEffect</a></li>
-</ul>
-<p>E.g.:</p>
-<div class="highlight"><pre><span></span><code>override fun &lt;P, S, O, R&gt; onRender(
-  renderProps: P,
-  renderState: S,
-  proceed: (P, S, RenderContextInterceptor&lt;P, S, O&gt;) -&gt; R,
-  session: WorkflowSession
-): R = proceed(renderProps, renderState, object : RenderContextInterceptor&lt;P, S, O&gt; {
-  override fun onActionSent(
-    action: WorkflowAction&lt;P, S, O&gt;,
-    proceed: (WorkflowAction&lt;P, S, O&gt;) -&gt; Unit
-  ) {
-    log(&quot;Action sent: $action&quot;)
-    proceed(action)
-  }
+<p>For use by <a href="../on-render/">onRender</a> methods that want to hook into action and side effect events. See documentation on methods for more information about the individual hooks:</p>
+<ul><li>[RenderContextInterceptor.onActionSent](on-action-sent.md)</li><li>[RenderContextInterceptor.onRunningSideEffect](on-running-side-effect.md)</li></ul>
 
-  override fun onRunningSideEffect(
-    key: String,
-    sideEffect: suspend () -&gt; Unit,
-    proceed: (key: String, sideEffect: suspend () -&gt; Unit) -&gt; Unit
-  ) {
-    proceed(key) {
-      log(&quot;Side effect started: $key&quot;)
-      sideEffect()
-      log(&quot;Side effect ended: $key&quot;)
-    }
-  }
-})
-</code></pre></div>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<p>E.g.:</p>
+<p>override fun <P, S, O, R> onRender(<br />
+  renderProps: P,<br />
+  renderState: S,<br />
+  proceed: (P, S, RenderContextInterceptor<P, S, O>) -&gt; R,<br />
+  session: WorkflowSession<br />
+): R = proceed(renderProps, renderState, object : RenderContextInterceptor<P, S, O> {<br />
+  override fun onActionSent(<br />
+    action: WorkflowAction<P, S, O>,<br />
+    proceed: (WorkflowAction<P, S, O>) -&gt; Unit<br />
+  ) {<br />
+    log(&ldquo;Action sent: $action&rdquo;)<br />
+    proceed(action)<br />
+  }  </p>
+<p>override fun onRunningSideEffect(<br />
+    key: String,<br />
+    sideEffect: suspend () -&gt; Unit,<br />
+    proceed: (key: String, sideEffect: suspend () -&gt; Unit) -&gt; Unit<br />
+  ) {<br />
+    proceed(key) {<br />
+      log(&ldquo;Side effect started: $key&rdquo;)<br />
+      sideEffect()<br />
+      log(&ldquo;Side effect ended: $key&rdquo;)<br />
+    }<br />
+  }<br />
+})   </p>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -868,16 +862,16 @@ hooks:</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="on-action-sent/">onActionSent</a></td>
-<td>Intercepts calls to <a href="../../-sink/send/">send</a> on the <a href="../../-base-render-context/action-sink/">BaseRenderContext.actionSink</a>.<code>open fun onActionSent(action:</code><a href="../../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;P, S, O&gt;, proceed: (</code><a href="../../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;P, S, O&gt;) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.RenderContextInterceptor/onActionSent/#com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function1[com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="on-action-sent/">onActionSent</a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.RenderContextInterceptor/onActionSent/#com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function1[com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="on-action-sent/">onActionSent</a>(action: <a href="../../-workflow-action/">WorkflowAction</a>&lt;<a href="./">P</a>, <a href="./">S</a>, <a href="./">O</a>&gt;, proceed: (<a href="../../-workflow-action/">WorkflowAction</a>&lt;<a href="./">P</a>, <a href="./">S</a>, <a href="./">O</a>&gt;) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)  <br>More info  <br>Intercepts calls to <a href="../../-sink/send/">send</a> on the <a href="../../-base-render-context/action-sink/">BaseRenderContext.actionSink</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="on-render-child/">onRenderChild</a></td>
-<td>Intercepts calls to <a href="../../-base-render-context/render-child/">BaseRenderContext.renderChild</a>, allowing the interceptor to wrap or replace the <a href="on-render-child/#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRenderChild(com.squareup.workflow1.Workflow((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CR)), com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.P, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.S, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.O)))), kotlin.Function4((com.squareup.workflow1.Workflow((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CR)), , kotlin.String, kotlin.Function1((, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.P, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.S, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.O)))), )))/child">child</a> Workflow, its <a href="on-render-child/#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRenderChild(com.squareup.workflow1.Workflow((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CR)), com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.P, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.S, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.O)))), kotlin.Function4((com.squareup.workflow1.Workflow((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CR)), , kotlin.String, kotlin.Function1((, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.P, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.S, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.O)))), )))/childProps">childProps</a>, <a href="on-render-child/#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRenderChild(com.squareup.workflow1.Workflow((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CR)), com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.P, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.S, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.O)))), kotlin.Function4((com.squareup.workflow1.Workflow((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CR)), , kotlin.String, kotlin.Function1((, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.P, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.S, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.O)))), )))/key">key</a>, and the <a href="on-render-child/#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRenderChild(com.squareup.workflow1.Workflow((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CR)), com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.P, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.S, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.O)))), kotlin.Function4((com.squareup.workflow1.Workflow((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CP, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CO, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.onRenderChild.CR)), , kotlin.String, kotlin.Function1((, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.P, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.S, com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor.O)))), )))/handler">handler</a> function to be applied to the child&rsquo;s output.<code>open fun &lt;CP, CO, CR&gt; onRenderChild(child:</code><a href="../../-workflow/"><code>Workflow</code></a><code>&lt;CP, CO, CR&gt;, childProps: CP, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, handler: (CO) -&gt;</code><a href="../../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;P, S, O&gt;, proceed: (child:</code><a href="../../-workflow/"><code>Workflow</code></a><code>&lt;CP, CO, CR&gt;, childProps: CP, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, handler: (CO) -&gt;</code><a href="../../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;P, S, O&gt;) -&gt; CR): CR</code></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.RenderContextInterceptor/onRenderChild/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#kotlin.Function4[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?]),kotlin.String,kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]],TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a><a href="on-render-child/">onRenderChild</a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.RenderContextInterceptor/onRenderChild/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]#kotlin.Function4[com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?]),kotlin.String,kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]],TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun &lt;<a href="on-render-child/">CP</a>, <a href="on-render-child/">CO</a>, <a href="on-render-child/">CR</a>&gt; <a href="on-render-child/">onRenderChild</a>(child: <a href="../../-workflow/">Workflow</a>&lt;<a href="on-render-child/">CP</a>, <a href="on-render-child/">CO</a>, <a href="on-render-child/">CR</a>&gt;, childProps: <a href="on-render-child/">CP</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, handler: (<a href="on-render-child/">CO</a>) -&gt; <a href="../../-workflow-action/">WorkflowAction</a>&lt;<a href="./">P</a>, <a href="./">S</a>, <a href="./">O</a>&gt;, proceed: (child: <a href="../../-workflow/">Workflow</a>&lt;<a href="on-render-child/">CP</a>, <a href="on-render-child/">CO</a>, <a href="on-render-child/">CR</a>&gt;, <a href="on-render-child/">CP</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, handler: (<a href="on-render-child/">CO</a>) -&gt; <a href="../../-workflow-action/">WorkflowAction</a>&lt;<a href="./">P</a>, <a href="./">S</a>, <a href="./">O</a>&gt;) -&gt; <a href="on-render-child/">CR</a>): <a href="on-render-child/">CR</a>  <br>More info  <br>Intercepts calls to <a href="../../-base-render-context/render-child/">BaseRenderContext.renderChild</a>, allowing the interceptor to wrap or replace the <a href="on-render-child/">child</a> Workflow, its <a href="on-render-child/">childProps</a>, <a href="on-render-child/">key</a>, and the <a href="on-render-child/">handler</a> function to be applied to the child&rsquo;s output.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="on-running-side-effect/">onRunningSideEffect</a></td>
-<td>Intercepts calls to <a href="../../-base-render-context/running-side-effect/">BaseRenderContext.runningSideEffect</a>, allowing the interceptor to wrap or replace the <a href="on-running-side-effect/#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRunningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), kotlin.Function2((kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), )))/sideEffect">sideEffect</a> and its <a href="on-running-side-effect/#com.squareup.workflow1.WorkflowInterceptor.RenderContextInterceptor$onRunningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), kotlin.Function2((kotlin.String, kotlin.coroutines.SuspendFunction0((kotlin.Unit)), )))/key">key</a>. This could be used to prevent a side effect from running, or to augment it with further effects.<code>open fun onRunningSideEffect(key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, sideEffect: suspend () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, proceed: (key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, sideEffect: suspend () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.RenderContextInterceptor/onRunningSideEffect/#kotlin.String#kotlin.coroutines.SuspendFunction0[kotlin.Unit]#kotlin.Function2[kotlin.String,kotlin.coroutines.SuspendFunction0[kotlin.Unit],kotlin.Unit]/PointingToDeclaration/"></a><a href="on-running-side-effect/">onRunningSideEffect</a></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.RenderContextInterceptor/onRunningSideEffect/#kotlin.String#kotlin.coroutines.SuspendFunction0[kotlin.Unit]#kotlin.Function2[kotlin.String,kotlin.coroutines.SuspendFunction0[kotlin.Unit],kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="on-running-side-effect/">onRunningSideEffect</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, sideEffect: suspend () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, proceed: (key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, sideEffect: suspend () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)  <br>More info  <br>Intercepts calls to <a href="../../-base-render-context/running-side-effect/">BaseRenderContext.runningSideEffect</a>, allowing the interceptor to wrap or replace the <a href="on-running-side-effect/">sideEffect</a> and its <a href="on-running-side-effect/">key</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

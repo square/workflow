@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -807,15 +807,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    Properties
+  <a href="#functions" class="md-nav__link">
+    Functions
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    Functions
+  <a href="#properties" class="md-nav__link">
+    Properties
   </a>
   
 </li>
@@ -840,48 +840,42 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1</a> / <a href="../">WorkflowAction</a> / <a href="./">Updater</a></p>
+                <p>//<a href="../../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">WorkflowAction</a>/<a href="./">Updater</a></p>
 <h1 id="updater">Updater<a class="headerlink" href="#updater" title="Permanent link">&para;</a></h1>
-<p><code>inner class Updater&lt;in PropsT, StateT, out OutputT&gt;</code></p>
-<p>The context for calls to <a href="../apply/">WorkflowAction.apply</a>. Allows the action to set the
-<a href="state/">state</a>, and to emit the <a href="set-output/">setOutput</a>.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>state</code> - the state that the workflow should move to. Default is the current state.</p>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<p>[jvm] inner class <a href="./">Updater</a>(<strong>props</strong>: @<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="../">PropsT</a>, <strong>state</strong>: <a href="../">StateT</a>)</p>
+<p>The context for calls to <a href="../apply/">WorkflowAction.apply</a>. Allows the action to set the <a href="state/">state</a>, and to emit the <a href="set-output/">setOutput</a>.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>The context for calls to <a href="../apply/">WorkflowAction.apply</a>. Allows the action to set the <a href="state/">state</a>, and to emit the <a href="set-output/">setOutput</a>.<code>Updater(props: PropsT, state: StateT)</code></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater///PointingToDeclaration/"></a>state</td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater///PointingToDeclaration/"></a><br><br>the state that the workflow should move to. Default is the current state.<br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="props/">props</a></td>
-<td><code>val props: PropsT</code></td>
-</tr>
-<tr>
-<td><a href="state/">state</a></td>
-<td>the state that the workflow should move to. Default is the current state.<code>var state: StateT</code></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater/Updater/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="-updater/">Updater</a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater/Updater/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a> [jvm] fun <a href="-updater/">Updater</a>(props: @<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="../">PropsT</a>, state: <a href="../">StateT</a>)the state that the workflow should move to.   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -891,8 +885,27 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="set-output/">setOutput</a></td>
-<td>Sets the value the workflow will emit as output when this action is applied. If this method is not called, there will be no output.<code>fun setOutput(output: OutputT):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater/setOutput/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="set-output/">setOutput</a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater/setOutput/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="set-output/">setOutput</a>(output: @<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="../">OutputT</a>)  <br>More info  <br>Sets the value the workflow will emit as output when this action is applied.  <br><br><br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater/props/#/PointingToDeclaration/"></a><a href="props/">props</a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater/props/#/PointingToDeclaration/"></a> [jvm] val <a href="props/">props</a>: @<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="../">PropsT</a>   <br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater/state/#/PointingToDeclaration/"></a><a href="state/">state</a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater/state/#/PointingToDeclaration/"></a> [jvm] var <a href="state/">state</a>: <a href="../">StateT</a>the state that the workflow should move to.   <br></td>
 </tr>
 </tbody>
 </table>

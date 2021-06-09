@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -802,28 +802,11 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.testing</a> / <a href="../">WorkerSink</a> / <a href="./">doesSameWorkAs</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">WorkerSink</a>/<a href="./">doesSameWorkAs</a></p>
 <h1 id="doessameworkas">doesSameWorkAs<a class="headerlink" href="#doessameworkas" title="Permanent link">&para;</a></h1>
-<p><code>fun doesSameWorkAs(otherWorker:</code><a href="../../../com.squareup.workflow1/-worker/"><code>Worker</code></a><code>&lt;*&gt;):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a></p>
-<p>Override this method to define equivalence between <a href="../../../com.squareup.workflow1/-worker/">Worker</a>s. The default implementation
-returns true if this worker&rsquo;s class is the same as <a href="../../../com.squareup.workflow1/-worker/does-same-work-as/#com.squareup.workflow1.Worker$doesSameWorkAs(com.squareup.workflow1.Worker((kotlin.Any)))/otherWorker">otherWorker</a>&lsquo;s class.</p>
-<p>At the end of every render pass, the set of <a href="../../../com.squareup.workflow1/-worker/">Worker</a>s that were requested by the workflow are
-compared to the set from the last render pass using this method. Workers are compared by their
-<em>declared</em> type. Equivalent workers are allowed to keep running. New workers are started (<a href="../../../com.squareup.workflow1/-worker/run/">run</a>
-is called and the returned <a href="#">Flow</a> is collected). Old workers are cancelled by cancelling their
-collecting coroutines. Workers for which <a href="../../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a> returns false will also be restarted.</p>
-<p>Implementations of this method should not be based on object identity. For example, a <a href="../../../com.squareup.workflow1/-worker/">Worker</a>
-that performs a network request might check that two workers are requests to the same endpoint
-and have the same request data.</p>
-<p>Most implementations of this method should compare constructor parameters.</p>
-<p>E.g:</p>
-<div class="highlight"><pre><span></span><code>class SearchWorker(private val query: String): Worker&lt;SearchResult&gt; {
-  // run omitted for example.
-
-  override fun doesSameWorkAs(otherWorker: Worker&lt;*&gt;): Boolean =
-    otherWorker is SearchWorker &amp;&amp; otherWorker.query == query
-}
-</code></pre></div>
+<p>[jvm]<br />
+Content<br />
+open override fun <a href="./">doesSameWorkAs</a>(otherWorker: <a href="../../../com.squareup.workflow1/-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  </p>
                 
               
               

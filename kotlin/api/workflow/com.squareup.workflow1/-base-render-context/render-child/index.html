@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -819,26 +819,33 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1</a> / <a href="../">BaseRenderContext</a> / <a href="./">renderChild</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">BaseRenderContext</a>/<a href="./">renderChild</a></p>
 <h1 id="renderchild">renderChild<a class="headerlink" href="#renderchild" title="Permanent link">&para;</a></h1>
-<p><code>abstract fun &lt;ChildPropsT, ChildOutputT, ChildRenderingT&gt; renderChild(child:</code><a href="../../-workflow/"><code>Workflow</code></a><code>&lt;ChildPropsT, ChildOutputT, ChildRenderingT&gt;, props: ChildPropsT, key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", handler: (ChildOutputT) -&gt;</code><a href="../../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;): ChildRenderingT</code></p>
-<p>Ensures <a href="./#com.squareup.workflow1.BaseRenderContext$renderChild(com.squareup.workflow1.Workflow((com.squareup.workflow1.BaseRenderContext.renderChild.ChildPropsT, com.squareup.workflow1.BaseRenderContext.renderChild.ChildOutputT, com.squareup.workflow1.BaseRenderContext.renderChild.ChildRenderingT)), com.squareup.workflow1.BaseRenderContext.renderChild.ChildPropsT, kotlin.String, kotlin.Function1((com.squareup.workflow1.BaseRenderContext.renderChild.ChildOutputT, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.BaseRenderContext.PropsT, com.squareup.workflow1.BaseRenderContext.StateT, com.squareup.workflow1.BaseRenderContext.OutputT)))))/child">child</a> is running as a child of this workflow, and returns the result of its
-<code>render</code> method.</p>
-<p><strong>Never call <a href="../../-stateful-workflow/render/">StatefulWorkflow.render</a> or <a href="../../-stateless-workflow/render/">StatelessWorkflow.render</a> directly, always do itthrough this context method.</strong></p>
-<ol>
-<li>If the child <em>wasn&rsquo;t</em> already running, it will be started either from
-    <a href="../../-stateful-workflow/initial-state/">initialState</a> or its snapshot.</li>
-<li>If the child <em>was</em> already running, The workflow&rsquo;s
-    <a href="../../-stateful-workflow/on-props-changed/">onPropsChanged</a> method is invoked with the previous input
-    and this one.</li>
-<li>The child&rsquo;s <code>render</code> method is invoked with <code>input</code> and the child&rsquo;s state.</li>
-</ol>
-<p>After this method returns, if something happens that trigger&rsquo;s one of <code>child</code>&lsquo;s handlers, and
-that handler emits an output, the function passed as <a href="./#com.squareup.workflow1.BaseRenderContext$renderChild(com.squareup.workflow1.Workflow((com.squareup.workflow1.BaseRenderContext.renderChild.ChildPropsT, com.squareup.workflow1.BaseRenderContext.renderChild.ChildOutputT, com.squareup.workflow1.BaseRenderContext.renderChild.ChildRenderingT)), com.squareup.workflow1.BaseRenderContext.renderChild.ChildPropsT, kotlin.String, kotlin.Function1((com.squareup.workflow1.BaseRenderContext.renderChild.ChildOutputT, com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.BaseRenderContext.PropsT, com.squareup.workflow1.BaseRenderContext.StateT, com.squareup.workflow1.BaseRenderContext.OutputT)))))/handler">handler</a> will be invoked with that
-output.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>key</code> - An optional string key that is used to distinguish between workflows of the same
-type.</p>
+<p>[jvm]<br />
+Content<br />
+abstract fun &lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt; <a href="./">renderChild</a>(child: <a href="../../-workflow/">Workflow</a>&lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt;, props: <a href="./">ChildPropsT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, handler: (<a href="./">ChildOutputT</a>) -&gt; <a href="../../-workflow-action/">WorkflowAction</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>&gt;): <a href="./">ChildRenderingT</a><br />
+More info  </p>
+<p>Ensures <a href="./">child</a> is running as a child of this workflow, and returns the result of its render method.</p>
+<p><strong>Never call</strong> <a href="../../-stateful-workflow/render/"><strong>StatefulWorkflow.render</strong></a> <strong>or</strong> <a href="../../-stateless-workflow/render/"><strong>StatelessWorkflow.render</strong></a> <strong>directly, always do it through this context method.</strong></p>
+<ol><li>If the child *wasn't* already running, it will be started either from     [initialState](../-stateful-workflow/initial-state.md) or its snapshot.</li><li>If the child *was* already running, The workflow's     [onPropsChanged](../-stateful-workflow/on-props-changed.md) method is invoked with the previous input     and this one.</li><li>The child's render method is invoked with input and the child's state.</li></ol>
+
+<p>After this method returns, if something happens that trigger&rsquo;s one of child&rsquo;s handlers, and that handler emits an output, the function passed as <a href="./">handler</a> will be invoked with that output.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1/BaseRenderContext/renderChild/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1/BaseRenderContext/renderChild/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/"></a><br><br>An optional string key that is used to distinguish between workflows of the same type.<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               

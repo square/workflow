@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,6 +793,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    See also
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#functions" class="md-nav__link">
     Functions
   </a>
@@ -819,15 +826,27 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.testing</a> / <a href="./">RenderTestResult</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.testing</a>/<a href="./">RenderTestResult</a></p>
 <h1 id="rendertestresult">RenderTestResult<a class="headerlink" href="#rendertestresult" title="Permanent link">&para;</a></h1>
-<p><code>interface RenderTestResult&lt;PropsT, StateT, OutputT&gt;</code></p>
-<p>Result of a <a href="../-render-tester/render/">RenderTester.render</a> call that can be used to verify that a <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> was
-processed and perform assertions on that action.</p>
-<p><strong>See Also</strong></p>
-<p><a href="verify-action/">verifyAction</a></p>
-<p><a href="verify-action-result/">verifyActionResult</a></p>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<p>[jvm] interface <a href="./">RenderTestResult</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;</p>
+<p>Result of a <a href="../-render-tester/render/">RenderTester.render</a> call that can be used to verify that a <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> was processed and perform assertions on that action.</p>
+<h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.testing/RenderTestResult///PointingToDeclaration/"></a><a href="verify-action-result/">com.squareup.workflow1.testing.RenderTestResult</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTestResult///PointingToDeclaration/"></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -837,12 +856,12 @@ processed and perform assertions on that action.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="verify-action/">verifyAction</a></td>
-<td>Asserts that the render pass handled either a workflow/worker output or a rendering event, and passes the resulting <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> to <a href="verify-action/#com.squareup.workflow1.testing.RenderTestResult$verifyAction(kotlin.Function1((com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.testing.RenderTestResult.PropsT, com.squareup.workflow1.testing.RenderTestResult.StateT, com.squareup.workflow1.testing.RenderTestResult.OutputT)), kotlin.Unit)))/block">block</a> for asserting.<code>abstract fun verifyAction(block: (</code><a href="../../com.squareup.workflow1/-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTestResult/verifyAction/#kotlin.Function1[com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="verify-action/">verifyAction</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTestResult/verifyAction/#kotlin.Function1[com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="verify-action/">verifyAction</a>(block: (<a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)  <br>More info  <br>Asserts that the render pass handled either a workflow/worker output or a rendering event, and passes the resulting <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> to <a href="verify-action/">block</a> for asserting.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="verify-action-result/">verifyActionResult</a></td>
-<td>Asserts that the render pass handled either a workflow/worker output or a rendering event, &ldquo;executes&rdquo; the action with the state passed to <a href="../test-render/">testRender</a>, then invokes <a href="verify-action-result/#com.squareup.workflow1.testing.RenderTestResult$verifyActionResult(kotlin.Function2((com.squareup.workflow1.testing.RenderTestResult.StateT, com.squareup.workflow1.WorkflowOutput((com.squareup.workflow1.testing.RenderTestResult.OutputT)), kotlin.Unit)))/block">block</a> with the resulting state and output values.<code>abstract fun verifyActionResult(block: (newState: StateT, output:</code><a href="../../com.squareup.workflow1/-workflow-output/"><code>WorkflowOutput</code></a><code>&lt;OutputT&gt;?) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTestResult/verifyActionResult/#kotlin.Function2[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?,kotlin.Unit]/PointingToDeclaration/"></a><a href="verify-action-result/">verifyActionResult</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTestResult/verifyActionResult/#kotlin.Function2[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?,kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="verify-action-result/">verifyActionResult</a>(block: (<a href="./">StateT</a>, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="./">OutputT</a>&gt;?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)  <br>More info  <br>Asserts that the render pass handled either a workflow/worker output or a rendering event, &ldquo;executes&rdquo; the action with the state passed to <a href="../test-render/">testRender</a>, then invokes <a href="verify-action-result/">block</a> with the resulting state and output values.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

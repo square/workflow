@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,6 +793,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#properties" class="md-nav__link">
     Properties
   </a>
@@ -826,14 +833,13 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">Compatible</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">Compatible</a></p>
 <h1 id="compatible">Compatible<a class="headerlink" href="#compatible" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi interface Compatible</code></p>
-<p>Implemented by objects whose <a href="../compatible/">compatibility</a> requires more nuance
-than just being of the same type.</p>
-<p>Renderings that don&rsquo;t implement this interface directly can be distinguished
-by wrapping them with <a href="../-named/">Named</a>.</p>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<p>[jvm] @<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
+<p>interface <a href="./">Compatible</a></p>
+<p>Implemented by objects whose <a href="../compatible/">compatibility</a> requires more nuance than just being of the same type.</p>
+<p>Renderings that don&rsquo;t implement this interface directly can be distinguished by wrapping them with <a href="../-named/">Named</a>.</p>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -843,12 +849,12 @@ by wrapping them with <a href="../-named/">Named</a>.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="compatibility-key/">compatibilityKey</a></td>
-<td>Instances of the same type are <a href="../compatible/">compatible</a> iff they have the same <a href="compatibility-key/">compatibilityKey</a>.<code>abstract val compatibilityKey:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a></td>
+<td><a name="com.squareup.workflow1.ui/Compatible.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.ui/Compatible.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="inheritors">Inheritors<a class="headerlink" href="#inheritors" title="Permanent link">&para;</a></h3>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -858,8 +864,21 @@ by wrapping them with <a href="../-named/">Named</a>.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="../-named/">Named</a></td>
-<td>Allows renderings that do not implement <a href="./">Compatible</a> themselves to be distinguished by more than just their type. Instances are <a href="../compatible/">compatible</a> if they have the same name and have <a href="../-named/wrapped/">compatible</a> fields.<code>data class Named&lt;W :</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt; :</code><a href="./"><code>Compatible</code></a></td>
+<td><a name="com.squareup.workflow1.ui/Compatible/compatibilityKey/#/PointingToDeclaration/"></a><a href="compatibility-key/">compatibilityKey</a></td>
+<td><a name="com.squareup.workflow1.ui/Compatible/compatibilityKey/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="compatibility-key/">compatibilityKey</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>Instances of the same type are <a href="../compatible/">compatible</a> iff they have the same <a href="compatibility-key/">compatibilityKey</a>.   <br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="inheritors">Inheritors<a class="headerlink" href="#inheritors" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.ui/Named///PointingToDeclaration/"></a><a href="../-named/">Named</a></td>
 </tr>
 </tbody>
 </table>

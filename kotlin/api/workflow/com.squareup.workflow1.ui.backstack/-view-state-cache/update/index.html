@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,6 +793,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#return" class="md-nav__link">
+    Return
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
@@ -819,22 +826,38 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.ui.backstack</a> / <a href="../">ViewStateCache</a> / <a href="./">update</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.ui.backstack</a>/<a href="../">ViewStateCache</a>/<a href="./">update</a></p>
 <h1 id="update">update<a class="headerlink" href="#update" title="Permanent link">&para;</a></h1>
-<p><code>fun update(retainedRenderings:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><code>Collection</code></a><code>&lt;</code><a href="../../../com.squareup.workflow1.ui/-named/"><code>Named</code></a><code>&lt;*&gt;&gt;, oldViewMaybe: View?, newView: View):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>retainedRenderings</code> - the renderings to be considered hidden after this update. Any
-associated view state will be retained in the cache, possibly to be restored to <a href="./#com.squareup.workflow1.ui.backstack.ViewStateCache$update(kotlin.collections.Collection((com.squareup.workflow1.ui.Named((kotlin.Any)))), android.view.View, android.view.View)/newView">newView</a>
-on a succeeding call to his method. Any other cached view state will be dropped.</p>
-<p><code>oldViewMaybe</code> - the view that is being removed, if any, which is expected to be showing
-a <a href="../../../com.squareup.workflow1.ui/-named/">Named</a> rendering. If that rendering is
-<a href="../../../com.squareup.workflow1.ui/compatible/">compatible with</a> a member of
-<a href="./#com.squareup.workflow1.ui.backstack.ViewStateCache$update(kotlin.collections.Collection((com.squareup.workflow1.ui.Named((kotlin.Any)))), android.view.View, android.view.View)/retainedRenderings">retainedRenderings</a>, its state will be <a href="#">saved</a>.</p>
-<p><code>newView</code> - the view that is about to be displayed, which must be showing a
-<a href="../../../com.squareup.workflow1.ui/-named/">Named</a> rendering. If <a href="../../../com.squareup.workflow1.ui/compatible/">compatible</a>
-view state is found in the cache, it is <a href="#">restored</a>.</p>
-<p><strong>Return</strong>
-true if <a href="./#com.squareup.workflow1.ui.backstack.ViewStateCache$update(kotlin.collections.Collection((com.squareup.workflow1.ui.Named((kotlin.Any)))), android.view.View, android.view.View)/newView">newView</a> has been restored.</p>
+<p>[androidJvm]<br />
+Content<br />
+fun <a href="./">update</a>(retainedRenderings: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;Named&lt;*&gt;&gt;, oldViewMaybe: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>?, newView: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>)<br />
+More info  </p>
+<h4 id="return">Return<a class="headerlink" href="#return" title="Permanent link">&para;</a></h4>
+<p>true if <a href="./">newView</a> has been restored.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>androidJvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.ui.backstack/ViewStateCache/update/#kotlin.collections.Collection[com.squareup.workflow1.ui.Named[*]]#android.view.View?#android.view.View/PointingToDeclaration/"></a>retainedRenderings</td>
+<td><a name="com.squareup.workflow1.ui.backstack/ViewStateCache/update/#kotlin.collections.Collection[com.squareup.workflow1.ui.Named[*]]#android.view.View?#android.view.View/PointingToDeclaration/"></a><br><br>the renderings to be considered hidden after this update. Any associated view state will be retained in the cache, possibly to be restored to <a href="./">newView</a> on a succeeding call to his method. Any other cached view state will be dropped.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.backstack/ViewStateCache/update/#kotlin.collections.Collection[com.squareup.workflow1.ui.Named[*]]#android.view.View?#android.view.View/PointingToDeclaration/"></a>oldViewMaybe</td>
+<td><a name="com.squareup.workflow1.ui.backstack/ViewStateCache/update/#kotlin.collections.Collection[com.squareup.workflow1.ui.Named[*]]#android.view.View?#android.view.View/PointingToDeclaration/"></a><br><br>the view that is being removed, if any, which is expected to be showing a Named rendering. If that rendering is compatible with a member of <a href="./">retainedRenderings</a>, its state will be <a href="../../../com.squareup.workflow1.ui.modal/-modal-view-container/#-888880737%2FFunctions%2F576965167">saved</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.backstack/ViewStateCache/update/#kotlin.collections.Collection[com.squareup.workflow1.ui.Named[*]]#android.view.View?#android.view.View/PointingToDeclaration/"></a>newView</td>
+<td><a name="com.squareup.workflow1.ui.backstack/ViewStateCache/update/#kotlin.collections.Collection[com.squareup.workflow1.ui.Named[*]]#android.view.View?#android.view.View/PointingToDeclaration/"></a><br><br>the view that is about to be displayed, which must be showing a Named rendering. If compatible view state is found in the cache, it is <a href="../../../com.squareup.workflow1.ui.modal/-modal-view-container/#-880525550%2FFunctions%2F576965167">restored</a>.<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               

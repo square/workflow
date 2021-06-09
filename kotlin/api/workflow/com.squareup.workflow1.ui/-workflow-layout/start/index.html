@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -802,16 +802,18 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.ui</a> / <a href="../">WorkflowLayout</a> / <a href="./">start</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.ui</a>/<a href="../">WorkflowLayout</a>/<a href="./">start</a></p>
 <h1 id="start">start<a class="headerlink" href="#start" title="Permanent link">&para;</a></h1>
-<p><code>fun start(renderings: Flow&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;, registry:</code><a href="../../-view-registry/"><code>ViewRegistry</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<p>Subscribes to <a href="./#com.squareup.workflow1.ui.WorkflowLayout$start(kotlinx.coroutines.flow.Flow((kotlin.Any)), com.squareup.workflow1.ui.ViewRegistry)/renderings">renderings</a>, and uses <a href="./#com.squareup.workflow1.ui.WorkflowLayout$start(kotlinx.coroutines.flow.Flow((kotlin.Any)), com.squareup.workflow1.ui.ViewRegistry)/registry">registry</a> to
-<a href="../../build-view/">build a new view</a> each time a new type of rendering is received,
-making that view the only child of this one.</p>
-<p><code>fun start(renderings: Flow&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>&gt;, environment:</code><a href="../../-view-environment/"><code>ViewEnvironment</code></a><code>= ViewEnvironment()):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<p>Subscribes to <a href="./#com.squareup.workflow1.ui.WorkflowLayout$start(kotlinx.coroutines.flow.Flow((kotlin.Any)), com.squareup.workflow1.ui.ViewEnvironment)/renderings">renderings</a>, and uses the <a href="../../-view-registry/">ViewRegistry</a> in the given <a href="./#com.squareup.workflow1.ui.WorkflowLayout$start(kotlinx.coroutines.flow.Flow((kotlin.Any)), com.squareup.workflow1.ui.ViewEnvironment)/environment">environment</a> to
-<a href="../../build-view/">build a new view</a> each time a new type of rendering is received,
-making that view the only child of this one.</p>
+<p>[androidJvm]<br />
+Content<br />
+fun <a href="./">start</a>(renderings: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;, registry: <a href="../../-view-registry/">ViewRegistry</a>)<br />
+More info  </p>
+<p>Subscribes to <a href="./">renderings</a>, and uses <a href="./">registry</a> to <a href="../../build-view/">build a new view</a> each time a new type of rendering is received, making that view the only child of this one.</p>
+<p>[androidJvm]<br />
+Content<br />
+fun <a href="./">start</a>(renderings: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;, environment: <a href="../../-view-environment/">ViewEnvironment</a> = ViewEnvironment())<br />
+More info  </p>
+<p>Subscribes to <a href="./">renderings</a>, and uses the <a href="../../-view-registry/">ViewRegistry</a> in the given <a href="./">environment</a> to <a href="../../build-view/">build a new view</a> each time a new type of rendering is received, making that view the only child of this one.</p>
                 
               
               

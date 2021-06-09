@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -833,36 +833,54 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.tracing</a> / <a href="./">TraceEncoder</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.tracing</a>/<a href="./">TraceEncoder</a></p>
 <h1 id="traceencoder">TraceEncoder<a class="headerlink" href="#traceencoder" title="Permanent link">&para;</a></h1>
-<p><code>class TraceEncoder :</code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html"><code>Closeable</code></a></p>
-<p>Encodes and writes <a href="../-trace-event/">trace events</a> to an Okio <a href="#">BufferedSink</a>.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>scope</code> - The <a href="#">CoroutineScope</a> that defines the lifetime for the encoder. When the scope is
-cancelled or fails, the sink returned from <a href="#">sinkProvider</a> will be closed.</p>
-<p><code>start</code> - The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-mark/index.html">TimeMark</a> to consider the beginning timestamp of the trace. All trace events&rsquo;
-timestamps are relative to this mark.
-<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-source/-monotonic/index.html">TimeSource.Monotonic</a>.<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-source/-monotonic/mark-now.html">markNow</a> by default.</p>
-<p><code>ioDispatcher</code> - The <a href="#">CoroutineDispatcher</a> to use to execute all IO operations.
-<a href="#">IO</a> by default.</p>
-<p><code>sinkProvider</code> - Returns the <a href="#">BufferedSink</a> to use to write trace events to. Called on a
-background thread.</p>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<p>[jvm] class <a href="./">TraceEncoder</a>(<strong>scope</strong>: CoroutineScope, <strong>start</strong>: <a href="../-time-mark/">TimeMark</a>, <strong>ioDispatcher</strong>: CoroutineDispatcher, <strong>sinkProvider</strong>: () -&gt; BufferedSink) : <a href="https://developer.android.com/reference/kotlin/java/io/Closeable.html">Closeable</a></p>
+<p>Encodes and writes <a href="../-trace-event/">trace events</a> to an Okio BufferedSink.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>Encodes and writes <a href="../-trace-event/">trace events</a> to an Okio <a href="#">BufferedSink</a>.<code>TraceEncoder(scope: CoroutineScope, start:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-mark/index.html"><code>TimeMark</code></a><code>= TimeSource.Monotonic.markNow(), ioDispatcher: CoroutineDispatcher = IO, sinkProvider: () -&gt; BufferedSink)</code></td>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a>scope</td>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a><br><br>The CoroutineScope that defines the lifetime for the encoder. When the scope is cancelled or fails, the sink returned from sinkProvider will be closed.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a>start</td>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a><br><br>The <a href="../-time-mark/">TimeMark</a> to consider the beginning timestamp of the trace. All trace events&rsquo; timestamps are relative to this mark. <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-source/-monotonic/index.html">TimeSource.Monotonic</a>.<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-source/-monotonic/mark-now.html">markNow</a> by default.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a>ioDispatcher</td>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a><br><br>The CoroutineDispatcher to use to execute all IO operations. IO by default.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a>sinkProvider</td>
+<td><a name="com.squareup.tracing/TraceEncoder///PointingToDeclaration/"></a><br><br>Returns the BufferedSink to use to write trace events to. Called on a background thread.<br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.tracing/TraceEncoder/TraceEncoder/#kotlinx.coroutines.CoroutineScope#com.squareup.tracing.TimeMark#kotlinx.coroutines.CoroutineDispatcher#kotlin.Function0[okio.BufferedSink]/PointingToDeclaration/"></a><a href="-trace-encoder/">TraceEncoder</a></td>
+<td><a name="com.squareup.tracing/TraceEncoder/TraceEncoder/#kotlinx.coroutines.CoroutineScope#com.squareup.tracing.TimeMark#kotlinx.coroutines.CoroutineDispatcher#kotlin.Function0[okio.BufferedSink]/PointingToDeclaration/"></a> [jvm] fun <a href="-trace-encoder/">TraceEncoder</a>(scope: CoroutineScope, start: <a href="../-time-mark/">TimeMark</a> = TraceEncoderTimeMark, ioDispatcher: CoroutineDispatcher = IO, sinkProvider: () -&gt; BufferedSink)The CoroutineScope that defines the lifetime for the encoder.   <br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -872,12 +890,12 @@ background thread.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="close/">close</a></td>
-<td><code>fun close():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.tracing/TraceEncoder/close/#/PointingToDeclaration/"></a><a href="close/">close</a></td>
+<td><a name="com.squareup.tracing/TraceEncoder/close/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="close/">close</a>()  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="create-logger/">createLogger</a></td>
-<td>Allocates a new thread ID named <a href="create-logger/#com.squareup.tracing.TraceEncoder$createLogger(kotlin.String, kotlin.String)/threadName">threadName</a> and returns a <a href="../-trace-logger/">TraceLogger</a> that will log all events under that thread ID.<code>fun createLogger(processName:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", threadName:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= ""):</code><a href="../-trace-logger/"><code>TraceLogger</code></a></td>
+<td><a name="com.squareup.tracing/TraceEncoder/createLogger/#kotlin.String#kotlin.String/PointingToDeclaration/"></a><a href="create-logger/">createLogger</a></td>
+<td><a name="com.squareup.tracing/TraceEncoder/createLogger/#kotlin.String#kotlin.String/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="create-logger/">createLogger</a>(processName: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, threadName: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="../-trace-logger/">TraceLogger</a>  <br>More info  <br>Allocates a new thread ID named <a href="create-logger/">threadName</a> and returns a <a href="../-trace-logger/">TraceLogger</a> that will log all events under that thread ID.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

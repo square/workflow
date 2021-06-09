@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -819,12 +819,12 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.tracing</a> / <a href="./">TraceLogger</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.tracing</a>/<a href="./">TraceLogger</a></p>
 <h1 id="tracelogger">TraceLogger<a class="headerlink" href="#tracelogger" title="Permanent link">&para;</a></h1>
-<p><code>interface TraceLogger</code></p>
-<p><a href="log/">Logs</a> <a href="../-trace-event/">TraceEvent</a>s to a <a href="../-trace-encoder/">TraceEncoder</a> under a given process and thread name.</p>
+<p>[jvm] interface <a href="./">TraceLogger</a></p>
+<p><a href="log/">Logs</a><a href="../-trace-event/">TraceEvent</a>s to a <a href="../-trace-encoder/">TraceEncoder</a> under a given process and thread name.</p>
 <p>Create with <a href="../-trace-encoder/create-logger/">TraceEncoder.createLogger</a>.</p>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -834,8 +834,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="log/">log</a></td>
-<td>Tags all events with the current timestamp and then enqueues them to be written to the trace file.<code>abstract fun log(eventBatch:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><code>List</code></a><code>&lt;</code><a href="../-trace-event/"><code>TraceEvent</code></a><code>&gt;):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><br>Tags event with the current timestamp and then enqueues it to be written to the trace file.<code>abstract fun log(event:</code><a href="../-trace-event/"><code>TraceEvent</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.tracing/TraceLogger/log/#com.squareup.tracing.TraceEvent/PointingToDeclaration/"></a><a href="log/">log</a></td>
+<td><a name="com.squareup.tracing/TraceLogger/log/#com.squareup.tracing.TraceEvent/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="log/">log</a>(event: <a href="../-trace-event/">TraceEvent</a>)  <br>More info  <br>Tags event with the current timestamp and then enqueues it to be written to the trace file.  <br><br><br>[jvm]  <br>Content  <br>abstract fun <a href="log/">log</a>(eventBatch: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-trace-event/">TraceEvent</a>&gt;)  <br>More info  <br>Tags all events with the current timestamp and then enqueues them to be written to the trace file.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

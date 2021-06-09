@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -802,13 +802,13 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1</a> / <a href="../">StatefulWorkflow</a> / <a href="./">onPropsChanged</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">StatefulWorkflow</a>/<a href="./">onPropsChanged</a></p>
 <h1 id="onpropschanged">onPropsChanged<a class="headerlink" href="#onpropschanged" title="Permanent link">&para;</a></h1>
-<p><code>open fun onPropsChanged(old: PropsT, new: PropsT, state: StateT): StateT</code></p>
-<p>Called from <a href="#">RenderContext.renderChild</a> instead of <a href="../initial-state/">initialState</a> when the workflow is already
-running. This allows the workflow to detect changes in props, and possibly change its state in
-response. This method is called eagerly: <code>old</code> and <code>new</code> might be the same value, so it is up
-to implementing code to perform any diffing if desired.</p>
+<p>[jvm]<br />
+Content<br />
+open fun <a href="./">onPropsChanged</a>(old: <a href="../">PropsT</a>, new: <a href="../">PropsT</a>, state: <a href="../">StateT</a>): <a href="../">StateT</a><br />
+More info  </p>
+<p>Called from RenderContext.renderChild instead of <a href="../initial-state/">initialState</a> when the workflow is already running. This allows the workflow to detect changes in props, and possibly change its state in response. This method is called eagerly: old and new might be the same value, so it is up to implementing code to perform any diffing if desired.</p>
 <p>Default implementation does nothing.</p>
                 
               

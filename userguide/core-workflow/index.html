@@ -212,7 +212,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../kotlin/api/workflow/" class="md-tabs__link">
+        <a href="../../kotlin/api/workflow/index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -761,7 +761,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../kotlin/api/workflow/" title="Kotlin" class="md-nav__link">
+    <a href="../../kotlin/api/workflow/index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -1040,11 +1040,11 @@ node in the workflow hierarchy.</p>
 <div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">Swift</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">Workflow</span><span class="p">:</span> <span class="n">AnyWorkflowConvertible</span> <span class="p">{</span>
 
-    <span class="n">associatedtype</span> <span class="n">State</span>
+    <span class="kd">associatedtype</span> <span class="n">State</span>
 
-    <span class="n">associatedtype</span> <span class="n">Output</span> <span class="p">=</span> <span class="n">Never</span>
+    <span class="kd">associatedtype</span> <span class="n">Output</span> <span class="p">=</span> <span class="n">Never</span>
 
-    <span class="n">associatedtype</span> <span class="n">Rendering</span>
+    <span class="kd">associatedtype</span> <span class="n">Rendering</span>
 
     <span class="kd">func</span> <span class="nf">makeInitialState</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">State</span>
 

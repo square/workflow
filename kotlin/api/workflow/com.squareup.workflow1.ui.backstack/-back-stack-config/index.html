@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,6 +793,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#entries" class="md-nav__link">
+    Entries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#types" class="md-nav__link">
     Types
   </a>
@@ -800,15 +807,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enum-values" class="md-nav__link">
-    Enum Values
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#companion-object-properties" class="md-nav__link">
-    Companion Object Properties
+  <a href="#properties" class="md-nav__link">
+    Properties
   </a>
   
 </li>
@@ -833,27 +833,35 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui.backstack</a> / <a href="./">BackStackConfig</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.backstack</a>/<a href="./">BackStackConfig</a></p>
 <h1 id="backstackconfig">BackStackConfig<a class="headerlink" href="#backstackconfig" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi enum class BackStackConfig</code></p>
-<p>Informs views whether they&rsquo;re children of a <a href="../-back-stack-container/">BackStackContainer</a>,
-and if so whether they&rsquo;re the <a href="-first/">first frame</a> or <a href="-other/">not</a>.</p>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<p>[androidJvm] @WorkflowUiExperimentalApi()  </p>
+<p>enum <a href="./">BackStackConfig</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a>&lt;<a href="./">BackStackConfig</a>&gt; </p>
+<p>Informs views whether they&rsquo;re children of a <a href="../-back-stack-container/">BackStackContainer</a>, and if so whether they&rsquo;re the <a href="-first/">first frame</a> or <a href="-other/">not</a>.</p>
+<h2 id="entries">Entries<a class="headerlink" href="#entries" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-companion/">Companion</a></td>
-<td><code>companion object Companion :</code><a href="../../com.squareup.workflow1.ui/-view-environment-key/"><code>ViewEnvironmentKey</code></a><code>&lt;</code><a href="./"><code>BackStackConfig</code></a><code>&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig.Other///PointingToDeclaration/"></a><a href="-other/">Other</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig.Other///PointingToDeclaration/"></a> [androidJvm] <a href="-other/">Other</a>()  <br>This rendering is in a BackStackScreen but is not the first frame.   <br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig.First///PointingToDeclaration/"></a><a href="-first/">First</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig.First///PointingToDeclaration/"></a> [androidJvm] <a href="-first/">First</a>()  <br>This rendering is the first frame in a BackStackScreen.   <br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig.None///PointingToDeclaration/"></a><a href="-none/">None</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig.None///PointingToDeclaration/"></a> [androidJvm] <a href="-none/">None</a>()  <br>There is no <a href="../-back-stack-container/">BackStackContainer</a> above here.   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="enum-values">Enum Values<a class="headerlink" href="#enum-values" title="Permanent link">&para;</a></h3>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -863,20 +871,12 @@ and if so whether they&rsquo;re the <a href="-first/">first frame</a> or <a href
 </thead>
 <tbody>
 <tr>
-<td><a href="-none/">None</a></td>
-<td>There is no <a href="../-back-stack-container/">BackStackContainer</a> above here.</td>
-</tr>
-<tr>
-<td><a href="-first/">First</a></td>
-<td>This rendering is the first frame in a <a href="../-back-stack-screen/">BackStackScreen</a>. Useful as a hint to disable &ldquo;go back&rdquo; behavior, or replace it with &ldquo;go up&rdquo; behavior.</td>
-</tr>
-<tr>
-<td><a href="-other/">Other</a></td>
-<td>This rendering is in a <a href="../-back-stack-screen/">BackStackScreen</a> but is not the first frame. Useful as a hint to enable &ldquo;go back&rdquo; behavior.</td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig.Companion///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>object <a href="-companion/">Companion</a> : <a href="../../com.squareup.workflow1.ui/-view-environment-key/">ViewEnvironmentKey</a>&lt;<a href="./">BackStackConfig</a>&gt;   <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="companion-object-properties">Companion Object Properties<a class="headerlink" href="#companion-object-properties" title="Permanent link">&para;</a></h3>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -886,8 +886,12 @@ and if so whether they&rsquo;re the <a href="-first/">first frame</a> or <a href
 </thead>
 <tbody>
 <tr>
-<td><a href="default/">default</a></td>
-<td><code>val default:</code><a href="./"><code>BackStackConfig</code></a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig/name/#/PointingToDeclaration/"></a><a href="./#1942191907%2FProperties%2F576965167">name</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig/name/#/PointingToDeclaration/"></a> [androidJvm] val <a href="./#1942191907%2FProperties%2F576965167">name</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>   <br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig/ordinal/#/PointingToDeclaration/"></a><a href="./#1808986427%2FProperties%2F576965167">ordinal</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackConfig/ordinal/#/PointingToDeclaration/"></a> [androidJvm] val <a href="./#1808986427%2FProperties%2F576965167">ordinal</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>   <br></td>
 </tr>
 </tbody>
 </table>

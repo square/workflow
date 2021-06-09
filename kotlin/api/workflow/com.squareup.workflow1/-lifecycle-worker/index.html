@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -806,13 +806,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#extension-functions" class="md-nav__link">
-    Extension Functions
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -833,28 +826,27 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">LifecycleWorker</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">LifecycleWorker</a></p>
 <h1 id="lifecycleworker">LifecycleWorker<a class="headerlink" href="#lifecycleworker" title="Permanent link">&para;</a></h1>
-<p><code>abstract class LifecycleWorker :</code><a href="../-worker/"><code>Worker</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt;</code></p>
+<p>[jvm] abstract class <a href="./">LifecycleWorker</a> : <a href="../-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt; </p>
 <p><a href="../-worker/">Worker</a> that performs some action when the worker is started and/or stopped.</p>
-<p>A <a href="../-worker/">Worker</a> is stopped when its parent <a href="../-workflow/">Workflow</a> finishes a render pass without running the
-worker, or when the parent workflow is itself torn down.</p>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<p>A <a href="../-worker/">Worker</a> is stopped when its parent <a href="../-workflow/">Workflow</a> finishes a render pass without running the worker, or when the parent workflow is itself torn down.</p>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td><a href="../-worker/">Worker</a> that performs some action when the worker is started and/or stopped.<code>LifecycleWorker()</code></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/LifecycleWorker/#/PointingToDeclaration/"></a><a href="-lifecycle-worker/">LifecycleWorker</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/LifecycleWorker/#/PointingToDeclaration/"></a> [jvm] fun <a href="-lifecycle-worker/">LifecycleWorker</a>()   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -864,39 +856,20 @@ worker, or when the parent workflow is itself torn down.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="does-same-work-as/">doesSameWorkAs</a></td>
-<td>Equates <a href="./">LifecycleWorker</a>s that have the same concrete class.<code>open fun doesSameWorkAs(otherWorker:</code><a href="../-worker/"><code>Worker</code></a><code>&lt;*&gt;):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a><a href="does-same-work-as/">doesSameWorkAs</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="../-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br>More info  <br>Equates <a href="./">LifecycleWorker</a>s that have the same concrete class.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="on-started/">onStarted</a></td>
-<td>Called when this worker is started. It is executed concurrently with the parent workflow – the first render pass that starts this worker <em>will not</em> wait for this method to return, and one or more additional render passes may occur before this method is called. This behavior may change to be more strict in the future.<code>open fun onStarted():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/onStarted/#/PointingToDeclaration/"></a><a href="on-started/">onStarted</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/onStarted/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="on-started/">onStarted</a>()  <br>More info  <br>Called when this worker is started.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="on-stopped/">onStopped</a></td>
-<td>Called when this worker has been torn down. It is executed concurrently with the parent workflow – the render pass that cancels (stops) this worker <em>will not</em> wait for this method to return, and one or more additional render passes may occur before this method is called. This behavior may change to be more strict in the future.<code>open fun onStopped():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/onStopped/#/PointingToDeclaration/"></a><a href="on-stopped/">onStopped</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/onStopped/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="on-stopped/">onStopped</a>()  <br>More info  <br>Called when this worker has been torn down.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="run/">run</a></td>
-<td>Returns a <a href="#">Flow</a> to execute the work represented by this worker.<code>fun run(): Flow&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt;</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="extension-functions">Extension Functions<a class="headerlink" href="#extension-functions" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Summary</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="../../com.squareup.workflow1.testing/test/">test</a></td>
-<td>Test a <a href="../-worker/">Worker</a> by defining assertions on its output within <a href="../../com.squareup.workflow1.testing/test/#com.squareup.workflow1.testing$test(com.squareup.workflow1.Worker((com.squareup.workflow1.testing.test.T)), kotlin.Long, kotlin.coroutines.SuspendFunction1((com.squareup.workflow1.testing.WorkerTester((com.squareup.workflow1.testing.test.T)), kotlin.Unit)))/block">block</a>.<code>fun &lt;T&gt;</code><a href="../-worker/"><code>Worker</code></a><code>&lt;T&gt;.test(timeoutMs:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html"><code>Long</code></a><code>= DEFAULT_TIMEOUT_MS, block: suspend</code><a href="../../com.squareup.workflow1.testing/-worker-tester/"><code>WorkerTester</code></a><code>&lt;T&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
-</tr>
-<tr>
-<td><a href="../transform/">transform</a></td>
-<td>Returns a <a href="../-worker/">Worker</a> that transforms this <a href="../-worker/">Worker</a>&lsquo;s <a href="#">Flow</a> by calling <a href="../transform/#com.squareup.workflow1$transform(com.squareup.workflow1.Worker((com.squareup.workflow1.transform.T)), kotlin.Function1((kotlinx.coroutines.flow.Flow((com.squareup.workflow1.transform.T)), kotlinx.coroutines.flow.Flow((com.squareup.workflow1.transform.R)))))/transform">transform</a>.<code>fun &lt;T, R&gt;</code><a href="../-worker/"><code>Worker</code></a><code>&lt;T&gt;.transform(transform: (Flow&lt;T&gt;) -&gt; Flow&lt;R&gt;):</code><a href="../-worker/"><code>Worker</code></a><code>&lt;R&gt;</code></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/run/#/PointingToDeclaration/"></a><a href="run/">run</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/run/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>override fun <a href="run/">run</a>(): Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;  <br>More info  <br>Returns a Flow to execute the work represented by this worker.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

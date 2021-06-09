@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -819,33 +819,37 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.ui</a> / <a href="./">AndroidViewRendering</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">AndroidViewRendering</a></p>
 <h1 id="androidviewrendering">AndroidViewRendering<a class="headerlink" href="#androidviewrendering" title="Permanent link">&para;</a></h1>
-<p><code>@WorkflowUiExperimentalApi interface AndroidViewRendering&lt;V :</code><a href="./"><code>AndroidViewRendering</code></a><code>&lt;V&gt;&gt;</code></p>
-<p>Interface implemented by a rendering class to allow it to drive an Android UI
-via an appropriate <a href="../-view-factory/">ViewFactory</a> implementation.</p>
-<p>You will rarely, if ever, write a <a href="../-view-factory/">ViewFactory</a> yourself.  Instead
-use <a href="../-layout-runner/bind/">LayoutRunner.bind</a> to work with XML layout resources, or
-<a href="../-builder-view-factory/">BuilderViewFactory</a> to create views from code.  See <a href="../-layout-runner/">LayoutRunner</a> for more
-details.</p>
-<div class="highlight"><pre><span></span><code>    @OptIn(WorkflowUiExperimentalApi::class)
-    data class HelloView(
-      val message: String,
-      val onClick: () -&gt; Unit
-    ) : AndroidViewRendering&lt;HelloView&gt; {
-      override val viewFactory: ViewFactory&lt;HelloView&gt; =
-        LayoutRunner.bind(HelloGoodbyeLayoutBinding::inflate) { r, _ -&gt;
-          helloMessage.text = r.message
-          helloMessage.setOnClickListener { r.onClick() }
-        }
+<p>[androidJvm] @WorkflowUiExperimentalApi()  </p>
+<p>interface <a href="./">AndroidViewRendering</a>&lt;<a href="./">V</a> : <a href="./">AndroidViewRendering</a>&lt;<a href="./">V</a>&gt;&gt;</p>
+<p>Interface implemented by a rendering class to allow it to drive an Android UI via an appropriate <a href="../-view-factory/">ViewFactory</a> implementation.</p>
+<p>You will rarely, if ever, write a <a href="../-view-factory/">ViewFactory</a> yourself.  Instead use <a href="../-layout-runner/-companion/bind/">LayoutRunner.bind</a> to work with XML layout resources, or <a href="../-builder-view-factory/">BuilderViewFactory</a> to create views from code.  See <a href="../-layout-runner/">LayoutRunner</a> for more details.</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>@OptIn(WorkflowUiExperimentalApi::class)
+data class HelloView(
+  val message: String,
+  val onClick: () -&gt; Unit
+) : AndroidViewRendering&lt;HelloView&gt; {
+  override val viewFactory: ViewFactory&lt;HelloView&gt; =
+    LayoutRunner.bind(HelloGoodbyeLayoutBinding::inflate) { r, _ -&gt;
+      helloMessage.text = r.message
+      helloMessage.setOnClickListener { r.onClick() }
     }
+}
 </code></pre></div>
-<p>This is the simplest way to bridge the gap between your workflows and the UI,
-but using it requires your workflows code to reside in Android modules, instead
-of pure Kotlin. If this is a problem, or you need more flexibility for any other
-reason, you can use <a href="../-view-registry/">ViewRegistry</a> to bind your renderings to <a href="../-view-factory/">ViewFactory</a>
-implementations at runtime.</p>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+</td></tr></table>
+<p>This is the simplest way to bridge the gap between your workflows and the UI, but using it requires your workflows code to reside in Android modules, instead of pure Kotlin. If this is a problem, or you need more flexibility for any other reason, you can use <a href="../-view-registry/">ViewRegistry</a> to bind your renderings to <a href="../-view-factory/">ViewFactory</a> implementations at runtime.</p>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -855,8 +859,8 @@ implementations at runtime.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="view-factory/">viewFactory</a></td>
-<td>Used to build instances of <a href="#">android.view.View</a> as needed to display renderings of this type.<code>abstract val viewFactory:</code><a href="../-view-factory/"><code>ViewFactory</code></a><code>&lt;V&gt;</code></td>
+<td><a name="com.squareup.workflow1.ui/AndroidViewRendering/viewFactory/#/PointingToDeclaration/"></a><a href="view-factory/">viewFactory</a></td>
+<td><a name="com.squareup.workflow1.ui/AndroidViewRendering/viewFactory/#/PointingToDeclaration/"></a> [androidJvm] abstract val <a href="view-factory/">viewFactory</a>: <a href="../-view-factory/">ViewFactory</a>&lt;<a href="./">V</a>&gt;Used to build instances of <a href="https://developer.android.com/reference/kotlin/android/view/View.html">android.view.View</a> as needed to display renderings of this type.   <br></td>
 </tr>
 </tbody>
 </table>

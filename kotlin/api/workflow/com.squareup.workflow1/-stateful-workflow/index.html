@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -797,53 +797,47 @@
     Avoid capturing stale state
   </a>
   
-    <nav class="md-nav" aria-label="Avoid capturing stale state">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    See also
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#types" class="md-nav__link">
-    Types
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#constructors" class="md-nav__link">
     Constructors
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#functions" class="md-nav__link">
     Functions
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#extension-properties" class="md-nav__link">
-    Extension Properties
+      
+        <li class="md-nav__item">
+  <a href="#extensions" class="md-nav__link">
+    Extensions
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extension-functions" class="md-nav__link">
-    Extension Functions
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -867,115 +861,75 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">StatefulWorkflow</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">StatefulWorkflow</a></p>
 <h1 id="statefulworkflow">StatefulWorkflow<a class="headerlink" href="#statefulworkflow" title="Permanent link">&para;</a></h1>
-<p><code>abstract class StatefulWorkflow&lt;in PropsT, StateT, out OutputT, out RenderingT&gt; :</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;</code></p>
-<p>A composable, stateful object that can <a href="#">handle events</a>,
-<a href="#">delegate to children</a>, <a href="../running-worker/">subscribe</a> to
-arbitrary asynchronous events from the outside world, and be <a href="snapshot-state/">saved</a> to a
-serialized form to be restored later.</p>
-<p>The basic purpose of a <code>Workflow</code> is to take some <a href="-render-context/#PropsT">props</a> and return a
-<a href="-render-context/#RenderingT">rendering</a> that serves as a public representation of its current state,
-and which can be used to update that state. A rendering typically serves as a view  model,
-though this is not assumed, and is not the only use case.</p>
-<p>To that end, a workflow may keep track of internal <a href="-render-context/#StateT">state</a>,
-recursively ask other workflows to render themselves, subscribe to data streams from the outside
-world, and handle events both from its <a href="#">renderings</a> and from
-workflows it&rsquo;s delegated to (its &ldquo;children&rdquo;). A <code>Workflow</code> may also emit
-<a href="-render-context/#OutputT">output events</a> up to its parent <code>Workflow</code>.</p>
-<p>Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows
-are started as necessary whenever another workflow asks for them, and are cleaned up automatically
-when they&rsquo;re no longer needed. <a href="-render-context/#PropsT">Props</a> propagate down the tree, <a href="-render-context/#OutputT">outputs</a> and
-<a href="-render-context/#RenderingT">renderings</a> propagate up the tree.</p>
+<p>[jvm] abstract class <a href="./">StatefulWorkflow</a><in <a href="index.md">PropsT</a>, <a href="index.md">StateT</a>, out <a href="index.md">OutputT</a>, out <a href="index.md">RenderingT</a>> : <a href="../-workflow/">Workflow</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; </p>
+<p>A composable, stateful object that can <a href="-render-context/#1977928193%2FProperties%2F-1979542051">handle events</a>, delegate to children, <a href="../running-worker/">subscribe</a> to arbitrary asynchronous events from the outside world, and be <a href="snapshot-state/">saved</a> to a serialized form to be restored later.</p>
+<p>The basic purpose of a Workflow is to take some <a href="./">props</a> and return a <a href="./">rendering</a> that serves as a public representation of its current state, and which can be used to update that state. A rendering typically serves as a view  model, though this is not assumed, and is not the only use case.</p>
+<p>To that end, a workflow may keep track of internal <a href="./">state</a>, recursively ask other workflows to render themselves, subscribe to data streams from the outside world, and handle events both from its <a href="-render-context/#1977928193%2FProperties%2F-1979542051">renderings</a> and from workflows it&rsquo;s delegated to (its &ldquo;children&rdquo;). A Workflow may also emit <a href="./">output events</a> up to its parent Workflow.</p>
+<p>Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows are started as necessary whenever another workflow asks for them, and are cleaned up automatically when they&rsquo;re no longer needed. <a href="./">Props</a> propagate down the tree, <a href="./">outputs</a> and <a href="./">renderings</a> propagate up the tree.</p>
 <h2 id="avoid-capturing-stale-state">Avoid capturing stale state<a class="headerlink" href="#avoid-capturing-stale-state" title="Permanent link">&para;</a></h2>
-<p>Workflows may not perform side effects in their <code>render</code> methods, but may perform side effects by
-running <a href="../-worker/">Worker</a>s and getting events from <a href="-render-context/#RenderingT">RenderingT</a>s via <a href="../-workflow-action/">WorkflowAction</a>s. A <a href="../-workflow-action/">WorkflowAction</a>
-defines how to update the <a href="-render-context/#StateT">StateT</a> and what <a href="-render-context/#OutputT">OutputT</a>s to emit. Actions get access to the current
-workflow&rsquo;s state, and they must use that view of the state. If an action is defined inline, it is
-incorrect to capture, or close over, the <a href="-render-context/#StateT">StateT</a> passed to <a href="render/">render</a> in the action. Workflows are
-executed synchronously, but external events may not be, so captured state may be stale when the
-action is invoked.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>PropsT</code> - Typically a data class that is used to pass configuration information or bits of
-state that the workflow can always get from its parent and needn&rsquo;t duplicate in its own state.
-May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not need any props data.</p>
-<p><code>StateT</code> - Typically a data class that contains all of the internal state for this workflow.
-The state is seeded via <a href="-render-context/#PropsT">props</a> in <a href="initial-state/">initialState</a>. It can be <a href="snapshot-state/">serialized</a>
-and later used to restore the workflow. <strong>Implementations of the <code>Workflow</code>interface should not generally contain their own state directly.</strong> They may inject objects like
-instances of their child workflows, or network clients, but should not contain directly mutable
-state. This is the only type parameter that a parent workflow needn&rsquo;t care about for its children,
-and may just use star (<code>*</code>) instead of specifying it. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not have
-any internal state (see <a href="../-stateless-workflow/">StatelessWorkflow</a>).</p>
-<p><code>OutputT</code> - Typically a sealed class that represents &ldquo;events&rdquo; that this workflow can send
-to its parent.
-May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a> if the workflow doesn&rsquo;t need to emit anything.</p>
-<p><code>RenderingT</code> - The value returned to this workflow&rsquo;s parent during <a href="render/">composition</a>.
-Typically represents a &ldquo;view&rdquo; of this workflow&rsquo;s props, current state, and children&rsquo;s renderings.
-A workflow that represents a UI component may use a view model as its rendering type.</p>
-<p><strong>See Also</strong></p>
-<p><a href="../-stateless-workflow/">StatelessWorkflow</a></p>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<p>Workflows may not perform side effects in their render methods, but may perform side effects by running <a href="../-worker/">Worker</a>s and getting events from <a href="./">RenderingT</a>s via <a href="../-workflow-action/">WorkflowAction</a>s. A <a href="../-workflow-action/">WorkflowAction</a> defines how to update the <a href="./">StateT</a> and what <a href="./">OutputT</a>s to emit. Actions get access to the current workflow&rsquo;s state, and they must use that view of the state. If an action is defined inline, it is incorrect to capture, or close over, the <a href="./">StateT</a> passed to <a href="render/">render</a> in the action. Workflows are executed synchronously, but external events may not be, so captured state may be stale when the action is invoked.</p>
+<h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-render-context/">RenderContext</a></td>
-<td><code>inner class RenderContext&lt;in PropsT, StateT, out OutputT, out RenderingT&gt; :</code><a href="../-base-render-context/"><code>BaseRenderContext</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a><a href="../-stateless-workflow/">com.squareup.workflow1.StatelessWorkflow</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a></td>
 </tr>
 </tbody>
 </table>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>A composable, stateful object that can <a href="#">handle events</a>, <a href="#">delegate to children</a>, <a href="../running-worker/">subscribe</a> to arbitrary asynchronous events from the outside world, and be <a href="snapshot-state/">saved</a> to a serialized form to be restored later.<code>StatefulWorkflow()</code></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a>PropsT</td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a><br><br>Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn&rsquo;t duplicate in its own state. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not need any props data.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a>StateT</td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a><br><br>Typically a data class that contains all of the internal state for this workflow. The state is seeded via <a href="./">props</a> in <a href="initial-state/">initialState</a>. It can be <a href="snapshot-state/">serialized</a> and later used to restore the workflow. <strong>Implementations of the</strong> <strong>Workflow</strong> <strong>interface should not generally contain their own state directly.</strong> They may inject objects like instances of their child workflows, or network clients, but should not contain directly mutable state. This is the only type parameter that a parent workflow needn&rsquo;t care about for its children, and may just use star (*) instead of specifying it. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not have any internal state (see <a href="../-stateless-workflow/">StatelessWorkflow</a>).<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a>OutputT</td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a><br><br>Typically a sealed class that represents &ldquo;events&rdquo; that this workflow can send to its parent. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a> if the workflow doesn&rsquo;t need to emit anything.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a>RenderingT</td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration/"></a><br><br>The value returned to this workflow&rsquo;s parent during <a href="render/">composition</a>. Typically represents a &ldquo;view&rdquo; of this workflow&rsquo;s props, current state, and children&rsquo;s renderings. A workflow that represents a UI component may use a view model as its rendering type.<br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="as-stateful-workflow/">asStatefulWorkflow</a></td>
-<td>Satisfies the <a href="../-workflow/">Workflow</a> interface by returning <code>this</code>.<code>fun asStatefulWorkflow():</code><a href="./"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;</code></td>
-</tr>
-<tr>
-<td><a href="initial-state/">initialState</a></td>
-<td>Called from <a href="#">RenderContext.renderChild</a> when the state machine is first started, to get the initial state.<code>abstract fun initialState(props: PropsT, snapshot:</code><a href="../-snapshot/"><code>Snapshot</code></a><code>?): StateT</code></td>
-</tr>
-<tr>
-<td><a href="on-props-changed/">onPropsChanged</a></td>
-<td>Called from <a href="#">RenderContext.renderChild</a> instead of <a href="initial-state/">initialState</a> when the workflow is already running. This allows the workflow to detect changes in props, and possibly change its state in response. This method is called eagerly: <code>old</code> and <code>new</code> might be the same value, so it is up to implementing code to perform any diffing if desired.<code>open fun onPropsChanged(old: PropsT, new: PropsT, state: StateT): StateT</code></td>
-</tr>
-<tr>
-<td><a href="render/">render</a></td>
-<td>Called at least once† any time one of the following things happens:<code>abstract fun render(renderProps: PropsT, renderState: StateT, context: RenderContext&lt;PropsT, StateT, OutputT, RenderingT&gt;): RenderingT</code></td>
-</tr>
-<tr>
-<td><a href="snapshot-state/">snapshotState</a></td>
-<td>Called whenever the state changes to generate a new <a href="../-snapshot/">Snapshot</a> of the state.<code>abstract fun snapshotState(state: StateT):</code><a href="../-snapshot/"><code>Snapshot</code></a><code>?</code></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/StatefulWorkflow/#/PointingToDeclaration/"></a><a href="-stateful-workflow/">StatefulWorkflow</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/StatefulWorkflow/#/PointingToDeclaration/"></a> [jvm] fun <a href="-stateful-workflow/">StatefulWorkflow</a>()Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn&rsquo;t duplicate in its own state.   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="extension-properties">Extension Properties<a class="headerlink" href="#extension-properties" title="Permanent link">&para;</a></h3>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -985,12 +939,12 @@ A workflow that represents a UI component may use a view model as its rendering 
 </thead>
 <tbody>
 <tr>
-<td><a href="../identifier/">identifier</a></td>
-<td>The <a href="../-workflow-identifier/">WorkflowIdentifier</a> that identifies this <a href="../-workflow/">Workflow</a>.<code>val</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;*, *, *&gt;.identifier:</code><a href="../-workflow-identifier/"><code>WorkflowIdentifier</code></a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow.RenderContext///PointingToDeclaration/"></a><a href="-render-context/">RenderContext</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow.RenderContext///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inner class <a href="-render-context/">RenderContext</a> : <a href="../-base-render-context/">BaseRenderContext</a>&lt;@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="./">PropsT</a>, <a href="./">StateT</a>, @<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="./">OutputT</a>&gt;   <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="extension-functions">Extension Functions<a class="headerlink" href="#extension-functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -1000,28 +954,51 @@ A workflow that represents a UI component may use a view model as its rendering 
 </thead>
 <tbody>
 <tr>
-<td><a href="../action/">action</a></td>
-<td>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those of the receiving <a href="./">StatefulWorkflow</a>. The action will invoke the given <a href="../action/#com.squareup.workflow1$action(com.squareup.workflow1.StatefulWorkflow((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT, com.squareup.workflow1.action.RenderingT)), kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/update">lambda</a> when it is <a href="../-workflow-action/apply/">applied</a>.<code>fun &lt;PropsT, StateT, OutputT, RenderingT&gt;</code><a href="./"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.action(name:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", update: Updater&lt;PropsT, StateT, OutputT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code><br><code>fun &lt;PropsT, StateT, OutputT, RenderingT&gt;</code><a href="./"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.action(name: () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, update: Updater&lt;PropsT, StateT, OutputT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/asStatefulWorkflow/#/PointingToDeclaration/"></a><a href="as-stateful-workflow/">asStatefulWorkflow</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/asStatefulWorkflow/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>override fun <a href="as-stateful-workflow/">asStatefulWorkflow</a>(): <a href="./">StatefulWorkflow</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;  <br>More info  <br>Satisfies the <a href="../-workflow/">Workflow</a> interface by returning this.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../../com.squareup.workflow1.testing/launch-for-testing-from-start-with/">launchForTestingFromStartWith</a></td>
-<td>Creates a <a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/">WorkflowTestRuntime</a> to run this workflow for unit testing.<code>fun &lt;T, PropsT, OutputT, RenderingT&gt;</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;.launchForTestingFromStartWith(props: PropsT, testParams:</code><a href="../../com.squareup.workflow1.testing/-workflow-test-params/"><code>WorkflowTestParams</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt; = WorkflowTestParams(), context:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><code>CoroutineContext</code></a><code>= EmptyCoroutineContext, block:</code><a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/"><code>WorkflowTestRuntime</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;.() -&gt; T): T</code><br><code>fun &lt;T, OutputT, RenderingT&gt;</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, OutputT, RenderingT&gt;.launchForTestingFromStartWith(testParams:</code><a href="../../com.squareup.workflow1.testing/-workflow-test-params/"><code>WorkflowTestParams</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>&gt; = WorkflowTestParams(), context:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><code>CoroutineContext</code></a><code>= EmptyCoroutineContext, block:</code><a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/"><code>WorkflowTestRuntime</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, OutputT, RenderingT&gt;.() -&gt; T): T</code></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/initialState/#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.Snapshot?/PointingToDeclaration/"></a><a href="initial-state/">initialState</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/initialState/#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.Snapshot?/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="initial-state/">initialState</a>(props: <a href="./">PropsT</a>, snapshot: <a href="../-snapshot/">Snapshot</a>?): <a href="./">StateT</a>  <br>More info  <br>Called from RenderContext.renderChild when the state machine is first started, to get the initial state.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">launchForTestingFromStateWith</a></td>
-<td>Creates a <a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/">WorkflowTestRuntime</a> to run this workflow for unit testing. If the workflow is <a href="./">stateful</a>, <a href="initial-state/">initialState</a> is not called. Instead, the workflow is started from the given <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/#com.squareup.workflow1.testing$launchForTestingFromStateWith(com.squareup.workflow1.StatefulWorkflow((com.squareup.workflow1.testing.launchForTestingFromStateWith.PropsT, com.squareup.workflow1.testing.launchForTestingFromStateWith.StateT, com.squareup.workflow1.testing.launchForTestingFromStateWith.OutputT, com.squareup.workflow1.testing.launchForTestingFromStateWith.RenderingT)), com.squareup.workflow1.testing.launchForTestingFromStateWith.PropsT, com.squareup.workflow1.testing.launchForTestingFromStateWith.StateT, kotlin.coroutines.CoroutineContext, kotlin.Function1((com.squareup.workflow1.testing.WorkflowTestRuntime((com.squareup.workflow1.testing.launchForTestingFromStateWith.PropsT, com.squareup.workflow1.testing.launchForTestingFromStateWith.OutputT, com.squareup.workflow1.testing.launchForTestingFromStateWith.RenderingT)), com.squareup.workflow1.testing.launchForTestingFromStateWith.T)))/initialState">initialState</a>.<code>fun &lt;T, PropsT, StateT, OutputT, RenderingT&gt;</code><a href="./"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.launchForTestingFromStateWith(props: PropsT, initialState: StateT, context:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><code>CoroutineContext</code></a><code>= EmptyCoroutineContext, block:</code><a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/"><code>WorkflowTestRuntime</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;.() -&gt; T): T</code><br><code>fun &lt;StateT, OutputT, RenderingT&gt;</code><a href="./"><code>StatefulWorkflow</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, StateT, OutputT, RenderingT&gt;.launchForTestingFromStateWith(initialState: StateT, context:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><code>CoroutineContext</code></a><code>= EmptyCoroutineContext, block:</code><a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/"><code>WorkflowTestRuntime</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, OutputT, RenderingT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/onPropsChanged/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="on-props-changed/">onPropsChanged</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/onPropsChanged/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="on-props-changed/">onPropsChanged</a>(old: <a href="./">PropsT</a>, new: <a href="./">PropsT</a>, state: <a href="./">StateT</a>): <a href="./">StateT</a>  <br>More info  <br>Called from RenderContext.renderChild instead of <a href="initial-state/">initialState</a> when the workflow is already running.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">launchForTestingWith</a></td>
-<td>Creates a <a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/">WorkflowTestRuntime</a> to run this workflow for unit testing.<code>fun &lt;T, PropsT, StateT, OutputT, RenderingT&gt;</code><a href="./"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.launchForTestingWith(props: PropsT, testParams:</code><a href="../../com.squareup.workflow1.testing/-workflow-test-params/"><code>WorkflowTestParams</code></a><code>&lt;StateT&gt; = WorkflowTestParams(), context:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><code>CoroutineContext</code></a><code>= EmptyCoroutineContext, block:</code><a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/"><code>WorkflowTestRuntime</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;.() -&gt; T): T</code></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/render/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.StatefulWorkflow.RenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a><a href="render/">render</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/render/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.StatefulWorkflow.RenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="render/">render</a>(renderProps: <a href="./">PropsT</a>, renderState: <a href="./">StateT</a>, context: <a href="-render-context/">StatefulWorkflow.RenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;): <a href="./">RenderingT</a>  <br>More info  <br>Called at least once† any time one of the following things happens:<ul><li>This workflow&rsquo;s <a href="render/">renderProps</a> changes (via the parent passing a different one in).</li><li>This workflow&rsquo;s <a href="render/">renderState</a> changes.</li><li>A descendant (immediate or transitive child) workflow:</li><ul><li>Changes its internal state.</li><li>Emits an output.</li></ul></ul><strong>Never call this method directly.</strong>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../map-rendering/">mapRendering</a></td>
-<td>Uses the given <a href="../map-rendering/#com.squareup.workflow1$mapRendering(com.squareup.workflow1.Workflow((com.squareup.workflow1.mapRendering.PropsT, com.squareup.workflow1.mapRendering.OutputT, com.squareup.workflow1.mapRendering.FromRenderingT)), kotlin.Function1((com.squareup.workflow1.mapRendering.FromRenderingT, com.squareup.workflow1.mapRendering.ToRenderingT)))/transform">function</a> to transform a <a href="../-workflow/">Workflow</a> that renders <a href="../map-rendering/#FromRenderingT">FromRenderingT</a> to one renders <a href="../map-rendering/#ToRenderingT">ToRenderingT</a>,<code>fun &lt;PropsT, OutputT, FromRenderingT, ToRenderingT&gt;</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, FromRenderingT&gt;.mapRendering(transform: (FromRenderingT) -&gt; ToRenderingT):</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, ToRenderingT&gt;</code></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/snapshotState/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="snapshot-state/">snapshotState</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/snapshotState/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="snapshot-state/">snapshotState</a>(state: <a href="./">StateT</a>): <a href="../-snapshot/">Snapshot</a>?  <br>More info  <br>Called whenever the state changes to generate a new <a href="../-snapshot/">Snapshot</a> of the state.  <br><br><br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="extensions">Extensions<a class="headerlink" href="#extensions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="../action/">action</a></td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun &lt;<a href="../action/">PropsT</a>, <a href="../action/">StateT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt; <a href="./">StatefulWorkflow</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">StateT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt;.<a href="../action/">action</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">StateT</a>, <a href="../action/">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">StateT</a>, <a href="../action/">OutputT</a>&gt;  <br>fun &lt;<a href="../action/">PropsT</a>, <a href="../action/">StateT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt; <a href="./">StatefulWorkflow</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">StateT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt;.<a href="../action/">action</a>(name: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">StateT</a>, <a href="../action/">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">StateT</a>, <a href="../action/">OutputT</a>&gt;  <br>More info  <br>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those of the receiving <a href="./">StatefulWorkflow</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../../com.squareup.workflow1.testing/test-render/">testRender</a></td>
-<td>Create a <a href="../../com.squareup.workflow1.testing/-render-tester/">RenderTester</a> to unit test an individual render pass of this workflow.<code>fun &lt;PropsT, StateT, OutputT, RenderingT&gt;</code><a href="./"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.testRender(props: PropsT, initialState: StateT):</code><a href="../../com.squareup.workflow1.testing/-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;</code><br>Create a <a href="../../com.squareup.workflow1.testing/-render-tester/">RenderTester</a> to unit test an individual render pass of this workflow, using the workflow&rsquo;s <a href="initial-state/">initial state</a>.<code>fun &lt;PropsT, OutputT, RenderingT&gt;</code><a href="../-workflow/"><code>Workflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;.testRender(props: PropsT):</code><a href="../../com.squareup.workflow1.testing/-render-tester/"><code>RenderTester</code></a><code>&lt;PropsT, *, OutputT, RenderingT&gt;</code></td>
+<td><a name="com.squareup.workflow1.testing//launchForTestingFromStateWith/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#kotlin.coroutines.CoroutineContext#kotlin.Function1[com.squareup.workflow1.testing.WorkflowTestRuntime[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">launchForTestingFromStateWith</a></td>
+<td><a name="com.squareup.workflow1.testing//launchForTestingFromStateWith/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])#kotlin.coroutines.CoroutineContext#kotlin.Function1[com.squareup.workflow1.testing.WorkflowTestRuntime[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@TestOnly()  <br>  <br>fun &lt;<a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">T</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">StateT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">RenderingT</a>&gt; <a href="./">StatefulWorkflow</a>&lt;<a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">StateT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">RenderingT</a>&gt;.<a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">launchForTestingFromStateWith</a>(props: <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">PropsT</a>, initialState: <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">StateT</a>, context: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> = EmptyCoroutineContext, block: <a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/">WorkflowTestRuntime</a>&lt;<a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">RenderingT</a>&gt;.() -&gt; <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">T</a>): <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">T</a>  <br>@TestOnly()  <br>  <br>fun &lt;<a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">StateT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">RenderingT</a>&gt; <a href="./">StatefulWorkflow</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">StateT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">RenderingT</a>&gt;.<a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">launchForTestingFromStateWith</a>(initialState: <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">StateT</a>, context: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> = EmptyCoroutineContext, block: <a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/">WorkflowTestRuntime</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-from-state-with/">RenderingT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)  <br>More info  <br>Creates a <a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/">WorkflowTestRuntime</a> to run this workflow for unit testing.  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//launchForTestingWith/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.testing.WorkflowTestParams[TypeParam(bounds=[kotlin.Any?])]#kotlin.coroutines.CoroutineContext#kotlin.Function1[com.squareup.workflow1.testing.WorkflowTestRuntime[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">launchForTestingWith</a></td>
+<td><a name="com.squareup.workflow1.testing//launchForTestingWith/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.testing.WorkflowTestParams[TypeParam(bounds=[kotlin.Any?])]#kotlin.coroutines.CoroutineContext#kotlin.Function1[com.squareup.workflow1.testing.WorkflowTestRuntime[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@TestOnly()  <br>  <br>fun &lt;<a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">T</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">StateT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">RenderingT</a>&gt; <a href="./">StatefulWorkflow</a>&lt;<a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">StateT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">RenderingT</a>&gt;.<a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">launchForTestingWith</a>(props: <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">PropsT</a>, testParams: <a href="../../com.squareup.workflow1.testing/-workflow-test-params/">WorkflowTestParams</a>&lt;<a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">StateT</a>&gt; = WorkflowTestParams(), context: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> = EmptyCoroutineContext, block: <a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/">WorkflowTestRuntime</a>&lt;<a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">RenderingT</a>&gt;.() -&gt; <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">T</a>): <a href="../../com.squareup.workflow1.testing/launch-for-testing-with/">T</a>  <br>More info  <br>Creates a <a href="../../com.squareup.workflow1.testing/-workflow-test-runtime/">WorkflowTestRuntime</a> to run this workflow for unit testing.  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.testing//testRender/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.testing/test-render/">testRender</a></td>
+<td><a name="com.squareup.workflow1.testing//testRender/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun &lt;<a href="../../com.squareup.workflow1.testing/test-render/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">StateT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">RenderingT</a>&gt; <a href="./">StatefulWorkflow</a>&lt;<a href="../../com.squareup.workflow1.testing/test-render/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">StateT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">RenderingT</a>&gt;.<a href="../../com.squareup.workflow1.testing/test-render/">testRender</a>(props: <a href="../../com.squareup.workflow1.testing/test-render/">PropsT</a>, initialState: <a href="../../com.squareup.workflow1.testing/test-render/">StateT</a>): <a href="../../com.squareup.workflow1.testing/-render-tester/">RenderTester</a>&lt;<a href="../../com.squareup.workflow1.testing/test-render/">PropsT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">StateT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">OutputT</a>, <a href="../../com.squareup.workflow1.testing/test-render/">RenderingT</a>&gt;  <br>More info  <br>Create a <a href="../../com.squareup.workflow1.testing/-render-tester/">RenderTester</a> to unit test an individual render pass of this workflow.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,6 +793,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#return" class="md-nav__link">
+    Return
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
@@ -819,21 +826,32 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1.testing</a> / <a href="../">RenderTester</a> / <a href="./">render</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">RenderTester</a>/<a href="./">render</a></p>
 <h1 id="render">render<a class="headerlink" href="#render" title="Permanent link">&para;</a></h1>
-<p><code>abstract fun render(block: (rendering: RenderingT) -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>= {}):</code><a href="../../-render-test-result/"><code>RenderTestResult</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code></p>
-<p>Execute the workflow&rsquo;s <code>render</code> method and run <a href="./#com.squareup.workflow1.testing.RenderTester$render(kotlin.Function1((com.squareup.workflow1.testing.RenderTester.RenderingT, kotlin.Unit)))/block">block</a> to perform assertions on and send events
-to the resulting rendering.</p>
-<p>All workflows rendered/ran by the workflow must be specified before calling this
-method. Workers are optionally specified.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>block</code> - Passed the result of the render pass to perform assertions on.
-If no child workflow or worker was configured to emit an output, may also invoke one of the
-rendering&rsquo;s event handlers. It is an error to invoke an event handler if a child emitted an
-output.</p>
-<p><strong>Return</strong>
-A <a href="../../-render-test-result/">RenderTestResult</a> that can be used to verify the <a href="../../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> that was used to
-handle a workflow or worker output or a rendering event.</p>
+<p>[jvm]<br />
+Content<br />
+abstract fun <a href="./">render</a>(block: (<a href="../">RenderingT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="../../-render-test-result/">RenderTestResult</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>&gt;<br />
+More info  </p>
+<p>Execute the workflow&rsquo;s render method and run <a href="./">block</a> to perform assertions on and send events to the resulting rendering.</p>
+<p>All workflows rendered/ran by the workflow must be specified before calling this method. Workers are optionally specified.</p>
+<h4 id="return">Return<a class="headerlink" href="#return" title="Permanent link">&para;</a></h4>
+<p>A <a href="../../-render-test-result/">RenderTestResult</a> that can be used to verify the <a href="../../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> that was used to handle a workflow or worker output or a rendering event.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.testing/RenderTester/render/#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>block</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/render/#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>Passed the result of the render pass to perform assertions on. If no child workflow or worker was configured to emit an output, may also invoke one of the rendering&rsquo;s event handlers. It is an error to invoke an event handler if a child emitted an output.<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               

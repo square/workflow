@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../../" class="md-tabs__link">
+        <a href="../../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../" title="Kotlin" class="md-nav__link">
+    <a href="../../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -819,25 +819,35 @@
                   
                 
                 
-                <p><a href="../../../">workflow</a> / <a href="../../">com.squareup.workflow1</a> / <a href="../">BaseRenderContext</a> / <a href="./">runningSideEffect</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">BaseRenderContext</a>/<a href="./">runningSideEffect</a></p>
 <h1 id="runningsideeffect">runningSideEffect<a class="headerlink" href="#runningsideeffect" title="Permanent link">&para;</a></h1>
-<p><code>abstract fun runningSideEffect(key:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, sideEffect: suspend CoroutineScope.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<p>Ensures <a href="./#com.squareup.workflow1.BaseRenderContext$runningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction1((kotlinx.coroutines.CoroutineScope, kotlin.Unit)))/sideEffect">sideEffect</a> is running with the given <a href="./#com.squareup.workflow1.BaseRenderContext$runningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction1((kotlinx.coroutines.CoroutineScope, kotlin.Unit)))/key">key</a>.</p>
-<p>The first render pass in which this method is called, <a href="./#com.squareup.workflow1.BaseRenderContext$runningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction1((kotlinx.coroutines.CoroutineScope, kotlin.Unit)))/sideEffect">sideEffect</a> will be launched in a new
-coroutine that will be scoped to the rendering <a href="../../-workflow/">Workflow</a>. Subsequent render passes that invoke
-this method with the same <a href="./#com.squareup.workflow1.BaseRenderContext$runningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction1((kotlinx.coroutines.CoroutineScope, kotlin.Unit)))/key">key</a> will not launch the coroutine again, but let it keep running.
-Note that if a different function is passed with the same key, the side effect will <em>not</em> be
-restarted, the new function will simply be ignored. The next render pass in which the
-workflow does not call this method with the same key, the coroutine running <a href="./#com.squareup.workflow1.BaseRenderContext$runningSideEffect(kotlin.String, kotlin.coroutines.SuspendFunction1((kotlinx.coroutines.CoroutineScope, kotlin.Unit)))/sideEffect">sideEffect</a> will
-be
-<a href="https://kotlinlang.org/docs/reference/coroutines/cancellation-and-timeouts.html">cancelled</a>.</p>
-<p>The coroutine will run with the same <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a>
-that the workflow runtime is running in. The side effect coroutine will not be started until
-<em>after</em> the first render call than runs it returns.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>key</code> - The string key that is used to distinguish between side effects.</p>
-<p><code>sideEffect</code> - The suspend function that will be launched in a coroutine to perform the
-side effect.</p>
+<p>[jvm]<br />
+Content<br />
+abstract fun <a href="./">runningSideEffect</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, sideEffect: suspend CoroutineScope.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<br />
+More info  </p>
+<p>Ensures <a href="./">sideEffect</a> is running with the given <a href="./">key</a>.</p>
+<p>The first render pass in which this method is called, <a href="./">sideEffect</a> will be launched in a new coroutine that will be scoped to the rendering <a href="../../-workflow/">Workflow</a>. Subsequent render passes that invoke this method with the same <a href="./">key</a> will not launch the coroutine again, but let it keep running. Note that if a different function is passed with the same key, the side effect will <em>not</em> be restarted, the new function will simply be ignored. The next render pass in which the workflow does not call this method with the same key, the coroutine running <a href="./">sideEffect</a> will be <a href="https://kotlinlang.org/docs/reference/coroutines/cancellation-and-timeouts.html">cancelled</a>.</p>
+<p>The coroutine will run with the same <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> that the workflow runtime is running in. The side effect coroutine will not be started until <em>after</em> the first render call than runs it returns.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1/BaseRenderContext/runningSideEffect/#kotlin.String#kotlin.coroutines.SuspendFunction1[kotlinx.coroutines.CoroutineScope,kotlin.Unit]/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1/BaseRenderContext/runningSideEffect/#kotlin.String#kotlin.coroutines.SuspendFunction1[kotlinx.coroutines.CoroutineScope,kotlin.Unit]/PointingToDeclaration/"></a><br><br>The string key that is used to distinguish between side effects.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1/BaseRenderContext/runningSideEffect/#kotlin.String#kotlin.coroutines.SuspendFunction1[kotlinx.coroutines.CoroutineScope,kotlin.Unit]/PointingToDeclaration/"></a>sideEffect</td>
+<td><a name="com.squareup.workflow1/BaseRenderContext/runningSideEffect/#kotlin.String#kotlin.coroutines.SuspendFunction1[kotlinx.coroutines.CoroutineScope,kotlin.Unit]/PointingToDeclaration/"></a><br><br>The suspend function that will be launched in a coroutine to perform the side effect.<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               

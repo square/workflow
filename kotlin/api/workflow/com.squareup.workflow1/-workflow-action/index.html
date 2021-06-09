@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,15 +793,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#types" class="md-nav__link">
-    Types
+  <a href="#constructors" class="md-nav__link">
+    Constructors
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#constructors" class="md-nav__link">
-    Constructors
+  <a href="#types" class="md-nav__link">
+    Types
   </a>
   
 </li>
@@ -814,15 +814,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#companion-object-functions" class="md-nav__link">
-    Companion Object Functions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#extension-functions" class="md-nav__link">
-    Extension Functions
+  <a href="#extensions" class="md-nav__link">
+    Extensions
   </a>
   
 </li>
@@ -847,26 +840,26 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">WorkflowAction</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">WorkflowAction</a></p>
 <h1 id="workflowaction">WorkflowAction<a class="headerlink" href="#workflowaction" title="Permanent link">&para;</a></h1>
-<p><code>abstract class WorkflowAction&lt;in PropsT, StateT, out OutputT&gt;</code></p>
+<p>[jvm] abstract class <a href="./">WorkflowAction</a><in <a href="index.md">PropsT</a>, <a href="index.md">StateT</a>, out <a href="index.md">OutputT</a>></p>
 <p>An atomic operation that updates the state of a <a href="../-workflow/">Workflow</a>, and also optionally emits an output.</p>
-<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="-updater/">Updater</a></td>
-<td>The context for calls to <a href="apply/">WorkflowAction.apply</a>. Allows the action to set the <a href="-updater/state/">state</a>, and to emit the <a href="-updater/set-output/">setOutput</a>.<code>inner class Updater&lt;in PropsT, StateT, out OutputT&gt;</code></td>
+<td><a name="com.squareup.workflow1/WorkflowAction/WorkflowAction/#/PointingToDeclaration/"></a><a href="-workflow-action/">WorkflowAction</a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction/WorkflowAction/#/PointingToDeclaration/"></a> [jvm] fun <a href="-workflow-action/">WorkflowAction</a>()   <br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h3>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -876,12 +869,16 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-init-/">&lt;init&gt;</a></td>
-<td>An atomic operation that updates the state of a <a href="../-workflow/">Workflow</a>, and also optionally emits an output.<code>WorkflowAction()</code></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater///PointingToDeclaration/"></a><a href="-updater/">Updater</a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction.Updater///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inner class <a href="-updater/">Updater</a>(<strong>props</strong>: @<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="./">PropsT</a>, <strong>state</strong>: <a href="./">StateT</a>)  <br>More info  <br>The context for calls to <a href="apply/">WorkflowAction.apply</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -891,12 +888,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="apply/">apply</a></td>
-<td>Executes the logic for this action, including any side effects, updating <a href="-updater/#StateT">state</a>, and setting the <a href="-updater/#OutputT">OutputT</a> to emit.<code>abstract fun Updater&lt;PropsT, StateT, OutputT&gt;.apply():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction/apply/com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#/PointingToDeclaration/"></a><a href="apply/">apply</a></td>
+<td><a name="com.squareup.workflow1/WorkflowAction/apply/com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="apply/">apply</a>()  <br>More info  <br>Executes the logic for this action, including any side effects, updating <a href="./">state</a>, and setting the <a href="./">OutputT</a> to emit.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="companion-object-functions">Companion Object Functions<a class="headerlink" href="#companion-object-functions" title="Permanent link">&para;</a></h3>
+<h2 id="extensions">Extensions<a class="headerlink" href="#extensions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -906,23 +903,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="no-action/">noAction</a></td>
-<td>Returns a <a href="./">WorkflowAction</a> that does nothing: no output will be emitted, and the state will not change.<code>fun &lt;PropsT, StateT, OutputT&gt; noAction():</code><a href="./"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="extension-functions">Extension Functions<a class="headerlink" href="#extension-functions" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Summary</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="../apply-to/">applyTo</a></td>
-<td>Applies this <a href="./">WorkflowAction</a> to <a href="../apply-to/#com.squareup.workflow1$applyTo(com.squareup.workflow1.WorkflowAction((com.squareup.workflow1.applyTo.PropsT, com.squareup.workflow1.applyTo.StateT, com.squareup.workflow1.applyTo.OutputT)), com.squareup.workflow1.applyTo.PropsT, com.squareup.workflow1.applyTo.StateT)/state">state</a>.<code>fun &lt;PropsT, StateT, OutputT&gt;</code><a href="./"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;.applyTo(props: PropsT, state: StateT):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><code>Pair</code></a><code>&lt;StateT,</code><a href="../-workflow-output/"><code>WorkflowOutput</code></a><code>&lt;OutputT&gt;?&gt;</code></td>
+<td><a name="com.squareup.workflow1//applyTo/com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="../apply-to/">applyTo</a></td>
+<td><a name="com.squareup.workflow1//applyTo/com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  <br>  <br>fun &lt;<a href="../apply-to/">PropsT</a>, <a href="../apply-to/">StateT</a>, <a href="../apply-to/">OutputT</a>&gt; <a href="./">WorkflowAction</a>&lt;<a href="../apply-to/">PropsT</a>, <a href="../apply-to/">StateT</a>, <a href="../apply-to/">OutputT</a>&gt;.<a href="../apply-to/">applyTo</a>(props: <a href="../apply-to/">PropsT</a>, state: <a href="../apply-to/">StateT</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html">Pair</a>&lt;<a href="../apply-to/">StateT</a>, <a href="../-workflow-output/">WorkflowOutput</a>&lt;<a href="../apply-to/">OutputT</a>&gt;?&gt;  <br>More info  <br>Applies this <a href="./">WorkflowAction</a> to <a href="../apply-to/">state</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

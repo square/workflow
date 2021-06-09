@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -793,15 +793,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    Functions
+  <a href="#parameters" class="md-nav__link">
+    Parameters
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#companion-object-functions" class="md-nav__link">
-    Companion Object Functions
+  <a href="#types" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
   </a>
   
 </li>
@@ -826,37 +833,29 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">TreeSnapshot</a></p>
+                <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">TreeSnapshot</a></p>
 <h1 id="treesnapshot">TreeSnapshot<a class="headerlink" href="#treesnapshot" title="Permanent link">&para;</a></h1>
-<p><code>class TreeSnapshot</code></p>
+<p>[jvm] class <a href="./">TreeSnapshot</a></p>
 <p>Aggregate of all the snapshots of a tree of workflows.</p>
-<p>Can be serialized with <a href="to-byte-string/">toByteString</a> and deserialized with <a href="parse/">parse</a>.</p>
-<p>For tests, you can get a <a href="./">TreeSnapshot</a> from a <a href="../-rendering-and-snapshot/">RenderingAndSnapshot</a> or by creating one for
-your root workflow only by calling <a href="for-root-only/">forRootOnly</a>.</p>
-<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<p>Can be serialized with <a href="to-byte-string/">toByteString</a> and deserialized with <a href="-companion/parse/">parse</a>.</p>
+<p>For tests, you can get a <a href="./">TreeSnapshot</a> from a <a href="../-rendering-and-snapshot/">RenderingAndSnapshot</a> or by creating one for your root workflow only by calling <a href="-companion/for-root-only/">forRootOnly</a>.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
-<th>Name</th>
-<th>Summary</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="equals/">equals</a></td>
-<td><code>fun equals(other:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><code>Any</code></a><code>?):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><code>Boolean</code></a></td>
-</tr>
-<tr>
-<td><a href="hash-code/">hashCode</a></td>
-<td><code>fun hashCode():</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><code>Int</code></a></td>
-</tr>
-<tr>
-<td><a href="to-byte-string/">toByteString</a></td>
-<td>Writes this <a href="../-snapshot/">Snapshot</a> and all its children into a <a href="#">ByteString</a>. The snapshot can be restored with <a href="parse/">parse</a>.<code>fun toByteString(): ByteString</code></td>
+<td><a name="com.squareup.workflow1/TreeSnapshot///PointingToDeclaration/"></a>childTreeSnapshots</td>
+<td><a name="com.squareup.workflow1/TreeSnapshot///PointingToDeclaration/"></a><br><br>A function that will lazily parse the child snapshots for this tree when invoked. It will be cached in the childTreeSnapshots property.<br><br></td>
 </tr>
 </tbody>
 </table>
-<h3 id="companion-object-functions">Companion Object Functions<a class="headerlink" href="#companion-object-functions" title="Permanent link">&para;</a></h3>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -866,12 +865,31 @@ your root workflow only by calling <a href="for-root-only/">forRootOnly</a>.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="for-root-only/">forRootOnly</a></td>
-<td>Returns a <a href="./">TreeSnapshot</a> that only contains a <a href="../-snapshot/">Snapshot</a> for the root workflow, and no child snapshots.<code>fun forRootOnly(rootSnapshot:</code><a href="../-snapshot/"><code>Snapshot</code></a><code>?):</code><a href="./"><code>TreeSnapshot</code></a></td>
+<td><a name="com.squareup.workflow1/TreeSnapshot.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1/TreeSnapshot.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1/TreeSnapshot/equals/#kotlin.Any?/PointingToDeclaration/"></a><a href="equals/">equals</a></td>
+<td><a name="com.squareup.workflow1/TreeSnapshot/equals/#kotlin.Any?/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open operator override fun <a href="equals/">equals</a>(other: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="parse/">parse</a></td>
-<td>Parses a &ldquo;root&rdquo; snapshot and the list of child snapshots with associated <a href="#">WorkflowNodeId</a>s from a <a href="#">ByteString</a> returned by <a href="to-byte-string/">toByteString</a>.<code>fun parse(bytes: ByteString):</code><a href="./"><code>TreeSnapshot</code></a></td>
+<td><a name="com.squareup.workflow1/TreeSnapshot/hashCode/#/PointingToDeclaration/"></a><a href="hash-code/">hashCode</a></td>
+<td><a name="com.squareup.workflow1/TreeSnapshot/hashCode/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="hash-code/">hashCode</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1/TreeSnapshot/toByteString/#/PointingToDeclaration/"></a><a href="to-byte-string/">toByteString</a></td>
+<td><a name="com.squareup.workflow1/TreeSnapshot/toByteString/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="to-byte-string/">toByteString</a>(): ByteString  <br>More info  <br>Writes this <a href="../-snapshot/">Snapshot</a> and all its children into a ByteString.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

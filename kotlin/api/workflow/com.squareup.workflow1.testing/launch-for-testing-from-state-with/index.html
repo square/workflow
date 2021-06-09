@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -802,13 +802,16 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1.testing</a> / <a href="./">launchForTestingFromStateWith</a></p>
+                <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.testing</a>/<a href="./">launchForTestingFromStateWith</a></p>
 <h1 id="launchfortestingfromstatewith">launchForTestingFromStateWith<a class="headerlink" href="#launchfortestingfromstatewith" title="Permanent link">&para;</a></h1>
-<p><code>@TestOnly fun &lt;T, PropsT, StateT, OutputT, RenderingT&gt;</code><a href="../../com.squareup.workflow1/-stateful-workflow/"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.launchForTestingFromStateWith(props: PropsT, initialState: StateT, context:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><code>CoroutineContext</code></a><code>= EmptyCoroutineContext, block:</code><a href="../-workflow-test-runtime/"><code>WorkflowTestRuntime</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;.() -&gt; T): T</code>
-<code>@TestOnly fun &lt;StateT, OutputT, RenderingT&gt;</code><a href="../../com.squareup.workflow1/-stateful-workflow/"><code>StatefulWorkflow</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, StateT, OutputT, RenderingT&gt;.launchForTestingFromStateWith(initialState: StateT, context:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><code>CoroutineContext</code></a><code>= EmptyCoroutineContext, block:</code><a href="../-workflow-test-runtime/"><code>WorkflowTestRuntime</code></a><code>&lt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>, OutputT, RenderingT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a></p>
-<p>Creates a <a href="../-workflow-test-runtime/">WorkflowTestRuntime</a> to run this workflow for unit testing.
-If the workflow is <a href="../../com.squareup.workflow1/-stateful-workflow/">stateful</a>, <a href="../../com.squareup.workflow1/-stateful-workflow/initial-state/">initialState</a>
-is not called. Instead, the workflow is started from the given <a href="./#com.squareup.workflow1.testing$launchForTestingFromStateWith(com.squareup.workflow1.StatefulWorkflow((com.squareup.workflow1.testing.launchForTestingFromStateWith.PropsT, com.squareup.workflow1.testing.launchForTestingFromStateWith.StateT, com.squareup.workflow1.testing.launchForTestingFromStateWith.OutputT, com.squareup.workflow1.testing.launchForTestingFromStateWith.RenderingT)), com.squareup.workflow1.testing.launchForTestingFromStateWith.PropsT, com.squareup.workflow1.testing.launchForTestingFromStateWith.StateT, kotlin.coroutines.CoroutineContext, kotlin.Function1((com.squareup.workflow1.testing.WorkflowTestRuntime((com.squareup.workflow1.testing.launchForTestingFromStateWith.PropsT, com.squareup.workflow1.testing.launchForTestingFromStateWith.OutputT, com.squareup.workflow1.testing.launchForTestingFromStateWith.RenderingT)), com.squareup.workflow1.testing.launchForTestingFromStateWith.T)))/initialState">initialState</a>.</p>
+<p>[jvm]<br />
+Content<br />
+@TestOnly()  </p>
+<p>fun &lt;<a href="./">T</a>, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../../com.squareup.workflow1/-stateful-workflow/">StatefulWorkflow</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">launchForTestingFromStateWith</a>(props: <a href="./">PropsT</a>, initialState: <a href="./">StateT</a>, context: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> = EmptyCoroutineContext, block: <a href="../-workflow-test-runtime/">WorkflowTestRuntime</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.() -&gt; <a href="./">T</a>): <a href="./">T</a><br />
+@TestOnly()  </p>
+<p>fun &lt;<a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../../com.squareup.workflow1/-stateful-workflow/">StatefulWorkflow</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">launchForTestingFromStateWith</a>(initialState: <a href="./">StateT</a>, context: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> = EmptyCoroutineContext, block: <a href="../-workflow-test-runtime/">WorkflowTestRuntime</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<br />
+More info  </p>
+<p>Creates a <a href="../-workflow-test-runtime/">WorkflowTestRuntime</a> to run this workflow for unit testing. If the workflow is <a href="../../com.squareup.workflow1/-stateful-workflow/">stateful</a>, <a href="../../com.squareup.workflow1/-stateful-workflow/initial-state/">initialState</a> is not called. Instead, the workflow is started from the given <a href="./">initialState</a>.</p>
 <p>All workflow-related coroutines are cancelled when the block exits.</p>
                 
               

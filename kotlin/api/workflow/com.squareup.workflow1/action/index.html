@@ -210,7 +210,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../" class="md-tabs__link">
+        <a href="../../index.md" class="md-tabs__link">
           API Reference
         </a>
       
@@ -630,7 +630,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../" title="Kotlin" class="md-nav__link">
+    <a href="../../index.md" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -821,8 +821,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    See also
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters_4" class="md-nav__link">
     Parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also_1" class="md-nav__link">
+    See also
   </a>
   
 </li>
@@ -854,56 +868,200 @@
                   
                 
                 
-                <p><a href="../../">workflow</a> / <a href="../">com.squareup.workflow1</a> / <a href="./">action</a></p>
+                <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">action</a></p>
 <h1 id="action">action<a class="headerlink" href="#action" title="Permanent link">&para;</a></h1>
-<p><code>fun &lt;PropsT, StateT, OutputT, RenderingT&gt;</code><a href="../-stateful-workflow/"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.action(name:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", update: Updater&lt;PropsT, StateT, OutputT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code></p>
-<p>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those
-of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="./#com.squareup.workflow1$action(com.squareup.workflow1.StatefulWorkflow((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT, com.squareup.workflow1.action.RenderingT)), kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/update">lambda</a>
-when it is <a href="../-workflow-action/apply/">applied</a>.</p>
-<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
-<p><code>name</code> - A string describing the update for debugging, included in <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/to-string.html">toString</a>.</p>
-<p><code>update</code> - Function that defines the workflow update.<code>fun &lt;PropsT, StateT, OutputT, RenderingT&gt;</code><a href="../-stateful-workflow/"><code>StatefulWorkflow</code></a><code>&lt;PropsT, StateT, OutputT, RenderingT&gt;.action(name: () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, update: Updater&lt;PropsT, StateT, OutputT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code></p>
-<p>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those
-of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="./#com.squareup.workflow1$action(com.squareup.workflow1.StatefulWorkflow((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT, com.squareup.workflow1.action.RenderingT)), kotlin.Function0((kotlin.String)), kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/update">lambda</a>
-when it is <a href="../-workflow-action/apply/">applied</a>.</p>
-<h3 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h3>
-<p><code>name</code> - Function that returns a string describing the update for debugging, included
-in <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/to-string.html">toString</a>.</p>
-<p><code>update</code> - Function that defines the workflow update.<code>fun &lt;PropsT, OutputT, RenderingT&gt;</code><a href="../-stateless-workflow/"><code>StatelessWorkflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;.action(name:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", update: Updater&lt;PropsT, *, OutputT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>, OutputT&gt;</code></p>
-<p>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those
-of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="./#com.squareup.workflow1$action(com.squareup.workflow1.StatelessWorkflow((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.OutputT, com.squareup.workflow1.action.RenderingT)), kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, kotlin.Any, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/update">lambda</a>
-when it is <a href="../-workflow-action/apply/">applied</a>.</p>
-<h3 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h3>
-<p><code>name</code> - A string describing the update for debugging, included in <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/to-string.html">toString</a>.</p>
-<p><code>update</code> - Function that defines the workflow update.<code>fun &lt;PropsT, OutputT, RenderingT&gt;</code><a href="../-stateless-workflow/"><code>StatelessWorkflow</code></a><code>&lt;PropsT, OutputT, RenderingT&gt;.action(name: () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, update: Updater&lt;PropsT, *, OutputT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT,</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><code>Nothing</code></a><code>, OutputT&gt;</code></p>
-<p>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those
-of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="./#com.squareup.workflow1$action(com.squareup.workflow1.StatelessWorkflow((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.OutputT, com.squareup.workflow1.action.RenderingT)), kotlin.Function0((kotlin.String)), kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, kotlin.Any, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/update">lambda</a>
-when it is <a href="../-workflow-action/apply/">applied</a>.</p>
-<h3 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h3>
-<p><code>name</code> - Function that returns a string describing the update for debugging, included in
-<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/to-string.html">toString</a>.</p>
-<p><code>update</code> - Function that defines the workflow update.<code>inline fun &lt;PropsT, StateT, OutputT&gt; action(name:</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>= "", crossinline apply: Updater&lt;PropsT, StateT, OutputT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code></p>
-<p>Creates a <a href="../-workflow-action/">WorkflowAction</a> from the <a href="./#com.squareup.workflow1$action(kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/apply">apply</a> lambda.
-The returned object will include the string returned from <a href="./#com.squareup.workflow1$action(kotlin.String, kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/name">name</a> in its <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/to-string.html">toString</a>.</p>
-<p>If defining actions within a <a href="../-stateful-workflow/">StatefulWorkflow</a>, use the <a href="#">StatefulWorkflow.workflowAction</a>
-extension instead, to do this without being forced to repeat its parameter types.</p>
-<h3 id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h3>
-<p><code>name</code> - A string describing the update for debugging.</p>
-<p><code>apply</code> - Function that defines the workflow update.</p>
-<p><strong>See Also</strong></p>
-<p><a href="./">StatelessWorkflow.action</a></p>
-<p><a href="./">StatefulWorkflow.action</a></p>
-<p><code>inline fun &lt;PropsT, StateT, OutputT&gt; action(crossinline name: () -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><code>String</code></a><code>, crossinline apply: Updater&lt;PropsT, StateT, OutputT&gt;.() -&gt;</code><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><code>Unit</code></a><code>):</code><a href="../-workflow-action/"><code>WorkflowAction</code></a><code>&lt;PropsT, StateT, OutputT&gt;</code></p>
-<p>Creates a <a href="../-workflow-action/">WorkflowAction</a> from the <a href="./#com.squareup.workflow1$action(kotlin.Function0((kotlin.String)), kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/apply">apply</a> lambda.
-The returned object will include the string returned from <a href="./#com.squareup.workflow1$action(kotlin.Function0((kotlin.String)), kotlin.Function1((com.squareup.workflow1.WorkflowAction.Updater((com.squareup.workflow1.action.PropsT, com.squareup.workflow1.action.StateT, com.squareup.workflow1.action.OutputT)), kotlin.Unit)))/name">name</a> in its <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/to-string.html">toString</a>.</p>
-<p>If defining actions within a <a href="../-stateful-workflow/">StatefulWorkflow</a>, use the <a href="#">StatefulWorkflow.workflowAction</a>
-extension instead, to do this without being forced to repeat its parameter types.</p>
-<h3 id="parameters_5">Parameters<a class="headerlink" href="#parameters_5" title="Permanent link">&para;</a></h3>
-<p><code>name</code> - Function that returns a string describing the update for debugging.</p>
-<p><code>apply</code> - Function that defines the workflow update.</p>
-<p><strong>See Also</strong></p>
-<p><a href="./">StatelessWorkflow.action</a></p>
-<p><a href="./">StatefulWorkflow.action</a></p>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../-stateful-workflow/">StatefulWorkflow</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">action</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;<br />
+More info  </p>
+<p>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="./">lambda</a> when it is <a href="../-workflow-action/apply/">applied</a>.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>name</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>A string describing the update for debugging, included in toString.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>update</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that defines the workflow update.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../-stateful-workflow/">StatefulWorkflow</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">action</a>(name: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;<br />
+More info  </p>
+<p>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="./">lambda</a> when it is <a href="../-workflow-action/apply/">applied</a>.</p>
+<h2 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>name</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that returns a string describing the update for debugging, included in toString.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>update</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatefulWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that defines the workflow update.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../-stateless-workflow/">StatelessWorkflow</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">action</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, *, <a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, <a href="./">OutputT</a>&gt;<br />
+More info  </p>
+<p>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="./">lambda</a> when it is <a href="../-workflow-action/apply/">applied</a>.</p>
+<h2 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>name</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>A string describing the update for debugging, included in <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/index.html">toString</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>update</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that defines the workflow update.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; <a href="../-stateless-workflow/">StatelessWorkflow</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">action</a>(name: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, *, <a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, <a href="./">OutputT</a>&gt;<br />
+More info  </p>
+<p>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="./">lambda</a> when it is <a href="../-workflow-action/apply/">applied</a>.</p>
+<h2 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>name</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that returns a string describing the update for debugging, included in <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/index.html">toString</a>.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>update</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that defines the workflow update.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="./">action</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline apply: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;<br />
+More info  </p>
+<p>Creates a <a href="../-workflow-action/">WorkflowAction</a> from the <a href="./">apply</a> lambda. The returned object will include the string returned from <a href="./">name</a> in its toString.</p>
+<p>If defining actions within a <a href="../-stateful-workflow/">StatefulWorkflow</a>, use the StatefulWorkflow.workflowAction extension instead, to do this without being forced to repeat its parameter types.</p>
+<h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="./">StatelessWorkflow.action</a></td>
+<td><a name="com.squareup.workflow1//action/#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1//action/#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="./">StatefulWorkflow.action</a></td>
+<td><a name="com.squareup.workflow1//action/#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>name</td>
+<td><a name="com.squareup.workflow1//action/#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>A string describing the update for debugging.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1//action/#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>apply</td>
+<td><a name="com.squareup.workflow1//action/#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that defines the workflow update.<br><br></td>
+</tr>
+</tbody>
+</table>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="./">action</a>(crossinline name: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, crossinline apply: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;<br />
+More info  </p>
+<p>Creates a <a href="../-workflow-action/">WorkflowAction</a> from the <a href="./">apply</a> lambda. The returned object will include the string returned from <a href="./">name</a> in its toString.</p>
+<p>If defining actions within a <a href="../-stateful-workflow/">StatefulWorkflow</a>, use the StatefulWorkflow.workflowAction extension instead, to do this without being forced to repeat its parameter types.</p>
+<h2 id="see-also_1">See also<a class="headerlink" href="#see-also_1" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="./">StatelessWorkflow.action</a></td>
+<td><a name="com.squareup.workflow1//action/#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1//action/#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="./">StatefulWorkflow.action</a></td>
+<td><a name="com.squareup.workflow1//action/#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="parameters_5">Parameters<a class="headerlink" href="#parameters_5" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1//action/#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>name</td>
+<td><a name="com.squareup.workflow1//action/#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that returns a string describing the update for debugging.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1//action/#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>apply</td>
+<td><a name="com.squareup.workflow1//action/#kotlin.Function0[kotlin.String]#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><br><br>Function that defines the workflow update.<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               
