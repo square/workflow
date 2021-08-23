@@ -84,7 +84,7 @@ function buildKotlinDocs() {
 	# Clean the target dir first.
 	[[ -d "$targetDir" ]] && rm -rf "$targetDir"
 	mkdir -p "$targetDir"
-	mv "$workingDir/build/dokka/workflow" "$targetDir"
+	mv "$workingDir/build/dokka/gfmCollector" "$targetDir"
 
 	echo "Removing working directory..."
 	rm -rf "$workingDir"

@@ -67,11 +67,11 @@ plugins:
       redirect_maps:
         # Redirect some of the most-visited pages from their old locations in case there are links
         # to these pages somewhere.
-        'kotlin/api/workflow-core/com.squareup.workflow/index.md': 'kotlin/api/workflow/com.squareup.workflow1/index.md'
-        'kotlin/api/workflow-core/com.squareup.workflow/-worker/index.md': 'kotlin/api/workflow/com.squareup.workflow1/-worker/index.md'
-        'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md': 'kotlin/api/workflow/com.squareup.workflow1.testing/index.md'
-        'kotlin/api/workflow-testing/com.squareup.workflow.testing/-render-tester/index.md': 'kotlin/api/workflow/com.squareup.workflow1.testing/-render-tester/index.md'
-        'kotlin/api/workflow-ui-android/com.squareup.workflow.ui/index.md': 'kotlin/api/workflow/com.squareup.workflow1.ui/index.md'
+        'kotlin/api/workflow-core/com.squareup.workflow/index.md': 'kotlin/api/gfmCollector/workflow/com.squareup.workflow1/index.md'
+        'kotlin/api/workflow-core/com.squareup.workflow/-worker/index.md': 'kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-worker/index.md'
+        'kotlin/api/workflow-testing/com.squareup.workflow.testing/index.md': 'kotlin/api/gfmCollector/workflow/com.squareup.workflow1.testing/index.md'
+        'kotlin/api/workflow-testing/com.squareup.workflow.testing/-render-tester/index.md': 'kotlin/api/gfmCollector/workflow/com.squareup.workflow1.testing/-render-tester/index.md'
+        'kotlin/api/workflow-ui-android/com.squareup.workflow.ui/index.md': 'kotlin/api/gfmCollector/workflow/com.squareup.workflow1.ui/index.md'
 
 extra:
   # type is the name of the FontAwesome icon without the fa- prefix.
@@ -107,7 +107,7 @@ nav:
     - 'Code Recipes': 'code-recipes.md'
     - 'Development Process': 'development-process.md'
   - 'API Reference':
-    - 'Kotlin': 'kotlin/api/workflow/index.md'
+    - 'Kotlin': 'kotlin/api/gfmCollector/index.md'
     - 'Swift API':
       - 'Workflow ': 'swift/api/Workflow/README.md'
       - 'WorkflowReactiveSwift': 'swift/api/WorkflowReactiveSwift/README.md'
