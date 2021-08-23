@@ -85,6 +85,8 @@ extra:
 
 nav:
   - 'Overview': index.md
+  - 'Why Workflow?': 'userguide/whyworkflow.md'
+  - 'Glossary': 'glossary.md'
   - 'User Guide':
     - 'Core Concepts': 'userguide/concepts.md'
     - 'Workflow Core':
@@ -93,9 +95,6 @@ nav:
       - 'Patterns': 'userguide/core-patterns.md'
     - 'Workflow UI': 'userguide/ui-concepts.md'
     - 'Workflow Testing': 'userguide/testing-concepts.md'
-    - 'Motivation & Architectural Concepts': 'userguide/motivation.md'
-    - 'Comparison with other frameworks': 'userguide/comparison.md'
-    - 'Under the Hood: Implementation Notes': 'userguide/implementation.md'
   - 'Tutorials & Samples':
     - 'Tutorial':
       - 'Overview': 'tutorial/index.md'
@@ -104,8 +103,6 @@ nav:
       - 'Building a Workflow': 'tutorial/building-a-workflow.md'
       - 'Building a View Controller from a Screen': 'tutorial/building-a-view-controller-from-screen.md'
       - 'Using a Workflow to Show UI': 'tutorial/using-a-workflow-for-ui.md'
-    - 'Code Recipes': 'code-recipes.md'
-    - 'Development Process': 'development-process.md'
   - 'API Reference':
     - 'Kotlin': 'kotlin/api/gfmCollector/index.md'
     - 'Swift API':
