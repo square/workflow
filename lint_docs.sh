@@ -29,5 +29,6 @@ DIR=docs/
 find $DIR \
     -name '*.md' \
     -not -name 'CHANGELOG.md' \
+    -not -name 'whyworkflow.md' \
     | xargs mdl --style $STYLE --ignore-front-matter \
     && echo "Success."

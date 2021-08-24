@@ -1,5 +1,16 @@
 # Frequently Asked Questions
 
+## Why do we need another architecture?
+
+We ask this question too! So we wrote a longer answer for it: ["Why Workflow?"](https://square.github.io/workflow/userguide/whyworkflow).
+
+## How do I get involved and/or contribute?
+
+- [Workflow is open source!](https://github.com/square/workflow)
+- See our [CONTRIBUTING](https://github.com/square/workflow/blob/main/CONTRIBUTING.md) doc to get
+  started.
+- Stay tuned! We're considering hosting a public Slack channel for open source contributors.
+
 ## Isn't this basically React/Elm?
 
 [React](https://reactjs.org/) and [the Elm architecture](https://guide.elm-lang.org/architecture/)
@@ -23,29 +34,9 @@ Besides being very Android and Rx specific, MvRx solves view modeling problems o
 per screen. Workflow was mainly inspired by the need to manage and compose
 navigation in apps with dozens or hundreds of screens.
 
-## How do I get involved and/or contribute?
-
-- [Workflow is open source!](https://github.com/square/workflow)
-- See our [CONTRIBUTING](https://github.com/square/workflow/blob/main/CONTRIBUTING.md) doc to get
-  started.
-- Stay tuned! We're considering hosting a public Slack channel for open source contributors.
-
 ## This seems clever. Can I stick with a traditional development approach?
 
 Of course! Workflow was designed to make complex application architecture predictable and safe for
 large development teams. We're confident that it brings benefits even to smaller projects, but there
 is never only one right way to build software. We recommend to [follow good practices and use an
 architecture that makes sense for your project](https://www.thoughtworks.com/insights/blog/write-quality-mobile-apps-any-architecture).
-
-## Why do we need another architecture?
-
-Architectural patterns with weak access controls and heavy use of shared mutable state make it
-incredibly difficult to fully understand the behavior of the code that we are writing. This quickly
-devolves into an arms race as the codebase grows: if every feature or component in the codebase
-might change anything at any time, bug fixes turn into a really sad game of whack-a-mole.
-
-We have seen this pattern occur repeatedly in traditional mobile applications using patterns like
-MVC.
-
-Workflow defines strong boundaries and contracts between separate parts of the application to ensure
-that our code remains predictable and maintainable as the size and complexity of the codebase grows.

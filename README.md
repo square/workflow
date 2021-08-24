@@ -38,7 +38,10 @@ See the [square/workflow-kotlin](https://github.com/square/workflow-kotlin) repo
 
 ## Resources
 
-* The website contains a [User Guide](https://square.github.io/workflow/userguide/concepts/)
+* Wondering why to use Workflow? See
+  ["Why Workflow"](https://square.github.io/workflow/userguide/whyworkflow/)
+* There is a [Glossary of Terms](https://square.github.io/workflow/glossary/)
+* We have a [User Guide](https://square.github.io/workflow/userguide/concepts/)
   describing core concepts.
 * For Kotlin (and Android), there is a codelab style
   [tutorial](https://github.com/square/workflow-kotlin/tree/main/samples/tutorial) in the repo.
