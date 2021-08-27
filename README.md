@@ -19,13 +19,6 @@ Workflow is:
 * A corresponding testing framework that facilitates simple-to-write unit
   tests for all application business logic and helps ensure correctness.
 
-_**This project is currently in development and the API subject to breaking changes without notice.**
-Follow Square's engineering blog, [The Corner](https://developer.squareup.com/blog/), to see when
-this project becomes stable._
-
-While the API is not yet stable, this code is in heavy production use in Android and iOS
-apps with millions of users.
-
 ## Using Workflows in your project
 
 ### Swift
