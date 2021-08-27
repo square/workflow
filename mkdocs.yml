@@ -111,6 +111,7 @@ nav:
       - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
       - 'WorkflowTesting ': 'swift/api/WorkflowTesting/README.md'
   - 'FAQ': faq.md
+  - 'Pre-1.0 Resources': historical.md
   - 'Changelog': CHANGELOG.md
   - 'Contributing': CONTRIBUTING.md
   - 'Code of Conduct': CODE_OF_CONDUCT.md
