@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -765,7 +780,9 @@ Content<br />
 More info  </p>
 <p>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> or <a href="../-decorative-view-factory/">DecorativeViewFactory</a> than to call this method directly.</p>
 <p>Finds a <a href="../-view-factory/">ViewFactory</a> to create a <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> to display <a href="./">initialRendering</a>. The new view can be updated via calls to <a href="../show-rendering/">View.showRendering</a> &ndash; that is, it is guaranteed that <a href="../bind-show-rendering/">bindShowRendering</a> has been called on this view.</p>
-<p>The returned view will have a <a href="../-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> set on it, the caller <em>must</em> ensure the view gets attached to a window at least once, and call its <a href="../-workflow-lifecycle-owner/destroy-on-detach/">WorkflowLifecycleOwner.destroyOnDetach</a> method before detaching the view for the final time when replacing with another built view. Failing to do this can result in memory and other resource leaks.</p>
+<p>The returned view will have a <a href="../../com.squareup.workflow1.ui.androidx/-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> set on it. The returned view must EITHER:</p>
+<ol><li>Be attached at least once to ensure that the lifecycle eventually gets destroyed (because its     parent is destroyed), or</li><li>Have its     [WorkflowLifecycleOwner.destroyOnDetach](../com.squareup.workflow1.ui.androidx/-workflow-lifecycle-owner/destroy-on-detach.md)     called, which will either schedule the     lifecycle to be destroyed if the view is attached, or destroy it immediately if it's detached.</li></ol>
+
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <p>androidJvm  </p>
 <table>

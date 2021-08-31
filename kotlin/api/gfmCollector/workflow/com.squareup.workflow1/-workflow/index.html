@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -842,8 +857,8 @@
                 <p>//<a href="../../../">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">Workflow</a></p>
 <h1 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h1>
 <p>[jvm] interface <a href="./">Workflow</a><in <a href="index.md">PropsT</a>, out <a href="index.md">OutputT</a>, out <a href="index.md">RenderingT</a>></p>
-<p>A composable, optionally-stateful object that can RenderContext.onEvent, RenderContext.renderChild, RenderContext.onWorkerOutput to arbitrary asynchronous events from the outside world.</p>
-<p>The basic purpose of a Workflow is to take some input (in the form of <a href="./">PropsT</a>) and return a <a href="./">rendering</a>. To that end, a workflow may keep track of internal <a href="../-stateful-workflow/">state</a>, recursively ask other workflows to render themselves, subscribe to data streams from the outside world, and handle events both from its RenderContext.onEvent and from workflows it&rsquo;s delegated to (its &ldquo;children&rdquo;). A Workflow may also emit <a href="./">output events</a> up to its parent Workflow.</p>
+<p>A composable, optionally-stateful object that can <a href="../-base-render-context/action-sink/">handle events</a>, <a href="../-base-render-context/render-child/">delegate to children</a>, <a href="../running-worker/">subscribe</a> to arbitrary asynchronous events from the outside world.</p>
+<p>The basic purpose of a Workflow is to take some input (in the form of <a href="./">PropsT</a>) and return a <a href="./">rendering</a>. To that end, a workflow may keep track of internal <a href="../-stateful-workflow/">state</a>, recursively ask other workflows to render themselves, subscribe to data streams from the outside world, and handle events both from its <a href="../-base-render-context/action-sink/">renderings</a> and from workflows it&rsquo;s delegated to (its &ldquo;children&rdquo;). A Workflow may also emit <a href="./">output events</a> up to its parent Workflow.</p>
 <p>Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows are started as necessary whenever another workflow asks for them, and are cleaned up automatically when they&rsquo;re no longer needed. <a href="./">Props</a> propagates down the tree, <a href="./">outputs</a> and <a href="./">renderings</a> propagate up the tree.</p>
 <h2 id="implementing-workflow">Implementing Workflow<a class="headerlink" href="#implementing-workflow" title="Permanent link">&para;</a></h2>
 <p>The <a href="./">Workflow</a> interface is useful as a facade for your API. You can publish an interface that extends Workflow, and keep the implementation (e.g. is your workflow state*ful* or state*less* a private implementation detail.</p>
@@ -853,7 +868,7 @@
 <h3 id="stateless-workflows"><a href="../-stateless-workflow/">Stateless Workflows</a><a class="headerlink" href="#stateless-workflows" title="Permanent link">&para;</a></h3>
 <p>If your workflow does not have any state of its own and simply needs to delegate to other workflows (e.g. transforming props, outputs, or renderings), subclass <a href="../-stateless-workflow/">StatelessWorkflow</a> and implement its sole <a href="../-stateless-workflow/render/">StatelessWorkflow.render</a> method, or just pass a lambda to the <a href="../stateless/">stateless</a> function.</p>
 <h2 id="interacting-with-events-and-other-workflows">Interacting with events and other workflows<a class="headerlink" href="#interacting-with-events-and-other-workflows" title="Permanent link">&para;</a></h2>
-<p>All workflows are passed a <a href="../-render-context/">RenderContext</a> in their render methods. This context allows the workflow to interact with the outside world by doing things like listening for events, subscribing to streams of data, rendering child workflows, and performing cleanup when the workflow is about to be torn down by its parent. See the documentation on <a href="../-render-context/">RenderContext</a> for more information about what it can do.</p>
+<p>All workflows are passed a <a href="../-base-render-context/">RenderContext</a> in their render methods. This context allows the workflow to interact with the outside world by doing things like listening for events, subscribing to streams of data, rendering child workflows, and performing cleanup when the workflow is about to be torn down by its parent. See the documentation on <a href="../-base-render-context/">BaseRenderContext</a> for more information about what it can do.</p>
 <h2 id="things-to-avoid">Things to avoid<a class="headerlink" href="#things-to-avoid" title="Permanent link">&para;</a></h2>
 <h3 id="mutable-instance-state">Mutable instance state<a class="headerlink" href="#mutable-instance-state" title="Permanent link">&para;</a></h3>
 <p>Classes that implement <a href="./">Workflow</a> should not contain mutable properties. Such properties are instance-specific state and can introduce buggy behavior. Instead, subclass <a href="../-stateful-workflow/">StatefulWorkflow</a> and move all your state to the workflow&rsquo;s StateT type. For example, setting a property will not cause your workflow to be re-rendered – the runtime has no way of knowing that some data it doesn&rsquo;t know about has changed. It can also break consumers of your workflows, who may be expecting to be able to re-use the same instance of your workflow type in different places in the workflow tree – this works if all the workflow&rsquo;s state is contained in its StateT, but not if the instance has its own properties. <em>(Note that storing dependencies, which are effectively static relative to the workflow instance, in properties is fine.)</em></p>
@@ -960,7 +975,7 @@
 <tbody>
 <tr>
 <td><a name="com.squareup.workflow1//identifier/com.squareup.workflow1.Workflow[*,*,*]#/PointingToDeclaration/"></a><a href="../identifier/">identifier</a></td>
-<td><a name="com.squareup.workflow1//identifier/com.squareup.workflow1.Workflow[*,*,*]#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  <br>  <br>val <a href="./">Workflow</a>&lt;*, *, *&gt;.<a href="../identifier/">identifier</a>: <a href="../-workflow-identifier/">WorkflowIdentifier</a>  <br>More info  <br>The <a href="../-workflow-identifier/">WorkflowIdentifier</a> that identifies this <a href="./">Workflow</a>.  <br><br><br></td>
+<td><a name="com.squareup.workflow1//identifier/com.squareup.workflow1.Workflow[*,*,*]#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>val <a href="./">Workflow</a>&lt;*, *, *&gt;.<a href="../identifier/">identifier</a>: <a href="../-workflow-identifier/">WorkflowIdentifier</a>  <br>More info  <br>The <a href="../-workflow-identifier/">WorkflowIdentifier</a> that identifies this <a href="./">Workflow</a>.  <br><br><br></td>
 </tr>
 <tr>
 <td><a name="com.squareup.workflow1.testing//launchForTestingFromStartWith/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.testing.WorkflowTestParams[kotlin.Nothing]#kotlin.coroutines.CoroutineContext#kotlin.Function1[com.squareup.workflow1.testing.WorkflowTestRuntime[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.testing/launch-for-testing-from-start-with/">launchForTestingFromStartWith</a></td>

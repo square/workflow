@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -735,7 +750,7 @@ Content<br />
 inline fun &lt;<a href="./">OutputT</a>&gt; <a href="./">create</a>(noinline block: suspend FlowCollector&lt;<a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../../">Worker</a>&lt;<a href="./">OutputT</a>&gt;<br />
 More info  </p>
 <p>Shorthand for flow { block() }.asWorker().</p>
-<p>Note: If your worker just needs to perform side effects and doesn&rsquo;t need to emit anything, use <a href="../create-side-effect/">createSideEffect</a> instead (since Nothing can&rsquo;t be used as a reified type parameter).</p>
+<p>Note: If your worker just needs to perform side effects and doesn&rsquo;t need to emit anything, do not use a <a href="../../">Worker</a> but instead call BaseRenderContext::runningSideEffect</p>
                 
               
               

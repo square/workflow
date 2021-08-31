@@ -725,6 +725,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -853,8 +868,8 @@
 <p><a href="https://reactjs.org/">React</a> and <a href="https://guide.elm-lang.org/architecture/">the Elm architecture</a>
 were both strong influences for this library. However both those libraries are written for
 JavaScript. Workflows are written in and for both Kotlin and Swift, making use of features of those
-languages, and with usability from those languages as a major design goal. There are also a few
-architectural differences:</p>
+languages, and with usability from those languages as a major design goal. There are some
+architectural differences which we can see briefly in the following table:</p>
 <table>
 <thead>
 <tr>
@@ -868,8 +883,8 @@ architectural differences:</p>
 <tr>
 <td><strong>Modularity</strong></td>
 <td><code>Component</code></td>
-<td>TK</td>
-<td><code>Workflow</code> is analogous to React&rsquo;s <code>Component</code></td>
+<td><code>Module</code>s for code organization, but not &lsquo;composable&rsquo; in the same way.</td>
+<td>A <code>Workflow</code> is analogous to React&rsquo;s <code>Component</code></td>
 </tr>
 <tr>
 <td><strong>State</strong></td>
@@ -884,22 +899,22 @@ architectural differences:</p>
 <td>Since workflows are not tied to any particular UI view layer, they can have an arbitrary rendering type. The <code>render()</code> method returns this type.</td>
 </tr>
 <tr>
-<td><strong>Dependencies</strong></td>
+<td><strong>Injected Dependencies</strong></td>
 <td>React allows parent components to pass &ldquo;props&rdquo; down to their children.</td>
-<td>TK</td>
+<td>N/A</td>
 <td>In Swift, <code>Workflow</code>s are often structs that need to be initialized with their dependencies and configuration data from their parent. In Kotlin, they have a separate type parameter (<code>PropsT</code>) that is always passed down from the parent. <code>Workflow</code> instances can also inject dependencies, and play nicely with dependency injection frameworks.</td>
 </tr>
 <tr>
 <td><strong>Composability</strong></td>
-<td>TK</td>
-<td>TK</td>
-<td>TK</td>
+<td><code>Component</code>s are composed of other <code>Component</code>s.</td>
+<td>N/A</td>
+<td><code>Workflow</code>s can have children; they control their lifecycle and can choose to incorporate child renderings into their own.</td>
 </tr>
 <tr>
 <td><strong>Event Handling</strong></td>
-<td>TK</td>
-<td>TK</td>
-<td>TK</td>
+<td>DOM event listeners are hooked up to functions on the <code>Component</code>.</td>
+<td>The <code>update</code> function takes a <code>Msg</code> to modify state based on events.</td>
+<td><code>action</code> can be sent to the <code>Sink</code> to update <code>State</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -947,13 +962,13 @@ architecture that makes sense for your project</a>.</p>
       
       
         
-        <a href="../CHANGELOG/" class="md-footer__link md-footer__link--next" aria-label="Next: Changelog" rel="next">
+        <a href="../historical/" class="md-footer__link md-footer__link--next" aria-label="Next: Pre-1.0 Resources" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Changelog
+              Pre-1.0 Resources
             </div>
           </div>
           <div class="md-footer__button md-icon">

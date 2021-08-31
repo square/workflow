@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -766,8 +781,7 @@
                 
                 <p>//<a href="../../../">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">WorkflowIdentifier</a></p>
 <h1 id="workflowidentifier">WorkflowIdentifier<a class="headerlink" href="#workflowidentifier" title="Permanent link">&para;</a></h1>
-<p>[jvm] @<a href="../-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  </p>
-<p>class <a href="./">WorkflowIdentifier</a></p>
+<p>[jvm] class <a href="./">WorkflowIdentifier</a></p>
 <p>Represents a <a href="../-workflow/">Workflow</a>&lsquo;s &ldquo;identity&rdquo; and is used by the runtime to determine whether a workflow is the same as one that was rendered in a previous render pass, in which case its state should be re-used; or if it&rsquo;s a new workflow and needs to be started.</p>
 <p>A workflow&rsquo;s identity consists primarily of its concrete type (i.e. the class that implements the <a href="../-workflow/">Workflow</a> interface). Two workflows of the same concrete type are considered identical. However, if a workflow class implements <a href="../-impostor-workflow/">ImpostorWorkflow</a>, the identifier will also include that workflow&rsquo;s <a href="../-impostor-workflow/real-identifier/">ImpostorWorkflow.realIdentifier</a>.</p>
 <p>Instances of this class are <a href="equals/">equatable</a> and <a href="hash-code/">hashable</a>.</p>
@@ -793,7 +807,7 @@
 </tr>
 <tr>
 <td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a>description</td>
-<td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a><br><br>Implementation of describeRealIdentifier.<br><br></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a><br><br>Implementation of <a href="../-impostor-workflow/describe-real-identifier/">ImpostorWorkflow.describeRealIdentifier</a>.<br><br></td>
 </tr>
 </tbody>
 </table>

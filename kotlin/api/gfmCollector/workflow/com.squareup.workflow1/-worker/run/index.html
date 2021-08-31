@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -764,7 +779,7 @@ More info  </p>
 
 <h2 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h2>
 <p>If a worker needs to report an error to the workflow running it, it <em>must not</em> throw it as an exception – any exceptions thrown by a worker&rsquo;s Flow will cancel the entire workflow runtime. Instead, the worker&rsquo;s <a href="../">OutputT</a> type should be capable of expressing errors itself, and the worker&rsquo;s logic should wrap any relevant exceptions into an output value (e.g. using the catch operator).</p>
-<p>While this might seem restrictive, this design decision keeps the RenderContext.runningWorker API simpler, since it does not need to handle exceptions itself. It also discourages the code smell of relying on exceptions to handle control flow.</p>
+<p>While this might seem restrictive, this design decision keeps the <a href="../../running-worker/">BaseRenderContext.runningWorker</a> API simpler, since it does not need to handle exceptions itself. It also discourages the code smell of relying on exceptions to handle control flow.</p>
                 
               
               

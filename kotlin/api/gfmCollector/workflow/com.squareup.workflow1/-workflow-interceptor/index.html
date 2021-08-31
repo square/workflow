@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -766,8 +781,7 @@
                 
                 <p>//<a href="../../../">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">WorkflowInterceptor</a></p>
 <h1 id="workflowinterceptor">WorkflowInterceptor<a class="headerlink" href="#workflowinterceptor" title="Permanent link">&para;</a></h1>
-<p>[jvm] @<a href="../-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  </p>
-<p>interface <a href="./">WorkflowInterceptor</a></p>
+<p>[jvm] interface <a href="./">WorkflowInterceptor</a></p>
 <p>Provides hooks into the workflow runtime that can be used to instrument or modify the behavior of workflows.</p>
 <p>This interface&rsquo;s methods mirror the methods of <a href="../-stateful-workflow/">StatefulWorkflow</a>. It also has one additional method, <a href="on-session-started/">onSessionStarted</a>, that is notified when a workflow is started. Each method returns the same thing as the corresponding method on <a href="../-stateful-workflow/">StatefulWorkflow</a>, and receives the same parameters as well as two extra parameters:</p>
 <ul><li>**proceed** – A function that *exactly* mirrors the corresponding function on     [StatefulWorkflow](../-stateful-workflow/index.md), accepting the same parameters and returning the same thing. An interceptor     can call this function to run the actual workflow, but it may also decide to not call it at     all, or call it multiple times.</li><li>**session** – A [WorkflowSession](-workflow-session/index.md) object that can be queried for information about the     workflow being intercepted.</li></ul>
@@ -792,7 +806,7 @@
 </tr>
 <tr>
 <td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession///PointingToDeclaration/"></a><a href="-workflow-session/">WorkflowSession</a></td>
-<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  <br>  <br>interface <a href="-workflow-session/">WorkflowSession</a>  <br>More info  <br>Information about the session of a workflow in the runtime that a <a href="./">WorkflowInterceptor</a> method is intercepting.  <br><br><br></td>
+<td><a name="com.squareup.workflow1/WorkflowInterceptor.WorkflowSession///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>interface <a href="-workflow-session/">WorkflowSession</a>  <br>More info  <br>Information about the session of a workflow in the runtime that a <a href="./">WorkflowInterceptor</a> method is intercepting.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

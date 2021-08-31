@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -782,7 +797,7 @@
 <h1 id="worker">Worker<a class="headerlink" href="#worker" title="Permanent link">&para;</a></h1>
 <p>[jvm] interface <a href="./">Worker</a><out <a href="index.md">OutputT</a>></p>
 <p>Represents a unit of asynchronous work that can have zero, one, or multiple outputs.</p>
-<p>Workers allow you to execute arbitrary, possibly asynchronous tasks in a declarative manner. To perform their tasks, workers return a Flow. Workers are effectively Flows that can be <a href="does-same-work-as/">compared</a> to determine equivalence between render passes. A <a href="../-workflow/">Workflow</a> uses Workers to perform asynchronous work during the render pass by calling RenderContext.runningWorker.</p>
+<p>Workers allow you to execute arbitrary, possibly asynchronous tasks in a declarative manner. To perform their tasks, workers return a Flow. Workers are effectively Flows that can be <a href="does-same-work-as/">compared</a> to determine equivalence between render passes. A <a href="../-workflow/">Workflow</a> uses Workers to perform asynchronous work during the render pass by calling <a href="../running-worker/">BaseRenderContext.runningWorker</a>.</p>
 <p>See the documentation on <a href="run/">run</a> for more information on the returned Flow is consumed and how to implement asynchronous work.</p>
 <p>See the documentation on <a href="does-same-work-as/">doesSameWorkAs</a> for more details on how and when workers are compared and the worker lifecycle.</p>
 <h2 id="example-network-request">Example: Network request<a class="headerlink" href="#example-network-request" title="Permanent link">&para;</a></h2>
@@ -808,7 +823,7 @@
 <p>Now you can request the time from your <a href="../-workflow/">Workflow</a>:</p>
 <p>class MyWorkflow(private val timeWorker: TimeWorker) {<br />
   override fun render(…): Foo {<br />
-    context.onWorkerOutput(timeWorker) { time -&gt; emitOutput(&ldquo;The time is $time&rdquo;) }<br />
+    context.runningWorker(timeWorker) { time -&gt; emitOutput(&ldquo;The time is $time&rdquo;) }<br />
   }</p>
 <p>Alternatively, if the response is a unique type, unlikely to be shared by any other workers, you don&rsquo;t even need to create your own Worker class, you can use a builder, and the worker will automatically be distinguished by that response type:</p>
 <p>interface TimeService {<br />
@@ -828,14 +843,6 @@
 <tbody>
 <tr>
 <td><a name="com.squareup.workflow1/Worker///PointingToDeclaration/"></a><a href="-companion/from-nullable/">com.squareup.workflow1.Worker.Companion</a></td>
-<td><a name="com.squareup.workflow1/Worker///PointingToDeclaration/"></a></td>
-</tr>
-<tr>
-<td><a name="com.squareup.workflow1/Worker///PointingToDeclaration/"></a>Deferred.asWorker</td>
-<td><a name="com.squareup.workflow1/Worker///PointingToDeclaration/"></a></td>
-</tr>
-<tr>
-<td><a name="com.squareup.workflow1/Worker///PointingToDeclaration/"></a>BroadcastChannel.asWorker</td>
 <td><a name="com.squareup.workflow1/Worker///PointingToDeclaration/"></a></td>
 </tr>
 </tbody>

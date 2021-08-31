@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -753,8 +768,8 @@ More info  </p>
 <p>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> or <a href="../-decorative-view-factory/">DecorativeViewFactory</a> than to call this method directly.</p>
 <p>Returns the <a href="../-view-factory/">ViewFactory</a> that builds <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> instances suitable to display the given <a href="./">rendering</a>, via subsequent calls to <a href="../show-rendering/">View.showRendering</a>.</p>
 <p>Prefers factories found via <a href="../-view-registry/get-factory-for/">ViewRegistry.getFactoryFor</a>. If that returns null, falls back to the factory provided by the rendering&rsquo;s implementation of <a href="../-android-view-rendering/view-factory/">AndroidViewRendering.viewFactory</a>, if there is one. Note that this means that a compile time <a href="../-android-view-rendering/view-factory/">AndroidViewRendering.viewFactory</a> binding can be overridden at runtime.</p>
-<p>The returned view will have a <a href="../-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> set on it. The returned view must EITHER:</p>
-<ol><li>Be attached at least once to ensure that the lifecycle eventually gets destroyed (because its     parent is destroyed), or</li><li>Have its [WorkflowLifecycleOwner.destroyOnDetach](-workflow-lifecycle-owner/destroy-on-detach.md) called, which will either schedule the     lifecycle to be destroyed if the view is attached, or destroy it immediately if it's detached.</li></ol>
+<p>The returned view will have a <a href="../../com.squareup.workflow1.ui.androidx/-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> set on it. The returned view must EITHER:</p>
+<ol><li>Be attached at least once to ensure that the lifecycle eventually gets destroyed (because its     parent is destroyed), or</li><li>Have its     [WorkflowLifecycleOwner.destroyOnDetach](../com.squareup.workflow1.ui.androidx/-workflow-lifecycle-owner/destroy-on-detach.md)     called, which will either schedule the     lifecycle to be destroyed if the view is attached, or destroy it immediately if it's detached.</li></ol>
 
 <h4 id="throws">Throws<a class="headerlink" href="#throws" title="Permanent link">&para;</a></h4>
 <table>

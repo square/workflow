@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -791,7 +806,16 @@
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>val AuthViewFactories = ViewRegistry(
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>val AuthViewFactories = ViewRegistry(
   AuthorizingLayoutRunner, LoginLayoutRunner, SecondFactorLayoutRunner
 )
 
@@ -805,12 +829,21 @@ val ApplicationViewFactories = ViewRegistry(ApplicationLayoutRunner) +
 override fun onCreate(savedInstanceState: Bundle?) {
   super.onCreate(savedInstanceState)
 
-  setContentWorkflow(
-    registry = viewRegistry,
-    configure = {
-      WorkflowRunner.Config(rootWorkflow)
-    }
+  val model: MyViewModel by viewModels()
+  setContentView(
+    WorkflowLayout(this).apply { start(model.renderings, ApplicationViewFactories) }
   )
+}
+
+/** As always, use an androidx ViewModel for state that survives config change. */
+class MyViewModel(savedState: SavedStateHandle) : ViewModel() {
+  val renderings: StateFlow&lt;Any&gt; by lazy {
+    renderWorkflowIn(
+      workflow = rootWorkflow,
+      scope = viewModelScope,
+      savedStateHandle = savedState
+    )
+  }
 }
 </code></pre></div>
 </td></tr></table>

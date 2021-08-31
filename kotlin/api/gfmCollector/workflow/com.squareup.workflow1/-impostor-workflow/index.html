@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -752,8 +767,7 @@
                 
                 <p>//<a href="../../../">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">ImpostorWorkflow</a></p>
 <h1 id="impostorworkflow">ImpostorWorkflow<a class="headerlink" href="#impostorworkflow" title="Permanent link">&para;</a></h1>
-<p>[jvm] @<a href="../-experimental-workflow-api/">ExperimentalWorkflowApi</a>()  </p>
-<p>interface <a href="./">ImpostorWorkflow</a></p>
+<p>[jvm] interface <a href="./">ImpostorWorkflow</a></p>
 <p>Optional interface that <a href="../-workflow/">Workflow</a>s should implement if they need the runtime to consider their identity to include a child workflow&rsquo;s identity. Two <a href="./">ImpostorWorkflow</a>s with the same concrete class, but different <a href="real-identifier/">realIdentifier</a>s will be considered different workflows by the runtime.</p>
 <p>This is intended to be used for helper workflows that implement things like operators by wrapping and delegating to other workflows, and which need to be able to express that the identity of the operator workflow is derived from the identity of the wrapped workflow.</p>
 <h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>

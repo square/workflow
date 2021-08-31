@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -757,7 +772,7 @@ Content<br />
 inline fun &lt;<a href="./">W</a> : <a href="../-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="./">runningWorker</a>(worker: <a href="./">W</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;)<br />
 More info  </p>
 <p>Ensures a <a href="../-worker/">Worker</a> that never emits anything is running. Since <a href="./">worker</a> can&rsquo;t emit anything, it can&rsquo;t trigger any <a href="../-workflow-action/">WorkflowAction</a>s.</p>
-<p>A simple way to create workers that don&rsquo;t output anything is using <a href="../-worker/-companion/create-side-effect/">Worker.createSideEffect</a>.</p>
+<p>If your <a href="../-worker/">Worker</a> does not output anything, then simply use runningSideEffect.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <p>jvm  </p>
 <table>

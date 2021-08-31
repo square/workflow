@@ -657,6 +657,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../../../historical/" class="md-nav__link">
+        Pre-1.0 Resources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../../../CHANGELOG/" class="md-nav__link">
         Changelog
       </a>
@@ -899,7 +914,7 @@ Content<br />
 inline fun &lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="./">action</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline apply: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;<br />
 More info  </p>
 <p>Creates a <a href="../-workflow-action/">WorkflowAction</a> from the <a href="./">apply</a> lambda. The returned object will include the string returned from <a href="./">name</a> in its toString.</p>
-<p>If defining actions within a <a href="../-stateful-workflow/">StatefulWorkflow</a>, use the StatefulWorkflow.workflowAction extension instead, to do this without being forced to repeat its parameter types.</p>
+<p>It is more common to use <a href="./">StatefulWorkflow.action</a> or <a href="./">StatelessWorkflow.action</a> instead of this function directly, to avoid repeating its parameter types.</p>
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <p>jvm  </p>
 <table>
@@ -945,7 +960,7 @@ Content<br />
 inline fun &lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="./">action</a>(crossinline name: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, crossinline apply: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;<br />
 More info  </p>
 <p>Creates a <a href="../-workflow-action/">WorkflowAction</a> from the <a href="./">apply</a> lambda. The returned object will include the string returned from <a href="./">name</a> in its toString.</p>
-<p>If defining actions within a <a href="../-stateful-workflow/">StatefulWorkflow</a>, use the StatefulWorkflow.workflowAction extension instead, to do this without being forced to repeat its parameter types.</p>
+<p>It is more common to use <a href="./">StatefulWorkflow.action</a> or <a href="./">StatelessWorkflow.action</a> instead of this function directly, to avoid repeating its parameter types.</p>
 <h2 id="see-also_1">See also<a class="headerlink" href="#see-also_1" title="Permanent link">&para;</a></h2>
 <p>jvm  </p>
 <table>
