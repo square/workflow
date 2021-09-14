@@ -57,10 +57,10 @@ jobs:
         cd workflow-swift
         bundle config --global path "$(pwd)/.bundle"
         bundle check || bundle install
-        
+
         # Don't need to run pod gen, the website script does that itself.
         brew install sourcedocs
-        
+
         # Use Xcode 11.4
         # TODO: Update this to the latest?
         # * Xcode 11.4 is the version that includes Swift 5.2, which is what our language version is set to
@@ -78,15 +78,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
     # Build Swift docs
     - name: Build Swift docs
       run: |
         mkdir -p workflow/docs/swift/api
-        
+
         cd workflow-swift
         bundle exec pod gen Development.podspec
         cd gen/Development
-        
+
         sourcedocs generate --output-folder "../../../workflow/docs/swift/api/Workflow" -- -scheme Workflow -workspace Development.xcworkspace
         sourcedocs generate --output-folder "../../../workflow/docs/swift/api/WorkflowUI" -- -scheme WorkflowUI -workspace Development.xcworkspace
         sourcedocs generate --output-folder "../../../workflow/docs/swift/api/WorkflowTesting" -- -scheme WorkflowTesting -workspace Development.xcworkspace
@@ -98,7 +103,7 @@ jobs:
         cd workflow-kotlin
         ./gradlew assemble --build-cache --quiet
         ./gradlew siteDokka --build-cache --quiet
-        
+
         mkdir -p ../workflow/docs/kotlin/api
         mv build/dokka/workflow ../workflow/docs/kotlin/api
 
@@ -124,13 +129,13 @@ jobs:
         # Get the source repo SHAs
         KOTLIN_REF=$(git --git-dir workflow-kotlin/.git log -1 --format='%H')
         SWIFT_REF=$(git --git-dir workflow-swift/.git log -1 --format='%H')
-        
+
         cd workflow-publish
         git checkout -b ${{ github.event.inputs.docs-branch }}
-        
+
         # Copy all the files over from the 'site' directory
         cp -R ../workflow/site/* .
-        
+
         # Commit and push
         git add .
         git commit -m "Update documentation" -m "Docs built from square/workflow-kotlin@$KOTLIN_REF and square/workflow-swift@$SWIFT_REF"
