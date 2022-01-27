@@ -62,7 +62,7 @@ node in the workflow hierarchy.
 
 ??? faq "Kotlin: `StatefulWorkflow` vs `Workflow`"
     It is a common practice in Kotlin to divide types into two parts: an interface for public API,
-    and a class for private implementation. The Workflow library defines a [`Workflow`](/workflow/kotlin/api/workflow-core/com.squareup.workflow/-workflow/)
+    and a class for private implementation. The Workflow library defines a [`Workflow`](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-workflow/)
     interface, which should be used as the type of properties and parameters by code that needs to
     refer to a particular `Workflow` interface. The `Workflow` interface contains a single method,
     which simply returns a `StatefulWorkflow` – a `Workflow` can be described as “anything that can
@@ -71,9 +71,9 @@ node in the workflow hierarchy.
     The library also defines two abstract classes which define the contract for workflows and should
     be subclassed to implement your workflows:
 
-    - [**`StatefulWorkflow`**](/workflow/kotlin/api/workflow-core/com.squareup.workflow/-stateful-workflow/)
+    - [**`StatefulWorkflow`**](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateful-workflow/)
       should be subclassed to implement Workflows that have [private state](#private-state).
-    - [**`StatelessWorkflow`**](/workflow/kotlin/api/workflow-core/com.squareup.workflow/-stateless-workflow/)
+    - [**`StatelessWorkflow`**](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateless-workflow/)
       should be subclassed to implement Workflows that _don't_ have any private state. See [Stateless Workflows](#stateless-workflows).
 
 Workflows have several responsibilities:
