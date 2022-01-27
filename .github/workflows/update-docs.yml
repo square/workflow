@@ -61,10 +61,8 @@ jobs:
         # Don't need to run pod gen, the website script does that itself.
         brew install sourcedocs
 
-        # Use Xcode 11.4
-        # TODO: Update this to the latest?
-        # * Xcode 11.4 is the version that includes Swift 5.2, which is what our language version is set to
-        sudo xcode-select -s /Applications/Xcode_11.4.app
+        # Use Xcode
+        sudo xcode-select -s /Applications/Xcode_12.5.1.app
 
     # Docs dependencies
     - name: Set up Python
