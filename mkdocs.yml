@@ -104,7 +104,7 @@ nav:
       - 'Building a View Controller from a Screen': 'tutorial/building-a-view-controller-from-screen.md'
       - 'Using a Workflow to Show UI': 'tutorial/using-a-workflow-for-ui.md'
   - 'API Reference':
-    - 'Kotlin': 'kotlin/api/gfmCollector/'
+    - 'Kotlin': 'kotlin/api/gfmCollector'
     - 'Swift API':
       - 'Workflow ': 'swift/api/Workflow/README.md'
       - 'WorkflowReactiveSwift': 'swift/api/WorkflowReactiveSwift/README.md'
