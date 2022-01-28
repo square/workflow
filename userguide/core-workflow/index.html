@@ -17,7 +17,7 @@
         <meta name="author" content="Square, Inc.">
       
       <link rel="shortcut icon" href="../../images/icon-square.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.2.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-5.2.2">
     
     
       
@@ -216,7 +216,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../kotlin/api/gfmCollector/index.md" class="md-tabs__link">
+        <a href="../../kotlin/api/gfmCollector/" class="md-tabs__link">
           API Reference
         </a>
       
@@ -731,7 +731,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../kotlin/api/gfmCollector/index.md" title="Kotlin" class="md-nav__link">
+    <a href="../../kotlin/api/gfmCollector/" title="Kotlin" class="md-nav__link">
       Kotlin
     </a>
   </li>
@@ -1076,7 +1076,7 @@ type-erased <code>AnyWorkflow</code>.</p>
 <details class="faq">
 <summary>Kotlin: <code>StatefulWorkflow</code> vs <code>Workflow</code></summary>
 <p>It is a common practice in Kotlin to divide types into two parts: an interface for public API,
-and a class for private implementation. The Workflow library defines a <a href="/workflow/kotlin/api/workflow-core/com.squareup.workflow/-workflow/"><code>Workflow</code></a>
+and a class for private implementation. The Workflow library defines a <a href="/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-workflow/"><code>Workflow</code></a>
 interface, which should be used as the type of properties and parameters by code that needs to
 refer to a particular <code>Workflow</code> interface. The <code>Workflow</code> interface contains a single method,
 which simply returns a <code>StatefulWorkflow</code> – a <code>Workflow</code> can be described as “anything that can
@@ -1084,9 +1084,9 @@ be expressed as a <code>StatefulWorkflow</code>.”</p>
 <p>The library also defines two abstract classes which define the contract for workflows and should
 be subclassed to implement your workflows:</p>
 <ul>
-<li><a href="/workflow/kotlin/api/workflow-core/com.squareup.workflow/-stateful-workflow/"><strong><code>StatefulWorkflow</code></strong></a>
+<li><a href="/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateful-workflow/"><strong><code>StatefulWorkflow</code></strong></a>
   should be subclassed to implement Workflows that have <a href="#private-state">private state</a>.</li>
-<li><a href="/workflow/kotlin/api/workflow-core/com.squareup.workflow/-stateless-workflow/"><strong><code>StatelessWorkflow</code></strong></a>
+<li><a href="/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateless-workflow/"><strong><code>StatelessWorkflow</code></strong></a>
   should be subclassed to implement Workflows that <em>don&rsquo;t</em> have any private state. See <a href="#stateless-workflows">Stateless Workflows</a>.</li>
 </ul>
 </details>
