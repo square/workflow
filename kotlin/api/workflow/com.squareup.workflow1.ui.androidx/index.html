@@ -820,6 +820,10 @@
 <td><a href="-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a></td>
 <td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>interface <a href="-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> : <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/LifecycleOwner.html">LifecycleOwner</a><br>An extension of <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/LifecycleOwner.html">LifecycleOwner</a> that is always owned by a <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, is logically a child lifecycle of the next-nearest <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a> above it (it mirrors its parent&rsquo;s lifecycle until it&rsquo;s destroyed), and can be <a href="-workflow-lifecycle-owner/destroy-on-detach/">asked to destroy</a> itself early.</td>
 </tr>
+<tr>
+<td><a href="-workflow-saved-state-registry-aggregator/">WorkflowSavedStateRegistryAggregator</a></td>
+<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>class <a href="-workflow-saved-state-registry-aggregator/">WorkflowSavedStateRegistryAggregator</a><br>Manages a group of <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>s that are all saved to and restored from a single &ldquo;parent&rdquo; <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>. <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> is the new androidx alternative to the <a href="../com.squareup.workflow1.ui/-workflow-view-stub/#1773232604%2FFunctions%2F576965167">View.onSaveInstanceState</a> system, and is required by Compose UI.</td>
+</tr>
 </tbody>
 </table>
                 
