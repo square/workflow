@@ -831,6 +831,10 @@
 <td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>interface <a href="-android-view-rendering/">AndroidViewRendering</a>&lt;<a href="-android-view-rendering/">V</a> : <a href="-android-view-rendering/">AndroidViewRendering</a>&lt;<a href="-android-view-rendering/">V</a>&gt;&gt;<br>Interface implemented by a rendering class to allow it to drive an Android UI via an appropriate <a href="-view-factory/">ViewFactory</a> implementation.</td>
 </tr>
 <tr>
+<td><a href="-back-button-screen/">BackButtonScreen</a></td>
+<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>class <a href="-back-button-screen/">BackButtonScreen</a>&lt;<a href="-back-button-screen/">W</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(wrapped: <a href="-back-button-screen/">W</a>, shadow: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, onBackPressed: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>?) : <a href="-android-view-rendering/">AndroidViewRendering</a>&lt;<a href="-back-button-screen/">BackButtonScreen</a>&lt;*&gt;&gt; <br>Adds optional back button handling to a <a href="-back-button-screen/wrapped/">wrapped</a> rendering, possibly overriding that the wrapped rendering&rsquo;s own back button handler.</td>
+</tr>
+<tr>
 <td><a href="./#-353760787%2FClasslikes%2F576965167">BackPressHandler</a></td>
 <td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>typealias <a href="./#-353760787%2FClasslikes%2F576965167">BackPressHandler</a> = () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><br>A function passed to <a href="back-pressed-handler/">View.backPressedHandler</a>, to be called if the back button is pressed while that view is attached to a window.</td>
 </tr>
