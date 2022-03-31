@@ -21,6 +21,7 @@ site_description: "A library for making composable state machines, and UIs drive
 site_author: Square, Inc.
 site_url: https://square.github.io/workflow/
 remote_branch: gh-pages
+edit_uri: edit/main/docs/
 
 copyright: 'Copyright &copy; 2019 Square, Inc.'
 
