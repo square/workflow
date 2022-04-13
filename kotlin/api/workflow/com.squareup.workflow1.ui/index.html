@@ -807,7 +807,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/square/workflow/edit/master/docs/kotlin/api/workflow/com.squareup.workflow1.ui/index.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/square/workflow/edit/main/docs/kotlin/api/workflow/com.squareup.workflow1.ui/index.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -859,8 +859,12 @@
 <td>[jvm]<br>@<a href="-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a><br>data class <a href="-named/">Named</a>&lt;<a href="-named/">W</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(wrapped: <a href="-named/">W</a>, name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) : <a href="-compatible/">Compatible</a><br>Allows renderings that do not implement <a href="-compatible/">Compatible</a> themselves to be distinguished by more than just their type. Instances are <a href="compatible/">compatible</a> if they have the same name and have <a href="-named/wrapped/">compatible</a> fields.</td>
 </tr>
 <tr>
+<td><a href="-parcelable-text-controller/">ParcelableTextController</a></td>
+<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>class <a href="-parcelable-text-controller/">ParcelableTextController</a> : <a href="-text-controller/#-1223366606%2FExtensions%2F576965167">TextController</a>, <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a><br><a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a> implementation of <a href="-text-controller/#-1223366606%2FExtensions%2F576965167">TextController</a>.</td>
+</tr>
+<tr>
 <td><a href="-text-controller/">TextController</a></td>
-<td>[jvm]<br>@<a href="-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a><br>class <a href="-text-controller/">TextController</a>(initialValue: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)<br>Helper class for keeping a workflow in sync with editable text in a UI, without interfering with the user&rsquo;s typing.</td>
+<td>[jvm]<br>@<a href="-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a><br>interface <a href="-text-controller/">TextController</a><br>Helper class for keeping a workflow in sync with editable text in a UI, without interfering with the user&rsquo;s typing.</td>
 </tr>
 <tr>
 <td><a href="./#-754151236%2FClasslikes%2F576965167">ViewBindingInflater</a></td>
@@ -964,6 +968,10 @@
 <tr>
 <td><a href="start/">start</a></td>
 <td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>fun <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="start/">start</a>()<br>Note that <a href="-workflow-view-stub/">WorkflowViewStub</a> calls this method for you.</td>
+</tr>
+<tr>
+<td><a href="-text-controller/">TextController</a></td>
+<td>[jvm]<br>@<a href="-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a><br>fun <a href="-text-controller/">TextController</a>(initialValue: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="-text-controller/">TextController</a><br>Create instance for default implementation of <a href="-text-controller/">TextController</a>.</td>
 </tr>
 <tr>
 <td><a href="to-parcelable/">toParcelable</a></td>

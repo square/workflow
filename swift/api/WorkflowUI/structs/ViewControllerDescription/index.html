@@ -802,6 +802,54 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#buildviewcontroller" class="md-nav__link">
+    buildViewController()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#canupdateviewcontroller" class="md-nav__link">
+    canUpdate(viewController:)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#note" class="md-nav__link">
+    Note
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updateviewcontroller" class="md-nav__link">
+    update(viewController:)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#note_1" class="md-nav__link">
+    Note
+  </a>
+  
+    <nav class="md-nav" aria-label="Note">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -819,7 +867,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/square/workflow/edit/master/docs/swift/api/WorkflowUI/structs/ViewControllerDescription.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/square/workflow/edit/main/docs/swift/api/WorkflowUI/structs/ViewControllerDescription.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -831,13 +879,24 @@
 <h1 id="viewcontrollerdescription"><code>ViewControllerDescription</code><a class="headerlink" href="#viewcontrollerdescription" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">ViewControllerDescription</span>
 </code></pre></div>
-<p>A ViewControllerDescription acts as a recipe for building and updating a
-specific UIViewController.</p>
+<p>A ViewControllerDescription acts as a &ldquo;recipe&rdquo; for building and updating a specific <code>UIViewController</code>.
+It describes how to <em>create</em> and later <em>update</em> a given view controller instance, without creating one
+itself. This means it is a lightweight currency you can create and pass around to describe a view controller,
+without needing to create one.</p>
+<p>The most common use case for a <code>ViewControllerDescription</code> is to return it from your <code>Screen</code>&lsquo;s
+<code>viewControllerDescription(environment:)</code> method. The <code>WorkflowUI</code> machinery (or your
+custom container view controller) will then use this view controller description to create or update the
+on-screen presented view controller.</p>
+<p>As a creator of a custom container view controller, you will usually pass this view controller description to
+a <code>DescribedViewController</code>, which will internally create and manage the described view
+controller for its current view controller description. However, you can also directly invoke the public
+methods such as <code>buildViewController()</code>, <code>update(viewController:)</code>, if you are
+manually managing your own view controller hierarchy.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="inittypebuildupdate"><code>init(type:build:update:)</code><a class="headerlink" href="#inittypebuildupdate" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">VC</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">&gt;(</span><span class="n">type</span><span class="p">:</span> <span class="n">VC</span><span class="p">.</span><span class="kr">Type</span> <span class="p">=</span> <span class="n">VC</span><span class="p">.</span><span class="kc">self</span><span class="p">,</span> <span class="n">build</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="n">VC</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">VC</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
 </code></pre></div>
-<p>Constructs a view controller description by providing a closure used to
+<p>Constructs a view controller description by providing closures used to
 build and update a specific view controller type.</p>
 <ul>
 <li>Parameters:</li>
@@ -868,6 +927,44 @@ build and update a specific view controller type.</p>
 <tr>
 <td>update</td>
 <td>Closure that updates the given view controller</td>
+</tr>
+</tbody>
+</table>
+<h3 id="buildviewcontroller"><code>buildViewController()</code><a class="headerlink" href="#buildviewcontroller" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">buildViewController</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="bp">UIViewController</span>
+</code></pre></div>
+<p>Construct and update a new view controller as described by this view controller description.
+The view controller will be updated before it is returned, so it is fully configured and prepared for display.</p>
+<h3 id="canupdateviewcontroller"><code>canUpdate(viewController:)</code><a class="headerlink" href="#canupdateviewcontroller" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">canUpdate</span><span class="p">(</span><span class="n">viewController</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span>
+</code></pre></div>
+<p>If the given view controller is of the correct type to be updated by this view controller description.</p>
+<p>If your view controller type can change between updates, call this method before invoking <code>update(viewController:)</code>.</p>
+<h3 id="note">Note<a class="headerlink" href="#note" title="Permanent link">&para;</a></h3>
+<p>Failure to confirm the view controller is updatable will result in a fatal <code>precondition</code>.</p>
+<h3 id="updateviewcontroller"><code>update(viewController:)</code><a class="headerlink" href="#updateviewcontroller" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">viewController</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">)</span>
+</code></pre></div>
+<p>Update the given view controller with the content from the view controller description.</p>
+<ul>
+<li>Parameters:</li>
+<li>viewController: The view controller to update.</li>
+</ul>
+<h3 id="note_1">Note<a class="headerlink" href="#note_1" title="Permanent link">&para;</a></h3>
+<p>You must pass a view controller previously created by a compatible <code>ViewControllerDescription</code>
+that passes <code>canUpdate(viewController:)</code>. Failure to do so will result in a fatal precondition.</p>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>viewController</td>
+<td>The view controller to update.</td>
 </tr>
 </tbody>
 </table>

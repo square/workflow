@@ -782,15 +782,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#constructors" class="md-nav__link">
-    Constructors
+  <a href="#properties" class="md-nav__link">
+    Properties
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    Properties
+  <a href="#inheritors" class="md-nav__link">
+    Inheritors
   </a>
   
 </li>
@@ -814,7 +814,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/square/workflow/edit/master/docs/kotlin/api/workflow/com.squareup.workflow1.ui/-text-controller/index.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/square/workflow/edit/main/docs/kotlin/api/workflow/com.squareup.workflow1.ui/-text-controller/index.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -826,7 +826,7 @@
 <h1 id="textcontroller">TextController<a class="headerlink" href="#textcontroller" title="Permanent link">&para;</a></h1>
 <p>[jvm]\
 @<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a></p>
-<p>class <a href="./">TextController</a>(initialValue: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)</p>
+<p>interface <a href="./">TextController</a></p>
 <p>Helper class for keeping a workflow in sync with editable text in a UI, without interfering with the user&rsquo;s typing.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <ol><li>For every editable string in your state, create a property of type [TextController](index.md).
@@ -842,21 +842,6 @@
 </ol>
 
 <p>If your workflow needs to access or change the current text value, get the value from <a href="text-value/">textValue</a>. If your workflow needs to react to changes, it can observe <a href="on-text-changed/">onTextChanged</a> by converting it to a worker.</p>
-<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="-text-controller/">TextController</a></td>
-<td>[jvm]<br>fun <a href="-text-controller/">TextController</a>(initialValue: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;)</td>
-</tr>
-</tbody>
-</table>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -868,11 +853,24 @@
 <tbody>
 <tr>
 <td><a href="on-text-changed/">onTextChanged</a></td>
-<td>[jvm]<br>val <a href="on-text-changed/">onTextChanged</a>: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<br>A Flow that emits the text value whenever it changes &ndash; and only when it changes, the current value is not provided at subscription time. Workflows can safely observe changes by converting this value to a worker. (When using multiple instances, remember to provide unique key values to each asWorker call.)</td>
+<td>[jvm]<br>abstract val <a href="on-text-changed/">onTextChanged</a>: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<br>A Flow that emits the text value whenever it changes &ndash; and only when it changes, the current value is not provided at subscription time. Workflows can safely observe changes by converting this value to a worker. (When using multiple instances, remember to provide unique key values to each asWorker call.)</td>
 </tr>
 <tr>
 <td><a href="text-value/">textValue</a></td>
-<td>[jvm]<br>var <a href="text-value/">textValue</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><br>The current text value.</td>
+<td>[jvm]<br>abstract var <a href="text-value/">textValue</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><br>The current text value.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="inheritors">Inheritors<a class="headerlink" href="#inheritors" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../-parcelable-text-controller/">ParcelableTextController</a></td>
 </tr>
 </tbody>
 </table>
@@ -887,7 +885,7 @@
 <tbody>
 <tr>
 <td><a href="../../com.squareup.workflow1.ui.compose/as-mutable-state/">asMutableState</a></td>
-<td>[androidJvm]<br>@Composable<br>fun <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a>.<a href="../../com.squareup.workflow1.ui.compose/as-mutable-state/">asMutableState</a>(): MutableState&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<br>Exposes the textValue of a <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a> as a remembered MutableState, suitable for use from @Composable functions.</td>
+<td>[androidJvm]<br>@Composable<br>fun <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a>.<a href="../../com.squareup.workflow1.ui.compose/as-mutable-state/">asMutableState</a>(): MutableState&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<br>Exposes the <a href="../-parcelable-text-controller/#-302046935%2FProperties%2F576965167">textValue</a> of a <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a> as a remembered MutableState, suitable for use from @Composable functions.</td>
 </tr>
 <tr>
 <td><a href="../control/">control</a></td>
