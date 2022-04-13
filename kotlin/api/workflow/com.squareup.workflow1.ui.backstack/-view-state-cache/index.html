@@ -807,7 +807,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/square/workflow/edit/master/docs/kotlin/api/workflow/com.squareup.workflow1.ui.backstack/-view-state-cache/index.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/square/workflow/edit/main/docs/kotlin/api/workflow/com.squareup.workflow1.ui.backstack/-view-state-cache/index.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -819,9 +819,9 @@
 <h1 id="viewstatecache">ViewStateCache<a class="headerlink" href="#viewstatecache" title="Permanent link">&para;</a></h1>
 <p>[androidJvm]\
 @WorkflowUiExperimentalApi</p>
-<p>class <a href="./">ViewStateCache</a> : <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a></p>
+<p>class <a href="./">ViewStateCache</a></p>
 <p>Handles persistence chores for container views that manage a set of Named renderings, showing a view for one at a time &ndash; think back stacks or tab sets.</p>
-<ul><li>This class implements [Parcelable](https://developer.android.com/reference/kotlin/android/os/Parcelable.html) so that it can be preserved from a container view's own [View.saveHierarchyState](../../com.squareup.workflow1.ui/-workflow-view-stub/index.md#-888880737%2FFunctions%2F576965167) method. A simple container can return [SavedState](-saved-state/index.md) from that method rather than creating its own persistence class.</li><li>It also handles androidx [ViewTreeSavedStateRegistryOwner](https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html) duties, via a wrapped instance of [WorkflowSavedStateRegistryAggregator](../../com.squareup.workflow1.ui.androidx/-workflow-saved-state-registry-aggregator/index.md). This means that container views using this class must call [attachToParentRegistryOwner](attach-to-parent-registry-owner.md) and [detachFromParentRegistry](detach-from-parent-registry.md) when they are [attached](../../com.squareup.workflow1.ui/-workflow-view-stub/index.md#75443984%2FFunctions%2F576965167) and [detached](../../com.squareup.workflow1.ui/-workflow-view-stub/index.md#233641971%2FFunctions%2F576965167), respectively.</li></ul>
+<ul><li>Provides [Parcelable](https://developer.android.com/reference/kotlin/android/os/Parcelable.html)-based [save](save.md) and [restore](restore.md) methods for use from a container's [View.onSaveInstanceState](../../com.squareup.workflow1.ui/-workflow-view-stub/index.md#1773232604%2FFunctions%2F576965167) and [View.onRestoreInstanceState](../../com.squareup.workflow1.ui/-workflow-view-stub/index.md#-648840093%2FFunctions%2F576965167) methods.</li><li>Also handles androidx [ViewTreeSavedStateRegistryOwner](https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html) duties, via a wrapped instance of [WorkflowSavedStateRegistryAggregator](../../com.squareup.workflow1.ui.androidx/-workflow-saved-state-registry-aggregator/index.md). This means that container views using this class must call [attachToParentRegistryOwner](attach-to-parent-registry-owner.md) and [detachFromParentRegistry](detach-from-parent-registry.md) when they are [attached](../../com.squareup.workflow1.ui/-workflow-view-stub/index.md#75443984%2FFunctions%2F576965167) and [detached](../../com.squareup.workflow1.ui/-workflow-view-stub/index.md#233641971%2FFunctions%2F576965167), respectively.</li></ul>
 
 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
@@ -848,12 +848,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-c-r-e-a-t-o-r/">CREATOR</a></td>
-<td>[androidJvm]<br>object <a href="-c-r-e-a-t-o-r/">CREATOR</a> : <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.Creator.html">Parcelable.Creator</a>&lt;<a href="./">ViewStateCache</a>&gt;</td>
-</tr>
-<tr>
-<td><a href="-saved-state/">SavedState</a></td>
-<td>[androidJvm]<br>class <a href="-saved-state/">SavedState</a> : <a href="https://developer.android.com/reference/kotlin/android/view/View.BaseSavedState.html">View.BaseSavedState</a><br>Convenience for use in <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#1773232604%2FFunctions%2F576965167">View.onSaveInstanceState</a> and <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#-648840093%2FFunctions%2F576965167">View.onRestoreInstanceState</a> methods of container views that have no other state of their own to save.</td>
+<td><a href="-saved/">Saved</a></td>
+<td>[androidJvm]<br>class <a href="-saved/">Saved</a> : <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a></td>
 </tr>
 </tbody>
 </table>
@@ -871,10 +867,6 @@
 <td>[androidJvm]<br>fun <a href="attach-to-parent-registry-owner/">attachToParentRegistryOwner</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, parentOwner: <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>)<br>Must be called whenever the owning view is <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#75443984%2FFunctions%2F576965167">attached to a window</a>. Must eventually be matched with a call to <a href="detach-from-parent-registry/">detachFromParentRegistry</a>.</td>
 </tr>
 <tr>
-<td><a href="describe-contents/">describeContents</a></td>
-<td>[androidJvm]<br>open override fun <a href="describe-contents/">describeContents</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></td>
-</tr>
-<tr>
 <td><a href="detach-from-parent-registry/">detachFromParentRegistry</a></td>
 <td>[androidJvm]<br>fun <a href="detach-from-parent-registry/">detachFromParentRegistry</a>()<br>Must be called whenever the owning view is <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#233641971%2FFunctions%2F576965167">detached from a window</a>. Must be matched with a call to <a href="attach-to-parent-registry-owner/">attachToParentRegistryOwner</a>.</td>
 </tr>
@@ -884,15 +876,15 @@
 </tr>
 <tr>
 <td><a href="restore/">restore</a></td>
-<td>[androidJvm]<br>fun <a href="restore/">restore</a>(from: <a href="./">ViewStateCache</a>)<br>Replaces the state of the receiver with that of <a href="restore/">from</a>. Typical usage is to call this from a container view&rsquo;s <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#-648840093%2FFunctions%2F576965167">View.onRestoreInstanceState</a>.</td>
+<td>[androidJvm]<br>fun <a href="restore/">restore</a>(from: <a href="-saved/">ViewStateCache.Saved</a>)<br>Replaces the state of the receiver with that of <a href="restore/">from</a>. Typical usage is to call this from a container view&rsquo;s <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#-648840093%2FFunctions%2F576965167">View.onRestoreInstanceState</a>.</td>
+</tr>
+<tr>
+<td><a href="save/">save</a></td>
+<td>[androidJvm]<br>fun <a href="save/">save</a>(): <a href="-saved/">ViewStateCache.Saved</a><br>Returns a <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a> copy of the internal state of the receiver, for use with a container view&rsquo;s <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#1773232604%2FFunctions%2F576965167">View.onSaveInstanceState</a>.</td>
 </tr>
 <tr>
 <td><a href="update/">update</a></td>
 <td>[androidJvm]<br>fun <a href="update/">update</a>(retainedRenderings: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;Named&lt;*&gt;&gt;, oldViewMaybe: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>?, newView: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>)</td>
-</tr>
-<tr>
-<td><a href="write-to-parcel/">writeToParcel</a></td>
-<td>[androidJvm]<br>open override fun <a href="write-to-parcel/">writeToParcel</a>(parcel: <a href="https://developer.android.com/reference/kotlin/android/os/Parcel.html">Parcel</a>, flags: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>)</td>
 </tr>
 </tbody>
 </table>

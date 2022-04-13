@@ -793,7 +793,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/square/workflow/edit/master/docs/kotlin/api/workflow/com.squareup.workflow1.ui/-workflow-layout/start.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/square/workflow/edit/main/docs/kotlin/api/workflow/com.squareup.workflow1.ui/-workflow-layout/start.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -804,7 +804,7 @@
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.ui</a>/<a href="../">WorkflowLayout</a>/<a href="./">start</a></p>
 <h1 id="start">start<a class="headerlink" href="#start" title="Permanent link">&para;</a></h1>
 <p>[androidJvm]\
-fun <a href="./">start</a>(lifecycle: <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a>, renderings: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;, environment: <a href="../../-view-environment/">ViewEnvironment</a> = ViewEnvironment())</p>
+fun <a href="./">start</a>(lifecycle: <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a>, renderings: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;, repeatOnLifecycle: <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.State.html">Lifecycle.State</a> = Lifecycle.State.STARTED, environment: <a href="../../-view-environment/">ViewEnvironment</a> = ViewEnvironment())</p>
 <p>This is the most common way to bootstrap a <a href="../../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a> driven UI. Collects <a href="./">renderings</a>, and calls <a href="../update/">update</a> with each one and <a href="./">environment</a>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <p>androidJvm</p>
@@ -819,6 +819,10 @@ fun <a href="./">start</a>(lifecycle: <a href="https://developer.android.com/ref
 <tr>
 <td>lifecycle</td>
 <td>the lifecycle that defines when and how this view should be updated. Typically this comes from ComponentActivity.lifecycle or  Fragment.lifecycle.</td>
+</tr>
+<tr>
+<td>repeatOnLifecycle</td>
+<td>the lifecycle state in which renderings should be actively updated. Defaults to STARTED, which is appropriate for Activity and Fragment.</td>
 </tr>
 </tbody>
 </table>
