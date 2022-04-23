@@ -775,6 +775,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#on-profiling" class="md-nav__link">
+    On Profiling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#workflow-sessions" class="md-nav__link">
     Workflow sessions
   </a>
@@ -828,11 +835,13 @@
 interface <a href="./">WorkflowInterceptor</a></p>
 <p>Provides hooks into the workflow runtime that can be used to instrument or modify the behavior of workflows.</p>
 <p>This interface&rsquo;s methods mirror the methods of <a href="../-stateful-workflow/">StatefulWorkflow</a>. It also has one additional method, <a href="on-session-started/">onSessionStarted</a>, that is notified when a workflow is started. Each method returns the same thing as the corresponding method on <a href="../-stateful-workflow/">StatefulWorkflow</a>, and receives the same parameters as well as two extra parameters:</p>
-<ul><li>**proceed** – A function that *exactly* mirrors the corresponding function on     [StatefulWorkflow](../-stateful-workflow/index.md), accepting the same parameters and returning the same thing. An interceptor     can call this function to run the actual workflow, but it may also decide to not call it at     all, or call it multiple times.</li><li>**session** – A [WorkflowSession](-workflow-session/index.md) object that can be queried for information about the     workflow being intercepted.</li></ul>
+<ul><li>**proceed** – A function that *exactly* mirrors the corresponding function on     [StatefulWorkflow](../-stateful-workflow/index.md), accepting the same parameters and returning the same thing. An interceptor     can call this function to run the actual workflow, but it may also decide to not call it at     all, or call it multiple times.</li><li>**session** – A [WorkflowSession](-workflow-session/index.md) object that can be queried for information about the     workflow being intercepted. Note that this object carries [parent](-workflow-session/parent.md)     information. So we can use the session object to determine if we are the root Workflow if     session.parent == null.</li></ul>
 
 <p>All methods have default no-op implementations.</p>
+<h2 id="on-profiling">On Profiling<a class="headerlink" href="#on-profiling" title="Permanent link">&para;</a></h2>
+<p>Note that the <a href="./">WorkflowInterceptor</a>&lsquo;s methods will call the actual methods with the proceed function. This means that we have hooks before and after the actual method making it very straightforward to trace/measure the timing of any part of any workflow, or of the whole tree.</p>
 <h2 id="workflow-sessions">Workflow sessions<a class="headerlink" href="#workflow-sessions" title="Permanent link">&para;</a></h2>
-<p>A single workflow may be rendered by different parents at the same time, or the same parent at different, disjoint times. Each continuous sequence of renderings of a particular workflow type, with the same key passed to <a href="../-base-render-context/render-child/">BaseRenderContext.renderChild</a>, is called an &ldquo;session&rdquo; of that workflow. The workflow&rsquo;s <a href="../-stateful-workflow/initial-state/">StatefulWorkflow.initialState</a> method will be called at the start of the session, and its state will be maintained by the runtime until the session is finished. Each session is identified by the <a href="-workflow-session/">WorkflowSession</a> object passed into the corresponding method in a <a href="./">WorkflowInterceptor</a>.</p>
+<p>A single workflow may be rendered by different parents at the same time, or the same parent at different, disjoint times. Each continuous sequence of renderings of a particular workflow type, with the same key passed to <a href="../-base-render-context/render-child/">BaseRenderContext.renderChild</a>, is called a &ldquo;session&rdquo; of that workflow. The workflow&rsquo;s <a href="../-stateful-workflow/initial-state/">StatefulWorkflow.initialState</a> method will be called at the start of the session, and its state will be maintained by the runtime until the session is finished. Each session is identified by the <a href="-workflow-session/">WorkflowSession</a> object passed into the corresponding method in a <a href="./">WorkflowInterceptor</a>.</p>
 <p>In addition to the <a href="../-workflow-identifier/">WorkflowIdentifier</a> of the type of the workflow being rendered, this object also knows the <a href="-workflow-session/render-key/">key</a> used to render the workflow and the <a href="-workflow-session/">WorkflowSession</a> of the <a href="-workflow-session/parent/">parent</a> workflow that is rendering it.</p>
 <p>Each session is also assigned a numerical ID that uniquely identifies the session over the life of the entire runtime. This value will remain constant as long as the workflow&rsquo;s parent is rendering it, and then it will never be used again. If this workflow stops being rendered, and then starts again, the value will be different.</p>
 <h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
