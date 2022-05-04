@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1</a>/<a href="../../">Worker</a>/<a href="../">Companion</a>/<a href="./">fromNullable</a></p>
 <h1 id="fromnullable">fromNullable<a class="headerlink" href="#fromnullable" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-inline fun &lt;<a href="./">OutputT</a>&gt; <a href="./">fromNullable</a>(noinline block: suspend () -&gt; <a href="./">OutputT</a>?): <a href="../../">Worker</a>&lt;<a href="./">OutputT</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">OutputT</a>&gt; <a href="./">fromNullable</a>(noinline block: suspend () -&gt; <a href="./">OutputT</a>?): <a href="../../">Worker</a>&lt;<a href="./">OutputT</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../">Worker</a> from a function that returns a single value. The worker will emit the value <strong>if and only if the value is not null</strong>, then finish.</p>
 <p>The returned <a href="../../">Worker</a> will equate to any other workers created with any of the <a href="../../">Worker</a> builder functions that have the same output type.</p>
                 

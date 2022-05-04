@@ -786,19 +786,21 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.compose</a>/<a href="./">asMutableState</a></p>
 <h1 id="asmutablestate">asMutableState<a class="headerlink" href="#asmutablestate" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@Composable</p>
-<p>fun <a href="../../com.squareup.workflow1.ui/-text-controller/#-1223366606%2FExtensions%2F576965167">TextController</a>.<a href="./">asMutableState</a>(): MutableState&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;</p>
-<p>Exposes the <a href="../../com.squareup.workflow1.ui/-parcelable-text-controller/#-302046935%2FProperties%2F576965167">textValue</a> of a <a href="../../com.squareup.workflow1.ui/-text-controller/#-1223366606%2FExtensions%2F576965167">TextController</a> as a remembered MutableState, suitable for use from @Composable functions.</p>
+<p>[androidJvm]<br />
+Content<br />
+@Composable()  </p>
+<p>fun <a href="../../com.squareup.workflow1.ui/-text-controller/#-1223366606%2FExtensions%2F576965167">TextController</a>.<a href="./">asMutableState</a>(): MutableState&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<br />
+More info  </p>
+<p>Exposes the textValue of a <a href="../../com.squareup.workflow1.ui/-text-controller/#-1223366606%2FExtensions%2F576965167">TextController</a> as a remembered MutableState, suitable for use from @Composable functions.</p>
 <p>Usage:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>var text by rendering.textController.asMutableState()
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code>var text by rendering.textController.asMutableState()
 
 OutlinedTextField(
   label = {},
@@ -806,8 +808,7 @@ OutlinedTextField(
   value = text,
   onValueChange = { text = it }
 )
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
                 
               
               

@@ -803,15 +803,17 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.compose.tooling</a>/<a href="./">Preview</a></p>
 <h1 id="preview">Preview<a class="headerlink" href="#preview" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>@Composable</p>
-<p>fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="../../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a>&lt;<a href="./">RenderingT</a>&gt;.<a href="./">Preview</a>(rendering: <a href="./">RenderingT</a>, modifier: Modifier = Modifier, placeholderModifier: Modifier = Modifier, viewEnvironmentUpdater: (<a href="../../com.squareup.workflow1.ui/-view-environment/">ViewEnvironment</a>) -&gt; <a href="../../com.squareup.workflow1.ui/-view-environment/">ViewEnvironment</a>? = null)</p>
-<p>Draws this <a href="../../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> using a special preview <a href="../../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a>.</p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()<br />
+@Composable()  </p>
+<p>fun &lt;<a href="./">RenderingT</a> : Screen&gt; <a href="../../com.squareup.workflow1.ui/-screen-view-factory/">ScreenViewFactory</a>&lt;<a href="./">RenderingT</a>&gt;.<a href="./">Preview</a>(rendering: <a href="./">RenderingT</a>, modifier: Modifier = Modifier, placeholderModifier: Modifier = Modifier, viewEnvironmentUpdater: (<a href="../../com.squareup.workflow1.ui/-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>) -&gt; <a href="../../com.squareup.workflow1.ui/-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>? = null)<br />
+More info  </p>
+<p>Draws this <a href="../../com.squareup.workflow1.ui/-screen-view-factory/">ScreenViewFactory</a> using a special preview <a href="../../com.squareup.workflow1.ui/-screen-view-factory-finder/">ScreenViewFactoryFinder</a>.</p>
 <p>Use inside @Preview Composable functions.</p>
-<p><em>Note:</em> <a href="./"><em>rendering</em></a> <em>must be the same type as this</em> <a href="../../com.squareup.workflow1.ui/-view-factory/"><em>ViewFactory</em></a><em>, even though the type system does not enforce this constraint. This is due to a Compose compiler bug tracked</em> <a href="https://issuetracker.google.com/issues/156527332"><em>here</em></a><em>.</em></p>
+<p><em>Note:</em> <a href="./"><em>rendering</em></a> <em>must be the same type as this</em> <a href="../../com.squareup.workflow1.ui/-screen-view-factory/"><em>ScreenViewFactory</em></a><em>, even though the type system does not enforce this constraint. This is due to a Compose compiler bug tracked</em> <a href="https://issuetracker.google.com/issues/156527332"><em>here</em></a><em>.</em></p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>androidJvm</p>
+<p>androidJvm  </p>
 <table>
 <thead>
 <tr>
@@ -821,16 +823,16 @@
 </thead>
 <tbody>
 <tr>
-<td>modifier</td>
-<td>Modifier that will be applied to this <a href="../../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a>.</td>
+<td><a name="com.squareup.workflow1.ui.compose.tooling//Preview/com.squareup.workflow1.ui.ScreenViewFactory[TypeParam(bounds=[com.squareup.workflow1.ui.Screen])]#TypeParam(bounds=[com.squareup.workflow1.ui.Screen])#androidx.compose.ui.Modifier#androidx.compose.ui.Modifier#kotlin.Function1[com.squareup.workflow1.ui.ViewEnvironment,com.squareup.workflow1.ui.ViewEnvironment]?/PointingToDeclaration/"></a>modifier</td>
+<td><a name="com.squareup.workflow1.ui.compose.tooling//Preview/com.squareup.workflow1.ui.ScreenViewFactory[TypeParam(bounds=[com.squareup.workflow1.ui.Screen])]#TypeParam(bounds=[com.squareup.workflow1.ui.Screen])#androidx.compose.ui.Modifier#androidx.compose.ui.Modifier#kotlin.Function1[com.squareup.workflow1.ui.ViewEnvironment,com.squareup.workflow1.ui.ViewEnvironment]?/PointingToDeclaration/"></a><br><br>Modifier that will be applied to this <a href="../../com.squareup.workflow1.ui/-screen-view-factory/">ScreenViewFactory</a>.<br><br></td>
 </tr>
 <tr>
-<td>placeholderModifier</td>
-<td>Modifier that will be applied to any nested renderings this factory shows.</td>
+<td><a name="com.squareup.workflow1.ui.compose.tooling//Preview/com.squareup.workflow1.ui.ScreenViewFactory[TypeParam(bounds=[com.squareup.workflow1.ui.Screen])]#TypeParam(bounds=[com.squareup.workflow1.ui.Screen])#androidx.compose.ui.Modifier#androidx.compose.ui.Modifier#kotlin.Function1[com.squareup.workflow1.ui.ViewEnvironment,com.squareup.workflow1.ui.ViewEnvironment]?/PointingToDeclaration/"></a>placeholderModifier</td>
+<td><a name="com.squareup.workflow1.ui.compose.tooling//Preview/com.squareup.workflow1.ui.ScreenViewFactory[TypeParam(bounds=[com.squareup.workflow1.ui.Screen])]#TypeParam(bounds=[com.squareup.workflow1.ui.Screen])#androidx.compose.ui.Modifier#androidx.compose.ui.Modifier#kotlin.Function1[com.squareup.workflow1.ui.ViewEnvironment,com.squareup.workflow1.ui.ViewEnvironment]?/PointingToDeclaration/"></a><br><br>Modifier that will be applied to any nested renderings this factory shows.<br><br></td>
 </tr>
 <tr>
-<td>viewEnvironmentUpdater</td>
-<td>Function that configures the <a href="../../com.squareup.workflow1.ui/-view-environment/">ViewEnvironment</a> passed to this factory.</td>
+<td><a name="com.squareup.workflow1.ui.compose.tooling//Preview/com.squareup.workflow1.ui.ScreenViewFactory[TypeParam(bounds=[com.squareup.workflow1.ui.Screen])]#TypeParam(bounds=[com.squareup.workflow1.ui.Screen])#androidx.compose.ui.Modifier#androidx.compose.ui.Modifier#kotlin.Function1[com.squareup.workflow1.ui.ViewEnvironment,com.squareup.workflow1.ui.ViewEnvironment]?/PointingToDeclaration/"></a>viewEnvironmentUpdater</td>
+<td><a name="com.squareup.workflow1.ui.compose.tooling//Preview/com.squareup.workflow1.ui.ScreenViewFactory[TypeParam(bounds=[com.squareup.workflow1.ui.Screen])]#TypeParam(bounds=[com.squareup.workflow1.ui.Screen])#androidx.compose.ui.Modifier#androidx.compose.ui.Modifier#kotlin.Function1[com.squareup.workflow1.ui.ViewEnvironment,com.squareup.workflow1.ui.ViewEnvironment]?/PointingToDeclaration/"></a><br><br>Function that configures the <a href="../../com.squareup.workflow1.ui/-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a> passed to this factory.<br><br></td>
 </tr>
 </tbody>
 </table>

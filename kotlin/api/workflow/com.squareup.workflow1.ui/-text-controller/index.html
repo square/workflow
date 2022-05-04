@@ -824,8 +824,7 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">TextController</a></p>
 <h1 id="textcontroller">TextController<a class="headerlink" href="#textcontroller" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a></p>
+<p>[jvm] @<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
 <p>interface <a href="./">TextController</a></p>
 <p>Helper class for keeping a workflow in sync with editable text in a UI, without interfering with the user&rsquo;s typing.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
@@ -835,11 +834,7 @@
 
  data class Rendering(val text: TextController)</li><li>In your render method, copy each [TextController](index.md) from your state to your rendering:
 
- return Rendering(state.text)</li><li>In your view code's showRendering method, call the appropriate extension     function for your UI platform, e.g.:</li>
-
-<ul><li>control() for an Android EditText viiew</li><li>asMutableState() from an Android @Composable function</li></ul>
-
-</ol>
+ return Rendering(state.text)</li><li>In your view code's showRendering method, call the appropriate extension     function for your UI platform, e.g.:</li><ul><li>control() for an Android EditText viiew</li><li>asMutableState() from an Android @Composable function</li></ul></ol>
 
 <p>If your workflow needs to access or change the current text value, get the value from <a href="text-value/">textValue</a>. If your workflow needs to react to changes, it can observe <a href="on-text-changed/">onTextChanged</a> by converting it to a worker.</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
@@ -852,12 +847,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="on-text-changed/">onTextChanged</a></td>
-<td>[jvm]<br>abstract val <a href="on-text-changed/">onTextChanged</a>: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<br>A Flow that emits the text value whenever it changes &ndash; and only when it changes, the current value is not provided at subscription time. Workflows can safely observe changes by converting this value to a worker. (When using multiple instances, remember to provide unique key values to each asWorker call.)</td>
+<td><a name="com.squareup.workflow1.ui/TextController/onTextChanged/#/PointingToDeclaration/"></a><a href="on-text-changed/">onTextChanged</a></td>
+<td><a name="com.squareup.workflow1.ui/TextController/onTextChanged/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="on-text-changed/">onTextChanged</a>: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;A Flow that emits the text value whenever it changes &ndash; and only when it changes, the current value is not provided at subscription time.   <br></td>
 </tr>
 <tr>
-<td><a href="text-value/">textValue</a></td>
-<td>[jvm]<br>abstract var <a href="text-value/">textValue</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><br>The current text value.</td>
+<td><a name="com.squareup.workflow1.ui/TextController/textValue/#/PointingToDeclaration/"></a><a href="text-value/">textValue</a></td>
+<td><a name="com.squareup.workflow1.ui/TextController/textValue/#/PointingToDeclaration/"></a> [jvm] abstract var <a href="text-value/">textValue</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>The current text value.   <br></td>
 </tr>
 </tbody>
 </table>
@@ -870,7 +865,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../-parcelable-text-controller/">ParcelableTextController</a></td>
+<td><a name="com.squareup.workflow1.ui/ParcelableTextController///PointingToDeclaration/"></a><a href="../-parcelable-text-controller/">ParcelableTextController</a></td>
 </tr>
 </tbody>
 </table>
@@ -884,12 +879,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../../com.squareup.workflow1.ui.compose/as-mutable-state/">asMutableState</a></td>
-<td>[androidJvm]<br>@Composable<br>fun <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a>.<a href="../../com.squareup.workflow1.ui.compose/as-mutable-state/">asMutableState</a>(): MutableState&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<br>Exposes the <a href="../-parcelable-text-controller/#-302046935%2FProperties%2F576965167">textValue</a> of a <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a> as a remembered MutableState, suitable for use from @Composable functions.</td>
+<td><a name="com.squareup.workflow1.ui.compose//asMutableState/com.squareup.workflow1.ui.TextController#/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.ui.compose/as-mutable-state/">asMutableState</a></td>
+<td><a name="com.squareup.workflow1.ui.compose//asMutableState/com.squareup.workflow1.ui.TextController#/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@Composable()  <br>  <br>fun <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a>.<a href="../../com.squareup.workflow1.ui.compose/as-mutable-state/">asMutableState</a>(): MutableState&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;  <br>More info  <br>Exposes the textValue of a <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a> as a remembered MutableState, suitable for use from @Composable functions.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../control/">control</a></td>
-<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>fun <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a>.<a href="../control/">control</a>(view: <a href="https://developer.android.com/reference/kotlin/android/widget/EditText.html">EditText</a>)<br>Call this from your view code&rsquo;s showRendering method. This method is idempotent: if it has already been called with a particular <a href="https://developer.android.com/reference/kotlin/android/widget/EditText.html">EditText</a>, and the view has not been detached since the last call, it will do nothing. If a different <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a>&lsquo;s <a href="../control/">control</a> is called on the same <a href="https://developer.android.com/reference/kotlin/android/widget/EditText.html">EditText</a>, the old one will be disconnected and the new one will replace it.</td>
+<td><a name="com.squareup.workflow1.ui//control/com.squareup.workflow1.ui.TextController#android.widget.EditText/PointingToDeclaration/"></a><a href="../control/">control</a></td>
+<td><a name="com.squareup.workflow1.ui//control/com.squareup.workflow1.ui.TextController#android.widget.EditText/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>fun <a href="./#-1223366606%2FExtensions%2F576965167">TextController</a>.<a href="../control/">control</a>(view: <a href="https://developer.android.com/reference/kotlin/android/widget/EditText.html">EditText</a>)  <br>More info  <br>Call this from your view code&rsquo;s showRendering method.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

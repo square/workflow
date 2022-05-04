@@ -786,11 +786,22 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">plus</a></p>
 <h1 id="plus">plus<a class="headerlink" href="#plus" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>operator fun <a href="../-view-registry/">ViewRegistry</a>.<a href="./">plus</a>(binding: <a href="../-view-factory/">ViewFactory</a>&lt;*&gt;): <a href="../-view-registry/">ViewRegistry</a></p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>operator fun <a href="../-view-registry/">ViewRegistry</a>.<a href="./">plus</a>(other: <a href="../-view-registry/">ViewRegistry</a>): <a href="../-view-registry/">ViewRegistry</a></p>
+<p>[jvm]<br />
+Content<br />
+@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
+<p>operator fun <a href="../-view-registry/">ViewRegistry</a>.<a href="./">plus</a>(entry: <a href="../-view-registry/-entry/">ViewRegistry.Entry</a>&lt;*&gt;): <a href="../-view-registry/">ViewRegistry</a><br />
+More info  </p>
+<p>Transforms the receiver to add <a href="./">entry</a>, throwing <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html">IllegalArgumentException</a> if the receiver already has a matching <a href="./">entry</a>. Use <a href="../merge/">merge</a> to replace an existing entry with a new one.</p>
+<p>[jvm]<br />
+Content<br />
+@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
+<p>operator fun <a href="../-view-registry/">ViewRegistry</a>.<a href="./">plus</a>(other: <a href="../-view-registry/">ViewRegistry</a>): <a href="../-view-registry/">ViewRegistry</a><br />
+More info  </p>
+<p>Transforms the receiver to add all entries from <a href="./">other</a>, throwing <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html">IllegalArgumentException</a> if the receiver already has any matching entry. Use <a href="../merge/">merge</a> to replace existing entries.</p>
+<p>[jvm]<br />
+Content<br />
+@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
+<p>operator fun <a href="../-view-environment/">ViewEnvironment</a>.<a href="./">plus</a>(registry: <a href="../-view-registry/">ViewRegistry</a>): <a href="../-view-environment/">ViewEnvironment</a>  </p>
                 
               
               

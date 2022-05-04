@@ -803,10 +803,12 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">StatelessWorkflow</a>/<a href="./">StatelessWorkflow</a></p>
 <h1 id="statelessworkflow">StatelessWorkflow<a class="headerlink" href="#statelessworkflow" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-fun <a href="./">StatelessWorkflow</a>()</p>
+<p>[jvm]<br />
+Content<br />
+fun <a href="./">StatelessWorkflow</a>()<br />
+More info  </p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -816,16 +818,16 @@ fun <a href="./">StatelessWorkflow</a>()</p>
 </thead>
 <tbody>
 <tr>
-<td>PropsT</td>
-<td>Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn&rsquo;t duplicate in its own state. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not need any props data.</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/StatelessWorkflow/#/PointingToDeclaration/"></a>PropsT</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/StatelessWorkflow/#/PointingToDeclaration/"></a><br><br>Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn&rsquo;t duplicate in its own state. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not need any props data.<br><br></td>
 </tr>
 <tr>
-<td>OutputT</td>
-<td>Typically a sealed class that represents &ldquo;events&rdquo; that this workflow can send to its parent. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a> if the workflow doesn&rsquo;t need to emit anything.</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/StatelessWorkflow/#/PointingToDeclaration/"></a>OutputT</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/StatelessWorkflow/#/PointingToDeclaration/"></a><br><br>Typically a sealed class that represents &ldquo;events&rdquo; that this workflow can send to its parent. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a> if the workflow doesn&rsquo;t need to emit anything.<br><br></td>
 </tr>
 <tr>
-<td>RenderingT</td>
-<td>The value returned to this workflow&rsquo;s parent during <a href="../render/">composition</a>. Typically represents a &ldquo;view&rdquo; of this workflow&rsquo;s props, current state, and children&rsquo;s renderings. A workflow that represents a UI component may use a view model as its rendering type.</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/StatelessWorkflow/#/PointingToDeclaration/"></a>RenderingT</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/StatelessWorkflow/#/PointingToDeclaration/"></a><br><br>The value returned to this workflow&rsquo;s parent during <a href="../render/">composition</a>. Typically represents a &ldquo;view&rdquo; of this workflow&rsquo;s props, current state, and children&rsquo;s renderings. A workflow that represents a UI component may use a view model as its rendering type.<br><br></td>
 </tr>
 </tbody>
 </table>

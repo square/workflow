@@ -854,39 +854,58 @@
 <p>In the Workflow architecture, the container acts as the glue between the state-driven world of
 Workflows and the UI that is ultimately displayed. On iOS, the container is implemented as
 <code>ContainerViewController</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">/// Drives view controllers from a root Workflow.</span>
-<span class="kd">public</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">ContainerViewController</span><span class="p">&lt;</span><span class="n">Output</span><span class="p">,</span> <span class="n">ScreenType</span><span class="p">&gt;:</span> <span class="bp">UIViewController</span> <span class="k">where</span> <span class="n">ScreenType</span><span class="p">:</span> <span class="n">Screen</span> <span class="p">{</span>
+<p>```swift</p>
+<p>/// Drives view controllers from a root Workflow.
+public final class ContainerViewController<Output, ScreenType>: UIViewController where ScreenType: Screen {</p>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>/// Emits output events from the bound workflow.
+public let output: Signal&lt;Output, Never&gt;
 
-    <span class="c1">/// Emits output events from the bound workflow.</span>
-    <span class="kd">public</span> <span class="kd">let</span> <span class="nv">output</span><span class="p">:</span> <span class="n">Signal</span><span class="p">&lt;</span><span class="n">Output</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span>
+public convenience init&lt;W: Workflow&gt;(workflow: W) where W.Rendering == ScreenType, W.Output == Output
+</code></pre></div></td></tr></table></div>
 
-    <span class="kd">public</span> <span class="kr">convenience</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">W</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">W</span><span class="p">)</span> <span class="k">where</span> <span class="n">W</span><span class="p">.</span><span class="n">Rendering</span> <span class="p">==</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">W</span><span class="p">.</span><span class="n">Output</span> <span class="p">==</span> <span class="n">Output</span>
-<span class="p">}</span>
-</code></pre></div>
+<p>}</p>
+<p>```</p>
 <p>The initializer argument is the workflow that will drive your application.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">import</span> <span class="nc">UIKit</span>
-<span class="kd">import</span> <span class="nc">Workflow</span>
-<span class="kd">import</span> <span class="nc">WorkflowUI</span>
+<p>```swift
+import UIKit
+import Workflow
+import WorkflowUI</p>
+<p>@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {</p>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code>var window: UIWindow?
 
-<span class="kr">@UIApplicationMain</span>
-<span class="kd">class</span> <span class="nc">AppDelegate</span><span class="p">:</span> <span class="bp">UIResponder</span><span class="p">,</span> <span class="bp">UIApplicationDelegate</span> <span class="p">{</span>
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool {
+    let window = UIWindow(frame: UIScreen.main.bounds)
 
-    <span class="kd">var</span> <span class="nv">window</span><span class="p">:</span> <span class="bp">UIWindow</span><span class="p">?</span>
+    let container = ContainerViewController(
+        workflow: DemoWorkflow()
+    )
 
-    <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="kc">_</span> <span class="n">application</span><span class="p">:</span> <span class="bp">UIApplication</span><span class="p">,</span> <span class="n">didFinishLaunchingWithOptions</span> <span class="n">launchOptions</span><span class="p">:</span> <span class="p">[</span><span class="bp">UIApplication</span><span class="p">.</span><span class="n">LaunchOptionsKey</span><span class="p">:</span> <span class="nb">Any</span><span class="p">]?)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span> <span class="p">{</span>
-        <span class="kd">let</span> <span class="nv">window</span> <span class="p">=</span> <span class="bp">UIWindow</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="bp">UIScreen</span><span class="p">.</span><span class="n">main</span><span class="p">.</span><span class="n">bounds</span><span class="p">)</span>
+    window.rootViewController = container
+    self.window = window
+    window.makeKeyAndVisible()
+    return true
+}
+</code></pre></div></td></tr></table></div>
 
-        <span class="kd">let</span> <span class="nv">container</span> <span class="p">=</span> <span class="n">ContainerViewController</span><span class="p">(</span>
-            <span class="n">workflow</span><span class="p">:</span> <span class="n">DemoWorkflow</span><span class="p">()</span>
-        <span class="p">)</span>
-
-        <span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="p">=</span> <span class="n">container</span>
-        <span class="kc">self</span><span class="p">.</span><span class="n">window</span> <span class="p">=</span> <span class="n">window</span>
-        <span class="n">window</span><span class="p">.</span><span class="n">makeKeyAndVisible</span><span class="p">()</span>
-        <span class="k">return</span> <span class="kc">true</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
+<p>}</p>
+<p>```</p>
 <p>Now, when the <code>ContainerViewController</code> is shown, it will start the workflow and <code>render</code> will be
 called returning the <code>DemoScreen</code>. The container will use <code>viewControllerDescription</code> to build
 a <code>DemoScreenViewController</code> and add it to the view hierarchy to display.</p>

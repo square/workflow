@@ -810,8 +810,7 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.rx2</a>/<a href="./">PublisherWorker</a></p>
 <h1 id="publisherworker">PublisherWorker<a class="headerlink" href="#publisherworker" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract class <a href="./">PublisherWorker</a>&lt;out <a href="./">OutputT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">OutputT</a>&gt; </p>
+<p>[jvm] abstract class <a href="./">PublisherWorker</a><out <a href="index.md">OutputT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>> : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">OutputT</a>&gt; </p>
 <p>An convenience implementation of <a href="../../com.squareup.workflow1/-worker/">Worker</a> that is expressed in terms of Reactive Streams&rsquo; Publisher instead of Flow.</p>
 <p>If you&rsquo;re using RxJava, Flowable is a Publisher.</p>
 <p>Subclassing this is equivalent to just implementing <a href="../../com.squareup.workflow1/-worker/run/">Worker.run</a> directly and calling asFlow on your Publisher.</p>
@@ -825,8 +824,8 @@ abstract class <a href="./">PublisherWorker</a>&lt;out <a href="./">OutputT</a> 
 </thead>
 <tbody>
 <tr>
-<td><a href="-publisher-worker/">PublisherWorker</a></td>
-<td>[jvm]<br>fun <a href="-publisher-worker/">PublisherWorker</a>()</td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/PublisherWorker/#/PointingToDeclaration/"></a><a href="-publisher-worker/">PublisherWorker</a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/PublisherWorker/#/PointingToDeclaration/"></a> [jvm] fun <a href="-publisher-worker/">PublisherWorker</a>()   <br></td>
 </tr>
 </tbody>
 </table>
@@ -840,16 +839,16 @@ abstract class <a href="./">PublisherWorker</a>&lt;out <a href="./">OutputT</a> 
 </thead>
 <tbody>
 <tr>
-<td><a href="../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a></td>
-<td>[jvm]<br>open fun <a href="../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></td>
+<td><a name="com.squareup.workflow1/Worker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a></td>
+<td><a name="com.squareup.workflow1/Worker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="run/">run</a></td>
-<td>[jvm]<br>override fun <a href="run/">run</a>(): Flow&lt;<a href="./">OutputT</a>&gt;</td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/run/#/PointingToDeclaration/"></a><a href="run/">run</a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/run/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>override fun <a href="run/">run</a>(): Flow&lt;<a href="./">OutputT</a>&gt;  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="run-publisher/">runPublisher</a></td>
-<td>[jvm]<br>abstract fun <a href="run-publisher/">runPublisher</a>(): Publisher&lt;out <a href="./">OutputT</a>&gt;<br>Returns a Flowable to execute the work represented by this worker.</td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/runPublisher/#/PointingToDeclaration/"></a><a href="run-publisher/">runPublisher</a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker/runPublisher/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="run-publisher/">runPublisher</a>(): Publisher<out <a href="index.md">OutputT</a>>  <br>More info  <br>Returns a Flowable to execute the work represented by this worker.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

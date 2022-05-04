@@ -786,19 +786,6 @@
     Caveat on threading and composition
   </a>
   
-    <nav class="md-nav" aria-label="Caveat on threading and composition">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#receiver" class="md-nav__link">
-    Receiver
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -830,41 +817,38 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.compose</a>/<a href="./">renderAsState</a></p>
 <h1 id="renderasstate">renderAsState<a class="headerlink" href="#renderasstate" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@Composable</p>
-<p>fun &lt;<a href="./">PropsT</a>, <a href="./">OutputT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, <a href="./">RenderingT</a>&gt; <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">renderAsState</a>(props: <a href="./">PropsT</a>, interceptors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;WorkflowInterceptor&gt; = emptyList(), scope: CoroutineScope = rememberCoroutineScope(), onOutput: suspend (<a href="./">OutputT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): State&lt;<a href="./">RenderingT</a>&gt;</p>
+<p>[androidJvm]<br />
+Content<br />
+@Composable()  </p>
+<p>fun &lt;<a href="./">PropsT</a>, <a href="./">OutputT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, <a href="./">RenderingT</a>&gt; <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;.<a href="./">renderAsState</a>(props: <a href="./">PropsT</a>, interceptors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><WorkflowInterceptor> = emptyList(), scope: CoroutineScope = rememberCoroutineScope(), onOutput: suspend (<a href="./">OutputT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): State&lt;<a href="./">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Runs this <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a> as long as this composable is part of the composition, and returns a State object that will be updated whenever the runtime emits a new <a href="./">RenderingT</a>. Note that here, and in the rest of the documentation for this class, the &ldquo;State&rdquo; type refers to Compose&rsquo;s snapshot State type, <em>not</em> the concept of the StateT type in a particular workflow.</p>
-<p>The workflow runtime will be started when this function is first added to the composition, and cancelled when it is removed or if the composition fails. The first rendering will be available immediately as soon as this function returns as State.value. Composables that read this value will automatically recompose whenever the runtime emits a new rendering. If you are driving UI from the Workflow tree managed by <a href="./">renderAsState</a> then you will probably want to pass the returned State&rsquo;s value (which is the Workflow rendering) to the <a href="../-workflow-rendering/">WorkflowRendering</a> composable.</p>
+<p>The workflow runtime will be started when this function is first added to the composition, and cancelled when it is removed or if the composition fails. The first rendering will be available immediately as soon as this function returns as State.value. Composables that read this value will automatically recompose whenever the runtime emits a new rendering. If you are driving UI from the Workflow tree managed by <a href="./">renderAsState</a> then you will probably want to pass the returned State&rsquo;s value (which is the Workflow rendering) to the WorkflowRendering composable.</p>
 <p><a href="../../com.squareup.workflow1/-snapshot/#1370838055%2FExtensions%2F576965167">Snapshot</a>s from the runtime will automatically be saved and restored using Compose&rsquo;s rememberSaveable.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<p>private val appViewRegistry = ViewRegistry(…)\
-\
-@Composable fun App(workflow: Workflow&lt;…&gt;, props: Props) {\
-  val scaffoldState = …\
-\
-  // Run the workflow in the current composition&rsquo;s coroutine scope.\
-  val rendering by workflow.renderAsState(props, onOutput = { output -&gt;\
-    // Note that onOutput is a suspend function, so you can run animations\
-    // and call other suspend functions.\
-    scaffoldState.snackbarHostState\
-      .showSnackbar(output.toString())\
-  })\
-  val viewEnvironment = remember {\
-    ViewEnvironment(mapOf(ViewRegistry to appViewRegistry))\
-  }\
-\
-  Scaffold(…) { padding -&gt;\
-    // Display the root rendering using the view environment&rsquo;s ViewRegistry.\
-    WorkflowRendering(rendering, viewEnvironment, Modifier.padding(padding))\
-  }\
+<p>private val appViewRegistry = ViewRegistry(…)  </p>
+<p>@Composable fun App(workflow: Workflow&lt;…&gt;, props: Props) {<br />
+  val scaffoldState = …  </p>
+<p>// Run the workflow in the current composition&rsquo;s coroutine scope.<br />
+  val rendering by workflow.renderAsState(props, onOutput = { output -&gt;<br />
+    // Note that onOutput is a suspend function, so you can run animations<br />
+    // and call other suspend functions.<br />
+    scaffoldState.snackbarHostState<br />
+      .showSnackbar(output.toString())<br />
+  })<br />
+  val viewEnvironment = remember {<br />
+    ViewEnvironment(mapOf(ViewRegistry to appViewRegistry))<br />
+  }  </p>
+<p>Scaffold(…) { padding -&gt;<br />
+    // Display the root rendering using the view environment&rsquo;s ViewRegistry.<br />
+    WorkflowRendering(rendering, viewEnvironment, Modifier.padding(padding))<br />
+  }<br />
 }</p>
 <h2 id="caveat-on-threading-and-composition">Caveat on threading and composition<a class="headerlink" href="#caveat-on-threading-and-composition" title="Permanent link">&para;</a></h2>
 <p>Note that the initial render pass will occur on whatever thread this function is called from. That may be a background thread, as Compose supports performing composition on background threads. Well-behaved workflows should have pure initialState and render functions, so this should not be a problem. Any side effects performed by workflows using the runningSideEffect method or Workers will be executed in <a href="./">scope</a> as usual.</p>
 <p>Also note that composition is an operation that may fail, or be cancelled, and the &ldquo;result&rdquo; of a given composition pass may be thrown away and never used to update UI. When this happens, the composition is said to have failed to commit. If the composition that initializes a workflow runtime using this function fails to commit, the runtime will be started and then immediately cancelled. Since the workflow runtime may perform side effects, this may cause effects that look like they spontaneously occur, or happen more often than they should.</p>
-<h4 id="receiver">Receiver<a class="headerlink" href="#receiver" title="Permanent link">&para;</a></h4>
-<p>The <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a> to run. If the value of the receiver changes to a different <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a> while this function is in the composition, the runtime will be restarted with the new workflow.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>androidJvm</p>
+<p>androidJvm  </p>
 <table>
 <thead>
 <tr>
@@ -874,20 +858,24 @@
 </thead>
 <tbody>
 <tr>
-<td>props</td>
-<td>The <a href="./">PropsT</a> for the root <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a>. Changes to this value across different compositions will cause the root workflow to re-render with the new props.</td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a><receiver></td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a> to run. If the value of the receiver changes to a different <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a> while this function is in the composition, the runtime will be restarted with the new workflow.<br><br></td>
 </tr>
 <tr>
-<td>interceptors</td>
-<td>An optional list of WorkflowInterceptors that will wrap every workflow rendered by the runtime. Interceptors will be invoked in 0-to-length order: the interceptor at index 0 will process the workflow first, then the interceptor at index 1, etc.</td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a>props</td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The <a href="./">PropsT</a> for the root <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a>. Changes to this value across different compositions will cause the root workflow to re-render with the new props.<br><br></td>
 </tr>
 <tr>
-<td>scope</td>
-<td>The CoroutineScope in which to launch the workflow runtime. If not specified, the value of rememberCoroutineScope will be used. Any exceptions thrown in any workflows, after the initial render pass, will be handled by this scope, and cancelling this scope will cancel the workflow runtime and any running workers. Note that any dispatcher in this scope will <em>not</em> be used to execute the very first render pass.</td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a>interceptors</td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>An optional list of WorkflowInterceptors that will wrap every workflow rendered by the runtime. Interceptors will be invoked in 0-to-length order: the interceptor at index 0 will process the workflow first, then the interceptor at index 1, etc.<br><br></td>
 </tr>
 <tr>
-<td>onOutput</td>
-<td>A function that will be executed whenever the root <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a> emits an output.</td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a>scope</td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>The CoroutineScope in which to launch the workflow runtime. If not specified, the value of rememberCoroutineScope will be used. Any exceptions thrown in any workflows, after the initial render pass, will be handled by this scope, and cancelling this scope will cancel the workflow runtime and any running workers. Note that any dispatcher in this scope will <em>not</em> be used to execute the very first render pass.<br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a>onOutput</td>
+<td><a name="com.squareup.workflow1.ui.compose//renderAsState/com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.List[com.squareup.workflow1.WorkflowInterceptor]#kotlinx.coroutines.CoroutineScope#kotlin.coroutines.SuspendFunction1[TypeParam(bounds=[kotlin.Any]),kotlin.Unit]/PointingToDeclaration/"></a><br><br>A function that will be executed whenever the root <a href="../../com.squareup.workflow1/-workflow/#-518262132%2FExtensions%2F576965167">Workflow</a> emits an output.<br><br></td>
 </tr>
 </tbody>
 </table>

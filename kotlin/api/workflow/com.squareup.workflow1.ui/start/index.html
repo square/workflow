@@ -786,9 +786,12 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">start</a></p>
 <h1 id="start">start<a class="headerlink" href="#start" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>fun <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">start</a>()</p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">start</a>()<br />
+More info  </p>
+<p><strong>This will be deprecated in favor of</strong> <a href="../start-showing/"><strong>ScreenViewFactory.startShowing</strong></a> <strong>very soon.</strong></p>
 <p>Note that <a href="../-workflow-view-stub/">WorkflowViewStub</a> calls this method for you.</p>
 <p>Makes the initial call to <a href="../show-rendering/">View.showRendering</a>, along with any wrappers that have been added via <a href="../build-view/">ViewRegistry.buildView</a>, or DecorativeViewFactory.viewStarter.</p>
 <ul><li>It is an error to call this method more than once.</li><li>It is an error to call [View.showRendering](show-rendering.md) without having called this method first.</li></ul>

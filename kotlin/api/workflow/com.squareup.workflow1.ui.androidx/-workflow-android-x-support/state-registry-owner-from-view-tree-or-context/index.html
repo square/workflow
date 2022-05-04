@@ -786,10 +786,12 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.ui.androidx</a>/<a href="../">WorkflowAndroidXSupport</a>/<a href="./">stateRegistryOwnerFromViewTreeOrContext</a></p>
 <h1 id="stateregistryownerfromviewtreeorcontext">stateRegistryOwnerFromViewTreeOrContext<a class="headerlink" href="#stateregistryownerfromviewtreeorcontext" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>fun <a href="./">stateRegistryOwnerFromViewTreeOrContext</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>): <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a></p>
-<p>Tries to get the parent <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> from the current view via <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>, if that fails it looks up the context chain for a registry owner, and if that fails it just returns null. This differs from <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html#get-android.view.View-">ViewTreeSavedStateRegistryOwner.get</a> because it will check the <a href="../../../com.squareup.workflow1.ui/-workflow-view-stub/#-966243067%2FFunctions%2F576965167">View.getContext</a> if no owner is found in the view tree.</p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun <a href="./">stateRegistryOwnerFromViewTreeOrContext</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>): <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a><br />
+More info  </p>
+<p>Tries to get the parent <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> from the current view via <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>, if that fails it looks up the context chain for a registry owner, and if that fails it just returns null. This differs from <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html#get-android.view.View-">ViewTreeSavedStateRegistryOwner.get</a> because it will check the <a href="../../../com.squareup.workflow1.ui.container/-back-stack-container/#-966243067%2FFunctions%2F576965167">View.getContext</a> if no owner is found in the view tree.</p>
                 
               
               

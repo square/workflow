@@ -803,14 +803,16 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.ui.androidx</a>/<a href="../">WorkflowSavedStateRegistryAggregator</a>/<a href="./">attachToParentRegistry</a></p>
 <h1 id="attachtoparentregistry">attachToParentRegistry<a class="headerlink" href="#attachtoparentregistry" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-fun <a href="./">attachToParentRegistry</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, parentOwner: <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>)</p>
+<p>[androidJvm]<br />
+Content<br />
+fun <a href="./">attachToParentRegistry</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, parentOwner: <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>)<br />
+More info  </p>
 <p>Must be called when the owning container view gets attached to the window. The owning view should find its <a href="./">parentOwner</a> (probably via <a href="../../-workflow-android-x-support/state-registry-owner-from-view-tree-or-context/">WorkflowAndroidXSupport.stateRegistryOwnerFromViewTreeOrContext</a>) and determine a string key unique within that parent to save and restore this class in that registry. These values will be cached in this object for <a href="../detach-from-parent-registry/">detachment</a> later.</p>
 <p>This method will register on the <a href="./">parentOwner</a>&lsquo;s registry to save any child registries created with <a href="../install-child-registry-owner-on/">installChildRegistryOwnerOn</a>.</p>
 <p>If this object has not been restored yet, this method will start listening to the <a href="./">parentOwner</a>&lsquo;s lifecycle to know when to restore.</p>
 <p>Must be accompanied by a call to <a href="../detach-from-parent-registry/">detachFromParentRegistry</a> when the container view is detached.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>androidJvm</p>
+<p>androidJvm  </p>
 <table>
 <thead>
 <tr>
@@ -820,8 +822,8 @@ fun <a href="./">attachToParentRegistry</a>(key: <a href="https://kotlinlang.org
 </thead>
 <tbody>
 <tr>
-<td>key</td>
-<td>an id for this <a href="../">WorkflowSavedStateRegistryAggregator</a>, uniquely identifying it in <a href="./">parentOwner</a>.  Typically this is derived from the compatibility key of the rendering of the owning container view.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/attachToParentRegistry/#kotlin.String#androidx.savedstate.SavedStateRegistryOwner/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/attachToParentRegistry/#kotlin.String#androidx.savedstate.SavedStateRegistryOwner/PointingToDeclaration/"></a><br><br>an id for this <a href="../">WorkflowSavedStateRegistryAggregator</a>, uniquely identifying it in <a href="./">parentOwner</a>.  Typically this is derived from the compatibility key of the rendering of the owning container view.<br><br></td>
 </tr>
 </tbody>
 </table>

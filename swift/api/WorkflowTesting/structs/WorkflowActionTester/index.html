@@ -876,11 +876,11 @@
                 
                 <p><strong>STRUCT</strong></p>
 <h1 id="workflowactiontester"><code>WorkflowActionTester</code><a class="headerlink" href="#workflowactiontester" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
-</code></pre></div>
+<p><code>swift
+public struct WorkflowActionTester&lt;WorkflowType, Action&gt; where Action: WorkflowAction, Action.WorkflowType == WorkflowType</code></p>
 <p>Testing helper that chains action sending and state/output assertions
 to make tests easier to write.</p>
-<div class="highlight"><pre><span></span><code>MyWorkflow.Action
+<p><code>MyWorkflow.Action
     .tester(withState: .firstState)
     .send(action: .exampleAction)
     .verifyOutput { output in
@@ -888,28 +888,25 @@ to make tests easier to write.</p>
     }
     .verifyState { state in
         XCTAssertEqual(.differentState, state)
-    }
-</code></pre></div>
+    }</code></p>
 <p>Or to assert that an action produces no output:</p>
-<div class="highlight"><pre><span></span><code>MyWorkflow.Action
+<p><code>MyWorkflow.Action
     .tester(withState: .firstState)
     .send(action: .actionProducingNoOutput)
     .assertNoOutput()
     .verifyState { state in
         XCTAssertEqual(.differentState, state)
-    }
-</code></pre></div>
+    }</code></p>
 <p>If your State or Output are <code>Equatable</code>, you can use the convenience assertion methods:
-<div class="highlight"><pre><span></span><code>MyWorkflow.Action
+<code>MyWorkflow.Action
     .tester(withState: .firstState)
     .send(action: .exampleAction)
     .assert(output: .finished)
-    .assert(state: .differentState)
-</code></pre></div></p>
+    .assert(state: .differentState)</code></p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="sendaction"><code>send(action:)</code><a class="headerlink" href="#sendaction" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func send(action: Action) -&gt; WorkflowActionTester&lt;WorkflowType, Action&gt;</code></p>
 <p>Sends an action to the reducer.</p>
 <ul>
 <li>
@@ -935,22 +932,22 @@ to make tests easier to write.</p>
 </tbody>
 </table>
 <h3 id="assertnooutputfileline"><code>assertNoOutput(file:line:)</code><a class="headerlink" href="#assertnooutputfileline" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">assertNoOutput</span><span class="p">(</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
-    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func assertNoOutput(
+    file: StaticString = #file,
+    line: UInt = #line
+) -&gt; WorkflowActionTester&lt;WorkflowType, Action&gt;</code></p>
 <p>Asserts that the action produced no output</p>
 <ul>
 <li>returns: A tester containing the current state and output.</li>
 </ul>
 <h3 id="verifyoutputfileline_"><code>verifyOutput(file:line:_:)</code><a class="headerlink" href="#verifyoutputfileline_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyOutput</span><span class="p">(</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
-    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func verifyOutput(
+    file: StaticString = #file,
+    line: UInt = #line,
+    _ assertions: (WorkflowType.Output) throws -&gt; Void
+) rethrows -&gt; WorkflowActionTester&lt;WorkflowType, Action&gt;</code></p>
 <p>Invokes the given closure (which is intended to contain test assertions) with the produced output.
 If the previous action produced no output, the triggers a test failure and does not execute the closure.</p>
 <ul>
@@ -977,8 +974,8 @@ If the previous action produced no output, the triggers a test failure and does 
 </tbody>
 </table>
 <h3 id="verifystate_"><code>verifyState(_:)</code><a class="headerlink" href="#verifystate_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyState</span><span class="p">(</span><span class="kc">_</span> <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func verifyState(_ assertions: (WorkflowType.State) throws -&gt; Void) rethrows -&gt; WorkflowActionTester&lt;WorkflowType, Action&gt;</code></p>
 <p>Invokes the given closure (which is intended to contain test assertions) with the current state.</p>
 <ul>
 <li>

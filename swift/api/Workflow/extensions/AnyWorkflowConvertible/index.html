@@ -918,18 +918,18 @@
                 
                 <p><strong>EXTENSION</strong></p>
 <h1 id="anyworkflowconvertible"><code>AnyWorkflowConvertible</code><a class="headerlink" href="#anyworkflowconvertible" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">AnyWorkflowConvertible</span>
-</code></pre></div>
+<p><code>swift
+extension AnyWorkflowConvertible</code></p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="mapoutput_"><code>mapOutput(_:)</code><a class="headerlink" href="#mapoutput_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">mapOutput</span><span class="p">&lt;</span><span class="n">NewOutput</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">transform</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">NewOutput</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">Rendering</span><span class="p">,</span> <span class="n">NewOutput</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func mapOutput&lt;NewOutput&gt;(_ transform: @escaping (Output) -&gt; NewOutput) -&gt; AnyWorkflow&lt;Rendering, NewOutput&gt;</code></p>
 <h3 id="maprendering_"><code>mapRendering(_:)</code><a class="headerlink" href="#maprendering_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">mapRendering</span><span class="p">&lt;</span><span class="n">NewRendering</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">transform</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Rendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">NewRendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">NewRendering</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func mapRendering&lt;NewRendering&gt;(_ transform: @escaping (Rendering) -&gt; NewRendering) -&gt; AnyWorkflow&lt;NewRendering, Output&gt;</code></p>
 <h3 id="renderedinkey"><code>rendered(in:key:)</code><a class="headerlink" href="#renderedinkey" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Output</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Output</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
-</code></pre></div>
+<p><code>swift
+public func rendered&lt;Parent&gt;(in context: RenderContext&lt;Parent&gt;, key: String = "") -&gt; Rendering where Output: WorkflowAction, Output.WorkflowType == Parent</code></p>
 <p>Creates or updates a child workflow of the given type, performs a render pass, and returns the result.</p>
 <p>Note that it is a programmer error to render two instances of a given workflow type with the same <code>key</code>
 during the same render pass.</p>
@@ -962,14 +962,14 @@ during the same render pass.</p>
 </tbody>
 </table>
 <h3 id="renderedinkeyoutputmap"><code>rendered(in:key:outputMap:)</code><a class="headerlink" href="#renderedinkeyoutputmap" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">outputMap</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Action</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
-</code></pre></div>
+<p><code>swift
+public func rendered&lt;Parent, Action&gt;(in context: RenderContext&lt;Parent&gt;, key: String = "", outputMap: @escaping (Output) -&gt; Action) -&gt; Rendering where Action: WorkflowAction, Action.WorkflowType == Parent</code></p>
 <h3 id="renderedinkey_1"><code>rendered(in:key:)</code><a class="headerlink" href="#renderedinkey_1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span> <span class="k">where</span> <span class="n">Output</span> <span class="p">==</span> <span class="n">AnyWorkflowAction</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func rendered&lt;Parent&gt;(in context: RenderContext&lt;Parent&gt;, key: String = "") -&gt; Rendering where Output == AnyWorkflowAction&lt;Parent&gt;</code></p>
 <h3 id="renderedinkey_2"><code>rendered(in:key:)</code><a class="headerlink" href="#renderedinkey_2" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rendered</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span>
-</code></pre></div>
+<p><code>swift
+public func rendered&lt;T&gt;(in context: RenderContext&lt;T&gt;, key: String = "") -&gt; Rendering</code></p>
 <p>Creates or updates a child workflow of the given type, performs a render pass, and returns the result.</p>
 <p>Note that it is a programmer error to render two instances of a given workflow type with the same <code>key</code>
 during the same render pass.</p>
@@ -1002,14 +1002,14 @@ during the same render pass.</p>
 </tbody>
 </table>
 <h3 id="runninginkeyoutputmap"><code>running(in:key:outputMap:)</code><a class="headerlink" href="#runninginkeyoutputmap" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">running</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">outputMap</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Action</span><span class="p">)</span> <span class="k">where</span> <span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
-</code></pre></div>
+<p><code>swift
+public func running&lt;Parent, Action&gt;(in context: RenderContext&lt;Parent&gt;, key: String = "", outputMap: @escaping (Output) -&gt; Action) where Action: WorkflowAction, Action.WorkflowType == Parent</code></p>
 <h3 id="runninginkey"><code>running(in:key:)</code><a class="headerlink" href="#runninginkey" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">running</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="k">in</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="k">where</span> <span class="n">Output</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">Parent</span>
-</code></pre></div>
+<p><code>swift
+public func running&lt;Parent&gt;(in context: RenderContext&lt;Parent&gt;, key: String = "") where Output.WorkflowType == Parent</code></p>
 <h3 id="onoutput_"><code>onOutput(_:)</code><a class="headerlink" href="#onoutput_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">onOutput</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">apply</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">((</span><span class="kr">inout</span> <span class="n">Parent</span><span class="p">.</span><span class="n">State</span><span class="p">,</span> <span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Parent</span><span class="p">.</span><span class="n">Output</span><span class="p">?))</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">Rendering</span><span class="p">,</span> <span class="n">AnyWorkflowAction</span><span class="p">&lt;</span><span class="n">Parent</span><span class="p">&gt;</span><span class="o">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func onOutput&lt;Parent&gt;(_ apply: @escaping ((inout Parent.State, Output) -&gt; Parent.Output?)) -&gt; AnyWorkflow&lt;Rendering, AnyWorkflowAction&lt;Parent&gt;&gt;</code></p>
 <p>Process an <code>Output</code></p>
 <ul>
 <li>Parameter apply: On <code>Output</code>, mutate <code>State</code> as necessary and return new <code>Output</code> (or <code>nil</code>).</li>
@@ -1030,8 +1030,8 @@ during the same render pass.</p>
 </tbody>
 </table>
 <h3 id="ignoringoutput"><code>ignoringOutput()</code><a class="headerlink" href="#ignoringoutput" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">ignoringOutput</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">Rendering</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func ignoringOutput() -&gt; AnyWorkflow&lt;Rendering, Never&gt;</code></p>
 <p>Wraps this workflow in a workflow that ignores all outputs.</p>
 <ul>
 <li>Returns: An <code>AnyWorkflow</code> with the same rendering and no output.</li>

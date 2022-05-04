@@ -786,18 +786,20 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">contraMap</a></p>
 <h1 id="contramap">contraMap<a class="headerlink" href="#contramap" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-fun &lt;<a href="./">T1</a>, <a href="./">T2</a>&gt; <a href="../-sink/">Sink</a>&lt;<a href="./">T1</a>&gt;.<a href="./">contraMap</a>(transform: (<a href="./">T2</a>) -&gt; <a href="./">T1</a>): <a href="../-sink/">Sink</a>&lt;<a href="./">T2</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">T1</a>, <a href="./">T2</a>&gt; <a href="../-sink/">Sink</a>&lt;<a href="./">T1</a>&gt;.<a href="./">contraMap</a>(transform: (<a href="./">T2</a>) -&gt; <a href="./">T1</a>): <a href="../-sink/">Sink</a>&lt;<a href="./">T2</a>&gt;<br />
+More info  </p>
 <p>Generates a new sink of type <a href="./">T2</a>.</p>
 <p>Given a <a href="./">transform</a> closure, the following code is functionally equivalent:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>sink.send(transform(value))
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>sink.send(transform(value))
 
 sink.contraMap(transform).send(value)
-</code></pre></div>
-</td></tr></table>
-<p><strong>Trivia</strong>: Why is this called contraMap?     - map turns Type&lt;T&gt; into Type&lt;U&gt; via (T)-&gt;U.     - contraMap turns Type&lt;T&gt; into Type&lt;U&gt; via (U)-&gt;T</p>
+</code></pre></div></td></tr></table></div>
+
+<p><strong>Trivia</strong>: Why is this called contraMap?     - map turns Type<T> into Type<U> via (T)-&gt;U.     - contraMap turns Type<T> into Type<U> via (U)-&gt;T</p>
 <p>Another way to think about this is: map transforms a type by changing the output types of its API, while contraMap transforms a type by changing the <em>input</em> types of its API.</p>
                 
               

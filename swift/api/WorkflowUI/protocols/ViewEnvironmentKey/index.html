@@ -816,30 +816,30 @@
                 
                 <p><strong>PROTOCOL</strong></p>
 <h1 id="viewenvironmentkey"><code>ViewEnvironmentKey</code><a class="headerlink" href="#viewenvironmentkey" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">ViewEnvironmentKey</span>
-</code></pre></div>
+<p><code>swift
+public protocol ViewEnvironmentKey</code></p>
 <p>A key into the ViewEnvironment.</p>
 <p>Environment keys are associated with a specific type of value (<code>Value</code>) and
 must declare a default value.</p>
 <p>Typically the key conforming to <code>ViewEnvironmentKey</code> will be private, and
 you are encouraged to provide a convenience accessor on <code>ViewEnvironment</code>
 as in the following example:</p>
-<div class="highlight"><pre><span></span><code>private enum ThemeKey: ViewEnvironmentKey {
+<p>```
+private enum ThemeKey: ViewEnvironmentKey {
     typealias Value = Theme
     var defaultValue: Theme
-}
-
-extension ViewEnvironment {
+}</p>
+<p>extension ViewEnvironment {
     public var theme: Theme {
         get { self[ThemeKey.self] }
         set { self[ThemeKey.self] = newValue }
     }
 }
-</code></pre></div>
+```</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="defaultvalue"><code>defaultValue</code><a class="headerlink" href="#defaultvalue" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">static</span> <span class="kd">var</span> <span class="nv">defaultValue</span><span class="p">:</span> <span class="n">Value</span>
-</code></pre></div>
+<p><code>swift
+static var defaultValue: Value</code></p>
                 
               
               

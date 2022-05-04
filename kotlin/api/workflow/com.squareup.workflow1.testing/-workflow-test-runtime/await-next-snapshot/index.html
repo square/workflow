@@ -803,12 +803,14 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">WorkflowTestRuntime</a>/<a href="./">awaitNextSnapshot</a></p>
 <h1 id="awaitnextsnapshot">awaitNextSnapshot<a class="headerlink" href="#awaitnextsnapshot" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-fun <a href="./">awaitNextSnapshot</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>? = null, skipIntermediate: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true): <a href="../../../com.squareup.workflow1/-tree-snapshot/">TreeSnapshot</a></p>
+<p>[jvm]<br />
+Content<br />
+fun <a href="./">awaitNextSnapshot</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>? = null, skipIntermediate: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true): <a href="../../../com.squareup.workflow1/-tree-snapshot/">TreeSnapshot</a><br />
+More info  </p>
 <p>Blocks until the workflow emits a snapshot, then returns it.</p>
 <p>The returned snapshot will be the snapshot only of the root workflow. It will be null if snapshotState returned an empty <a href="../../../com.squareup.workflow1/-snapshot/">Snapshot</a>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -818,12 +820,12 @@ fun <a href="./">awaitNextSnapshot</a>(timeoutMs: <a href="https://kotlinlang.or
 </thead>
 <tbody>
 <tr>
-<td>timeoutMs</td>
-<td>The maximum amount of time to wait for a snapshot to be emitted. If null, <a href="../-companion/-d-e-f-a-u-l-t_-t-i-m-e-o-u-t_-m-s/">DEFAULT_TIMEOUT_MS</a> will be used instead.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextSnapshot/#kotlin.Long?#kotlin.Boolean/PointingToDeclaration/"></a>timeoutMs</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextSnapshot/#kotlin.Long?#kotlin.Boolean/PointingToDeclaration/"></a><br><br>The maximum amount of time to wait for a snapshot to be emitted. If null, <a href="../-companion/-d-e-f-a-u-l-t_-t-i-m-e-o-u-t_-m-s/">DEFAULT_TIMEOUT_MS</a> will be used instead.<br><br></td>
 </tr>
 <tr>
-<td>skipIntermediate</td>
-<td>If true, and the workflow has emitted multiple snapshots, all but the most recent one will be dropped.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextSnapshot/#kotlin.Long?#kotlin.Boolean/PointingToDeclaration/"></a>skipIntermediate</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextSnapshot/#kotlin.Long?#kotlin.Boolean/PointingToDeclaration/"></a><br><br>If true, and the workflow has emitted multiple snapshots, all but the most recent one will be dropped.<br><br></td>
 </tr>
 </tbody>
 </table>

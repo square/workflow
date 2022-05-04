@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">StatelessWorkflow</a>/<a href="./">asStatefulWorkflow</a></p>
 <h1 id="asstatefulworkflow">asStatefulWorkflow<a class="headerlink" href="#asstatefulworkflow" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-override fun <a href="./">asStatefulWorkflow</a>(): <a href="../../-stateful-workflow/">StatefulWorkflow</a>&lt;<a href="../">PropsT</a>, *, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+override fun <a href="./">asStatefulWorkflow</a>(): <a href="../../-stateful-workflow/">StatefulWorkflow</a>&lt;<a href="../">PropsT</a>, *, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Satisfies the <a href="../../-workflow/">Workflow</a> interface by wrapping this in a <a href="../../-stateful-workflow/">StatefulWorkflow</a> with Unit state.</p>
 <p>This method is called a few times per instance, but we don&rsquo;t need to allocate a new <a href="../../-stateful-workflow/">StatefulWorkflow</a> every time, so we store it in a private property.</p>
                 

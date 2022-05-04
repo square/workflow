@@ -810,8 +810,7 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.androidx</a>/<a href="./">WorkflowSavedStateRegistryAggregator</a></p>
 <h1 id="workflowsavedstateregistryaggregator">WorkflowSavedStateRegistryAggregator<a class="headerlink" href="#workflowsavedstateregistryaggregator" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-@WorkflowUiExperimentalApi</p>
+<p>[androidJvm] @WorkflowUiExperimentalApi()  </p>
 <p>class <a href="./">WorkflowSavedStateRegistryAggregator</a></p>
 <p>Manages a group of <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>s that are all saved to and restored from a single &ldquo;parent&rdquo; <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>. <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> is the new androidx alternative to the <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#1773232604%2FFunctions%2F576965167">View.onSaveInstanceState</a> system, and is required by Compose UI.</p>
 <p>This class is designed to support a navigation container view that owns a a set of navigation &ldquo;frames&rdquo;, where a frame is something that can be navigated to/from. A frame loosely consists of a root <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> and its <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>. For example:</p>
@@ -833,8 +832,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-workflow-saved-state-registry-aggregator/">WorkflowSavedStateRegistryAggregator</a></td>
-<td>[androidJvm]<br>fun <a href="-workflow-saved-state-registry-aggregator/">WorkflowSavedStateRegistryAggregator</a>()</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/WorkflowSavedStateRegistryAggregator/#/PointingToDeclaration/"></a><a href="-workflow-saved-state-registry-aggregator/">WorkflowSavedStateRegistryAggregator</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/WorkflowSavedStateRegistryAggregator/#/PointingToDeclaration/"></a> [androidJvm] fun <a href="-workflow-saved-state-registry-aggregator/">WorkflowSavedStateRegistryAggregator</a>()   <br></td>
 </tr>
 </tbody>
 </table>
@@ -848,24 +847,24 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="attach-to-parent-registry/">attachToParentRegistry</a></td>
-<td>[androidJvm]<br>fun <a href="attach-to-parent-registry/">attachToParentRegistry</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, parentOwner: <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>)<br>Must be called when the owning container view gets attached to the window. The owning view should find its <a href="attach-to-parent-registry/">parentOwner</a> (probably via <a href="../-workflow-android-x-support/state-registry-owner-from-view-tree-or-context/">WorkflowAndroidXSupport.stateRegistryOwnerFromViewTreeOrContext</a>) and determine a string key unique within that parent to save and restore this class in that registry. These values will be cached in this object for <a href="detach-from-parent-registry/">detachment</a> later.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/attachToParentRegistry/#kotlin.String#androidx.savedstate.SavedStateRegistryOwner/PointingToDeclaration/"></a><a href="attach-to-parent-registry/">attachToParentRegistry</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/attachToParentRegistry/#kotlin.String#androidx.savedstate.SavedStateRegistryOwner/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>fun <a href="attach-to-parent-registry/">attachToParentRegistry</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, parentOwner: <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>)  <br>More info  <br>Must be called when the owning container view gets attached to the window.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="detach-from-parent-registry/">detachFromParentRegistry</a></td>
-<td>[androidJvm]<br>fun <a href="detach-from-parent-registry/">detachFromParentRegistry</a>()<br>Must be called when the owning view detaches from the window.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/detachFromParentRegistry/#/PointingToDeclaration/"></a><a href="detach-from-parent-registry/">detachFromParentRegistry</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/detachFromParentRegistry/#/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>fun <a href="detach-from-parent-registry/">detachFromParentRegistry</a>()  <br>More info  <br>Must be called when the owning view detaches from the window.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="install-child-registry-owner-on/">installChildRegistryOwnerOn</a></td>
-<td>[androidJvm]<br>fun <a href="install-child-registry-owner-on/">installChildRegistryOwnerOn</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)<br>Puts a new <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> in place on <a href="install-child-registry-owner-on/">view</a>, registered with its <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a>. (Use <a href="../-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> to ensure one is properly installed.)</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/installChildRegistryOwnerOn/#android.view.View#kotlin.String/PointingToDeclaration/"></a><a href="install-child-registry-owner-on/">installChildRegistryOwnerOn</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/installChildRegistryOwnerOn/#android.view.View#kotlin.String/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>fun <a href="install-child-registry-owner-on/">installChildRegistryOwnerOn</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)  <br>More info  <br>Puts a new <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> in place on <a href="install-child-registry-owner-on/">view</a>, registered with its <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="prune-all-child-registry-owners-except/">pruneAllChildRegistryOwnersExcept</a></td>
-<td>[androidJvm]<br>fun <a href="prune-all-child-registry-owners-except/">pruneAllChildRegistryOwnersExcept</a>(keysToKeep: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt; = emptyList())<br>Drops all child <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>s and their restored state, except those identified in <a href="prune-all-child-registry-owners-except/">keysToKeep</a>.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/pruneAllChildRegistryOwnersExcept/#kotlin.collections.Collection[kotlin.String]/PointingToDeclaration/"></a><a href="prune-all-child-registry-owners-except/">pruneAllChildRegistryOwnersExcept</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/pruneAllChildRegistryOwnersExcept/#kotlin.collections.Collection[kotlin.String]/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>fun <a href="prune-all-child-registry-owners-except/">pruneAllChildRegistryOwnersExcept</a>(keysToKeep: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt; = emptyList())  <br>More info  <br>Drops all child <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>s and their restored state, except those identified in <a href="prune-all-child-registry-owners-except/">keysToKeep</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="save-and-prune-child-registry-owner/">saveAndPruneChildRegistryOwner</a></td>
-<td>[androidJvm]<br>fun <a href="save-and-prune-child-registry-owner/">saveAndPruneChildRegistryOwner</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)<br>Call this when the <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> previously <a href="install-child-registry-owner-on/">registered</a> with <a href="save-and-prune-child-registry-owner/">key</a> is being dropped, but may be replaced with a new instance before the container is destroyed &ndash; think of pushing and popping in a back stack.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/saveAndPruneChildRegistryOwner/#kotlin.String/PointingToDeclaration/"></a><a href="save-and-prune-child-registry-owner/">saveAndPruneChildRegistryOwner</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/saveAndPruneChildRegistryOwner/#kotlin.String/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>fun <a href="save-and-prune-child-registry-owner/">saveAndPruneChildRegistryOwner</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)  <br>More info  <br>Call this when the <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> previously <a href="install-child-registry-owner-on/">registered</a> with <a href="save-and-prune-child-registry-owner/">key</a> is being dropped, but may be replaced with a new instance before the container is destroyed &ndash; think of pushing and popping in a back stack.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

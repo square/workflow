@@ -803,11 +803,13 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">StatefulWorkflow</a>/<a href="./">initialState</a></p>
 <h1 id="initialstate">initialState<a class="headerlink" href="#initialstate" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract fun <a href="./">initialState</a>(props: <a href="../">PropsT</a>, snapshot: <a href="../../-snapshot/">Snapshot</a>?): <a href="../">StateT</a></p>
+<p>[jvm]<br />
+Content<br />
+abstract fun <a href="./">initialState</a>(props: <a href="../">PropsT</a>, snapshot: <a href="../../-snapshot/">Snapshot</a>?): <a href="../">StateT</a><br />
+More info  </p>
 <p>Called from RenderContext.renderChild when the state machine is first started, to get the initial state.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -817,8 +819,8 @@ abstract fun <a href="./">initialState</a>(props: <a href="../">PropsT</a>, snap
 </thead>
 <tbody>
 <tr>
-<td>snapshot</td>
-<td>If the workflow is being created fresh, OR the workflow is being restored from a null or empty <a href="../../-snapshot/">Snapshot</a>, <a href="./">snapshot</a> will be null. A snapshot is considered &ldquo;empty&rdquo; if <a href="../../-snapshot/bytes/">Snapshot.bytes</a> returns an empty ByteString, probably because <a href="../snapshot-state/">snapshotState</a> returned null. If the workflow is being restored from a <a href="../../-snapshot/">Snapshot</a>, <a href="./">snapshot</a> will be the last value returned from <a href="../snapshot-state/">snapshotState</a>, and implementations that return something other than null should create their initial state by parsing their snapshot.</td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/initialState/#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.Snapshot?/PointingToDeclaration/"></a>snapshot</td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/initialState/#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.Snapshot?/PointingToDeclaration/"></a><br><br>If the workflow is being created fresh, OR the workflow is being restored from a null or empty <a href="../../-snapshot/">Snapshot</a>, <a href="./">snapshot</a> will be null. A snapshot is considered &ldquo;empty&rdquo; if <a href="../../-snapshot/bytes/">Snapshot.bytes</a> returns an empty ByteString, probably because <a href="../snapshot-state/">snapshotState</a> returned null. If the workflow is being restored from a <a href="../../-snapshot/">Snapshot</a>, <a href="./">snapshot</a> will be the last value returned from <a href="../snapshot-state/">snapshotState</a>, and implementations that return something other than null should create their initial state by parsing their snapshot.<br><br></td>
 </tr>
 </tbody>
 </table>

@@ -838,11 +838,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">StatelessWorkflow</a></p>
 <h1 id="statelessworkflow">StatelessWorkflow<a class="headerlink" href="#statelessworkflow" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract class <a href="./">StatelessWorkflow</a>&lt;in <a href="./">PropsT</a>, out <a href="./">OutputT</a>, out <a href="./">RenderingT</a>&gt; : <a href="../-workflow/">Workflow</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; </p>
+<p>[jvm] abstract class <a href="./">StatelessWorkflow</a><in <a href="index.md">PropsT</a>, out <a href="index.md">OutputT</a>, out <a href="index.md">RenderingT</a>> : <a href="../-workflow/">Workflow</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt; </p>
 <p>Minimal implementation of <a href="../-workflow/">Workflow</a> that maintains no state of its own.</p>
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -852,13 +851,13 @@ abstract class <a href="./">StatelessWorkflow</a>&lt;in <a href="./">PropsT</a>,
 </thead>
 <tbody>
 <tr>
-<td><a href="../-stateful-workflow/">com.squareup.workflow1.StatefulWorkflow</a></td>
-<td></td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow///PointingToDeclaration/"></a><a href="../-stateful-workflow/">com.squareup.workflow1.StatefulWorkflow</a></td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow///PointingToDeclaration/"></a></td>
 </tr>
 </tbody>
 </table>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -868,16 +867,16 @@ abstract class <a href="./">StatelessWorkflow</a>&lt;in <a href="./">PropsT</a>,
 </thead>
 <tbody>
 <tr>
-<td>PropsT</td>
-<td>Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn&rsquo;t duplicate in its own state. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not need any props data.</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow///PointingToDeclaration/"></a>PropsT</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow///PointingToDeclaration/"></a><br><br>Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn&rsquo;t duplicate in its own state. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not need any props data.<br><br></td>
 </tr>
 <tr>
-<td>OutputT</td>
-<td>Typically a sealed class that represents &ldquo;events&rdquo; that this workflow can send to its parent. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a> if the workflow doesn&rsquo;t need to emit anything.</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow///PointingToDeclaration/"></a>OutputT</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow///PointingToDeclaration/"></a><br><br>Typically a sealed class that represents &ldquo;events&rdquo; that this workflow can send to its parent. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a> if the workflow doesn&rsquo;t need to emit anything.<br><br></td>
 </tr>
 <tr>
-<td>RenderingT</td>
-<td>The value returned to this workflow&rsquo;s parent during <a href="render/">composition</a>. Typically represents a &ldquo;view&rdquo; of this workflow&rsquo;s props, current state, and children&rsquo;s renderings. A workflow that represents a UI component may use a view model as its rendering type.</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow///PointingToDeclaration/"></a>RenderingT</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow///PointingToDeclaration/"></a><br><br>The value returned to this workflow&rsquo;s parent during <a href="render/">composition</a>. Typically represents a &ldquo;view&rdquo; of this workflow&rsquo;s props, current state, and children&rsquo;s renderings. A workflow that represents a UI component may use a view model as its rendering type.<br><br></td>
 </tr>
 </tbody>
 </table>
@@ -891,8 +890,8 @@ abstract class <a href="./">StatelessWorkflow</a>&lt;in <a href="./">PropsT</a>,
 </thead>
 <tbody>
 <tr>
-<td><a href="-stateless-workflow/">StatelessWorkflow</a></td>
-<td>[jvm]<br>fun <a href="-stateless-workflow/">StatelessWorkflow</a>()</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/StatelessWorkflow/#/PointingToDeclaration/"></a><a href="-stateless-workflow/">StatelessWorkflow</a></td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/StatelessWorkflow/#/PointingToDeclaration/"></a> [jvm] fun <a href="-stateless-workflow/">StatelessWorkflow</a>()Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn&rsquo;t duplicate in its own state.   <br></td>
 </tr>
 </tbody>
 </table>
@@ -906,8 +905,8 @@ abstract class <a href="./">StatelessWorkflow</a>&lt;in <a href="./">PropsT</a>,
 </thead>
 <tbody>
 <tr>
-<td><a href="-render-context/">RenderContext</a></td>
-<td>[jvm]<br>inner class <a href="-render-context/">RenderContext</a> : <a href="../-base-render-context/">BaseRenderContext</a>&lt;@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a><a href="./">PropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, @<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a><a href="./">OutputT</a>&gt;</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow.RenderContext///PointingToDeclaration/"></a><a href="-render-context/">RenderContext</a></td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow.RenderContext///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inner class <a href="-render-context/">RenderContext</a> : <a href="../-base-render-context/">BaseRenderContext</a>&lt;@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="./">PropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, @<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html">UnsafeVariance</a>()<a href="./">OutputT</a>&gt;   <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -921,12 +920,12 @@ abstract class <a href="./">StatelessWorkflow</a>&lt;in <a href="./">PropsT</a>,
 </thead>
 <tbody>
 <tr>
-<td><a href="as-stateful-workflow/">asStatefulWorkflow</a></td>
-<td>[jvm]<br>override fun <a href="as-stateful-workflow/">asStatefulWorkflow</a>(): <a href="../-stateful-workflow/">StatefulWorkflow</a>&lt;<a href="./">PropsT</a>, *, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;<br>Satisfies the <a href="../-workflow/">Workflow</a> interface by wrapping this in a <a href="../-stateful-workflow/">StatefulWorkflow</a> with Unit state.</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/asStatefulWorkflow/#/PointingToDeclaration/"></a><a href="as-stateful-workflow/">asStatefulWorkflow</a></td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/asStatefulWorkflow/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>override fun <a href="as-stateful-workflow/">asStatefulWorkflow</a>(): <a href="../-stateful-workflow/">StatefulWorkflow</a>&lt;<a href="./">PropsT</a>, *, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;  <br>More info  <br>Satisfies the <a href="../-workflow/">Workflow</a> interface by wrapping this in a <a href="../-stateful-workflow/">StatefulWorkflow</a> with Unit state.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="render/">render</a></td>
-<td>[jvm]<br>abstract fun <a href="render/">render</a>(renderProps: <a href="./">PropsT</a>, context: <a href="-render-context/">StatelessWorkflow.RenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;): <a href="./">RenderingT</a><br>Called at least once any time one of the following things happens:</td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/render/#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.StatelessWorkflow.RenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a><a href="render/">render</a></td>
+<td><a name="com.squareup.workflow1/StatelessWorkflow/render/#TypeParam(bounds=[kotlin.Any?])#com.squareup.workflow1.StatelessWorkflow.RenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="render/">render</a>(renderProps: <a href="./">PropsT</a>, context: <a href="-render-context/">StatelessWorkflow.RenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;): <a href="./">RenderingT</a>  <br>More info  <br>Called at least once any time one of the following things happens:<ul><li>This workflow&rsquo;s <a href="render/">renderProps</a> change (via the parent passing a different one in).</li><li>A descendant (immediate or transitive child) workflow:</li><ul><li>Changes its internal state.</li><li>Emits an output.</li></ul></ul><strong>Never call this method directly.</strong>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -940,8 +939,8 @@ abstract class <a href="./">StatelessWorkflow</a>&lt;in <a href="./">PropsT</a>,
 </thead>
 <tbody>
 <tr>
-<td><a href="../action/">action</a></td>
-<td>[jvm]<br>fun &lt;<a href="../action/">PropsT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt; <a href="./">StatelessWorkflow</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt;.<a href="../action/">action</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="../action/">PropsT</a>, *, <a href="../action/">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="../action/">PropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, <a href="../action/">OutputT</a>&gt;<br>fun &lt;<a href="../action/">PropsT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt; <a href="./">StatelessWorkflow</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt;.<a href="../action/">action</a>(name: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="../action/">PropsT</a>, *, <a href="../action/">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="../action/">PropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, <a href="../action/">OutputT</a>&gt;<br>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>. The action will invoke the given <a href="../action/">lambda</a> when it is <a href="../-workflow-action/apply/">applied</a>.</td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="../action/">action</a></td>
+<td><a name="com.squareup.workflow1//action/com.squareup.workflow1.StatelessWorkflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String#kotlin.Function1[com.squareup.workflow1.WorkflowAction.Updater[TypeParam(bounds=[kotlin.Any?]),*,TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun &lt;<a href="../action/">PropsT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt; <a href="./">StatelessWorkflow</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt;.<a href="../action/">action</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="../action/">PropsT</a>, *, <a href="../action/">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="../action/">PropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, <a href="../action/">OutputT</a>&gt;  <br>fun &lt;<a href="../action/">PropsT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt; <a href="./">StatelessWorkflow</a>&lt;<a href="../action/">PropsT</a>, <a href="../action/">OutputT</a>, <a href="../action/">RenderingT</a>&gt;.<a href="../action/">action</a>(name: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, update: <a href="../-workflow-action/-updater/">WorkflowAction.Updater</a>&lt;<a href="../action/">PropsT</a>, *, <a href="../action/">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="../action/">PropsT</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>, <a href="../action/">OutputT</a>&gt;  <br>More info  <br>Convenience to create a <a href="../-workflow-action/">WorkflowAction</a> with parameter types matching those of the receiving <a href="../-stateful-workflow/">StatefulWorkflow</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

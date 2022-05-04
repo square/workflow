@@ -817,23 +817,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.testing</a>/<a href="./">WorkflowTestRuntime</a></p>
 <h1 id="workflowtestruntime">WorkflowTestRuntime<a class="headerlink" href="#workflowtestruntime" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-class <a href="./">WorkflowTestRuntime</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;</p>
+<p>[jvm] class <a href="./">WorkflowTestRuntime</a>&lt;<a href="./">PropsT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;</p>
 <p>Runs a <a href="../../com.squareup.workflow1/-workflow/">Workflow</a> and provides access to its <a href="await-next-rendering/">renderings</a>, <a href="await-next-output/">outputs</a>, and <a href="await-next-snapshot/">snapshots</a>.</p>
 <p>For each of renderings, outputs, and snapshots, this class gives you a few ways to access information about them:</p>
-<ul><li>[awaitNextRendering](await-next-rendering.md), [awaitNextOutput](await-next-output.md), [awaitNextSnapshot](await-next-snapshot.md)</li>
-
-<ul><li>Block until something becomes available, and then return it.</li></ul>
-
-<li>[hasRendering](has-rendering.md), [hasOutput](has-output.md), [hasSnapshot](has-snapshot.md)</li>
-
-<ul><li>Return true if the previous methods won't block.</li></ul>
-
-<li>[sendProps](send-props.md)</li>
-
-<ul><li>Send a new [PropsT](index.md) to the root workflow.</li></ul>
-
-</ul>
+<ul><li>[awaitNextRendering](await-next-rendering.md), [awaitNextOutput](await-next-output.md), [awaitNextSnapshot](await-next-snapshot.md)</li><ul><li>Block until something becomes available, and then return it.</li></ul><li>[hasRendering](has-rendering.md), [hasOutput](has-output.md), [hasSnapshot](has-snapshot.md)</li><ul><li>Return true if the previous methods won't block.</li></ul><li>[sendProps](send-props.md)</li><ul><li>Send a new [PropsT](index.md) to the root workflow.</li></ul></ul>
 
 <h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
@@ -845,8 +832,8 @@ class <a href="./">WorkflowTestRuntime</a>&lt;<a href="./">PropsT</a>, <a href="
 </thead>
 <tbody>
 <tr>
-<td><a href="-companion/">Companion</a></td>
-<td>[jvm]<br>object <a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -860,20 +847,20 @@ class <a href="./">WorkflowTestRuntime</a>&lt;<a href="./">PropsT</a>, <a href="
 </thead>
 <tbody>
 <tr>
-<td><a href="await-next-output/">awaitNextOutput</a></td>
-<td>[jvm]<br>fun <a href="await-next-output/">awaitNextOutput</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>? = null): <a href="./">OutputT</a><br>Blocks until the workflow emits an output, then returns it.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextOutput/#kotlin.Long?/PointingToDeclaration/"></a><a href="await-next-output/">awaitNextOutput</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextOutput/#kotlin.Long?/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="await-next-output/">awaitNextOutput</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>? = null): <a href="./">OutputT</a>  <br>More info  <br>Blocks until the workflow emits an output, then returns it.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="await-next-rendering/">awaitNextRendering</a></td>
-<td>[jvm]<br>fun <a href="await-next-rendering/">awaitNextRendering</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>? = null, skipIntermediate: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true): <a href="./">RenderingT</a><br>Blocks until the workflow emits a rendering, then returns it.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextRendering/#kotlin.Long?#kotlin.Boolean/PointingToDeclaration/"></a><a href="await-next-rendering/">awaitNextRendering</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextRendering/#kotlin.Long?#kotlin.Boolean/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="await-next-rendering/">awaitNextRendering</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>? = null, skipIntermediate: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true): <a href="./">RenderingT</a>  <br>More info  <br>Blocks until the workflow emits a rendering, then returns it.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="await-next-snapshot/">awaitNextSnapshot</a></td>
-<td>[jvm]<br>fun <a href="await-next-snapshot/">awaitNextSnapshot</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>? = null, skipIntermediate: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true): <a href="../../com.squareup.workflow1/-tree-snapshot/">TreeSnapshot</a><br>Blocks until the workflow emits a snapshot, then returns it.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextSnapshot/#kotlin.Long?#kotlin.Boolean/PointingToDeclaration/"></a><a href="await-next-snapshot/">awaitNextSnapshot</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/awaitNextSnapshot/#kotlin.Long?#kotlin.Boolean/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="await-next-snapshot/">awaitNextSnapshot</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>? = null, skipIntermediate: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true): <a href="../../com.squareup.workflow1/-tree-snapshot/">TreeSnapshot</a>  <br>More info  <br>Blocks until the workflow emits a snapshot, then returns it.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="send-props/">sendProps</a></td>
-<td>[jvm]<br>fun <a href="send-props/">sendProps</a>(input: <a href="./">PropsT</a>)<br>Sends <a href="send-props/">input</a> to the workflow.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/sendProps/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="send-props/">sendProps</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/sendProps/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="send-props/">sendProps</a>(input: <a href="./">PropsT</a>)  <br>More info  <br>Sends <a href="send-props/">input</a> to the workflow.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -887,16 +874,16 @@ class <a href="./">WorkflowTestRuntime</a>&lt;<a href="./">PropsT</a>, <a href="
 </thead>
 <tbody>
 <tr>
-<td><a href="has-output/">hasOutput</a></td>
-<td>[jvm]<br>val <a href="has-output/">hasOutput</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><br>True if the workflow has emitted a new output that is ready to be consumed.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/hasOutput/#/PointingToDeclaration/"></a><a href="has-output/">hasOutput</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/hasOutput/#/PointingToDeclaration/"></a> [jvm] val <a href="has-output/">hasOutput</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>True if the workflow has emitted a new output that is ready to be consumed.   <br></td>
 </tr>
 <tr>
-<td><a href="has-rendering/">hasRendering</a></td>
-<td>[jvm]<br>val <a href="has-rendering/">hasRendering</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><br>True if the workflow has emitted a new rendering that is ready to be consumed.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/hasRendering/#/PointingToDeclaration/"></a><a href="has-rendering/">hasRendering</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/hasRendering/#/PointingToDeclaration/"></a> [jvm] val <a href="has-rendering/">hasRendering</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>True if the workflow has emitted a new rendering that is ready to be consumed.   <br></td>
 </tr>
 <tr>
-<td><a href="has-snapshot/">hasSnapshot</a></td>
-<td>[jvm]<br>val <a href="has-snapshot/">hasSnapshot</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><br>True if the workflow has emitted a new snapshot that is ready to be consumed.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/hasSnapshot/#/PointingToDeclaration/"></a><a href="has-snapshot/">hasSnapshot</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestRuntime/hasSnapshot/#/PointingToDeclaration/"></a> [jvm] val <a href="has-snapshot/">hasSnapshot</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>True if the workflow has emitted a new snapshot that is ready to be consumed.   <br></td>
 </tr>
 </tbody>
 </table>

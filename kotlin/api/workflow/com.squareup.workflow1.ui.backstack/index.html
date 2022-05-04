@@ -820,20 +820,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-back-stack-config/">BackStackConfig</a></td>
-<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>enum <a href="-back-stack-config/">BackStackConfig</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a>&lt;<a href="-back-stack-config/">BackStackConfig</a>&gt; <br>Informs views whether they&rsquo;re children of a <a href="-back-stack-container/">BackStackContainer</a>, and if so whether they&rsquo;re the <a href="-back-stack-config/-first/">first frame</a> or <a href="-back-stack-config/-other/">not</a>.</td>
-</tr>
-<tr>
-<td><a href="-back-stack-container/">BackStackContainer</a></td>
-<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>open class <a href="-back-stack-container/">BackStackContainer</a>@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html">JvmOverloads</a>constructor(context: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, attributeSet: <a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a>?, defStyle: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, defStyleRes: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>) : <a href="https://developer.android.com/reference/kotlin/android/widget/FrameLayout.html">FrameLayout</a><br>A container view that can display a stream of BackStackScreen instances.</td>
-</tr>
-<tr>
-<td><a href="-back-stack-screen/">BackStackScreen</a></td>
-<td>[jvm]<br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a><br>class <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="-back-stack-screen/">StackedT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(bottom: <a href="-back-stack-screen/">StackedT</a>, rest: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="-back-stack-screen/">StackedT</a>&gt;)<br>Represents an active screen (<a href="-back-stack-screen/top/">top</a>), and a set of previously visited screens to which we may return (<a href="-back-stack-screen/back-stack/">backStack</a>). By rendering the entire history we allow the UI to do things like maintain cached view state, implement drag-back gestures without waiting for the workflow, etc.</td>
-</tr>
-<tr>
-<td><a href="-view-state-cache/">ViewStateCache</a></td>
-<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>class <a href="-view-state-cache/">ViewStateCache</a><br>Handles persistence chores for container views that manage a set of Named renderings, showing a view for one at a time &ndash; think back stacks or tab sets.</td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackScreen///PointingToDeclaration/"></a><a href="-back-stack-screen/">BackStackScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack/BackStackScreen///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>class <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="-back-stack-screen/">StackedT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(<strong>bottom</strong>: <a href="-back-stack-screen/">StackedT</a>, <strong>rest</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="-back-stack-screen/">StackedT</a>&gt;)  <br>More info  <br><strong>This will be deprecated in favor of</strong> <a href="../com.squareup.workflow1.ui.container/-back-stack-screen/"><strong>com.squareup.workflow1.ui.container.BackStackScreen</strong></a> <strong>very soon.</strong>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -847,12 +835,16 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="to-back-stack-screen/">toBackStackScreen</a></td>
-<td>[jvm]<br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a><br>fun &lt;<a href="to-back-stack-screen/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="to-back-stack-screen/">T</a>&gt;.<a href="to-back-stack-screen/">toBackStackScreen</a>(): <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="to-back-stack-screen/">T</a>&gt;</td>
+<td><a name="com.squareup.workflow1.ui.backstack//asNonLegacy/com.squareup.workflow1.ui.backstack.BackStackScreen[*]#/PointingToDeclaration/"></a><a href="as-non-legacy/">asNonLegacy</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack//asNonLegacy/com.squareup.workflow1.ui.backstack.BackStackScreen[*]#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>fun <a href="-back-stack-screen/">BackStackScreen</a>&lt;*&gt;.<a href="as-non-legacy/">asNonLegacy</a>(): <a href="../com.squareup.workflow1.ui.container/-back-stack-screen/">BackStackScreen</a>&lt;<a href="../com.squareup.workflow1.ui/-screen/">Screen</a>&gt;  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="to-back-stack-screen-or-null/">toBackStackScreenOrNull</a></td>
-<td>[jvm]<br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a><br>fun &lt;<a href="to-back-stack-screen-or-null/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="to-back-stack-screen-or-null/">T</a>&gt;.<a href="to-back-stack-screen-or-null/">toBackStackScreenOrNull</a>(): <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="to-back-stack-screen-or-null/">T</a>&gt;?</td>
+<td><a name="com.squareup.workflow1.ui.backstack//toBackStackScreen/kotlin.collections.List[TypeParam(bounds=[kotlin.Any])]#/PointingToDeclaration/"></a><a href="to-back-stack-screen/">toBackStackScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack//toBackStackScreen/kotlin.collections.List[TypeParam(bounds=[kotlin.Any])]#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>fun &lt;<a href="to-back-stack-screen/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="to-back-stack-screen/">T</a>&gt;.<a href="to-back-stack-screen/">toBackStackScreen</a>(): <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="to-back-stack-screen/">T</a>&gt;  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui.backstack//toBackStackScreenOrNull/kotlin.collections.List[TypeParam(bounds=[kotlin.Any])]#/PointingToDeclaration/"></a><a href="to-back-stack-screen-or-null/">toBackStackScreenOrNull</a></td>
+<td><a name="com.squareup.workflow1.ui.backstack//toBackStackScreenOrNull/kotlin.collections.List[TypeParam(bounds=[kotlin.Any])]#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>fun &lt;<a href="to-back-stack-screen-or-null/">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="to-back-stack-screen-or-null/">T</a>&gt;.<a href="to-back-stack-screen-or-null/">toBackStackScreenOrNull</a>(): <a href="-back-stack-screen/">BackStackScreen</a>&lt;<a href="to-back-stack-screen-or-null/">T</a>&gt;?  <br><br><br></td>
 </tr>
 </tbody>
 </table>

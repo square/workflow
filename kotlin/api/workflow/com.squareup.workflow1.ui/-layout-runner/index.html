@@ -810,10 +810,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">LayoutRunner</a></p>
 <h1 id="layoutrunner">LayoutRunner<a class="headerlink" href="#layoutrunner" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-@WorkflowUiExperimentalApi</p>
-<p>fun interface <a href="./">LayoutRunner</a>&lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;</p>
-<p>A delegate that implements a <a href="show-rendering/">showRendering</a> method to be called when a workflow rendering of type <a href="./">RenderingT</a> is ready to be displayed in a view inflated from a layout resource by a <a href="../-view-registry/">ViewRegistry</a>. (Use <a href="../-builder-view-factory/">BuilderViewFactory</a> if you want to build views from code rather than layouts.)</p>
+<p>[androidJvm] @WorkflowUiExperimentalApi()  </p>
+<p>fun fun interface <a href="./">LayoutRunner</a>&lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;</p>
+<p><strong>This will be deprecated in favor of</strong> <a href="../-screen-view-runner/"><strong>ScreenViewRunner</strong></a> <strong>very soon.</strong></p>
+<p>A delegate that implements a <a href="show-rendering/">showRendering</a> method to be called when a workflow rendering of type <a href="./">RenderingT</a> is ready to be displayed in a view inflated from a layout resource by a <a href="../-view-registry/#417657%2FExtensions%2F576965167">ViewRegistry</a>. (Use <a href="../-builder-view-factory/">BuilderViewFactory</a> if you want to build views from code rather than layouts.)</p>
 <p>If you&rsquo;re using AndroidX ViewBinding you likely won&rsquo;t need to implement this interface at all. For details, see the three overloads of <a href="-companion/bind/">LayoutRunner.bind</a>.</p>
 <h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
@@ -825,8 +825,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-companion/">Companion</a></td>
-<td>[androidJvm]<br>object <a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.ui/LayoutRunner.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.ui/LayoutRunner.Companion///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -840,8 +840,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="show-rendering/">showRendering</a></td>
-<td>[androidJvm]<br>abstract fun <a href="show-rendering/">showRendering</a>(rendering: <a href="./">RenderingT</a>, viewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>)</td>
+<td><a name="com.squareup.workflow1.ui/LayoutRunner/showRendering/#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment/PointingToDeclaration/"></a><a href="show-rendering/">showRendering</a></td>
+<td><a name="com.squareup.workflow1.ui/LayoutRunner/showRendering/#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>abstract fun <a href="show-rendering/">showRendering</a>(rendering: <a href="./">RenderingT</a>, viewEnvironment: <a href="../-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>)  <br><br><br></td>
 </tr>
 </tbody>
 </table>

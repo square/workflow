@@ -817,9 +817,9 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">Named</a></p>
 <h1 id="named">Named<a class="headerlink" href="#named" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a></p>
-<p>data class <a href="./">Named</a>&lt;<a href="./">W</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(wrapped: <a href="./">W</a>, name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) : <a href="../-compatible/">Compatible</a></p>
+<p>[jvm] @<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
+<p>data class <a href="./">Named</a>&lt;<a href="./">W</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(<strong>wrapped</strong>: <a href="./">W</a>, <strong>name</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) : <a href="../-compatible/">Compatible</a></p>
+<p><strong>This will be deprecated in favor of</strong> <a href="../-named-screen/"><strong>NamedScreen</strong></a> <strong>very soon.</strong></p>
 <p>Allows renderings that do not implement <a href="../-compatible/">Compatible</a> themselves to be distinguished by more than just their type. Instances are <a href="../compatible/">compatible</a> if they have the same name and have <a href="wrapped/">compatible</a> fields.</p>
 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
@@ -831,8 +831,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-named/">Named</a></td>
-<td>[jvm]<br>fun &lt;<a href="./">W</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-named/">Named</a>(wrapped: <a href="./">W</a>, name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)</td>
+<td><a name="com.squareup.workflow1.ui/Named/Named/#TypeParam(bounds=[kotlin.Any])#kotlin.String/PointingToDeclaration/"></a><a href="-named/">Named</a></td>
+<td><a name="com.squareup.workflow1.ui/Named/Named/#TypeParam(bounds=[kotlin.Any])#kotlin.String/PointingToDeclaration/"></a> [jvm] fun &lt;<a href="./">W</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-named/">Named</a>(wrapped: <a href="./">W</a>, name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)   <br></td>
 </tr>
 </tbody>
 </table>
@@ -846,8 +846,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="to-string/">toString</a></td>
-<td>[jvm]<br>open override fun <a href="to-string/">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></td>
+<td><a name="com.squareup.workflow1.ui/Named/toString/#/PointingToDeclaration/"></a><a href="to-string/">toString</a></td>
+<td><a name="com.squareup.workflow1.ui/Named/toString/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="to-string/">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -861,16 +861,16 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="compatibility-key/">compatibilityKey</a></td>
-<td>[jvm]<br>open override val <a href="compatibility-key/">compatibilityKey</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><br>Instances of the same type are <a href="../compatible/">compatible</a> iff they have the same <a href="compatibility-key/">compatibilityKey</a>.</td>
+<td><a name="com.squareup.workflow1.ui/Named/compatibilityKey/#/PointingToDeclaration/"></a><a href="compatibility-key/">compatibilityKey</a></td>
+<td><a name="com.squareup.workflow1.ui/Named/compatibilityKey/#/PointingToDeclaration/"></a> [jvm] open override val <a href="compatibility-key/">compatibilityKey</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>Instances of the same type are <a href="../compatible/">compatible</a> iff they have the same <a href="compatibility-key/">compatibilityKey</a>.   <br></td>
 </tr>
 <tr>
-<td><a href="name/">name</a></td>
-<td>[jvm]<br>val <a href="name/">name</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></td>
+<td><a name="com.squareup.workflow1.ui/Named/name/#/PointingToDeclaration/"></a><a href="name/">name</a></td>
+<td><a name="com.squareup.workflow1.ui/Named/name/#/PointingToDeclaration/"></a> [jvm] val <a href="name/">name</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>   <br></td>
 </tr>
 <tr>
-<td><a href="wrapped/">wrapped</a></td>
-<td>[jvm]<br>val <a href="wrapped/">wrapped</a>: <a href="./">W</a></td>
+<td><a name="com.squareup.workflow1.ui/Named/wrapped/#/PointingToDeclaration/"></a><a href="wrapped/">wrapped</a></td>
+<td><a name="com.squareup.workflow1.ui/Named/wrapped/#/PointingToDeclaration/"></a> [jvm] val <a href="wrapped/">wrapped</a>: <a href="./">W</a>   <br></td>
 </tr>
 </tbody>
 </table>

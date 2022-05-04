@@ -786,12 +786,18 @@
     Parameters
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#throws" class="md-nav__link">
     Throws
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -817,26 +823,27 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.compose</a>/<a href="./">WorkflowRendering</a></p>
 <h1 id="workflowrendering">WorkflowRendering<a class="headerlink" href="#workflowrendering" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>@Composable</p>
-<p>fun <a href="./">WorkflowRendering</a>(rendering: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, viewEnvironment: <a href="../../com.squareup.workflow1.ui/-view-environment/">ViewEnvironment</a>, modifier: Modifier = Modifier)</p>
-<p>Renders <a href="./">rendering</a> into the composition using this <a href="../../com.squareup.workflow1.ui/-view-environment/">ViewEnvironment</a>&lsquo;s <a href="../../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a> to generate the view.</p>
-<p>This function fulfills a similar role as <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/">WorkflowViewStub</a>, but is much more convenient to use from Composable functions. Note, however, that just like <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/">WorkflowViewStub</a>, it doesn&rsquo;t matter whether the factory registered for the rendering is using classic Android views or Compose.</p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()<br />
+@Composable()  </p>
+<p>fun <a href="./">WorkflowRendering</a>(rendering: Screen, viewEnvironment: <a href="../../com.squareup.workflow1.ui/-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>, modifier: Modifier = Modifier)<br />
+More info  </p>
+<p>Renders <a href="./">rendering</a> into the composition using this <a href="../../com.squareup.workflow1.ui/-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>&lsquo;s <a href="../../com.squareup.workflow1.ui/-screen-view-factory-finder/">ScreenViewFactoryFinder</a> to generate the view.</p>
+<p>This function fulfills a similar role as <a href="../../com.squareup.workflow1.ui/-screen-view-holder/">ScreenViewHolder</a> and <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/">WorkflowViewStub</a>, but is much more convenient to use from Composable functions. Note that, just as with <a href="../../com.squareup.workflow1.ui/-screen-view-holder/">ScreenViewHolder</a> and <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/">WorkflowViewStub</a>, it doesn&rsquo;t matter whether the factory registered for the rendering is using classic Android views or Compose.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<p>data class FramedRendering&lt;R : Any&gt;(\
-  val borderColor: Color,\
-  val child: R\
-) : ComposeRendering {\
-\
-  @Composable override fun Content(viewEnvironment: ViewEnvironment) {\
-    Surface(border = Border(borderColor, 8.dp)) {\
-      WorkflowRendering(child, viewEnvironment)\
-    }\
-  }\
+<p>data class FramedRendering<R : Any>(<br />
+  val borderColor: Color,<br />
+  val child: R<br />
+) : ComposeRendering {  </p>
+<p>@Composable override fun Content(viewEnvironment: ViewEnvironment) {<br />
+    Surface(border = Border(borderColor, 8.dp)) {<br />
+      WorkflowRendering(child, viewEnvironment)<br />
+    }<br />
+  }<br />
 }</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>androidJvm</p>
+<p>androidJvm  </p>
 <table>
 <thead>
 <tr>
@@ -846,16 +853,16 @@
 </thead>
 <tbody>
 <tr>
-<td>rendering</td>
-<td>The workflow rendering to display. May be of any type for which a <a href="../../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> has been registered in <a href="./">viewEnvironment</a>&lsquo;s <a href="../../com.squareup.workflow1.ui/-view-registry/">ViewRegistry</a>.</td>
+<td><a name="com.squareup.workflow1.ui.compose//WorkflowRendering/#com.squareup.workflow1.ui.Screen#com.squareup.workflow1.ui.ViewEnvironment#androidx.compose.ui.Modifier/PointingToDeclaration/"></a>rendering</td>
+<td><a name="com.squareup.workflow1.ui.compose//WorkflowRendering/#com.squareup.workflow1.ui.Screen#com.squareup.workflow1.ui.ViewEnvironment#androidx.compose.ui.Modifier/PointingToDeclaration/"></a><br><br>The workflow rendering to display. May be of any type for which a <a href="../../com.squareup.workflow1.ui/-view-factory/">ViewFactory</a> has been registered in <a href="./">viewEnvironment</a>&lsquo;s <a href="../../com.squareup.workflow1.ui/-view-registry/#417657%2FExtensions%2F576965167">ViewRegistry</a>.<br><br></td>
 </tr>
 <tr>
-<td>modifier</td>
-<td>A Modifier that will be applied to composable used to show <a href="./">rendering</a>.</td>
+<td><a name="com.squareup.workflow1.ui.compose//WorkflowRendering/#com.squareup.workflow1.ui.Screen#com.squareup.workflow1.ui.ViewEnvironment#androidx.compose.ui.Modifier/PointingToDeclaration/"></a>modifier</td>
+<td><a name="com.squareup.workflow1.ui.compose//WorkflowRendering/#com.squareup.workflow1.ui.Screen#com.squareup.workflow1.ui.ViewEnvironment#androidx.compose.ui.Modifier/PointingToDeclaration/"></a><br><br>A Modifier that will be applied to composable used to show <a href="./">rendering</a>.<br><br></td>
 </tr>
 </tbody>
 </table>
-<h2 id="throws">Throws<a class="headerlink" href="#throws" title="Permanent link">&para;</a></h2>
+<h4 id="throws">Throws<a class="headerlink" href="#throws" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
@@ -865,8 +872,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/index.html">kotlin.IllegalArgumentException</a></td>
-<td>if no factory can be found for <a href="./">rendering</a>&lsquo;s type.</td>
+<td><a name="com.squareup.workflow1.ui.compose//WorkflowRendering/#com.squareup.workflow1.ui.Screen#com.squareup.workflow1.ui.ViewEnvironment#androidx.compose.ui.Modifier/PointingToDeclaration/"></a><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html">java.lang.IllegalArgumentException</a></td>
+<td><a name="com.squareup.workflow1.ui.compose//WorkflowRendering/#com.squareup.workflow1.ui.Screen#com.squareup.workflow1.ui.ViewEnvironment#androidx.compose.ui.Modifier/PointingToDeclaration/"></a><br><br>if no factory can be found for <a href="./">rendering</a>&lsquo;s type.<br><br></td>
 </tr>
 </tbody>
 </table>

@@ -824,15 +824,14 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">WorkflowIdentifier</a></p>
 <h1 id="workflowidentifier">WorkflowIdentifier<a class="headerlink" href="#workflowidentifier" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-class <a href="./">WorkflowIdentifier</a></p>
+<p>[jvm] class <a href="./">WorkflowIdentifier</a></p>
 <p>Represents a <a href="../-workflow/">Workflow</a>&lsquo;s &ldquo;identity&rdquo; and is used by the runtime to determine whether a workflow is the same as one that was rendered in a previous render pass, in which case its state should be re-used; or if it&rsquo;s a new workflow and needs to be started.</p>
 <p>A workflow&rsquo;s identity consists primarily of its concrete type (i.e. the class that implements the <a href="../-workflow/">Workflow</a> interface). Two workflows of the same concrete type are considered identical. However, if a workflow class implements <a href="../-impostor-workflow/">ImpostorWorkflow</a>, the identifier will also include that workflow&rsquo;s <a href="../-impostor-workflow/real-identifier/">ImpostorWorkflow.realIdentifier</a>.</p>
 <p>Instances of this class are <a href="equals/">equatable</a> and <a href="hash-code/">hashable</a>.</p>
 <h2 id="identifiers-and-snapshots">Identifiers and snapshots<a class="headerlink" href="#identifiers-and-snapshots" title="Permanent link">&para;</a></h2>
 <p>Since workflows can be <a href="../-stateful-workflow/snapshot-state/">serialized</a>, workflows&rsquo; identifiers must also be serializable in order to match workflows back up with their snapshots when restoring. However, some <a href="./">WorkflowIdentifier</a>s may represent workflows that cannot be snapshotted. When an identifier is not snapshottable, <a href="to-byte-string-or-null/">toByteStringOrNull</a> will return null, and any identifiers that reference <a href="../-impostor-workflow/">ImpostorWorkflow</a>s whose <a href="../-impostor-workflow/real-identifier/">ImpostorWorkflow.realIdentifier</a> is not snapshottable will also not be snapshottable. Such identifiers are created with <a href="../unsnapshottable-identifier/">unsnapshottableIdentifier</a>, but should not be used to wrap arbitrary workflows since those workflows may expect to be snapshotted.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -842,16 +841,16 @@ class <a href="./">WorkflowIdentifier</a></p>
 </thead>
 <tbody>
 <tr>
-<td>type</td>
-<td>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> of the <a href="../-workflow/">Workflow</a> this identifier identifies, or the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of an <a href="../unsnapshottable-identifier/">unsnapshottableIdentifier</a>.</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a>type</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a><br><br>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> of the <a href="../-workflow/">Workflow</a> this identifier identifies, or the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of an <a href="../unsnapshottable-identifier/">unsnapshottableIdentifier</a>.<br><br></td>
 </tr>
 <tr>
-<td>proxiedIdentifier</td>
-<td>An optional identifier from <a href="../-impostor-workflow/real-identifier/">ImpostorWorkflow.realIdentifier</a> that will be used to further narrow the scope of this identifier.</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a>proxiedIdentifier</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a><br><br>An optional identifier from <a href="../-impostor-workflow/real-identifier/">ImpostorWorkflow.realIdentifier</a> that will be used to further narrow the scope of this identifier.<br><br></td>
 </tr>
 <tr>
-<td>description</td>
-<td>Implementation of <a href="../-impostor-workflow/describe-real-identifier/">ImpostorWorkflow.describeRealIdentifier</a>.</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a>description</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration/"></a><br><br>Implementation of <a href="../-impostor-workflow/describe-real-identifier/">ImpostorWorkflow.describeRealIdentifier</a>.<br><br></td>
 </tr>
 </tbody>
 </table>
@@ -865,8 +864,8 @@ class <a href="./">WorkflowIdentifier</a></p>
 </thead>
 <tbody>
 <tr>
-<td><a href="-companion/">Companion</a></td>
-<td>[jvm]<br>object <a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -880,24 +879,24 @@ class <a href="./">WorkflowIdentifier</a></p>
 </thead>
 <tbody>
 <tr>
-<td><a href="equals/">equals</a></td>
-<td>[jvm]<br>open operator override fun <a href="equals/">equals</a>(other: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/equals/#kotlin.Any?/PointingToDeclaration/"></a><a href="equals/">equals</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/equals/#kotlin.Any?/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open operator override fun <a href="equals/">equals</a>(other: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="get-real-identifier-type/">getRealIdentifierType</a></td>
-<td>[jvm]<br>@TestOnly<br>fun <a href="get-real-identifier-type/">getRealIdentifierType</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-annotated-element/index.html">KAnnotatedElement</a><br>Returns either a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> or <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> representing the &ldquo;real&rdquo; type that this identifier identifies – i.e. which is not an <a href="../-impostor-workflow/">ImpostorWorkflow</a>.</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/getRealIdentifierType/#/PointingToDeclaration/"></a><a href="get-real-identifier-type/">getRealIdentifierType</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/getRealIdentifierType/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@TestOnly()  <br>  <br>fun <a href="get-real-identifier-type/">getRealIdentifierType</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-annotated-element/index.html">KAnnotatedElement</a>  <br>More info  <br>Returns either a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> or <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> representing the &ldquo;real&rdquo; type that this identifier identifies – i.e.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="hash-code/">hashCode</a></td>
-<td>[jvm]<br>open override fun <a href="hash-code/">hashCode</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/hashCode/#/PointingToDeclaration/"></a><a href="hash-code/">hashCode</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/hashCode/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="hash-code/">hashCode</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="to-byte-string-or-null/">toByteStringOrNull</a></td>
-<td>[jvm]<br>fun <a href="to-byte-string-or-null/">toByteStringOrNull</a>(): ByteString?<br>If this identifier is snapshottable, returns the serialized form of the identifier. If it is not snapshottable, returns null.</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/toByteStringOrNull/#/PointingToDeclaration/"></a><a href="to-byte-string-or-null/">toByteStringOrNull</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/toByteStringOrNull/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="to-byte-string-or-null/">toByteStringOrNull</a>(): ByteString?  <br>More info  <br>If this identifier is snapshottable, returns the serialized form of the identifier.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="to-string/">toString</a></td>
-<td>[jvm]<br>open override fun <a href="to-string/">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><br>If this identifier identifies an <a href="../-impostor-workflow/">ImpostorWorkflow</a>, returns the result of that workflow&rsquo;s <a href="../-impostor-workflow/describe-real-identifier/">ImpostorWorkflow.describeRealIdentifier</a> method, otherwise returns a description of this identifier including the name of its workflow type and any <a href="../-impostor-workflow/real-identifier/">ImpostorWorkflow.realIdentifier</a>s.</td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/toString/#/PointingToDeclaration/"></a><a href="to-string/">toString</a></td>
+<td><a name="com.squareup.workflow1/WorkflowIdentifier/toString/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="to-string/">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>  <br>More info  <br>If this identifier identifies an <a href="../-impostor-workflow/">ImpostorWorkflow</a>, returns the result of that workflow&rsquo;s <a href="../-impostor-workflow/describe-real-identifier/">ImpostorWorkflow.describeRealIdentifier</a> method, otherwise returns a description of this identifier including the name of its workflow type and any <a href="../-impostor-workflow/real-identifier/">ImpostorWorkflow.realIdentifier</a>s.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

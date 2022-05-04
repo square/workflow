@@ -853,23 +853,29 @@
 <p>This document will guide you through the process of adding Workflow to an iOS project.</p>
 <h2 id="libraries">Libraries<a class="headerlink" href="#libraries" title="Permanent link">&para;</a></h2>
 <p>You&rsquo;ll need the following four libraries:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">import</span> <span class="nc">Workflow</span>
-<span class="kd">import</span> <span class="nc">WorkflowUI</span>
-<span class="kd">import</span> <span class="nc">ReactiveSwift</span>
-</code></pre></div>
+<p><code>swift
+import Workflow
+import WorkflowUI
+import ReactiveSwift</code></p>
 <p>The easiest way to integrate these libraries is via Cocoapods. If you are using Cocoapods, you can
 simply add the dependencies to your <code>.podspec</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># MySoftware.podspec</span>
-<span class="no">Pod</span><span class="o">::</span><span class="no">Spec</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
-    <span class="c1"># ...</span>
+<p>```ruby</p>
+<h1 id="mysoftwarepodspec">MySoftware.podspec<a class="headerlink" href="#mysoftwarepodspec" title="Permanent link">&para;</a></h1>
+<p>Pod::Spec.new do |s|
+    # &hellip;</p>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code>s.dependency &#39;Workflow&#39;
+s.dependency &#39;WorkflowUI&#39;
+s.dependency &#39;ReactiveSwift&#39;
 
-    <span class="n">s</span><span class="o">.</span><span class="n">dependency</span> <span class="s1">&#39;Workflow&#39;</span>
-    <span class="n">s</span><span class="o">.</span><span class="n">dependency</span> <span class="s1">&#39;WorkflowUI&#39;</span>
-    <span class="n">s</span><span class="o">.</span><span class="n">dependency</span> <span class="s1">&#39;ReactiveSwift&#39;</span>
+# ...
+</code></pre></div></td></tr></table></div>
 
-    <span class="c1"># ...</span>
-<span class="k">end</span>
-</code></pre></div>
+<p>end
+```</p>
                 
               
               

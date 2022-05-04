@@ -803,15 +803,17 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1.ui.androidx</a>/<a href="../../">WorkflowLifecycleOwner</a>/<a href="../">Companion</a>/<a href="./">installOn</a></p>
 <h1 id="installon">installOn<a class="headerlink" href="#installon" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-fun <a href="./">installOn</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, findParentLifecycle: (<a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>) -&gt; <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a> = { v -&gt; findParentViewTreeLifecycle(v) })</p>
+<p>[androidJvm]<br />
+Content<br />
+fun <a href="./">installOn</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, findParentLifecycle: (<a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>) -&gt; <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a> = this::findParentViewTreeLifecycle)<br />
+More info  </p>
 <p>Creates a new <a href="../../">WorkflowLifecycleOwner</a> and sets it on <a href="./">view</a>&lsquo;s tags so it can be later retrieved with <a href="../get/">get</a>.</p>
 <p>It&rsquo;s very important that, once this function is called with a given view, that EITHER:</p>
 <ol><li>The view gets attached at least once to ensure that the lifecycle eventually gets     destroyed (because its parent is destroyed), or</li><li>Someone eventually calls [destroyOnDetach](../destroy-on-detach.md), which will either schedule the lifecycle to     destroyed if the view is attached, or destroy it immediately if it's detached.</li></ol>
 
 <p>If this is not done, any observers registered with the <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a> may be leaked as they will never see the destroy event.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>androidJvm</p>
+<p>androidJvm  </p>
 <table>
 <thead>
 <tr>
@@ -821,8 +823,8 @@ fun <a href="./">installOn</a>(view: <a href="https://developer.android.com/refe
 </thead>
 <tbody>
 <tr>
-<td>findParentLifecycle</td>
-<td>A function that is called whenever <a href="./">view</a> is attached, and should return the <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a> to use as the parent lifecycle. If not specified, defaults to looking up the view tree by calling <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html#get-android.view.View-">ViewTreeLifecycleOwner.get</a> on <a href="./">view</a>&lsquo;s parent, and if none is found, then looking up <a href="./">view</a>&lsquo;s context wrapper chain for something that implements <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/LifecycleOwner.html">LifecycleOwner</a>. This only needs to be passed if <a href="./">view</a> will be used as the root of a new view hierarchy, e.g. for a new dialog. If no parent lifecycle is found, then the lifecycle will become <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.State.html#RESUMED">RESUMED</a> when it&rsquo;s attached for the first time, and stay in that state until it is re-attached with a non-null parent or <a href="../../destroy-on-detach/">destroyOnDetach</a> is called.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner.Companion/installOn/#android.view.View#kotlin.Function1[android.view.View,androidx.lifecycle.Lifecycle]/PointingToDeclaration/"></a>findParentLifecycle</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner.Companion/installOn/#android.view.View#kotlin.Function1[android.view.View,androidx.lifecycle.Lifecycle]/PointingToDeclaration/"></a><br><br>A function that is called whenever <a href="./">view</a> is attached, and should return the <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a> to use as the parent lifecycle. If not specified, defaults to looking up the view tree by calling <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html#get-android.view.View-">ViewTreeLifecycleOwner.get</a> on <a href="./">view</a>&lsquo;s parent, and if none is found, then looking up <a href="./">view</a>&lsquo;s context wrapper chain for something that implements <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/LifecycleOwner.html">LifecycleOwner</a>. This only needs to be passed if <a href="./">view</a> will be used as the root of a new view hierarchy, e.g. for a new dialog. If no parent lifecycle is found, then the lifecycle will become <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.State.RESUMED.html">RESUMED</a> when it&rsquo;s attached for the first time, and stay in that state until it is re-attached with a non-null parent or <a href="../../destroy-on-detach/">destroyOnDetach</a> is called.<br><br></td>
 </tr>
 </tbody>
 </table>

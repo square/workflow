@@ -803,8 +803,7 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.testing</a>/<a href="./">WorkerTester</a></p>
 <h1 id="workertester">WorkerTester<a class="headerlink" href="#workertester" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-interface <a href="./">WorkerTester</a>&lt;<a href="./">T</a>&gt;</p>
+<p>[jvm] interface <a href="./">WorkerTester</a>&lt;<a href="./">T</a>&gt;   </p>
 <h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -815,28 +814,28 @@ interface <a href="./">WorkerTester</a>&lt;<a href="./">T</a>&gt;</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="assert-finished/">assertFinished</a></td>
-<td>[jvm]<br>abstract suspend fun <a href="assert-finished/">assertFinished</a>()<br>Suspends until the worker emits an output or finishes.</td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/assertFinished/#/PointingToDeclaration/"></a><a href="assert-finished/">assertFinished</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/assertFinished/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract suspend fun <a href="assert-finished/">assertFinished</a>()  <br>More info  <br>Suspends until the worker emits an output or finishes.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="assert-no-output/">assertNoOutput</a></td>
-<td>[jvm]<br>abstract fun <a href="assert-no-output/">assertNoOutput</a>()<br>Throws an <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-assertion-error/index.html">AssertionError</a> if an output has been emitted since the last call to <a href="next-output/">nextOutput</a>.</td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/assertNoOutput/#/PointingToDeclaration/"></a><a href="assert-no-output/">assertNoOutput</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/assertNoOutput/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="assert-no-output/">assertNoOutput</a>()  <br>More info  <br>Throws an <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AssertionError.html">AssertionError</a> if an output has been emitted since the last call to <a href="next-output/">nextOutput</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="assert-not-finished/">assertNotFinished</a></td>
-<td>[jvm]<br>abstract fun <a href="assert-not-finished/">assertNotFinished</a>()<br>Throws an <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-assertion-error/index.html">AssertionError</a> immediately if the worker is finished.</td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/assertNotFinished/#/PointingToDeclaration/"></a><a href="assert-not-finished/">assertNotFinished</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/assertNotFinished/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="assert-not-finished/">assertNotFinished</a>()  <br>More info  <br>Throws an <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AssertionError.html">AssertionError</a> immediately if the worker is finished.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="cancel-worker/">cancelWorker</a></td>
-<td>[jvm]<br>abstract suspend fun <a href="cancel-worker/">cancelWorker</a>()<br>Cancels the worker and suspends until it&rsquo;s finished cancelling (joined).</td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/cancelWorker/#/PointingToDeclaration/"></a><a href="cancel-worker/">cancelWorker</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/cancelWorker/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract suspend fun <a href="cancel-worker/">cancelWorker</a>()  <br>More info  <br>Cancels the worker and suspends until it&rsquo;s finished cancelling (joined).  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="get-exception/">getException</a></td>
-<td>[jvm]<br>abstract suspend fun <a href="get-exception/">getException</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><br>Suspends until the worker throws an exception, then returns it.</td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/getException/#/PointingToDeclaration/"></a><a href="get-exception/">getException</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/getException/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract suspend fun <a href="get-exception/">getException</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a>  <br>More info  <br>Suspends until the worker throws an exception, then returns it.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="next-output/">nextOutput</a></td>
-<td>[jvm]<br>abstract suspend fun <a href="next-output/">nextOutput</a>(): <a href="./">T</a><br>Suspends until the worker emits its next value, then returns it.</td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/nextOutput/#/PointingToDeclaration/"></a><a href="next-output/">nextOutput</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerTester/nextOutput/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract suspend fun <a href="next-output/">nextOutput</a>(): <a href="./">T</a>  <br>More info  <br>Suspends until the worker emits its next value, then returns it.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

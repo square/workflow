@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1</a>/<a href="../../">TreeSnapshot</a>/<a href="../">Companion</a>/<a href="./">parse</a></p>
 <h1 id="parse">parse<a class="headerlink" href="#parse" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-fun <a href="./">parse</a>(bytes: ByteString): <a href="../../">TreeSnapshot</a></p>
+<p>[jvm]<br />
+Content<br />
+fun <a href="./">parse</a>(bytes: ByteString): <a href="../../">TreeSnapshot</a><br />
+More info  </p>
 <p>Parses a &ldquo;root&rdquo; snapshot and the list of child snapshots with associated WorkflowNodeIds from a ByteString returned by <a href="../../to-byte-string/">toByteString</a>.</p>
 <p>Never returns an empty root snapshot: if the root snapshot is empty it will be null. Child snapshots, however, are always returned as-is. They must be recursively passed to this function to continue parsing the tree.</p>
 <p>Note that this method is mostly lazy. It will parse the list of child <a href="../../">TreeSnapshot</a>s, but will not recursively parse each of those.</p>

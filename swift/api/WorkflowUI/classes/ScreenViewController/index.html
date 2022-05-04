@@ -871,44 +871,44 @@
                 
                 <p><strong>CLASS</strong></p>
 <h1 id="screenviewcontroller"><code>ScreenViewController</code><a class="headerlink" href="#screenviewcontroller" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="n">open</span> <span class="kd">class</span> <span class="nc">ScreenViewController</span><span class="p">&lt;</span><span class="n">ScreenType</span><span class="p">:</span> <span class="n">Screen</span><span class="p">&gt;:</span> <span class="bp">UIViewController</span>
-</code></pre></div>
+<p><code>swift
+open class ScreenViewController&lt;ScreenType: Screen&gt;: UIViewController</code></p>
 <p>Generic base class that can be subclassed in order to to define a UI implementation that is powered by the
 given screen type.</p>
 <p>Using this base class, a screen can be implemented as:
-<div class="highlight"><pre><span></span><code>struct MyScreen: Screen {
+```
+struct MyScreen: Screen {
     func viewControllerDescription(environment: ViewEnvironment) -&gt; ViewControllerDescription {
         return MyScreenViewController.description(for: self)
     }
-}
-
-private class MyScreenViewController: ScreenViewController&lt;MyScreen&gt; {
+}</p>
+<p>private class MyScreenViewController: ScreenViewController<MyScreen> {
     override func screenDidChange(from previousScreen: MyScreen, previousEnvironment: ViewEnvironment) {
         // … update views as necessary
     }
 }
-</code></pre></div></p>
+```</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="screen"><code>screen</code><a class="headerlink" href="#screen" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">private</span><span class="p">(</span><span class="kr">set</span><span class="p">)</span> <span class="kr">final</span> <span class="kd">var</span> <span class="nv">screen</span><span class="p">:</span> <span class="n">ScreenType</span>
-</code></pre></div>
+<p><code>swift
+public private(set) final var screen: ScreenType</code></p>
 <h3 id="screentype"><code>screenType</code><a class="headerlink" href="#screentype" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">final</span> <span class="kd">var</span> <span class="nv">screenType</span><span class="p">:</span> <span class="n">Screen</span><span class="p">.</span><span class="kr">Type</span>
-</code></pre></div>
+<p><code>swift
+public final var screenType: Screen.Type</code></p>
 <h3 id="environment"><code>environment</code><a class="headerlink" href="#environment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">private</span><span class="p">(</span><span class="kr">set</span><span class="p">)</span> <span class="kr">final</span> <span class="kd">var</span> <span class="nv">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span>
-</code></pre></div>
+<p><code>swift
+public private(set) final var environment: ViewEnvironment</code></p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="initscreenenvironment"><code>init(screen:environment:)</code><a class="headerlink" href="#initscreenenvironment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">required</span> <span class="kd">init</span><span class="p">(</span><span class="n">screen</span><span class="p">:</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+public required init(screen: ScreenType, environment: ViewEnvironment)</code></p>
 <h3 id="initcoder"><code>init(coder:)</code><a class="headerlink" href="#initcoder" title="Permanent link">&para;</a></h3>
 <h3 id="updatescreenenvironment"><code>update(screen:environment:)</code><a class="headerlink" href="#updatescreenenvironment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">final</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">screen</span><span class="p">:</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+public final func update(screen: ScreenType, environment: ViewEnvironment)</code></p>
 <h3 id="screendidchangefrompreviousenvironment"><code>screenDidChange(from:previousEnvironment:)</code><a class="headerlink" href="#screendidchangefrompreviousenvironment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">open</span> <span class="kd">func</span> <span class="nf">screenDidChange</span><span class="p">(</span><span class="n">from</span> <span class="n">previousScreen</span><span class="p">:</span> <span class="n">ScreenType</span><span class="p">,</span> <span class="n">previousEnvironment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+open func screenDidChange(from previousScreen: ScreenType, previousEnvironment: ViewEnvironment)</code></p>
 <p>Subclasses should override this method in order to update any relevant UI bits when the screen model changes.</p>
                 
               

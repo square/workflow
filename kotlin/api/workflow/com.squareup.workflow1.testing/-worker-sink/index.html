@@ -817,13 +817,12 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.testing</a>/<a href="./">WorkerSink</a></p>
 <h1 id="workersink">WorkerSink<a class="headerlink" href="#workersink" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-class <a href="./">WorkerSink</a>&lt;<a href="./">T</a>&gt;(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;*&gt;) : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt; </p>
+<p>[jvm] class <a href="./">WorkerSink</a>&lt;<a href="./">T</a>&gt;(<strong>name</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <strong>type</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;*&gt;) : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt; </p>
 <p>Implementation of <a href="../../com.squareup.workflow1/-worker/">Worker</a> for integration tests (using <a href="../launch-for-testing-from-start-with/">launchForTestingFromStartWith</a> or <a href="../launch-for-testing-from-state-with/">launchForTestingFromStateWith</a>) that need to simply push values into the worker from the test.</p>
 <p>Instances of this class are considered equivalent if they have matching type and name.</p>
 <p>These workers can not be run concurrently – they may only be run by a single workflow at a time, although they may be run multiple times sequentially. The Flow returned by <a href="run/">run</a> will throw an exception if it is collected more than once concurrently.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -833,8 +832,8 @@ class <a href="./">WorkerSink</a>&lt;<a href="./">T</a>&gt;(name: <a href="https
 </thead>
 <tbody>
 <tr>
-<td>name</td>
-<td>String used to distinguish this worker from other <a href="./">WorkerSink</a>s being ran by the same workflow. Used to implement <a href="does-same-work-as/">doesSameWorkAs</a>, see the kdoc on that method for more information.</td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink///PointingToDeclaration/"></a>name</td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink///PointingToDeclaration/"></a><br><br>String used to distinguish this worker from other <a href="./">WorkerSink</a>s being ran by the same workflow. Used to implement <a href="does-same-work-as/">doesSameWorkAs</a>, see the kdoc on that method for more information.<br><br></td>
 </tr>
 </tbody>
 </table>
@@ -848,8 +847,8 @@ class <a href="./">WorkerSink</a>&lt;<a href="./">T</a>&gt;(name: <a href="https
 </thead>
 <tbody>
 <tr>
-<td><a href="-worker-sink/">WorkerSink</a></td>
-<td>[jvm]<br>fun <a href="-worker-sink/">WorkerSink</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;*&gt;)</td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/WorkerSink/#kotlin.String#kotlin.reflect.KClass[*]/PointingToDeclaration/"></a><a href="-worker-sink/">WorkerSink</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/WorkerSink/#kotlin.String#kotlin.reflect.KClass[*]/PointingToDeclaration/"></a> [jvm] fun <a href="-worker-sink/">WorkerSink</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;*&gt;)String used to distinguish this worker from other <a href="./">WorkerSink</a>s being ran by the same workflow.   <br></td>
 </tr>
 </tbody>
 </table>
@@ -863,20 +862,20 @@ class <a href="./">WorkerSink</a>&lt;<a href="./">T</a>&gt;(name: <a href="https
 </thead>
 <tbody>
 <tr>
-<td><a href="does-same-work-as/">doesSameWorkAs</a></td>
-<td>[jvm]<br>open override fun <a href="does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a><a href="does-same-work-as/">doesSameWorkAs</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="run/">run</a></td>
-<td>[jvm]<br>open override fun <a href="run/">run</a>(): Flow&lt;<a href="./">T</a>&gt;</td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/run/#/PointingToDeclaration/"></a><a href="run/">run</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/run/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="run/">run</a>(): Flow&lt;<a href="./">T</a>&gt;  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="send/">send</a></td>
-<td>[jvm]<br>fun <a href="send/">send</a>(value: <a href="./">T</a>)</td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/send/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="send/">send</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/send/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="send/">send</a>(value: <a href="./">T</a>)  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="to-string/">toString</a></td>
-<td>[jvm]<br>open override fun <a href="to-string/">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/toString/#/PointingToDeclaration/"></a><a href="to-string/">toString</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink/toString/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="to-string/">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>

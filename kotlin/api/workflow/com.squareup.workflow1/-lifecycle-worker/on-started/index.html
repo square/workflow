@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">LifecycleWorker</a>/<a href="./">onStarted</a></p>
 <h1 id="onstarted">onStarted<a class="headerlink" href="#onstarted" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-open fun <a href="./">onStarted</a>()</p>
+<p>[jvm]<br />
+Content<br />
+open fun <a href="./">onStarted</a>()<br />
+More info  </p>
 <p>Called when this worker is started. It is executed concurrently with the parent workflow – the first render pass that starts this worker <em>will not</em> wait for this method to return, and one or more additional render passes may occur before this method is called. This behavior may change to be more strict in the future.</p>
 <p>This method will be called exactly once for each matching call to <a href="../on-stopped/">onStopped</a>, and it will always be called first.</p>
 <p>Invoked on the dispatcher running the workflow.</p>

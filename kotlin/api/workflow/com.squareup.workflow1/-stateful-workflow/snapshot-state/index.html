@@ -803,14 +803,16 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">StatefulWorkflow</a>/<a href="./">snapshotState</a></p>
 <h1 id="snapshotstate">snapshotState<a class="headerlink" href="#snapshotstate" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract fun <a href="./">snapshotState</a>(state: <a href="../">StateT</a>): <a href="../../-snapshot/">Snapshot</a>?</p>
+<p>[jvm]<br />
+Content<br />
+abstract fun <a href="./">snapshotState</a>(state: <a href="../">StateT</a>): <a href="../../-snapshot/">Snapshot</a>?<br />
+More info  </p>
 <p>Called whenever the state changes to generate a new <a href="../../-snapshot/">Snapshot</a> of the state.</p>
 <p><strong>Snapshots must be lazy.</strong></p>
 <p>Serialization must not be done at the time this method is called, since the state will be snapshotted frequently but the serialized form may only be needed very rarely.</p>
 <p>If the workflow does not have any state, or should always be started from scratch, return null from this method.</p>
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -820,8 +822,8 @@ abstract fun <a href="./">snapshotState</a>(state: <a href="../">StateT</a>): <a
 </thead>
 <tbody>
 <tr>
-<td><a href="../initial-state/">com.squareup.workflow1.StatefulWorkflow</a></td>
-<td></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/snapshotState/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="../initial-state/">com.squareup.workflow1.StatefulWorkflow</a></td>
+<td><a name="com.squareup.workflow1/StatefulWorkflow/snapshotState/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a></td>
 </tr>
 </tbody>
 </table>

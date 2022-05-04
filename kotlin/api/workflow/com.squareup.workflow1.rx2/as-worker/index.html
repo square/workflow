@@ -786,28 +786,38 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.rx2</a>/<a href="./">asWorker</a></p>
 <h1 id="asworker">asWorker<a class="headerlink" href="#asworker" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-inline fun &lt;<a href="./">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Observable&lt;out <a href="./">T</a>?&gt;.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Observable<out <a href="as-worker.md">T</a>?>.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../com.squareup.workflow1/-worker/">Worker</a> from this Observable.</p>
 <p>The Observable will be subscribed to when the <a href="../../com.squareup.workflow1/-worker/">Worker</a> is started, and disposed when it is cancelled.</p>
 <p>RxJava doesn&rsquo;t allow nulls, but it can&rsquo;t express that in its types. The receiver type parameter is nullable so that the resulting <a href="../../com.squareup.workflow1/-worker/">Worker</a> is non-nullable instead of having platform nullability.</p>
-<p>[jvm]\
-inline fun &lt;<a href="./">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Publisher&lt;out <a href="./">T</a>?&gt;.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Publisher<out <a href="as-worker.md">T</a>?>.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../com.squareup.workflow1/-worker/">Worker</a> from this Publisher (Flowable is a Publisher).</p>
 <p>The Publisher will be subscribed to when the <a href="../../com.squareup.workflow1/-worker/">Worker</a> is started, and cancelled when it is cancelled.</p>
 <p>RxJava doesn&rsquo;t allow nulls, but it can&rsquo;t express that in its types. The receiver type parameter is nullable so that the resulting <a href="../../com.squareup.workflow1/-worker/">Worker</a> is non-nullable instead of having platform nullability.</p>
-<p>[jvm]\
-inline fun &lt;<a href="./">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Maybe&lt;out <a href="./">T</a>?&gt;.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Maybe<out <a href="as-worker.md">T</a>?>.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../com.squareup.workflow1/-worker/">Worker</a> from this Maybe.</p>
 <p>The Maybe will be subscribed to when the <a href="../../com.squareup.workflow1/-worker/">Worker</a> is started, and disposed when it is cancelled.</p>
 <p>RxJava doesn&rsquo;t allow nulls, but it can&rsquo;t express that in its types. The receiver type parameter is nullable so that the resulting <a href="../../com.squareup.workflow1/-worker/">Worker</a> is non-nullable instead of having platform nullability.</p>
-<p>[jvm]\
-inline fun &lt;<a href="./">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Single&lt;out <a href="./">T</a>?&gt;.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; Single<out <a href="as-worker.md">T</a>?>.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="./">T</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../com.squareup.workflow1/-worker/">Worker</a> from this Single.</p>
 <p>The Single will be subscribed to when the <a href="../../com.squareup.workflow1/-worker/">Worker</a> is started, and disposed when it is cancelled.</p>
 <p>RxJava doesn&rsquo;t allow nulls, but it can&rsquo;t express that in its types. The receiver type parameter is nullable so that the resulting <a href="../../com.squareup.workflow1/-worker/">Worker</a> is non-nullable instead of having platform nullability.</p>
-<p>[jvm]\
-fun Completable.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+fun Completable.<a href="./">asWorker</a>(): <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../com.squareup.workflow1/-worker/">Worker</a> from this Completable.</p>
 <p>The Completable will be subscribed to when the <a href="../../com.squareup.workflow1/-worker/">Worker</a> is started, and disposed when it is cancelled.</p>
 <p>The key is required for this operator because there is no type information available to distinguish workers.</p>

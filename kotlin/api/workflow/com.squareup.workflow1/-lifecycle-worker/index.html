@@ -810,8 +810,7 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">LifecycleWorker</a></p>
 <h1 id="lifecycleworker">LifecycleWorker<a class="headerlink" href="#lifecycleworker" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract class <a href="./">LifecycleWorker</a> : <a href="../-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt; </p>
+<p>[jvm] abstract class <a href="./">LifecycleWorker</a> : <a href="../-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt; </p>
 <p><a href="../-worker/">Worker</a> that performs some action when the worker is started and/or stopped.</p>
 <p>A <a href="../-worker/">Worker</a> is stopped when its parent <a href="../-workflow/">Workflow</a> finishes a render pass without running the worker, or when the parent workflow is itself torn down.</p>
 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
@@ -824,8 +823,8 @@ abstract class <a href="./">LifecycleWorker</a> : <a href="../-worker/">Worker</
 </thead>
 <tbody>
 <tr>
-<td><a href="-lifecycle-worker/">LifecycleWorker</a></td>
-<td>[jvm]<br>fun <a href="-lifecycle-worker/">LifecycleWorker</a>()</td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/LifecycleWorker/#/PointingToDeclaration/"></a><a href="-lifecycle-worker/">LifecycleWorker</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/LifecycleWorker/#/PointingToDeclaration/"></a> [jvm] fun <a href="-lifecycle-worker/">LifecycleWorker</a>()   <br></td>
 </tr>
 </tbody>
 </table>
@@ -839,20 +838,20 @@ abstract class <a href="./">LifecycleWorker</a> : <a href="../-worker/">Worker</
 </thead>
 <tbody>
 <tr>
-<td><a href="does-same-work-as/">doesSameWorkAs</a></td>
-<td>[jvm]<br>open override fun <a href="does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="../-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><br>Equates <a href="./">LifecycleWorker</a>s that have the same concrete class.</td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a><a href="does-same-work-as/">doesSameWorkAs</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open override fun <a href="does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="../-worker/">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br>More info  <br>Equates <a href="./">LifecycleWorker</a>s that have the same concrete class.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="on-started/">onStarted</a></td>
-<td>[jvm]<br>open fun <a href="on-started/">onStarted</a>()<br>Called when this worker is started. It is executed concurrently with the parent workflow – the first render pass that starts this worker <em>will not</em> wait for this method to return, and one or more additional render passes may occur before this method is called. This behavior may change to be more strict in the future.</td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/onStarted/#/PointingToDeclaration/"></a><a href="on-started/">onStarted</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/onStarted/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="on-started/">onStarted</a>()  <br>More info  <br>Called when this worker is started.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="on-stopped/">onStopped</a></td>
-<td>[jvm]<br>open fun <a href="on-stopped/">onStopped</a>()<br>Called when this worker has been torn down. It is executed concurrently with the parent workflow – the render pass that cancels (stops) this worker <em>will not</em> wait for this method to return, and one or more additional render passes may occur before this method is called. This behavior may change to be more strict in the future.</td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/onStopped/#/PointingToDeclaration/"></a><a href="on-stopped/">onStopped</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/onStopped/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="on-stopped/">onStopped</a>()  <br>More info  <br>Called when this worker has been torn down.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="run/">run</a></td>
-<td>[jvm]<br>override fun <a href="run/">run</a>(): Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;<br>Returns a Flow to execute the work represented by this worker.</td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/run/#/PointingToDeclaration/"></a><a href="run/">run</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker/run/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>override fun <a href="run/">run</a>(): Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;  <br>More info  <br>Returns a Flow to execute the work represented by this worker.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

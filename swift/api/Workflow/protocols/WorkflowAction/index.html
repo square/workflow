@@ -829,14 +829,14 @@
                 
                 <p><strong>PROTOCOL</strong></p>
 <h1 id="workflowaction"><code>WorkflowAction</code><a class="headerlink" href="#workflowaction" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">WorkflowAction</span>
-</code></pre></div>
+<p><code>swift
+public protocol WorkflowAction</code></p>
 <p>Conforming types represent an action that advances a workflow. When applied, an action emits the next
 state and / or output for the workflow.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="applytostate"><code>apply(toState:)</code><a class="headerlink" href="#applytostate" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">apply</span><span class="p">(</span><span class="n">toState</span> <span class="n">state</span><span class="p">:</span> <span class="kr">inout</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">?</span>
-</code></pre></div>
+<p><code>swift
+func apply(toState state: inout WorkflowType.State) -&gt; WorkflowType.Output?</code></p>
 <p>Applies this action to a given state of the workflow, optionally returning an output event.</p>
 <ul>
 <li>

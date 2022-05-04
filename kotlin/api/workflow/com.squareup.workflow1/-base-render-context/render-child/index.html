@@ -803,15 +803,17 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">BaseRenderContext</a>/<a href="./">renderChild</a></p>
 <h1 id="renderchild">renderChild<a class="headerlink" href="#renderchild" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract fun &lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt; <a href="./">renderChild</a>(child: <a href="../../-workflow/">Workflow</a>&lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt;, props: <a href="./">ChildPropsT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, handler: (<a href="./">ChildOutputT</a>) -&gt; <a href="../../-workflow-action/">WorkflowAction</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>&gt;): <a href="./">ChildRenderingT</a></p>
+<p>[jvm]<br />
+Content<br />
+abstract fun &lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt; <a href="./">renderChild</a>(child: <a href="../../-workflow/">Workflow</a>&lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a href="./">ChildRenderingT</a>&gt;, props: <a href="./">ChildPropsT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, handler: (<a href="./">ChildOutputT</a>) -&gt; <a href="../../-workflow-action/">WorkflowAction</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>&gt;): <a href="./">ChildRenderingT</a><br />
+More info  </p>
 <p>Ensures <a href="./">child</a> is running as a child of this workflow, and returns the result of its render method.</p>
 <p><strong>Never call</strong> <a href="../../-stateful-workflow/render/"><strong>StatefulWorkflow.render</strong></a> <strong>or</strong> <a href="../../-stateless-workflow/render/"><strong>StatelessWorkflow.render</strong></a> <strong>directly, always do it through this context method.</strong></p>
 <ol><li>If the child *wasn't* already running, it will be started either from     [initialState](../-stateful-workflow/initial-state.md) or its snapshot.</li><li>If the child *was* already running, The workflow's     [onPropsChanged](../-stateful-workflow/on-props-changed.md) method is invoked with the previous input     and this one.</li><li>The child's render method is invoked with input and the child's state.</li></ol>
 
 <p>After this method returns, if something happens that trigger&rsquo;s one of child&rsquo;s handlers, and that handler emits an output, the function passed as <a href="./">handler</a> will be invoked with that output.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -821,8 +823,8 @@ abstract fun &lt;<a href="./">ChildPropsT</a>, <a href="./">ChildOutputT</a>, <a
 </thead>
 <tbody>
 <tr>
-<td>key</td>
-<td>An optional string key that is used to distinguish between workflows of the same type.</td>
+<td><a name="com.squareup.workflow1/BaseRenderContext/renderChild/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1/BaseRenderContext/renderChild/#com.squareup.workflow1.Workflow[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/"></a><br><br>An optional string key that is used to distinguish between workflows of the same type.<br><br></td>
 </tr>
 </tbody>
 </table>
