@@ -22,8 +22,8 @@
 # Need to explicitly run all rules, so the per-rule configs below aren't used as an allowlist.
 all
 
-# Increase default line length from 80 to 100.
-rule 'MD013', :line_length => 100, :code_blocks => false, :tables => false
+# We don't care about line length, because it prevents us from pasting in text from sane tools.
+exclude_rule 'MD013'
 
 # Enable inline HTML.
 exclude_rule 'MD033'
