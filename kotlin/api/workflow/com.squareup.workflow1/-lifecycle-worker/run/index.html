@@ -810,10 +810,12 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">LifecycleWorker</a>/<a href="./">run</a></p>
 <h1 id="run">run<a class="headerlink" href="#run" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-override fun <a href="./">run</a>(): Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+override fun <a href="./">run</a>(): Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;<br />
+More info  </p>
 <p>Returns a Flow to execute the work represented by this worker.</p>
-<p>Flow is &ldquo;a cold asynchronous data stream that sequentially emits values and completes normally or with an exception&rdquo;, although it may not emit any values. It is common to use workers to perform some side effect that should only be executed when a state is entered – in this case, the worker never emits anything (and will have type Worker&lt;Nothing&gt;).</p>
+<p>Flow is &ldquo;a cold asynchronous data stream that sequentially emits values and completes normally or with an exception&rdquo;, although it may not emit any values. It is common to use workers to perform some side effect that should only be executed when a state is entered – in this case, the worker never emits anything (and will have type Worker<Nothing>).</p>
 <h2 id="coroutine-context">Coroutine Context<a class="headerlink" href="#coroutine-context" title="Permanent link">&para;</a></h2>
 <p>When a worker is started, a coroutine is launched to collect the flow. When the worker is torn down, the coroutine is cancelled. This coroutine is launched in the same scope as the workflow runtime, with a few changes:</p>
 <ul><li>The dispatcher is always set to Unconfined to minimize overhead for workers that don't care which thread they're executed on (e.g. logging side effects, workers that wrap third-party reactive libraries, etc.). If your work cares which thread it runs on, use withContext or flowOn to specify a dispatcher.</li><li>A CoroutineName that describes the Worker instance (via toString) and the key specified by the workflow running the worker.</li></ul>

@@ -803,12 +803,15 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">showRendering</a></p>
 <h1 id="showrendering">showRendering<a class="headerlink" href="#showrendering" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">showRendering</a>(rendering: <a href="./">RenderingT</a>, viewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>)</p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">showRendering</a>(rendering: <a href="./">RenderingT</a>, viewEnvironment: <a href="../-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>)<br />
+More info  </p>
+<p><strong>This will be deprecated in favor of</strong> <a href="../show/"><strong>ScreenViewHolder.show</strong></a> <strong>very soon.</strong></p>
 <p>It is usually more convenient to call <a href="./">WorkflowViewStub.showRendering</a> than to call this method directly.</p>
 <p>Shows <a href="./">rendering</a> in this View by invoking the <a href="../#1074174269%2FClasslikes%2F576965167">ViewShowRendering</a> function previously set by <a href="../bind-show-rendering/">bindShowRendering</a>.</p>
-<h2 id="throws">Throws<a class="headerlink" href="#throws" title="Permanent link">&para;</a></h2>
+<h4 id="throws">Throws<a class="headerlink" href="#throws" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
@@ -818,8 +821,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-state-exception/index.html">kotlin.IllegalStateException</a></td>
-<td>if <a href="../bind-show-rendering/">bindShowRendering</a> has not been called.</td>
+<td><a name="com.squareup.workflow1.ui//showRendering/android.view.View#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment/PointingToDeclaration/"></a><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html">java.lang.IllegalStateException</a></td>
+<td><a name="com.squareup.workflow1.ui//showRendering/android.view.View#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment/PointingToDeclaration/"></a><br><br>if <a href="../bind-show-rendering/">bindShowRendering</a> has not been called.<br><br></td>
 </tr>
 </tbody>
 </table>

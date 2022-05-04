@@ -823,15 +823,15 @@
                 
                 <p><strong>EXTENSION</strong></p>
 <h1 id="rendercontext"><code>RenderContext</code><a class="headerlink" href="#rendercontext" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">RenderContext</span>
-</code></pre></div>
+<p><code>swift
+extension RenderContext</code></p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="makesinkofonevent"><code>makeSink(of:onEvent:)</code><a class="headerlink" href="#makesinkofonevent" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeSink</span><span class="p">&lt;</span><span class="n">Event</span><span class="p">&gt;(</span><span class="n">of</span> <span class="n">eventType</span><span class="p">:</span> <span class="n">Event</span><span class="p">.</span><span class="kr">Type</span><span class="p">,</span> <span class="n">onEvent</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Event</span><span class="p">,</span> <span class="kr">inout</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">?)</span> <span class="p">-&gt;</span> <span class="n">Sink</span><span class="p">&lt;</span><span class="n">Event</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func makeSink&lt;Event&gt;(of eventType: Event.Type, onEvent: @escaping (Event, inout WorkflowType.State) -&gt; WorkflowType.Output?) -&gt; Sink&lt;Event&gt;</code></p>
 <h3 id="makeoutputsink"><code>makeOutputSink()</code><a class="headerlink" href="#makeoutputsink" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeOutputSink</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">Sink</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func makeOutputSink() -&gt; Sink&lt;WorkflowType.Output&gt;</code></p>
 <p>Generates a sink that allows sending the Workflow&rsquo;s output wrapped in an AnyWorkflowAction, allowing bypassing an
 intermediate action.</p>
                 

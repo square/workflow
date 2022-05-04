@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">unsnapshottableIdentifier</a></p>
 <h1 id="unsnapshottableidentifier">unsnapshottableIdentifier<a class="headerlink" href="#unsnapshottableidentifier" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-fun <a href="./">unsnapshottableIdentifier</a>(type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a>): <a href="../-workflow-identifier/">WorkflowIdentifier</a></p>
+<p>[jvm]<br />
+Content<br />
+fun <a href="./">unsnapshottableIdentifier</a>(type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a>): <a href="../-workflow-identifier/">WorkflowIdentifier</a><br />
+More info  </p>
 <p>Creates a <a href="../-workflow-identifier/">WorkflowIdentifier</a> that is not capable of being snapshotted and will cause any <a href="../-impostor-workflow/">ImpostorWorkflow</a> workflow identified by it to also not be snapshotted.</p>
 <p><strong>This function should not be used for</strong> <a href="../-impostor-workflow/"><strong>ImpostorWorkflow</strong></a><strong>s that wrap arbitrary workflows</strong>, since those workflows may expect to be on snapshotted. Using such identifiers <em>anywhere in the</em> <a href="../-impostor-workflow/real-identifier/"><em>ImpostorWorkflow.realIdentifier</em></a> <em>chain</em> will disable snapshotting for that workflow. <strong>This function should only be used for</strong> <a href="../-impostor-workflow/"><strong>ImpostorWorkflow</strong></a><strong>s that wrap a closed set of known workflow types.</strong></p>
                 

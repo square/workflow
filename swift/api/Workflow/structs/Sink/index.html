@@ -856,18 +856,18 @@
                 
                 <p><strong>STRUCT</strong></p>
 <h1 id="sink"><code>Sink</code><a class="headerlink" href="#sink" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">Sink</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public struct Sink&lt;Value&gt;</code></p>
 <p>Sink is a type that receives incoming values (commonly events or <code>WorkflowAction</code>)</p>
 <p>Use <code>RenderContext.makeSink</code> to create instances.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="init_"><code>init(_:)</code><a class="headerlink" href="#init_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="kc">_</span> <span class="n">onValue</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Value</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+public init(_ onValue: @escaping (Value) -&gt; Void)</code></p>
 <p>Initializes a new sink with the given closure.</p>
 <h3 id="send_"><code>send(_:)</code><a class="headerlink" href="#send_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+public func send(_ value: Value)</code></p>
 <p>Sends a new event into the sink.</p>
 <ul>
 <li>Parameter event: The value to send into the sink.</li>
@@ -888,14 +888,12 @@
 </tbody>
 </table>
 <h3 id="contramap_"><code>contraMap(_:)</code><a class="headerlink" href="#contramap_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">contraMap</span><span class="p">&lt;</span><span class="n">NewValue</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">transform</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">NewValue</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Sink</span><span class="p">&lt;</span><span class="n">NewValue</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func contraMap&lt;NewValue&gt;(_ transform: @escaping (NewValue) -&gt; Value) -&gt; Sink&lt;NewValue&gt;</code></p>
 <p>Generates a new sink of type NewValue.</p>
 <p>Given a <code>transform</code> closure, the following code is functionally equivalent:</p>
-<p><div class="highlight"><pre><span></span><code>sink.send(transform(value))
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>sink.contraMap(transform).send(value)
-</code></pre></div></p>
+<p><code>sink.send(transform(value))</code>
+<code>sink.contraMap(transform).send(value)</code></p>
 <p><strong>Trivia</strong>: Why is this called <code>contraMap</code>?
 - <code>map</code> turns <code>Type&lt;T&gt;</code> into <code>Type&lt;U&gt;</code> via <code>(T)-&gt;U</code>.
 - <code>contraMap</code> turns <code>Type&lt;T&gt;</code> into <code>Type&lt;U&gt;</code> via <code>(U)-&gt;T</code></p>

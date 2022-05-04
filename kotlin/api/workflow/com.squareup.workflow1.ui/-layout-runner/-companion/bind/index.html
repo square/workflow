@@ -786,44 +786,52 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1.ui</a>/<a href="../../">LayoutRunner</a>/<a href="../">Companion</a>/<a href="./">bind</a></p>
 <h1 id="bind">bind<a class="headerlink" href="#bind" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-inline fun &lt;<a href="./">BindingT</a> : ViewBinding, <a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">bind</a>(noinline bindingInflater: <a href="../../../#-754151236%2FClasslikes%2F576965167">ViewBindingInflater</a>&lt;<a href="./">BindingT</a>&gt;, crossinline showRendering: <a href="./">BindingT</a>.(<a href="./">RenderingT</a>, <a href="../../../-view-environment/">ViewEnvironment</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../../../-view-factory/">ViewFactory</a>&lt;<a href="./">RenderingT</a>&gt;</p>
+<p>[androidJvm]<br />
+Content<br />
+inline fun &lt;<a href="./">BindingT</a> : ViewBinding, <a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">bind</a>(noinline bindingInflater: <a href="../../../#-754151236%2FClasslikes%2F576965167">ViewBindingInflater</a>&lt;<a href="./">BindingT</a>&gt;, crossinline showRendering: <a href="./">BindingT</a>.(<a href="./">RenderingT</a>, <a href="../../../-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../../../-view-factory/">ViewFactory</a>&lt;<a href="./">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../../-view-factory/">ViewFactory</a> that <a href="./">inflates</a> a ViewBinding (<a href="./">BindingT</a>) to show renderings of type <a href="./">RenderingT</a>, using <a href="./">a lambda</a>.</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>val HelloBinding: ViewFactory =
-  LayoutRunner.bind(HelloGoodbyeLayoutBinding::inflate) { rendering, viewEnvironment -&gt;helloMessage.text = rendering.message
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code>val HelloBinding: ViewFactory&lt;Rendering&gt; =
+  LayoutRunner.bind(HelloGoodbyeLayoutBinding::inflate) { rendering, viewEnvironment -&gt;
+    helloMessage.text = rendering.message
     helloMessage.setOnClickListener { rendering.onClick(Unit) }
   }
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
+
 <p>If you need to initialize your view before <a href="./">showRendering</a> is called, implement <a href="../../">LayoutRunner</a> and create a binding using the bind variant that accepts a (ViewBinding) -&gt; LayoutRunner function, below.</p>
-<p>[androidJvm]\
-inline fun &lt;<a href="./">BindingT</a> : ViewBinding, <a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">bind</a>(noinline bindingInflater: <a href="../../../#-754151236%2FClasslikes%2F576965167">ViewBindingInflater</a>&lt;<a href="./">BindingT</a>&gt;, noinline constructor: (<a href="./">BindingT</a>) -&gt; <a href="../../">LayoutRunner</a>&lt;<a href="./">RenderingT</a>&gt;): <a href="../../../-view-factory/">ViewFactory</a>&lt;<a href="./">RenderingT</a>&gt;</p>
+<p>[androidJvm]<br />
+Content<br />
+inline fun &lt;<a href="./">BindingT</a> : ViewBinding, <a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">bind</a>(noinline bindingInflater: <a href="../../../#-754151236%2FClasslikes%2F576965167">ViewBindingInflater</a>&lt;<a href="./">BindingT</a>&gt;, noinline constructor: (<a href="./">BindingT</a>) -&gt; <a href="../../">LayoutRunner</a>&lt;<a href="./">RenderingT</a>&gt;): <a href="../../../-view-factory/">ViewFactory</a>&lt;<a href="./">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../../-view-factory/">ViewFactory</a> that <a href="./">inflates</a> a ViewBinding (<a href="./">BindingT</a>) to show renderings of type <a href="./">RenderingT</a>, using a <a href="../../">LayoutRunner</a> created by <a href="./">constructor</a>. Handy if you need to perform some set up before <a href="../../show-rendering/">showRendering</a> is called.</p>
 <p>class HelloLayoutRunner(     private val binding: HelloGoodbyeLayoutBinding ) : LayoutRunner<Rendering> {</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>override fun showRendering(rendering: Rendering) {
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code>override fun showRendering(rendering: Rendering) {
   binding.messageView.text = rendering.message
   binding.messageView.setOnClickListener { rendering.onClick(Unit) }
 }
 
-companion object : ViewFactory by bind(
+companion object : ViewFactory&lt;Rendering&gt; by bind(
     HelloGoodbyeLayoutBinding::inflate, ::HelloLayoutRunner
 )
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
+
 <p>}</p>
 <p>If the view doesn&rsquo;t need to be initialized before <a href="../../show-rendering/">showRendering</a> is called, use the variant above which just takes a lambda.</p>
-<p>[androidJvm]\
-inline fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">bind</a>(@<a href="https://developer.android.com/reference/kotlin/androidx/annotation/LayoutRes.html">LayoutRes</a>layoutId: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, noinline constructor: (<a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>) -&gt; <a href="../../">LayoutRunner</a>&lt;<a href="./">RenderingT</a>&gt;): <a href="../../../-view-factory/">ViewFactory</a>&lt;<a href="./">RenderingT</a>&gt;</p>
+<p>[androidJvm]<br />
+Content<br />
+inline fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">bind</a>(@<a href="https://developer.android.com/reference/kotlin/androidx/annotation/LayoutRes.html">LayoutRes</a>()layoutId: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, noinline constructor: (<a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>) -&gt; <a href="../../">LayoutRunner</a>&lt;<a href="./">RenderingT</a>&gt;): <a href="../../../-view-factory/">ViewFactory</a>&lt;<a href="./">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../../-view-factory/">ViewFactory</a> that inflates <a href="./">layoutId</a> to show renderings of type <a href="./">RenderingT</a>, using a <a href="../../">LayoutRunner</a> created by <a href="./">constructor</a>. Avoids any use of AndroidX ViewBinding.</p>
                 
               

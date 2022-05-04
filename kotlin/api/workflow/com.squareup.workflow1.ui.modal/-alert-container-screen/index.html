@@ -817,12 +817,12 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.modal</a>/<a href="./">AlertContainerScreen</a></p>
 <h1 id="alertcontainerscreen">AlertContainerScreen<a class="headerlink" href="#alertcontainerscreen" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-@<a href="../../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a></p>
-<p>data class <a href="./">AlertContainerScreen</a>&lt;<a href="./">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(beneathModals: <a href="./">B</a>, modals: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-alert-screen/">AlertScreen</a>&gt;) : <a href="../-has-modals/">HasModals</a>&lt;<a href="./">B</a>, <a href="../-alert-screen/">AlertScreen</a>&gt; </p>
+<p>[jvm] @<a href="../../com.squareup.workflow1.ui/-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
+<p>data class <a href="./">AlertContainerScreen</a>&lt;<a href="./">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt;(<strong>beneathModals</strong>: <a href="./">B</a>, <strong>modals</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-alert-screen/">AlertScreen</a>&gt;) : <a href="../-has-modals/">HasModals</a>&lt;<a href="./">B</a>, <a href="../-alert-screen/">AlertScreen</a>&gt; </p>
+<p><strong>This will be deprecated in favor of</strong> <a href="../../com.squareup.workflow1.ui.container/-alert-overlay/"><strong>AlertOverlay</strong></a> <strong>and</strong> <a href="../../com.squareup.workflow1.ui.container/-body-and-modals-screen/"><strong>BodyAndModalsScreen</strong></a> <strong>very soon.</strong></p>
 <p>May show a stack of <a href="../-alert-screen/">AlertScreen</a> over a <a href="beneath-modals/">beneathModals</a>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -832,8 +832,8 @@
 </thead>
 <tbody>
 <tr>
-<td>B</td>
-<td>the type of <a href="beneath-modals/">beneathModals</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen///PointingToDeclaration/"></a>B</td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen///PointingToDeclaration/"></a><br><br>the type of <a href="beneath-modals/">beneathModals</a><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -847,16 +847,16 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-alert-container-screen/">AlertContainerScreen</a></td>
-<td>[jvm]<br>fun &lt;<a href="./">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-alert-container-screen/">AlertContainerScreen</a>(baseScreen: <a href="./">B</a>, alert: <a href="../-alert-screen/">AlertScreen</a>)</td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/AlertContainerScreen/#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.modal.AlertScreen/PointingToDeclaration/"></a><a href="-alert-container-screen/">AlertContainerScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/AlertContainerScreen/#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.modal.AlertScreen/PointingToDeclaration/"></a> [jvm] fun &lt;<a href="./">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-alert-container-screen/">AlertContainerScreen</a>(baseScreen: <a href="./">B</a>, alert: <a href="../-alert-screen/">AlertScreen</a>)   <br></td>
 </tr>
 <tr>
-<td><a href="-alert-container-screen/">AlertContainerScreen</a></td>
-<td>[jvm]<br>fun &lt;<a href="./">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-alert-container-screen/">AlertContainerScreen</a>(baseScreen: <a href="./">B</a>, vararg alerts: <a href="../-alert-screen/">AlertScreen</a>)</td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/AlertContainerScreen/#TypeParam(bounds=[kotlin.Any])#kotlin.Array[com.squareup.workflow1.ui.modal.AlertScreen]/PointingToDeclaration/"></a><a href="-alert-container-screen/">AlertContainerScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/AlertContainerScreen/#TypeParam(bounds=[kotlin.Any])#kotlin.Array[com.squareup.workflow1.ui.modal.AlertScreen]/PointingToDeclaration/"></a> [jvm] fun &lt;<a href="./">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-alert-container-screen/">AlertContainerScreen</a>(baseScreen: <a href="./">B</a>, vararg alerts: <a href="../-alert-screen/">AlertScreen</a>)   <br></td>
 </tr>
 <tr>
-<td><a href="-alert-container-screen/">AlertContainerScreen</a></td>
-<td>[jvm]<br>fun &lt;<a href="./">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-alert-container-screen/">AlertContainerScreen</a>(beneathModals: <a href="./">B</a>, modals: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-alert-screen/">AlertScreen</a>&gt; = emptyList())</td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/AlertContainerScreen/#TypeParam(bounds=[kotlin.Any])#kotlin.collections.List[com.squareup.workflow1.ui.modal.AlertScreen]/PointingToDeclaration/"></a><a href="-alert-container-screen/">AlertContainerScreen</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/AlertContainerScreen/#TypeParam(bounds=[kotlin.Any])#kotlin.collections.List[com.squareup.workflow1.ui.modal.AlertScreen]/PointingToDeclaration/"></a> [jvm] fun &lt;<a href="./">B</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="-alert-container-screen/">AlertContainerScreen</a>(beneathModals: <a href="./">B</a>, modals: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-alert-screen/">AlertScreen</a>&gt; = emptyList())the type of beneathModals   <br></td>
 </tr>
 </tbody>
 </table>
@@ -870,12 +870,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="beneath-modals/">beneathModals</a></td>
-<td>[jvm]<br>open override val <a href="beneath-modals/">beneathModals</a>: <a href="./">B</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/beneathModals/#/PointingToDeclaration/"></a><a href="beneath-modals/">beneathModals</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/beneathModals/#/PointingToDeclaration/"></a> [jvm] open override val <a href="beneath-modals/">beneathModals</a>: <a href="./">B</a>   <br></td>
 </tr>
 <tr>
-<td><a href="modals/">modals</a></td>
-<td>[jvm]<br>open override val <a href="modals/">modals</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-alert-screen/">AlertScreen</a>&gt;</td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/modals/#/PointingToDeclaration/"></a><a href="modals/">modals</a></td>
+<td><a name="com.squareup.workflow1.ui.modal/AlertContainerScreen/modals/#/PointingToDeclaration/"></a> [jvm] open override val <a href="modals/">modals</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-alert-screen/">AlertScreen</a>&gt;   <br></td>
 </tr>
 </tbody>
 </table>

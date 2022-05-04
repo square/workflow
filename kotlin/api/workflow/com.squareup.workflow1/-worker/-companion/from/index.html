@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1</a>/<a href="../../">Worker</a>/<a href="../">Companion</a>/<a href="./">from</a></p>
 <h1 id="from">from<a class="headerlink" href="#from" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-inline fun &lt;<a href="./">OutputT</a>&gt; <a href="./">from</a>(noinline block: suspend () -&gt; <a href="./">OutputT</a>): <a href="../../">Worker</a>&lt;<a href="./">OutputT</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">OutputT</a>&gt; <a href="./">from</a>(noinline block: suspend () -&gt; <a href="./">OutputT</a>): <a href="../../">Worker</a>&lt;<a href="./">OutputT</a>&gt;<br />
+More info  </p>
 <p>Creates a <a href="../../">Worker</a> from a function that returns a single value.</p>
 <p>Shorthand for flow { emit(block()) }.asWorker().</p>
 <p>The returned <a href="../../">Worker</a> will equate to any other workers created with any of the <a href="../../">Worker</a> builder functions that have the same output type.</p>

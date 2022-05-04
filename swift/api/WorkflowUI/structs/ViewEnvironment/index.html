@@ -843,8 +843,8 @@
                 
                 <p><strong>STRUCT</strong></p>
 <h1 id="viewenvironment"><code>ViewEnvironment</code><a class="headerlink" href="#viewenvironment" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">ViewEnvironment</span>
-</code></pre></div>
+<p><code>swift
+public struct ViewEnvironment</code></p>
 <p>ViewEnvironment acts as a container for values to flow down the view-side
 of a rendering tree (as opposed to being passed down through Workflows).</p>
 <p>This will often be used by containers to let their children know in what
@@ -853,35 +853,33 @@ the environment of its two children according to which position they’re
 appearing in).</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="empty"><code>empty</code><a class="headerlink" href="#empty" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">let</span> <span class="nv">empty</span><span class="p">:</span> <span class="n">ViewEnvironment</span> <span class="p">=</span> <span class="n">ViewEnvironment</span><span class="p">()</span>
-</code></pre></div>
+<p><code>swift
+public static let empty: ViewEnvironment = ViewEnvironment()</code></p>
 <p>An empty view environment. This should only be used when setting up a
 root workflow into a root ContainerViewController or when writing tests.
 In other scenarios, containers should pass down the ViewEnvironment
 value they get from above.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="settingkeyto"><code>setting(key:to:)</code><a class="headerlink" href="#settingkeyto" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setting</span><span class="p">&lt;</span><span class="n">Key</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span> <span class="n">Key</span><span class="p">.</span><span class="kr">Type</span><span class="p">,</span> <span class="n">to</span> <span class="n">value</span><span class="p">:</span> <span class="n">Key</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewEnvironment</span> <span class="k">where</span> <span class="n">Key</span><span class="p">:</span> <span class="n">ViewEnvironmentKey</span>
-</code></pre></div>
+<p><code>swift
+public func setting&lt;Key&gt;(key: Key.Type, to value: Key.Value) -&gt; ViewEnvironment where Key: ViewEnvironmentKey</code></p>
 <p>Returns a new ViewEnvironment with the given value set for the given
 environment key.</p>
 <p>This is provided as a convenience for modifying the environment while
 passing it down to children screens without the need for an intermediate
 mutable value. It is functionally equivalent to the subscript setter.</p>
 <h3 id="settingkeypathto"><code>setting(keyPath:to:)</code><a class="headerlink" href="#settingkeypathto" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setting</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">keyPath</span><span class="p">:</span> <span class="n">WritableKeyPath</span><span class="p">&lt;</span><span class="n">ViewEnvironment</span><span class="p">,</span> <span class="n">Value</span><span class="p">&gt;,</span> <span class="n">to</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewEnvironment</span>
-</code></pre></div>
+<p><code>swift
+public func setting&lt;Value&gt;(keyPath: WritableKeyPath&lt;ViewEnvironment, Value&gt;, to value: Value) -&gt; ViewEnvironment</code></p>
 <p>Returns a new ViewEnvironment with the given value set for the given
 key path.</p>
 <p>This is provided as a convenience for modifying the environment while
 passing it down to children screens.</p>
 <p>The following are functionally equivalent:
-<div class="highlight"><pre><span></span><code>var newEnvironment = environment
-newEnvironment.someProperty = 42
-</code></pre></div>
+<code>var newEnvironment = environment
+newEnvironment.someProperty = 42</code>
 and
-<div class="highlight"><pre><span></span><code>let newEnvironment = environment.setting(\.someProperty, to: 42)
-</code></pre></div></p>
+<code>let newEnvironment = environment.setting(\.someProperty, to: 42)</code></p>
                 
               
               

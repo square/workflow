@@ -824,13 +824,12 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">RenderTester</a>/<a href="./">RenderChildInvocation</a></p>
 <h1 id="renderchildinvocation">RenderChildInvocation<a class="headerlink" href="#renderchildinvocation" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-class <a href="./">RenderChildInvocation</a>(workflow: <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;*, *, *&gt;, props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?, outputType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, renderingType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, renderKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)</p>
+<p>[jvm] class <a href="./">RenderChildInvocation</a>(<strong>workflow</strong>: <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;<em>, *, *&gt;, **props*</em>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?, <strong>outputType</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, <strong>renderingType</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, <strong>renderKey</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)</p>
 <p>Describes a call to <a href="../../../com.squareup.workflow1/-base-render-context/render-child/">RenderContext.renderChild</a>.</p>
 <h2 id="output-and-rendering-types">Output and rendering types<a class="headerlink" href="#output-and-rendering-types" title="Permanent link">&para;</a></h2>
 <p>The testing library will attempt to determine the output and rendering types by using reflection to determine the type arguments that the concrete workflow class passes to the <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a> interface. This is subject to the limitations of Kotlin&rsquo;s reflection. Notably, there is a compiler bug (<a href="https://youtrack.jetbrains.com/issue/KT-17103">KT-17103</a>) that prevents reflecting on these types when the workflow is an anonymous class that was created by an inline function with reified types, such as Workflow.stateful and Workflow.stateless.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -840,24 +839,24 @@ class <a href="./">RenderChildInvocation</a>(workflow: <a href="../../../com.squ
 </thead>
 <tbody>
 <tr>
-<td>workflow</td>
-<td>The child workflow that is being rendered.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a>workflow</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a><br><br>The child workflow that is being rendered.<br><br></td>
 </tr>
 <tr>
-<td>props</td>
-<td>The props value passed to renderChild.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a>props</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a><br><br>The props value passed to renderChild.<br><br></td>
 </tr>
 <tr>
-<td>outputType</td>
-<td>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow&rsquo;s OutputT.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a>outputType</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a><br><br>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow&rsquo;s OutputT.<br><br></td>
 </tr>
 <tr>
-<td>renderingType</td>
-<td>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow&rsquo;s RenderingT.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a>renderingType</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a><br><br>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow&rsquo;s RenderingT.<br><br></td>
 </tr>
 <tr>
-<td>renderKey</td>
-<td>The string key passed to renderChild.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a>renderKey</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a><br><br>The string key passed to renderChild.<br><br></td>
 </tr>
 </tbody>
 </table>
@@ -871,8 +870,8 @@ class <a href="./">RenderChildInvocation</a>(workflow: <a href="../../../com.squ
 </thead>
 <tbody>
 <tr>
-<td><a href="-render-child-invocation/">RenderChildInvocation</a></td>
-<td>[jvm]<br>fun <a href="-render-child-invocation/">RenderChildInvocation</a>(workflow: <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;*, *, *&gt;, props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?, outputType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, renderingType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, renderKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/RenderChildInvocation/#com.squareup.workflow1.Workflow[*,*,*]#kotlin.Any?#kotlin.reflect.KTypeProjection#kotlin.reflect.KTypeProjection#kotlin.String/PointingToDeclaration/"></a><a href="-render-child-invocation/">RenderChildInvocation</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/RenderChildInvocation/#com.squareup.workflow1.Workflow[*,*,*]#kotlin.Any?#kotlin.reflect.KTypeProjection#kotlin.reflect.KTypeProjection#kotlin.String/PointingToDeclaration/"></a> [jvm] fun <a href="-render-child-invocation/">RenderChildInvocation</a>(workflow: <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;*, *, *&gt;, props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?, outputType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, renderingType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, renderKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)The child workflow that is being rendered.   <br></td>
 </tr>
 </tbody>
 </table>
@@ -886,24 +885,24 @@ class <a href="./">RenderChildInvocation</a>(workflow: <a href="../../../com.squ
 </thead>
 <tbody>
 <tr>
-<td><a href="output-type/">outputType</a></td>
-<td>[jvm]<br>val <a href="output-type/">outputType</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/outputType/#/PointingToDeclaration/"></a><a href="output-type/">outputType</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/outputType/#/PointingToDeclaration/"></a> [jvm] val <a href="output-type/">outputType</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow&rsquo;s OutputT.   <br></td>
 </tr>
 <tr>
-<td><a href="props/">props</a></td>
-<td>[jvm]<br>val <a href="props/">props</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/props/#/PointingToDeclaration/"></a><a href="props/">props</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/props/#/PointingToDeclaration/"></a> [jvm] val <a href="props/">props</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?The props value passed to renderChild.   <br></td>
 </tr>
 <tr>
-<td><a href="rendering-type/">renderingType</a></td>
-<td>[jvm]<br>val <a href="rendering-type/">renderingType</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/renderingType/#/PointingToDeclaration/"></a><a href="rendering-type/">renderingType</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/renderingType/#/PointingToDeclaration/"></a> [jvm] val <a href="rendering-type/">renderingType</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow&rsquo;s RenderingT.   <br></td>
 </tr>
 <tr>
-<td><a href="render-key/">renderKey</a></td>
-<td>[jvm]<br>val <a href="render-key/">renderKey</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/renderKey/#/PointingToDeclaration/"></a><a href="render-key/">renderKey</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/renderKey/#/PointingToDeclaration/"></a> [jvm] val <a href="render-key/">renderKey</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>The string key passed to renderChild.   <br></td>
 </tr>
 <tr>
-<td><a href="workflow/">workflow</a></td>
-<td>[jvm]<br>val <a href="workflow/">workflow</a>: <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;*, *, *&gt;</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/workflow/#/PointingToDeclaration/"></a><a href="workflow/">workflow</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation/workflow/#/PointingToDeclaration/"></a> [jvm] val <a href="workflow/">workflow</a>: <a href="../../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;*, *, *&gt;The child workflow that is being rendered.   <br></td>
 </tr>
 </tbody>
 </table>

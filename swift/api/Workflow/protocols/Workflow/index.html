@@ -856,8 +856,8 @@
                 
                 <p><strong>PROTOCOL</strong></p>
 <h1 id="workflow"><code>Workflow</code><a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">Workflow</span><span class="p">:</span> <span class="n">AnyWorkflowConvertible</span>
-</code></pre></div>
+<p><code>swift
+public protocol Workflow: AnyWorkflowConvertible</code></p>
 <p>Defines a node in the workflow tree.</p>
 <hr />
 <p><strong>Initialization and Updating</strong></p>
@@ -887,21 +887,20 @@ a render pass occurs. The render pass takes the workflow that was passed
 down from the parent along with the current state and generates a value
 of type <code>Rendering</code>. In a common case, a workflow might render to a screen
 model for display.</p>
-<div class="highlight"><pre><span></span><code>func render(state: State, context: RenderContext&lt;Self&gt;) -&gt; MyScreenModel {
+<p><code>func render(state: State, context: RenderContext&lt;Self&gt;) -&gt; MyScreenModel {
     return MyScreenModel()
-}
-</code></pre></div>
+}</code></p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="makeinitialstate"><code>makeInitialState()</code><a class="headerlink" href="#makeinitialstate" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">makeInitialState</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">State</span>
-</code></pre></div>
+<p><code>swift
+func makeInitialState() -&gt; State</code></p>
 <p>This method is invoked once when a workflow node comes into existence.</p>
 <ul>
 <li>Returns: The initial state for the workflow.</li>
 </ul>
 <h3 id="workflowdidchangefromstate"><code>workflowDidChange(from:state:)</code><a class="headerlink" href="#workflowdidchangefromstate" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">workflowDidChange</span><span class="p">(</span><span class="n">from</span> <span class="n">previousWorkflow</span><span class="p">:</span> <span class="kc">Self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="kr">inout</span> <span class="n">State</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+func workflowDidChange(from previousWorkflow: Self, state: inout State)</code></p>
 <p>Called when a new workflow is passed down from the parent to an existing workflow node.</p>
 <ul>
 <li>Parameter previousWorkflow: The workflow before the update.</li>
@@ -927,8 +926,8 @@ model for display.</p>
 </tbody>
 </table>
 <h3 id="renderstatecontext"><code>render(state:context:)</code><a class="headerlink" href="#renderstatecontext" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="kc">Self</span><span class="p">&gt;)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span>
-</code></pre></div>
+<p><code>swift
+func render(state: State, context: RenderContext&lt;Self&gt;) -&gt; Rendering</code></p>
 <p>Called by the internal Workflow infrastructure to &ldquo;render&rdquo; the current state into <code>Rendering</code>.
 A workflow&rsquo;s <code>Rendering</code> type is commonly a view or screen model.</p>
 <ul>

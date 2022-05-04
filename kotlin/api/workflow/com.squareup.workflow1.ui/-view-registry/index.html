@@ -824,13 +824,12 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">ViewRegistry</a></p>
 <h1 id="viewregistry">ViewRegistry<a class="headerlink" href="#viewregistry" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-@WorkflowUiExperimentalApi</p>
+<p>[jvm] @<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  </p>
 <p>interface <a href="./">ViewRegistry</a></p>
-<p>The <a href="../-view-environment/">ViewEnvironment</a> service that can be used to display the stream of renderings from a workflow tree as <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> instances. This is the engine behind <a href="../-android-view-rendering/">AndroidViewRendering</a>, <a href="../-workflow-view-stub/">WorkflowViewStub</a> and <a href="../-view-factory/">ViewFactory</a>. Most apps can ignore <a href="./">ViewRegistry</a> as an implementation detail, by using <a href="../-android-view-rendering/">AndroidViewRendering</a> to tie their rendering classes to view code.</p>
-<p>To avoid that coupling between workflow code and the Android runtime, registries can be loaded with <a href="../-view-factory/">ViewFactory</a> instances at runtime, and provided as an optional parameter to <a href="../-workflow-layout/start/">WorkflowLayout.start</a>.</p>
+<p>The <a href="../-view-environment/">ViewEnvironment</a> service that can be used to display the stream of renderings from a workflow tree as View instances. This is the engine behind AndroidViewRendering, WorkflowViewStub and ViewFactory. Most apps can ignore <a href="./">ViewRegistry</a> as an implementation detail, by using AndroidViewRendering to tie their rendering classes to view code.</p>
+<p>To avoid that coupling between workflow code and the Android runtime, registries can be loaded with ViewFactory instances at runtime, and provided as an optional parameter to WorkflowLayout.start.</p>
 <p>For example:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -859,7 +858,7 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>val AuthViewFactories = ViewRegistry(
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code>val AuthViewFactories = ViewRegistry(
   AuthorizingLayoutRunner, LoginLayoutRunner, SecondFactorLayoutRunner
 )
 
@@ -881,7 +880,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 /** As always, use an androidx ViewModel for state that survives config change. */
 class MyViewModel(savedState: SavedStateHandle) : ViewModel() {
-  val renderings: StateFlow by lazy {
+  val renderings: StateFlow&lt;Any&gt; by lazy {
     renderWorkflowIn(
       workflow = rootWorkflow,
       scope = viewModelScope,
@@ -889,26 +888,26 @@ class MyViewModel(savedState: SavedStateHandle) : ViewModel() {
     )
   }
 }
-</code></pre></div>
-</td></tr></table>
-<p>In the above example, it is assumed that the companion objects of the various decoupled <a href="../-layout-runner/">LayoutRunner</a> classes honor a convention of implementing <a href="../-view-factory/">ViewFactory</a>, in aid of this kind of assembly.</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+</code></pre></div></td></tr></table></div>
+
+<p>In the above example, it is assumed that the companion objects of the various decoupled LayoutRunner classes honor a convention of implementing ViewFactory, in aid of this kind of assembly.</p>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>class GamePlayLayoutRunner(view: View) : LayoutRunner {
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code>class GamePlayLayoutRunner(view: View) : LayoutRunner&lt;GameRendering&gt; {
 
   // ...
 
-  companion object : ViewFactory by LayoutRunner.bind(
+  companion object : ViewFactory&lt;GameRendering&gt; by LayoutRunner.bind(
     R.layout.game_layout, ::GameLayoutRunner
   )
 }
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
+
 <h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -919,8 +918,12 @@ class MyViewModel(savedState: SavedStateHandle) : ViewModel() {
 </thead>
 <tbody>
 <tr>
-<td><a href="-companion/">Companion</a></td>
-<td>[androidJvm]<br>object <a href="-companion/">Companion</a> : <a href="../-view-environment-key/">ViewEnvironmentKey</a>&lt;<a href="./">ViewRegistry</a>&gt;</td>
+<td><a name="com.squareup.workflow1.ui/ViewRegistry.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.ui/ViewRegistry.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-companion/">Companion</a> : <a href="../-view-environment-key/">ViewEnvironmentKey</a>&lt;<a href="./">ViewRegistry</a>&gt;   <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui/ViewRegistry.Entry///PointingToDeclaration/"></a><a href="-entry/">Entry</a></td>
+<td><a name="com.squareup.workflow1.ui/ViewRegistry.Entry///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>interface <a href="-entry/">Entry</a><in <a href="-entry/index.md">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -934,8 +937,8 @@ class MyViewModel(savedState: SavedStateHandle) : ViewModel() {
 </thead>
 <tbody>
 <tr>
-<td><a href="get-factory-for/">getFactoryFor</a></td>
-<td>[androidJvm]<br>abstract fun &lt;<a href="get-factory-for/">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="get-factory-for/">getFactoryFor</a>(renderingType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;out <a href="get-factory-for/">RenderingT</a>&gt;): <a href="../-view-factory/">ViewFactory</a>&lt;<a href="get-factory-for/">RenderingT</a>&gt;?<br>This method is not for general use, use <a href="../-workflow-view-stub/">WorkflowViewStub</a> instead.</td>
+<td><a name="com.squareup.workflow1.ui/ViewRegistry/getEntryFor/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/"></a><a href="get-entry-for/">getEntryFor</a></td>
+<td><a name="com.squareup.workflow1.ui/ViewRegistry/getEntryFor/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun &lt;<a href="get-entry-for/">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="get-entry-for/">getEntryFor</a>(renderingType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><out <a href="get-entry-for.md">RenderingT</a>>): <a href="-entry/">ViewRegistry.Entry</a>&lt;<a href="get-entry-for/">RenderingT</a>&gt;?  <br>More info  <br>Returns the <a href="-entry/">Entry</a> that was registered for the given <a href="get-entry-for/">renderingType</a>, or null if none was found.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -949,8 +952,8 @@ class MyViewModel(savedState: SavedStateHandle) : ViewModel() {
 </thead>
 <tbody>
 <tr>
-<td><a href="keys/">keys</a></td>
-<td>[androidJvm]<br>abstract val <a href="keys/">keys</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;*&gt;&gt;<br>The set of unique keys which this registry can derive from the renderings passed to <a href="../build-view/">buildView</a> and for which it knows how to create views.</td>
+<td><a name="com.squareup.workflow1.ui/ViewRegistry/keys/#/PointingToDeclaration/"></a><a href="keys/">keys</a></td>
+<td><a name="com.squareup.workflow1.ui/ViewRegistry/keys/#/PointingToDeclaration/"></a> [jvm] abstract val <a href="keys/">keys</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;*&gt;&gt;The set of unique keys which this registry can derive from the renderings passed to <a href="get-entry-for/">getEntryFor</a> and for which it knows how to create views.   <br></td>
 </tr>
 </tbody>
 </table>
@@ -964,20 +967,28 @@ class MyViewModel(savedState: SavedStateHandle) : ViewModel() {
 </thead>
 <tbody>
 <tr>
-<td><a href="../build-view/">buildView</a></td>
-<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>fun &lt;<a href="../build-view/">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">ViewRegistry</a>.<a href="../build-view/">buildView</a>(initialRendering: <a href="../build-view/">RenderingT</a>, initialViewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>, contextForNewView: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, container: <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>? = null, viewStarter: <a href="../-view-starter/">ViewStarter</a>? = null): <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><br>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> or <a href="../-decorative-view-factory/">DecorativeViewFactory</a> than to call this method directly.</td>
+<td><a name="com.squareup.workflow1.ui//buildView/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?#com.squareup.workflow1.ui.ViewStarter?/PointingToDeclaration/"></a><a href="../build-view/">buildView</a></td>
+<td><a name="com.squareup.workflow1.ui//buildView/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#android.content.Context#android.view.ViewGroup?#com.squareup.workflow1.ui.ViewStarter?/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>fun &lt;<a href="../build-view/">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./#417657%2FExtensions%2F576965167">ViewRegistry</a>.<a href="../build-view/">buildView</a>(initialRendering: <a href="../build-view/">RenderingT</a>, initialViewEnvironment: <a href="../-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>, contextForNewView: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>, container: <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>? = null, viewStarter: <a href="../-view-starter/">ViewStarter</a>? = null): <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>  <br>More info  <br><strong>This will be deprecated in favor of</strong> <a href="../start-showing/"><strong>ScreenViewFactory.startShowing</strong></a> <strong>very soon.</strong>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../get-factory-for-rendering/">getFactoryForRendering</a></td>
-<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>fun &lt;<a href="../get-factory-for-rendering/">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">ViewRegistry</a>.<a href="../get-factory-for-rendering/">getFactoryForRendering</a>(rendering: <a href="../get-factory-for-rendering/">RenderingT</a>): <a href="../-view-factory/">ViewFactory</a>&lt;<a href="../get-factory-for-rendering/">RenderingT</a>&gt;<br>It is usually more convenient to use <a href="../-workflow-view-stub/">WorkflowViewStub</a> or <a href="../-decorative-view-factory/">DecorativeViewFactory</a> than to call this method directly.</td>
+<td><a name="com.squareup.workflow1.ui//get/com.squareup.workflow1.ui.ViewRegistry#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/"></a><a href="../get/">get</a></td>
+<td><a name="com.squareup.workflow1.ui//get/com.squareup.workflow1.ui.ViewRegistry#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>inline operator fun &lt;<a href="../get/">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./">ViewRegistry</a>.<a href="../get/">get</a>(renderingType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><out <a href="../get.md">RenderingT</a>>): <a href="-entry/">ViewRegistry.Entry</a>&lt;<a href="../get/">RenderingT</a>&gt;?  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../plus/">plus</a></td>
-<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>operator fun <a href="./">ViewRegistry</a>.<a href="../plus/">plus</a>(binding: <a href="../-view-factory/">ViewFactory</a>&lt;*&gt;): <a href="./">ViewRegistry</a><br>@WorkflowUiExperimentalApi<br>operator fun <a href="./">ViewRegistry</a>.<a href="../plus/">plus</a>(other: <a href="./">ViewRegistry</a>): <a href="./">ViewRegistry</a></td>
+<td><a name="com.squareup.workflow1.ui//getFactoryFor/com.squareup.workflow1.ui.ViewRegistry#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/"></a><a href="../get-factory-for/">getFactoryFor</a></td>
+<td><a name="com.squareup.workflow1.ui//getFactoryFor/com.squareup.workflow1.ui.ViewRegistry#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>fun &lt;<a href="../get-factory-for/">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./#417657%2FExtensions%2F576965167">ViewRegistry</a>.<a href="../get-factory-for/">getFactoryFor</a>(renderingType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><out <a href="../get-factory-for.md">RenderingT</a>>): <a href="../-view-factory/">ViewFactory</a>&lt;<a href="../get-factory-for/">RenderingT</a>&gt;?  <br>More info  <br><strong>This will be deprecated in favor of</strong> <strong>ViewRegistry.getEntryFor</strong> <strong>very soon.</strong>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../../com.squareup.workflow1.ui.compose/with-composition-root/">withCompositionRoot</a></td>
-<td>[androidJvm]<br>@WorkflowUiExperimentalApi<br>fun <a href="./">ViewRegistry</a>.<a href="../../com.squareup.workflow1.ui.compose/with-composition-root/">withCompositionRoot</a>(root: <a href="../../com.squareup.workflow1.ui.compose/#2122347671%2FClasslikes%2F576965167">CompositionRoot</a>): <a href="./">ViewRegistry</a><br>Returns a <a href="./">ViewRegistry</a> that ensures that any <a href="../../com.squareup.workflow1.ui.compose/compose-view-factory/">composeViewFactory</a> factories registered in this registry will be wrapped exactly once with a <a href="../../com.squareup.workflow1.ui.compose/#2122347671%2FClasslikes%2F576965167">CompositionRoot</a> wrapper. See <a href="../../com.squareup.workflow1.ui.compose/#2122347671%2FClasslikes%2F576965167">CompositionRoot</a> for more information.</td>
+<td><a name="com.squareup.workflow1.ui//getFactoryForRendering/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/"></a><a href="../get-factory-for-rendering/">getFactoryForRendering</a></td>
+<td><a name="com.squareup.workflow1.ui//getFactoryForRendering/com.squareup.workflow1.ui.ViewRegistry#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@WorkflowUiExperimentalApi()  <br>  <br>fun &lt;<a href="../get-factory-for-rendering/">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="./#417657%2FExtensions%2F576965167">ViewRegistry</a>.<a href="../get-factory-for-rendering/">getFactoryForRendering</a>(rendering: <a href="../get-factory-for-rendering/">RenderingT</a>): <a href="../-view-factory/">ViewFactory</a>&lt;<a href="../get-factory-for-rendering/">RenderingT</a>&gt;  <br>More info  <br><strong>This will be deprecated in favor of</strong> <a href="../-screen-view-factory-finder/get-view-factory-for-rendering/"><strong>ScreenViewFactoryFinder.getViewFactoryForRendering</strong></a> <strong>very soon.</strong>  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//merge/com.squareup.workflow1.ui.ViewRegistry#com.squareup.workflow1.ui.ViewRegistry/PointingToDeclaration/"></a><a href="../merge/">merge</a></td>
+<td><a name="com.squareup.workflow1.ui//merge/com.squareup.workflow1.ui.ViewRegistry#com.squareup.workflow1.ui.ViewRegistry/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>infix fun <a href="./">ViewRegistry</a>.<a href="../merge/">merge</a>(other: <a href="./">ViewRegistry</a>): <a href="./">ViewRegistry</a>  <br>More info  <br>Combines the receiver with <a href="../merge/">other</a>.  <br><br><br></td>
+</tr>
+<tr>
+<td><a name="com.squareup.workflow1.ui//plus/com.squareup.workflow1.ui.ViewRegistry#com.squareup.workflow1.ui.ViewRegistry.Entry[*]/PointingToDeclaration/"></a><a href="../plus/">plus</a></td>
+<td><a name="com.squareup.workflow1.ui//plus/com.squareup.workflow1.ui.ViewRegistry#com.squareup.workflow1.ui.ViewRegistry.Entry[*]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>operator fun <a href="./">ViewRegistry</a>.<a href="../plus/">plus</a>(entry: <a href="-entry/">ViewRegistry.Entry</a>&lt;*&gt;): <a href="./">ViewRegistry</a>  <br>More info  <br>Transforms the receiver to add <a href="../plus/">entry</a>, throwing <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html">IllegalArgumentException</a> if the receiver already has a matching <a href="../plus/">entry</a>.  <br><br><br>[jvm]  <br>Content  <br>@<a href="../-workflow-ui-experimental-api/">WorkflowUiExperimentalApi</a>()  <br>  <br>operator fun <a href="./">ViewRegistry</a>.<a href="../plus/">plus</a>(other: <a href="./">ViewRegistry</a>): <a href="./">ViewRegistry</a>  <br>More info  <br>Transforms the receiver to add all entries from <a href="../plus/">other</a>, throwing <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html">IllegalArgumentException</a> if the receiver already has any matching entry.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

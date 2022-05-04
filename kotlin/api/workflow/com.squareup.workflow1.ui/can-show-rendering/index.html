@@ -786,12 +786,15 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">canShowRendering</a></p>
 <h1 id="canshowrendering">canShowRendering<a class="headerlink" href="#canshowrendering" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>fun <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">canShowRendering</a>(rendering: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">canShowRendering</a>(rendering: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><br />
+More info  </p>
+<p><strong>This will be deprecated in favor of</strong> <a href="../can-show/"><strong>ScreenViewHolder.canShow</strong></a> <strong>very soon.</strong></p>
 <p>Note that <a href="../show-rendering/">WorkflowViewStub.showRendering</a> makes this check for you.</p>
 <p>True if this view is able to show <a href="./">rendering</a>.</p>
-<p>Returns false if <a href="../bind-show-rendering/">View.bindShowRendering</a> has not been called, so it is always safe to call this method. Otherwise returns the compatibility of the current <a href="../get-rendering/">View.getRendering</a> and the new one.</p>
+<p>Returns false if <a href="../bind-show-rendering/">View.bindShowRendering</a> has not been called, so it is always safe to call this method. Otherwise returns the compatible of the current <a href="../get-rendering/">View.getRendering</a> and the new one.</p>
                 
               
               

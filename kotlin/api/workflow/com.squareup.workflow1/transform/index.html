@@ -823,29 +823,27 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">transform</a></p>
 <h1 id="transform">transform<a class="headerlink" href="#transform" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-fun &lt;<a href="./">T</a>, <a href="./">R</a>&gt; <a href="../-worker/">Worker</a>&lt;<a href="./">T</a>&gt;.<a href="./">transform</a>(transform: (Flow&lt;<a href="./">T</a>&gt;) -&gt; Flow&lt;<a href="./">R</a>&gt;): <a href="../-worker/">Worker</a>&lt;<a href="./">R</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+fun &lt;<a href="./">T</a>, <a href="./">R</a>&gt; <a href="../-worker/">Worker</a>&lt;<a href="./">T</a>&gt;.<a href="./">transform</a>(transform: (Flow&lt;<a href="./">T</a>&gt;) -&gt; Flow&lt;<a href="./">R</a>&gt;): <a href="../-worker/">Worker</a>&lt;<a href="./">R</a>&gt;<br />
+More info  </p>
 <p>Returns a <a href="../-worker/">Worker</a> that transforms this <a href="../-worker/">Worker</a>&lsquo;s Flow by calling <a href="./">transform</a>.</p>
 <p>The returned worker is considered equivalent with any other worker returned by this function with the same receiver.</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="workers-from-the-same-source-are-equivalent">Workers from the same source are equivalent<a class="headerlink" href="#workers-from-the-same-source-are-equivalent" title="Permanent link">&para;</a></h3>
-<p>val secondsWorker = millisWorker.transform {\
-  it.map { millis -&gt; millis / 1000 }.distinctUntilChanged()\
-}\
-\
-val otherSecondsWorker = millisWorker.transform {\
-  it.map { millis -&gt; millis.toSeconds() }\
-}\
-\
-assert(secondsWorker.doesSameWorkAs(otherSecondsWorker))</p>
+<p>val secondsWorker = millisWorker.transform {<br />
+  it.map { millis -&gt; millis / 1000 }.distinctUntilChanged()<br />
+}  </p>
+<p>val otherSecondsWorker = millisWorker.transform {<br />
+  it.map { millis -&gt; millis.toSeconds() }<br />
+}  </p>
+<p>assert(secondsWorker.doesSameWorkAs(otherSecondsWorker))</p>
 <h3 id="workers-from-different-sources-are-not-equivalent">Workers from different sources are not equivalent<a class="headerlink" href="#workers-from-different-sources-are-not-equivalent" title="Permanent link">&para;</a></h3>
-<p>val secondsWorker = millisWorker.transform {\
-  it.map { millis -&gt; millis / 1000 }.distinctUntilChanged()\
-}\
-\
-val otherSecondsWorker = secondsWorker.transform { it }\
-\
-assert(!secondsWorker.doesSameWorkAs(otherSecondsWorker))</p>
+<p>val secondsWorker = millisWorker.transform {<br />
+  it.map { millis -&gt; millis / 1000 }.distinctUntilChanged()<br />
+}  </p>
+<p>val otherSecondsWorker = secondsWorker.transform { it }  </p>
+<p>assert(!secondsWorker.doesSameWorkAs(otherSecondsWorker))  </p>
                 
               
               

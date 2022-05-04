@@ -880,56 +880,92 @@
 <h2 id="screenviewcontroller"><code>ScreenViewController</code><a class="headerlink" href="#screenviewcontroller" title="Permanent link">&para;</a></h2>
 <p>The <code>ScreenViewController</code> provides a base class that hides the plumbing of updating a view
 controller from a view model update.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">struct</span> <span class="nc">DemoScreen</span><span class="p">:</span> <span class="n">Screen</span> <span class="p">{</span>
-    <span class="kd">let</span> <span class="nv">title</span><span class="p">:</span> <span class="nb">String</span>
-    <span class="kd">let</span> <span class="nv">onTap</span><span class="p">:</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<p>```swift
+struct DemoScreen: Screen {
+    let title: String
+    let onTap: () -&gt; Void</p>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>func viewControllerDescription(environment: ViewEnvironment) -&gt; ViewControllerDescription {
+    return DemoScreenViewController.description(for: self, environment: environment)
+}
+</code></pre></div></td></tr></table></div>
 
-    <span class="kd">func</span> <span class="nf">viewControllerDescription</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewControllerDescription</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">DemoScreenViewController</span><span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="k">for</span><span class="p">:</span> <span class="kc">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">environment</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<p>}</p>
+<p>class DemoScreenViewController: ScreenViewController<DemoScreen> {</p>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code>private let button: UIButton
 
+required init(screen: DemoScreen, environment: ViewEnvironment) {
+    button = UIButton()
+    super.init(screen: screen, environment: environment)
 
-<span class="kd">class</span> <span class="nc">DemoScreenViewController</span><span class="p">:</span> <span class="n">ScreenViewController</span><span class="p">&lt;</span><span class="n">DemoScreen</span><span class="p">&gt;</span> <span class="p">{</span>
+    update(screen: screen)
+}
 
-    <span class="kd">private</span> <span class="kd">let</span> <span class="nv">button</span><span class="p">:</span> <span class="bp">UIButton</span>
+override func viewDidLoad() {
+    super.viewDidLoad()
 
-    <span class="kr">required</span> <span class="kd">init</span><span class="p">(</span><span class="n">screen</span><span class="p">:</span> <span class="n">DemoScreen</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">button</span> <span class="p">=</span> <span class="bp">UIButton</span><span class="p">()</span>
-        <span class="kc">super</span><span class="p">.</span><span class="kd">init</span><span class="p">(</span><span class="n">screen</span><span class="p">:</span> <span class="n">screen</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">environment</span><span class="p">)</span>
+    button.addTarget(self, action: #selector(buttonPressed(sender:)), for: .touchUpInside)
 
-        <span class="n">update</span><span class="p">(</span><span class="n">screen</span><span class="p">:</span> <span class="n">screen</span><span class="p">)</span>
-    <span class="p">}</span>
+    view.addSubview(button)
+}
 
-    <span class="kr">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
-        <span class="kc">super</span><span class="p">.</span><span class="n">viewDidLoad</span><span class="p">()</span>
+override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
 
-        <span class="n">button</span><span class="p">.</span><span class="n">addTarget</span><span class="p">(</span><span class="kc">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="k">#selector</span><span class="p">(</span><span class="n">buttonPressed</span><span class="p">(</span><span class="n">sender</span><span class="p">:)),</span> <span class="k">for</span><span class="p">:</span> <span class="p">.</span><span class="n">touchUpInside</span><span class="p">)</span>
+    button.frame = view.bounds
+}
 
-        <span class="n">view</span><span class="p">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
-    <span class="p">}</span>
+override func screenDidChange(from previousScreen: DemoScreen, previousEnvironment: ViewEnvironment) {
+    super.screenDidChange(from: previousScreen, previousEnvironment: previousEnvironment)
+    update(screen: screen)
+}
 
-    <span class="kr">override</span> <span class="kd">func</span> <span class="nf">viewWillLayoutSubviews</span><span class="p">()</span> <span class="p">{</span>
-        <span class="kc">super</span><span class="p">.</span><span class="n">viewWillLayoutSubviews</span><span class="p">()</span>
+private func update(screen: DemoScreen) {
+    button.setTitle(screen.title, for: .normal)
+}
 
-        <span class="n">button</span><span class="p">.</span><span class="n">frame</span> <span class="p">=</span> <span class="n">view</span><span class="p">.</span><span class="n">bounds</span>
-    <span class="p">}</span>
+@objc private func buttonPressed(sender: UIButton) {
+    screen.onTap()
+}
+</code></pre></div></td></tr></table></div>
 
-    <span class="kr">override</span> <span class="kd">func</span> <span class="nf">screenDidChange</span><span class="p">(</span><span class="n">from</span> <span class="n">previousScreen</span><span class="p">:</span> <span class="n">DemoScreen</span><span class="p">,</span> <span class="n">previousEnvironment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kc">super</span><span class="p">.</span><span class="n">screenDidChange</span><span class="p">(</span><span class="n">from</span><span class="p">:</span> <span class="n">previousScreen</span><span class="p">,</span> <span class="n">previousEnvironment</span><span class="p">:</span> <span class="n">previousEnvironment</span><span class="p">)</span>
-        <span class="n">update</span><span class="p">(</span><span class="n">screen</span><span class="p">:</span> <span class="n">screen</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">screen</span><span class="p">:</span> <span class="n">DemoScreen</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">button</span><span class="p">.</span><span class="n">setTitle</span><span class="p">(</span><span class="n">screen</span><span class="p">.</span><span class="n">title</span><span class="p">,</span> <span class="k">for</span><span class="p">:</span> <span class="p">.</span><span class="n">normal</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="kr">@objc</span> <span class="kd">private</span> <span class="kd">func</span> <span class="nf">buttonPressed</span><span class="p">(</span><span class="n">sender</span><span class="p">:</span> <span class="bp">UIButton</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">screen</span><span class="p">.</span><span class="n">onTap</span><span class="p">()</span>
-    <span class="p">}</span>
-
-<span class="p">}</span>
-</code></pre></div>
+<p>}
+```</p>
 <h3 id="lifecycle">Lifecycle<a class="headerlink" href="#lifecycle" title="Permanent link">&para;</a></h3>
 <ol>
 <li>When the view controller is first created, it is given the initial screen value. In the example,

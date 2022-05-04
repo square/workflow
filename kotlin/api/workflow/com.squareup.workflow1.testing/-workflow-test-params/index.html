@@ -824,12 +824,11 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.testing</a>/<a href="./">WorkflowTestParams</a></p>
 <h1 id="workflowtestparams">WorkflowTestParams<a class="headerlink" href="#workflowtestparams" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-@TestOnly</p>
-<p>class <a href="./">WorkflowTestParams</a>&lt;out <a href="./">StateT</a>&gt;(startFrom: <a href="-start-mode/">WorkflowTestParams.StartMode</a>&lt;<a href="./">StateT</a>&gt;, checkRenderIdempotence: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>)</p>
+<p>[jvm] @TestOnly()  </p>
+<p>class <a href="./">WorkflowTestParams</a><out <a href="index.md">StateT</a>>(<strong>startFrom</strong>: <a href="-start-mode/">WorkflowTestParams.StartMode</a>&lt;<a href="./">StateT</a>&gt;, <strong>checkRenderIdempotence</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>)</p>
 <p>Defines configuration for workflow testing infrastructure such as testRender, testFromStart. and test.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -839,12 +838,12 @@
 </thead>
 <tbody>
 <tr>
-<td>startFrom</td>
-<td>How to start the workflow – see <a href="-start-mode/">StartMode</a>.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams///PointingToDeclaration/"></a>startFrom</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams///PointingToDeclaration/"></a><br><br>How to start the workflow – see <a href="-start-mode/">StartMode</a>.<br><br></td>
 </tr>
 <tr>
-<td>checkRenderIdempotence</td>
-<td>If true, every render method will be called multiple times, to help suss out any side effects that a render method is trying to perform. This parameter defaults to true since the workflow contract is that render will be called an arbitrary number of times for any given state, so performing side effects in render will almost always result in bugs. It is recommended to leave this on, but if you need to debug a test and don&rsquo;t want to have to deal with the extra passes, you can temporarily set it to false.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams///PointingToDeclaration/"></a>checkRenderIdempotence</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams///PointingToDeclaration/"></a><br><br>If true, every render method will be called multiple times, to help suss out any side effects that a render method is trying to perform. This parameter defaults to true since the workflow contract is that render will be called an arbitrary number of times for any given state, so performing side effects in render will almost always result in bugs. It is recommended to leave this on, but if you need to debug a test and don&rsquo;t want to have to deal with the extra passes, you can temporarily set it to false.<br><br></td>
 </tr>
 </tbody>
 </table>
@@ -858,8 +857,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-workflow-test-params/">WorkflowTestParams</a></td>
-<td>[jvm]<br>fun &lt;out <a href="./">StateT</a>&gt; <a href="-workflow-test-params/">WorkflowTestParams</a>(startFrom: <a href="-start-mode/">WorkflowTestParams.StartMode</a>&lt;<a href="./">StateT</a>&gt; = StartFresh, checkRenderIdempotence: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true)</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams/WorkflowTestParams/#com.squareup.workflow1.testing.WorkflowTestParams.StartMode[TypeParam(bounds=[kotlin.Any?])]#kotlin.Boolean/PointingToDeclaration/"></a><a href="-workflow-test-params/">WorkflowTestParams</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams/WorkflowTestParams/#com.squareup.workflow1.testing.WorkflowTestParams.StartMode[TypeParam(bounds=[kotlin.Any?])]#kotlin.Boolean/PointingToDeclaration/"></a> [jvm] fun <out <a href="index.md">StateT</a>> <a href="-workflow-test-params/">WorkflowTestParams</a>(startFrom: <a href="-start-mode/">WorkflowTestParams.StartMode</a>&lt;<a href="./">StateT</a>&gt; = StartFresh, checkRenderIdempotence: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true)How to start the workflow – see <a href="-start-mode/">StartMode</a>.   <br></td>
 </tr>
 </tbody>
 </table>
@@ -873,8 +872,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-start-mode/">StartMode</a></td>
-<td>[jvm]<br>sealed class <a href="-start-mode/">StartMode</a>&lt;out <a href="-start-mode/">StateT</a>&gt;<br>Defines how to start the workflow for tests.</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode///PointingToDeclaration/"></a><a href="-start-mode/">StartMode</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams.StartMode///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>sealed class <a href="-start-mode/">StartMode</a><out <a href="-start-mode/index.md">StateT</a>>  <br>More info  <br>Defines how to start the workflow for tests.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -888,12 +887,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="check-render-idempotence/">checkRenderIdempotence</a></td>
-<td>[jvm]<br>val <a href="check-render-idempotence/">checkRenderIdempotence</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams/checkRenderIdempotence/#/PointingToDeclaration/"></a><a href="check-render-idempotence/">checkRenderIdempotence</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams/checkRenderIdempotence/#/PointingToDeclaration/"></a> [jvm] val <a href="check-render-idempotence/">checkRenderIdempotence</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = trueIf true, every render method will be called multiple times, to help suss out any side effects that a render method is trying to perform.   <br></td>
 </tr>
 <tr>
-<td><a href="start-from/">startFrom</a></td>
-<td>[jvm]<br>val <a href="start-from/">startFrom</a>: <a href="-start-mode/">WorkflowTestParams.StartMode</a>&lt;<a href="./">StateT</a>&gt;</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams/startFrom/#/PointingToDeclaration/"></a><a href="start-from/">startFrom</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams/startFrom/#/PointingToDeclaration/"></a> [jvm] val <a href="start-from/">startFrom</a>: <a href="-start-mode/">WorkflowTestParams.StartMode</a>&lt;<a href="./">StateT</a>&gt;How to start the workflow – see <a href="-start-mode/">StartMode</a>.   <br></td>
 </tr>
 </tbody>
 </table>

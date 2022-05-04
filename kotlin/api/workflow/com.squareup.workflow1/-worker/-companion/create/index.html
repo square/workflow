@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1</a>/<a href="../../">Worker</a>/<a href="../">Companion</a>/<a href="./">create</a></p>
 <h1 id="create">create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-inline fun &lt;<a href="./">OutputT</a>&gt; <a href="./">create</a>(noinline block: suspend FlowCollector&lt;<a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../../">Worker</a>&lt;<a href="./">OutputT</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">OutputT</a>&gt; <a href="./">create</a>(noinline block: suspend FlowCollector&lt;<a href="./">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../../">Worker</a>&lt;<a href="./">OutputT</a>&gt;<br />
+More info  </p>
 <p>Shorthand for flow { block() }.asWorker().</p>
 <p>Note: If your worker just needs to perform side effects and doesn&rsquo;t need to emit anything, do not use a <a href="../../">Worker</a> but instead call BaseRenderContext::runningSideEffect</p>
                 

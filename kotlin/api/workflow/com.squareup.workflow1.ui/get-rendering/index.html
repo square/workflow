@@ -803,11 +803,14 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">getRendering</a></p>
 <h1 id="getrendering">getRendering<a class="headerlink" href="#getrendering" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>inline fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">getRendering</a>(): <a href="./">RenderingT</a>?</p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>inline fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">getRendering</a>(): <a href="./">RenderingT</a>?<br />
+More info  </p>
+<p><strong>This will be deprecated in favor of</strong> <a href="../screen-or-null/"><strong>screenOrNull</strong></a> <strong>very soon.</strong></p>
 <p>Returns the most recent rendering shown by this view cast to <a href="./">RenderingT</a>, or null if <a href="../bind-show-rendering/">bindShowRendering</a> has never been called.</p>
-<h2 id="throws">Throws<a class="headerlink" href="#throws" title="Permanent link">&para;</a></h2>
+<h4 id="throws">Throws<a class="headerlink" href="#throws" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
@@ -817,8 +820,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-class-cast-exception/index.html">kotlin.ClassCastException</a></td>
-<td>if the current rendering is not of type <a href="./">RenderingT</a></td>
+<td><a name="com.squareup.workflow1.ui//getRendering/android.view.View#/PointingToDeclaration/"></a><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassCastException.html">java.lang.ClassCastException</a></td>
+<td><a name="com.squareup.workflow1.ui//getRendering/android.view.View#/PointingToDeclaration/"></a><br><br>if the current rendering is not of type <a href="./">RenderingT</a><br><br></td>
 </tr>
 </tbody>
 </table>

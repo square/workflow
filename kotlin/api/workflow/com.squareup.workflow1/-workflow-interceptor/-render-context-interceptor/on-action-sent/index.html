@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../../">com.squareup.workflow1</a>/<a href="../../">WorkflowInterceptor</a>/<a href="../">RenderContextInterceptor</a>/<a href="./">onActionSent</a></p>
 <h1 id="onactionsent">onActionSent<a class="headerlink" href="#onactionsent" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-open fun <a href="./">onActionSent</a>(action: <a href="../../../-workflow-action/">WorkflowAction</a>&lt;<a href="../">P</a>, <a href="../">S</a>, <a href="../">O</a>&gt;, proceed: (<a href="../../../-workflow-action/">WorkflowAction</a>&lt;<a href="../">P</a>, <a href="../">S</a>, <a href="../">O</a>&gt;) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)</p>
+<p>[jvm]<br />
+Content<br />
+open fun <a href="./">onActionSent</a>(action: <a href="../../../-workflow-action/">WorkflowAction</a>&lt;<a href="../">P</a>, <a href="../">S</a>, <a href="../">O</a>&gt;, proceed: (<a href="../../../-workflow-action/">WorkflowAction</a>&lt;<a href="../">P</a>, <a href="../">S</a>, <a href="../">O</a>&gt;) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<br />
+More info  </p>
 <p>Intercepts calls to <a href="../../../-sink/send/">send</a> on the <a href="../../../-base-render-context/action-sink/">BaseRenderContext.actionSink</a>.</p>
 <p>This method will be called from inside the actual <a href="../../../-sink/send/">Sink.send</a> stack frame, so any stack traces captured from it will include the code that is actually making the send call.</p>
                 

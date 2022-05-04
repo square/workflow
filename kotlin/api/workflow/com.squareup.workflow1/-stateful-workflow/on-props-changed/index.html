@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">StatefulWorkflow</a>/<a href="./">onPropsChanged</a></p>
 <h1 id="onpropschanged">onPropsChanged<a class="headerlink" href="#onpropschanged" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-open fun <a href="./">onPropsChanged</a>(old: <a href="../">PropsT</a>, new: <a href="../">PropsT</a>, state: <a href="../">StateT</a>): <a href="../">StateT</a></p>
+<p>[jvm]<br />
+Content<br />
+open fun <a href="./">onPropsChanged</a>(old: <a href="../">PropsT</a>, new: <a href="../">PropsT</a>, state: <a href="../">StateT</a>): <a href="../">StateT</a><br />
+More info  </p>
 <p>Called from RenderContext.renderChild instead of <a href="../initial-state/">initialState</a> when the workflow is already running. This allows the workflow to detect changes in props, and possibly change its state in response. This method is called only if the new props value is not == with the old.</p>
 <p>Default implementation does nothing.</p>
                 

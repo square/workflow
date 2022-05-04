@@ -909,14 +909,14 @@
                 
                 <p><strong>STRUCT</strong></p>
 <h1 id="rendertester"><code>RenderTester</code><a class="headerlink" href="#rendertester" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public struct RenderTester&lt;WorkflowType: Workflow&gt;</code></p>
 <p>Testing helper for validating the behavior of calls to <code>render</code>.</p>
 <p>Usage: <code>expect</code> workflows and side effects then validate with a call to <code>render</code> and
 the resulting <code>RenderTesterResult</code>.
 Side-effects may be performed against the rendering to validate the behavior of actions.</p>
 <p>To directly test actions and their effects, use the <code>WorkflowActionTester</code>.</p>
-<div class="highlight"><pre><span></span><code>workflow
+<p><code>workflow
     .renderTester(initialState: TestWorkflow.State())
     .expect(
         worker: TestWorker(),
@@ -924,74 +924,68 @@ Side-effects may be performed against the rendering to validate the behavior of 
     )
     .expectWorkflow(
         type: ChildWorkflow.self,
-        key: &quot;key&quot;,
-        rendering: &quot;rendering&quot;,
+        key: "key",
+        rendering: "rendering",
         producingOutput: ChildWorkflow.Output.success
     )
     .render { rendering in
-        XCTAssertEqual(&quot;expected text on rendering&quot;, rendering.text)
+        XCTAssertEqual("expected text on rendering", rendering.text)
     }
     .assert(state: TestWorkflow.State())
-    .assert(output: TestWorkflow.Output.finished)
-</code></pre></div>
+    .assert(output: TestWorkflow.Output.finished)</code></p>
 <p>Validating the rendering only from the initial state provided by the workflow:
-<div class="highlight"><pre><span></span><code>workflow
+<code>workflow
     .renderTester()
     .render { rendering in
-        XCTAssertEqual(&quot;expected text on rendering&quot;, rendering.text)
-    }
-</code></pre></div></p>
+        XCTAssertEqual("expected text on rendering", rendering.text)
+    }</code></p>
 <p>Validate the state was updated from a callback on the rendering:
-<div class="highlight"><pre><span></span><code>workflow
+<code>workflow
     .renderTester()
     .render { rendering in
-        XCTAssertEqual(&quot;expected text on rendering&quot;, rendering.text)
-        rendering.updateText(&quot;updated&quot;)
+        XCTAssertEqual("expected text on rendering", rendering.text)
+        rendering.updateText("updated")
     }
     .assert(
-        state: TestWorkflow.State(text: &quot;updated&quot;)
-    )
-</code></pre></div></p>
+        state: TestWorkflow.State(text: "updated")
+    )</code></p>
 <p>Validate an output was received from the workflow. The <code>action()</code> on the rendering will cause an action that will return an output.
-<div class="highlight"><pre><span></span><code>workflow
+<code>workflow
     .renderTester()
     .render { rendering in
         rendering.action()
     }
     .assert(
        output: .success
-    )
-</code></pre></div></p>
+    )</code></p>
 <p>Validate a worker is running, and simulate the effect of its output:
-<div class="highlight"><pre><span></span><code>workflow
+<code>workflow
     .renderTester(initialState: TestWorkflow.State(loadingState: .loading))
     .expect(
         worker: TestWorker(),
         output: TestWorker.Output.success
     )
-    .render { _ in }
-</code></pre></div></p>
+    .render { _ in }</code></p>
 <p>Validate a child workflow is run, and simulate the effect of its output:
-<div class="highlight"><pre><span></span><code>workflow
+<code>workflow
     .renderTester(initialState: TestWorkflow.State(loadingState: .loading))
     .expectWorkflow(
         type: ChildWorkflow.self,
-        rendering: &quot;rendering&quot;,
+        rendering: "rendering",
         producingOutput: ChildWorkflow.Output.success
     )
-    .render { _ in }
-</code></pre></div></p>
+    .render { _ in }</code></p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="expectworkflowtypekeyproducingrenderingproducingoutputfilelineassertions"><code>expectWorkflow(type:key:producingRendering:producingOutput:file:line:assertions:)</code><a class="headerlink" href="#expectworkflowtypekeyproducingrenderingproducingoutputfilelineassertions" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">expectWorkflow</span><span class="p">&lt;</span><span class="n">ExpectedWorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span>
-    <span class="n">type</span><span class="p">:</span> <span class="n">ExpectedWorkflowType</span><span class="p">.</span><span class="kr">Type</span><span class="p">,</span>
-    <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-    <span class="n">producingRendering</span> <span class="n">rendering</span><span class="p">:</span> <span class="n">ExpectedWorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">,</span>
-    <span class="n">producingOutput</span> <span class="n">output</span><span class="p">:</span> <span class="n">ExpectedWorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">,</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="n">assertions</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">ExpectedWorkflowType</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span> <span class="p">=</span> <span class="p">{</span> <span class="kc">_</span> <span class="k">in</span> <span class="p">}</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func expectWorkflow&lt;ExpectedWorkflowType: Workflow&gt;(
+    type: ExpectedWorkflowType.Type,
+    key: String = "",
+    producingRendering rendering: ExpectedWorkflowType.Rendering,
+    producingOutput output: ExpectedWorkflowType.Output? = nil,
+    file: StaticString = #file, line: UInt = #line,
+    assertions: @escaping (ExpectedWorkflowType) -&gt; Void = { _ in }
+) -&gt; RenderTester&lt;WorkflowType&gt;</code></p>
 <p>Expect the given workflow type in the next rendering.</p>
 <ul>
 <li>Parameters:</li>
@@ -1033,15 +1027,15 @@ Side-effects may be performed against the rendering to validate the behavior of 
 </tbody>
 </table>
 <h3 id="expectworkflowignoringoutputtypekeyproducingrenderingfilelineassertions"><code>expectWorkflowIgnoringOutput(type:key:producingRendering:file:line:assertions:)</code><a class="headerlink" href="#expectworkflowignoringoutputtypekeyproducingrenderingfilelineassertions" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">expectWorkflowIgnoringOutput</span><span class="p">&lt;</span><span class="n">ExpectedWorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span>
-    <span class="n">type</span><span class="p">:</span> <span class="n">ExpectedWorkflowType</span><span class="p">.</span><span class="kr">Type</span><span class="p">,</span>
-    <span class="n">key</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-    <span class="n">producingRendering</span> <span class="n">rendering</span><span class="p">:</span> <span class="n">ExpectedWorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">,</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
-    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="n">assertions</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">ExpectedWorkflowType</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span> <span class="p">=</span> <span class="p">{</span> <span class="kc">_</span> <span class="k">in</span> <span class="p">}</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func expectWorkflowIgnoringOutput&lt;ExpectedWorkflowType: Workflow&gt;(
+    type: ExpectedWorkflowType.Type,
+    key: String = "",
+    producingRendering rendering: ExpectedWorkflowType.Rendering,
+    file: StaticString = #file,
+    line: UInt = #line,
+    assertions: @escaping (ExpectedWorkflowType) -&gt; Void = { _ in }
+) -&gt; RenderTester&lt;WorkflowType&gt;</code></p>
 <p>Expect the given workflow type in the next rendering, with its output being ignored by a call to <code>ignoringOutput()</code>.</p>
 <ul>
 <li>Parameters:</li>
@@ -1078,11 +1072,11 @@ Side-effects may be performed against the rendering to validate the behavior of 
 </tbody>
 </table>
 <h3 id="expectsideeffectkeyfileline"><code>expectSideEffect(key:file:line:)</code><a class="headerlink" href="#expectsideeffectkeyfileline" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">expectSideEffect</span><span class="p">(</span>
-    <span class="n">key</span><span class="p">:</span> <span class="n">AnyHashable</span><span class="p">,</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func expectSideEffect(
+    key: AnyHashable,
+    file: StaticString = #file, line: UInt = #line
+) -&gt; RenderTester&lt;WorkflowType&gt;</code></p>
 <p>Expect a side-effect for the given key.</p>
 <ul>
 <li>Parameter key: The key to expect.</li>
@@ -1103,12 +1097,12 @@ Side-effects may be performed against the rendering to validate the behavior of 
 </tbody>
 </table>
 <h3 id="expectsideeffectkeyproducingactionfileline"><code>expectSideEffect(key:producingAction:file:line:)</code><a class="headerlink" href="#expectsideeffectkeyproducingactionfileline" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">expectSideEffect</span><span class="p">&lt;</span><span class="n">ActionType</span><span class="p">&gt;(</span>
-    <span class="n">key</span><span class="p">:</span> <span class="n">AnyHashable</span><span class="p">,</span>
-    <span class="n">producingAction</span> <span class="n">action</span><span class="p">:</span> <span class="n">ActionType</span><span class="p">,</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
-<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">ActionType</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">ActionType</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
-</code></pre></div>
+<p><code>swift
+public func expectSideEffect&lt;ActionType&gt;(
+    key: AnyHashable,
+    producingAction action: ActionType,
+    file: StaticString = #file, line: UInt = #line
+) -&gt; RenderTester&lt;WorkflowType&gt; where ActionType: WorkflowAction, ActionType.WorkflowType == WorkflowType</code></p>
 <p>Expect a side-effect for the given key, and produce the given action when it is requested.</p>
 <ul>
 <li>Parameters:</li>
@@ -1135,11 +1129,11 @@ Side-effects may be performed against the rendering to validate the behavior of 
 </tbody>
 </table>
 <h3 id="renderfilelineassertions"><code>render(file:line:assertions:)</code><a class="headerlink" href="#renderfilelineassertions" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
-    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func render(
+    file: StaticString = #file, line: UInt = #line,
+    assertions: (WorkflowType.Rendering) throws -&gt; Void
+) rethrows -&gt; RenderTesterResult&lt;WorkflowType&gt;</code></p>
 <p>Render the workflow under test. At this point, you should have set up all expectations.</p>
 <p>The given <code>assertions</code> closure will be called with the produced rendering, allowing you to assert its properties or
 perform actions on it (such as closures that are wired up to a <code>Sink</code> inside the workflow.</p>

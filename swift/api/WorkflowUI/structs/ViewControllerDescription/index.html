@@ -877,8 +877,8 @@
                 
                 <p><strong>STRUCT</strong></p>
 <h1 id="viewcontrollerdescription"><code>ViewControllerDescription</code><a class="headerlink" href="#viewcontrollerdescription" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">ViewControllerDescription</span>
-</code></pre></div>
+<p><code>swift
+public struct ViewControllerDescription</code></p>
 <p>A ViewControllerDescription acts as a &ldquo;recipe&rdquo; for building and updating a specific <code>UIViewController</code>.
 It describes how to <em>create</em> and later <em>update</em> a given view controller instance, without creating one
 itself. This means it is a lightweight currency you can create and pass around to describe a view controller,
@@ -894,8 +894,8 @@ methods such as <code>buildViewController()</code>, <code>update(viewController:
 manually managing your own view controller hierarchy.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="inittypebuildupdate"><code>init(type:build:update:)</code><a class="headerlink" href="#inittypebuildupdate" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">VC</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">&gt;(</span><span class="n">type</span><span class="p">:</span> <span class="n">VC</span><span class="p">.</span><span class="kr">Type</span> <span class="p">=</span> <span class="n">VC</span><span class="p">.</span><span class="kc">self</span><span class="p">,</span> <span class="n">build</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="n">VC</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">VC</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+public init&lt;VC: UIViewController&gt;(type: VC.Type = VC.self, build: @escaping () -&gt; VC, update: @escaping (VC) -&gt; Void)</code></p>
 <p>Constructs a view controller description by providing closures used to
 build and update a specific view controller type.</p>
 <ul>
@@ -931,20 +931,20 @@ build and update a specific view controller type.</p>
 </tbody>
 </table>
 <h3 id="buildviewcontroller"><code>buildViewController()</code><a class="headerlink" href="#buildviewcontroller" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">buildViewController</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="bp">UIViewController</span>
-</code></pre></div>
+<p><code>swift
+public func buildViewController() -&gt; UIViewController</code></p>
 <p>Construct and update a new view controller as described by this view controller description.
 The view controller will be updated before it is returned, so it is fully configured and prepared for display.</p>
 <h3 id="canupdateviewcontroller"><code>canUpdate(viewController:)</code><a class="headerlink" href="#canupdateviewcontroller" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">canUpdate</span><span class="p">(</span><span class="n">viewController</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span>
-</code></pre></div>
+<p><code>swift
+public func canUpdate(viewController: UIViewController) -&gt; Bool</code></p>
 <p>If the given view controller is of the correct type to be updated by this view controller description.</p>
 <p>If your view controller type can change between updates, call this method before invoking <code>update(viewController:)</code>.</p>
 <h3 id="note">Note<a class="headerlink" href="#note" title="Permanent link">&para;</a></h3>
 <p>Failure to confirm the view controller is updatable will result in a fatal <code>precondition</code>.</p>
 <h3 id="updateviewcontroller"><code>update(viewController:)</code><a class="headerlink" href="#updateviewcontroller" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">viewController</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+public func update(viewController: UIViewController)</code></p>
 <p>Update the given view controller with the content from the view controller description.</p>
 <ul>
 <li>Parameters:</li>

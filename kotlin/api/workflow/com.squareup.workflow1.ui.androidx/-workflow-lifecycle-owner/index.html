@@ -810,12 +810,11 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui.androidx</a>/<a href="./">WorkflowLifecycleOwner</a></p>
 <h1 id="workflowlifecycleowner">WorkflowLifecycleOwner<a class="headerlink" href="#workflowlifecycleowner" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-@WorkflowUiExperimentalApi</p>
+<p>[androidJvm] @WorkflowUiExperimentalApi()  </p>
 <p>interface <a href="./">WorkflowLifecycleOwner</a> : <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/LifecycleOwner.html">LifecycleOwner</a></p>
 <p>An extension of <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/LifecycleOwner.html">LifecycleOwner</a> that is always owned by a <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, is logically a child lifecycle of the next-nearest <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a> above it (it mirrors its parent&rsquo;s lifecycle until it&rsquo;s destroyed), and can be <a href="destroy-on-detach/">asked to destroy</a> itself early.</p>
 <p>This type is meant to help integrate with <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a> by allowing the creation of a tree of <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/LifecycleOwner.html">LifecycleOwner</a>s that mirrors the view tree.</p>
-<p>Custom container views that use <a href="../../com.squareup.workflow1.ui/build-view/">ViewRegistry.buildView</a> to create their children <em>must</em> ensure they call <a href="destroy-on-detach/">destroyOnDetach</a> on the outgoing view before they replace children with new views. If this is not done, then certain processes that are started by that view&rsquo;s subtree may continue to run long after the view has been detached, and memory and other resources may be leaked. Note that <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/">WorkflowViewStub</a> takes care of this chore itself.</p>
+<p>Custom container views that use ScreenViewFactory.startShowing to create their children <em>must</em> ensure they call <a href="destroy-on-detach/">destroyOnDetach</a> on the outgoing view before they replace children with new views. If this is not done, then certain processes that are started by that view&rsquo;s subtree may continue to run long after the view has been detached, and memory and other resources may be leaked. Note that <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/">WorkflowViewStub</a> takes care of this chore itself.</p>
 <p>Set a <a href="./">WorkflowLifecycleOwner</a> on a view by calling <a href="-companion/install-on/">installOn</a>, and read it back using <a href="-companion/get/">get</a>.</p>
 <h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
 <table>
@@ -827,8 +826,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="-companion/">Companion</a></td>
-<td>[androidJvm]<br>object <a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner.Companion///PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -842,12 +841,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="destroy-on-detach/">destroyOnDetach</a></td>
-<td>[androidJvm]<br>abstract fun <a href="destroy-on-detach/">destroyOnDetach</a>()<br>If the owning view is attached, flags this <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">lifecycle</a> to be set to <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.State.html#DESTROYED">DESTROYED</a> as soon as the owning view is <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#233641971%2FFunctions%2F576965167">detached</a>. If the view is not attached (either because it&rsquo;s never been attached, or because it was attached and then detached), then it will destroy the lifecycle immediately.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner/destroyOnDetach/#/PointingToDeclaration/"></a><a href="destroy-on-detach/">destroyOnDetach</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner/destroyOnDetach/#/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>abstract fun <a href="destroy-on-detach/">destroyOnDetach</a>()  <br>More info  <br>If the owning view is attached, flags this <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">lifecycle</a> to be set to <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.State.DESTROYED.html">DESTROYED</a> as soon as the owning view is <a href="../../com.squareup.workflow1.ui/-workflow-view-stub/#233641971%2FFunctions%2F576965167">detached</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="./#1810192813%2FFunctions%2F576965167">getLifecycle</a></td>
-<td>[androidJvm]<br>@<a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html">NonNull</a><br>abstract fun <a href="./#1810192813%2FFunctions%2F576965167">getLifecycle</a>(): <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a></td>
+<td><a name="androidx.lifecycle/LifecycleOwner/getLifecycle/#/PointingToDeclaration/"></a><a href="./#1810192813%2FFunctions%2F576965167">getLifecycle</a></td>
+<td><a name="androidx.lifecycle/LifecycleOwner/getLifecycle/#/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>@<a href="https://developer.android.com/reference/kotlin/androidx/annotation/NonNull.html">NonNull</a>()  <br>  <br>abstract fun <a href="./#1810192813%2FFunctions%2F576965167">getLifecycle</a>(): <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>

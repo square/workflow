@@ -803,14 +803,17 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">bindShowRendering</a></p>
 <h1 id="bindshowrendering">bindShowRendering<a class="headerlink" href="#bindshowrendering" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\</p>
-<p>@WorkflowUiExperimentalApi</p>
-<p>fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">bindShowRendering</a>(initialRendering: <a href="./">RenderingT</a>, initialViewEnvironment: <a href="../-view-environment/">ViewEnvironment</a>, showRendering: <a href="../#1074174269%2FClasslikes%2F576965167">ViewShowRendering</a>&lt;<a href="./">RenderingT</a>&gt;)</p>
+<p>[androidJvm]<br />
+Content<br />
+@WorkflowUiExperimentalApi()  </p>
+<p>fun &lt;<a href="./">RenderingT</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>&gt; <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>.<a href="./">bindShowRendering</a>(initialRendering: <a href="./">RenderingT</a>, initialViewEnvironment: <a href="../-view-environment/#1147469433%2FExtensions%2F576965167">ViewEnvironment</a>, showRendering: <a href="../#1074174269%2FClasslikes%2F576965167">ViewShowRendering</a>&lt;<a href="./">RenderingT</a>&gt;)<br />
+More info  </p>
+<p><strong>This will be deprecated in favor of</strong> <a href="../-screen-view-holder/"><strong>ScreenViewHolder</strong></a> <strong>very soon.</strong></p>
 <p>For use by implementations of <a href="../-view-factory/build-view/">ViewFactory.buildView</a>. Establishes <a href="./">showRendering</a> as the implementation of <a href="../show-rendering/">View.showRendering</a> for the receiver, possibly replacing the existing one.</p>
 <ul><li>After this method is called, [View.start](start.md) must be called exactly once before [View.showRendering](show-rendering.md) can be called.</li><li>If this method is called again *after*[View.start](start.md) (e.g. if a [View](https://developer.android.com/reference/kotlin/android/view/View.html) is reused), the receiver is reset to its initialized state, and [View.start](start.md) must be called again.</li></ul>
 
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
-<p>androidJvm</p>
+<p>androidJvm  </p>
 <table>
 <thead>
 <tr>
@@ -820,12 +823,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../-view-factory/">com.squareup.workflow1.ui.ViewFactory</a></td>
-<td></td>
+<td><a name="com.squareup.workflow1.ui//bindShowRendering/android.view.View#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit]/PointingToDeclaration/"></a><a href="../-view-factory/">com.squareup.workflow1.ui.ViewFactory</a></td>
+<td><a name="com.squareup.workflow1.ui//bindShowRendering/android.view.View#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit]/PointingToDeclaration/"></a></td>
 </tr>
 <tr>
-<td><a href="../-decorative-view-factory/">com.squareup.workflow1.ui.DecorativeViewFactory</a></td>
-<td></td>
+<td><a name="com.squareup.workflow1.ui//bindShowRendering/android.view.View#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit]/PointingToDeclaration/"></a><a href="../-decorative-view-factory/">com.squareup.workflow1.ui.DecorativeViewFactory</a></td>
+<td><a name="com.squareup.workflow1.ui//bindShowRendering/android.view.View#TypeParam(bounds=[kotlin.Any])#com.squareup.workflow1.ui.ViewEnvironment#kotlin.Function2[TypeParam(bounds=[kotlin.Any]),com.squareup.workflow1.ui.ViewEnvironment,kotlin.Unit]/PointingToDeclaration/"></a></td>
 </tr>
 </tbody>
 </table>

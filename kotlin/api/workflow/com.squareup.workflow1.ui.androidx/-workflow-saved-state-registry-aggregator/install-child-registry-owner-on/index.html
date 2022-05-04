@@ -803,15 +803,17 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.ui.androidx</a>/<a href="../">WorkflowSavedStateRegistryAggregator</a>/<a href="./">installChildRegistryOwnerOn</a></p>
 <h1 id="installchildregistryowneron">installChildRegistryOwnerOn<a class="headerlink" href="#installchildregistryowneron" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-fun <a href="./">installChildRegistryOwnerOn</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)</p>
+<p>[androidJvm]<br />
+Content<br />
+fun <a href="./">installChildRegistryOwnerOn</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)<br />
+More info  </p>
 <p>Puts a new <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> in place on <a href="./">view</a>, registered with its <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a>. (Use <a href="../../-workflow-lifecycle-owner/">WorkflowLifecycleOwner</a> to ensure one is properly installed.)</p>
 <p><strong>This method must be called before</strong> <a href="./"><strong>view</strong></a> <strong>is attached to a window.</strong></p>
 <p>Clean up requirements after making this call are nuanced. There is no need to remove the <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> from the <a href="./">view</a> itself, but this <a href="../">WorkflowSavedStateRegistryAggregator</a> must be informed when <a href="./">view</a> is retired from use:</p>
 <ul><li>if [view](install-child-registry-owner-on.md) is dropped but may later be replaced with a new instance, as when pushing and popping a back stack, call [saveAndPruneChildRegistryOwner](save-and-prune-child-registry-owner.md). This will capture the outgoing view's state, and to stop requesting updates from it. The saved state will be restored to the next [view](install-child-registry-owner-on.md) passed to [installChildRegistryOwnerOn](install-child-registry-owner-on.md) with the same [key](install-child-registry-owner-on.md)</li><li>if [view](install-child-registry-owner-on.md) is dropped and will not be restored, as when a window is closed or     back stack history is modified, call prune*with the keys of the views that     remain active*.</li></ul>
 
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>androidJvm</p>
+<p>androidJvm  </p>
 <table>
 <thead>
 <tr>
@@ -821,8 +823,8 @@ fun <a href="./">installChildRegistryOwnerOn</a>(view: <a href="https://develope
 </thead>
 <tbody>
 <tr>
-<td>key</td>
-<td>identifier for the new <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>, unique across this <a href="../">WorkflowSavedStateRegistryAggregator</a>. Typically this is derived from the compatibility key of the <a href="./">view</a>&lsquo;s rendering.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/installChildRegistryOwnerOn/#android.view.View#kotlin.String/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator/installChildRegistryOwnerOn/#android.view.View#kotlin.String/PointingToDeclaration/"></a><br><br>identifier for the new <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>, unique across this <a href="../">WorkflowSavedStateRegistryAggregator</a>. Typically this is derived from the compatibility key of the <a href="./">view</a>&lsquo;s rendering.<br><br></td>
 </tr>
 </tbody>
 </table>

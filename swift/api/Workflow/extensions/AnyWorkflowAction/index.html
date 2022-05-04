@@ -849,18 +849,18 @@
                 
                 <p><strong>EXTENSION</strong></p>
 <h1 id="anyworkflowaction"><code>AnyWorkflowAction</code><a class="headerlink" href="#anyworkflowaction" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">AnyWorkflowAction</span>
-</code></pre></div>
+<p><code>swift
+extension AnyWorkflowAction</code></p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="noaction"><code>noAction</code><a class="headerlink" href="#noaction" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">var</span> <span class="nv">noAction</span><span class="p">:</span> <span class="n">AnyWorkflowAction</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public static var noAction: AnyWorkflowAction&lt;WorkflowType&gt;</code></p>
 <p>Creates a type-erased workflow action that does nothing (it leaves state unchanged and does not emit an output
 event).</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="initsendingoutput"><code>init(sendingOutput:)</code><a class="headerlink" href="#initsendingoutput" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">sendingOutput</span> <span class="n">output</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span>
-</code></pre></div>
+<p><code>swift
+public init(sendingOutput output: WorkflowType.Output)</code></p>
 <p>Creates a type-erased workflow action that simply sends the given output event.</p>
 <ul>
 <li>Parameter output: The output event to send when this action is applied.</li>

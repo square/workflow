@@ -786,14 +786,12 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">StatefulWorkflow</a>/<a href="./">render</a></p>
 <h1 id="render">render<a class="headerlink" href="#render" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract fun <a href="./">render</a>(renderProps: <a href="../">PropsT</a>, renderState: <a href="../">StateT</a>, context: <a href="../-render-context/">StatefulWorkflow.RenderContext</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;): <a href="../">RenderingT</a></p>
+<p>[jvm]<br />
+Content<br />
+abstract fun <a href="./">render</a>(renderProps: <a href="../">PropsT</a>, renderState: <a href="../">StateT</a>, context: <a href="../-render-context/">StatefulWorkflow.RenderContext</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;): <a href="../">RenderingT</a><br />
+More info  </p>
 <p>Called at least once† any time one of the following things happens:</p>
-<ul><li>This workflow's [renderProps](render.md) changes (via the parent passing a different one in).</li><li>This workflow's [renderState](render.md) changes.</li><li>A descendant (immediate or transitive child) workflow:</li>
-
-<ul><li>Changes its internal state.</li><li>Emits an output.</li></ul>
-
-</ul>
+<ul><li>This workflow's [renderProps](render.md) changes (via the parent passing a different one in).</li><li>This workflow's [renderState](render.md) changes.</li><li>A descendant (immediate or transitive child) workflow:</li><ul><li>Changes its internal state.</li><li>Emits an output.</li></ul></ul>
 
 <p><strong>Never call this method directly.</strong> To nest the rendering of a child workflow in your own, pass the child and any required props to RenderContext.renderChild.</p>
 <p>This method <em>should not</em> have any side effects, and in particular should not do anything that blocks the current thread. It may be called multiple times for the same state. It must do all its work by calling methods on <a href="./">context</a>.</p>

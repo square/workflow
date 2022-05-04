@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.ui</a>/<a href="../">TextController</a>/<a href="./">onTextChanged</a></p>
 <h1 id="ontextchanged">onTextChanged<a class="headerlink" href="#ontextchanged" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract val <a href="./">onTextChanged</a>: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+abstract val <a href="./">onTextChanged</a>: Flow&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<br />
+More info  </p>
 <p>A Flow that emits the text value whenever it changes &ndash; and only when it changes, the current value is not provided at subscription time. Workflows can safely observe changes by converting this value to a worker. (When using multiple instances, remember to provide unique key values to each asWorker call.)</p>
 <p>If you can do processing that doesn&rsquo;t require running a WorkflowAction or triggering a render pass, it can be done in regular Flow operators before converting to a worker.</p>
                 

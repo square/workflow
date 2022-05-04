@@ -810,12 +810,14 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">runningWorker</a></p>
 <h1 id="runningworker">runningWorker<a class="headerlink" href="#runningworker" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-inline fun &lt;<a href="./">W</a> : <a href="../-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="./">runningWorker</a>(worker: <a href="./">W</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;)</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">W</a> : <a href="../-worker/">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt;, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="./">runningWorker</a>(worker: <a href="./">W</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;)<br />
+More info  </p>
 <p>Ensures a <a href="../-worker/">Worker</a> that never emits anything is running. Since <a href="./">worker</a> can&rsquo;t emit anything, it can&rsquo;t trigger any <a href="../-workflow-action/">WorkflowAction</a>s.</p>
 <p>If your <a href="../-worker/">Worker</a> does not output anything, then simply use runningSideEffect.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -825,17 +827,19 @@ inline fun &lt;<a href="./">W</a> : <a href="../-worker/">Worker</a>&lt;<a href=
 </thead>
 <tbody>
 <tr>
-<td>key</td>
-<td>An optional string key that is used to distinguish between identical <a href="../-worker/">Worker</a>s.</td>
+<td><a name="com.squareup.workflow1//runningWorker/com.squareup.workflow1.BaseRenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[com.squareup.workflow1.Worker[kotlin.Nothing]])#kotlin.String/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1//runningWorker/com.squareup.workflow1.BaseRenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[com.squareup.workflow1.Worker[kotlin.Nothing]])#kotlin.String/PointingToDeclaration/"></a><br><br>An optional string key that is used to distinguish between identical <a href="../-worker/">Worker</a>s.<br><br></td>
 </tr>
 </tbody>
 </table>
-<p>[jvm]\
-inline fun &lt;<a href="./">T</a>, <a href="./">W</a> : <a href="../-worker/">Worker</a>&lt;<a href="./">T</a>&gt;, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="./">runningWorker</a>(worker: <a href="./">W</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, noinline handler: (<a href="./">T</a>) -&gt; <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;)</p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">T</a>, <a href="./">W</a> : <a href="../-worker/">Worker</a>&lt;<a href="./">T</a>&gt;, <a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt; <a href="../-base-render-context/">BaseRenderContext</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;.<a href="./">runningWorker</a>(worker: <a href="./">W</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, noinline handler: (<a href="./">T</a>) -&gt; <a href="../-workflow-action/">WorkflowAction</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>&gt;)<br />
+More info  </p>
 <p>Ensures <a href="./">worker</a> is running. When the <a href="../-worker/">Worker</a> emits an output, <a href="./">handler</a> is called to determine the <a href="../-workflow-action/">WorkflowAction</a> to take. When the worker finishes, nothing happens (although another render pass may be triggered).</p>
 <p>Like workflows, workers are kept alive across multiple render passes if they&rsquo;re the same type, and different workers of distinct types can be run concurrently. However, unlike workflows, workers are compared by their <em>declared</em> type, not their actual type. This means that if you pass a worker stored in a variable to this function, the type that will be used to compare the worker will be the type of the variable, not the type of the object the variable refers to.</p>
 <h2 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -845,8 +849,8 @@ inline fun &lt;<a href="./">T</a>, <a href="./">W</a> : <a href="../-worker/">Wo
 </thead>
 <tbody>
 <tr>
-<td>key</td>
-<td>An optional string key that is used to distinguish between identical <a href="../-worker/">Worker</a>s.</td>
+<td><a name="com.squareup.workflow1//runningWorker/com.squareup.workflow1.BaseRenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[com.squareup.workflow1.Worker[TypeParam(bounds=[kotlin.Any?])]])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/"></a>key</td>
+<td><a name="com.squareup.workflow1//runningWorker/com.squareup.workflow1.BaseRenderContext[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[com.squareup.workflow1.Worker[TypeParam(bounds=[kotlin.Any?])]])#kotlin.String#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),com.squareup.workflow1.WorkflowAction[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/"></a><br><br>An optional string key that is used to distinguish between identical <a href="../-worker/">Worker</a>s.<br><br></td>
 </tr>
 </tbody>
 </table>

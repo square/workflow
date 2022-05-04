@@ -803,8 +803,7 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.ui.androidx</a>/<a href="../">WorkflowLifecycleOwner</a>/<a href="./">Companion</a></p>
 <h1 id="companion">Companion<a class="headerlink" href="#companion" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-object <a href="./">Companion</a></p>
+<p>[androidJvm] object <a href="./">Companion</a>   </p>
 <h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -815,12 +814,12 @@ object <a href="./">Companion</a></p>
 </thead>
 <tbody>
 <tr>
-<td><a href="get/">get</a></td>
-<td>[androidJvm]<br>fun <a href="get/">get</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>): <a href="../">WorkflowLifecycleOwner</a>?<br>Looks for the nearest <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a> on <a href="get/">view</a> and returns it if it&rsquo;s an instance of <a href="../">WorkflowLifecycleOwner</a>. Convenience function for retrieving the owner set by <a href="install-on/">installOn</a>.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner.Companion/get/#android.view.View/PointingToDeclaration/"></a><a href="get/">get</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner.Companion/get/#android.view.View/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>fun <a href="get/">get</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>): <a href="../">WorkflowLifecycleOwner</a>?  <br>More info  <br>Looks for the nearest <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a> on <a href="get/">view</a> and returns it if it&rsquo;s an instance of <a href="../">WorkflowLifecycleOwner</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="install-on/">installOn</a></td>
-<td>[androidJvm]<br>fun <a href="install-on/">installOn</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, findParentLifecycle: (<a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>) -&gt; <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a> = { v -&gt; findParentViewTreeLifecycle(v) })<br>Creates a new <a href="../">WorkflowLifecycleOwner</a> and sets it on <a href="install-on/">view</a>&lsquo;s tags so it can be later retrieved with <a href="get/">get</a>.</td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner.Companion/installOn/#android.view.View#kotlin.Function1[android.view.View,androidx.lifecycle.Lifecycle]/PointingToDeclaration/"></a><a href="install-on/">installOn</a></td>
+<td><a name="com.squareup.workflow1.ui.androidx/WorkflowLifecycleOwner.Companion/installOn/#android.view.View#kotlin.Function1[android.view.View,androidx.lifecycle.Lifecycle]/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>fun <a href="install-on/">installOn</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, findParentLifecycle: (<a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>) -&gt; <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/Lifecycle.html">Lifecycle</a> = this::findParentViewTreeLifecycle)  <br>More info  <br>Creates a new <a href="../">WorkflowLifecycleOwner</a> and sets it on <a href="install-on/">view</a>&lsquo;s tags so it can be later retrieved with <a href="get/">get</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

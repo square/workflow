@@ -803,11 +803,9 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.ui</a>/<a href="./">ViewStarter</a></p>
 <h1 id="viewstarter">ViewStarter<a class="headerlink" href="#viewstarter" title="Permanent link">&para;</a></h1>
-<p>[androidJvm]\
-@WorkflowUiExperimentalApi</p>
-<p>fun interface <a href="./">ViewStarter</a></p>
-<p>A wrapper for the function invoked when <a href="../start/">View.start</a> is called, allowing for last second initialization of a newly built <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>. Provided via <a href="../build-view/">ViewRegistry.buildView</a> or DecorativeViewFactory.viewStarter.</p>
-<p>While <a href="../get-rendering/">View.getRendering</a> may be called from <a href="start-view/">startView</a>, it is not safe to assume that the type of the rendering retrieved matches the type the view was originally built to display. <a href="../-view-factory/">ViewFactories</a> can be wrapped, and renderings can be mapped to other types.</p>
+<p>[androidJvm] @WorkflowUiExperimentalApi()  </p>
+<p>fun fun interface <a href="./">ViewStarter</a></p>
+<p>A wrapper for the function invoked when <a href="../start-showing/">ScreenViewFactory.startShowing</a> is called, allowing for custom initialization of a newly built <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> before or after the first call to <a href="../show/">ScreenViewHolder.show</a>.</p>
 <h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -818,8 +816,8 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="start-view/">startView</a></td>
-<td>[androidJvm]<br>abstract fun <a href="start-view/">startView</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, doStart: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<br>Called from <a href="../start/">View.start</a>. <a href="start-view/">doStart</a> must be invoked.</td>
+<td><a name="com.squareup.workflow1.ui/ViewStarter/startView/#android.view.View#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/"></a><a href="start-view/">startView</a></td>
+<td><a name="com.squareup.workflow1.ui/ViewStarter/startView/#android.view.View#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/"></a>[androidJvm]  <br>Content  <br>abstract fun <a href="start-view/">startView</a>(view: <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a>, doStart: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)  <br>More info  <br>Called from <a href="../start/">View.start</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

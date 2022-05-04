@@ -803,11 +803,13 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">RenderTester</a>/<a href="./">expectSideEffect</a></p>
 <h1 id="expectsideeffect">expectSideEffect<a class="headerlink" href="#expectsideeffect" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract fun <a href="./">expectSideEffect</a>(description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, exactMatch: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true, matcher: (key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>): <a href="../">RenderTester</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+abstract fun <a href="./">expectSideEffect</a>(description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, exactMatch: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true, matcher: (key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>): <a href="../">RenderTester</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Specifies that this render pass is expected to run a side effect with a key that satisfies <a href="./">matcher</a>. This expectation is strict, and will fail if multiple side effects match.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -817,16 +819,16 @@ abstract fun <a href="./">expectSideEffect</a>(description: <a href="https://kot
 </thead>
 <tbody>
 <tr>
-<td>description</td>
-<td>String that will be used to describe this expectation in error messages. The description is required since no human-readable description can be derived from the predicate alone.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/expectSideEffect/#kotlin.String#kotlin.Boolean#kotlin.Function1[kotlin.String,kotlin.Boolean]/PointingToDeclaration/"></a>description</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/expectSideEffect/#kotlin.String#kotlin.Boolean#kotlin.Function1[kotlin.String,kotlin.Boolean]/PointingToDeclaration/"></a><br><br>String that will be used to describe this expectation in error messages. The description is required since no human-readable description can be derived from the predicate alone.<br><br></td>
 </tr>
 <tr>
-<td>exactMatch</td>
-<td>If true, then the test will fail if any other matching expectations are also exact matches, and the expectation will only be allowed to match a single side effect. If false, the match will only be used if no other expectations return exclusive matches (in which case the first match will be used), and the expectation may match multiple side effects.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/expectSideEffect/#kotlin.String#kotlin.Boolean#kotlin.Function1[kotlin.String,kotlin.Boolean]/PointingToDeclaration/"></a>exactMatch</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/expectSideEffect/#kotlin.String#kotlin.Boolean#kotlin.Function1[kotlin.String,kotlin.Boolean]/PointingToDeclaration/"></a><br><br>If true, then the test will fail if any other matching expectations are also exact matches, and the expectation will only be allowed to match a single side effect. If false, the match will only be used if no other expectations return exclusive matches (in which case the first match will be used), and the expectation may match multiple side effects.<br><br></td>
 </tr>
 <tr>
-<td>matcher</td>
-<td>A function that is passed the key value from <a href="../../../com.squareup.workflow1/-base-render-context/running-side-effect/">runningSideEffect</a> and return true if this key is expected.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/expectSideEffect/#kotlin.String#kotlin.Boolean#kotlin.Function1[kotlin.String,kotlin.Boolean]/PointingToDeclaration/"></a>matcher</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/expectSideEffect/#kotlin.String#kotlin.Boolean#kotlin.Function1[kotlin.String,kotlin.Boolean]/PointingToDeclaration/"></a><br><br>A function that is passed the key value from <a href="../../../com.squareup.workflow1/-base-render-context/running-side-effect/">runningSideEffect</a> and return true if this key is expected.<br><br></td>
 </tr>
 </tbody>
 </table>

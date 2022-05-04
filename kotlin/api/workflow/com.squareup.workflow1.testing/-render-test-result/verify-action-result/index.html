@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">RenderTestResult</a>/<a href="./">verifyActionResult</a></p>
 <h1 id="verifyactionresult">verifyActionResult<a class="headerlink" href="#verifyactionresult" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract fun <a href="./">verifyActionResult</a>(block: (<a href="../">StateT</a>, output: <a href="../../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../">OutputT</a>&gt;?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../">RenderTestResult</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+abstract fun <a href="./">verifyActionResult</a>(block: (<a href="../">StateT</a>, output: <a href="../../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../">OutputT</a>&gt;?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../">RenderTestResult</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Asserts that the render pass handled either a workflow/worker output or a rendering event, &ldquo;executes&rdquo; the action with the state passed to <a href="../../test-render/">testRender</a>, then invokes <a href="./">block</a> with the resulting state and output values.</p>
 <p>If the workflow didn&rsquo;t process any actions, newState will be the initial state and output will be null.</p>
 <p>Note that by using this method, you&rsquo;re also testing the implementation of your action. This can be useful if your actions are anonymous. If they are a sealed class or enum, use <a href="../verify-action/">verifyAction</a> instead and write separate unit tests for your action implementations.</p>

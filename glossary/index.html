@@ -906,6 +906,30 @@
 <td>Worker</td>
 <td>A Child Workflow that provides only output, with no rendering — a pattern for doing asynchronous work in Workflows.<br/>In Kotlin, this is an actual Interface which provides a convenient way to specify asynchronous work that produces an Output and a handler for that Output which can provide an Action. There are Kotlin extensions to map Rx Observables and Kotlin Flows to create Worker implementations.<br/>In Swift, there are at least 3 different Worker types which are convenience wrappers around reactive APIs that facilitate performing work.</td>
 </tr>
+<tr>
+<td>View</td>
+<td>A class or function managing a 2d box in a graphical user interface system, able to paint a defined region of the display and respond to user input events within its bounds. Views are arranged in a hierarchical tree, with parents able to lay out children and manage their painting and event handling.<br/>Instances supported by Workflow are:<br/>• Kotlin, Classic Android: <code>class android.view.View</code><br/>• Kotlin, Android JetPack Compose: <code>@Composable fun Box()</code> <br/>• Swift: <code>class NSViewController</code></td>
+</tr>
+<tr>
+<td>Screen</td>
+<td>An interface / protocol identifying Renderings that model a View. Workflow UI libraries can map a given Screen type to a View instance that can display a series of such Screens.<br />In Kotlin, <code>Screen</code> is a marker interface. Each type <code>S : Screen</code> is mapped by the Android UI library to a <code>ScreenViewFactory&lt;S&gt;</code> able to create instances of <code>android.view.View</code>; or that provides a <code>@Composable fun Content(S)</code> function to be called from a <code>Box {}</code> context. (Note that the Android UI support is able to interleave Screens bound to <code>View</code> or <code>@Composable</code> seamlessly.)<br />In Swift, the <code>Screen</code> protocol defines a single function creating <code>ViewControllerDescription</code> instances, objects which create and update <code>ViewController</code> instances to display Screens of the corresponding type.</td>
+</tr>
+<tr>
+<td>Overlay (Kotlin only)</td>
+<td>An interface identifying Renderings that model a plane covering (‘higher’ in the z-order, for visibility and event-handling) a base Screen, possibly hosting another Screen.<br />In Kotlin, <code>Overlay</code> is a marker interface. Each type <code>O : Overlay</code> is mapped by the Android UI library to an <code>OverlayDialogFactory&lt;O&gt;</code> able to create and update instances of <code>android.app.Dialog</code></td>
+</tr>
+<tr>
+<td>Container Screen</td>
+<td>A design pattern, describing a Screen type whose instances wrap one or more other Screens, commonly to either annotate those Screens or define the relationships between them.<br />Wrapping one Screen in another does not necessarily imply that the derived View hierarchy will change. It is common for the Kotlin <code>ScreenViewFactory</code> or Swift <code>ViewControllerDescription</code> bound to a Container Screen to delegate its construction and updating work to those of the wrapped Screens.</td>
+</tr>
+<tr>
+<td>Container View</td>
+<td>A View able to host children that are driven by Screen renderings. A Container View is generally driven by Container Screens of a specific type — e.g., a BackStackContainer View that can display BackStackScreen values. The exception is a root Container View, which is able to display a series of Screen instances of any type.<br />In Kotlin, the root Container Views are <code>WorkflowLayout : FrameLayout</code>, and <code>@Composable Workflow.renderAsState()</code>. Custom Container Views written to display custom Container Screens can use <code>WorkflowViewStub : FrameLayout</code> or <code>@Composable fun WorkflowRendering()</code> to display wrapped Screens.<br />In Swift, the root Container View is <code>ContainerViewController</code>. Custom Container Views written to render custom Container Screens can be built as subclasses of <code>ScreenViewController</code>, and use <code>DescribedViewController</code> to display wrapped Screens.</td>
+</tr>
+<tr>
+<td>ViewEnvironment</td>
+<td>A read-only key/value map passed from the Container View down to its children at update time, similar in spirit to Swift UI EnvironmentValues and Jetpack CompositionLocal. Like them, the ViewEnvironment is primarily intended to allow parents to offer children hints about the context in which they are being displayed — for example, to allow a child to know if it is a member of a back stack, and so decide whether or not to display a Go Back button.<br />The ViewEnvironment also can be used judiciously as a service provider for UI-specific concerns, like image loaders — tread carefully.</td>
+</tr>
 </tbody>
 </table>
                 

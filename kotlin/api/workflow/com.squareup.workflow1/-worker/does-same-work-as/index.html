@@ -786,19 +786,20 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">Worker</a>/<a href="./">doesSameWorkAs</a></p>
 <h1 id="doessameworkas">doesSameWorkAs<a class="headerlink" href="#doessameworkas" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-open fun <a href="./">doesSameWorkAs</a>(otherWorker: <a href="../">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></p>
+<p>[jvm]<br />
+Content<br />
+open fun <a href="./">doesSameWorkAs</a>(otherWorker: <a href="../">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><br />
+More info  </p>
 <p>Override this method to define equivalence between <a href="../">Worker</a>s. The default implementation returns true if this worker&rsquo;s class is the same as <a href="./">otherWorker</a>&lsquo;s class.</p>
 <p>At the end of every render pass, the set of <a href="../">Worker</a>s that were requested by the workflow are compared to the set from the last render pass using this method. Workers are compared by their <em>declared</em><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> - including generics. Equivalent workers are allowed to keep running. New workers are started (<a href="../run/">run</a> is called and the returned Flow is collected). Old workers are cancelled by cancelling their collecting coroutines. Workers for which <a href="./">doesSameWorkAs</a> returns false will also be restarted.</p>
 <p>Implementations of this method should not be based on object identity. Nor do they need to be based on anything including in the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> - such as generics - as those will already be compared by the Workflow Runtime, see WorkerWorkflow. For example, a <a href="../">Worker</a> that performs a network request might check that two workers are requests to the same endpoint and have the same request data.</p>
 <p>Most implementations of this method should compare constructor parameters.</p>
 <p>E.g:</p>
-<p>class SearchWorker(private val query: String): Worker&lt;SearchResult&gt; {\
-  // run omitted for example.\
-\
-  override fun doesSameWorkAs(otherWorker: Worker&lt;*&gt;): Boolean =\
-    otherWorker is SearchWorker &amp;&amp; otherWorker.query == query\
-}</p>
+<p>class SearchWorker(private val query: String): Worker<SearchResult> {<br />
+  // run omitted for example.  </p>
+<p>override fun doesSameWorkAs(otherWorker: Worker&lt;*&gt;): Boolean =<br />
+    otherWorker is SearchWorker &amp;&amp; otherWorker.query == query<br />
+}  </p>
                 
               
               

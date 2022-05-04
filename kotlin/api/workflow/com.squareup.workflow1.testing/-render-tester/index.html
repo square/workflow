@@ -865,8 +865,7 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1.testing</a>/<a href="./">RenderTester</a></p>
 <h1 id="rendertester">RenderTester<a class="headerlink" href="#rendertester" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract class <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;</p>
+<p>[jvm] abstract class <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;</p>
 <p>The props must be specified, the initial state may be specified, and then all child workflows and workers that are expected to run, and any outputs from them, must be specified with expectWorkflow and (optionally) <a href="../expect-worker/">expectWorker</a> calls. If one needs to verify all workers explicitly, perhaps to verify that a worker is <em>not</em> run, then use <a href="require-explicit-worker-expectations/">requireExplicitWorkerExpectations</a>. Then call <a href="render/">render</a> and perform any assertions on the rendering. An event may also be sent to the rendering if no workflows or workers emitted an output. Lastly, the <a href="../-render-test-result/">RenderTestResult</a> returned by render may be used to assert on the <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a>s processed to handle events or outputs by calling <a href="../-render-test-result/verify-action/">verifyAction</a> or <a href="../-render-test-result/verify-action-result/">verifyActionResult</a>.</p>
 <ul><li>All workflows that are rendered/ran by this workflow must be specified.</li><li>Workers are optionally specified. Specified workers must run. Unexpected workers on a render pass do not cause a test failure.</li><li>It is an error if more than one workflow or worker specifies an output.</li><li>It is a test failure if any workflows or workers that were expected were not ran.</li><li>It is a test failure if the workflow tried to run any workflows that were not expected.</li><li>It is a test failure if no workflow or workflow emitted an output, no rendering event was invoked, and any of the action verification methods on [RenderTestResult](../-render-test-result/index.md) is called.</li></ul>
 
@@ -874,94 +873,95 @@ abstract class <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href
 <h3 id="worker-output">Worker output<a class="headerlink" href="#worker-output" title="Permanent link">&para;</a></h3>
 <p>The following example tests a render pass that runs one worker, SubmitLoginWorker, which is configured to have &ldquo;emitted&rdquo; an output, and one workflow, ChildWorkflow, which expects a props containing &ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;">&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;</a>&rdquo; and returning a ChildRendering as its rendering.</p>
 <p>It checks that the rendering properties are expected and that the output handler for the SubmitLoginWorker returned the CompleteLogin action.</p>
-<p>workflow\
-  .testRender(\
-    props = MyProps(…),\
-    initialState = MyState(…)\
-  )\
-  .expectWorker(\
-    workerClass = SubmitLoginWorker::class\
-    key = &ldquo;signin&rdquo;,\
-    output = WorkflowOutput(LoginResponse(success = true))\
-  )\
-  .expectWorkflow(\
-    workflowType = ChildWorkflow::class,\
-    key = &ldquo;child&rdquo;,\
-    assertProps = { assertThat(it.email).isEqualTo(&ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;">&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;</a>&rdquo;) },\
-    rendering = ChildRendering(&ldquo;message&rdquo;)\
-  )\
-  .render { rendering -&gt;\
-    assertThat(rendering.text).isEqualTo(&ldquo;foo&rdquo;)\
-  }\
-  .verifyAction { action -&gt;\
-    assertThat(action).isEqualTo(Action.CompleteLogin(success = true))\
+<p>workflow<br />
+  .testRender(<br />
+    props = MyProps(…),<br />
+    initialState = MyState(…)<br />
+  )<br />
+  .expectWorker(<br />
+    workerClass = SubmitLoginWorker::class<br />
+    key = &ldquo;signin&rdquo;,<br />
+    output = WorkflowOutput(LoginResponse(success = true))<br />
+  )<br />
+  .expectWorkflow(<br />
+    workflowType = ChildWorkflow::class,<br />
+    key = &ldquo;child&rdquo;,<br />
+    assertProps = { assertThat(it.email).isEqualTo(&ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;">&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;</a>&rdquo;) },<br />
+    rendering = ChildRendering(&ldquo;message&rdquo;)<br />
+  )<br />
+  .render { rendering -&gt;<br />
+    assertThat(rendering.text).isEqualTo(&ldquo;foo&rdquo;)<br />
+  }<br />
+  .verifyAction { action -&gt;<br />
+    assertThat(action).isEqualTo(Action.CompleteLogin(success = true))<br />
   }</p>
 <h3 id="rendering-event">Rendering event<a class="headerlink" href="#rendering-event" title="Permanent link">&para;</a></h3>
 <p>This is similar to the example above, but will test an event sent to the rendering instead.</p>
-<p>workflow\
-  .testRender(\
-    props = MyProps(…),\
-    initialState = MyState(…)\
-  )\
-  .expectWorker(\
-    matchesWhen = { it is SubmitLoginWorker },\
-    key = &ldquo;signin&rdquo;\
-  )\
-  .expectWorkflow(\
-    workflowType = ChildWorkflow::class,\
-    key = &ldquo;child&rdquo;,\
-    assertProps = { assertThat(it.email).isEqualTo(&ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;">&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;</a>&rdquo;) },\
-    rendering = ChildRendering(&ldquo;message&rdquo;)\
-  )\
-  .render { rendering -&gt;\
-    rendering.onCancelClicked()\
-    assertThat(rendering.text).isEqualTo(&ldquo;foo&rdquo;)\
-  }\
-  .verifyAction { action -&gt;\
-    assertThat(action).isEqualTo(Action.CancelLogin)\
+<p>workflow<br />
+  .testRender(<br />
+    props = MyProps(…),<br />
+    initialState = MyState(…)<br />
+  )<br />
+  .expectWorker(<br />
+    matchesWhen = { it is SubmitLoginWorker },<br />
+    key = &ldquo;signin&rdquo;<br />
+  )<br />
+  .expectWorkflow(<br />
+    workflowType = ChildWorkflow::class,<br />
+    key = &ldquo;child&rdquo;,<br />
+    assertProps = { assertThat(it.email).isEqualTo(&ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;">&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;</a>&rdquo;) },<br />
+    rendering = ChildRendering(&ldquo;message&rdquo;)<br />
+  )<br />
+  .render { rendering -&gt;<br />
+    rendering.onCancelClicked()<br />
+    assertThat(rendering.text).isEqualTo(&ldquo;foo&rdquo;)<br />
+  }<br />
+  .verifyAction { action -&gt;<br />
+    assertThat(action).isEqualTo(Action.CancelLogin)<br />
   }</p>
 <h3 id="verify-action-result">Verify action result<a class="headerlink" href="#verify-action-result" title="Permanent link">&para;</a></h3>
 <p>This test verifies the action <em>result</em> instead of the action itself. This technique is useful if the <a href="../../com.squareup.workflow1/-workflow-action/">WorkflowAction</a> is anonymous or inline.</p>
-<p>val currentState = …\
-val previousState = …\
-\
-workflow\
-  .testRender(\
-    props = MyProps(…),\
-    initialState = currentState\
-  )\
-  .render { rendering -&gt;\
-    rendering.onCancelClicked()\
-  }\
-  .verifyActionResult { newState, output -&gt;\
-    // Check that the workflow navigated back correctly.\
-    assertThat(newState).isEqualTo(previousState)\
-\
-    // Check that the workflow didn&rsquo;t emit any output from the button click.\
-    assertThat(output).isNull()\
-  }</p>
+<p>val currentState = …<br />
+val previousState = …  </p>
+<p>workflow<br />
+  .testRender(<br />
+    props = MyProps(…),<br />
+    initialState = currentState<br />
+  )<br />
+  .render { rendering -&gt;<br />
+    rendering.onCancelClicked()<br />
+  }<br />
+  .verifyActionResult { newState, output -&gt;<br />
+    // Check that the workflow navigated back correctly.<br />
+    assertThat(newState).isEqualTo(previousState)  </p>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>// Check that the workflow didn&#39;t emit any output from the button click.  
+assertThat(output).isNull()
+</code></pre></div></td></tr></table></div>
+
+<p>}</p>
 <h3 id="too-many-outputs">Too many outputs<a class="headerlink" href="#too-many-outputs" title="Permanent link">&para;</a></h3>
 <p>This is an example of what <strong>not</strong> to do – this test will error out because a worker is emitting and output <em>and</em> a rendering event is sent.</p>
-<p>workflow\
-  .testRender(\
-    props = MyProps(…),\
-    initialState = MyState(…)\
-  )\
-  .expectWorker(\
-    matchesWhen = { it is SubmitLoginWorker },\
-    key = &ldquo;signin&rdquo;,\
-    output = WorkflowOutput(LoginResponse(success = true))\
-  )\
-  .expectWorkflow(\
-    workflowType = ChildWorkflow::class,\
-    key = &ldquo;child&rdquo;,\
-    assertProps = { assertThat(it.email).isEqualTo(&ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;">&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;</a>&rdquo;) },\
-    rendering = ChildRendering(&ldquo;message&rdquo;)\
-  )\
-  .render { rendering -&gt;\
-    // This will throw and fail the test because the SubmitLoginWorker is also configured to emit\
-    // an output.\
-    rendering.onCancelClicked()</p>
+<p>workflow<br />
+  .testRender(<br />
+    props = MyProps(…),<br />
+    initialState = MyState(…)<br />
+  )<br />
+  .expectWorker(<br />
+    matchesWhen = { it is SubmitLoginWorker },<br />
+    key = &ldquo;signin&rdquo;,<br />
+    output = WorkflowOutput(LoginResponse(success = true))<br />
+  )<br />
+  .expectWorkflow(<br />
+    workflowType = ChildWorkflow::class,<br />
+    key = &ldquo;child&rdquo;,<br />
+    assertProps = { assertThat(it.email).isEqualTo(&ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;">&#116;&#101;&#115;&#116;&#64;&#102;&#111;&#111;&#46;&#99;&#111;&#109;</a>&rdquo;) },<br />
+    rendering = ChildRendering(&ldquo;message&rdquo;)<br />
+  )<br />
+  .render { rendering -&gt;<br />
+    // This will throw and fail the test because the SubmitLoginWorker is also configured to emit<br />
+    // an output.<br />
+    rendering.onCancelClicked()   </p>
 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -972,8 +972,8 @@ workflow\
 </thead>
 <tbody>
 <tr>
-<td><a href="-render-tester/">RenderTester</a></td>
-<td>[jvm]<br>fun <a href="-render-tester/">RenderTester</a>()</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/RenderTester/#/PointingToDeclaration/"></a><a href="-render-tester/">RenderTester</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/RenderTester/#/PointingToDeclaration/"></a> [jvm] fun <a href="-render-tester/">RenderTester</a>()   <br></td>
 </tr>
 </tbody>
 </table>
@@ -987,12 +987,12 @@ workflow\
 </thead>
 <tbody>
 <tr>
-<td><a href="-child-workflow-match/">ChildWorkflowMatch</a></td>
-<td>[jvm]<br>sealed class <a href="-child-workflow-match/">ChildWorkflowMatch</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.ChildWorkflowMatch///PointingToDeclaration/"></a><a href="-child-workflow-match/">ChildWorkflowMatch</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.ChildWorkflowMatch///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>sealed class <a href="-child-workflow-match/">ChildWorkflowMatch</a>  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="-render-child-invocation/">RenderChildInvocation</a></td>
-<td>[jvm]<br>class <a href="-render-child-invocation/">RenderChildInvocation</a>(workflow: <a href="../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;*, *, *&gt;, props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?, outputType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, renderingType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, renderKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)<br>Describes a call to <a href="../../com.squareup.workflow1/-base-render-context/render-child/">RenderContext.renderChild</a>.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a><a href="-render-child-invocation/">RenderChildInvocation</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>class <a href="-render-child-invocation/">RenderChildInvocation</a>(<strong>workflow</strong>: <a href="../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;<em>, *, *&gt;, **props*</em>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?, <strong>outputType</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, <strong>renderingType</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a>, <strong>renderKey</strong>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)  <br>More info  <br>Describes a call to <a href="../../com.squareup.workflow1/-base-render-context/render-child/">RenderContext.renderChild</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -1006,20 +1006,20 @@ workflow\
 </thead>
 <tbody>
 <tr>
-<td><a href="expect-side-effect/">expectSideEffect</a></td>
-<td>[jvm]<br>abstract fun <a href="expect-side-effect/">expectSideEffect</a>(description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, exactMatch: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true, matcher: (key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>): <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;<br>Specifies that this render pass is expected to run a side effect with a key that satisfies <a href="expect-side-effect/">matcher</a>. This expectation is strict, and will fail if multiple side effects match.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/expectSideEffect/#kotlin.String#kotlin.Boolean#kotlin.Function1[kotlin.String,kotlin.Boolean]/PointingToDeclaration/"></a><a href="expect-side-effect/">expectSideEffect</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/expectSideEffect/#kotlin.String#kotlin.Boolean#kotlin.Function1[kotlin.String,kotlin.Boolean]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="expect-side-effect/">expectSideEffect</a>(description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, exactMatch: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true, matcher: (key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>): <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;  <br>More info  <br>Specifies that this render pass is expected to run a side effect with a key that satisfies <a href="expect-side-effect/">matcher</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="render/">render</a></td>
-<td>[jvm]<br>abstract fun <a href="render/">render</a>(block: (<a href="./">RenderingT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="../-render-test-result/">RenderTestResult</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;<br>Execute the workflow&rsquo;s render method and run <a href="render/">block</a> to perform assertions on and send events to the resulting rendering.</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/render/#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a><a href="render/">render</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/render/#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="render/">render</a>(block: (<a href="./">RenderingT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="../-render-test-result/">RenderTestResult</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;  <br>More info  <br>Execute the workflow&rsquo;s render method and run <a href="render/">block</a> to perform assertions on and send events to the resulting rendering.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="require-explicit-side-effect-expectations/">requireExplicitSideEffectExpectations</a></td>
-<td>[jvm]<br>abstract fun <a href="require-explicit-side-effect-expectations/">requireExplicitSideEffectExpectations</a>(): <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/requireExplicitSideEffectExpectations/#/PointingToDeclaration/"></a><a href="require-explicit-side-effect-expectations/">requireExplicitSideEffectExpectations</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/requireExplicitSideEffectExpectations/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="require-explicit-side-effect-expectations/">requireExplicitSideEffectExpectations</a>(): <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="require-explicit-worker-expectations/">requireExplicitWorkerExpectations</a></td>
-<td>[jvm]<br>abstract fun <a href="require-explicit-worker-expectations/">requireExplicitWorkerExpectations</a>(): <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;</td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/requireExplicitWorkerExpectations/#/PointingToDeclaration/"></a><a href="require-explicit-worker-expectations/">requireExplicitWorkerExpectations</a></td>
+<td><a name="com.squareup.workflow1.testing/RenderTester/requireExplicitWorkerExpectations/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="require-explicit-worker-expectations/">requireExplicitWorkerExpectations</a>(): <a href="./">RenderTester</a>&lt;<a href="./">PropsT</a>, <a href="./">StateT</a>, <a href="./">OutputT</a>, <a href="./">RenderingT</a>&gt;  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -1033,20 +1033,20 @@ workflow\
 </thead>
 <tbody>
 <tr>
-<td><a href="../expect-side-effect/">expectSideEffect</a></td>
-<td>[jvm]<br>fun &lt;<a href="../expect-side-effect/">PropsT</a>, <a href="../expect-side-effect/">StateT</a>, <a href="../expect-side-effect/">OutputT</a>, <a href="../expect-side-effect/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-side-effect/">PropsT</a>, <a href="../expect-side-effect/">StateT</a>, <a href="../expect-side-effect/">OutputT</a>, <a href="../expect-side-effect/">RenderingT</a>&gt;.<a href="../expect-side-effect/">expectSideEffect</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="./">RenderTester</a>&lt;<a href="../expect-side-effect/">PropsT</a>, <a href="../expect-side-effect/">StateT</a>, <a href="../expect-side-effect/">OutputT</a>, <a href="../expect-side-effect/">RenderingT</a>&gt;<br>Specifies that this render pass is expected to run a particular side effect.</td>
+<td><a name="com.squareup.workflow1.testing//expectSideEffect/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String/PointingToDeclaration/"></a><a href="../expect-side-effect/">expectSideEffect</a></td>
+<td><a name="com.squareup.workflow1.testing//expectSideEffect/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.String/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun &lt;<a href="../expect-side-effect/">PropsT</a>, <a href="../expect-side-effect/">StateT</a>, <a href="../expect-side-effect/">OutputT</a>, <a href="../expect-side-effect/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-side-effect/">PropsT</a>, <a href="../expect-side-effect/">StateT</a>, <a href="../expect-side-effect/">OutputT</a>, <a href="../expect-side-effect/">RenderingT</a>&gt;.<a href="../expect-side-effect/">expectSideEffect</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="./">RenderTester</a>&lt;<a href="../expect-side-effect/">PropsT</a>, <a href="../expect-side-effect/">StateT</a>, <a href="../expect-side-effect/">OutputT</a>, <a href="../expect-side-effect/">RenderingT</a>&gt;  <br>More info  <br>Specifies that this render pass is expected to run a particular side effect.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../expect-worker/">expectWorker</a></td>
-<td>[jvm]<br>inline fun &lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>, <a href="../expect-worker/">WorkerOutputT</a>, <a href="../expect-worker/">WorkerT</a> : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="../expect-worker/">WorkerOutputT</a>&gt;&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;.<a href="../expect-worker/">expectWorker</a>(expected: <a href="../expect-worker/">WorkerT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../expect-worker/">WorkerOutputT</a>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;<br>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> that has the same type of the given worker and for which the actual worker&rsquo;s <a href="../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a> method returns true. If a worker is ran that matches the type of <a href="../expect-worker/">expected</a>, but the actual worker&rsquo;s doesSameWorkAs returns false, then an <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-assertion-error/index.html">AssertionError</a> will be thrown. If you need to perform custom assertions, use the overload of this method that takes an assertWhen parameter.<br>[jvm]<br>inline fun &lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>, <a href="../expect-worker/">WorkerOutputT</a>, <a href="../expect-worker/">WorkerT</a> : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="../expect-worker/">WorkerOutputT</a>&gt;&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;.<a href="../expect-worker/">expectWorker</a>(workerClass: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;out <a href="../expect-worker/">WorkerT</a>&gt;, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline assertWorker: (<a href="../expect-worker/">WorkerT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../expect-worker/">WorkerOutputT</a>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;<br>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> with the given <a href="../expect-worker/">workerClass</a>. The worker&rsquo;s output type is not taken into consideration.<br>[jvm]<br>fun &lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;.<a href="../expect-worker/">expectWorker</a>(workerType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, assertWorker: (<a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<em>&gt;) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;</em>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;<br>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> whose <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> matches <a href="../expect-worker/">workerType</a>.</td>
+<td><a name="com.squareup.workflow1.testing//expectWorker/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[com.squareup.workflow1.Worker[TypeParam(bounds=[kotlin.Any?])]])#kotlin.String#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a><a href="../expect-worker/">expectWorker</a></td>
+<td><a name="com.squareup.workflow1.testing//expectWorker/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[com.squareup.workflow1.Worker[TypeParam(bounds=[kotlin.Any?])]])#kotlin.String#com.squareup.workflow1.WorkflowOutput[TypeParam(bounds=[kotlin.Any?])]?#kotlin.String/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inline fun &lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>, <a href="../expect-worker/">WorkerOutputT</a>, <a href="../expect-worker/">WorkerT</a> : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="../expect-worker/">WorkerOutputT</a>&gt;&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;.<a href="../expect-worker/">expectWorker</a>(expected: <a href="../expect-worker/">WorkerT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../expect-worker/">WorkerOutputT</a>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;  <br>More info  <br>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> that has the same type of the given worker and for which the actual worker&rsquo;s <a href="../../com.squareup.workflow1/-worker/does-same-work-as/">doesSameWorkAs</a> method returns true.  <br><br><br>[jvm]  <br>Content  <br>inline fun &lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>, <a href="../expect-worker/">WorkerOutputT</a>, <a href="../expect-worker/">WorkerT</a> : <a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<a href="../expect-worker/">WorkerOutputT</a>&gt;&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;.<a href="../expect-worker/">expectWorker</a>(workerClass: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><out <a href="../expect-worker.md">WorkerT</a>>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline assertWorker: (<a href="../expect-worker/">WorkerT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../expect-worker/">WorkerOutputT</a>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;  <br>More info  <br>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> with the given <a href="../expect-worker/">workerClass</a>.  <br><br><br>[jvm]  <br>Content  <br>fun &lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;.<a href="../expect-worker/">expectWorker</a>(workerType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, assertWorker: (<a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<em>&gt;) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;</em>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-worker/">PropsT</a>, <a href="../expect-worker/">StateT</a>, <a href="../expect-worker/">OutputT</a>, <a href="../expect-worker/">RenderingT</a>&gt;  <br>More info  <br>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> whose <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> matches <a href="../expect-worker/">workerType</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../expect-worker-outputting/">expectWorkerOutputting</a></td>
-<td>[jvm]<br>inline fun &lt;<a href="../expect-worker-outputting/">PropsT</a>, <a href="../expect-worker-outputting/">StateT</a>, <a href="../expect-worker-outputting/">OutputT</a>, <a href="../expect-worker-outputting/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-worker-outputting/">PropsT</a>, <a href="../expect-worker-outputting/">StateT</a>, <a href="../expect-worker-outputting/">OutputT</a>, <a href="../expect-worker-outputting/">RenderingT</a>&gt;.<a href="../expect-worker-outputting/">expectWorkerOutputting</a>(outputType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline assertWorker: (<a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<em>&gt;) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;</em>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-worker-outputting/">PropsT</a>, <a href="../expect-worker-outputting/">StateT</a>, <a href="../expect-worker-outputting/">OutputT</a>, <a href="../expect-worker-outputting/">RenderingT</a>&gt;<br>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> with the given <a href="../expect-worker-outputting/">outputType</a>.</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkerOutputting/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KType#kotlin.String#kotlin.Function1[com.squareup.workflow1.Worker[*],kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[*]?#kotlin.String/PointingToDeclaration/"></a><a href="../expect-worker-outputting/">expectWorkerOutputting</a></td>
+<td><a name="com.squareup.workflow1.testing//expectWorkerOutputting/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#kotlin.reflect.KType#kotlin.String#kotlin.Function1[com.squareup.workflow1.Worker[*],kotlin.Unit]#com.squareup.workflow1.WorkflowOutput[*]?#kotlin.String/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inline fun &lt;<a href="../expect-worker-outputting/">PropsT</a>, <a href="../expect-worker-outputting/">StateT</a>, <a href="../expect-worker-outputting/">OutputT</a>, <a href="../expect-worker-outputting/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-worker-outputting/">PropsT</a>, <a href="../expect-worker-outputting/">StateT</a>, <a href="../expect-worker-outputting/">OutputT</a>, <a href="../expect-worker-outputting/">RenderingT</a>&gt;.<a href="../expect-worker-outputting/">expectWorkerOutputting</a>(outputType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline assertWorker: (<a href="../../com.squareup.workflow1/-worker/">Worker</a>&lt;<em>&gt;) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;</em>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-worker-outputting/">PropsT</a>, <a href="../expect-worker-outputting/">StateT</a>, <a href="../expect-worker-outputting/">OutputT</a>, <a href="../expect-worker-outputting/">RenderingT</a>&gt;  <br>More info  <br>Specifies that this render pass is expected to run a <a href="../../com.squareup.workflow1/-worker/">Worker</a> with the given <a href="../expect-worker-outputting/">outputType</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../expect-workflow/">expectWorkflow</a></td>
-<td>[jvm]<br>inline fun &lt;<a href="../expect-workflow/">ChildRenderingT</a>, <a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;.<a href="../expect-workflow/">expectWorkflow</a>(identifier: <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>, rendering: <a href="../expect-workflow/">ChildRenderingT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, noinline assertProps: (props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;<br>fun &lt;<a href="../expect-workflow/">ChildOutputT</a>, <a href="../expect-workflow/">ChildRenderingT</a>, <a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;.<a href="../expect-workflow/">expectWorkflow</a>(identifier: <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>, rendering: <a href="../expect-workflow/">ChildRenderingT</a>, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../expect-workflow/">ChildOutputT</a>&gt;?, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, assertProps: (props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;<br>inline fun &lt;<a href="../expect-workflow/">ChildPropsT</a>, <a href="../expect-workflow/">ChildOutputT</a>, <a href="../expect-workflow/">ChildRenderingT</a>, <a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;.<a href="../expect-workflow/">expectWorkflow</a>(workflowType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;out <a href="../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;<a href="../expect-workflow/">ChildPropsT</a>, <a href="../expect-workflow/">ChildOutputT</a>, <a href="../expect-workflow/">ChildRenderingT</a>&gt;&gt;, rendering: <a href="../expect-workflow/">ChildRenderingT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline assertProps: (<a href="../expect-workflow/">ChildPropsT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../expect-workflow/">ChildOutputT</a>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;<br>Specifies that this render pass is expected to render a particular child workflow.</td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a><a href="../expect-workflow/">expectWorkflow</a></td>
+<td><a name="com.squareup.workflow1.testing//expectWorkflow/com.squareup.workflow1.testing.RenderTester[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]#com.squareup.workflow1.WorkflowIdentifier#TypeParam(bounds=[kotlin.Any?])#kotlin.String#kotlin.String#kotlin.Function1[kotlin.Any?,kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inline fun &lt;<a href="../expect-workflow/">ChildRenderingT</a>, <a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;.<a href="../expect-workflow/">expectWorkflow</a>(identifier: <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>, rendering: <a href="../expect-workflow/">ChildRenderingT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, noinline assertProps: (props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;  <br>fun &lt;<a href="../expect-workflow/">ChildOutputT</a>, <a href="../expect-workflow/">ChildRenderingT</a>, <a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;.<a href="../expect-workflow/">expectWorkflow</a>(identifier: <a href="../../com.squareup.workflow1/-workflow-identifier/">WorkflowIdentifier</a>, rendering: <a href="../expect-workflow/">ChildRenderingT</a>, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../expect-workflow/">ChildOutputT</a>&gt;?, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, assertProps: (props: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;  <br>inline fun &lt;<a href="../expect-workflow/">ChildPropsT</a>, <a href="../expect-workflow/">ChildOutputT</a>, <a href="../expect-workflow/">ChildRenderingT</a>, <a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt; <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;.<a href="../expect-workflow/">expectWorkflow</a>(workflowType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a>&lt;out <a href="../../com.squareup.workflow1/-workflow/">Workflow</a>&lt;<a href="../expect-workflow/">ChildPropsT</a>, <a href="../expect-workflow/">ChildOutputT</a>, <a href="../expect-workflow/">ChildRenderingT</a>&gt;&gt;, rendering: <a href="../expect-workflow/">ChildRenderingT</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;, crossinline assertProps: (<a href="../expect-workflow/">ChildPropsT</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}, output: <a href="../../com.squareup.workflow1/-workflow-output/">WorkflowOutput</a>&lt;<a href="../expect-workflow/">ChildOutputT</a>&gt;? = null, description: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="./">RenderTester</a>&lt;<a href="../expect-workflow/">PropsT</a>, <a href="../expect-workflow/">StateT</a>, <a href="../expect-workflow/">OutputT</a>, <a href="../expect-workflow/">RenderingT</a>&gt;  <br>More info  <br>Specifies that this render pass is expected to render a particular child workflow.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

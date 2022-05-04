@@ -810,8 +810,7 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">Sink</a></p>
 <h1 id="sink">Sink<a class="headerlink" href="#sink" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-fun interface <a href="./">Sink</a>&lt;in <a href="./">T</a>&gt;</p>
+<p>[jvm] fun fun interface <a href="./">Sink</a><in <a href="index.md">T</a>></p>
 <p>An object that receives values (commonly events or <a href="../-workflow-action/">WorkflowAction</a>). <a href="../-base-render-context/action-sink/">BaseRenderContext.actionSink</a> implements this interface.</p>
 <h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
@@ -823,8 +822,8 @@ fun interface <a href="./">Sink</a>&lt;in <a href="./">T</a>&gt;</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="send/">send</a></td>
-<td>[jvm]<br>abstract fun <a href="send/">send</a>(value: <a href="./">T</a>)</td>
+<td><a name="com.squareup.workflow1/Sink/send/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a><a href="send/">send</a></td>
+<td><a name="com.squareup.workflow1/Sink/send/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="send/">send</a>(value: <a href="./">T</a>)  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -838,8 +837,8 @@ fun interface <a href="./">Sink</a>&lt;in <a href="./">T</a>&gt;</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="../contra-map/">contraMap</a></td>
-<td>[jvm]<br>fun &lt;<a href="../contra-map/">T1</a>, <a href="../contra-map/">T2</a>&gt; <a href="./">Sink</a>&lt;<a href="../contra-map/">T1</a>&gt;.<a href="../contra-map/">contraMap</a>(transform: (<a href="../contra-map/">T2</a>) -&gt; <a href="../contra-map/">T1</a>): <a href="./">Sink</a>&lt;<a href="../contra-map/">T2</a>&gt;<br>Generates a new sink of type <a href="../contra-map/">T2</a>.</td>
+<td><a name="com.squareup.workflow1//contraMap/com.squareup.workflow1.Sink[TypeParam(bounds=[kotlin.Any?])]#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a><a href="../contra-map/">contraMap</a></td>
+<td><a name="com.squareup.workflow1//contraMap/com.squareup.workflow1.Sink[TypeParam(bounds=[kotlin.Any?])]#kotlin.Function1[TypeParam(bounds=[kotlin.Any?]),TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun &lt;<a href="../contra-map/">T1</a>, <a href="../contra-map/">T2</a>&gt; <a href="./">Sink</a>&lt;<a href="../contra-map/">T1</a>&gt;.<a href="../contra-map/">contraMap</a>(transform: (<a href="../contra-map/">T2</a>) -&gt; <a href="../contra-map/">T1</a>): <a href="./">Sink</a>&lt;<a href="../contra-map/">T2</a>&gt;  <br>More info  <br>Generates a new sink of type <a href="../contra-map/">T2</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

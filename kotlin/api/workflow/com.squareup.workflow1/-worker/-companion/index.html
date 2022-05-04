@@ -803,8 +803,7 @@
                 
                 <p>//<a href="../../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1</a>/<a href="../">Worker</a>/<a href="./">Companion</a></p>
 <h1 id="companion">Companion<a class="headerlink" href="#companion" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-object <a href="./">Companion</a></p>
+<p>[jvm] object <a href="./">Companion</a>   </p>
 <h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -815,24 +814,24 @@ object <a href="./">Companion</a></p>
 </thead>
 <tbody>
 <tr>
-<td><a href="create/">create</a></td>
-<td>[jvm]<br>inline fun &lt;<a href="create/">OutputT</a>&gt; <a href="create/">create</a>(noinline block: suspend FlowCollector&lt;<a href="create/">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../">Worker</a>&lt;<a href="create/">OutputT</a>&gt;<br>Shorthand for flow { block() }.asWorker().</td>
+<td><a name="com.squareup.workflow1/Worker.Companion/create/#kotlin.coroutines.SuspendFunction1[kotlinx.coroutines.flow.FlowCollector[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="create/">create</a></td>
+<td><a name="com.squareup.workflow1/Worker.Companion/create/#kotlin.coroutines.SuspendFunction1[kotlinx.coroutines.flow.FlowCollector[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inline fun &lt;<a href="create/">OutputT</a>&gt; <a href="create/">create</a>(noinline block: suspend FlowCollector&lt;<a href="create/">OutputT</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="../">Worker</a>&lt;<a href="create/">OutputT</a>&gt;  <br>More info  <br>Shorthand for flow { block() }.asWorker().  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="finished/">finished</a></td>
-<td>[jvm]<br>fun &lt;<a href="finished/">T</a>&gt; <a href="finished/">finished</a>(): <a href="../">Worker</a>&lt;<a href="finished/">T</a>&gt;<br>Returns a <a href="../">Worker</a> that finishes immediately without emitting anything.</td>
+<td><a name="com.squareup.workflow1/Worker.Companion/finished/#/PointingToDeclaration/"></a><a href="finished/">finished</a></td>
+<td><a name="com.squareup.workflow1/Worker.Companion/finished/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun &lt;<a href="finished/">T</a>&gt; <a href="finished/">finished</a>(): <a href="../">Worker</a>&lt;<a href="finished/">T</a>&gt;  <br>More info  <br>Returns a <a href="../">Worker</a> that finishes immediately without emitting anything.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="from/">from</a></td>
-<td>[jvm]<br>inline fun &lt;<a href="from/">OutputT</a>&gt; <a href="from/">from</a>(noinline block: suspend () -&gt; <a href="from/">OutputT</a>): <a href="../">Worker</a>&lt;<a href="from/">OutputT</a>&gt;<br>Creates a <a href="../">Worker</a> from a function that returns a single value.</td>
+<td><a name="com.squareup.workflow1/Worker.Companion/from/#kotlin.coroutines.SuspendFunction0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a><a href="from/">from</a></td>
+<td><a name="com.squareup.workflow1/Worker.Companion/from/#kotlin.coroutines.SuspendFunction0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inline fun &lt;<a href="from/">OutputT</a>&gt; <a href="from/">from</a>(noinline block: suspend () -&gt; <a href="from/">OutputT</a>): <a href="../">Worker</a>&lt;<a href="from/">OutputT</a>&gt;  <br>More info  <br>Creates a <a href="../">Worker</a> from a function that returns a single value.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="from-nullable/">fromNullable</a></td>
-<td>[jvm]<br>inline fun &lt;<a href="from-nullable/">OutputT</a>&gt; <a href="from-nullable/">fromNullable</a>(noinline block: suspend () -&gt; <a href="from-nullable/">OutputT</a>?): <a href="../">Worker</a>&lt;<a href="from-nullable/">OutputT</a>&gt;<br>Creates a <a href="../">Worker</a> from a function that returns a single value. The worker will emit the value <strong>if and only if the value is not null</strong>, then finish.</td>
+<td><a name="com.squareup.workflow1/Worker.Companion/fromNullable/#kotlin.coroutines.SuspendFunction0[TypeParam(bounds=[kotlin.Any?])?]/PointingToDeclaration/"></a><a href="from-nullable/">fromNullable</a></td>
+<td><a name="com.squareup.workflow1/Worker.Companion/fromNullable/#kotlin.coroutines.SuspendFunction0[TypeParam(bounds=[kotlin.Any?])?]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>inline fun &lt;<a href="from-nullable/">OutputT</a>&gt; <a href="from-nullable/">fromNullable</a>(noinline block: suspend () -&gt; <a href="from-nullable/">OutputT</a>?): <a href="../">Worker</a>&lt;<a href="from-nullable/">OutputT</a>&gt;  <br>More info  <br>Creates a <a href="../">Worker</a> from a function that returns a single value.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="timer/">timer</a></td>
-<td>[jvm]<br>fun <a href="timer/">timer</a>(delayMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="../">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>&gt;<br>Creates a <a href="../">Worker</a> that will emit <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> and then finish after <a href="timer/">delayMs</a> milliseconds. Negative delays are clamped to zero.</td>
+<td><a name="com.squareup.workflow1/Worker.Companion/timer/#kotlin.Long#kotlin.String/PointingToDeclaration/"></a><a href="timer/">timer</a></td>
+<td><a name="com.squareup.workflow1/Worker.Companion/timer/#kotlin.Long#kotlin.String/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun <a href="timer/">timer</a>(delayMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>, key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a> = &ldquo;&rdquo;): <a href="../">Worker</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>&gt;  <br>More info  <br>Creates a <a href="../">Worker</a> that will emit <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> and then finish after <a href="timer/">delayMs</a> milliseconds.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

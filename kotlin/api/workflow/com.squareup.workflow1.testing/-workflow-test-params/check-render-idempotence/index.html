@@ -766,6 +766,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -786,8 +803,26 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">WorkflowTestParams</a>/<a href="./">checkRenderIdempotence</a></p>
 <h1 id="checkrenderidempotence">checkRenderIdempotence<a class="headerlink" href="#checkrenderidempotence" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-val <a href="./">checkRenderIdempotence</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true</p>
+<p>[jvm]<br />
+Content<br />
+val <a href="./">checkRenderIdempotence</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = true<br />
+More info  </p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<p>jvm  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams/checkRenderIdempotence/#/PointingToDeclaration/"></a>checkRenderIdempotence</td>
+<td><a name="com.squareup.workflow1.testing/WorkflowTestParams/checkRenderIdempotence/#/PointingToDeclaration/"></a><br><br>If true, every render method will be called multiple times, to help suss out any side effects that a render method is trying to perform. This parameter defaults to true since the workflow contract is that render will be called an arbitrary number of times for any given state, so performing side effects in render will almost always result in bugs. It is recommended to leave this on, but if you need to debug a test and don&rsquo;t want to have to deal with the extra passes, you can temporarily set it to false.<br><br></td>
+</tr>
+</tbody>
+</table>
                 
               
               

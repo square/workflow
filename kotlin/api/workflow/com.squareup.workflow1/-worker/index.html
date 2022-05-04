@@ -838,48 +838,44 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">Worker</a></p>
 <h1 id="worker">Worker<a class="headerlink" href="#worker" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-interface <a href="./">Worker</a>&lt;out <a href="./">OutputT</a>&gt;</p>
+<p>[jvm] interface <a href="./">Worker</a><out <a href="index.md">OutputT</a>></p>
 <p>Represents a unit of asynchronous work that can have zero, one, or multiple outputs.</p>
 <p>Workers allow you to execute arbitrary, possibly asynchronous tasks in a declarative manner. To perform their tasks, workers return a Flow. Workers are effectively Flows that can be <a href="does-same-work-as/">compared</a> to determine equivalence between render passes. A <a href="../-workflow/">Workflow</a> uses Workers to perform asynchronous work during the render pass by calling <a href="../running-worker/">BaseRenderContext.runningWorker</a>.</p>
 <p>See the documentation on <a href="run/">run</a> for more information on the returned Flow is consumed and how to implement asynchronous work.</p>
 <p>See the documentation on <a href="does-same-work-as/">doesSameWorkAs</a> for more details on how and when workers are compared and the worker lifecycle.</p>
 <h2 id="example-network-request">Example: Network request<a class="headerlink" href="#example-network-request" title="Permanent link">&para;</a></h2>
 <p>Let&rsquo;s say you have a network service with an API that returns a number, and you want to call that service from a <a href="../-workflow/">Workflow</a>.</p>
-<p>interface TimeService {\
-  suspend fun getTime(timezone: String): Long\
+<p>interface TimeService {<br />
+  suspend fun getTime(timezone: String): Long<br />
 }</p>
 <p>The first step is to define a Worker that can call this service, and maybe an extension function on your service class:</p>
-<p>fun TimeService.getTimeWorker(timezone: String): Worker&lt;Long&gt; = TimeWorker(timezone, this)\
-\
-private class TimeWorker(\
-  val timezone: String,\
-  val service: TimeService\
-): Worker&lt;Long&gt; {\
-\
-  override fun run(): Flow&lt;Long&gt; = flow {\
-    val time = service.getTime(timezone)\
-    emit(time)\
-  }\
+<p>fun TimeService.getTimeWorker(timezone: String): Worker<Long> = TimeWorker(timezone, this)  </p>
+<p>private class TimeWorker(<br />
+  val timezone: String,<br />
+  val service: TimeService<br />
+): Worker<Long> {  </p>
+<p>override fun run(): Flow<Long> = flow {<br />
+    val time = service.getTime(timezone)<br />
+    emit(time)<br />
+  }<br />
 }</p>
 <p>You also need to define how to determine if a previous Worker is already doing the same work. This will ensure that if the same request is made by the same <a href="../-workflow/">Workflow</a> in adjacent render passes, we&rsquo;ll keep the request alive from the first pass.</p>
-<p>override fun doesSameWorkAs(otherWorker: Worker&lt;*&gt;): Boolean =\
-  otherWorker is TimeWorker &amp;&amp;\
+<p>override fun doesSameWorkAs(otherWorker: Worker&lt;*&gt;): Boolean =<br />
+  otherWorker is TimeWorker &amp;&amp;<br />
     timezone == otherWorker.timezone</p>
 <p>Now you can request the time from your <a href="../-workflow/">Workflow</a>:</p>
-<p>class MyWorkflow(private val timeWorker: TimeWorker) {\
-  override fun render(…): Foo {\
-    context.runningWorker(timeWorker) { time -&gt; emitOutput(&ldquo;The time is $time&rdquo;) }\
+<p>class MyWorkflow(private val timeWorker: TimeWorker) {<br />
+  override fun render(…): Foo {<br />
+    context.runningWorker(timeWorker) { time -&gt; emitOutput(&ldquo;The time is $time&rdquo;) }<br />
   }</p>
 <p>Alternatively, if the response is a unique type, unlikely to be shared by any other workers, you don&rsquo;t even need to create your own Worker class, you can use a builder, and the worker will automatically be distinguished by that response type:</p>
-<p>interface TimeService {\
-  fun getTime(timezone: String): Deferred&lt;TimeResponse&gt;\
-}\
-\
-fun TimeService.getTimeWorker(timezone: String): Worker&lt;TimeResponse&gt; =\
-  Worker.from { getTime(timezone).await()) }</p>
+<p>interface TimeService {<br />
+  fun getTime(timezone: String): Deferred<TimeResponse><br />
+}  </p>
+<p>fun TimeService.getTimeWorker(timezone: String): Worker<TimeResponse> =<br />
+  Worker.from { getTime(timezone).await()) }   </p>
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
-<p>jvm</p>
+<p>jvm  </p>
 <table>
 <thead>
 <tr>
@@ -889,8 +885,8 @@ fun TimeService.getTimeWorker(timezone: String): Worker&lt;TimeResponse&gt; =\
 </thead>
 <tbody>
 <tr>
-<td><a href="-companion/from-nullable/">com.squareup.workflow1.Worker.Companion</a></td>
-<td></td>
+<td><a name="com.squareup.workflow1/Worker///PointingToDeclaration/"></a><a href="-companion/from-nullable/">com.squareup.workflow1.Worker.Companion</a></td>
+<td><a name="com.squareup.workflow1/Worker///PointingToDeclaration/"></a></td>
 </tr>
 </tbody>
 </table>
@@ -904,8 +900,8 @@ fun TimeService.getTimeWorker(timezone: String): Worker&lt;TimeResponse&gt; =\
 </thead>
 <tbody>
 <tr>
-<td><a href="-companion/">Companion</a></td>
-<td>[jvm]<br>object <a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1/Worker.Companion///PointingToDeclaration/"></a><a href="-companion/">Companion</a></td>
+<td><a name="com.squareup.workflow1/Worker.Companion///PointingToDeclaration/"></a>[jvm]  <br>Content  <br>object <a href="-companion/">Companion</a>  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -919,12 +915,12 @@ fun TimeService.getTimeWorker(timezone: String): Worker&lt;TimeResponse&gt; =\
 </thead>
 <tbody>
 <tr>
-<td><a href="does-same-work-as/">doesSameWorkAs</a></td>
-<td>[jvm]<br>open fun <a href="does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="./">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><br>Override this method to define equivalence between <a href="./">Worker</a>s. The default implementation returns true if this worker&rsquo;s class is the same as <a href="does-same-work-as/">otherWorker</a>&lsquo;s class.</td>
+<td><a name="com.squareup.workflow1/Worker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a><a href="does-same-work-as/">doesSameWorkAs</a></td>
+<td><a name="com.squareup.workflow1/Worker/doesSameWorkAs/#com.squareup.workflow1.Worker[*]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>open fun <a href="does-same-work-as/">doesSameWorkAs</a>(otherWorker: <a href="./">Worker</a>&lt;*&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>  <br>More info  <br>Override this method to define equivalence between <a href="./">Worker</a>s.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="run/">run</a></td>
-<td>[jvm]<br>abstract fun <a href="run/">run</a>(): Flow&lt;<a href="./">OutputT</a>&gt;<br>Returns a Flow to execute the work represented by this worker.</td>
+<td><a name="com.squareup.workflow1/Worker/run/#/PointingToDeclaration/"></a><a href="run/">run</a></td>
+<td><a name="com.squareup.workflow1/Worker/run/#/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>abstract fun <a href="run/">run</a>(): Flow&lt;<a href="./">OutputT</a>&gt;  <br>More info  <br>Returns a Flow to execute the work represented by this worker.  <br><br><br></td>
 </tr>
 </tbody>
 </table>
@@ -937,13 +933,13 @@ fun TimeService.getTimeWorker(timezone: String): Worker&lt;TimeResponse&gt; =\
 </thead>
 <tbody>
 <tr>
-<td><a href="../-lifecycle-worker/">LifecycleWorker</a></td>
+<td><a name="com.squareup.workflow1/LifecycleWorker///PointingToDeclaration/"></a><a href="../-lifecycle-worker/">LifecycleWorker</a></td>
 </tr>
 <tr>
-<td><a href="../../com.squareup.workflow1.rx2/-publisher-worker/">PublisherWorker</a></td>
+<td><a name="com.squareup.workflow1.rx2/PublisherWorker///PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.rx2/-publisher-worker/">PublisherWorker</a></td>
 </tr>
 <tr>
-<td><a href="../../com.squareup.workflow1.testing/-worker-sink/">WorkerSink</a></td>
+<td><a name="com.squareup.workflow1.testing/WorkerSink///PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.testing/-worker-sink/">WorkerSink</a></td>
 </tr>
 </tbody>
 </table>
@@ -957,12 +953,12 @@ fun TimeService.getTimeWorker(timezone: String): Worker&lt;TimeResponse&gt; =\
 </thead>
 <tbody>
 <tr>
-<td><a href="../../com.squareup.workflow1.testing/test/">test</a></td>
-<td>[jvm]<br>fun &lt;<a href="../../com.squareup.workflow1.testing/test/">T</a>&gt; <a href="./">Worker</a>&lt;<a href="../../com.squareup.workflow1.testing/test/">T</a>&gt;.<a href="../../com.squareup.workflow1.testing/test/">test</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a> = DEFAULT_TIMEOUT_MS, block: suspend <a href="../../com.squareup.workflow1.testing/-worker-tester/">WorkerTester</a>&lt;<a href="../../com.squareup.workflow1.testing/test/">T</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<br>Test a <a href="./">Worker</a> by defining assertions on its output within <a href="../../com.squareup.workflow1.testing/test/">block</a>.</td>
+<td><a name="com.squareup.workflow1.testing//test/com.squareup.workflow1.Worker[TypeParam(bounds=[kotlin.Any?])]#kotlin.Long#kotlin.coroutines.SuspendFunction1[com.squareup.workflow1.testing.WorkerTester[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a><a href="../../com.squareup.workflow1.testing/test/">test</a></td>
+<td><a name="com.squareup.workflow1.testing//test/com.squareup.workflow1.Worker[TypeParam(bounds=[kotlin.Any?])]#kotlin.Long#kotlin.coroutines.SuspendFunction1[com.squareup.workflow1.testing.WorkerTester[TypeParam(bounds=[kotlin.Any?])],kotlin.Unit]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun &lt;<a href="../../com.squareup.workflow1.testing/test/">T</a>&gt; <a href="./">Worker</a>&lt;<a href="../../com.squareup.workflow1.testing/test/">T</a>&gt;.<a href="../../com.squareup.workflow1.testing/test/">test</a>(timeoutMs: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a> = DEFAULT_TIMEOUT_MS, block: suspend <a href="../../com.squareup.workflow1.testing/-worker-tester/">WorkerTester</a>&lt;<a href="../../com.squareup.workflow1.testing/test/">T</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)  <br>More info  <br>Test a <a href="./">Worker</a> by defining assertions on its output within <a href="../../com.squareup.workflow1.testing/test/">block</a>.  <br><br><br></td>
 </tr>
 <tr>
-<td><a href="../transform/">transform</a></td>
-<td>[jvm]<br>fun &lt;<a href="../transform/">T</a>, <a href="../transform/">R</a>&gt; <a href="./">Worker</a>&lt;<a href="../transform/">T</a>&gt;.<a href="../transform/">transform</a>(transform: (Flow&lt;<a href="../transform/">T</a>&gt;) -&gt; Flow&lt;<a href="../transform/">R</a>&gt;): <a href="./">Worker</a>&lt;<a href="../transform/">R</a>&gt;<br>Returns a <a href="./">Worker</a> that transforms this <a href="./">Worker</a>&lsquo;s Flow by calling <a href="../transform/">transform</a>.</td>
+<td><a name="com.squareup.workflow1//transform/com.squareup.workflow1.Worker[TypeParam(bounds=[kotlin.Any?])]#kotlin.Function1[kotlinx.coroutines.flow.Flow[TypeParam(bounds=[kotlin.Any?])],kotlinx.coroutines.flow.Flow[TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/"></a><a href="../transform/">transform</a></td>
+<td><a name="com.squareup.workflow1//transform/com.squareup.workflow1.Worker[TypeParam(bounds=[kotlin.Any?])]#kotlin.Function1[kotlinx.coroutines.flow.Flow[TypeParam(bounds=[kotlin.Any?])],kotlinx.coroutines.flow.Flow[TypeParam(bounds=[kotlin.Any?])]]/PointingToDeclaration/"></a>[jvm]  <br>Content  <br>fun &lt;<a href="../transform/">T</a>, <a href="../transform/">R</a>&gt; <a href="./">Worker</a>&lt;<a href="../transform/">T</a>&gt;.<a href="../transform/">transform</a>(transform: (Flow&lt;<a href="../transform/">T</a>&gt;) -&gt; Flow&lt;<a href="../transform/">R</a>&gt;): <a href="./">Worker</a>&lt;<a href="../transform/">R</a>&gt;  <br>More info  <br>Returns a <a href="./">Worker</a> that transforms this <a href="./">Worker</a>&lsquo;s Flow by calling <a href="../transform/">transform</a>.  <br><br><br></td>
 </tr>
 </tbody>
 </table>

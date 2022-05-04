@@ -786,8 +786,10 @@
                 
                 <p>//<a href="../../../index.md">workflow</a>/<a href="../../">com.squareup.workflow1.testing</a>/<a href="../">RenderTestResult</a>/<a href="./">testNextRenderWithProps</a></p>
 <h1 id="testnextrenderwithprops">testNextRenderWithProps<a class="headerlink" href="#testnextrenderwithprops" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-abstract fun <a href="./">testNextRenderWithProps</a>(newProps: <a href="../">PropsT</a>): <a href="../../-render-tester/">RenderTester</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;</p>
+<p>[jvm]<br />
+Content<br />
+abstract fun <a href="./">testNextRenderWithProps</a>(newProps: <a href="../">PropsT</a>): <a href="../../-render-tester/">RenderTester</a>&lt;<a href="../">PropsT</a>, <a href="../">StateT</a>, <a href="../">OutputT</a>, <a href="../">RenderingT</a>&gt;<br />
+More info  </p>
 <p>Starts a new <a href="../../-render-tester/">RenderTester</a> session using <a href="./">newProps</a> props, and the state that is a result of the latest render pass (the same one you could run assertions on in <a href="../verify-action-result/">verifyActionResult</a>).</p>
 <p>This method is useful for daisy-chaining of <a href="../../-render-tester/">RenderTester</a> sessions, when you want to assert different state transitions without <a href="../../-workflow-test-runtime/">WorkflowTestRuntime</a> overhead.</p>
 <p>Note that if you&rsquo;re overriding <a href="../../../com.squareup.workflow1/-stateful-workflow/on-props-changed/">StatefulWorkflow.onPropsChanged</a> method, it&rsquo;ll be ran before the next <a href="../../-render-tester/render/">RenderTester.render</a> pass, and <a href="../../-render-tester/">RenderTester</a> returned by this method will use the updated state value.</p>

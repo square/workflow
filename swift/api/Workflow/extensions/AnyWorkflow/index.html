@@ -856,15 +856,15 @@
                 
                 <p><strong>EXTENSION</strong></p>
 <h1 id="anyworkflow"><code>AnyWorkflow</code><a class="headerlink" href="#anyworkflow" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">AnyWorkflow</span><span class="p">:</span> <span class="n">AnyWorkflowConvertible</span>
-</code></pre></div>
+<p><code>swift
+extension AnyWorkflow: AnyWorkflowConvertible</code></p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="asanyworkflow"><code>asAnyWorkflow()</code><a class="headerlink" href="#asanyworkflow" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">asAnyWorkflow</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">Rendering</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func asAnyWorkflow() -&gt; AnyWorkflow&lt;Rendering, Output&gt;</code></p>
 <h3 id="mapoutput_"><code>mapOutput(_:)</code><a class="headerlink" href="#mapoutput_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">mapOutput</span><span class="p">&lt;</span><span class="n">NewOutput</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">transform</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Output</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">NewOutput</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">Rendering</span><span class="p">,</span> <span class="n">NewOutput</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func mapOutput&lt;NewOutput&gt;(_ transform: @escaping (Output) -&gt; NewOutput) -&gt; AnyWorkflow&lt;Rendering, NewOutput&gt;</code></p>
 <p>Returns a new AnyWorkflow whose <code>Output</code> type has been transformed into the given type.</p>
 <ul>
 <li>
@@ -890,8 +890,8 @@
 </tbody>
 </table>
 <h3 id="maprendering_"><code>mapRendering(_:)</code><a class="headerlink" href="#maprendering_" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">mapRendering</span><span class="p">&lt;</span><span class="n">NewRendering</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">transform</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Rendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">NewRendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">AnyWorkflow</span><span class="p">&lt;</span><span class="n">NewRendering</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;</span>
-</code></pre></div>
+<p><code>swift
+public func mapRendering&lt;NewRendering&gt;(_ transform: @escaping (Rendering) -&gt; NewRendering) -&gt; AnyWorkflow&lt;NewRendering, Output&gt;</code></p>
 <p>Returns a new <code>AnyWorkflow</code> whose <code>Rendering</code> type has been transformed into the given type.</p>
 <ul>
 <li>

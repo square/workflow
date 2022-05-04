@@ -786,16 +786,18 @@
                 
                 <p>//<a href="../../index.md">workflow</a>/<a href="../">com.squareup.workflow1</a>/<a href="./">parse</a></p>
 <h1 id="parse">parse<a class="headerlink" href="#parse" title="Permanent link">&para;</a></h1>
-<p>[jvm]\
-inline fun &lt;<a href="./">T</a>&gt; ByteString.<a href="./">parse</a>(block: (BufferedSource) -&gt; <a href="./">T</a>): <a href="./">T</a></p>
+<p>[jvm]<br />
+Content<br />
+inline fun &lt;<a href="./">T</a>&gt; ByteString.<a href="./">parse</a>(block: (BufferedSource) -&gt; <a href="./">T</a>): <a href="./">T</a><br />
+More info  </p>
 <p>Runs block with a BufferedSource that will read from this ByteString.</p>
 <p>Lets you do stuff like:</p>
-<p>myBlob.parse {\
-  MyValueObject(\
-    name = it.readUtf8WithLength(),\
-    age = it.readInt()\
-  )\
-}</p>
+<p>myBlob.parse {<br />
+  MyValueObject(<br />
+    name = it.readUtf8WithLength(),<br />
+    age = it.readInt()<br />
+  )<br />
+}  </p>
                 
               
               
