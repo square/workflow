@@ -34,6 +34,16 @@ simply by rendering various children. It may just combine the renderings of mult
 use its props to determine which of a set of children to render. Such workflows can often be
 stateless.
 
+## One-and-done Workflows (RenderingT v. OutputT)
+
+A common question is “why can’t I emit output from `initialState`,” or “what if my Workflow realizes it doesn’t actually need to run? The most efficient, and most expressive, way to handle this is to use an optional or conditional `Rendering` type, and an `Output` of [`Never`](https://nshipster.com/never/)/[`Nothing`](https://medium.com/@agrawalsuneet/the-nothing-type-kotlin-2e7df43b0111).
+
+Imagine a `PromptForPermissionMaybeWorkflow`, that renders a UI to get a passcode, but only if that permission has not already been granted. If you make its `RenderingT` nullable (e.g. `Screen?`), it can return `null` to indicate that its job is done. Its callers will be synchronously informed that the coast is clear, and can immediately render what they actually care about.
+
+Another variation of this pattern is to use a sealed class / enum type for `Rendering`, with a `Working` type that implements `Screen`, and a unviewable `Finished` type that carries the work product.
+
+A good rule of thumb for choosing between using `Rendering` or `Output` is to remember that `Output` is event-like, and is always asynchronous. A parent waiting for an output must be given something to render in the meantime. Using `Rendering` is a great idiom for a one-and-done workflow tasked with providing a single product, especially one that might be available instantly.
+
 ## Props values v. Injected Dependencies
 
 [Dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) is a technique for making
