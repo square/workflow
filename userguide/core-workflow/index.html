@@ -1197,6 +1197,7 @@ actions.</p>
 hierarchy. This is the opportunity for a workflow to notify its parent that something has happened
 (and the parent&rsquo;s opportunity to respond to that event by dispatching its own action, continuing up
 the tree as long as output events are emitted).</p>
+<p><a id="rendering"/></p>
 <h2 id="workflows-produce-an-external-representation-of-their-state-via-rendering">Workflows produce an external representation of their state via <code>Rendering</code><a class="headerlink" href="#workflows-produce-an-external-representation-of-their-state-via-rendering" title="Permanent link">&para;</a></h2>
 <p>Immediately after starting up, or after a state transition occurs, a workflow will have its <code>render</code>
 method called. This method is responsible for creating and returning a value of type <code>Rendering</code>.
@@ -1282,11 +1283,13 @@ root workflow&rsquo;s <code>initialState</code>. The workflow can choose to eith
 restore its <code>State</code>. On the first render pass, if the root workflow renders any children that were
 also being rendered when the snapshot was taken, those children&rsquo;s snapshots are also extracted from
 the aggregate and used to initialize their states.</p>
-<p>!!! faq Why don&rsquo;t Swift Workflows support snapshotting?
-    Snapshotting was built into Kotlin workflows specifically to support Android&rsquo;s app lifecycle,
-    which requires apps to serialize their current state before being backgrounded so that they can
-    be restored in case the system needs to kill the hosting process. iOS apps don&rsquo;t have this
-    requirement, so the Swift library doesn&rsquo;t need to support it.</p>
+<div class="admonition faq">
+<p class="admonition-title">Why don&rsquo;t Swift Workflows support snapshotting?</p>
+<p>Snapshotting was built into Kotlin workflows specifically to support Android&rsquo;s app lifecycle,
+which requires apps to serialize their current state before being backgrounded so that they can
+be restored in case the system needs to kill the hosting process. iOS apps don&rsquo;t have this
+requirement, so the Swift library doesn&rsquo;t need to support it.</p>
+</div>
 
               
             </article>
