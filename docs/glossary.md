@@ -22,13 +22,13 @@ An abstraction that models a program’s logic as a graph of a set of states and
 
 ## Idempotent
 
-A function whose side effects won’t be repeated with multiple invocations, the result is purely a function of the input. In other words, if called multiple times with the same input, the result is the same. For Workflows, the render() function must be idempotent, as the runtime offers no guarantees for how many times it may be called.
+A function whose side effects won’t be repeated with multiple invocations, the result is purely a function of the input. In other words, if called multiple times with the same input, the result is the same. For Workflows, the `render()` function must be idempotent, as the runtime offers no guarantees for how many times it may be called.
 
 ## Workflow Runtime
 
 An event loop that executes a Workflow Tree. On each pass:
 
-1. A Rendering is assembled by calling render() on each Node of the Workflow Tree with each parent Workflow given the option to incorporate the Renderings of its children into its own.
+1. A Rendering is assembled by calling `render()` on each Node of the Workflow Tree with each parent Workflow given the option to incorporate the Renderings of its children into its own.
 
 1. The event loop waits for an Action to be sent to the Sink.
 
@@ -36,9 +36,9 @@ An event loop that executes a Workflow Tree. On each pass:
 
 1. Any Output emitted is processed in turn by an Action defined by the updated Workflow’s parent again possibly updating its State and emitting an Output cascading up the hierarchy.
 
-1. A new render() pass is made against the entire Workflow Tree with the updated States.
+1. A new `render()` pass is made against the entire Workflow Tree with the updated States.
 
-We use the term Workflow Runtime to refer to the core code in the framework that executes this event loop, responding to Actions and invoking render().
+We use the term Workflow Runtime to refer to the core code in the framework that executes this event loop, responding to Actions and invoking `render()`.
 
 ## Workflow (Instance)
 
@@ -47,9 +47,9 @@ An object that defines the transitions and side effects of a state machine as, e
 1. Providing the first state: () -> State
 1. Providing a rendering: (Props and State) -> (Rendering and Side Effect Invocations and Child Workflow Invocations)
 
-The Child Workflow Invocations declared by the render function result in calls to the children’s render() functions in turn, allowing the parent render function to choose to incorporate child Rendering values into its own.
+The Child Workflow Invocations declared by the render function result in calls to the children’s `render()` functions in turn, allowing the parent render function to choose to incorporate child Rendering values into its own.
 
-A Workflow is not itself a state machine, and ideally has no state of its own. It is rather a schema that identifies a particular type of state machine that can be started in initialState() by the Workflow Runtime, and advanced by repeated invocations of render().
+A Workflow is not itself a state machine, and ideally has no state of its own. It is rather a schema that identifies a particular type of state machine that can be started in `initialState()` by the Workflow Runtime, and advanced by repeated invocations of `render()`.
 
 Note: there is significant fuzziness in using the term ‘Workflow’, as it can mean at times the class/struct that declares the Workflow behavior as well as the object representing the running Workflow Node. To understand the Runtime behavior, grasping this distinction is necessary and valuable. When using a Workflow, the formal distinction is less valuable than the mental model of how a Workflow will be run.
 
@@ -61,11 +61,11 @@ An active state machine whose behavior is defined by a Workflow Instance. This i
 
 Every Workflow or Side Effect Node has a lifecycle that is determined by its parent. In the case of the root Workflow, this lifecycle is determined by how long the host of the root chooses to use the stream of Renderings from the root Workflow. In the case of a non-root Workflow or Side Effect — that is, in the case of a Child — its lifecycle is determined as follows:
 
-* Start: the first time its parent invokes the Child in the parent’s own render() pass.
+* Start: the first time its parent invokes the Child in the parent’s own `render()` pass.
 
-* End: the first subsequent render() pass that does not invoke the Child.
+* End: the first subsequent `render()` pass that does not invoke the Child.
 
-Note that in between Start and End, the Workflow, or Side Effect is not “re-invoked” in the sense of starting again with each render() pass, but rather the originally invoked instance continues to run until a render() call is made without invoking it.
+Note that in between Start and End, the Workflow, or Side Effect is not “re-invoked” in the sense of starting again with each `render()` pass, but rather the originally invoked instance continues to run until a `render()` call is made without invoking it.
 
 ## Workflow Tree
 
@@ -91,7 +91,7 @@ When an event occurs and the handler provides an Action, this Action may possibl
 
 ## Render Pass
 
-The portion of the Workflow Runtime event loop which traverses the Workflow tree, calling render() on each Workflow Node. When the RenderContext Sink receives an Action an Action Cascade occurs and at the completion of the Action Cascade the Render Pass occurs.
+The portion of the Workflow Runtime event loop which traverses the Workflow tree, calling `render()` on each Workflow Node. When the RenderContext Sink receives an Action an Action Cascade occurs and at the completion of the Action Cascade the Render Pass occurs.
 
 ## Output Event
 
@@ -129,9 +129,9 @@ The State object itself is immutable, in other words, its property values cannot
 
 What this means for Workflows is that the Workflow Runtime holds a canonical instance of the internal State of each Workflow. A Workflow’s state is “advanced” when that canonical instance is atomically replaced by one returned when an Action is invoked. State can only be mutated through WorkflowAction which will trigger a re-render. There are a number of benefits to keeping State immutable in this way:
 
-* Reasoning about and debugging the Workflow is easier because, for any given State, there is a deterministic Rendering and the State cannot change except as a new parameter value to the render() method.
+* Reasoning about and debugging the Workflow is easier because, for any given State, there is a deterministic Rendering and the State cannot change except as a new parameter value to the `render()` method.
 
-* This assists in making render() idempotent as the State will not be modified in the course of the execution of that function.
+* This assists in making `render()` idempotent as the State will not be modified in the course of the execution of that function.
 
 Note that this immutability can be enforced only by convention. It is possible to cheat, but that is strongly discouraged.
 
@@ -151,11 +151,11 @@ A Workflow which has a parent. A parent may compose a child Workflow’s [Render
 
 ## Side Effect
 
-From render(), runningSideEffect() can be called with a given key and a function that will be called once by the Workflow Runtime.
+From `render()`, `runningSideEffect()` can be called with a given key and a function that will be called once by the Workflow Runtime.
 
-* For Swift, a Lifetime object is also passed to runningSideEffect() which has an onEnded() closure that can be used for cleanup.
+* For Swift, a Lifetime object is also passed to `runningSideEffect()` which has an `onEnded()` closure that can be used for cleanup.
 
-* For Kotlin, a coroutine scope is used to execute the function so it can be cancelled() at cleanup time. Given that any property (including the Sink) could be captured by the closure of the Side Effect this is the basic building block that can be used to interact with asynchronous (and often imperative) Workflow Children.
+* For Kotlin, a coroutine scope is used to execute the function so it can be `cancelled()` at cleanup time. Given that any property (including the Sink) could be captured by the closure of the Side Effect this is the basic building block that can be used to interact with asynchronous (and often imperative) Workflow Children.
 
 ## Worker
 
