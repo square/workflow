@@ -190,6 +190,7 @@ hierarchy. This is the opportunity for a workflow to notify its parent that some
 (and the parent's opportunity to respond to that event by dispatching its own action, continuing up
 the tree as long as output events are emitted).
 
+<a id="rendering"/>
 ## Workflows produce an external representation of their state via `Rendering`
 
 Immediately after starting up, or after a state transition occurs, a workflow will have its `render`
@@ -291,7 +292,7 @@ restore its `State`. On the first render pass, if the root workflow renders any 
 also being rendered when the snapshot was taken, those children's snapshots are also extracted from
 the aggregate and used to initialize their states.
 
-!!! faq Why don't Swift Workflows support snapshotting?
+!!! faq "Why don't Swift Workflows support snapshotting?"
     Snapshotting was built into Kotlin workflows specifically to support Android's app lifecycle,
     which requires apps to serialize their current state before being backgrounded so that they can
     be restored in case the system needs to kill the hosting process. iOS apps don't have this
