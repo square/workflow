@@ -383,9 +383,54 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Workflow UI
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Workflow UI
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#separation-of-concerns" class="md-nav__link">
+    Separation of Concerns
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-a-screen" class="md-nav__link">
+    What's a Screen?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#composition-and-navigation-screens-all-the-way-down" class="md-nav__link">
+    Composition and Navigation: Screens all the way down
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -795,6 +840,35 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#separation-of-concerns" class="md-nav__link">
+    Separation of Concerns
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-a-screen" class="md-nav__link">
+    What's a Screen?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#composition-and-navigation-screens-all-the-way-down" class="md-nav__link">
+    Composition and Navigation: Screens all the way down
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -812,7 +886,139 @@
 
 
 <h1 id="workflow-ui">Workflow UI<a class="headerlink" href="#workflow-ui" title="Permanent link">&para;</a></h1>
-<p><em>Coming soon!</em></p>
+<p>This page provides a high level overview of Workflow UI, the companion that allows <a href="../core-workflow">Workflow Core</a> to drive Android and iOS apps.</p>
+<h2 id="separation-of-concerns">Separation of Concerns<a class="headerlink" href="#separation-of-concerns" title="Permanent link">&para;</a></h2>
+<p>Workflow maintains a rigid separation between its core runtime and its UI support.
+The <a href="../core-workflow">Workflow Core</a> modules are strictly Swift and Kotlin, with no dependencies on any UI framework.
+Dependencies on Android and iOS are restricted to the Workflow UI modules, as you would expect.
+This innate separation naturally puts developers on a path to avoid entangling view concerns with their app logic.</p>
+<p>And note that we say &ldquo;app logic&rdquo; rather than &ldquo;business logic.&rdquo;
+In any interesting app, the code that manages navigation and other UI-releated behavior is likely to dwarf that for what we typically think of as model concerns, in both size and complexity.</p>
+<p>We&rsquo;re all pretty good at capturing business concerns in tidy OO models of items for sale, shopping carts, payment cards and the like, nicely decoupled from the UI world.
+But the rest of the app, and in particular the bits about how our users navigate it?
+Traditionally it&rsquo;s hard to keep that app-specific logic centralized, so that you can see what&rsquo;s going on; and even harder to keep it decoupled from your view system, so that it&rsquo;s easy to test.
+The strict divide between Workflow UI and Workflow Core leads you to maintain that separation by accident.</p>
+<h2 id="whats-a-screen">What&rsquo;s a Screen?<a class="headerlink" href="#whats-a-screen" title="Permanent link">&para;</a></h2>
+<p>Most Workflow implementations produce <code>struct</code> / <code>data class</code> <a href="../core-workflow#rendering">renderings</a> that can serve as view models.
+Such a rendering provides enough data to paint a UI, and functions to be called in response to UI events.</p>
+<p>These view model renderings implement the <code>Screen</code> <a href="https://github.com/square/workflow-swift/blob/main/WorkflowUI/Sources/Screen/Screen.swift">protocol</a> / <a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/Screen.kt">interface</a> to advertise that this is their intended use.
+The core service provided by Workflow UI is to transform <code>Screen</code> types into platform-specific view objects, and to keep those views updated as new <code>Screen</code> renderings are emitted.</p>
+<p><code>Screen</code> is the lynch pin that ties the Workflow Core and Workflow UI worlds together, the basic UI building block for Workflow-driven apps.
+A <code>Screen</code> is an object that can be presented as a basic 2D UI box, like an <code>android.view.View</code> or a <code>UIViewController</code>.
+And Workflow UI provides the glue that allows you to declare (at compile time!) that instances of <code>FooScreen : Screen</code> are used to drive <code>FooViewController</code>, <code>layout/foo_screen.xml</code>, or <code>@Composable fun Content(FooScreen, ViewEnvironment)</code>.</p>
+<div class="tabbed-set" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">iOS</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="kd">struct</span> <span class="nc">WelcomeScreen</span><span class="p">:</span> <span class="n">Screen</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span>
+    <span class="kd">var</span> <span class="nv">onNameChanged</span><span class="p">:</span> <span class="p">(</span><span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+    <span class="kd">var</span> <span class="nv">onLoginTapped</span><span class="p">:</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+
+    <span class="kd">func</span> <span class="nf">viewControllerDescription</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewControllerDescription</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">WelcomeViewController</span><span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="k">for</span><span class="p">:</span> <span class="kc">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">environment</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">private</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">WelcomeViewController</span><span class="p">:</span> <span class="n">ScreenViewController</span><span class="p">&lt;</span><span class="n">WelcomeScreen</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+</code></pre></div>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Android Classic</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="kd">data</span> <span class="kd">class</span> <span class="nc">HelloScreen</span><span class="p">(</span>
+  <span class="kd">val</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+  <span class="kd">val</span> <span class="nv">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Unit</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">AndroidScreen</span><span class="o">&lt;</span><span class="n">HelloScreen</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="kd">override</span> <span class="kd">val</span> <span class="nv">viewFactory</span><span class="p">:</span> <span class="n">ScreenViewFactory</span><span class="o">&lt;</span><span class="n">HelloScreen</span><span class="o">&gt;</span> <span class="o">=</span>
+    <span class="n">fromViewBinding</span><span class="p">(</span><span class="n">HelloViewBinding</span><span class="o">::</span><span class="n">inflate</span><span class="p">)</span> <span class="p">{</span> <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">-&gt;</span>
+      <span class="n">helloMessage</span><span class="p">.</span><span class="na">text</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="na">message</span>
+      <span class="n">helloMessage</span><span class="p">.</span><span class="na">setOnClickListener</span> <span class="p">{</span> <span class="n">r</span><span class="p">.</span><span class="na">onClick</span><span class="p">()</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><label for="__tabbed_1_3">Android Compose</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="kd">data</span> <span class="kd">class</span> <span class="nc">HelloScreen</span><span class="p">(</span>
+  <span class="kd">val</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+  <span class="kd">val</span> <span class="nv">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Unit</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">AndroidScreen</span><span class="o">&lt;</span><span class="n">HelloScreen</span><span class="o">&gt;</span> <span class="k">by</span> <span class="n">ComposeScreen</span> <span class="p">{</span>
+  <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="o">=</span> <span class="n">onClick</span><span class="p">)</span>
+  <span class="n">Text</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+<p>After all the chest-thumping above about <a href="#separation-of-concerns">Separation of Concerns</a>, these code samples probably don&rsquo;t look very separate. That&rsquo;s because, while the libraries themselves are completely decoupled, they don&rsquo;t force that strict rigor on your app code.</p>
+<p>If you aren&rsquo;t building, say, a core Workflow module that you want to ship separately from its Android and command line interfaces, you&rsquo;d probably gain nothing from enforced separation but boilerplate and runtime errors.
+And in practice, your Workflow unit tests won&rsquo;t call <code>viewFactory</code> and will build and run just fine against the JVM.
+Likewise, at this point we&rsquo;ve been building apps this way for hundreds of engineering years, and so far no one has called <code>viewControllerDescription()</code> and stashed a <code>UIViewController</code> in their workflow state.
+(This is not a challenge.)</p>
+<p>If you&rsquo;re one of the few who truly do need impermeable boundaries between your core and UI modules, they aren&rsquo;t hard to get.
+Your <code>Screen</code> implementations can be defined completely separately from their view code and bound later.</p>
+<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">iOS</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="c1">// WelcomeScreen.swift</span>
+<span class="kd">struct</span> <span class="nc">WelcomeScreen</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span>
+    <span class="kd">var</span> <span class="nv">onNameChanged</span><span class="p">:</span> <span class="p">(</span><span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+    <span class="kd">var</span> <span class="nv">onLoginTapped</span><span class="p">:</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">}</span>
+
+<span class="c1">// WelcomeViewController.swift</span>
+<span class="kd">extension</span> <span class="nc">WelcomeScreen</span><span class="p">:</span> <span class="n">Screen</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">viewControllerDescription</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewControllerDescription</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">WelcomeViewController</span><span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="k">for</span><span class="p">:</span> <span class="kc">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">environment</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">private</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">WelcomeViewController</span><span class="p">:</span> <span class="n">ScreenViewController</span><span class="p">&lt;</span><span class="n">WelcomeScreen</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+</code></pre></div>
+</div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Android</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="c1">// HelloScreen.kt</span>
+<span class="kd">data</span> <span class="kd">class</span> <span class="nc">HelloScreen</span><span class="p">(</span>
+  <span class="kd">val</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+  <span class="kd">val</span> <span class="nv">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Unit</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">Screen</span>
+
+<span class="c1">// HelloScreenViewFactory.kt</span>
+<span class="kd">object</span> <span class="nc">HelloScreenViewFactory</span><span class="p">:</span> <span class="n">ScreenViewFactory</span><span class="o">&lt;</span><span class="n">HelloScreen</span><span class="o">&gt;</span>
+<span class="k">by</span> <span class="n">ScreenViewFactory</span><span class="p">.</span><span class="na">fromViewBinding</span><span class="p">(</span><span class="n">HelloViewBinding</span><span class="o">::</span><span class="n">inflate</span><span class="p">)</span> <span class="p">{</span> <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">-&gt;</span>
+      <span class="n">helloMessage</span><span class="p">.</span><span class="na">text</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="na">message</span>
+      <span class="n">helloMessage</span><span class="p">.</span><span class="na">setOnClickListener</span> <span class="p">{</span> <span class="n">r</span><span class="p">.</span><span class="na">onClick</span><span class="p">()</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// HelloActivity.kt</span>
+<span class="kd">class</span> <span class="nc">HelloWorkflowActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">override</span> <span class="kd">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle?)</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="na">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+
+    <span class="kd">val</span> <span class="nv">model</span><span class="p">:</span> <span class="n">HelloViewModel</span> <span class="k">by</span> <span class="n">viewModels</span><span class="p">()</span>
+    <span class="n">setContentView</span><span class="p">(</span>
+      <span class="n">WorkflowLayout</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="na">apply</span> <span class="p">{</span> <span class="n">take</span><span class="p">(</span><span class="n">lifecycle</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="na">renderings</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">HelloViewModel</span><span class="p">(</span><span class="n">savedState</span><span class="p">:</span> <span class="n">SavedStateHandle</span><span class="p">)</span> <span class="p">:</span> <span class="n">ViewModel</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">private</span> <span class="kd">val</span> <span class="nv">viewRegistry</span> <span class="o">=</span> <span class="n">ViewRegistry</span><span class="p">(</span><span class="n">HelloScreenViewFactory</span><span class="p">)</span>
+
+  <span class="kd">val</span> <span class="nv">renderings</span><span class="p">:</span> <span class="n">StateFlow</span><span class="o">&lt;</span><span class="n">Screen</span><span class="o">&gt;</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span>
+    <span class="n">renderWorkflowIn</span><span class="p">(</span>
+      <span class="n">workflow</span> <span class="o">=</span> <span class="n">HelloWorkflow</span><span class="p">.</span><span class="na">mapRenderings</span> <span class="p">{</span> <span class="nb">it</span><span class="p">.</span><span class="na">withRegistry</span><span class="p">(</span><span class="n">viewRegistry</span><span class="p">)</span> <span class="p">},</span>
+      <span class="n">scope</span> <span class="o">=</span> <span class="n">viewModelScope</span><span class="p">,</span>
+      <span class="n">savedStateHandle</span> <span class="o">=</span> <span class="n">savedState</span>
+    <span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+<div class="admonition faq">
+<p class="admonition-title">Why "Screen"?</p>
+<p>We chose the name &ldquo;Screen&rdquo; because &ldquo;View&rdquo; would invite confusion with the like-named Android and iOS classes, and because &ldquo;Box&rdquo; didn&rsquo;t occur to us.
+And really, because it&rsquo;s the nebulous term that we and our users have always used to discuss our apps: &ldquo;Go to the Settings screen.&rdquo; &ldquo;I was on the Checkout screen.&rdquo; &ldquo;How do I get to the Tipping screen?&rdquo; &ldquo;The Cart screen is shown in a modal over the Home screen on tablets.&rdquo; It&rsquo;s a safe bet you understood each of those sentences.</p>
+</div>
+<h2 id="composition-and-navigation-screens-all-the-way-down">Composition and Navigation: Screens all the way down<a class="headerlink" href="#composition-and-navigation-screens-all-the-way-down" title="Permanent link">&para;</a></h2>
+<p>TBD (read, &ldquo;To Be Distilled from this <a href="https://github.com/square/workflow/issues/613">support ticket</a>&rdquo;)</p>
 
               
             </article>
