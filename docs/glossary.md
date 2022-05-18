@@ -44,7 +44,7 @@ We use the term Workflow Runtime to refer to the core code in the framework that
 
 An object that defines the transitions and side effects of a state machine as, effectively, two functions:
 
-1. Providing the first state: () -> State
+1. Providing the first state: (Props) -> State
 1. Providing a rendering: (Props and State) -> (Rendering and Side Effect Invocations and Child Workflow Invocations)
 
 The Child Workflow Invocations declared by the render function result in calls to the children’s `render()` functions in turn, allowing the parent render function to choose to incorporate child Rendering values into its own.
@@ -85,10 +85,6 @@ The object which provides access to the Workflow Runtime from a Workflow render 
 
 * executing Side Effects
 
-## Action Cascade
-
-When an event occurs and the handler provides an Action, this Action may possibly produce an Output for the parent Workflow which in turn has its own handler provide an Action that may produce an Output and onwards up the Workflow Tree. This is an Action Cascade.
-
 ## Render Pass
 
 The portion of the Workflow Runtime event loop which traverses the Workflow tree, calling `render()` on each Workflow Node. When the RenderContext Sink receives an Action an Action Cascade occurs and at the completion of the Action Cascade the Render Pass occurs.
@@ -104,6 +100,10 @@ Any occurrence in the UI of a program — e.g. click, drag, keypress — the lis
 ## Action
 
 A type associated with a particular Workflow (Instance) that is responsible for transforming a given State into a new State and optionally emitting an Output. Actions are sent to the Sink to be processed by the Workflow Runtime.
+
+## Action Cascade
+
+When an event occurs and the handler provides an Action, this Action may possibly produce an Output for the parent Workflow which in turn has its own handler provide an Action that may produce an Output and onwards up the Workflow Tree. This is an Action Cascade.
 
 ## Sink
 

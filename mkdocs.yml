@@ -89,11 +89,13 @@ nav:
   - 'Why Workflow?': 'userguide/whyworkflow.md'
   - 'User Guide':
     - 'Core Concepts': 'userguide/concepts.md'
-    - 'The Role of a Workflow': 'userguide/core-workflow.md'
-    - 'The Role of a Worker': 'userguide/core-worker.md'
+    - 'What is a Workflow?': 'userguide/core-workflow.md'
+    - 'Coding a Workflow': 'userguide/workflow-in-code.md'
+    - 'What is a Worker?': 'userguide/core-worker.md'
     - 'Testing (TBD)': 'userguide/testing-concepts.md'
     - 'Workflow UI (in progress)': 'userguide/ui-concepts.md'
     - 'Common Patterns': 'userguide/core-patterns.md'
+    - 'Implementation Notes': 'userguide/implementation.md'
   - 'Tutorials and Samples':
     - 'Swift Tutorial 🔗': https://github.com/square/workflow-swift/tree/main/Samples/Tutorial
     - 'Swift Samples 🔗': https://github.com/square/workflow-swift/tree/main/Samples
