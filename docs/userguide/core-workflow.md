@@ -1,6 +1,4 @@
-# Workflow Core: Workflow
-
-## The Role of a Workflow
+# The Role of a Workflow
 
 `Workflow` is a protocol (in Swift) and interface (in Kotlin) that defines the contract for a single
 node in the workflow hierarchy.
@@ -190,7 +188,7 @@ hierarchy. This is the opportunity for a workflow to notify its parent that some
 (and the parent's opportunity to respond to that event by dispatching its own action, continuing up
 the tree as long as output events are emitted).
 
-<a id="rendering"/>
+<a id="rendering"></a>
 ## Workflows produce an external representation of their state via `Rendering`
 
 Immediately after starting up, or after a state transition occurs, a workflow will have its `render`

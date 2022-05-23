@@ -173,8 +173,8 @@ Instances supported by Workflow are:
 
 * For Kotlin:
 
-  * Classic Android: `class android.view.View`
-  * Android JetPack Compose: `@Composable fun Box()`
+    * Classic Android: `class android.view.View`
+    * Android JetPack Compose: `@Composable fun Box()`
 
 * For Swift: `class NSViewController`
 

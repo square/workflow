@@ -43,3 +43,6 @@ exclude_rule 'MD031'
 
 # Allow raw URLs.
 exclude_rule 'MD034'
+
+# Py Markdown requires four spaces to indent a sublist
+rule 'MD007', :indent => 4
