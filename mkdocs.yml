@@ -87,30 +87,26 @@ extra:
 nav:
   - 'Overview': index.md
   - 'Why Workflow?': 'userguide/whyworkflow.md'
-  - 'Glossary': 'glossary.md'
   - 'User Guide':
     - 'Core Concepts': 'userguide/concepts.md'
-    - 'Workflow Core':
-      - 'Workflow': 'userguide/core-workflow.md'
-      - 'Worker': 'userguide/core-worker.md'
-      - 'Patterns': 'userguide/core-patterns.md'
-    - 'Workflow UI': 'userguide/ui-concepts.md'
-    - 'Workflow Testing': 'userguide/testing-concepts.md'
-  - 'Tutorials & Samples':
-    - 'Tutorial':
-      - 'Overview': 'tutorial/index.md'
-      - 'Adding Workflow to a project': 'tutorial/adding-workflow-to-a-project.md'
-      - 'Tooling': 'tutorial/tooling.md'
-      - 'Building a Workflow': 'tutorial/building-a-workflow.md'
-      - 'Building a View Controller from a Screen': 'tutorial/building-a-view-controller-from-screen.md'
-      - 'Using a Workflow to Show UI': 'tutorial/using-a-workflow-for-ui.md'
+    - 'The Role of a Workflow': 'userguide/core-workflow.md'
+    - 'The Role of a Worker': 'userguide/core-worker.md'
+    - 'Testing (TBD)': 'userguide/testing-concepts.md'
+    - 'Workflow UI (in progress)': 'userguide/ui-concepts.md'
+    - 'Common Patterns': 'userguide/core-patterns.md'
+  - 'Tutorials and Samples':
+    - 'Swift Tutorial 🔗': https://github.com/square/workflow-swift/tree/main/Samples/Tutorial
+    - 'Swift Samples 🔗': https://github.com/square/workflow-swift/tree/main/Samples
+    - 'Kotlin Tutorial 🔗': https://github.com/square/workflow-kotlin/tree/main/samples/tutorial#readme
+    - 'Kotlin Samples 🔗': https://github.com/square/workflow-kotlin/tree/main/samples
   - 'API Reference':
-    - 'Kotlin': 'kotlin/api/gfmCollector'
+    - 'Kotlin 🔗': 'kotlin/api/gfmCollector'
     - 'Swift API':
       - 'Workflow ': 'swift/api/Workflow/README.md'
       - 'WorkflowReactiveSwift': 'swift/api/WorkflowReactiveSwift/README.md'
       - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
       - 'WorkflowTesting ': 'swift/api/WorkflowTesting/README.md'
+  - 'Glossary': 'glossary.md'
   - 'FAQ': faq.md
   - 'Pre-1.0 Resources': historical.md
   - 'Changelog': CHANGELOG.md

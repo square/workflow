@@ -55,7 +55,7 @@ The Workflows at the left of the diagram contain all state and business logic fo
 This is where network requests happen, navigation decisions are made, models are saved to or loaded
 from disk – if it's not UI, it's in this box.
 
-For more information, see [Workflow Core Concepts].
+For more information, see [The Role of a Workflow].
 
 ### View Models
 
@@ -64,7 +64,7 @@ current state of the application's UI. You will sometimes hear these view models
 'screens', which is just another way to refer to a view model that contains the data for an entire
 screen in the app.
 
-For more information, see [Workflow UI Concepts].
+For more information, see [Workflow UI].
 
 ### Container
 
@@ -72,7 +72,7 @@ The container is responsible for plumbing together the two separate halves of th
 subscribes to the stream of view models that the workflows provide, then implements the logic to
 update the live UI whenever a new view model is emitted.
 
-For more information, see [Workflow UI Concepts].
+For more information, see [Workflow UI].
 
 ### UI
 
@@ -81,7 +81,7 @@ never attempt to navigate using system components (navigation controller pushes,
 etc). In this architecture the workflows are in charge – any navigation that happens outside of the
 workflow will be disregarded and stomped on during the next update cycle.
 
-For more information, see [Workflow UI Concepts].
+For more information, see [Workflow UI].
 
 ### Events
 
@@ -90,7 +90,7 @@ UI. When the user interacts with the application by, for example, tapping a butt
 receives that event – which may trigger a simple state transition, or more complex behavior such as
 a network request.
 
-For more information, see [Workflow Core Concepts].
+For more information, see [The Role of a Workflow].
 
 ---
 
@@ -104,5 +104,5 @@ For more information, see [Workflow Core Concepts].
     In general, any time a generic type is referred to as `Foo`, in source code the Swift associated
     type is called `Foo` and the Kotlin type parameter is called `FooT`.
 
-[Workflow Core Concepts]: core-workflow.md
-[Workflow UI Concepts]: ui-concepts.md
+[The Role of a Workflow]: core-workflow.md
+[Workflow UI]: ui-concepts.md

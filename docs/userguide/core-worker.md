@@ -1,6 +1,4 @@
-# Workflow Core: Worker
-
-## The Role of a Worker
+# The Role of a Worker
 
 `Worker` is a protocol (in Swift) and interface (in Kotlin) that defines an asynchronous task that
 can be performed by a `Workflow`. `Worker`s only emit outputs, they do not have a `Rendering` type.

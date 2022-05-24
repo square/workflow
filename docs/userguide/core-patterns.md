@@ -1,4 +1,4 @@
-# Workflow Core: Patterns/Variations
+# Common Patterns
 
 There are a lot associated/generic types in workflow code – that doesn't mean you always need to use
 all of them. Here are some common configurations we've seen.
