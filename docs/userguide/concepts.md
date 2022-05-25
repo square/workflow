@@ -1,6 +1,100 @@
 # Core Concepts
 
-## Architectural Concepts
+## What is a Workflow?
+
+A [Workflow](../../glossary#workflow-instance) defines the possible states and behaviors of components of a particular type.
+The overall state of a Workflow has two parts:
+
+* [Props](../../glossary#props), configuration information provided by whatever is running the Workflow
+* And the private [State](../../glossary#state) managed by the Workflow itself
+
+At any time, a Workflow can be asked to transform its current Props and State into a [Rendering](../../glossary#rendering) that is suitable for external consumption.
+A Rendering is typically a simple struct with display data, and event handler functions that can enqueue [Workflow Actions](../../glossary#action) — functions that update State, and which may at the same time emit [Output](../../glossary#output) events.
+
+![Workflow schematic showing State as a box with Props entering from the top, Output exiting from the top, and Rendering exiting from the left side, with events returning to the workflow via Rendering](../images/workflow_schematic.svg)
+
+For example, a Workflow running a simple game might be configured with a description of the participating `Players` as its Props, build `GameScreen` structs when asked to render, and emit a `GameOver` event as Output to signal that is finished.
+
+![Workflow schematic with State type GameState, Props type Players, Rendering type GameScreen, and Output type GameOver. The workflow is receiving an onClick() event.](../images/game_workflow_schematic.svg)
+
+A workflow Rendering usually serves as a view model in iOS or Android apps, but that is not a requirement.
+In fact, this page includes no details about how platform specific UI code is driven.
+See [Workflow UI](../ui-concepts) for that discussion.
+
+!!! note
+     Readers with an Android background should note the lower case _v_ and _m_ of "view model" — this notion has nothing to do with Jetpack `ViewModel`.
+
+## Composing Workflows
+
+Workflows run in a tree, with a single root Workflow declaring it has any number of children for a particular state, each of which can declare children of their own, and so on.
+The most common reason to compose Workflows this way is to build big view models (Renderings) out of small ones.
+
+For example, consider an overview / detail split screen, like an email app with a list of messages on the left, and the body of the selected message on the right.
+This could be modeled as a trio of Workflows:
+
+**InboxWorkflow**
+
+* Expects a `List<MessageId>` as its Props
+* Rendering is an `InboxScreen`, a struct with displayable information derived from its Props, and an `onMessageSelected()` function
+* When `onMessageSelected()` is called, a WorkflowAction is executed which emits the given `MessageId` as Output
+* Has no private State
+
+![Workflow schematic showing InboxWorkflow](../images/email_inbox_workflow_schematic.svg)
+
+**MessageWorkflow**
+
+* Requires a `MessageId` Props value to produce a `MessageScreen` Rendering
+* Has no private State, and emits no Output
+
+![Workflow schematic showing MessageWorkflow](../images/email_message_workflow_schematic.svg)
+
+**EmailBrowserWorkflow**
+
+* State includes a `List<MessageId>`, and the selected `MessageId`
+* Rendering is a `SplitScreen` view model, to be assembled from the renderings of the other two Workflows
+* Accepts no Props, and emits no Output
+
+![Workflow schematic showing MessageWorkflow](../images/email_browser_workflow_schematic.svg)
+
+When `EmailBrowserWorkflow` is asked to provide its Rendering, it in turn asks for Renderings from its two children.
+
+* It provides the `List<MessageId>` from its state as the Props for `EmailInboxWorkflow` and receives an `InBoxScreen` rendering in return. That `InboxScreen` becomes the left pane of a `SplitScreen` Rendering.
+* For the `SplitScreen`'s right pane, the browser Workflow provides the currently selected `MessageId` as input to `EmailMessageWorkflow`, to get a `MessageScreen` rendering.
+
+![Workflow schematic showing EmailBrowserWorkflow rendering by delegating to two children, InboxWorkflow and MessageWorkflow, and assembling their renderings into its own.](../images/split_screen_schematic.svg)
+
+!!! note
+    Note that the two children, `EmailInboxWorkflow` and `EmailMessageWorkflow`, have no knowledge of each other, nor of the context in which they are run.
+
+The `InboxScreen` rendering includes an `onMessageSelected(MessageId)` function.
+When that is called, `EmailInboxWorkflow` enqueues an Action function that emits the given `MessageId` as Output.
+`EmailBrowserWorkflow`  receives that Output, and enqueues another Action that updates the `selection: MessageId` of its State accordingly.
+
+![Workflow schematic showing EmailBrowserWorkflow rendering by delegating to two children, InboxWorkflow and MessageWorkflow, and assembling their renderings into its own.](../images/split_screen_update.svg)
+
+Whenever such a [Workflow Action cascade](../../glossary#action-cascade) fires, the root Workflow is asked for a new Rendering.
+Just as before, `EmailInboxWorkflow` delegates to its two children for their Renderings, this time providing the new value of `selection` as the updated Props for `MessageWorkflow`.
+
+<!-- ## Workers for I/O and other side effects
+
+There is a big gap in the email app above.
+It describes modeling in terms of `MessageId` values, with no description of how actual messages are fetched.
+
+WIP
+ -->
+
+## Why does Workflow work this way?
+
+Worklow was built to tame the composition and navigation challenges presented by Square's massive Android and iOS apps.
+It lets us write intricate, centralized, well tested code encapsulating the flow through literally hundreds of individual screens.
+We are no longer unable to see the forest for the trees.
+
+We built it with two core design principals in mind:
+
+* Unidirectional data flow is the best way to stay sane when building UI
+* Declarative programming is the best way to define unidirectional data flows
+
+What does that actually mean?
 
 ### Unidirectional Data Flow
 
@@ -37,72 +131,7 @@ library encourages you to write your logic in a declarative and functional style
 manages state and wiring up event handling for you, so the only code you need to write is code that
 is actually interesting for your particular problem.
 
-#### A note about functional programming
-
-Kotlin and Swift are not strictly functional programming languages, but both have features that
-allow you to write [functional](https://en.wikipedia.org/wiki/Functional_programming)-style code.
-Functional code discourages side effects and is generally much easier to test than object-oriented
-code. Functional and declarative programming go very well together, and Workflow encourages you to
-write such code.
-
-## Core Components
-
-![workflow component diagram](../images/workflow_components_diagram.png)
-
-### Workflows
-
-The Workflows at the left of the diagram contain all state and business logic for the application.
-This is where network requests happen, navigation decisions are made, models are saved to or loaded
-from disk – if it's not UI, it's in this box.
-
-For more information, see [What is a Workflow?].
-
-### View Models
-
-The primary job of the Workflows is to emit an observable stream of view models representing the
-current state of the application's UI. You will sometimes hear these view models referred to as
-'screens', which is just another way to refer to a view model that contains the data for an entire
-screen in the app.
-
-For more information, see [Workflow UI].
-
-### Container
-
-The container is responsible for plumbing together the two separate halves of the application. It
-subscribes to the stream of view models that the workflows provide, then implements the logic to
-update the live UI whenever a new view model is emitted.
-
-For more information, see [Workflow UI].
-
-### UI
-
-This is typically conventional platform-specific UI code. One important note is that UI code should
-never attempt to navigate using system components (navigation controller pushes, modal presentation,
-etc). In this architecture the workflows are in charge – any navigation that happens outside of the
-workflow will be disregarded and stomped on during the next update cycle.
-
-For more information, see [Workflow UI].
-
-### Events
-
-In order for the application to actually do anything, the workflow needs to receive events from the
-UI. When the user interacts with the application by, for example, tapping a button, the workflow
-receives that event – which may trigger a simple state transition, or more complex behavior such as
-a network request.
-
-For more information, see [What is a Workflow?].
-
----
-
-!!! info Swift vs Kotlin
-    While the core shape of the libraries is shared by Swift and Kotlin implementations, some of the
-    naming and types differ slightly to accommodate each language’s particular type system and
-    naming conventions. Where those differences occur in this document, they are noted in "Swift vs
-    Kotlin" blurbs. See [Where Swift and Kotlin Libraries Differ](4_where_swift_and_kotlin_libraries_differ.md)
-    for an overall summary.
-
-    In general, any time a generic type is referred to as `Foo`, in source code the Swift associated
-    type is called `Foo` and the Kotlin type parameter is called `FooT`.
-
-[What is a Workflow?]: core-workflow.md
-[Workflow UI]: ui-concepts.md
+!!! note "A note about functional programming"
+    Kotlin and Swift are not strictly functional programming languages, but both have features that allow you to write [functional](https://en.wikipedia.org/wiki/Functional_programming)-style code.
+    Functional code discourages side effects and is generally much easier to test than object-oriented code.
+    Functional and declarative programming go very well together, and Workflow encourages you to write such code.
