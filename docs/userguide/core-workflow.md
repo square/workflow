@@ -1,297 +1,78 @@
-# The Role of a Workflow
+# What is a Workflow?
 
-`Workflow` is a protocol (in Swift) and interface (in Kotlin) that defines the contract for a single
-node in the workflow hierarchy.
+A [Workflow](../../glossary#workflow-instance) defines the possible states and behaviors of components of a particular type.
+The overall state of a Workflow has two parts:
 
-=== "Swift"
-    ```Swift
-    public protocol Workflow: AnyWorkflowConvertible {
+* [Props](../../glossary#props), configuration information provided by whatever is running the Workflow
+* And the private [State](../../glossary#state) managed by the Workflow itself
 
-        associatedtype State
+At any time, a Workflow can be asked to transform its current Props and State into a [Rendering](../../glossary#rendering) that is suitable for external consumption.
+A Rendering is typically a simple struct with display data, and event handler functions that can enqueue [Workflow Actions](../../glossary#action) — functions that update State, and which may at the same time emit [Output](../../glossary#output) events.
 
-        associatedtype Output = Never
+![Workflow schematic showing State as a box with Props entering from the top, Output exiting from the top, and Rendering exiting from the left side, with events returning to the workflow via Rendering](../images/workflow_schematic.svg)
 
-        associatedtype Rendering
+For example, a Workflow running a simple game might be configured with a description of the participating `Players` as its Props, build `GameScreen` structs when asked to render, and emit a `GameOver` event to signal that is finished.
 
-        func makeInitialState() -> State
+![Workflow schematic with State type GameState, Props type Players, Rendering type GameScreen, and Output type GameOver. The workflow is receiving an onClick() event.](../images/game_workflow_schematic.svg)
 
-        func workflowDidChange(from previousWorkflow: Self, state: inout State)
+A workflow Rendering usually serves as a view model in iOS or Android apps, but that is not a requirement.
+In fact, this page includes no details about how platform specific UI code is driven.
+See [Workflow UI](../ui-concepts) for that discussion.
 
-        func render(state: State, context: RenderContext<Self>) -> Rendering
+!!! note
+     Readers with an Android background should note the lower case _v_ and _m_ of "view model" — this notion has nothing to do with Jetpack `ViewModel`.
 
-    }
+## Composing Workflows
 
-    ```
+Workflows run in a tree, with a single root Workflow declaring it has any number of children for a particular state, each of which can declare children of their own, and so on.
+The most common reason to compose Workflows this way is to build big view models (Renderings) out of small ones.
 
-=== "Kotlin"
-    ```Kotlin
-    abstract class StatefulWorkflow<in PropsT, StateT, out OutputT : Any, out RenderingT> :
-        Workflow<PropsT, OutputT, RenderingT> {
-
-      abstract fun initialState(
-        props: PropsT,
-        initialSnapshot: Snapshot?
-      ): StateT
-
-      open fun onPropsChanged(
-        old: PropsT,
-        new: PropsT,
-        state: StateT
-      ): StateT = state
+For example, consider an overview / detail split screen, like an email app with a list of messages on the left, and the body of the selected message on the right.
+This could be modeled as a trio of Workflows:
 
-      abstract fun render(
-        props: PropsT,
-        state: StateT,
-        context: RenderContext<StateT, OutputT>
-      ): RenderingT
+**InboxWorkflow**
 
-      abstract fun snapshotState(state: StateT): Snapshot
-    }
-    ```
-
-??? faq "Swift: What is `AnyWorkflowConvertible`?"
-    When a protocol has an associated `Self` type, Swift requires the use of a [type-erasing wrapper](https://medium.com/swiftworld/swift-world-type-erasure-5b720bc0318a)
-    to store references to instances of that protocol.
-    [`AnyWorkflow`](/workflow/swift/api/Workflow/Structs/AnyWorkflow.html) is such a wrapper for
-    `Workflow`. [`AnyWorkflowConvertible`](/workflow/swift/api/Workflow/Protocols/AnyWorkflowConvertible.html)
-    is a protocol with a single method that returns an `AnyWorkflow`. It is useful as a base type
-    because it allows instances of `Workflow` to be used directly by any code that requires the
-    type-erased `AnyWorkflow`.
-
-??? faq "Kotlin: `StatefulWorkflow` vs `Workflow`"
-    It is a common practice in Kotlin to divide types into two parts: an interface for public API,
-    and a class for private implementation. The Workflow library defines a [`Workflow`](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-workflow/)
-    interface, which should be used as the type of properties and parameters by code that needs to
-    refer to a particular `Workflow` interface. The `Workflow` interface contains a single method,
-    which simply returns a `StatefulWorkflow` – a `Workflow` can be described as “anything that can
-    be expressed as a `StatefulWorkflow`.”
-
-    The library also defines two abstract classes which define the contract for workflows and should
-    be subclassed to implement your workflows:
-
-    - [**`StatefulWorkflow`**](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateful-workflow/)
-      should be subclassed to implement Workflows that have [private state](#private-state).
-    - [**`StatelessWorkflow`**](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateless-workflow/)
-      should be subclassed to implement Workflows that _don't_ have any private state. See [Stateless Workflows](#stateless-workflows).
-
-Workflows have several responsibilities:
-
-## Workflows have state
-
-Once a Workflow has been started, it always operates in the context of some state. This state is
-divided into two parts: private state, which only the Workflow implementation itself knows about,
-which is defined by the `State` type, and properties (or "props"), which is passed to the Workflow
-from its parent (more on hierarchical workflows below).
+* Expects a `List<MessageId>` as its Props
+* Rendering is an `InboxScreen`, a struct with displayable information derived from its Props, and an `onMessageSelected()` function
+* When `onMessageSelected()` is called, a WorkflowAction is executed which emits the given `MessageId` as Output
+* Has no private State
 
-### Private state
+![Workflow schematic showing InboxWorkflow](../images/email_inbox_workflow_schematic.svg)
 
-Every Workflow implementation defines a `State` type to maintain any necessary state while the
-workflow is running.
-
-For example, a tic-tac-toe game might have a state like this:
+**MessageWorkflow**
 
-=== "Swift"
-    ```Swift
-    struct State {
+* Requires a `MessageId` Props value to produce a `MessageScreen` Rendering
+* Has no private State, and emits no Output
 
-        enum Player {
-            case x
-            case o
-        }
-
-        enum Space {
-            case unfilled
-            filled(Player)
-        }
-
-        // 3 rows * 3 columns = 9 spaces
-        var spaces: [Space] = Array(repeating: .unfilled, count: 9)
-        var currentTurn: Player = .x
-    }
-    ```
-
-=== "Kotlin"
-    ```Kotlin
-    data class State(
-      // 3 rows * 3 columns = 9 spaces
-      val spaces: List<Space> = List(9) { Unfilled },
-      val currentTurn: Player = X
-    ) {
-
-      enum class Player {
-        X, O
-      }
-
-      sealed class Space {
-        object Unfilled : Space()
-        data class Filled(val player: Player) : Space()
-      }
-    }
-    ```
-
-When the workflow is first started, it is queried for an initial state value. From that point
-forward, the workflow may advance to a new state as the result of events occurring from various
-sources (which will be covered below).
-
-!!! info "Stateless Workflows"
-    If a workflow does not have any private state, it is often referred to as a
-    "stateless workflow". A stateless Workflow is simply a Workflow that has a `Void` or `Unit`
-    `State` type. See more [below](#stateless-workflows).
-
-### Props
-
-Every Workflow implementation also defines data that is passed into it. The Workflow is not able to
-modify this state itself, but it may change between render passes. This public state is called
-`Props`.
-
-In Swift, the props are simply defined as properties of the struct implementing Workflow itself. In
-Kotlin, the `Workflow` interface defines a separate `PropsT` type parameter. (This additional type
-parameter is necessary due to Kotlin’s lack of the `Self` type that Swift workflow’s
-`workflowDidChange` method relies upon.)
-
-=== "Swift"
-    ```Swift
-    TK
-    ```
-
-=== "Kotlin"
-    ```Kotlin
-    data class Props(
-      val playerXName: String
-      val playerOName: String
-    )
-    ```
-
-## Workflows are advanced by `WorkflowAction`s
-
-Any time something happens that should advance a workflow – a UI event, a network response, a
-child's output event – actions are used to perform the update. For example, a workflow may respond
-to UI events by mapping those events into a type conforming to/implementing `WorkflowAction`. These
-types implement the logic to advance a workflow by:
-
-- Advancing to a new state
-- (Optionally) emitting an output event up the tree.
-
-`WorkflowAction`s are typically defined as enums with associated types (Swift) or sealed classes
-(Kotlin), and can include data from the event – for example, the ID of the item in the list that was
-clicked.
-
-Side effects such as logging button clicks to an analytics framework are also typically performed in
-actions.
-
-If you're familiar with React/Redux, `WorkflowAction`s are essentially reducers.
-
-## Workflows can emit output events up the hierarchy to their parent
-
-When a workflow is advanced by an action, an optional output event can be sent up the workflow
-hierarchy. This is the opportunity for a workflow to notify its parent that something has happened
-(and the parent's opportunity to respond to that event by dispatching its own action, continuing up
-the tree as long as output events are emitted).
-
-<a id="rendering"></a>
-## Workflows produce an external representation of their state via `Rendering`
-
-Immediately after starting up, or after a state transition occurs, a workflow will have its `render`
-method called. This method is responsible for creating and returning a value of type `Rendering`.
-You can think of `Rendering` as the "external published state" of the workflow, and the `render`
-function as a map of (`Props` + `State` + childrens' `Rendering`s) -> `Rendering`. While a
-workflow's internal state may contain more detailed or comprehensive state, the `Rendering`
-(external state) is a type that is useful outside of the workflow. Because a workflow’s render
-method may be called by infrastructure for a variety of reasons, it’s important to not perform side
-effects when rendering — render methods must be idempotent. Event-based side effects should use
-Actions and state-based side effects should use Workers.
-
-When building an interactive application, the `Rendering` type is commonly (but not always) a view
-model that will drive the UI layer.
-
-## Workflows can respond to UI events
-
-The `RenderContext` that is passed into `render` as the last parameter provides some useful tools to
-assist in creating the `Rendering` value.
-
-If a workflow is producing a view model, it is common to need an event handler to respond to UI
-events. The `RenderContext` has API to create an event handler, called a `Sink`, that when called
-will advance the workflow by dispatching an action back to the workflow (for more on actions, see
-[below](#workflows-are-advanced-by-actions)).
-
-=== "Swift"
-    ```Swift
-    func render(state: State, context: RenderContext<DemoWorkflow>) -> DemoScreen {
-        // Create a sink of our Action type so we can send actions back to the workflow.
-        let sink = context.makeSink(of: Action.self)
-
-        return DemoScreen(
-            title: "A nice title",
-            onTap: { sink.send(Action.refreshButtonTapped) }
-    }
-    ```
-
-=== "Kotlin"
-    ```Kotlin
-    TK
-    ```
-
-## Workflows form a hierarchy (they may have children)
-
-As they produce a `Rendering` value, it is common for workflows to delegate some portion of that
-work to a _child workflow_. This is done via the `RenderContext` that is passed into the `render`
-method. In order to delegate to a child, the parent calls `renderChild` on the context, with the
-child workflow as the single argument. The infrastructure will spin up the child workflow (including
-initializing its initial state) if this is the first time this child has been used, or, if the child
-was also used on the previous `render` pass, the existing child will be updated. Either way,
-`render` will immediately be called on the child (by the Workflow infrastructure), and the resulting
-child's `Rendering` value will be returned to the parent.
-
-This allows a parent to return complex `Rendering` types (such as a view model representing the
-entire UI state of an application) without needing to model all of that complexity within a single
-workflow.
-
-!!! info "Workflow Identity"
-    The Workflow infrastructure automatically detects the first time and the last subsequent time
-    you've asked to render a child workflow, and will automatically initialize the child and clean
-    it up. In both Swift and Kotlin, this is done using the workflow's concrete type. Both languages
-    use reflection to do this comparison (e.g. in Kotlin, the workflows' `KClass`es are compared).
-
-    It is an error to render workflows of the same type more than once in the same render pass.
-    Since type is used for workflow identity, the child rendering APIs take an optional string key
-    to differentiate between multiple child workflows of the same type.
-
-## Workflows can subscribe to external event sources
-
-If a workflow needs to respond to some external event source (e.g. push notifications), the workflow
-can ask the context to listen to those events from within the `render` method.
-
-!!! info "Swift vs Kotlin"
-    In the Swift library, there is a special API for subscribing to hot streams (`Signal` in
-    ReactiveSwift). The Kotlin library does not have any special API for subscribing to hot streams
-    (channels), though it does have extension methods to convert [`ReceiveChannel`s](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/),
-    and RxJava `Flowable`s and `Observables`, to [`Worker`s](#worker). The reason for this
-    discrepancy is simply that we don't have any uses of channels yet in production, and so we've
-    decided to keep the API simpler. If we start using channels in the future, it may make sense to
-    make subscribing to them a first-class API like in Swift.
-
-## Workflows can perform asynchronous tasks (Workers)
-
-`Workers` are very similar in concept to child workflows. Unlike child workflows, however, workers
-do not have a `Rendering` type; they only exist to perform a single asynchronous task before sending
-zero or more output events back up the tree to their parent.
-
-For more information about workers, see the [Worker](#worker) section below.
-
-## Workflows can be saved to and restored from a snapshot (Kotlin only)
-
-On every render pass, each workflow is asked to create a "snapshot" of its state – a lazily-produced
-serialization of the workflow's `State` as a binary blob. These `Snapshot`s are aggregated into a
-single `Snapshot` for the entire workflow tree and emitted along with the root workflow's
-`Rendering`. When the workflow runtime is started, it can be passed an optional `Snapshot` to
-restore the tree from. When non-null, the root workflow's snapshot is extracted and passed to the
-root workflow's `initialState`. The workflow can choose to either ignore the snapshot or use it to
-restore its `State`. On the first render pass, if the root workflow renders any children that were
-also being rendered when the snapshot was taken, those children's snapshots are also extracted from
-the aggregate and used to initialize their states.
-
-!!! faq "Why don't Swift Workflows support snapshotting?"
-    Snapshotting was built into Kotlin workflows specifically to support Android's app lifecycle,
-    which requires apps to serialize their current state before being backgrounded so that they can
-    be restored in case the system needs to kill the hosting process. iOS apps don't have this
-    requirement, so the Swift library doesn't need to support it.
+![Workflow schematic showing MessageWorkflow](../images/email_message_workflow_schematic.svg)
+
+**EmailBrowserWorkflow**
+
+* State includes a `List<MessageId>`, and the selected `MessageId`
+* Rendering is a `SplitScreen` view model, to be assembled from the renderings of the other two Workflows
+* Accepts no Props, and emits no Output
+
+![Workflow schematic showing MessageWorkflow](../images/email_browser_workflow_schematic.svg)
+
+When `EmailBrowserWorkflow` is asked to provide its Rendering, it in turn asks for Renderings from its two children.
+
+* It provides the `List<MessageId>` from its state as the Props for `EmailInboxWorkflow` and receives an `InBoxScreen` rendering in return. That `InboxScreen` becomes the left pane of a `SplitScreen` Rendering.
+* For the `SplitScreen`'s right pane, the browser Workflow provides the currently selected `MessageId` as input to `EmailMessageWorkflow`, to get a `MessageScreen` rendering.
+
+![Workflow schematic showing EmailBrowserWorkflow rendering by delegating to two children, InboxWorkflow and MessageWorkflow, and assembling their renderings into its own.](../images/split_screen_schematic.svg)
+
+!!! note
+    Note that the two children, `EmailInboxWorkflow` and `EmailMessageWorkflow`, have no knowledge of each other, nor of the context in which they are run.
+
+The `InboxScreen` rendering includes an `onMessageSelected(MessageId)` function.
+When that is called, `EmailInboxWorkflow` enqueues an Action function that emits the given `MessageId` as Output.
+`EmailBrowserWorkflow`  receives that Output, and enqueues another Action that updates the `selection: MessageId` of its State accordingly.
+
+![Workflow schematic showing EmailBrowserWorkflow rendering by delegating to two children, InboxWorkflow and MessageWorkflow, and assembling their renderings into its own.](../images/split_screen_update.svg)
+
+Whenever such a [Workflow Action cascade](../../glossary#action-cascade) fires, the root Workflow is asked for a new Rendering.
+Just as before, `EmailInboxWorkflow` delegates to its two children for their Renderings, this time providing the new value of `selection` as the updated Props for `MessageWorkflow`.
+
+### Workers
+
+TBD

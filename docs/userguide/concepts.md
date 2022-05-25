@@ -55,7 +55,7 @@ The Workflows at the left of the diagram contain all state and business logic fo
 This is where network requests happen, navigation decisions are made, models are saved to or loaded
 from disk – if it's not UI, it's in this box.
 
-For more information, see [The Role of a Workflow].
+For more information, see [What is a Workflow?].
 
 ### View Models
 
@@ -90,7 +90,7 @@ UI. When the user interacts with the application by, for example, tapping a butt
 receives that event – which may trigger a simple state transition, or more complex behavior such as
 a network request.
 
-For more information, see [The Role of a Workflow].
+For more information, see [What is a Workflow?].
 
 ---
 
@@ -104,5 +104,5 @@ For more information, see [The Role of a Workflow].
     In general, any time a generic type is referred to as `Foo`, in source code the Swift associated
     type is called `Foo` and the Kotlin type parameter is called `FooT`.
 
-[The Role of a Workflow]: core-workflow.md
+[What is a Workflow?]: core-workflow.md
 [Workflow UI]: ui-concepts.md

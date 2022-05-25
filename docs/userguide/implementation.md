@@ -1,6 +1,8 @@
 # Implementation Notes
 
-_Work in progress…_
+!!! info "Work in progress…"
+    So far we only have notes on the implementation of the Swift runtime.
+    They're actually pretty close to what goes on in Kotlin, the `WorkflowNode` and `SubtreeManager` classes in particular.
 
 ## Swift
 

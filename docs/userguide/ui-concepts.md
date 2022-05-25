@@ -2,6 +2,13 @@
 
 This page provides a high level overview of Workflow UI, the companion that allows [Workflow Core](../core-workflow) to drive Android and iOS apps.
 
+!!! warning Kotlin WIP
+    The `Screen` interface that is so central to this discussion has reached Kotlin very recently, via `v1.8.0-beta01`.
+    Thus, if you are working against the most recent non-beta release, you will find the code blocks here don't match what you're seeing.
+
+    Square is using the `Screen` machinery introduced with the beta at the heart of our Android app suite, and we expect the beta period to be a short one.
+    The Swift `Screen` protocol _et al._ have been in steady use for years.
+
 ## Separation of Concerns
 
 Workflow maintains a rigid separation between its core runtime and its UI support.
@@ -12,7 +19,7 @@ This innate separation naturally puts developers on a path to avoid entangling v
 And note that we say "app logic" rather than "business logic."
 In any interesting app, the code that manages navigation and other UI-releated behavior is likely to dwarf that for what we typically think of as model concerns, in both size and complexity.
 
-We're all pretty good at capturing business concerns in tidy OO models of items for sale, shopping carts, payment cards and the like, nicely decoupled from the UI world.
+We're all pretty good at capturing business concerns in tidy object-oriented models of items for sale, shopping carts, payment cards and the like, nicely decoupled from the UI world.
 But the rest of the app, and in particular the bits about how our users navigate it?
 Traditionally it's hard to keep that app-specific logic centralized, so that you can see what's going on; and even harder to keep it decoupled from your view system, so that it's easy to test.
 The strict divide between Workflow UI and Workflow Core leads you to maintain that separation by accident.
@@ -143,8 +150,23 @@ Your `Screen` implementations can be defined completely separately from their vi
 
 !!! faq "Why \"Screen\"?"
     We chose the name "Screen" because "View" would invite confusion with the like-named Android and iOS classes, and because "Box" didn't occur to us.
-    And really, because it's the nebulous term that we and our users have always used to discuss our apps: "Go to the Settings screen." "I was on the Checkout screen." "How do I get to the Tipping screen?" "The Cart screen is shown in a modal over the Home screen on tablets." It's a safe bet you understood each of those sentences.
+    (No one seems to have been bothered by the fact that `Screen` and iOS's `UIScreen` are unrelated.)
+
+    And really, we went with "Screen" because it's the nebulous term that we and our users have always used to discuss our apps:
+    "Go to the Settings screen."
+    "How do I get to the Tipping screen?"
+    "The Cart screen is shown in a modal over the Home screen on tablets."
+    It's a safe bet you understood each of those sentences.
 
 ## Composition and Navigation: Screens all the way down
+
+All of the above is expressive enough if a `Screen` really is modeling the entire display, but that's not very realistic.
+It falls apart as soon as you need think about two or more screens at a time, in cases like:
+
+* Back-stack style push / pop transitions
+* Overview / detail split pane navigation, like an email app that shows an inbox on the left, and the selected message on the right
+* Showing one screen over another one for a temporary modal session
+
+Workflow handles all of this via the [Container Screen](../../Glossary#container-screen) pattern: Screens that are built out of other Screens.
 
 TBD (read, "To Be Distilled from this [support ticket](https://github.com/square/workflow/issues/613)")
