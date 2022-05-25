@@ -283,7 +283,21 @@
   
     <li class="md-nav__item">
       <a href="../userguide/core-workflow/" class="md-nav__link">
-        The Role of a Workflow
+        What is a Workflow?
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../userguide/workflow-in-code/" class="md-nav__link">
+        Coding a Workflow
       </a>
     </li>
   
@@ -297,7 +311,7 @@
   
     <li class="md-nav__item">
       <a href="../userguide/core-worker/" class="md-nav__link">
-        The Role of a Worker
+        What is a Worker?
       </a>
     </li>
   
@@ -340,6 +354,20 @@
     <li class="md-nav__item">
       <a href="../userguide/core-patterns/" class="md-nav__link">
         Common Patterns
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../userguide/implementation/" class="md-nav__link">
+        Implementation Notes
       </a>
     </li>
   
@@ -712,13 +740,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#action-cascade" class="md-nav__link">
-    Action Cascade
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#render-pass" class="md-nav__link">
     Render Pass
   </a>
@@ -742,6 +763,13 @@
         <li class="md-nav__item">
   <a href="#action" class="md-nav__link">
     Action
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#action-cascade" class="md-nav__link">
+    Action Cascade
   </a>
   
 </li>
@@ -1052,13 +1080,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#action-cascade" class="md-nav__link">
-    Action Cascade
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#render-pass" class="md-nav__link">
     Render Pass
   </a>
@@ -1082,6 +1103,13 @@
         <li class="md-nav__item">
   <a href="#action" class="md-nav__link">
     Action
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#action-cascade" class="md-nav__link">
+    Action Cascade
   </a>
   
 </li>
@@ -1245,7 +1273,7 @@
 <h2 id="workflow-instance">Workflow (Instance)<a class="headerlink" href="#workflow-instance" title="Permanent link">&para;</a></h2>
 <p>An object that defines the transitions and side effects of a state machine as, effectively, two functions:</p>
 <ol>
-<li>Providing the first state: () -&gt; State</li>
+<li>Providing the first state: (Props) -&gt; State</li>
 <li>Providing a rendering: (Props and State) -&gt; (Rendering and Side Effect Invocations and Child Workflow Invocations)</li>
 </ol>
 <p>The Child Workflow Invocations declared by the render function result in calls to the children’s <code>render()</code> functions in turn, allowing the parent render function to choose to incorporate child Rendering values into its own.</p>
@@ -1281,8 +1309,6 @@
 <p>executing Side Effects</p>
 </li>
 </ul>
-<h2 id="action-cascade">Action Cascade<a class="headerlink" href="#action-cascade" title="Permanent link">&para;</a></h2>
-<p>When an event occurs and the handler provides an Action, this Action may possibly produce an Output for the parent Workflow which in turn has its own handler provide an Action that may produce an Output and onwards up the Workflow Tree. This is an Action Cascade.</p>
 <h2 id="render-pass">Render Pass<a class="headerlink" href="#render-pass" title="Permanent link">&para;</a></h2>
 <p>The portion of the Workflow Runtime event loop which traverses the Workflow tree, calling <code>render()</code> on each Workflow Node. When the RenderContext Sink receives an Action an Action Cascade occurs and at the completion of the Action Cascade the Render Pass occurs.</p>
 <h2 id="output-event">Output Event<a class="headerlink" href="#output-event" title="Permanent link">&para;</a></h2>
@@ -1291,6 +1317,8 @@
 <p>Any occurrence in the UI of a program — e.g. click, drag, keypress — the listener for which has been connected to a callback in the Rendering of a Workflow. UI Event callbacks typically add Actions to the Sink, to advance the state of the Workflow.</p>
 <h2 id="action">Action<a class="headerlink" href="#action" title="Permanent link">&para;</a></h2>
 <p>A type associated with a particular Workflow (Instance) that is responsible for transforming a given State into a new State and optionally emitting an Output. Actions are sent to the Sink to be processed by the Workflow Runtime.</p>
+<h2 id="action-cascade">Action Cascade<a class="headerlink" href="#action-cascade" title="Permanent link">&para;</a></h2>
+<p>When an event occurs and the handler provides an Action, this Action may possibly produce an Output for the parent Workflow which in turn has its own handler provide an Action that may produce an Output and onwards up the Workflow Tree. This is an Action Cascade.</p>
 <h2 id="sink">Sink<a class="headerlink" href="#sink" title="Permanent link">&para;</a></h2>
 <p>The handle provided by the RenderContext to send Actions to the Workflow Runtime. These Actions are applied by the Workflow Runtime to advance a Workflow’s State, and optionally produce an Output to be processed by the handler its parent registered.</p>
 <h2 id="props">Props<a class="headerlink" href="#props" title="Permanent link">&para;</a></h2>

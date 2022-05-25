@@ -285,7 +285,21 @@
   
     <li class="md-nav__item">
       <a href="../core-workflow/" class="md-nav__link">
-        The Role of a Workflow
+        What is a Workflow?
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow-in-code/" class="md-nav__link">
+        Coding a Workflow
       </a>
     </li>
   
@@ -299,7 +313,7 @@
   
     <li class="md-nav__item">
       <a href="../core-worker/" class="md-nav__link">
-        The Role of a Worker
+        What is a Worker?
       </a>
     </li>
   
@@ -397,6 +411,20 @@
     <li class="md-nav__item">
       <a href="../core-patterns/" class="md-nav__link">
         Common Patterns
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementation/" class="md-nav__link">
+        Implementation Notes
       </a>
     </li>
   
@@ -793,6 +821,13 @@
 
 <h1 id="workflow-ui">Workflow UI<a class="headerlink" href="#workflow-ui" title="Permanent link">&para;</a></h1>
 <p>This page provides a high level overview of Workflow UI, the companion that allows <a href="../core-workflow">Workflow Core</a> to drive Android and iOS apps.</p>
+<div class="admonition warning kotlin wip">
+<p class="admonition-title">Warning</p>
+<p>The <code>Screen</code> interface that is so central to this discussion has reached Kotlin very recently, via <code>v1.8.0-beta01</code>.
+Thus, if you are working against the most recent non-beta release, you will find the code blocks here don&rsquo;t match what you&rsquo;re seeing.</p>
+<p>Square is using the <code>Screen</code> machinery introduced with the beta at the heart of our Android app suite, and we expect the beta period to be a short one.
+The Swift <code>Screen</code> protocol <em>et al.</em> have been in steady use for years.</p>
+</div>
 <h2 id="separation-of-concerns">Separation of Concerns<a class="headerlink" href="#separation-of-concerns" title="Permanent link">&para;</a></h2>
 <p>Workflow maintains a rigid separation between its core runtime and its UI support.
 The <a href="../core-workflow">Workflow Core</a> modules are strictly Swift and Kotlin, with no dependencies on any UI framework.
@@ -800,7 +835,7 @@ Dependencies on Android and iOS are restricted to the Workflow UI modules, as yo
 This innate separation naturally puts developers on a path to avoid entangling view concerns with their app logic.</p>
 <p>And note that we say &ldquo;app logic&rdquo; rather than &ldquo;business logic.&rdquo;
 In any interesting app, the code that manages navigation and other UI-releated behavior is likely to dwarf that for what we typically think of as model concerns, in both size and complexity.</p>
-<p>We&rsquo;re all pretty good at capturing business concerns in tidy OO models of items for sale, shopping carts, payment cards and the like, nicely decoupled from the UI world.
+<p>We&rsquo;re all pretty good at capturing business concerns in tidy object-oriented models of items for sale, shopping carts, payment cards and the like, nicely decoupled from the UI world.
 But the rest of the app, and in particular the bits about how our users navigate it?
 Traditionally it&rsquo;s hard to keep that app-specific logic centralized, so that you can see what&rsquo;s going on; and even harder to keep it decoupled from your view system, so that it&rsquo;s easy to test.
 The strict divide between Workflow UI and Workflow Core leads you to maintain that separation by accident.</p>
@@ -921,9 +956,22 @@ Your <code>Screen</code> implementations can be defined completely separately fr
 <div class="admonition faq">
 <p class="admonition-title">Why "Screen"?</p>
 <p>We chose the name &ldquo;Screen&rdquo; because &ldquo;View&rdquo; would invite confusion with the like-named Android and iOS classes, and because &ldquo;Box&rdquo; didn&rsquo;t occur to us.
-And really, because it&rsquo;s the nebulous term that we and our users have always used to discuss our apps: &ldquo;Go to the Settings screen.&rdquo; &ldquo;I was on the Checkout screen.&rdquo; &ldquo;How do I get to the Tipping screen?&rdquo; &ldquo;The Cart screen is shown in a modal over the Home screen on tablets.&rdquo; It&rsquo;s a safe bet you understood each of those sentences.</p>
+(No one seems to have been bothered by the fact that <code>Screen</code> and iOS&rsquo;s <code>UIScreen</code> are unrelated.)</p>
+<p>And really, we went with &ldquo;Screen&rdquo; because it&rsquo;s the nebulous term that we and our users have always used to discuss our apps:
+&ldquo;Go to the Settings screen.&rdquo;
+&ldquo;How do I get to the Tipping screen?&rdquo;
+&ldquo;The Cart screen is shown in a modal over the Home screen on tablets.&rdquo;
+It&rsquo;s a safe bet you understood each of those sentences.</p>
 </div>
 <h2 id="composition-and-navigation-screens-all-the-way-down">Composition and Navigation: Screens all the way down<a class="headerlink" href="#composition-and-navigation-screens-all-the-way-down" title="Permanent link">&para;</a></h2>
+<p>All of the above is expressive enough if a <code>Screen</code> really is modeling the entire display, but that&rsquo;s not very realistic.
+It falls apart as soon as you need think about two or more screens at a time, in cases like:</p>
+<ul>
+<li>Back-stack style push / pop transitions</li>
+<li>Overview / detail split pane navigation, like an email app that shows an inbox on the left, and the selected message on the right</li>
+<li>Showing one screen over another one for a temporary modal session</li>
+</ul>
+<p>Workflow handles all of this via the <a href="../../Glossary#container-screen">Container Screen</a> pattern: Screens that are built out of other Screens.</p>
 <p>TBD (read, &ldquo;To Be Distilled from this <a href="https://github.com/square/workflow/issues/613">support ticket</a>&rdquo;)</p>
 
               
