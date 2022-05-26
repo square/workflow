@@ -1,4 +1,7 @@
-# Core Concepts
+# Workflow Core Concepts
+
+This page provides a high level overview of Workflow Core, the UI-agnostic Swift and Kotlin runtimes at the heart of the Workflow libraries.
+See [Workflow UI Concepts](../ui-concepts) to learn about the companion Android and iOS specific modules.
 
 ## What is a Workflow?
 
@@ -18,8 +21,8 @@ For example, a Workflow running a simple game might be configured with a descrip
 ![Workflow schematic with State type GameState, Props type Players, Rendering type GameScreen, and Output type GameOver. The workflow is receiving an onClick() event.](../images/game_workflow_schematic.svg)
 
 A workflow Rendering usually serves as a view model in iOS or Android apps, but that is not a requirement.
-In fact, this page includes no details about how platform specific UI code is driven.
-See [Workflow UI](../ui-concepts) for that discussion.
+Again, this page includes no details about how platform specific UI code is driven.
+See [Workflow UI Concepts](../ui-concepts) for that discussion.
 
 !!! note
      Readers with an Android background should note the lower case _v_ and _m_ of "view model" — this notion has nothing to do with Jetpack `ViewModel`.
@@ -85,9 +88,9 @@ WIP
 
 ## Why does Workflow work this way?
 
-Worklow was built to tame the composition and navigation challenges presented by Square's massive Android and iOS apps.
+Workflow was built to tame the composition and navigation challenges presented by Square's massive Android and iOS apps.
 It lets us write intricate, centralized, well tested code encapsulating the flow through literally hundreds of individual screens.
-We are no longer unable to see the forest for the trees.
+These days we are able to see and shape the forest, despite all of the trees.
 
 We built it with two core design principals in mind:
 
