@@ -1,6 +1,6 @@
-# Workflow UI
+# Workflow UI Concepts
 
-This page provides a high level overview of Workflow UI, the companion that allows [Workflow Core](../core-workflow) to drive Android and iOS apps.
+This page provides a high level overview of Workflow UI, the companion that allows [Workflow Core](../concepts) to drive Android and iOS apps.
 
 !!! warning Kotlin WIP
     The `Screen` interface that is so central to this discussion has reached Kotlin very recently, via `v1.8.0-beta01`.
@@ -12,7 +12,7 @@ This page provides a high level overview of Workflow UI, the companion that allo
 ## Separation of Concerns
 
 Workflow maintains a rigid separation between its core runtime and its UI support.
-The [Workflow Core](../core-workflow) modules are strictly Swift and Kotlin, with no dependencies on any UI framework.
+The [Workflow Core](../concepts) modules are strictly Swift and Kotlin, with no dependencies on any UI framework.
 Dependencies on Android and iOS are restricted to the Workflow UI modules, as you would expect.
 This innate separation naturally puts developers on a path to avoid entangling view concerns with their app logic.
 
@@ -26,7 +26,7 @@ The strict divide between Workflow UI and Workflow Core leads you to maintain th
 
 ## What's a Screen?
 
-Most Workflow implementations produce `struct` / `data class` [renderings](../core-workflow#rendering) that can serve as view models.
+Most Workflow implementations produce `struct` / `data class` [renderings](../../glossary#rendering) that can serve as view models.
 Such a rendering provides enough data to paint a UI, and functions to be called in response to UI events.
 
 These view model renderings implement the `Screen` [protocol](https://github.com/square/workflow-swift/blob/main/WorkflowUI/Sources/Screen/Screen.swift) / [interface](https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/Screen.kt) to advertise that this is their intended use.
