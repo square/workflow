@@ -88,10 +88,11 @@ nav:
   - 'Overview': index.md
   - 'Why Workflow?': 'userguide/whyworkflow.md'
   - 'User Guide':
-    - 'Core Concepts': 'userguide/concepts.md'
-    - 'UI Concepts (in progress)': 'userguide/ui-concepts.md'
-    - 'Coding a Workflow': 'userguide/workflow-in-code.md'
-    - 'Coding a Worker': 'userguide/worker-in-code.md'
+    - 'Workflow Core': 'userguide/concepts.md'
+    - 'Coding a Workflow (stale)': 'userguide/workflow-in-code.md'
+    - 'Coding a Worker (stale)': 'userguide/worker-in-code.md'
+    - 'Workflow UI (in progress)': 'userguide/ui-concepts.md'
+    - 'Coding Workflow UI (in progress)': 'userguide/ui-in-code.md'
     - 'Testing (TBD)': 'userguide/testing-concepts.md'
     - 'Common Patterns': 'userguide/common-patterns.md'
     - 'Implementation Notes': 'userguide/implementation.md'

@@ -20,7 +20,7 @@
 # To install, run:
 # gem install mdl
 
-set -ex
+set -e
 
 STYLE=.markdownlint.rb
 DIR=docs/
