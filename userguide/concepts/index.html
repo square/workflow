@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#core-concepts" class="md-skip">
+        <a href="#workflow-core-concepts" class="md-skip">
           Skip to content
         </a>
       
@@ -359,6 +359,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../ui-concepts/" class="md-nav__link">
+        UI Concepts (in progress)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../workflow-in-code/" class="md-nav__link">
         Coding a Workflow
       </a>
@@ -389,20 +403,6 @@
     <li class="md-nav__item">
       <a href="../testing-concepts/" class="md-nav__link">
         Testing (TBD)
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ui-concepts/" class="md-nav__link">
-        Workflow UI (in progress)
       </a>
     </li>
   
@@ -845,7 +845,9 @@
 
 
 
-<h1 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h1>
+<h1 id="workflow-core-concepts">Workflow Core Concepts<a class="headerlink" href="#workflow-core-concepts" title="Permanent link">&para;</a></h1>
+<p>This page provides a high level overview of Workflow Core, the UI-agnostic Swift and Kotlin runtimes at the heart of the Workflow libraries.
+See <a href="../ui-concepts">Workflow UI Concepts</a> to learn about the companion Android and iOS specific modules.</p>
 <h2 id="what-is-a-workflow">What is a Workflow?<a class="headerlink" href="#what-is-a-workflow" title="Permanent link">&para;</a></h2>
 <p>A <a href="../../glossary#workflow-instance">Workflow</a> defines the possible states and behaviors of components of a particular type.
 The overall state of a Workflow has two parts:</p>
@@ -859,8 +861,8 @@ A Rendering is typically a simple struct with display data, and event handler fu
 <p>For example, a Workflow running a simple game might be configured with a description of the participating <code>Players</code> as its Props, build <code>GameScreen</code> structs when asked to render, and emit a <code>GameOver</code> event as Output to signal that is finished.</p>
 <p><img alt="Workflow schematic with State type GameState, Props type Players, Rendering type GameScreen, and Output type GameOver. The workflow is receiving an onClick() event." src="../../images/game_workflow_schematic.svg" /></p>
 <p>A workflow Rendering usually serves as a view model in iOS or Android apps, but that is not a requirement.
-In fact, this page includes no details about how platform specific UI code is driven.
-See <a href="../ui-concepts">Workflow UI</a> for that discussion.</p>
+Again, this page includes no details about how platform specific UI code is driven.
+See <a href="../ui-concepts">Workflow UI Concepts</a> for that discussion.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Readers with an Android background should note the lower case <em>v</em> and <em>m</em> of &ldquo;view model&rdquo; — this notion has nothing to do with Jetpack <code>ViewModel</code>.</p>
@@ -916,9 +918,9 @@ WIP
  -->
 
 <h2 id="why-does-workflow-work-this-way">Why does Workflow work this way?<a class="headerlink" href="#why-does-workflow-work-this-way" title="Permanent link">&para;</a></h2>
-<p>Worklow was built to tame the composition and navigation challenges presented by Square&rsquo;s massive Android and iOS apps.
+<p>Workflow was built to tame the composition and navigation challenges presented by Square&rsquo;s massive Android and iOS apps.
 It lets us write intricate, centralized, well tested code encapsulating the flow through literally hundreds of individual screens.
-We are no longer unable to see the forest for the trees.</p>
+These days we are able to see and shape the forest, despite all of the trees.</p>
 <p>We built it with two core design principals in mind:</p>
 <ul>
 <li>Unidirectional data flow is the best way to stay sane when building UI</li>
@@ -988,13 +990,13 @@ Functional and declarative programming go very well together, and Workflow encou
       
       
         
-        <a href="../workflow-in-code/" class="md-footer__link md-footer__link--next" aria-label="Next: Coding a Workflow" rel="next">
+        <a href="../ui-concepts/" class="md-footer__link md-footer__link--next" aria-label="Next: UI Concepts (in progress)" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Coding a Workflow
+              UI Concepts (in progress)
             </div>
           </div>
           <div class="md-footer__button md-icon">
