@@ -19,7 +19,7 @@
     
     
       
-        <title>UI Concepts (in progress) - Square Workflow</title>
+        <title>Workflow UI (in progress) - Square Workflow</title>
       
     
     
@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#workflow-ui-concepts" class="md-skip">
+        <a href="#workflow-ui" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              UI Concepts (in progress)
+              Workflow UI (in progress)
             
           </span>
         </div>
@@ -271,7 +271,35 @@
   
     <li class="md-nav__item">
       <a href="../concepts/" class="md-nav__link">
-        Core Concepts
+        Workflow Core
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow-in-code/" class="md-nav__link">
+        Coding a Workflow (stale)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../worker-in-code/" class="md-nav__link">
+        Coding a Worker (stale)
       </a>
     </li>
   
@@ -294,12 +322,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          UI Concepts (in progress)
+          Workflow UI (in progress)
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        UI Concepts (in progress)
+        Workflow UI (in progress)
       </a>
       
         
@@ -318,13 +346,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#separation-of-concerns" class="md-nav__link">
-    Separation of Concerns
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#whats-a-screen" class="md-nav__link">
     What's a Screen?
   </a>
@@ -332,8 +353,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#composition-and-navigation-screens-all-the-way-down" class="md-nav__link">
-    Composition and Navigation: Screens all the way down
+  <a href="#workflow-tree-rendering-tree-view-tree" class="md-nav__link">
+    Workflow Tree, Rendering Tree, View Tree
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#viewenvironment" class="md-nav__link">
+    ViewEnvironment
   </a>
   
 </li>
@@ -353,22 +381,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../workflow-in-code/" class="md-nav__link">
-        Coding a Workflow
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../worker-in-code/" class="md-nav__link">
-        Coding a Worker
+      <a href="../ui-in-code/" class="md-nav__link">
+        Coding Workflow UI (in progress)
       </a>
     </li>
   
@@ -767,13 +781,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#separation-of-concerns" class="md-nav__link">
-    Separation of Concerns
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#whats-a-screen" class="md-nav__link">
     What's a Screen?
   </a>
@@ -781,8 +788,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#composition-and-navigation-screens-all-the-way-down" class="md-nav__link">
-    Composition and Navigation: Screens all the way down
+  <a href="#workflow-tree-rendering-tree-view-tree" class="md-nav__link">
+    Workflow Tree, Rendering Tree, View Tree
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#viewenvironment" class="md-nav__link">
+    ViewEnvironment
   </a>
   
 </li>
@@ -805,8 +819,9 @@
 
 
 
-<h1 id="workflow-ui-concepts">Workflow UI Concepts<a class="headerlink" href="#workflow-ui-concepts" title="Permanent link">&para;</a></h1>
-<p>This page provides a high level overview of Workflow UI, the companion that allows <a href="../concepts">Workflow Core</a> to drive Android and iOS apps.</p>
+<h1 id="workflow-ui">Workflow UI<a class="headerlink" href="#workflow-ui" title="Permanent link">&para;</a></h1>
+<p>This page provides a high level overview of Workflow UI, the companion that allows <a href="../concepts">Workflow Core</a> to drive Android and iOS apps.
+To see how these ideas are realized in code, move on to <a href="../ui-in-code">Coding Workflow UI</a>.</p>
 <div class="admonition warning kotlin wip">
 <p class="admonition-title">Warning</p>
 <p>The <code>Screen</code> interface that is so central to this discussion has reached Kotlin very recently, via <code>v1.8.0-beta01</code>.
@@ -814,131 +829,14 @@ Thus, if you are working against the most recent non-beta release, you will find
 <p>Square is using the <code>Screen</code> machinery introduced with the beta at the heart of our Android app suite, and we expect the beta period to be a short one.
 The Swift <code>Screen</code> protocol <em>et al.</em> have been in steady use for years.</p>
 </div>
-<h2 id="separation-of-concerns">Separation of Concerns<a class="headerlink" href="#separation-of-concerns" title="Permanent link">&para;</a></h2>
-<p>Workflow maintains a rigid separation between its core runtime and its UI support.
-The <a href="../concepts">Workflow Core</a> modules are strictly Swift and Kotlin, with no dependencies on any UI framework.
-Dependencies on Android and iOS are restricted to the Workflow UI modules, as you would expect.
-This innate separation naturally puts developers on a path to avoid entangling view concerns with their app logic.</p>
-<p>And note that we say &ldquo;app logic&rdquo; rather than &ldquo;business logic.&rdquo;
-In any interesting app, the code that manages navigation and other UI-releated behavior is likely to dwarf that for what we typically think of as model concerns, in both size and complexity.</p>
-<p>We&rsquo;re all pretty good at capturing business concerns in tidy object-oriented models of items for sale, shopping carts, payment cards and the like, nicely decoupled from the UI world.
-But the rest of the app, and in particular the bits about how our users navigate it?
-Traditionally it&rsquo;s hard to keep that app-specific logic centralized, so that you can see what&rsquo;s going on; and even harder to keep it decoupled from your view system, so that it&rsquo;s easy to test.
-The strict divide between Workflow UI and Workflow Core leads you to maintain that separation by accident.</p>
 <h2 id="whats-a-screen">What&rsquo;s a Screen?<a class="headerlink" href="#whats-a-screen" title="Permanent link">&para;</a></h2>
 <p>Most Workflow implementations produce <code>struct</code> / <code>data class</code> <a href="../../glossary#rendering">renderings</a> that can serve as view models.
-Such a rendering provides enough data to paint a UI, and functions to be called in response to UI events.</p>
+Such a rendering provides enough data to paint a complete UI, including functions to be called in response to UI events.</p>
 <p>These view model renderings implement the <code>Screen</code> <a href="https://github.com/square/workflow-swift/blob/main/WorkflowUI/Sources/Screen/Screen.swift">protocol</a> / <a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/Screen.kt">interface</a> to advertise that this is their intended use.
 The core service provided by Workflow UI is to transform <code>Screen</code> types into platform-specific view objects, and to keep those views updated as new <code>Screen</code> renderings are emitted.</p>
 <p><code>Screen</code> is the lynch pin that ties the Workflow Core and Workflow UI worlds together, the basic UI building block for Workflow-driven apps.
 A <code>Screen</code> is an object that can be presented as a basic 2D UI box, like an <code>android.view.View</code> or a <code>UIViewController</code>.
 And Workflow UI provides the glue that allows you to declare (at compile time!) that instances of <code>FooScreen : Screen</code> are used to drive <code>FooViewController</code>, <code>layout/foo_screen.xml</code>, or <code>@Composable fun Content(FooScreen, ViewEnvironment)</code>.</p>
-<div class="tabbed-set" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">iOS</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="kd">struct</span> <span class="nc">WelcomeScreen</span><span class="p">:</span> <span class="n">Screen</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span>
-    <span class="kd">var</span> <span class="nv">onNameChanged</span><span class="p">:</span> <span class="p">(</span><span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-    <span class="kd">var</span> <span class="nv">onLoginTapped</span><span class="p">:</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-
-    <span class="kd">func</span> <span class="nf">viewControllerDescription</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewControllerDescription</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">WelcomeViewController</span><span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="k">for</span><span class="p">:</span> <span class="kc">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">environment</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">private</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">WelcomeViewController</span><span class="p">:</span> <span class="n">ScreenViewController</span><span class="p">&lt;</span><span class="n">WelcomeScreen</span><span class="p">&gt;</span> <span class="p">{</span>
-    <span class="c1">// ...</span>
-</code></pre></div>
-</div>
-<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Android Classic</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="kd">data</span> <span class="kd">class</span> <span class="nc">HelloScreen</span><span class="p">(</span>
-  <span class="kd">val</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-  <span class="kd">val</span> <span class="nv">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Unit</span>
-<span class="p">)</span> <span class="p">:</span> <span class="n">AndroidScreen</span><span class="o">&lt;</span><span class="n">HelloScreen</span><span class="o">&gt;</span> <span class="p">{</span>
-  <span class="kd">override</span> <span class="kd">val</span> <span class="nv">viewFactory</span><span class="p">:</span> <span class="n">ScreenViewFactory</span><span class="o">&lt;</span><span class="n">HelloScreen</span><span class="o">&gt;</span> <span class="o">=</span>
-    <span class="n">fromViewBinding</span><span class="p">(</span><span class="n">HelloViewBinding</span><span class="o">::</span><span class="n">inflate</span><span class="p">)</span> <span class="p">{</span> <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">-&gt;</span>
-      <span class="n">helloMessage</span><span class="p">.</span><span class="na">text</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="na">message</span>
-      <span class="n">helloMessage</span><span class="p">.</span><span class="na">setOnClickListener</span> <span class="p">{</span> <span class="n">r</span><span class="p">.</span><span class="na">onClick</span><span class="p">()</span> <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-</div>
-<input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><label for="__tabbed_1_3">Android Compose</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="kd">data</span> <span class="kd">class</span> <span class="nc">HelloScreen</span><span class="p">(</span>
-  <span class="kd">val</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-  <span class="kd">val</span> <span class="nv">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Unit</span>
-<span class="p">)</span> <span class="p">:</span> <span class="n">AndroidScreen</span><span class="o">&lt;</span><span class="n">HelloScreen</span><span class="o">&gt;</span> <span class="k">by</span> <span class="n">ComposeScreen</span> <span class="p">{</span>
-  <span class="n">Button</span><span class="p">(</span><span class="n">onClick</span> <span class="o">=</span> <span class="n">onClick</span><span class="p">)</span>
-  <span class="n">Text</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div>
-</div>
-</div>
-<p>After all the chest-thumping above about <a href="#separation-of-concerns">Separation of Concerns</a>, these code samples probably don&rsquo;t look very separate. That&rsquo;s because, while the libraries themselves are completely decoupled, they don&rsquo;t force that strict rigor on your app code.</p>
-<p>If you aren&rsquo;t building, say, a core Workflow module that you want to ship separately from its Android and command line interfaces, you&rsquo;d probably gain nothing from enforced separation but boilerplate and runtime errors.
-And in practice, your Workflow unit tests won&rsquo;t call <code>viewFactory</code> and will build and run just fine against the JVM.
-Likewise, at this point we&rsquo;ve been building apps this way for hundreds of engineering years, and so far no one has called <code>viewControllerDescription()</code> and stashed a <code>UIViewController</code> in their workflow state.
-(This is not a challenge.)</p>
-<p>If you&rsquo;re one of the few who truly do need impermeable boundaries between your core and UI modules, they aren&rsquo;t hard to get.
-Your <code>Screen</code> implementations can be defined completely separately from their view code and bound later.</p>
-<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">iOS</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="c1">// WelcomeScreen.swift</span>
-<span class="kd">struct</span> <span class="nc">WelcomeScreen</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span>
-    <span class="kd">var</span> <span class="nv">onNameChanged</span><span class="p">:</span> <span class="p">(</span><span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-    <span class="kd">var</span> <span class="nv">onLoginTapped</span><span class="p">:</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
-<span class="p">}</span>
-
-<span class="c1">// WelcomeViewController.swift</span>
-<span class="kd">extension</span> <span class="nc">WelcomeScreen</span><span class="p">:</span> <span class="n">Screen</span> <span class="p">{</span>
-    <span class="kd">func</span> <span class="nf">viewControllerDescription</span><span class="p">(</span><span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">ViewControllerDescription</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">WelcomeViewController</span><span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="k">for</span><span class="p">:</span> <span class="kc">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">environment</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">private</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">WelcomeViewController</span><span class="p">:</span> <span class="n">ScreenViewController</span><span class="p">&lt;</span><span class="n">WelcomeScreen</span><span class="p">&gt;</span> <span class="p">{</span>
-    <span class="c1">// ...</span>
-</code></pre></div>
-</div>
-<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">Android</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code><span class="c1">// HelloScreen.kt</span>
-<span class="kd">data</span> <span class="kd">class</span> <span class="nc">HelloScreen</span><span class="p">(</span>
-  <span class="kd">val</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-  <span class="kd">val</span> <span class="nv">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Unit</span>
-<span class="p">)</span> <span class="p">:</span> <span class="n">Screen</span>
-
-<span class="c1">// HelloScreenViewFactory.kt</span>
-<span class="kd">object</span> <span class="nc">HelloScreenViewFactory</span><span class="p">:</span> <span class="n">ScreenViewFactory</span><span class="o">&lt;</span><span class="n">HelloScreen</span><span class="o">&gt;</span>
-<span class="k">by</span> <span class="n">ScreenViewFactory</span><span class="p">.</span><span class="na">fromViewBinding</span><span class="p">(</span><span class="n">HelloViewBinding</span><span class="o">::</span><span class="n">inflate</span><span class="p">)</span> <span class="p">{</span> <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">-&gt;</span>
-      <span class="n">helloMessage</span><span class="p">.</span><span class="na">text</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="na">message</span>
-      <span class="n">helloMessage</span><span class="p">.</span><span class="na">setOnClickListener</span> <span class="p">{</span> <span class="n">r</span><span class="p">.</span><span class="na">onClick</span><span class="p">()</span> <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="c1">// HelloActivity.kt</span>
-<span class="kd">class</span> <span class="nc">HelloWorkflowActivity</span> <span class="p">:</span> <span class="n">AppCompatActivity</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">override</span> <span class="kd">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle?)</span> <span class="p">{</span>
-    <span class="k">super</span><span class="p">.</span><span class="na">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
-
-    <span class="kd">val</span> <span class="nv">model</span><span class="p">:</span> <span class="n">HelloViewModel</span> <span class="k">by</span> <span class="n">viewModels</span><span class="p">()</span>
-    <span class="n">setContentView</span><span class="p">(</span>
-      <span class="n">WorkflowLayout</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="na">apply</span> <span class="p">{</span> <span class="n">take</span><span class="p">(</span><span class="n">lifecycle</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="na">renderings</span><span class="p">)</span> <span class="p">}</span>
-    <span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">class</span> <span class="nc">HelloViewModel</span><span class="p">(</span><span class="n">savedState</span><span class="p">:</span> <span class="n">SavedStateHandle</span><span class="p">)</span> <span class="p">:</span> <span class="n">ViewModel</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">private</span> <span class="kd">val</span> <span class="nv">viewRegistry</span> <span class="o">=</span> <span class="n">ViewRegistry</span><span class="p">(</span><span class="n">HelloScreenViewFactory</span><span class="p">)</span>
-
-  <span class="kd">val</span> <span class="nv">renderings</span><span class="p">:</span> <span class="n">StateFlow</span><span class="o">&lt;</span><span class="n">Screen</span><span class="o">&gt;</span> <span class="k">by</span> <span class="n">lazy</span> <span class="p">{</span>
-    <span class="n">renderWorkflowIn</span><span class="p">(</span>
-      <span class="n">workflow</span> <span class="o">=</span> <span class="n">HelloWorkflow</span><span class="p">.</span><span class="na">mapRenderings</span> <span class="p">{</span> <span class="nb">it</span><span class="p">.</span><span class="na">withRegistry</span><span class="p">(</span><span class="n">viewRegistry</span><span class="p">)</span> <span class="p">},</span>
-      <span class="n">scope</span> <span class="o">=</span> <span class="n">viewModelScope</span><span class="p">,</span>
-      <span class="n">savedStateHandle</span> <span class="o">=</span> <span class="n">savedState</span>
-    <span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-</div>
-</div>
 <div class="admonition faq">
 <p class="admonition-title">Why "Screen"?</p>
 <p>We chose the name &ldquo;Screen&rdquo; because &ldquo;View&rdquo; would invite confusion with the like-named Android and iOS classes, and because &ldquo;Box&rdquo; didn&rsquo;t occur to us.
@@ -949,16 +847,81 @@ Your <code>Screen</code> implementations can be defined completely separately fr
 &ldquo;The Cart screen is shown in a modal over the Home screen on tablets.&rdquo;
 It&rsquo;s a safe bet you understood each of those sentences.</p>
 </div>
-<h2 id="composition-and-navigation-screens-all-the-way-down">Composition and Navigation: Screens all the way down<a class="headerlink" href="#composition-and-navigation-screens-all-the-way-down" title="Permanent link">&para;</a></h2>
-<p>All of the above is expressive enough if a <code>Screen</code> really is modeling the entire display, but that&rsquo;s not very realistic.
-It falls apart as soon as you need think about two or more screens at a time, in cases like:</p>
+<h2 id="workflow-tree-rendering-tree-view-tree">Workflow Tree, Rendering Tree, View Tree<a class="headerlink" href="#workflow-tree-rendering-tree-view-tree" title="Permanent link">&para;</a></h2>
+<p>In the Workflow Core page we discussed how Workflows can be <a href="../concepts#composing-workflows">composed as trees</a>, like this email app driven by a trio of Workflows that assemble a composite <code>SplitScreen</code> rendering.</p>
+<p><img alt="Workflow schematic showing a parent EmailBrowserWorkflow assembling the renderings of its children, InboxWorkflow and MessageWorkflow, into a SplitScreen(InboxScreen, MessageScreen)" src="../../images/email_schematic_renderings_only.svg" /></p>
+<p>Let&rsquo;s take a look at how Workflow UI transforms such a <a href="../../glossary#container-screen">container screen</a> into a <a href="../../glossary#container-view">container view</a>.</p>
+<p>The main connection between the Workflow Core runtime and a native view system is the stream of Rendering objects from the root Workflow, <code>EmailBrowserWorkflow</code> in this discussion.
+From that point on, the flow of control is entirely in view-land.</p>
+<p>The precise details of that journey vary between Android and iOS in terms of naming, subclassing v. delegating, and so on, mainly to ensure that the API is idiomatic for each audience.
+None the less, the broad strokes are the same.
+(Move on to <a href="../ui-in-code">Coding Workflow UI</a> to drill into the platform-specific details.)</p>
+<p>Each flavor of Workflow UI provides two core container helpers, both pictured below:</p>
 <ul>
-<li>Back-stack style push / pop transitions</li>
-<li>Overview / detail split pane navigation, like an email app that shows an inbox on the left, and the selected message on the right</li>
-<li>Showing one screen over another one for a temporary modal session</li>
+<li>A &ldquo;workflow container&rdquo;, able to instantiate and update a view that can display Screen instances of the given type<ul>
+<li>In iOS this is <code>DescribedViewController</code></li>
+<li>For Android Classic we provide <code>WorkflowViewStub</code>, very similar to <code>android.view.ViewStub</code>.</li>
+<li>Android Jetpack Compose code can call <code>@Compose fun WorkflowRendering()</code>.</li>
 </ul>
-<p>Workflow handles all of this via the <a href="../../Glossary#container-screen">Container Screen</a> pattern: Screens that are built out of other Screens.</p>
-<p>TBD (read, &ldquo;To Be Distilled from this <a href="https://github.com/square/workflow/issues/613">support ticket</a>&rdquo;)</p>
+</li>
+<li>A &ldquo;workflow root container&rdquo;, able to field a stream of renderings from the Workflow Core runtime, and pass them on to a workflow container<ul>
+<li><code>ContainerViewController</code> for iOS</li>
+<li><code>WorkflowLayout</code> for Android Classic</li>
+<li><code>@Compose fun Workflow.renderAsState()</code> for Android Jetpack Compose</li>
+</ul>
+</li>
+</ul>
+<p><img alt="A box labeled Runtime contains the EmailBrowserWorkflow. It slightly overlaps a larger box labeled Native view system. A line from the EmailBrowserWorkflow's Rendering port connects to a  box at the top of the Native View System, labeled Workflow root container. That Rendering, a SplitScreen(InboxScreen, MessageScreen), is passed from the Workflow root container down to a bi-part box labeled Workflow container / Custom split view. From there, InboxScreen is passed down to a similar bi-part box labeled Workflow container / Custom inbox view, and MessageScreen to Workflow container / Custom message view" src="../../images/down_the_view_tree.svg" /></p>
+<p>When the runtime in our example is started, the flow is something like this:</p>
+<ul>
+<li><code>EmailBrowserWorkflow</code> is asked for its first Rendering, a <code>SplitScreen</code> wrapping an <code>InboxScreen</code> and a <code>MessageScreen</code>.</li>
+<li>The <em>Workflow root container</em> receives that, and hands it off to its <em>Workflow container</em>.<ul>
+<li>The container is able to resolve that <code>SplitScreen</code> instances can be displayed by views of the associated type <em>Custom split view</em>.</li>
+<li>The container builds that view, and passes it the <code>SplitScreen</code>.</li>
+</ul>
+</li>
+<li><em>Custom split view</em> is written with two <em>Workflow containers</em> of its own, one for the left side and for the right.<ul>
+<li>The left hand container resolves <code>InboxScreen</code> to <em>Custom inbox view</em>, builds one, and hands the rendering that new view.</li>
+<li>The right hand container does the same for the <code>MessageScreen</code>, creating a <em>Custom message view</em> to display it.</li>
+</ul>
+</li>
+</ul>
+<p>Sooner or later the state of <code>EmailBrowserWorkflow</code> or one of its children will change.
+Perhaps a new message has been received.
+Perhaps an event handler function on <code>InboxScreen</code> has been called because the user wants to read something else now.
+Regardless of where in the Workflow hierarchy the update happens, the entire tree will be re-rendered: <code>EmailBrowserWorkflow</code> will be asked for a new Rendering, it will ask its children for the same, and so on.</p>
+<div class="admonition tip">
+<p class="admonition-title">Yes, everything renders when anything changes</p>
+<p>New Workflow developers generally freak out when they hear that the entire tree is re-rendered when any state anywhere updates.
+Remember that <code>render()</code> implementations are expected to be idempotent, and that their job is strictly declarative: <code>render()</code> effectively means &ldquo;I assume these children are running, and that I am subscribed to these work streams. Please make sure that stays the case, or fire up some new ones if needed.&rdquo;
+Another way is to think of them as declaring how to adapt the internal State into the external Rendering.
+These calls should be cheap, with all real work happening outside of the <code>render()</code> call.</p>
+<p>Optimizations may prevent rendering calls that are clearly redundant from being made, but semantically one should assume that the whole world is rendered when any part of the world changes.</p>
+</div>
+<p>Once the runtime&rsquo;s Workflow tree finishes re-rendering, the new <code>SplitScreen</code> is passed through the native view system like so:</p>
+<ul>
+<li>The <em>Workflow root container</em> once again passes the new <code>SplitScreen</code> to its <em>Workflow container</em>, because that is the only trick it knows.<ul>
+<li>That container recognizes that <code>SplitScreen</code> can be accepted by the <em>Custom split view</em> it created last time, and so there is no work to be done.</li>
+<li>The existing <em>Custom split view</em> receives the new <code>SplitScreen</code>.</li>
+</ul>
+</li>
+<li>Just like last time, <em>Custom split view</em> passes <code>InboxScreen</code> to the <em>Workflow container</em> on its left, and <code>MessageScreen</code> to that on its right.<ul>
+<li>The left hand <em>Workflow container</em> sees that it is already showing a <em>Custom inbox view</em> and passes <code>InboxScreen</code> rendering through.</li>
+<li>The same things happens with <code>MessageScreen</code>, and the <em>Custom message view</em> previously built by the right hand <em>Workflow container</em>.</li>
+</ul>
+</li>
+</ul>
+<p>As is always the case with view code, <em>Custom inbox view</em> and <em>Custom message view</em> should be written with care to avoid redundant work, comparing what they are already showing with what they are being asked to show now.
+(A simple way to do this is to keep a Screen type&rsquo;s display data in a separate object from its event handlers, as an Equatable Swift struct, or as a Kotlin data class.
+Always hold on to the latest Screen in a <code>var</code>, and write UI click handlers and to reference it.)</p>
+<p>The update scenario would be different if the types of any of the <code>Screen</code> Renderings changed.
+Suppose our email app is able to host both email and voice mail in its inbox, and that the <code>MessageScreen</code> from the previous update is replaced with a <code>VoicemailScreen</code> this time.
+In that case, <em>Custom message view</em> would refuse the new Rendering, and the right hand <em>Workflow container</em> that created it would destroy it.
+A <em>Custom voicemail view</em> would be created in its stead, and that new view would paint itself with the information from the <code>VoicemailScreen</code>.</p>
+<p>So just how do these containers know what views to create for what Screen types?
+Those details are very language and platform specific, and are covered in the next page, under <a href="../ui-in-code#view-binding">Building views from Screens</a>.</p>
+<h2 id="viewenvironment">ViewEnvironment<a class="headerlink" href="#viewenvironment" title="Permanent link">&para;</a></h2>
+<p>TK</p>
 
               
             </article>
@@ -972,7 +935,7 @@ It falls apart as soon as you need think about two or more screens at a time, in
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../concepts/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core Concepts" rel="prev">
+        <a href="../worker-in-code/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Coding a Worker (stale)" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -981,20 +944,20 @@ It falls apart as soon as you need think about two or more screens at a time, in
               <span class="md-footer__direction">
                 Previous
               </span>
-              Core Concepts
+              Coding a Worker (stale)
             </div>
           </div>
         </a>
       
       
         
-        <a href="../workflow-in-code/" class="md-footer__link md-footer__link--next" aria-label="Next: Coding a Workflow" rel="next">
+        <a href="../ui-in-code/" class="md-footer__link md-footer__link--next" aria-label="Next: Coding Workflow UI (in progress)" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Coding a Workflow
+              Coding Workflow UI (in progress)
             </div>
           </div>
           <div class="md-footer__button md-icon">
