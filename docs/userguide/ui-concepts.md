@@ -40,16 +40,14 @@ In the Workflow Core page we discussed how Workflows can be [composed as trees](
 
 Let's take a look at how Workflow UI transforms such a [container screen](../../glossary#container-screen) into a [container view](../../glossary#container-view).
 
-![A box labeled Runtime contains the EmailBrowserWorkflow. It slightly overlaps a larger box labeled Native view system. A line from the EmailBrowserWorkflow's Rendering port connects to a  box at the top of the Native View System, labeled Workflow root container. That Rendering, a SplitScreen(InboxScreen, MessageScreen), is passed from the Workflow root container down to a bi-part box labeled Workflow container / Custom split view. From there, InboxScreen is passed down to a similar bi-part box labeled Workflow container / Custom inbox view, and MessageScreen to Workflow container / Custom message view](../images/down_the_view_tree.svg)
-
-The main connection between the Workflow Core runtime and a native view system is the stream of Rendering objects from the root Workflow, `EmailBrowserWorkflow` in this illustration.
+The main connection between the Workflow Core runtime and a native view system is the stream of Rendering objects from the root Workflow, `EmailBrowserWorkflow` in this discussion.
 From that point on, the flow of control is entirely in view-land.
 
 The precise details of that journey vary between Android and iOS in terms of naming, subclassing v. delegating, and so on, mainly to ensure that the API is idiomatic for each audience.
 None the less, the broad strokes are the same.
 (Move on to [Coding Workflow UI](../ui-in-code) to drill into the platform-specific details.)
 
-Each flavor of Workflow UI provides two core container helpers, both pictured above:
+Each flavor of Workflow UI provides two core container helpers, both pictured below:
 
 * A "workflow container", able to instantiate and update a view that can display Screen instances of the given type
     * In iOS this is `DescribedViewController`
@@ -59,6 +57,8 @@ Each flavor of Workflow UI provides two core container helpers, both pictured ab
     * `ContainerViewController` for iOS
     * `WorkflowLayout` for Android Classic
     * `@Compose fun Workflow.renderAsState()` for Android Jetpack Compose
+
+![A box labeled Runtime contains the EmailBrowserWorkflow. It slightly overlaps a larger box labeled Native view system. A line from the EmailBrowserWorkflow's Rendering port connects to a  box at the top of the Native View System, labeled Workflow root container. That Rendering, a SplitScreen(InboxScreen, MessageScreen), is passed from the Workflow root container down to a bi-part box labeled Workflow container / Custom split view. From there, InboxScreen is passed down to a similar bi-part box labeled Workflow container / Custom inbox view, and MessageScreen to Workflow container / Custom message view](../images/down_the_view_tree.svg)
 
 When the runtime in our example is started, the flow is something like this:
 
@@ -78,6 +78,7 @@ Regardless of where in the Workflow hierarchy the update happens, the entire tre
 !!! tip "Yes, everything renders when anything changes"
     New Workflow developers generally freak out when they hear that the entire tree is re-rendered when any state anywhere updates.
     Remember that `render()` implementations are expected to be idempotent, and that their job is strictly declarative: `render()` effectively means "I assume these children are running, and that I am subscribed to these work streams. Please make sure that stays the case, or fire up some new ones if needed."
+    Another way is to think of them as declaring how to adapt the internal State into the external Rendering.
     These calls should be cheap, with all real work happening outside of the `render()` call.
 
     Optimizations may prevent rendering calls that are clearly redundant from being made, but semantically one should assume that the whole world is rendered when any part of the world changes.
@@ -92,6 +93,8 @@ Once the runtime's Workflow tree finishes re-rendering, the new `SplitScreen` is
     * The same things happens with `MessageScreen`, and the _Custom message view_ previously built by the right hand _Workflow container_.
 
 As is always the case with view code, _Custom inbox view_ and _Custom message view_ should be written with care to avoid redundant work, comparing what they are already showing with what they are being asked to show now.
+(A simple way to do this is to keep a Screen type's display data in a separate object from its event handlers, as an Equatable Swift struct, or as a Kotlin data class.
+Always hold on to the latest Screen in a `var`, and write UI click handlers and to reference it.)
 
 The update scenario would be different if the types of any of the `Screen` Renderings changed.
 Suppose our email app is able to host both email and voice mail in its inbox, and that the `MessageScreen` from the previous update is replaced with a `VoicemailScreen` this time.

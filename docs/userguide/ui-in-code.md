@@ -71,7 +71,7 @@ But really, you can host a Workflow driven UI anywhere you can show a view, what
     ```
 
 === "Android Jetpack Compose"
-    ```Kotlin title="HelloComposeActivity.kt"
+    ```kotlin title="HelloComposeActivity.kt"
     class HelloComposeActivity : AppCompatActivity() {
       override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +81,7 @@ But really, you can host a Workflow driven UI anywhere you can show a view, what
         }
       }
     }
+    ```
 
 Android developers should note that classic and Compose bootstrapping are completely interchangeable.
 Each style is able to display Screens of any type, regardless of whether they are set up to inflate `View` instances or to run `@Composeable` functions.
@@ -144,7 +145,7 @@ Hello, Screen world.
     `ScreenViewFactory` returns `View` instances wrapped in `ScreenViewHolder` objects.
     `ScreenViewHolder.show` is called by the Workflow UI runtime to update the view with `Screen` instances that are deemed acceptible by `ScreenViewHolder.canShow`.
 
-    In this example the `fromViewBinding` function creates a `ScreenViewFactory` that builds `View` instances using a Jetpack view binding, `HelloViewBinding`, presumably derived from `hello_view_binding.xml`.
+    In this example the `fromViewBinding` function creates a `ScreenViewFactory` that builds `View` instances using a [Jetpack View Binding](https://developer.android.com/topic/libraries/view-binding), `HelloViewBinding`, presumably derived from `hello_view_binding.xml`.
     The lamda argument to the `fromViewBinding` provides the implementation for `ScreenViewHolder.show`, and is guaranteed that the given `helloScreen` parameter is of the appropriate type.
 
     Other factory functions are provided to work with layout resources directly, or to build views entirely from code.
@@ -167,7 +168,7 @@ Hello, Screen world.
     `ComposeScreen` extends the same `AndroidScreen` class used for classic Android, defining `@Composable fun Content()` to get its work done.
     `Content` is always called from a `@Composable Box()` context.
 
-    !!! tip "It's smart"
+    !!! tip "It's context aware"
         Even though `AndroidScreen` provides a thing called `ScreenViewFactory` to do its work, the factories built by `ComposeScreen` are able to recognize whether they're being called from a classic `View` or from a `@Composeable` function, and do the right thing.
         Workflow UI only creates `ComposeView` instances as needed: when a `@Composeable` needs to be shown in a `View`.
         If the factory is to be used in a `@Composable` context, `Content()` is called directly.
@@ -356,7 +357,20 @@ For something like a `SplitScreen` rendering, you'll write your own view code th
       val trailingScreen: T
     ): ComposeScreen<SplitScreen<L, T>> {
       @Composable override fun Content(viewEnvironment: ViewEnvironment) {
-        TODO()
+        Row {
+          WorkflowRendering(
+            rendering = leadingScreen,
+            modifier = Modifier
+              .weight(1 / 3f)
+              .fillMaxHeight()
+          )
+          WorkflowRendering(
+            rendering = trailingScreen,
+            modifier = Modifier
+              .weight(2 / 3f)
+              .fillMaxHeight()
+          )
+        }
       }
     }
     ```
