@@ -189,8 +189,7 @@ hierarchy. This is the opportunity for a workflow to notify its parent that some
 (and the parent's opportunity to respond to that event by dispatching its own action, continuing up
 the tree as long as output events are emitted).
 
-<a id="rendering"></a>
-## Workflows produce an external representation of their state via `Rendering`
+## Workflows produce an external representation of their state via `Rendering`<a id="rendering"></a>
 
 Immediately after starting up, or after a state transition occurs, a workflow will have its `render`
 method called. This method is responsible for creating and returning a value of type `Rendering`.

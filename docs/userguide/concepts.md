@@ -1,7 +1,7 @@
-# Workflow Core Concepts
+# Workflow Core
 
 This page provides a high level overview of Workflow Core, the UI-agnostic Swift and Kotlin runtimes at the heart of the Workflow libraries.
-See [Workflow UI Concepts](../ui-concepts) to learn about the companion Android and iOS specific modules.
+See [Workflow UI](../ui-concepts) to learn about the companion Android and iOS specific modules.
 
 ## What is a Workflow?
 
@@ -22,7 +22,7 @@ For example, a Workflow running a simple game might be configured with a descrip
 
 A workflow Rendering usually serves as a view model in iOS or Android apps, but that is not a requirement.
 Again, this page includes no details about how platform specific UI code is driven.
-See [Workflow UI Concepts](../ui-concepts) for that discussion.
+See [Workflow UI](../ui-concepts) for that discussion.
 
 !!! note
      Readers with an Android background should note the lower case _v_ and _m_ of "view model" — this notion has nothing to do with Jetpack `ViewModel`.
@@ -64,7 +64,7 @@ When `EmailBrowserWorkflow` is asked to provide its Rendering, it in turn asks f
 * It provides the `List<MessageId>` from its state as the Props for `EmailInboxWorkflow` and receives an `InBoxScreen` rendering in return. That `InboxScreen` becomes the left pane of a `SplitScreen` Rendering.
 * For the `SplitScreen`'s right pane, the browser Workflow provides the currently selected `MessageId` as input to `EmailMessageWorkflow`, to get a `MessageScreen` rendering.
 
-![Workflow schematic showing EmailBrowserWorkflow rendering by delegating to two children, InboxWorkflow and MessageWorkflow, and assembling their renderings into its own.](../images/split_screen_schematic.svg)
+![Workflow schematic showing a parent EmailBrowserWorkflow providing Props to its children, InboxWorkflow and MessageWorkflow, and assembling their renderings into a SplitScreen(InboxScreen, MessageScreen)](../images/split_screen_schematic.svg)
 
 !!! note
     Note that the two children, `EmailInboxWorkflow` and `EmailMessageWorkflow`, have no knowledge of each other, nor of the context in which they are run.
