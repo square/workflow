@@ -19,7 +19,7 @@
     
     
       
-        <title>Core Concepts - Square Workflow</title>
+        <title>Workflow Core - Square Workflow</title>
       
     
     
@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#workflow-core-concepts" class="md-skip">
+        <a href="#workflow-core" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Core Concepts
+              Workflow Core
             
           </span>
         </div>
@@ -280,12 +280,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Core Concepts
+          Workflow Core
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Core Concepts
+        Workflow Core
       </a>
       
         
@@ -359,22 +359,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../ui-concepts/" class="md-nav__link">
-        UI Concepts (in progress)
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../workflow-in-code/" class="md-nav__link">
-        Coding a Workflow
+        Coding a Workflow (stale)
       </a>
     </li>
   
@@ -388,7 +374,35 @@
   
     <li class="md-nav__item">
       <a href="../worker-in-code/" class="md-nav__link">
-        Coding a Worker
+        Coding a Worker (stale)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui-concepts/" class="md-nav__link">
+        Workflow UI (in progress)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui-in-code/" class="md-nav__link">
+        Coding Workflow UI (in progress)
       </a>
     </li>
   
@@ -845,9 +859,9 @@
 
 
 
-<h1 id="workflow-core-concepts">Workflow Core Concepts<a class="headerlink" href="#workflow-core-concepts" title="Permanent link">&para;</a></h1>
+<h1 id="workflow-core">Workflow Core<a class="headerlink" href="#workflow-core" title="Permanent link">&para;</a></h1>
 <p>This page provides a high level overview of Workflow Core, the UI-agnostic Swift and Kotlin runtimes at the heart of the Workflow libraries.
-See <a href="../ui-concepts">Workflow UI Concepts</a> to learn about the companion Android and iOS specific modules.</p>
+See <a href="../ui-concepts">Workflow UI</a> to learn about the companion Android and iOS specific modules.</p>
 <h2 id="what-is-a-workflow">What is a Workflow?<a class="headerlink" href="#what-is-a-workflow" title="Permanent link">&para;</a></h2>
 <p>A <a href="../../glossary#workflow-instance">Workflow</a> defines the possible states and behaviors of components of a particular type.
 The overall state of a Workflow has two parts:</p>
@@ -862,7 +876,7 @@ A Rendering is typically a simple struct with display data, and event handler fu
 <p><img alt="Workflow schematic with State type GameState, Props type Players, Rendering type GameScreen, and Output type GameOver. The workflow is receiving an onClick() event." src="../../images/game_workflow_schematic.svg" /></p>
 <p>A workflow Rendering usually serves as a view model in iOS or Android apps, but that is not a requirement.
 Again, this page includes no details about how platform specific UI code is driven.
-See <a href="../ui-concepts">Workflow UI Concepts</a> for that discussion.</p>
+See <a href="../ui-concepts">Workflow UI</a> for that discussion.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Readers with an Android background should note the lower case <em>v</em> and <em>m</em> of &ldquo;view model&rdquo; — this notion has nothing to do with Jetpack <code>ViewModel</code>.</p>
@@ -898,7 +912,7 @@ This could be modeled as a trio of Workflows:</p>
 <li>It provides the <code>List&lt;MessageId&gt;</code> from its state as the Props for <code>EmailInboxWorkflow</code> and receives an <code>InBoxScreen</code> rendering in return. That <code>InboxScreen</code> becomes the left pane of a <code>SplitScreen</code> Rendering.</li>
 <li>For the <code>SplitScreen</code>&lsquo;s right pane, the browser Workflow provides the currently selected <code>MessageId</code> as input to <code>EmailMessageWorkflow</code>, to get a <code>MessageScreen</code> rendering.</li>
 </ul>
-<p><img alt="Workflow schematic showing EmailBrowserWorkflow rendering by delegating to two children, InboxWorkflow and MessageWorkflow, and assembling their renderings into its own." src="../../images/split_screen_schematic.svg" /></p>
+<p><img alt="Workflow schematic showing a parent EmailBrowserWorkflow providing Props to its children, InboxWorkflow and MessageWorkflow, and assembling their renderings into a SplitScreen(InboxScreen, MessageScreen)" src="../../images/split_screen_schematic.svg" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Note that the two children, <code>EmailInboxWorkflow</code> and <code>EmailMessageWorkflow</code>, have no knowledge of each other, nor of the context in which they are run.</p>
@@ -990,13 +1004,13 @@ Functional and declarative programming go very well together, and Workflow encou
       
       
         
-        <a href="../ui-concepts/" class="md-footer__link md-footer__link--next" aria-label="Next: UI Concepts (in progress)" rel="next">
+        <a href="../workflow-in-code/" class="md-footer__link md-footer__link--next" aria-label="Next: Coding a Workflow (stale)" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              UI Concepts (in progress)
+              Coding a Workflow (stale)
             </div>
           </div>
           <div class="md-footer__button md-icon">
