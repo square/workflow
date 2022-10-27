@@ -84,7 +84,7 @@ function buildKotlinDocs() {
 	# Clean the target dir first.
 	[[ -d "$targetDir" ]] && rm -rf "$targetDir"
 	mkdir -p "$targetDir"
-	mv "$workingDir/build/dokka/gfmCollector" "$targetDir"
+	mv "$workingDir/build/dokka/htmlMultiModule" "$targetDir"
 
 	echo "Removing working directory..."
 	rm -rf "$workingDir"
@@ -117,7 +117,7 @@ function buildSwiftDocs() {
 
 	echo "Building Swift docs..."
 	pushd $workingDir
-	
+
 	bundle exec pod gen Development.podspec
 	cd gen/Development
 

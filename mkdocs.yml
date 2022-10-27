@@ -102,7 +102,7 @@ nav:
     - 'Kotlin Tutorial 🔗': https://github.com/square/workflow-kotlin/tree/main/samples/tutorial#readme
     - 'Kotlin Samples 🔗': https://github.com/square/workflow-kotlin/tree/main/samples
   - 'API Reference':
-    - 'Kotlin 🔗': 'kotlin/api/gfmCollector'
+    - 'Kotlin 🔗': 'kotlin/api/htmlMultiModule'
     - 'Swift API':
       - 'Workflow ': 'swift/api/Workflow/README.md'
       - 'WorkflowReactiveSwift': 'swift/api/WorkflowReactiveSwift/README.md'
