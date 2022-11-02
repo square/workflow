@@ -59,4 +59,3 @@ Essentially, a `Workflow` containing child `Workflow`s calls `render(context:key
 each child `Workflow` and passes in the `RenderContext`. The context does some bookkeeping for the
 child `Workflow` (creating or updating a `ChildWorkflow<T>`) and then calls `render()`.
 `ChildWorkflow<T>.render()` calls `render()` on its `WorkflowNode` and we recurse back to step 2.
-

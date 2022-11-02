@@ -98,4 +98,3 @@ appropriate, up to and including a permanent ban from all of Square spaces witho
 [ubuntu_coc]: https://ubuntu.com/community/code-of-conduct
 [gdc_coc]: https://www.gdconf.com/code-of-conduct
 [django_coc]: https://www.djangoproject.com/conduct/reporting/
-
