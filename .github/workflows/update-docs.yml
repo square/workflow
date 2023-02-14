@@ -25,20 +25,20 @@ jobs:
 
     steps:
     - name: Check out main repo
-      uses: actions/checkout@v2.3.3
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.event.inputs.main-ref }}
         path: 'workflow'
 
     - name: Check out Kotlin repo
-      uses: actions/checkout@v2.3.3
+      uses: actions/checkout@v3
       with:
         repository: 'square/workflow-kotlin'
         ref: ${{ github.event.inputs.kotlin-ref }}
         path: 'workflow-kotlin'
 
     - name: Check out Swift repo
-      uses: actions/checkout@v2.3.3
+      uses: actions/checkout@v3
       with:
         repository: 'square/workflow-swift'
         ref: ${{ github.event.inputs.swift-ref }}
@@ -46,7 +46,7 @@ jobs:
 
     # Ruby Gems
     - name: Load gem cache
-      uses: actions/cache@v2.1.2
+      uses: actions/cache@v3
       with:
         path: workflow-swift/.bundle
         key: gems-${{ hashFiles('workflow-swift/Gemfile.lock') }}
@@ -62,7 +62,7 @@ jobs:
         brew install sourcedocs
 
         # Use Xcode
-        sudo xcode-select -s /Applications/Xcode_12.5.1.app
+        sudo xcode-select -s /Applications/Xcode_14.2.0.app
 
     # Docs dependencies
     - name: Set up Python
@@ -117,7 +117,7 @@ jobs:
 
     # Push docs to new branch
     - name: Create new docs branch
-      uses: actions/checkout@v2.3.3
+      uses: actions/checkout@v3
       with:
         ref: gh-pages
         path: 'workflow-publish'
