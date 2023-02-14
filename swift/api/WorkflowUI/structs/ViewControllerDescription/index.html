@@ -504,7 +504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../../kotlin/api/gfmCollector" class="md-nav__link">
+      <a href="../../../../../kotlin/api/htmlMultiModule" class="md-nav__link">
         Kotlin 🔗
       </a>
     </li>
@@ -724,6 +724,40 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performinitialupdate" class="md-nav__link">
+    performInitialUpdate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#note" class="md-nav__link">
+    Note
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kind" class="md-nav__link">
+    kind
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#methods" class="md-nav__link">
     Methods
   </a>
@@ -732,22 +766,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#inittypebuildupdate" class="md-nav__link">
-    init(type:build:update:)
+  <a href="#initperforminitialupdatetypebuildupdate" class="md-nav__link">
+    init(performInitialUpdate:type:build:update:)
   </a>
-  
-    <nav class="md-nav" aria-label="init(type:build:update:)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -766,13 +787,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#note" class="md-nav__link">
-    Note
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#updateviewcontroller" class="md-nav__link">
     update(viewController:)
   </a>
@@ -783,19 +797,6 @@
   <a href="#note_1" class="md-nav__link">
     Note
   </a>
-  
-    <nav class="md-nav" aria-label="Note">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -824,8 +825,6 @@
 
 <p><strong>STRUCT</strong></p>
 <h1 id="viewcontrollerdescription"><code>ViewControllerDescription</code><a class="headerlink" href="#viewcontrollerdescription" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">ViewControllerDescription</span>
-</code></pre></div>
 <p>A ViewControllerDescription acts as a &ldquo;recipe&rdquo; for building and updating a specific <code>UIViewController</code>.
 It describes how to <em>create</em> and later <em>update</em> a given view controller instance, without creating one
 itself. This means it is a lightweight currency you can create and pass around to describe a view controller,
@@ -839,59 +838,49 @@ a <code>DescribedViewController</code>, which will internally create and manage 
 controller for its current view controller description. However, you can also directly invoke the public
 methods such as <code>buildViewController()</code>, <code>update(viewController:)</code>, if you are
 manually managing your own view controller hierarchy.</p>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<h3 id="performinitialupdate"><code>performInitialUpdate</code><a class="headerlink" href="#performinitialupdate" title="Permanent link">&para;</a></h3>
+<p>If an initial call to <code>update(viewController:)</code> will be performed
+when the view controller is created. Defaults to <code>true</code>.</p>
+<h3 id="note">Note<a class="headerlink" href="#note" title="Permanent link">&para;</a></h3>
+<p>When creating container view controllers that contain other view controllers
+(eg, a navigation stack), you usually want to set this value to <code>false</code> to avoid
+duplicate updates to your children if they are created in <code>init</code>.</p>
+<h3 id="kind"><code>kind</code><a class="headerlink" href="#kind" title="Permanent link">&para;</a></h3>
+<p>Describes the <code>UIViewController</code> type that backs the <code>ViewControllerDescription</code>
+in a way that is <code>Equatable</code> and <code>Hashable</code>. When implementing view controller
+updating and diffing, you can use this type to identify if the backing view controller
+type changed.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="inittypebuildupdate"><code>init(type:build:update:)</code><a class="headerlink" href="#inittypebuildupdate" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">VC</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">&gt;(</span><span class="n">type</span><span class="p">:</span> <span class="n">VC</span><span class="p">.</span><span class="kr">Type</span> <span class="p">=</span> <span class="n">VC</span><span class="p">.</span><span class="kc">self</span><span class="p">,</span> <span class="n">build</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="n">VC</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">VC</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
-</code></pre></div>
+<h3 id="initperforminitialupdatetypebuildupdate"><code>init(performInitialUpdate:type:build:update:)</code><a class="headerlink" href="#initperforminitialupdatetypebuildupdate" title="Permanent link">&para;</a></h3>
 <p>Constructs a view controller description by providing closures used to
 build and update a specific view controller type.</p>
 <ul>
 <li>Parameters:</li>
-<li>type: The type of view controller produced by this description.
-          Typically, should should be able to omit this parameter, but
-          in cases where type inference has trouble, it’s offered as
-          an escape hatch.</li>
-<li>build: Closure that produces a new instance of the view controller</li>
-<li>update: Closure that updates the given view controller</li>
+<li>
+<p>performInitialUpdate: If an initial call to <code>update(viewController:)</code>
+    will be performed when the view controller is created. Defaults to <code>true</code>.</p>
+</li>
+<li>
+<p>type: The type of view controller produced by this description.
+    Typically, should should be able to omit this parameter, but
+    in cases where type inference has trouble, it’s offered as
+    an escape hatch.</p>
+</li>
+<li>
+<p>build: Closure that produces a new instance of the view controller</p>
+</li>
+<li>
+<p>update: Closure that updates the given view controller</p>
+</li>
 </ul>
-<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>type</td>
-<td>The type of view controller produced by this description. Typically, should should be able to omit this parameter, but in cases where type inference has trouble, it’s offered as an escape hatch.</td>
-</tr>
-<tr>
-<td>build</td>
-<td>Closure that produces a new instance of the view controller</td>
-</tr>
-<tr>
-<td>update</td>
-<td>Closure that updates the given view controller</td>
-</tr>
-</tbody>
-</table>
 <h3 id="buildviewcontroller"><code>buildViewController()</code><a class="headerlink" href="#buildviewcontroller" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">buildViewController</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="bp">UIViewController</span>
-</code></pre></div>
 <p>Construct and update a new view controller as described by this view controller description.
 The view controller will be updated before it is returned, so it is fully configured and prepared for display.</p>
 <h3 id="canupdateviewcontroller"><code>canUpdate(viewController:)</code><a class="headerlink" href="#canupdateviewcontroller" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">canUpdate</span><span class="p">(</span><span class="n">viewController</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span>
-</code></pre></div>
 <p>If the given view controller is of the correct type to be updated by this view controller description.</p>
 <p>If your view controller type can change between updates, call this method before invoking <code>update(viewController:)</code>.</p>
-<h3 id="note">Note<a class="headerlink" href="#note" title="Permanent link">&para;</a></h3>
-<p>Failure to confirm the view controller is updatable will result in a fatal <code>precondition</code>.</p>
 <h3 id="updateviewcontroller"><code>update(viewController:)</code><a class="headerlink" href="#updateviewcontroller" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">viewController</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">)</span>
-</code></pre></div>
 <p>Update the given view controller with the content from the view controller description.</p>
 <ul>
 <li>Parameters:</li>
@@ -900,21 +889,6 @@ The view controller will be updated before it is returned, so it is fully config
 <h3 id="note_1">Note<a class="headerlink" href="#note_1" title="Permanent link">&para;</a></h3>
 <p>You must pass a view controller previously created by a compatible <code>ViewControllerDescription</code>
 that passes <code>canUpdate(viewController:)</code>. Failure to do so will result in a fatal precondition.</p>
-<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>viewController</td>
-<td>The view controller to update.</td>
-</tr>
-</tbody>
-</table>
 
               
             </article>

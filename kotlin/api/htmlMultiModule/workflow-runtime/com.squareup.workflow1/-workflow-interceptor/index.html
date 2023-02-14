@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>WorkflowInterceptor</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-runtime::com.squareup.workflow1/WorkflowInterceptor///PointingToDeclaration//-1625139255">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-runtime</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1</a><span class="delimiter">/</span><span class="current">WorkflowInterceptor</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Workflow</span><wbr><span><span>Interceptor</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">WorkflowInterceptor</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-runtime/src/commonMain/kotlin/com/squareup/workflow1/WorkflowInterceptor.kt#L10">source</a>)</span></span></div><p class="paragraph">Provides hooks into the workflow runtime that can be used to instrument or modify the behavior of workflows.</p><p class="paragraph">This interface's methods mirror the methods of <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/index.html">StatefulWorkflow</a>. It also has one additional method, <a href="on-session-started.html">onSessionStarted</a>, that is notified when a workflow is started. Each method returns the same thing as the corresponding method on <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/index.html">StatefulWorkflow</a>, and receives the same parameters as well as two extra parameters:</p><ul><li><p class="paragraph"><code class="strong lang-kotlin"><strong>proceed</strong></code> – A function that <i>exactly</i> mirrors the corresponding function on     <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/index.html">StatefulWorkflow</a>, accepting the same parameters and returning the same thing. An interceptor     can call this function to run the actual workflow, but it may also decide to not call it at     all, or call it multiple times.</p></li><li><p class="paragraph"><code class="strong lang-kotlin"><strong>session</strong></code> – A <a href="-workflow-session/index.html">WorkflowSession</a> object that can be queried for information about the     workflow being intercepted. Note that this object carries <a href="-workflow-session/parent.html">parent</a>     information. So we can use the session object to determine if we are the root Workflow if     session.parent == null.</p></li></ul><p class="paragraph">All methods have default no-op implementations.</p><h2 class=""> On Profiling</h2><p class="paragraph">Note that the <a href="index.html">WorkflowInterceptor</a>'s methods will call the actual methods with the proceed function. This means that we have hooks before and after the actual method making it very straightforward to trace/measure the timing of any part of any workflow, or of the whole tree.</p><h2 class=""> Workflow sessions</h2><p class="paragraph">A single workflow may be rendered by different parents at the same time, or the same parent at different, disjoint times. Each continuous sequence of renderings of a particular workflow type, with the same key passed to <a href="../../../workflow-core/com.squareup.workflow1/-base-render-context/render-child.html">BaseRenderContext.renderChild</a>, is called a "session" of that workflow. The workflow's <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/initial-state.html">StatefulWorkflow.initialState</a> method will be called at the start of the session, and its state will be maintained by the runtime until the session is finished. Each session is identified by the <a href="-workflow-session/index.html">WorkflowSession</a> object passed into the corresponding method in a <a href="index.html">WorkflowInterceptor</a>.</p><p class="paragraph">In addition to the <a href="../../../workflow-core/com.squareup.workflow1/-workflow-identifier/index.html">WorkflowIdentifier</a> of the type of the workflow being rendered, this object also knows the <a href="-workflow-session/render-key.html">key</a> used to render the workflow and the <a href="-workflow-session/index.html">WorkflowSession</a> of the <a href="-workflow-session/parent.html">parent</a> workflow that is rendering it.</p><p class="paragraph">Each session is also assigned a numerical ID that uniquely identifies the session over the life of the entire runtime. This value will remain constant as long as the workflow's parent is rendering it, and then it will never be used again. If this workflow stops being rendered, and then starts again, the value will be different.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="969244055%2FClasslikes%2F-1625139255" anchor-label="RenderContextInterceptor" id="969244055%2FClasslikes%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-render-context-interceptor/index.html"><span>Render</span><wbr><span>Context</span><wbr><span><span>Interceptor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="969244055%2FClasslikes%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-render-context-interceptor/index.html">RenderContextInterceptor</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-render-context-interceptor/index.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-render-context-interceptor/index.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-render-context-interceptor/index.html">O</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Provides hooks for intercepting calls to a <a href="../../../workflow-core/com.squareup.workflow1/-base-render-context/index.html">BaseRenderContext</a>, to be used from <a href="on-render.html">onRender</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-313187096%2FClasslikes%2F-1625139255" anchor-label="WorkflowSession" id="-313187096%2FClasslikes%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-workflow-session/index.html"><span>Workflow</span><wbr><span><span>Session</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-313187096%2FClasslikes%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-workflow-session/index.html">WorkflowSession</a></div><div class="brief "><p class="paragraph">Information about the session of a workflow in the runtime that a <a href="index.html">WorkflowInterceptor</a> method is intercepting.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-127534148%2FFunctions%2F-1625139255" anchor-label="onInitialState" id="-127534148%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-initial-state.html"><span>on</span><wbr><span>Initial</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-127534148%2FFunctions%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-initial-state.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-initial-state.html">S</a><span class="token operator">&gt; </span><a href="on-initial-state.html"><span class="token function">onInitialState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">props<span class="token operator">: </span><a href="on-initial-state.html">P</a><span class="token punctuation">, </span></span><span class="parameter ">snapshot<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="on-initial-state.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="on-initial-state.html">S</a><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="on-initial-state.html">S</a></div><div class="brief "><p class="paragraph">Intercepts calls to <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/initial-state.html">StatefulWorkflow.initialState</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="153217055%2FFunctions%2F-1625139255" anchor-label="onPropsChanged" id="153217055%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-props-changed.html"><span>on</span><wbr><span>Props</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="153217055%2FFunctions%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-props-changed.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-props-changed.html">S</a><span class="token operator">&gt; </span><a href="on-props-changed.html"><span class="token function">onPropsChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">old<span class="token operator">: </span><a href="on-props-changed.html">P</a><span class="token punctuation">, </span></span><span class="parameter ">new<span class="token operator">: </span><a href="on-props-changed.html">P</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="on-props-changed.html">S</a><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="on-props-changed.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-props-changed.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-props-changed.html">S</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="on-props-changed.html">S</a><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="on-props-changed.html">S</a></div><div class="brief "><p class="paragraph">Intercepts calls to <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/on-props-changed.html">StatefulWorkflow.onPropsChanged</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="489927098%2FFunctions%2F-1625139255" anchor-label="onRender" id="489927098%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-render.html"><span>on</span><wbr><span><span>Render</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="489927098%2FFunctions%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">O</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">R</a><span class="token operator">&gt; </span><a href="on-render.html"><span class="token function">onRender</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">renderProps<span class="token operator">: </span><a href="on-render.html">P</a><span class="token punctuation">, </span></span><span class="parameter ">renderState<span class="token operator">: </span><a href="on-render.html">S</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-base-render-context/index.html">BaseRenderContext</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">O</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="on-render.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-render-context-interceptor/index.html">WorkflowInterceptor.RenderContextInterceptor</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">O</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="on-render.html">R</a><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="on-render.html">R</a></div><div class="brief "><p class="paragraph">Intercepts calls to <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/render.html">StatefulWorkflow.render</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1173293711%2FFunctions%2F-1625139255" anchor-label="onSessionStarted" id="1173293711%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-session-started.html"><span>on</span><wbr><span>Session</span><wbr><span><span>Started</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1173293711%2FFunctions%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="on-session-started.html"><span class="token function">onSessionStarted</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">workflowScope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called when the session is starting, before <a href="on-initial-state.html">onInitialState</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="94574022%2FFunctions%2F-1625139255" anchor-label="onSnapshotState" id="94574022%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-snapshot-state.html"><span>on</span><wbr><span>Snapshot</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="94574022%2FFunctions%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-snapshot-state.html">S</a><span class="token operator">&gt; </span><a href="on-snapshot-state.html"><span class="token function">onSnapshotState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="on-snapshot-state.html">S</a><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="on-snapshot-state.html">S</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Intercepts calls to <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/snapshot-state.html">StatefulWorkflow.snapshotState</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Inheritors</h2>
+      <div class="table" data-togglable="Inheritors"><a data-name="-1418115278%2FInheritors%2F-1625139255" anchor-label="SimpleLoggingWorkflowInterceptor" id="-1418115278%2FInheritors%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-simple-logging-workflow-interceptor/index.html">SimpleLoggingWorkflowInterceptor</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1418115278%2FInheritors%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="636320275%2FInheritors%2F-1625139255" anchor-label="NoopWorkflowInterceptor" id="636320275%2FInheritors%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-noop-workflow-interceptor/index.html">NoopWorkflowInterceptor</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="636320275%2FInheritors%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>StatefulWorkflow</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-core:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-core::com.squareup.workflow1/StatefulWorkflow/StatefulWorkflow/#/PointingToDeclaration//-1897121320">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-core</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1</a><span class="delimiter">/</span><a href="index.html">StatefulWorkflow</a><span class="delimiter">/</span><span class="current">StatefulWorkflow</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Stateful</span><wbr><span><span>Workflow</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-stateful-workflow.html"><span class="token function">StatefulWorkflow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/StatefulWorkflow.kt#L12">source</a>)</span></span></div><h4 class="">Parameters</h4><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>Props</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn't duplicate in its own state. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not need any props data.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>State</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Typically a data class that contains all of the internal state for this workflow. The state is seeded via <a href="index.html">props</a> in <a href="initial-state.html">initialState</a>. It can be <a href="snapshot-state.html">serialized</a> and later used to restore the workflow. <strong>Implementations of the </strong><code class="strong lang-kotlin"><strong>Workflow</strong></code><strong> interface should not generally contain their own state directly.</strong> They may inject objects like instances of their child workflows, or network clients, but should not contain directly mutable state. This is the only type parameter that a parent workflow needn't care about for its children, and may just use star (<code class="lang-kotlin">*</code>) instead of specifying it. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not have any internal state (see <a href="../-stateless-workflow/index.html">StatelessWorkflow</a>).</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>Output</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Typically a sealed class that represents "events" that this workflow can send to its parent. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a> if the workflow doesn't need to emit anything.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>Rendering</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The value returned to this workflow's parent during <a href="render.html">composition</a>. Typically represents a "view" of this workflow's props, current state, and children's renderings. A workflow that represents a UI component may use a view model as its rendering type.</p></div></div></div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

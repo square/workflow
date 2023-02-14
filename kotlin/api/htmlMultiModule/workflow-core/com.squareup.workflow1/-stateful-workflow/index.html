@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>StatefulWorkflow</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-core:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-core::com.squareup.workflow1/StatefulWorkflow///PointingToDeclaration//-1897121320">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-core</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1</a><span class="delimiter">/</span><span class="current">StatefulWorkflow</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Stateful</span><wbr><span><span>Workflow</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">StatefulWorkflow</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">StateT</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="index.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="index.html">RenderingT</a><span class="token operator">&gt;</span> : <a href="../-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">RenderingT</a><span class="token operator">&gt; </span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/StatefulWorkflow.kt#L12">source</a>)</span></span></div><p class="paragraph">A composable, stateful object that can <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/-render-context/action-sink.html">handle events</a>, <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/-render-context/render-child.html">delegate to children</a>, <a href="../running-worker.html">subscribe</a> to arbitrary asynchronous events from the outside world, and be <a href="snapshot-state.html">saved</a> to a serialized form to be restored later.</p><p class="paragraph">The basic purpose of a <code class="lang-kotlin">Workflow</code> is to take some <a href="index.html">props</a> and return a <a href="index.html">rendering</a> that serves as a public representation of its current state, and which can be used to update that state. A rendering typically serves as a view  model, though this is not assumed, and is not the only use case.</p><p class="paragraph">To that end, a workflow may keep track of internal <a href="index.html">state</a>, recursively ask other workflows to render themselves, subscribe to data streams from the outside world, and handle events both from its <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/-render-context/action-sink.html">renderings</a> and from workflows it's delegated to (its "children"). A <code class="lang-kotlin">Workflow</code> may also emit <a href="index.html">output events</a> up to its parent <code class="lang-kotlin">Workflow</code>.</p><p class="paragraph">Workflows form a tree, where each workflow can have zero or more child workflows. Child workflows are started as necessary whenever another workflow asks for them, and are cleaned up automatically when they're no longer needed. <a href="index.html">Props</a> propagate down the tree, <a href="index.html">outputs</a> and <a href="index.html">renderings</a> propagate up the tree.</p><h2 class=""> Avoid capturing stale state</h2><p class="paragraph">Workflows may not perform side effects in their <code class="lang-kotlin">render</code> methods, but may perform side effects by running <a href="../-worker/index.html">Worker</a>s and getting events from <a href="index.html">RenderingT</a>s via <a href="../-workflow-action/index.html">WorkflowAction</a>s. A <a href="../-workflow-action/index.html">WorkflowAction</a> defines how to update the <a href="index.html">StateT</a> and what <a href="index.html">OutputT</a>s to emit. Actions get access to the current workflow's state, and they must use that view of the state. If an action is defined inline, it is incorrect to capture, or close over, the <a href="index.html">StateT</a> passed to <a href="render.html">render</a> in the action. Workflows are executed synchronously, but external events may not be, so captured state may be stale when the action is invoked.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Extensions">Extensions</button><button class="section-tab" data-togglable="Parameters">Parameters</button><button class="section-tab" data-togglable="See also">See also</button></div>
+    <div class="tabs-section-body">
+      <h4 class="">See also</h4>
+      <div data-togglable="See also">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="See also"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div data-togglable="See also"><div class="table" data-togglable="See also"><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="../-stateless-workflow/index.html"><span>Stateless</span><wbr><span><span>Workflow</span></span></a></div></span></div><div></div></div></div></div></div></div></div>
+      </div>
+      <h4 class="">Parameters</h4>
+      <div data-togglable="Parameters">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>Props</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Typically a data class that is used to pass configuration information or bits of state that the workflow can always get from its parent and needn't duplicate in its own state. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not need any props data.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>State</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Typically a data class that contains all of the internal state for this workflow. The state is seeded via <a href="index.html">props</a> in <a href="initial-state.html">initialState</a>. It can be <a href="snapshot-state.html">serialized</a> and later used to restore the workflow. <strong>Implementations of the </strong><code class="strong lang-kotlin"><strong>Workflow</strong></code><strong> interface should not generally contain their own state directly.</strong> They may inject objects like instances of their child workflows, or network clients, but should not contain directly mutable state. This is the only type parameter that a parent workflow needn't care about for its children, and may just use star (<code class="lang-kotlin">*</code>) instead of specifying it. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> if the workflow does not have any internal state (see <a href="../-stateless-workflow/index.html">StatelessWorkflow</a>).</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>Output</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Typically a sealed class that represents "events" that this workflow can send to its parent. May be <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a> if the workflow doesn't need to emit anything.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>Rendering</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The value returned to this workflow's parent during <a href="render.html">composition</a>. Typically represents a "view" of this workflow's props, current state, and children's renderings. A workflow that represents a UI component may use a view model as its rendering type.</p></div></div></div></div></div></div></div></div></div>
+      </div>
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-237872396%2FConstructors%2F-1897121320" anchor-label="StatefulWorkflow" id="-237872396%2FConstructors%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-stateful-workflow.html"><span>Stateful</span><wbr><span><span>Workflow</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-237872396%2FConstructors%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-stateful-workflow.html"><span class="token function">StatefulWorkflow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="-1721723627%2FClasslikes%2F-1897121320" anchor-label="RenderContext" id="-1721723627%2FClasslikes%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-render-context/index.html"><span>Render</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1721723627%2FClasslikes%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">inner </span><span class="token keyword">class </span><a href="-render-context/index.html">RenderContext</a> : <a href="../-base-render-context/index.html">BaseRenderContext</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">OutputT</a><span class="token operator">&gt; </span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-23351678%2FFunctions%2F-1897121320" anchor-label="asStatefulWorkflow" id="-23351678%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="as-stateful-workflow.html"><span>as</span><wbr><span>Stateful</span><wbr><span><span>Workflow</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-23351678%2FFunctions%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="as-stateful-workflow.html"><span class="token function">asStatefulWorkflow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">StatefulWorkflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">RenderingT</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Satisfies the <a href="../-workflow/index.html">Workflow</a> interface by returning <code class="lang-kotlin">this</code>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1291030979%2FFunctions%2F-1897121320" anchor-label="initialState" id="-1291030979%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="initial-state.html"><span>initial</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1291030979%2FFunctions%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="initial-state.html"><span class="token function">initialState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">props<span class="token operator">: </span><a href="index.html">PropsT</a><span class="token punctuation">, </span></span><span class="parameter ">snapshot<span class="token operator">: </span><a href="../-snapshot/index.html">Snapshot</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">StateT</a></div><div class="brief "><p class="paragraph">Called from <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/-render-context/render-child.html">RenderContext.renderChild</a> when the state machine is first started, to get the initial state.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1872381600%2FFunctions%2F-1897121320" anchor-label="onPropsChanged" id="1872381600%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-props-changed.html"><span>on</span><wbr><span>Props</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1872381600%2FFunctions%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="on-props-changed.html"><span class="token function">onPropsChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">old<span class="token operator">: </span><a href="index.html">PropsT</a><span class="token punctuation">, </span></span><span class="parameter ">new<span class="token operator">: </span><a href="index.html">PropsT</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="index.html">StateT</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">StateT</a></div><div class="brief "><p class="paragraph">Called from <a href="../../../workflow-core/com.squareup.workflow1/-stateful-workflow/-render-context/render-child.html">RenderContext.renderChild</a> instead of <a href="initial-state.html">initialState</a> when the workflow is already running. This allows the workflow to detect changes in props, and possibly change its state in response. This method is called only if the new props value is not <code class="lang-kotlin">==</code> with the old.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2102653894%2FFunctions%2F-1897121320" anchor-label="render" id="-2102653894%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="render.html"><span><span>render</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2102653894%2FFunctions%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="render.html"><span class="token function">render</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">renderProps<span class="token operator">: </span><a href="index.html">PropsT</a><span class="token punctuation">, </span></span><span class="parameter ">renderState<span class="token operator">: </span><a href="index.html">StateT</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="-render-context/index.html">StatefulWorkflow.RenderContext</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">RenderingT</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">RenderingT</a></div><div class="brief "><p class="paragraph">Called at least once† any time one of the following things happens:</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-151433744%2FFunctions%2F-1897121320" anchor-label="snapshotState" id="-151433744%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="snapshot-state.html"><span>snapshot</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-151433744%2FFunctions%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="snapshot-state.html"><span class="token function">snapshotState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="index.html">StateT</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-snapshot/index.html">Snapshot</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Called whenever the state changes to generate a new <a href="../-snapshot/index.html">Snapshot</a> of the state.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="tabbedcontent">Extensions</h2>
+      <div class="table" data-togglable="Extensions"><a data-name="-1852980613%2FExtensions%2F-1897121320" anchor-label="action" id="-1852980613%2FExtensions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../action.html"><span><span>action</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1852980613%2FExtensions%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../action.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">RenderingT</a><span class="token operator">&gt; </span><a href="index.html">StatefulWorkflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../action.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">RenderingT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../action.html"><span class="token function">action</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter ">update<span class="token operator">: </span><span class="token keyword"></span><a href="../-workflow-action/-updater/index.html">WorkflowAction.Updater</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../action.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">OutputT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-workflow-action/index.html">WorkflowAction</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../action.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">OutputT</a><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../action.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">RenderingT</a><span class="token operator">&gt; </span><a href="index.html">StatefulWorkflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../action.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">RenderingT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../action.html"><span class="token function">action</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">update<span class="token operator">: </span><span class="token keyword"></span><a href="../-workflow-action/-updater/index.html">WorkflowAction.Updater</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../action.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">OutputT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-workflow-action/index.html">WorkflowAction</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../action.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../action.html">OutputT</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Convenience to create a <a href="../-workflow-action/index.html">WorkflowAction</a> with parameter types matching those of the receiving <a href="index.html">StatefulWorkflow</a>. The action will invoke the given <a href="../action.html">lambda</a> when it is <a href="../-workflow-action/apply.html">applied</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1401851623%2FExtensions%2F-1897121320" anchor-label="identifier" id="-1401851623%2FExtensions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../identifier.html"><span><span>identifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1401851623%2FExtensions%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../identifier.html">identifier</a><span class="token operator">: </span><a href="../-workflow-identifier/index.html">WorkflowIdentifier</a></div><div class="brief "><p class="paragraph">The <a href="../-workflow-identifier/index.html">WorkflowIdentifier</a> that identifies this <a href="../-workflow/index.html">Workflow</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="784867950%2FExtensions%2F-1897121320" anchor-label="mapRendering" id="784867950%2FExtensions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../map-rendering.html"><span>map</span><wbr><span><span>Rendering</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="784867950%2FExtensions%2F-1897121320"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../map-rendering.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../map-rendering.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../map-rendering.html">FromRenderingT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../map-rendering.html">ToRenderingT</a><span class="token operator">&gt; </span><a href="../-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../map-rendering.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../map-rendering.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../map-rendering.html">FromRenderingT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../map-rendering.html"><span class="token function">mapRendering</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">transform<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../map-rendering.html">FromRenderingT</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../map-rendering.html">ToRenderingT</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../map-rendering.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../map-rendering.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../map-rendering.html">ToRenderingT</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Uses the given <a href="../map-rendering.html">function</a> to transform a <a href="../-workflow/index.html">Workflow</a> that renders <a href="../map-rendering.html">FromRenderingT</a> to one renders <a href="../map-rendering.html">ToRenderingT</a>,</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

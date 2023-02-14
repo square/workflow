@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ViewStateCache</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.container/ViewStateCache///PointingToDeclaration//-108279078">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.container</a><span class="delimiter">/</span><span class="current">ViewStateCache</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>View</span><wbr><span>State</span><wbr><span><span>Cache</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="index.html">ViewStateCache</a></div><p class="paragraph">Handles persistence chores for container views that manage a set of <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a> renderings, showing a view for one at a time -- think back stacks or tab sets.</p><ul><li><p class="paragraph">Provides <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a>-based <a href="save.html">save</a> and <a href="restore.html">restore</a> methods for use from a container's <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onsaveinstancestate">View.onSaveInstanceState</a> and <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onrestoreinstancestate">View.onRestoreInstanceState</a> methods.</p></li><li><p class="paragraph">Also handles androidx <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> duties, via a wrapped instance of <a href="../../com.squareup.workflow1.ui.androidx/-workflow-saved-state-registry-aggregator/index.html">WorkflowSavedStateRegistryAggregator</a>. This means that container views using this class must call <a href="attach-to-parent-registry-owner.html">attachToParentRegistryOwner</a> and <a href="detach-from-parent-registry.html">detachFromParentRegistry</a> when they are <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onattachedtowindow">attached</a> and <a href="https://developer.android.com/reference/kotlin/android/view/View.html#ondetachedfromwindow">detached</a>, respectively.</p></li></ul></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-441532079%2FConstructors%2F-108279078" anchor-label="ViewStateCache" id="-441532079%2FConstructors%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-view-state-cache.html"><span>View</span><wbr><span>State</span><wbr><span><span>Cache</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-441532079%2FConstructors%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-view-state-cache.html"><span class="token function">ViewStateCache</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="1095103295%2FClasslikes%2F-108279078" anchor-label="Saved" id="1095103295%2FClasslikes%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-saved/index.html"><span><span>Saved</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1095103295%2FClasslikes%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="-saved/index.html">Saved</a> : <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-1251085837%2FFunctions%2F-108279078" anchor-label="attachToParentRegistryOwner" id="-1251085837%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="attach-to-parent-registry-owner.html"><span>attach</span><wbr><span>To</span><wbr><span>Parent</span><wbr><span>Registry</span><wbr><span><span>Owner</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1251085837%2FFunctions%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="attach-to-parent-registry-owner.html"><span class="token function">attachToParentRegistryOwner</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">parentOwner<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Must be called whenever the owning view is <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onattachedtowindow">attached to a window</a>. Must eventually be matched with a call to <a href="detach-from-parent-registry.html">detachFromParentRegistry</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1283448733%2FFunctions%2F-108279078" anchor-label="detachFromParentRegistry" id="-1283448733%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="detach-from-parent-registry.html"><span>detach</span><wbr><span>From</span><wbr><span>Parent</span><wbr><span><span>Registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1283448733%2FFunctions%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="detach-from-parent-registry.html"><span class="token function">detachFromParentRegistry</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Must be called whenever the owning view is <a href="https://developer.android.com/reference/kotlin/android/view/View.html#ondetachedfromwindow">detached from a window</a>. Must be matched with a call to <a href="attach-to-parent-registry-owner.html">attachToParentRegistryOwner</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1492566671%2FFunctions%2F-108279078" anchor-label="prune" id="-1492566671%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="prune.html"><span><span>prune</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1492566671%2FFunctions%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="prune.html"><span class="token function">prune</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">retaining<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">To be called when the set of hidden views changes but the visible view remains the same. Any cached view state held for renderings that are not <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">compatible</a> those in <a href="prune.html">retaining</a> will be dropped.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="937407604%2FFunctions%2F-108279078" anchor-label="restore" id="937407604%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="restore.html"><span><span>restore</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="937407604%2FFunctions%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="restore.html"><span class="token function">restore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">from<span class="token operator">: </span><a href="-saved/index.html">ViewStateCache.Saved</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Replaces the state of the receiver with that of <a href="restore.html">from</a>. Typical usage is to call this from a container view's <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onrestoreinstancestate">View.onRestoreInstanceState</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1157125194%2FFunctions%2F-108279078" anchor-label="save" id="1157125194%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="save.html"><span><span>save</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1157125194%2FFunctions%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="save.html"><span class="token function">save</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-saved/index.html">ViewStateCache.Saved</a></div><div class="brief "><p class="paragraph">Returns a <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a> copy of the internal state of the receiver, for use with a container view's <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onsaveinstancestate">View.onSaveInstanceState</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1087089107%2FFunctions%2F-108279078" anchor-label="update" id="1087089107%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="update.html"><span><span>update</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1087089107%2FFunctions%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="update.html"><span class="token function">update</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">retainedRenderings<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">oldHolderMaybe<span class="token operator">: </span><a href="../../com.squareup.workflow1.ui/-screen-view-holder/index.html">ScreenViewHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">newHolder<span class="token operator">: </span><a href="../../com.squareup.workflow1.ui/-screen-view-holder/index.html">ScreenViewHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

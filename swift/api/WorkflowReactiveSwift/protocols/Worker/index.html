@@ -504,7 +504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../../kotlin/api/gfmCollector" class="md-nav__link">
+      <a href="../../../../../kotlin/api/htmlMultiModule" class="md-nav__link">
         Kotlin 🔗
       </a>
     </li>
@@ -770,8 +770,6 @@
 
 <p><strong>PROTOCOL</strong></p>
 <h1 id="worker"><code>Worker</code><a class="headerlink" href="#worker" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">Worker</span><span class="p">:</span> <span class="n">AnyWorkflowConvertible</span> <span class="k">where</span> <span class="n">Rendering</span> <span class="p">==</span> <span class="nb">Void</span>
-</code></pre></div>
 <p>Workers define a unit of asynchronous work.</p>
 <p>During a render pass, a workflow can ask the context to await the result of a worker.</p>
 <p>When this occurs, the context checks to see if there is already a running worker of the same type.
@@ -779,12 +777,8 @@ If there is, and if the workers are &lsquo;equivalent&rsquo;, the context leaves
 <p>If there is not an existing worker of this type, the context will kick off the new worker (via <code>run</code>).</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="run"><code>run()</code><a class="headerlink" href="#run" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">run</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">SignalProducer</span><span class="p">&lt;</span><span class="n">Output</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span>
-</code></pre></div>
 <p>Returns a signal producer to execute the work represented by this worker.</p>
 <h3 id="isequivalentto"><code>isEquivalent(to:)</code><a class="headerlink" href="#isequivalentto" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">isEquivalent</span><span class="p">(</span><span class="n">to</span> <span class="n">otherWorker</span><span class="p">:</span> <span class="kc">Self</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span>
-</code></pre></div>
 <p>Returns <code>true</code> if the other worker should be considered equivalent to <code>self</code>. Equivalence should take into
 account whatever data is meaningful to the task. For example, a worker that loads a user account from a server
 would not be equivalent to another worker with a different user ID.</p>

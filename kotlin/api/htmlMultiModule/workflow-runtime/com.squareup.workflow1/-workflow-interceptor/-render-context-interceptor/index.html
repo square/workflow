@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>RenderContextInterceptor</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-runtime::com.squareup.workflow1/WorkflowInterceptor.RenderContextInterceptor///PointingToDeclaration//-1625139255">
+  <div class="breadcrumbs"><a href="../../../index.html">workflow-runtime</a><span class="delimiter">/</span><a href="../../index.html">com.squareup.workflow1</a><span class="delimiter">/</span><a href="../index.html">WorkflowInterceptor</a><span class="delimiter">/</span><span class="current">RenderContextInterceptor</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Render</span><wbr><span>Context</span><wbr><span><span>Interceptor</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">RenderContextInterceptor</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-runtime/src/commonMain/kotlin/com/squareup/workflow1/WorkflowInterceptor.kt#L135">source</a>)</span></span></div><p class="paragraph">Provides hooks for intercepting calls to a <a href="../../../../workflow-core/com.squareup.workflow1/-base-render-context/index.html">BaseRenderContext</a>, to be used from <a href="../on-render.html">onRender</a>.</p><p class="paragraph">For use by <a href="../on-render.html">onRender</a> methods that want to hook into action and side effect events. See documentation on methods for more information about the individual hooks:</p><ul><li><p class="paragraph"><a href="on-action-sent.html">RenderContextInterceptor.onActionSent</a></p></li><li><p class="paragraph"><a href="on-running-side-effect.html">RenderContextInterceptor.onRunningSideEffect</a></p></li></ul><p class="paragraph">E.g.:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">override fun &lt;P, S, O, R&gt; onRender(<br>  renderProps: P,<br>  renderState: S,<br>  proceed: (P, S, RenderContextInterceptor&lt;P, S, O&gt;) -&gt; R,<br>  session: WorkflowSession<br>): R = proceed(renderProps, renderState, object : RenderContextInterceptor&lt;P, S, O&gt; {<br>  override fun onActionSent(<br>    action: WorkflowAction&lt;P, S, O&gt;,<br>    proceed: (WorkflowAction&lt;P, S, O&gt;) -&gt; Unit<br>  ) {<br>    log("Action sent: $action")<br>    proceed(action)<br>  }<br><br>  override fun onRunningSideEffect(<br>    key: String,<br>    sideEffect: suspend () -&gt; Unit,<br>    proceed: (key: String, sideEffect: suspend () -&gt; Unit) -&gt; Unit<br>  ) {<br>    proceed(key) {<br>      log("Side effect started: $key")<br>      sideEffect()<br>      log("Side effect ended: $key")<br>    }<br>  }<br>})</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="1448249167%2FFunctions%2F-1625139255" anchor-label="onActionSent" id="1448249167%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-action-sent.html"><span>on</span><wbr><span>Action</span><wbr><span><span>Sent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1448249167%2FFunctions%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="on-action-sent.html"><span class="token function">onActionSent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow-action/index.html">WorkflowAction</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow-action/index.html">WorkflowAction</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Intercepts calls to <a href="../../../../workflow-core/com.squareup.workflow1/-sink/send.html">send</a> on the <a href="../../../../workflow-core/com.squareup.workflow1/-base-render-context/action-sink.html">BaseRenderContext.actionSink</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-66271292%2FFunctions%2F-1625139255" anchor-label="onRenderChild" id="-66271292%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-render-child.html"><span>on</span><wbr><span>Render</span><wbr><span><span>Child</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-66271292%2FFunctions%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render-child.html">CP</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render-child.html">CO</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render-child.html">CR</a><span class="token operator">&gt; </span><a href="on-render-child.html"><span class="token function">onRenderChild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">child<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render-child.html">CP</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render-child.html">CO</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render-child.html">CR</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">childProps<span class="token operator">: </span><a href="on-render-child.html">CP</a><span class="token punctuation">, </span></span><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">handler<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="on-render-child.html">CO</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow-action/index.html">WorkflowAction</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>child<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render-child.html">CP</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render-child.html">CO</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render-child.html">CR</a><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span>childProps<span class="token operator">: </span><a href="on-render-child.html">CP</a><span class="token punctuation">, </span><span class="token keyword"></span>key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span>handler<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="on-render-child.html">CO</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow-action/index.html">WorkflowAction</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="on-render-child.html">CR</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="on-render-child.html">CR</a></div><div class="brief "><p class="paragraph">Intercepts calls to <a href="../../../../workflow-core/com.squareup.workflow1/-base-render-context/render-child.html">BaseRenderContext.renderChild</a>, allowing the interceptor to wrap or replace the <a href="on-render-child.html">child</a> Workflow, its <a href="on-render-child.html">childProps</a>, <a href="on-render-child.html">key</a>, and the <a href="on-render-child.html">handler</a> function to be applied to the child's output.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1131626484%2FFunctions%2F-1625139255" anchor-label="onRunningSideEffect" id="-1131626484%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-running-side-effect.html"><span>on</span><wbr><span>Running</span><wbr><span>Side</span><wbr><span><span>Effect</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1131626484%2FFunctions%2F-1625139255"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="on-running-side-effect.html"><span class="token function">onRunningSideEffect</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">sideEffect<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span>sideEffect<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Intercepts calls to <a href="../../../../workflow-core/com.squareup.workflow1/-base-render-context/running-side-effect.html">BaseRenderContext.runningSideEffect</a>, allowing the interceptor to wrap or replace the <a href="on-running-side-effect.html">sideEffect</a> and its <a href="on-running-side-effect.html">key</a>. This could be used to prevent a side effect from running, or to augment it with further effects.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
