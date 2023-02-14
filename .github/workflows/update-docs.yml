@@ -66,7 +66,7 @@ jobs:
 
     # Docs dependencies
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.6
 
@@ -77,8 +77,9 @@ jobs:
         pip install -r requirements.txt
 
     - name: Set up JDK 11
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v2
       with:
+        distribution: 'zulu'
         java-version: 11
 
     # Build Swift docs
@@ -103,7 +104,7 @@ jobs:
         ./gradlew siteDokka --build-cache --quiet
 
         mkdir -p ../workflow/docs/kotlin/api
-        mv build/dokka/workflow ../workflow/docs/kotlin/api
+        mv build/dokka/htmlMultiModule ../workflow/docs/kotlin/api
 
     # Generate the mkdocs site
     - name: Generate site with mkdocs
