@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>WorkflowTestParams</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-testing-jvm::com.squareup.workflow1.testing/WorkflowTestParams/WorkflowTestParams/#com.squareup.workflow1.testing.WorkflowTestParams.StartMode[TypeParam(bounds=[kotlin.Any?])]#kotlin.Boolean/PointingToDeclaration//-1959099706">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-testing-jvm</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.testing</a><span class="delimiter">/</span><a href="index.html">WorkflowTestParams</a><span class="delimiter">/</span><span class="current">WorkflowTestParams</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Workflow</span><wbr><span>Test</span><wbr><span><span>Params</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="index.html">StateT</a><span class="token operator">&gt; </span><a href="-workflow-test-params.html"><span class="token function">WorkflowTestParams</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">startFrom<span class="token operator">: </span><a href="-start-mode/index.html">WorkflowTestParams.StartMode</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">StateT</a><span class="token operator">&gt;</span><span class="token operator"> = </span>StartFresh<span class="token punctuation">, </span></span><span class="parameter ">checkRenderIdempotence<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/WorkflowTestParams.kt#L25">source</a>)</span></span></div><h4 class="">Parameters</h4><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>start</span><wbr><span><span>From</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">How to start the workflow – see <a href="-start-mode/index.html">StartMode</a>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>check</span><wbr><span>Render</span><wbr><span><span>Idempotence</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">If true, every render method will be called multiple times, to help suss out any side effects that a render method is trying to perform. This parameter defaults to <code class="lang-kotlin">true</code> since the workflow contract is that <code class="lang-kotlin">render</code> will be called an arbitrary number of times for any given state, so performing side effects in <code class="lang-kotlin">render</code> will almost always result in bugs. It is recommended to leave this on, but if you need to debug a test and don't want to have to deal with the extra passes, you can temporarily set it to false.</p></div></div></div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

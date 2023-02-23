@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>AndroidOverlay</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.container/AndroidOverlay///PointingToDeclaration//-108279078">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.container</a><span class="delimiter">/</span><span class="current">AndroidOverlay</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Android</span><wbr><span><span>Overlay</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="index.html">AndroidOverlay</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator"> : </span><a href="index.html">AndroidOverlay</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a></div><p class="paragraph">Interface implemented by a rendering class to allow it to drive an Android UI via an appropriate <a href="../-overlay-dialog-factory/index.html">OverlayDialogFactory</a> implementation.</p><p class="paragraph">Note that you can mix this interface with others:</p><ul><li><p class="paragraph"><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-modal-overlay/index.html">ModalOverlay</a> to indicate that user input to covered views and dialogs should be blocked while this one is visible.</p></li><li><p class="paragraph"><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-screen-overlay/index.html">ScreenOverlay</a> for dialogs whose content is defined by a wrapped <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> instance. And in this case, also note <a href="../-screen-overlay-dialog-factory/index.html">ScreenOverlayDialogFactory</a>.</p></li></ul><p class="paragraph">This is the simplest way to introduce a <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> workflow driven UI, but using it requires your workflows code to reside in Android modules, instead of pure Kotlin. If this is a problem, or you need more flexibility for any other reason, you can use <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a> to bind your renderings to <a href="../-overlay-dialog-factory/index.html">OverlayDialogFactory</a> implementations at runtime. Also note that a <code class="lang-kotlin">ViewRegistry</code> entry will override the <a href="dialog-factory.html">dialogFactory</a> returned by an <a href="index.html">AndroidOverlay</a>.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="See also">See also</button></div>
+    <div class="tabs-section-body">
+      <h4 class="">See also</h4>
+      <div data-togglable="See also">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="See also"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div data-togglable="See also"><div class="table" data-togglable="See also"><div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="../../com.squareup.workflow1.ui/-android-screen/index.html"><span>Android</span><wbr><span><span>Screen</span></span></a></div></span></div><div></div></div></div></div></div></div></div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="1266215910%2FProperties%2F-108279078" anchor-label="dialogFactory" id="1266215910%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="dialog-factory.html"><span>dialog</span><wbr><span><span>Factory</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1266215910%2FProperties%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><a data-name="1266215910%2FProperties%2F-108279078" anchor-label="dialogFactory" id="1266215910%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="dialog-factory.html">dialogFactory</a><span class="token operator">: </span><a href="../-overlay-dialog-factory/index.html">OverlayDialogFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

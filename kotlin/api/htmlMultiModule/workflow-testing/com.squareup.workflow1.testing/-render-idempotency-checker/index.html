@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>RenderIdempotencyChecker</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-testing-jvm::com.squareup.workflow1.testing/RenderIdempotencyChecker///PointingToDeclaration//-1959099706">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-testing-jvm</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.testing</a><span class="delimiter">/</span><span class="current">RenderIdempotencyChecker</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Render</span><wbr><span>Idempotency</span><wbr><span><span>Checker</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">RenderIdempotencyChecker</a> : <a href="../../../workflow-core/com.squareup.workflow1/-workflow-interceptor/index.html">WorkflowInterceptor</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/RenderIdempotencyChecker.kt#L11">source</a>)</span></span></div><p class="paragraph">Intercepts the render pass of the root workflow and runs it twice to ensure that well-written unit tests catch side effects being incorrectly performed directly in the render method.</p><p class="paragraph">The first render pass is the real one, the second one is a no-op and child workflow renderings will be played back, in order, to their renderChild calls.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-127534148%2FFunctions%2F-1959099706" anchor-label="onInitialState" id="-127534148%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-127534148%2FFunctions%2F-1959099706"><span>on</span><wbr><span>Initial</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-127534148%2FFunctions%2F-1959099706"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html#-127534148%2FFunctions%2F-1959099706">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html#-127534148%2FFunctions%2F-1959099706">S</a><span class="token operator">&gt; </span><a href="index.html#-127534148%2FFunctions%2F-1959099706"><span class="token function">onInitialState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">props<span class="token operator">: </span><a href="index.html#-127534148%2FFunctions%2F-1959099706">P</a><span class="token punctuation">, </span></span><span class="parameter ">snapshot<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="index.html#-127534148%2FFunctions%2F-1959099706">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="index.html#-127534148%2FFunctions%2F-1959099706">S</a><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-workflow-interceptor/-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#-127534148%2FFunctions%2F-1959099706">S</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="153217055%2FFunctions%2F-1959099706" anchor-label="onPropsChanged" id="153217055%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#153217055%2FFunctions%2F-1959099706"><span>on</span><wbr><span>Props</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="153217055%2FFunctions%2F-1959099706"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html#153217055%2FFunctions%2F-1959099706">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html#153217055%2FFunctions%2F-1959099706">S</a><span class="token operator">&gt; </span><a href="index.html#153217055%2FFunctions%2F-1959099706"><span class="token function">onPropsChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">old<span class="token operator">: </span><a href="index.html#153217055%2FFunctions%2F-1959099706">P</a><span class="token punctuation">, </span></span><span class="parameter ">new<span class="token operator">: </span><a href="index.html#153217055%2FFunctions%2F-1959099706">P</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="index.html#153217055%2FFunctions%2F-1959099706">S</a><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="index.html#153217055%2FFunctions%2F-1959099706">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html#153217055%2FFunctions%2F-1959099706">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html#153217055%2FFunctions%2F-1959099706">S</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="index.html#153217055%2FFunctions%2F-1959099706">S</a><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-workflow-interceptor/-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#153217055%2FFunctions%2F-1959099706">S</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2011326312%2FFunctions%2F-1959099706" anchor-label="onRender" id="-2011326312%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="on-render.html"><span>on</span><wbr><span><span>Render</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2011326312%2FFunctions%2F-1959099706"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">O</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">R</a><span class="token operator">&gt; </span><a href="on-render.html"><span class="token function">onRender</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">renderProps<span class="token operator">: </span><a href="on-render.html">P</a><span class="token punctuation">, </span></span><span class="parameter ">renderState<span class="token operator">: </span><a href="on-render.html">S</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-base-render-context/index.html">BaseRenderContext</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">O</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="on-render.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../../workflow-core/com.squareup.workflow1/-workflow-interceptor/-render-context-interceptor/index.html">WorkflowInterceptor.RenderContextInterceptor</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="on-render.html">P</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="on-render.html">O</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="on-render.html">R</a><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-workflow-interceptor/-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="on-render.html">R</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1173293711%2FFunctions%2F-1959099706" anchor-label="onSessionStarted" id="1173293711%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1173293711%2FFunctions%2F-1959099706"><span>on</span><wbr><span>Session</span><wbr><span><span>Started</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1173293711%2FFunctions%2F-1959099706"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#1173293711%2FFunctions%2F-1959099706"><span class="token function">onSessionStarted</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">workflowScope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-workflow-interceptor/-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="94574022%2FFunctions%2F-1959099706" anchor-label="onSnapshotState" id="94574022%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#94574022%2FFunctions%2F-1959099706"><span>on</span><wbr><span>Snapshot</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="94574022%2FFunctions%2F-1959099706"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html#94574022%2FFunctions%2F-1959099706">S</a><span class="token operator">&gt; </span><a href="index.html#94574022%2FFunctions%2F-1959099706"><span class="token function">onSnapshotState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="index.html#94574022%2FFunctions%2F-1959099706">S</a><span class="token punctuation">, </span></span><span class="parameter ">proceed<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="index.html#94574022%2FFunctions%2F-1959099706">S</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">session<span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-workflow-interceptor/-workflow-session/index.html">WorkflowInterceptor.WorkflowSession</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a><span class="token operator">?</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
