@@ -61,7 +61,7 @@ In Swift, props are implicit as properties of the struct implementing Workflow.
 
 ??? faq "Kotlin: `StatefulWorkflow` vs `Workflow`"
     It is a common practice in Kotlin to divide types into two parts: an interface for public API,
-    and a class for private implementation. The Workflow library defines a [`Workflow`](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-workflow/)
+    and a class for private implementation. The Workflow library defines a [`Workflow`](/workflow/kotlin/api/htmlMultiModule/workflow-core/com.squareup.workflow1/-workflow/index.html)
     interface, which should be used as the type of properties and parameters by code that needs to
     refer to a particular `Workflow` interface. The `Workflow` interface contains a single method,
     which simply returns a `StatefulWorkflow` – a `Workflow` can be described as “anything that can
@@ -70,9 +70,9 @@ In Swift, props are implicit as properties of the struct implementing Workflow.
     The library also defines two abstract classes which define the contract for workflows and should
     be subclassed to implement your workflows:
 
-    - [**`StatefulWorkflow`**](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateful-workflow/)
+    - [**`StatefulWorkflow`**](/workflow/kotlin/api/htmlMultiModule/workflow-core/com.squareup.workflow1/-stateful-workflow/index.html)
       should be subclassed to implement Workflows that have [private state](#private-state).
-    - [**`StatelessWorkflow`**](/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateless-workflow/)
+    - [**`StatelessWorkflow`**](/workflow/kotlin/api/htmlMultiModule/workflow-core/com.squareup.workflow1/-stateless-workflow/index.html)
       should be subclassed to implement Workflows that _don't_ have any private state. See [Stateless Workflows](#stateless-workflows).
 
 Workflows have several responsibilities:
