@@ -17,11 +17,11 @@ jobs:
     name: Build mkdocs to validate mkdocs.yml
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.6
+          python-version: '3.10'
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
       - name: Install dependencies
@@ -33,7 +33,7 @@ jobs:
     name: Lint Markdown files
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Ruby 2.7
         uses: ruby/setup-ruby@v1
         with:
