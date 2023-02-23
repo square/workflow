@@ -504,7 +504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../../kotlin/api/gfmCollector" class="md-nav__link">
+      <a href="../../../../../kotlin/api/htmlMultiModule" class="md-nav__link">
         Kotlin 🔗
       </a>
     </li>
@@ -736,38 +736,12 @@
     assert(state:file:line:)
   </a>
   
-    <nav class="md-nav" aria-label="assert(state:file:line:)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
   <a href="#assertoutputfileline" class="md-nav__link">
     assert(output:file:line:)
   </a>
-  
-    <nav class="md-nav" aria-label="assert(output:file:line:)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -796,57 +770,21 @@
 
 <p><strong>EXTENSION</strong></p>
 <h1 id="workflowactiontester"><code>WorkflowActionTester</code><a class="headerlink" href="#workflowactiontester" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">WorkflowActionTester</span> <span class="k">where</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">:</span> <span class="nb">Equatable</span>
-</code></pre></div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="assertstatefileline"><code>assert(state:file:line:)</code><a class="headerlink" href="#assertstatefileline" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">assert</span><span class="p">(</span><span class="n">state</span> <span class="n">expectedState</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
-</code></pre></div>
 <p>Triggers a test failure if the current state does not match the given expected state</p>
 <ul>
 <li>Parameters:</li>
 <li>expectedState: The expected state</li>
 <li>returns: A tester containing the current state and output.</li>
 </ul>
-<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>expectedState</td>
-<td>The expected state</td>
-</tr>
-</tbody>
-</table>
 <h3 id="assertoutputfileline"><code>assert(output:file:line:)</code><a class="headerlink" href="#assertoutputfileline" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">assert</span><span class="p">(</span><span class="n">output</span> <span class="n">expectedOutput</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowActionTester</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">,</span> <span class="n">Action</span><span class="p">&gt;</span>
-</code></pre></div>
 <p>Triggers a test failure if the produced output does not match the given expected output</p>
 <ul>
 <li>Parameters:</li>
 <li>expectedState: The expected output</li>
 <li>returns: A tester containing the current state and output.</li>
 </ul>
-<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>expectedState</td>
-<td>The expected output</td>
-</tr>
-</tbody>
-</table>
 
               
             </article>

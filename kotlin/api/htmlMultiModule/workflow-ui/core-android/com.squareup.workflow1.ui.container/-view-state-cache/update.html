@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>update</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.container/ViewStateCache/update/#kotlin.collections.Collection[com.squareup.workflow1.ui.NamedScreen[*]]#com.squareup.workflow1.ui.ScreenViewHolder[com.squareup.workflow1.ui.NamedScreen[*]]?#com.squareup.workflow1.ui.ScreenViewHolder[com.squareup.workflow1.ui.NamedScreen[*]]/PointingToDeclaration//-108279078">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.container</a><span class="delimiter">/</span><a href="index.html">ViewStateCache</a><span class="delimiter">/</span><span class="current">update</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>update</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="update.html"><span class="token function">update</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">retainedRenderings<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">oldHolderMaybe<span class="token operator">: </span><a href="../../com.squareup.workflow1.ui/-screen-view-holder/index.html">ScreenViewHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">newHolder<span class="token operator">: </span><a href="../../com.squareup.workflow1.ui/-screen-view-holder/index.html">ScreenViewHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><span class="kdoc-tag"><h4 class="">Return</h4><p class="paragraph">true if <a href="update.html">newHolder</a> has been restored.</p></span><h4 class="">Parameters</h4><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>retained</span><wbr><span><span>Renderings</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the renderings to be considered hidden after this update. Any associated view state will be retained in the cache, possibly to be restored to newView on a succeeding call to his method. Any other cached view state will be dropped.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>old</span><wbr><span>Holder</span><wbr><span><span>Maybe</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the view that is being removed, if any, which is expected to be showing a <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a> rendering. If that rendering is <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">compatible with</a> a member of <a href="update.html">retainedRenderings</a>, its state will be <a href="../-back-stack-container/index.html#-888880737%2FFunctions%2F-108279078">saved</a>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>new</span><wbr><span><span>Holder</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the view that is about to be displayed, which must be showing a <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-named-screen/index.html">NamedScreen</a> rendering. If <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">compatible</a> view state is found in the cache, it is <a href="../-back-stack-container/index.html#-880525550%2FFunctions%2F-108279078">restored</a>.</p></div></div></div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

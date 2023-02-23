@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ComposeScreenViewFactory</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-ui-compose::com.squareup.workflow1.ui.compose/ComposeScreenViewFactory///PointingToDeclaration//232754475">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-ui-compose</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.compose</a><span class="delimiter">/</span><span class="current">ComposeScreenViewFactory</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Compose</span><wbr><span>Screen</span><wbr><span>View</span><wbr><span><span>Factory</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">ComposeScreenViewFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">RenderingT</a><span class="token operator"> : </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a><span class="token operator">&gt;</span> : <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory/index.html">ScreenViewFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">RenderingT</a><span class="token operator">&gt; </span></div><p class="paragraph">A <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory/index.html">ScreenViewFactory</a> that uses a <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html">Composable</a> function to display the rendering. It is the Compose-based analogue of <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-runner/index.html">ScreenViewRunner</a>.</p><p class="paragraph">Simple usage:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">class FooViewFactory : ComposeScreenViewFactory&lt;FooScreen&gt;() {<br>  override val type = FooScreen::class<br><br>  @Composable override fun Content(<br>    rendering: FooScreen,<br>    viewEnvironment: ViewEnvironment<br>  ) {<br>    Text(rendering.message)<br>  }<br>}<br><br>…<br><br>val viewRegistry = ViewRegistry(FooViewFactory, …)</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h2 class=""> Nesting child renderings</h2><p class="paragraph">Workflows can render other workflows, and renderings from one workflow can contain renderings from other workflows. These renderings may all be bound to their own <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory/index.html">ScreenViewFactory</a>s. Regular <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory/index.html">ScreenViewFactory</a>s and <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-runner/index.html">ScreenViewRunner</a>s use <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/index.html">WorkflowViewStub</a> to recursively show nested renderings using the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a>.</p><p class="paragraph">View factories defined using this function may also show nested renderings. Doing so is as simple as calling <a href="../../../../workflow-ui/compose/com.squareup.workflow1.ui.compose/index.html">WorkflowRendering</a> and passing in the nested rendering. See the kdoc on that function for an example.</p><p class="paragraph">Nested renderings will have access to any <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal.html">composition locals</a> defined in outer composable, even if there are legacy views in between them, as long as the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a> is propagated continuously between the two factories.</p><h2 class=""> Initializing Compose context</h2><p class="paragraph">Often all the <a href="../compose-screen-view-factory.html">composeScreenViewFactory</a> factories in an app need to share some context – for example, certain composition locals need to be provided, such as <code class="lang-kotlin">MaterialTheme</code>. To configure this shared context, call <a href="../with-composition-root.html">withCompositionRoot</a> on your top-level <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a>. The first time a <a href="../../../../workflow-ui/compose/com.squareup.workflow1.ui.compose/index.html">composeViewFactory</a> is used to show a rendering, its <a href="-content.html">Content</a> function will be wrapped with the <a href="../index.html#2122347671%2FClasslikes%2F232754475">CompositionRoot</a>. See the documentation on <a href="../index.html#2122347671%2FClasslikes%2F232754475">CompositionRoot</a> for more information.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-330313856%2FConstructors%2F232754475" anchor-label="ComposeScreenViewFactory" id="-330313856%2FConstructors%2F232754475" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:compose:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-compose-screen-view-factory.html"><span>Compose</span><wbr><span>Screen</span><wbr><span>View</span><wbr><span><span>Factory</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-330313856%2FConstructors%2F232754475"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-compose-screen-view-factory.html"><span class="token function">ComposeScreenViewFactory</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-830324911%2FFunctions%2F232754475" anchor-label="buildView" id="-830324911%2FFunctions%2F232754475" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:compose:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="build-view.html"><span>build</span><wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-830324911%2FFunctions%2F232754475"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="build-view.html"><span class="token function">buildView</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">initialRendering<span class="token operator">: </span><a href="index.html">RenderingT</a><span class="token punctuation">, </span></span><span class="parameter ">initialEnvironment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">container<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-holder/index.html">ScreenViewHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">RenderingT</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-431790289%2FFunctions%2F232754475" anchor-label="Content" id="-431790289%2FFunctions%2F232754475" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:compose:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-content.html"><span><span>Content</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-431790289%2FFunctions%2F232754475"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-content.html"><span class="token function">Content</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rendering<span class="token operator">: </span><a href="index.html">RenderingT</a><span class="token punctuation">, </span></span><span class="parameter ">viewEnvironment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The composable content of this <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory/index.html">ScreenViewFactory</a>. This method will be called any time <a href="-content.html">rendering</a> or <a href="-content.html">viewEnvironment</a> change. It is the Compose-based analogue of com.squareup.workflow1.ui.ScreenViewRunner.show.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="949846928%2FProperties%2F232754475" anchor-label="type" id="949846928%2FProperties%2F232754475" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:compose:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#949846928%2FProperties%2F232754475"><span><span>type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="949846928%2FProperties%2F232754475"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><a data-name="949846928%2FProperties%2F232754475" anchor-label="type" id="949846928%2FProperties%2F232754475" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="index.html#949846928%2FProperties%2F232754475">type</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">RenderingT</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

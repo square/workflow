@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ScreenOverlayDialogFactory</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.container/ScreenOverlayDialogFactory///PointingToDeclaration//-108279078">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.container</a><span class="delimiter">/</span><span class="current">ScreenOverlayDialogFactory</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Screen</span><wbr><span>Overlay</span><wbr><span>Dialog</span><wbr><span><span>Factory</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">ScreenOverlayDialogFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">S</a><span class="token operator"> : </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator"> : </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-screen-overlay/index.html">ScreenOverlay</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">S</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>type<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">O</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="../-overlay-dialog-factory/index.html">OverlayDialogFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt; </span></div><p class="paragraph">Extensible base implementation of <a href="../-overlay-dialog-factory/index.html">OverlayDialogFactory</a> for <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-screen-overlay/index.html">ScreenOverlay</a> types. Also serves as the default factory for <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-full-screen-overlay/index.html">FullScreenOverlay</a>. (Use a custom <a href="../-overlay-dialog-factory-finder/index.html">OverlayDialogFactoryFinder</a> to customize the presentation of <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-full-screen-overlay/index.html">FullScreenOverlay</a>.)</p><p class="paragraph">Dialogs built by this class are compatible with <a href="../../com.squareup.workflow1.ui/back-pressed-handler.html">View.backPressedHandler</a>, and honor the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay-area/index.html">OverlayArea</a> and <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-covered-by-modal/index.html">CoveredByModal</a> values placed in the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a> by the standard <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-body-and-overlays-screen/index.html">BodyAndOverlaysScreen</a> container.</p><h2 class=""> Details of <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> management</h2><p class="paragraph">There is a lot of machinery in play to to provide control over the placement of <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> windows, and to ensure that <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-modal-overlay/index.html">ModalOverlay</a> dialogs behave as expected (i.e., that events in the Activity window are blocked the instant a modal <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> is shown).</p><p class="paragraph">For placement, consider a layout where we want the option to show a tutorial bar below the main UI.</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">+-------------------------+
+|                         |
+|  BodyAndOverlaysScreen  |
+|                         |
++-------------------------+
+|    TutorialBarScreen    |
++-------------------------+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Suppose we have custom dialogs that we want to cover the entire screen, except when tutorial is running -- the tutorial bar should always be visible, and should always be able to field touch events.</p><p class="paragraph">To support this case we provide the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay-area/index.html">OverlayArea</a> value in the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a>. When a <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-body-and-overlays-screen/index.html">BodyAndOverlaysScreen</a> includes <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-body-and-overlays-screen/overlays.html">overlays</a>, the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay-area/index.html">OverlayArea</a> holds the bounds of the view created to display the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-body-and-overlays-screen/body.html">body screen</a>. Well behaved dialogs created to display those <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> renderings look for <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay-area/index.html">OverlayArea</a> value and restrict themselves to the reported bounds.</p><p class="paragraph">Another <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a> value is maintained to support modality: <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-covered-by-modal/index.html">CoveredByModal</a>. When this value is true, it indicates that a dialog window driven by a <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-modal-overlay/index.html">ModalOverlay</a> is in play over the view, or is about to be, and so touch and click events should be ignored. This is necessary because there is a long period after a call to <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html#show">Dialog.show</a> before the new Dialog window will start intercepting events -- an issue that has preoccupied Square for a <a href="https://stackoverflow.com/questions/2886407/dealing-with-rapid-tapping-on-buttons">very long time</a>.)</p><p class="paragraph">The default container view driven by <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-body-and-overlays-screen/index.html">BodyAndOverlaysScreen</a> automatically honors <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-covered-by-modal/index.html">CoveredByModal</a>. Dialog windows built by <a href="index.html">ScreenOverlayDialogFactory</a> also honor <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-covered-by-modal/index.html">CoveredByModal</a> when there is a <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-modal-overlay/index.html">ModalOverlay</a>-driven dialog with a higher Z index in play. All of this is driven by the <a href="../-layered-dialog-sessions/index.html">LayeredDialogSessions</a> support class, which can also be used to create custom <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-body-and-overlays-screen/index.html">BodyAndOverlaysScreen</a> container views. To put such a custom container in play, see <a href="../-overlay-dialog-factory-finder/index.html">OverlayDialogFactoryFinder</a>.</p><p class="paragraph">Modality also has implications for the handling of the Android back button. While a modal dialog is shown, <a href="../../com.squareup.workflow1.ui/back-pressed-handler.html">back press handlers</a> on covered views and windows should not fire. <a href="index.html">ScreenOverlayDialogFactory</a> takes care of that requirement by default, presuming that your app uses Jetpack <a href="https://developer.android.com/reference/kotlin/androidx/activity/OnBackPressedDispatcher.html">OnBackPressedDispatcher</a>. If that is not the case, override <a href="build-dialog-with-content.html">buildDialogWithContent</a> and provide an alternative <code class="lang-kotlin">onBackPressed</code> implementation when you call <a href="../-overlay-dialog-holder/index.html">OverlayDialogHolder</a>.</p><p class="paragraph">It is important to note that the modal behavior described here is all keyed to the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-modal-overlay/index.html">ModalOverlay</a> interface, not its parent type <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a>. Rendering types that declare the latter but not the former can be used to create dialogs for non-modal windows like toasts and tool tips.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-1123785609%2FConstructors%2F-108279078" anchor-label="ScreenOverlayDialogFactory" id="-1123785609%2FConstructors%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-screen-overlay-dialog-factory.html"><span>Screen</span><wbr><span>Overlay</span><wbr><span>Dialog</span><wbr><span><span>Factory</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1123785609%2FConstructors%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator"> : </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-screen-overlay/index.html">ScreenOverlay</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">S</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span><a href="-screen-overlay-dialog-factory.html"><span class="token function">ScreenOverlayDialogFactory</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">O</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="1957290060%2FFunctions%2F-108279078" anchor-label="buildDialog" id="1957290060%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="build-dialog.html"><span>build</span><wbr><span><span>Dialog</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1957290060%2FFunctions%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="build-dialog.html"><span class="token function">buildDialog</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">initialRendering<span class="token operator">: </span><a href="index.html">O</a><span class="token punctuation">, </span></span><span class="parameter ">initialEnvironment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-overlay-dialog-holder/index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Creates the <a href="../../com.squareup.workflow1.ui/-screen-view-holder/index.html">ScreenViewHolder</a> for <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-screen-overlay/content.html">initialRendering.content</a> and then calls <a href="build-dialog-with-content.html">buildDialogWithContent</a> to create <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> in an <a href="../-overlay-dialog-holder/index.html">OverlayDialogHolder</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1065101895%2FFunctions%2F-108279078" anchor-label="buildDialogWithContent" id="-1065101895%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="build-dialog-with-content.html"><span>build</span><wbr><span>Dialog</span><wbr><span>With</span><wbr><span><span>Content</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1065101895%2FFunctions%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="build-dialog-with-content.html"><span class="token function">buildDialogWithContent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">initialRendering<span class="token operator">: </span><a href="index.html">O</a><span class="token punctuation">, </span></span><span class="parameter ">initialEnvironment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">, </span></span><span class="parameter ">content<span class="token operator">: </span><a href="../../com.squareup.workflow1.ui/-screen-view-holder/index.html">ScreenViewHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">S</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-overlay-dialog-holder/index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">O</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Build the <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a>, using <a href="build-dialog-with-content.html">content</a> as its <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html#setcontentview">contentView</a>. Open to allow customization, typically theming. Subclasses need not call <code class="lang-kotlin">super</code>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="260779893%2FProperties%2F-108279078" anchor-label="type" id="260779893%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="type.html"><span><span>type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="260779893%2FProperties%2F-108279078"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><a data-name="260779893%2FProperties%2F-108279078" anchor-label="type" id="260779893%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="type.html">type</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">O</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>StartFromWorkflowSnapshot</title>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="workflow-testing-jvm::com.squareup.workflow1.testing/WorkflowTestParams.StartMode.StartFromWorkflowSnapshot///PointingToDeclaration//-1959099706">
+  <div class="breadcrumbs"><a href="../../../../index.html">workflow-testing-jvm</a><span class="delimiter">/</span><a href="../../../index.html">com.squareup.workflow1.testing</a><span class="delimiter">/</span><a href="../../index.html">WorkflowTestParams</a><span class="delimiter">/</span><a href="../index.html">StartMode</a><span class="delimiter">/</span><span class="current">StartFromWorkflowSnapshot</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Start</span><wbr><span>From</span><wbr><span>Workflow</span><wbr><span><span>Snapshot</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">StartFromWorkflowSnapshot</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>snapshot<span class="token operator">: </span><a href="../../../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a></span></span><span class="token punctuation">)</span> : <a href="../index.html">WorkflowTestParams.StartMode</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt; </span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/WorkflowTestParams.kt#L45">source</a>)</span></span></div><p class="paragraph">Starts the workflow from its initial state (as specified by <a href="../../../../../workflow-core/com.squareup.workflow1/-stateful-workflow/initial-state.html">initial state</a>), with a non-null snapshot.  Only applies to <a href="../../../../../workflow-core/com.squareup.workflow1/-stateless-workflow/index.html">StatefulWorkflow</a>s.</p><p class="paragraph">This differs from <a href="../-start-from-complete-snapshot/index.html">StartFromCompleteSnapshot</a> because it represents only the snapshot for the root workflow, without any of the snapshots of its children or other bookkeeping data added by the workflow runtime.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section-body">
+      <h4 class="">Parameters</h4>
+      <div data-togglable="Parameters">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>snapshot</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">A <a href="../../../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a> that can be directly parsed by a workflow's <code class="lang-kotlin">initialState</code> method. For workflow trees, this is only the snapshot of the <i>root</i> workflow, as returned by <a href="../../../../../workflow-core/com.squareup.workflow1/-stateful-workflow/snapshot-state.html">snapshotState</a>. To test with a complete snapshot of the entire workflow tree, use <a href="../-start-from-complete-snapshot/index.html">StartFromCompleteSnapshot</a>.</p></div></div></div></div></div></div></div></div></div>
+      </div>
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-440285329%2FConstructors%2F-1959099706" anchor-label="StartFromWorkflowSnapshot" id="-440285329%2FConstructors%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-start-from-workflow-snapshot.html"><span>Start</span><wbr><span>From</span><wbr><span>Workflow</span><wbr><span><span>Snapshot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-440285329%2FConstructors%2F-1959099706"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-start-from-workflow-snapshot.html"><span class="token function">StartFromWorkflowSnapshot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">snapshot<span class="token operator">: </span><a href="../../../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-1880010083%2FProperties%2F-1959099706" anchor-label="snapshot" id="-1880010083%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="snapshot.html"><span><span>snapshot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1880010083%2FProperties%2F-1959099706"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="-1880010083%2FProperties%2F-1959099706" anchor-label="snapshot" id="-1880010083%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="snapshot.html">snapshot</a><span class="token operator">: </span><a href="../../../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
