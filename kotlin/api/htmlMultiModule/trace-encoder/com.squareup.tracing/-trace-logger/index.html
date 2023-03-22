@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":trace-encoder:dokkaHtmlPartial/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,27 +49,29 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="trace-encoder::com.squareup.tracing/TraceLogger///PointingToDeclaration//-1892351546">
+<div class="main-content" data-page-type="classlike" id="content" pageids="trace-encoder::com.squareup.tracing/TraceLogger///PointingToDeclaration//-1892351546">
   <div class="breadcrumbs"><a href="../../index.html">trace-encoder</a><span class="delimiter">/</span><a href="../index.html">com.squareup.tracing</a><span class="delimiter">/</span><span class="current">TraceLogger</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Trace</span><wbr><span><span>Logger</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">TraceLogger</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/trace-encoder/src/main/java/com/squareup/tracing/TraceLogger.kt#L3">source</a>)</span></span></div><p class="paragraph"><a href="log.html">Logs</a> <a href="../-trace-event/index.html">TraceEvent</a>s to a <a href="../-trace-encoder/index.html">TraceEncoder</a> under a given process and thread name.</p><p class="paragraph">Create with <a href="../-trace-encoder/create-logger.html">TraceEncoder.createLogger</a>.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">TraceLogger</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/trace-encoder/src/main/java/com/squareup/tracing/TraceLogger.kt#L8">source</a>)</span></span></div><p class="paragraph"><a href="log.html">Logs</a> <a href="../-trace-event/index.html">TraceEvent</a>s to a <a href="../-trace-encoder/index.html">TraceEncoder</a> under a given process and thread name.</p><p class="paragraph">Create with <a href="../-trace-encoder/create-logger.html">TraceEncoder.createLogger</a>.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-430197252%2FFunctions%2F-1892351546" anchor-label="log" id="-430197252%2FFunctions%2F-1892351546" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="log.html"><span><span>log</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-430197252%2FFunctions%2F-1892351546" anchor-label="log" id="-430197252%2FFunctions%2F-1892351546" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="log.html"><span><span>log</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-430197252%2FFunctions%2F-1892351546"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="log.html"><span class="token function">log</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><a href="../-trace-event/index.html">TraceEvent</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Tags event with the current timestamp and then enqueues it to be written to the trace file.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="log.html"><span class="token function">log</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">eventBatch<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-trace-event/index.html">TraceEvent</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Tags all events with the current timestamp and then enqueues them to be written to the trace file.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="log.html"><span class="token function">log</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><a href="../-trace-event/index.html">TraceEvent</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Tags event with the current timestamp and then enqueues it to be written to the trace file.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="log.html"><span class="token function">log</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">eventBatch<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-trace-event/index.html">TraceEvent</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Tags all events with the current timestamp and then enqueues them to be written to the trace file.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -80,6 +85,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

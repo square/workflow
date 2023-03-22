@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-config:config-android:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,27 +49,29 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-config-android::com.squareup.workflow1.config/AndroidRuntimeConfigTools.Companion///PointingToDeclaration//-718288571">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-config-android::com.squareup.workflow1.config/AndroidRuntimeConfigTools.Companion///PointingToDeclaration//-718288571">
   <div class="breadcrumbs"><a href="../../../index.html">workflow-config-android</a><span class="delimiter">/</span><a href="../../index.html">com.squareup.workflow1.config</a><span class="delimiter">/</span><a href="../index.html">AndroidRuntimeConfigTools</a><span class="delimiter">/</span><span class="current">Companion</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Companion</span></span></h1>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-config:config-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">Companion</a></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="411949014%2FFunctions%2F-718288571" anchor-label="getAppWorkflowRuntimeConfig" id="411949014%2FFunctions%2F-718288571" data-filterable-set=":workflow-config:config-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-config:config-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-config:config-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="get-app-workflow-runtime-config.html"><span>get</span><wbr><span>App</span><wbr><span>Workflow</span><wbr><span>Runtime</span><wbr><span><span>Config</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="411949014%2FFunctions%2F-718288571" anchor-label="getAppWorkflowRuntimeConfig" id="411949014%2FFunctions%2F-718288571" data-filterable-set=":workflow-config:config-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-config:config-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-config:config-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-app-workflow-runtime-config.html"><span>get</span><wbr><span>App</span><wbr><span>Workflow</span><wbr><span>Runtime</span><wbr><span><span>Config</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="411949014%2FFunctions%2F-718288571"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-config:config-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../../workflow-core/com.squareup.workflow1/-workflow-experimental-runtime/index.html"><span class="token annotation builtin">WorkflowExperimentalRuntime</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-app-workflow-runtime-config.html"><span class="token function">getAppWorkflowRuntimeConfig</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../workflow-core/com.squareup.workflow1/-runtime-config/index.html">RuntimeConfig</a></div><div class="brief "><p class="paragraph">Helper for Configuration for the workflow runtime in an application. This allows one to specify a project property from the gradle build to choose a runtime. e.g. add "-Pworkflow.runtime=timeout" in your gradle build to build the timeout runtime into the application.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-config:config-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../../workflow-core/com.squareup.workflow1/-workflow-experimental-runtime/index.html"><span class="token annotation builtin">WorkflowExperimentalRuntime</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-app-workflow-runtime-config.html"><span class="token function">getAppWorkflowRuntimeConfig</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../workflow-core/com.squareup.workflow1/-runtime-config/index.html">RuntimeConfig</a></div><div class="brief "><p class="paragraph">Helper for Configuration for the workflow runtime in an application. This allows one to specify a project property from the gradle build to choose a runtime. e.g. add "-Pworkflow.runtime=timeout" in your gradle build to build the timeout runtime into the application.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -80,6 +85,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

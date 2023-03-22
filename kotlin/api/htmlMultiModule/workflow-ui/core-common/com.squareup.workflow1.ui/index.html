@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-common:dokkaHtmlPartial/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,253 +49,287 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-ui-core-common-jvm::com.squareup.workflow1.ui////PointingToDeclaration//-917155079">
+<div class="main-content" data-page-type="package" id="content" pageids="workflow-ui-core-common-jvm::com.squareup.workflow1.ui////PointingToDeclaration//-917155079">
   <div class="breadcrumbs"><a href="../index.html">workflow-ui-core-common-jvm</a><span class="delimiter">/</span><span class="current">com.squareup.workflow1.ui</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="-1576460611%2FClasslikes%2F-917155079" anchor-label="AsScreen" id="-1576460611%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-as-screen/index.html"><span>As</span><wbr><span><span>Screen</span></span></a></div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1576460611%2FClasslikes%2F-917155079" anchor-label="AsScreen" id="-1576460611%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-as-screen/index.html"><span>As</span><wbr><span><span>Screen</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1576460611%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="-as-screen/index.html">AsScreen</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-as-screen/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>rendering<span class="token operator">: </span><a href="-as-screen/index.html">W</a></span></span><span class="token punctuation">)</span> : <a href="-screen/index.html">Screen</a>, <a href="-compatible/index.html">Compatible</a></div><div class="brief "><p class="paragraph">Provides backward compatibility for legacy non-<a href="-screen/index.html">Screen</a> renderings. This is a migration tool for code bases that are still adopting the <code class="lang-kotlin">Screen</code> and <code class="lang-kotlin">Overlay</code> interfaces, and will be deprecated and deleted sooner or later.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="-as-screen/index.html">AsScreen</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-as-screen/index.html">C</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>content<span class="token operator">: </span><a href="-as-screen/index.html">C</a></span></span><span class="token punctuation">)</span> : <a href="-screen/index.html">Screen</a>, <a href="-wrapper/index.html">Wrapper</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-as-screen/index.html">C</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Provides backward compatibility for legacy non-<a href="-screen/index.html">Screen</a> renderings. This is a migration tool for code bases that are still adopting the <code class="lang-kotlin">Screen</code> and <code class="lang-kotlin">Overlay</code> interfaces, and will be deprecated and deleted sooner or later.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1944794777%2FClasslikes%2F-917155079" anchor-label="Compatible" id="-1944794777%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-compatible/index.html"><span><span>Compatible</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-compatible/index.html"><span><span>Compatible</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1944794777%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-compatible/index.html">Compatible</a></div><div class="brief "><p class="paragraph">Implemented by objects whose <a href="compatible.html">compatibility</a> requires more nuance than just being of the same type.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-compatible/index.html">Compatible</a></div><div class="brief "><p class="paragraph">Implemented by objects whose <a href="compatible.html">compatibility</a> requires more nuance than just being of the same type.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+<a data-name="-383771642%2FClasslikes%2F-917155079" anchor-label="Container" id="-383771642%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-container/index.html"><span><span>Container</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-383771642%2FClasslikes%2F-917155079"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-container/index.html">Container</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-container/index.html">BaseT</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="-container/index.html">ContentT</a><span class="token operator"> : </span><a href="-container/index.html">BaseT</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A rendering type comprised of a set of other renderings.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-1059988862%2FClasslikes%2F-917155079" anchor-label="NamedScreen" id="-1059988862%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-named-screen/index.html"><span>Named</span><wbr><span><span>Screen</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-named-screen/index.html"><span>Named</span><wbr><span><span>Screen</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1059988862%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-named-screen/index.html">W</a><span class="token operator"> : </span><a href="-screen/index.html">Screen</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>wrapped<span class="token operator">: </span><a href="-named-screen/index.html">W</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-screen/index.html">Screen</a>, <a href="-compatible/index.html">Compatible</a></div><div class="brief "><p class="paragraph">Allows <a href="-screen/index.html">Screen</a> renderings that do not implement <a href="-compatible/index.html">Compatible</a> themselves to be distinguished by more than just their type. Instances are <a href="compatible.html">compatible</a> if they have the same name and have <a href="-named-screen/wrapped.html">compatible</a> fields.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-named-screen/index.html">C</a><span class="token operator"> : </span><a href="-screen/index.html">Screen</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>content<span class="token operator">: </span><a href="-named-screen/index.html">C</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-screen/index.html">Screen</a>, <a href="-wrapper/index.html">Wrapper</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-screen/index.html">Screen</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-named-screen/index.html">C</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Allows <a href="-screen/index.html">Screen</a> renderings that do not implement <a href="-compatible/index.html">Compatible</a> themselves to be distinguished by more than just their type. Instances are <a href="compatible.html">compatible</a> if they have the same name and have <a href="-named-screen/content.html">compatible</a> fields.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-274189361%2FClasslikes%2F-917155079" anchor-label="Screen" id="-274189361%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-screen/index.html"><span><span>Screen</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-screen/index.html"><span><span>Screen</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-274189361%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-screen/index.html">Screen</a></div><div class="brief "><p class="paragraph">Marker interface implemented by renderings that map to a UI system's 2d view class.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-screen/index.html">Screen</a></div><div class="brief "><p class="paragraph">Marker interface implemented by renderings that map to a UI system's 2d view class.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1223366606%2FClasslikes%2F-917155079" anchor-label="TextController" id="-1223366606%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-text-controller/index.html"><span>Text</span><wbr><span><span>Controller</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-text-controller/index.html"><span>Text</span><wbr><span><span>Controller</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1223366606%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-text-controller/index.html">TextController</a></div><div class="brief "><p class="paragraph">Helper class for keeping a workflow in sync with editable text in a UI, without interfering with the user's typing.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-text-controller/index.html">TextController</a></div><div class="brief "><p class="paragraph">Helper class for keeping a workflow in sync with editable text in a UI, without interfering with the user's typing.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1147469433%2FClasslikes%2F-917155079" anchor-label="ViewEnvironment" id="1147469433%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-view-environment/index.html"><span>View</span><wbr><span><span>Environment</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-view-environment/index.html"><span>View</span><wbr><span><span>Environment</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1147469433%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="-view-environment/index.html">ViewEnvironment</a></div><div class="brief "><p class="paragraph">Immutable map of values that a parent view can pass down to its children. Allows containers to give descendants information about the context in which they're drawing.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="-view-environment/index.html">ViewEnvironment</a></div><div class="brief "><p class="paragraph">Immutable map of values that a parent view can pass down to its children. Allows containers to give descendants information about the context in which they're drawing.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1415546998%2FClasslikes%2F-917155079" anchor-label="ViewEnvironmentKey" id="-1415546998%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-view-environment-key/index.html"><span>View</span><wbr><span>Environment</span><wbr><span><span>Key</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-view-environment-key/index.html"><span>View</span><wbr><span>Environment</span><wbr><span><span>Key</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1415546998%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-view-environment-key/index.html">ViewEnvironmentKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-view-environment-key/index.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-view-environment-key/index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Defines a value that can be provided by a <a href="-view-environment/index.html">ViewEnvironment</a> map, specifying its <a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment-key/type.html">type</a> and <a href="-view-environment-key/default.html">default</a> value.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-view-environment-key/index.html">ViewEnvironmentKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-view-environment-key/index.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-view-environment-key/index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Defines a value that can be provided by a <a href="-view-environment/index.html">ViewEnvironment</a> map, specifying its <a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment-key/type.html">type</a> and <a href="-view-environment-key/default.html">default</a> value.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="417657%2FClasslikes%2F-917155079" anchor-label="ViewRegistry" id="417657%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-view-registry/index.html"><span>View</span><wbr><span><span>Registry</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-view-registry/index.html"><span>View</span><wbr><span><span>Registry</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="417657%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">The <a href="-view-environment/index.html">ViewEnvironment</a> service that can be used to display the stream of renderings from a workflow tree as View instances. This is the engine behind AndroidViewRendering, WorkflowViewStub and ViewFactory. Most apps can ignore <a href="-view-registry/index.html">ViewRegistry</a> as an implementation detail, by using AndroidViewRendering to tie their rendering classes to view code.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">The <a href="-view-environment/index.html">ViewEnvironment</a> service that can be used to display the stream of renderings from a workflow tree as View instances. This is the engine behind AndroidViewRendering, WorkflowViewStub and ViewFactory. Most apps can ignore <a href="-view-registry/index.html">ViewRegistry</a> as an implementation detail, by using AndroidViewRendering to tie their rendering classes to view code.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-738461336%2FClasslikes%2F-917155079" anchor-label="WorkflowUiExperimentalApi" id="-738461336%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-workflow-ui-experimental-api/index.html"><span>Workflow</span><wbr><span>Ui</span><wbr><span>Experimental</span><wbr><span><span>Api</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-workflow-ui-experimental-api/index.html"><span>Workflow</span><wbr><span>Ui</span><wbr><span>Experimental</span><wbr><span><span>Api</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-738461336%2FClasslikes%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-target/index.html"><span class="token annotation builtin">Target</span></a><span class="token punctuation">(</span><span>allowedTargets<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-c-l-a-s-s/index.html">AnnotationTarget.CLASS</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-p-r-o-p-e-r-t-y/index.html">AnnotationTarget.PROPERTY</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-f-u-n-c-t-i-o-n/index.html">AnnotationTarget.FUNCTION</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-t-y-p-e-a-l-i-a-s/index.html">AnnotationTarget.TYPEALIAS</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">annotation class </span><a href="-workflow-ui-experimental-api/index.html">WorkflowUiExperimentalApi</a></div><div class="brief "><p class="paragraph">Marks Workflow user interface APIs which are still in flux. Annotated code SHOULD NOT be used in library code or app code that you are not prepared to update when changing even minor workflow versions. Proceed with caution, and be ready to have the rug pulled out from under you.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-target/index.html"><span class="token annotation builtin">Target</span></a><span class="token punctuation">(</span><span>allowedTargets<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-c-l-a-s-s/index.html">AnnotationTarget.CLASS</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-p-r-o-p-e-r-t-y/index.html">AnnotationTarget.PROPERTY</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-f-u-n-c-t-i-o-n/index.html">AnnotationTarget.FUNCTION</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-t-y-p-e-a-l-i-a-s/index.html">AnnotationTarget.TYPEALIAS</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">annotation class </span><a href="-workflow-ui-experimental-api/index.html">WorkflowUiExperimentalApi</a></div><div class="brief "><p class="paragraph">Marks Workflow user interface APIs which are still in flux. Annotated code SHOULD NOT be used in library code or app code that you are not prepared to update when changing even minor workflow versions. Proceed with caution, and be ready to have the rug pulled out from under you.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1764561332%2FClasslikes%2F-917155079" anchor-label="Wrapper" id="1764561332%2FClasslikes%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-wrapper/index.html"><span><span>Wrapper</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1764561332%2FClasslikes%2F-917155079"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-wrapper/index.html">Wrapper</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-wrapper/index.html">BaseT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-wrapper/index.html">ContentT</a><span class="token operator"> : </span><a href="-wrapper/index.html">BaseT</a><span class="token operator">&gt;</span> : <a href="-container/index.html">Container</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-wrapper/index.html">BaseT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-wrapper/index.html">ContentT</a><span class="token operator">&gt; </span>, <a href="-compatible/index.html">Compatible</a></div><div class="brief "><p class="paragraph">A <a href="-container/index.html">Container</a> rendering that wraps exactly one other rendering, its <a href="-wrapper/content.html">content</a>. These are typically used to "add value" to the <a href="-wrapper/content.html">content</a>, e.g. an <a href="../com.squareup.workflow1.ui.container/-environment-screen/index.html">EnvironmentScreen</a> that allows changes to be made to the <a href="-view-environment/index.html">ViewEnvironment</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="60271239%2FFunctions%2F-917155079" anchor-label="asScreen" id="60271239%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="as-screen.html"><span>as</span><wbr><span><span>Screen</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="60271239%2FFunctions%2F-917155079" anchor-label="asScreen" id="60271239%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="as-screen.html"><span>as</span><wbr><span><span>Screen</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="60271239%2FFunctions%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="as-screen.html"><span class="token function">asScreen</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rendering<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-screen/index.html">Screen</a></div><div class="brief "><p class="paragraph">Ensures <a href="as-screen.html">rendering</a> implements <a href="-screen/index.html">Screen</a>, wrapping it in an <a href="-as-screen/index.html">AsScreen</a> if necessary.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="as-screen.html"><span class="token function">asScreen</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rendering<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-screen/index.html">Screen</a></div><div class="brief "><p class="paragraph">Ensures <a href="as-screen.html">rendering</a> implements <a href="-screen/index.html">Screen</a>, wrapping it in an <a href="-as-screen/index.html">AsScreen</a> if necessary.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1339109201%2FFunctions%2F-917155079" anchor-label="compatible" id="-1339109201%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="compatible.html"><span><span>compatible</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="compatible.html"><span><span>compatible</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1339109201%2FFunctions%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="compatible.html"><span class="token function">compatible</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">me<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span></span><span class="parameter ">you<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Normally returns true if <a href="compatible.html">me</a> and <a href="compatible.html">you</a> are instances of the same class. If that common class implements <a href="-compatible/index.html">Compatible</a>, both instances must also have the same <a href="-compatible/compatibility-key.html">Compatible.compatibilityKey</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="compatible.html"><span class="token function">compatible</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">me<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span></span><span class="parameter ">you<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Normally returns true if <a href="compatible.html">me</a> and <a href="compatible.html">you</a> are instances of the same class. If that common class implements <a href="-compatible/index.html">Compatible</a>, both instances must also have the same <a href="-compatible/compatibility-key.html">Compatible.compatibilityKey</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1642577553%2FFunctions%2F-917155079" anchor-label="get" id="1642577553%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="get.html"><span><span>get</span></span></a></div>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get.html"><span><span>get</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1642577553%2FFunctions%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">inline operator </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="get.html">RenderingT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="-view-registry/index.html">ViewRegistry</a><span class="token punctuation">.</span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">renderingType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="get.html">RenderingT</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/-entry/index.html">ViewRegistry.Entry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="get.html">RenderingT</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">inline operator </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="get.html">RenderingT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="-view-registry/index.html">ViewRegistry</a><span class="token punctuation">.</span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">renderingType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="get.html">RenderingT</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/-entry/index.html">ViewRegistry.Entry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="get.html">RenderingT</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="69723454%2FFunctions%2F-917155079" anchor-label="merge" id="69723454%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="merge.html"><span><span>merge</span></span></a></div>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="merge.html"><span><span>merge</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="69723454%2FFunctions%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">infix </span><span class="token keyword">fun </span><a href="-view-registry/index.html">ViewRegistry</a><span class="token punctuation">.</span><a href="merge.html"><span class="token function">merge</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">Combines the receiver with <a href="merge.html">other</a>. If there are conflicting entries, those in <a href="merge.html">other</a> are preferred.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">infix </span><span class="token keyword">fun </span><a href="-view-registry/index.html">ViewRegistry</a><span class="token punctuation">.</span><a href="merge.html"><span class="token function">merge</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">Combines the receiver with <a href="merge.html">other</a>. If there are conflicting entries, those in <a href="merge.html">other</a> are preferred.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1673873756%2FFunctions%2F-917155079" anchor-label="plus" id="-1673873756%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="plus.html"><span><span>plus</span></span></a></div>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="plus.html"><span><span>plus</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1673873756%2FFunctions%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">.</span><a href="plus.html"><span class="token function">plus</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">registry<span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-environment/index.html">ViewEnvironment</a></div><br><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="-view-registry/index.html">ViewRegistry</a><span class="token punctuation">.</span><a href="plus.html"><span class="token function">plus</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">entry<span class="token operator">: </span><a href="-view-registry/-entry/index.html">ViewRegistry.Entry</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">Transforms the receiver to add <a href="plus.html">entry</a>, throwing <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/index.html">IllegalArgumentException</a> if the receiver already has a matching <a href="plus.html">entry</a>. Use <a href="merge.html">merge</a> to replace an existing entry with a new one.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="-view-registry/index.html">ViewRegistry</a><span class="token punctuation">.</span><a href="plus.html"><span class="token function">plus</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">Transforms the receiver to add all entries from <a href="plus.html">other</a>, throwing <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/index.html">IllegalArgumentException</a> if the receiver already has any matching entry. Use <a href="merge.html">merge</a> to replace existing entries.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">.</span><a href="plus.html"><span class="token function">plus</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">registry<span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-environment/index.html">ViewEnvironment</a></div><br><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="-view-registry/index.html">ViewRegistry</a><span class="token punctuation">.</span><a href="plus.html"><span class="token function">plus</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">Transforms the receiver to add all entries from <a href="plus.html">other</a>, throwing <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/index.html">IllegalArgumentException</a> if the receiver already has any matching entry. Use <a href="merge.html">merge</a> to replace existing entries.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="-view-registry/index.html">ViewRegistry</a><span class="token punctuation">.</span><a href="plus.html"><span class="token function">plus</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">entry<span class="token operator">: </span><a href="-view-registry/-entry/index.html">ViewRegistry.Entry</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">Transforms the receiver to add <a href="plus.html">entry</a>, throwing <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/index.html">IllegalArgumentException</a> if the receiver already has a matching <a href="plus.html">entry</a>. Use <a href="merge.html">merge</a> to replace an existing entry with a new one.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1419490889%2FFunctions%2F-917155079" anchor-label="TextController" id="1419490889%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-text-controller.html"><span>Text</span><wbr><span><span>Controller</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-text-controller.html"><span>Text</span><wbr><span><span>Controller</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1419490889%2FFunctions%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-text-controller.html"><span class="token function">TextController</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">initialValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-text-controller/index.html">TextController</a></div><div class="brief "><p class="paragraph">Create instance for default implementation of <a href="-text-controller/index.html">TextController</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-text-controller.html"><span class="token function">TextController</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">initialValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-text-controller/index.html">TextController</a></div><div class="brief "><p class="paragraph">Create instance for default implementation of <a href="-text-controller/index.html">TextController</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="2049221873%2FFunctions%2F-917155079" anchor-label="ViewRegistry" id="2049221873%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-view-registry.html"><span>View</span><wbr><span><span>Registry</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-view-registry.html"><span>View</span><wbr><span><span>Registry</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2049221873%2FFunctions%2F-917155079"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-view-registry.html"><span class="token function">ViewRegistry</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">Returns a <a href="-view-registry/index.html">ViewRegistry</a> that contains no bindings.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-view-registry.html"><span class="token function">ViewRegistry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>bindings<span class="token operator">: </span><a href="-view-registry/-entry/index.html">ViewRegistry.Entry</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-view-registry.html"><span class="token function">ViewRegistry</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div><div class="brief "><p class="paragraph">Returns a <a href="-view-registry/index.html">ViewRegistry</a> that contains no bindings.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-view-registry.html"><span class="token function">ViewRegistry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>bindings<span class="token operator">: </span><a href="-view-registry/-entry/index.html">ViewRegistry.Entry</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-view-registry/index.html">ViewRegistry</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -306,6 +343,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

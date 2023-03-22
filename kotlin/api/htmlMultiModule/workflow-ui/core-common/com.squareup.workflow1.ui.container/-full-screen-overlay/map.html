@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>map</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../index.html">
+<span>workflow</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-common:dokkaHtmlPartial/main">jvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="member" id="content" pageids="workflow-ui-core-common-jvm::com.squareup.workflow1.ui.container/FullScreenOverlay/map/#kotlin.Function1[TypeParam(bounds=[com.squareup.workflow1.ui.Screen]),TypeParam(bounds=[com.squareup.workflow1.ui.Screen])]/PointingToDeclaration//-917155079">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-common-jvm</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.container</a><span class="delimiter">/</span><a href="index.html">FullScreenOverlay</a><span class="delimiter">/</span><span class="current">map</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>map</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="map.html">D</a><span class="token operator"> : </span><a href="../../com.squareup.workflow1.ui/-screen/index.html">Screen</a><span class="token operator">&gt; </span><a href="map.html"><span class="token function">map</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">transform<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="index.html">C</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="map.html">D</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">FullScreenOverlay</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="map.html">D</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/container/FullScreenOverlay.kt#L15">source</a>)</span></span></div><p class="paragraph">Returns a Container with the <a href="map.html">transform</a>ed contents of the receiver. It is expected that an implementation will take advantage of covariance to declare its own type as the return type, rather than plain old Container. This requirement is not enforced because recursive generics are a fussy nuisance.</p><p class="paragraph">For example, suppose we want to create <code class="lang-kotlin">LoggingScreen</code>, one that wraps any other screen to add some logging calls. Its implementation of this method would be expected to have a return type of <code class="lang-kotlin">LoggingScreen</code> rather than <code class="lang-kotlin">Container</code>:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">override fun  map(transform: (C) -&gt; D): LoggingScreen =
+  LoggingScreen(transform(content))</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">By requiring all Container types to implement <a href="map.html">map</a>, we ensure that their contents can be repackaged in interesting ways, e.g.:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val childBackStackScreen = renderChild(childWorkflow) { ... }
+val loggingBackStackScreen = childBackStackScreen.map { LoggingScreen(it) }</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+

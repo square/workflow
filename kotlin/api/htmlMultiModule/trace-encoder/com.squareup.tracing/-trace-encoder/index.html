@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":trace-encoder:dokkaHtmlPartial/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,63 +49,63 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="trace-encoder::com.squareup.tracing/TraceEncoder///PointingToDeclaration//-1892351546">
+<div class="main-content" data-page-type="classlike" id="content" pageids="trace-encoder::com.squareup.tracing/TraceEncoder///PointingToDeclaration//-1892351546">
   <div class="breadcrumbs"><a href="../../index.html">trace-encoder</a><span class="delimiter">/</span><a href="../index.html">com.squareup.tracing</a><span class="delimiter">/</span><span class="current">TraceEncoder</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Trace</span><wbr><span><span>Encoder</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">TraceEncoder</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">start<span class="token operator">: </span><a href="../-time-mark/index.html">TimeMark</a><span class="token operator"> = </span>TraceEncoderTimeMark<span class="token punctuation">, </span></span><span class="parameter ">ioDispatcher<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="token operator"> = </span>IO<span class="token punctuation">, </span></span><span class="parameter ">sinkProvider<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span></span></span><span class="token punctuation">)</span> : <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html">Closeable</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/trace-encoder/src/main/java/com/squareup/tracing/TraceEncoder.kt#L16">source</a>)</span></span></div><p class="paragraph">Encodes and writes <a href="../-trace-event/index.html">trace events</a> to an Okio <span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span>.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">TraceEncoder</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">start<span class="token operator">: </span><a href="../-time-mark/index.html">TimeMark</a><span class="token operator"> = </span>TraceEncoderTimeMark<span class="token punctuation">, </span></span><span class="parameter ">ioDispatcher<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="token operator"> = </span>IO<span class="token punctuation">, </span></span><span class="parameter ">sinkProvider<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span></span></span><span class="token punctuation">)</span> : <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html">Closeable</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/trace-encoder/src/main/java/com/squareup/tracing/TraceEncoder.kt#L30">source</a>)</span></span></div><p class="paragraph">Encodes and writes <a href="../-trace-event/index.html">trace events</a> to an Okio <span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>scope</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> that defines the lifetime for the encoder. When the scope is cancelled or fails, the sink returned from <a href="../../../trace-encoder/com.squareup.tracing/-trace-encoder/sink-provider.html">sinkProvider</a> will be closed.</p></div></div></div></div><div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>start</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="../-time-mark/index.html">TimeMark</a> to consider the beginning timestamp of the trace. All trace events' timestamps are relative to this mark. <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-source/-monotonic/index.html">TimeSource.Monotonic</a>.<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-source/-monotonic/mark-now.html">markNow</a> by default.</p></div></div></div></div><div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>io</span><wbr><span><span>Dispatcher</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span> to use to execute all IO operations. <span data-unresolved-link="kotlinx.coroutines/Dispatchers/IO/#/PointingToDeclaration/">IO</span> by default.</p></div></div></div></div><div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>sink</span><wbr><span><span>Provider</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Returns the <span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span> to use to write trace events to. Called on a background thread.</p></div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h4 class="">Parameters</h4>
-      <div data-togglable="Parameters">
-        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>scope</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> that defines the lifetime for the encoder. When the scope is cancelled or fails, the sink returned from <a href="../../../trace-encoder/com.squareup.tracing/-trace-encoder/sink-provider.html">sinkProvider</a> will be closed.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>start</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The <a href="../-time-mark/index.html">TimeMark</a> to consider the beginning timestamp of the trace. All trace events' timestamps are relative to this mark. <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-source/-monotonic/index.html">TimeSource.Monotonic</a>.<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-time-source/-monotonic/mark-now.html">markNow</a> by default.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>io</span><wbr><span><span>Dispatcher</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span> to use to execute all IO operations. <span data-unresolved-link="kotlinx.coroutines/Dispatchers/IO/#/PointingToDeclaration/">IO</span> by default.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>sink</span><wbr><span><span>Provider</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Returns the <span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span> to use to write trace events to. Called on a background thread.</p></div></div></div></div></div></div></div></div></div>
-      </div>
-      <h2 class="tabbedcontent">Constructors</h2>
-      <div class="table" data-togglable="Constructors"><a data-name="-9471050%2FConstructors%2F-1892351546" anchor-label="TraceEncoder" id="-9471050%2FConstructors%2F-1892351546" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue TabbedContent">
-            <div class=""><span class="inline-flex">
-                <div><a href="-trace-encoder.html"><span>Trace</span><wbr><span><span>Encoder</span></span></a></div>
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-9471050%2FConstructors%2F-1892351546" anchor-label="TraceEncoder" id="-9471050%2FConstructors%2F-1892351546" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-trace-encoder.html"><span>Trace</span><wbr><span><span>Encoder</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-9471050%2FConstructors%2F-1892351546"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-trace-encoder.html"><span class="token function">TraceEncoder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">start<span class="token operator">: </span><a href="../-time-mark/index.html">TimeMark</a><span class="token operator"> = </span>TraceEncoderTimeMark<span class="token punctuation">, </span></span><span class="parameter ">ioDispatcher<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="token operator"> = </span>IO<span class="token punctuation">, </span></span><span class="parameter ">sinkProvider<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span></span></span><span class="token punctuation">)</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">start<span class="token operator">: </span><a href="../-time-mark/index.html">TimeMark</a><span class="token operator"> = </span>TraceEncoderTimeMark<span class="token punctuation">, </span></span><span class="parameter ">ioDispatcher<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="token operator"> = </span>IO<span class="token punctuation">, </span></span><span class="parameter ">sinkProvider<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-436389209%2FFunctions%2F-1892351546" anchor-label="close" id="-436389209%2FFunctions%2F-1892351546" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="close.html"><span><span>close</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-436389209%2FFunctions%2F-1892351546" anchor-label="close" id="-436389209%2FFunctions%2F-1892351546" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="close.html"><span><span>close</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-436389209%2FFunctions%2F-1892351546"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="9188890%2FFunctions%2F-1892351546" anchor-label="createLogger" id="9188890%2FFunctions%2F-1892351546" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="create-logger.html"><span>create</span><wbr><span><span>Logger</span></span></a></div>
+          <div class="table-row" data-filterable-current=":trace-encoder:dokkaHtmlPartial/main" data-filterable-set=":trace-encoder:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-logger.html"><span>create</span><wbr><span><span>Logger</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="9188890%2FFunctions%2F-1892351546"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="create-logger.html"><span class="token function">createLogger</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">processName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter ">threadName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-trace-logger/index.html">TraceLogger</a></div><div class="brief "><p class="paragraph">Allocates a new thread ID named <a href="create-logger.html">threadName</a> and returns a <a href="../-trace-logger/index.html">TraceLogger</a> that will log all events under that thread ID.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":trace-encoder:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="create-logger.html"><span class="token function">createLogger</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">processName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter ">threadName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-trace-logger/index.html">TraceLogger</a></div><div class="brief "><p class="paragraph">Allocates a new thread ID named <a href="create-logger.html">threadName</a> and returns a <a href="../-trace-logger/index.html">TraceLogger</a> that will log all events under that thread ID.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -116,6 +119,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

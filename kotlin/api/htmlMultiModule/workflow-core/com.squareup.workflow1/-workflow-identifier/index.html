@@ -49,108 +49,108 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-core::com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration//-1897121320">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-core::com.squareup.workflow1/WorkflowIdentifier///PointingToDeclaration//-1897121320">
   <div class="breadcrumbs"><a href="../../index.html">workflow-core</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1</a><span class="delimiter">/</span><span class="current">WorkflowIdentifier</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Workflow</span><wbr><span><span>Identifier</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">WorkflowIdentifier</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/WorkflowIdentifier.kt#L17">source</a>)</span></span></div><p class="paragraph">Represents a <a href="../-workflow/index.html">Workflow</a>'s "identity" and is used by the runtime to determine whether a workflow is the same as one that was rendered in a previous render pass, in which case its state should be re-used; or if it's a new workflow and needs to be started.</p><p class="paragraph">A workflow's identity consists primarily of its concrete type (i.e. the class that implements the <a href="../-workflow/index.html">Workflow</a> interface). Two workflows of the same concrete type are considered identical. However, if a workflow class implements <a href="../-impostor-workflow/index.html">ImpostorWorkflow</a>, the identifier will also include that workflow's <a href="../-impostor-workflow/real-identifier.html">ImpostorWorkflow.realIdentifier</a>.</p><p class="paragraph">Instances of this class are <a href="equals.html">equatable</a> and <a href="hash-code.html">hashable</a>.</p><h2 class=""> Identifiers and snapshots</h2><p class="paragraph">Since workflows can be <a href="../-stateful-workflow/snapshot-state.html">serialized</a>, workflows' identifiers must also be serializable in order to match workflows back up with their snapshots when restoring. However, some <a href="index.html">WorkflowIdentifier</a>s may represent workflows that cannot be snapshotted. When an identifier is not snapshottable, <a href="to-byte-string-or-null.html">toByteStringOrNull</a> will return null, and any identifiers that reference <a href="../-impostor-workflow/index.html">ImpostorWorkflow</a>s whose <a href="../-impostor-workflow/real-identifier.html">ImpostorWorkflow.realIdentifier</a> is not snapshottable will also not be snapshottable. Such identifiers are created with <a href="../unsnapshottable-identifier.html">unsnapshottableIdentifier</a>, but should not be used to wrap arbitrary workflows since those workflows may expect to be snapshotted.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">WorkflowIdentifier</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/WorkflowIdentifier.kt#L47">source</a>)</span></span></div><p class="paragraph">Represents a <a href="../-workflow/index.html">Workflow</a>'s "identity" and is used by the runtime to determine whether a workflow is the same as one that was rendered in a previous render pass, in which case its state should be re-used; or if it's a new workflow and needs to be started.</p><p class="paragraph">A workflow's identity consists primarily of its concrete type (i.e. the class that implements the <a href="../-workflow/index.html">Workflow</a> interface). Two workflows of the same concrete type are considered identical. However, if a workflow class implements <a href="../-impostor-workflow/index.html">ImpostorWorkflow</a>, the identifier will also include that workflow's <a href="../-impostor-workflow/real-identifier.html">ImpostorWorkflow.realIdentifier</a>.</p><p class="paragraph">Instances of this class are <a href="equals.html">equatable</a> and <a href="hash-code.html">hashable</a>.</p><h2 class=""> Identifiers and snapshots</h2><p class="paragraph">Since workflows can be <a href="../-stateful-workflow/snapshot-state.html">serialized</a>, workflows' identifiers must also be serializable in order to match workflows back up with their snapshots when restoring. However, some <a href="index.html">WorkflowIdentifier</a>s may represent workflows that cannot be snapshotted. When an identifier is not snapshottable, <a href="to-byte-string-or-null.html">toByteStringOrNull</a> will return null, and any identifiers that reference <a href="../-impostor-workflow/index.html">ImpostorWorkflow</a>s whose <a href="../-impostor-workflow/real-identifier.html">ImpostorWorkflow.realIdentifier</a> is not snapshottable will also not be snapshottable. Such identifiers are created with <a href="../unsnapshottable-identifier.html">unsnapshottableIdentifier</a>, but should not be used to wrap arbitrary workflows since those workflows may expect to be snapshotted.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>type</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Wrapper around the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> of the <a href="../-workflow/index.html">Workflow</a> this identifier identifies, or the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of an <a href="../unsnapshottable-identifier.html">unsnapshottableIdentifier</a>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>proxied</span><wbr><span><span>Identifier</span></span></u></div></span></div><div><div class="title"><p class="paragraph">An optional identifier from <a href="../-impostor-workflow/real-identifier.html">ImpostorWorkflow.realIdentifier</a> that will be used to further narrow the scope of this identifier.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>description</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Implementation of <a href="../-impostor-workflow/describe-real-identifier.html">ImpostorWorkflow.describeRealIdentifier</a>.</p></div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h4 class="">Parameters</h4>
-      <div data-togglable="Parameters">
-        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>type</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Wrapper around the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> of the <a href="../-workflow/index.html">Workflow</a> this identifier identifies, or the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of an <a href="../unsnapshottable-identifier.html">unsnapshottableIdentifier</a>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>proxied</span><wbr><span><span>Identifier</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">An optional identifier from <a href="../-impostor-workflow/real-identifier.html">ImpostorWorkflow.realIdentifier</a> that will be used to further narrow the scope of this identifier.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>description</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Implementation of <a href="../-impostor-workflow/describe-real-identifier.html">ImpostorWorkflow.describeRealIdentifier</a>.</p></div></div></div></div></div></div></div></div></div>
-      </div>
-      <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="2143700197%2FClasslikes%2F-1897121320" anchor-label="Companion" id="2143700197%2FClasslikes%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="2143700197%2FClasslikes%2F-1897121320" anchor-label="Companion" id="2143700197%2FClasslikes%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2143700197%2FClasslikes%2F-1897121320"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-284488891%2FFunctions%2F-1897121320" anchor-label="equals" id="-284488891%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="equals.html"><span><span>equals</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-284488891%2FFunctions%2F-1897121320" anchor-label="equals" id="-284488891%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="equals.html"><span><span>equals</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-284488891%2FFunctions%2F-1897121320"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1309849785%2FFunctions%2F-1897121320" anchor-label="getRealIdentifierType" id="-1309849785%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="get-real-identifier-type.html"><span>get</span><wbr><span>Real</span><wbr><span>Identifier</span><wbr><span><span>Type</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-real-identifier-type.html"><span>get</span><wbr><span>Real</span><wbr><span>Identifier</span><wbr><span><span>Type</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1309849785%2FFunctions%2F-1897121320"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-real-identifier-type.html"><span class="token function">getRealIdentifierType</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-workflow-identifier-type/index.html">WorkflowIdentifierType</a></div><div class="brief "><p class="paragraph">Returns either a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> or <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> representing the "real" type that this identifier identifies – i.e. which is not an <a href="../-impostor-workflow/index.html">ImpostorWorkflow</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-real-identifier-type.html"><span class="token function">getRealIdentifierType</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-workflow-identifier-type/index.html">WorkflowIdentifierType</a></div><div class="brief "><p class="paragraph">Returns either a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a> or <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> representing the "real" type that this identifier identifies – i.e. which is not an <a href="../-impostor-workflow/index.html">ImpostorWorkflow</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="746810369%2FFunctions%2F-1897121320" anchor-label="hashCode" id="746810369%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="746810369%2FFunctions%2F-1897121320"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1765678210%2FFunctions%2F-1897121320" anchor-label="toByteStringOrNull" id="-1765678210%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="to-byte-string-or-null.html"><span>to</span><wbr><span>Byte</span><wbr><span>String</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-byte-string-or-null.html"><span>to</span><wbr><span>Byte</span><wbr><span>String</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1765678210%2FFunctions%2F-1897121320"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="to-byte-string-or-null.html"><span class="token function">toByteStringOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="okio/ByteString///PointingToDeclaration/">ByteString</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">If this identifier is snapshottable, returns the serialized form of the identifier. If it is not snapshottable, returns null.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="to-byte-string-or-null.html"><span class="token function">toByteStringOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="okio/ByteString///PointingToDeclaration/">ByteString</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">If this identifier is snapshottable, returns the serialized form of the identifier. If it is not snapshottable, returns null.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="568644304%2FFunctions%2F-1897121320" anchor-label="toString" id="568644304%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="to-string.html"><span>to</span><wbr><span><span>String</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-string.html"><span>to</span><wbr><span><span>String</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="568644304%2FFunctions%2F-1897121320"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">If this identifier identifies an <a href="../-impostor-workflow/index.html">ImpostorWorkflow</a>, returns the result of that workflow's <a href="../-impostor-workflow/describe-real-identifier.html">ImpostorWorkflow.describeRealIdentifier</a> method, otherwise returns a description of this identifier including the name of its workflow type and any <a href="../-impostor-workflow/real-identifier.html">ImpostorWorkflow.realIdentifier</a>s.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">If this identifier identifies an <a href="../-impostor-workflow/index.html">ImpostorWorkflow</a>, returns the result of that workflow's <a href="../-impostor-workflow/describe-real-identifier.html">ImpostorWorkflow.describeRealIdentifier</a> method, otherwise returns a description of this identifier including the name of its workflow type and any <a href="../-impostor-workflow/real-identifier.html">ImpostorWorkflow.realIdentifier</a>s.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -164,6 +164,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

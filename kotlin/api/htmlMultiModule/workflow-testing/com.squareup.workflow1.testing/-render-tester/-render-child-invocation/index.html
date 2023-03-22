@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-testing:dokkaHtmlPartial/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,108 +49,108 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-testing-jvm::com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration//-1959099706">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-testing-jvm::com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration//-1959099706">
   <div class="breadcrumbs"><a href="../../../index.html">workflow-testing-jvm</a><span class="delimiter">/</span><a href="../../index.html">com.squareup.workflow1.testing</a><span class="delimiter">/</span><a href="../index.html">RenderTester</a><span class="delimiter">/</span><span class="current">RenderChildInvocation</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Render</span><wbr><span>Child</span><wbr><span><span>Invocation</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">RenderChildInvocation</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>workflow<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>props<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>outputType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>renderingType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>renderKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/RenderTester.kt#L250">source</a>)</span></span></div><p class="paragraph">Describes a call to <a href="../../../../workflow-core/com.squareup.workflow1/-base-render-context/render-child.html">RenderContext.renderChild</a>.</p><h2 class=""> Output and rendering types</h2><p class="paragraph">The testing library will attempt to determine the output and rendering types by using reflection to determine the type arguments that the concrete workflow class passes to the <a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a> interface. This is subject to the limitations of Kotlin's reflection. Notably, there is a compiler bug (<a href="https://youtrack.jetbrains.com/issue/KT-17103">KT-17103</a>) that prevents reflecting on these types when the workflow is an anonymous class that was created by an inline function with reified types, such as <code class="lang-kotlin">Workflow.stateful</code> and <code class="lang-kotlin">Workflow.stateless</code>.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">RenderChildInvocation</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>workflow<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>props<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>outputType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>renderingType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>renderKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/RenderTester.kt#L269">source</a>)</span></span></div><p class="paragraph">Describes a call to <a href="../../../../workflow-core/com.squareup.workflow1/-base-render-context/render-child.html">RenderContext.renderChild</a>.</p><h2 class=""> Output and rendering types</h2><p class="paragraph">The testing library will attempt to determine the output and rendering types by using reflection to determine the type arguments that the concrete workflow class passes to the <a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a> interface. This is subject to the limitations of Kotlin's reflection. Notably, there is a compiler bug (<a href="https://youtrack.jetbrains.com/issue/KT-17103">KT-17103</a>) that prevents reflecting on these types when the workflow is an anonymous class that was created by an inline function with reified types, such as <code class="lang-kotlin">Workflow.stateful</code> and <code class="lang-kotlin">Workflow.stateless</code>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>workflow</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The child workflow that is being rendered.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>props</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The props value passed to <code class="lang-kotlin">renderChild</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>output</span><wbr><span><span>Type</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow's <code class="lang-kotlin">OutputT</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>rendering</span><wbr><span><span>Type</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow's <code class="lang-kotlin">RenderingT</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>render</span><wbr><span><span>Key</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The string key passed to <code class="lang-kotlin">renderChild</code>.</p></div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h4 class="">Parameters</h4>
-      <div data-togglable="Parameters">
-        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>workflow</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The child workflow that is being rendered.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>props</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The props value passed to <code class="lang-kotlin">renderChild</code>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>output</span><wbr><span><span>Type</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow's <code class="lang-kotlin">OutputT</code>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>rendering</span><wbr><span><span>Type</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow's <code class="lang-kotlin">RenderingT</code>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>render</span><wbr><span><span>Key</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The string key passed to <code class="lang-kotlin">renderChild</code>.</p></div></div></div></div></div></div></div></div></div>
-      </div>
-      <h2 class="tabbedcontent">Constructors</h2>
-      <div class="table" data-togglable="Constructors"><a data-name="-2124240561%2FConstructors%2F-1959099706" anchor-label="RenderChildInvocation" id="-2124240561%2FConstructors%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue TabbedContent">
-            <div class=""><span class="inline-flex">
-                <div><a href="-render-child-invocation.html"><span>Render</span><wbr><span>Child</span><wbr><span><span>Invocation</span></span></a></div>
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-2124240561%2FConstructors%2F-1959099706" anchor-label="RenderChildInvocation" id="-2124240561%2FConstructors%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-render-child-invocation.html"><span>Render</span><wbr><span>Child</span><wbr><span><span>Invocation</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2124240561%2FConstructors%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-render-child-invocation.html"><span class="token function">RenderChildInvocation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">workflow<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">props<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">outputType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter ">renderingType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter ">renderKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">workflow<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">props<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">outputType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter ">renderingType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter ">renderKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="-684064812%2FProperties%2F-1959099706" anchor-label="outputType" id="-684064812%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="output-type.html"><span>output</span><wbr><span><span>Type</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-684064812%2FProperties%2F-1959099706" anchor-label="outputType" id="-684064812%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="output-type.html"><span>output</span><wbr><span><span>Type</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-684064812%2FProperties%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="-684064812%2FProperties%2F-1959099706" anchor-label="outputType" id="-684064812%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="output-type.html">outputType</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="output-type.html">outputType</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="2138526075%2FProperties%2F-1959099706" anchor-label="props" id="2138526075%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="props.html"><span><span>props</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="props.html"><span><span>props</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2138526075%2FProperties%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="2138526075%2FProperties%2F-1959099706" anchor-label="props" id="2138526075%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="props.html">props</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="props.html">props</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="903010757%2FProperties%2F-1959099706" anchor-label="renderingType" id="903010757%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="rendering-type.html"><span>rendering</span><wbr><span><span>Type</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="rendering-type.html"><span>rendering</span><wbr><span><span>Type</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="903010757%2FProperties%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="903010757%2FProperties%2F-1959099706" anchor-label="renderingType" id="903010757%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="rendering-type.html">renderingType</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="rendering-type.html">renderingType</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="563284258%2FProperties%2F-1959099706" anchor-label="renderKey" id="563284258%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="render-key.html"><span>render</span><wbr><span><span>Key</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="render-key.html"><span>render</span><wbr><span><span>Key</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="563284258%2FProperties%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="563284258%2FProperties%2F-1959099706" anchor-label="renderKey" id="563284258%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="render-key.html">renderKey</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="render-key.html">renderKey</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="63963376%2FProperties%2F-1959099706" anchor-label="workflow" id="63963376%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="workflow.html"><span><span>workflow</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="workflow.html"><span><span>workflow</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="63963376%2FProperties%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="63963376%2FProperties%2F-1959099706" anchor-label="workflow" id="63963376%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="workflow.html">workflow</a><span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="workflow.html">workflow</a><span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -161,6 +164,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

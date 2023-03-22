@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-testing:dokkaHtmlPartial/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,136 +49,142 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-testing-jvm::com.squareup.workflow1.testing/WorkflowTestRuntime///PointingToDeclaration//-1959099706">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-testing-jvm::com.squareup.workflow1.testing/WorkflowTestRuntime///PointingToDeclaration//-1959099706">
   <div class="breadcrumbs"><a href="../../index.html">workflow-testing-jvm</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.testing</a><span class="delimiter">/</span><span class="current">WorkflowTestRuntime</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Workflow</span><wbr><span>Test</span><wbr><span><span>Runtime</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">WorkflowTestRuntime</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">RenderingT</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/WorkflowTestRuntime.kt#L42">source</a>)</span></span></div><p class="paragraph">Runs a <a href="../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a> and provides access to its <a href="await-next-rendering.html">renderings</a>, <a href="await-next-output.html">outputs</a>, and <a href="await-next-snapshot.html">snapshots</a>.</p><p class="paragraph">For each of renderings, outputs, and snapshots, this class gives you a few ways to access information about them:</p><ul><li><p class="paragraph"><a href="await-next-rendering.html">awaitNextRendering</a>, <a href="await-next-output.html">awaitNextOutput</a>, <a href="await-next-snapshot.html">awaitNextSnapshot</a></p></li><ul><li><p class="paragraph">Block until something becomes available, and then return it.</p></li></ul><li><p class="paragraph"><a href="has-rendering.html">hasRendering</a>, <a href="has-output.html">hasOutput</a>, <a href="has-snapshot.html">hasSnapshot</a></p></li><ul><li><p class="paragraph">Return <code class="lang-kotlin">true</code> if the previous methods won't block.</p></li></ul><li><p class="paragraph"><a href="send-props.html">sendProps</a></p></li><ul><li><p class="paragraph">Send a new <a href="index.html">PropsT</a> to the root workflow.</p></li></ul></ul></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">WorkflowTestRuntime</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">RenderingT</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/WorkflowTestRuntime.kt#L55">source</a>)</span></span></div><p class="paragraph">Runs a <a href="../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a> and provides access to its <a href="await-next-rendering.html">renderings</a>, <a href="await-next-output.html">outputs</a>, and <a href="await-next-snapshot.html">snapshots</a>.</p><p class="paragraph">For each of renderings, outputs, and snapshots, this class gives you a few ways to access information about them:</p><ul><li><p class="paragraph"><a href="await-next-rendering.html">awaitNextRendering</a>, <a href="await-next-output.html">awaitNextOutput</a>, <a href="await-next-snapshot.html">awaitNextSnapshot</a></p></li><ul><li><p class="paragraph">Block until something becomes available, and then return it.</p></li></ul><li><p class="paragraph"><a href="has-rendering.html">hasRendering</a>, <a href="has-output.html">hasOutput</a>, <a href="has-snapshot.html">hasSnapshot</a></p></li><ul><li><p class="paragraph">Return <code class="lang-kotlin">true</code> if the previous methods won't block.</p></li></ul><li><p class="paragraph"><a href="send-props.html">sendProps</a></p></li><ul><li><p class="paragraph">Send a new <a href="index.html">PropsT</a> to the root workflow.</p></li></ul></ul></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="1606415376%2FClasslikes%2F-1959099706" anchor-label="Companion" id="1606415376%2FClasslikes%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1606415376%2FClasslikes%2F-1959099706" anchor-label="Companion" id="1606415376%2FClasslikes%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1606415376%2FClasslikes%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="90828169%2FFunctions%2F-1959099706" anchor-label="awaitNextOutput" id="90828169%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="await-next-output.html"><span>await</span><wbr><span>Next</span><wbr><span><span>Output</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="90828169%2FFunctions%2F-1959099706" anchor-label="awaitNextOutput" id="90828169%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="await-next-output.html"><span>await</span><wbr><span>Next</span><wbr><span><span>Output</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="90828169%2FFunctions%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="await-next-output.html"><span class="token function">awaitNextOutput</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">OutputT</a></div><div class="brief "><p class="paragraph">Blocks until the workflow emits an output, then returns it.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="await-next-output.html"><span class="token function">awaitNextOutput</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">OutputT</a></div><div class="brief "><p class="paragraph">Blocks until the workflow emits an output, then returns it.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-157675956%2FFunctions%2F-1959099706" anchor-label="awaitNextRendering" id="-157675956%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="await-next-rendering.html"><span>await</span><wbr><span>Next</span><wbr><span><span>Rendering</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="await-next-rendering.html"><span>await</span><wbr><span>Next</span><wbr><span><span>Rendering</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-157675956%2FFunctions%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="await-next-rendering.html"><span class="token function">awaitNextRendering</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">skipIntermediate<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">RenderingT</a></div><div class="brief "><p class="paragraph">Blocks until the workflow emits a rendering, then returns it.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="await-next-rendering.html"><span class="token function">awaitNextRendering</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">skipIntermediate<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">RenderingT</a></div><div class="brief "><p class="paragraph">Blocks until the workflow emits a rendering, then returns it.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-909313826%2FFunctions%2F-1959099706" anchor-label="awaitNextSnapshot" id="-909313826%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="await-next-snapshot.html"><span>await</span><wbr><span>Next</span><wbr><span><span>Snapshot</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="await-next-snapshot.html"><span>await</span><wbr><span>Next</span><wbr><span><span>Snapshot</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-909313826%2FFunctions%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="await-next-snapshot.html"><span class="token function">awaitNextSnapshot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">skipIntermediate<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-tree-snapshot/index.html">TreeSnapshot</a></div><div class="brief "><p class="paragraph">Blocks until the workflow emits a snapshot, then returns it.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="await-next-snapshot.html"><span class="token function">awaitNextSnapshot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">skipIntermediate<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../workflow-core/com.squareup.workflow1/-tree-snapshot/index.html">TreeSnapshot</a></div><div class="brief "><p class="paragraph">Blocks until the workflow emits a snapshot, then returns it.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1914988765%2FFunctions%2F-1959099706" anchor-label="sendProps" id="1914988765%2FFunctions%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="send-props.html"><span>send</span><wbr><span><span>Props</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="send-props.html"><span>send</span><wbr><span><span>Props</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1914988765%2FFunctions%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="send-props.html"><span class="token function">sendProps</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="index.html">PropsT</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sends <a href="send-props.html">input</a> to the workflow.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="send-props.html"><span class="token function">sendProps</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">input<span class="token operator">: </span><a href="index.html">PropsT</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sends <a href="send-props.html">input</a> to the workflow.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="1736642286%2FProperties%2F-1959099706" anchor-label="hasOutput" id="1736642286%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="has-output.html"><span>has</span><wbr><span><span>Output</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1736642286%2FProperties%2F-1959099706" anchor-label="hasOutput" id="1736642286%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-output.html"><span>has</span><wbr><span><span>Output</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1736642286%2FProperties%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="1736642286%2FProperties%2F-1959099706" anchor-label="hasOutput" id="1736642286%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="has-output.html">hasOutput</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><a data-name="1736642286%2FProperties%2F-1959099706" anchor-label="hasOutput" id="1736642286%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><p class="paragraph">True if the workflow has emitted a new output that is ready to be consumed.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="has-output.html">hasOutput</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">True if the workflow has emitted a new output that is ready to be consumed.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1636405153%2FProperties%2F-1959099706" anchor-label="hasRendering" id="-1636405153%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="has-rendering.html"><span>has</span><wbr><span><span>Rendering</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-rendering.html"><span>has</span><wbr><span><span>Rendering</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1636405153%2FProperties%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="-1636405153%2FProperties%2F-1959099706" anchor-label="hasRendering" id="-1636405153%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="has-rendering.html">hasRendering</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><a data-name="-1636405153%2FProperties%2F-1959099706" anchor-label="hasRendering" id="-1636405153%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><p class="paragraph">True if the workflow has emitted a new rendering that is ready to be consumed.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="has-rendering.html">hasRendering</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">True if the workflow has emitted a new rendering that is ready to be consumed.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1867458315%2FProperties%2F-1959099706" anchor-label="hasSnapshot" id="1867458315%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="has-snapshot.html"><span>has</span><wbr><span><span>Snapshot</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-snapshot.html"><span>has</span><wbr><span><span>Snapshot</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1867458315%2FProperties%2F-1959099706"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><a data-name="1867458315%2FProperties%2F-1959099706" anchor-label="hasSnapshot" id="1867458315%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="has-snapshot.html">hasSnapshot</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><a data-name="1867458315%2FProperties%2F-1959099706" anchor-label="hasSnapshot" id="1867458315%2FProperties%2F-1959099706" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"></a><p class="paragraph">True if the workflow has emitted a new snapshot that is ready to be consumed.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="has-snapshot.html">hasSnapshot</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">True if the workflow has emitted a new snapshot that is ready to be consumed.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -189,6 +198,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

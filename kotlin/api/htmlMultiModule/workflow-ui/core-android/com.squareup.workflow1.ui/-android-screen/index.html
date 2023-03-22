@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-android:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,7 +49,7 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui/AndroidScreen///PointingToDeclaration//-108279078">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui/AndroidScreen///PointingToDeclaration//-108279078">
   <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui</a><span class="delimiter">/</span><span class="current">AndroidScreen</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Android</span><wbr><span><span>Screen</span></span></h1>
@@ -59,42 +62,27 @@
       helloMessage.text = screen.message
       helloMessage.setOnClickListener { screen.onClick() }
     }
-}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This is the simplest way to bridge the gap between your workflows and the UI, but using it requires your workflows code to reside in Android modules, instead of pure Kotlin. If this is a problem, or you need more flexibility for any other reason, you can use <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a> to bind your renderings to <a href="../-screen-view-factory/index.html">ScreenViewFactory</a> implementations at runtime.</p><p class="paragraph">Also note that a <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a> entry will override the <a href="view-factory.html">viewFactory</a> returned by an <a href="index.html">AndroidScreen</a>. This means that an <a href="index.html">AndroidScreen</a> implementation can provide a default UI that can be completely customized at runtime via <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a> configuration.</p><p class="paragraph">See also <a href="../-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a> to customize built in rendering types like <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-back-stack-screen/index.html">BackStackScreen</a>.</p></div></div>
+}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This is the simplest way to bridge the gap between your workflows and the UI, but using it requires your workflows code to reside in Android modules, instead of pure Kotlin. If this is a problem, or you need more flexibility for any other reason, you can use <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a> to bind your renderings to <a href="../-screen-view-factory/index.html">ScreenViewFactory</a> implementations at runtime.</p><p class="paragraph">Also note that a <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a> entry will override the <a href="view-factory.html">viewFactory</a> returned by an <a href="index.html">AndroidScreen</a>. This means that an <a href="index.html">AndroidScreen</a> implementation can provide a default UI that can be completely customized at runtime via <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a> configuration.</p><p class="paragraph">See also <a href="../-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a> to customize built in rendering types like <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-back-stack-screen/index.html">BackStackScreen</a>.</p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.squareup.workflow1.ui.container/-android-overlay/index.html"><span>Android</span><wbr><span><span>Overlay</span></span></a></div></span></div><div></div></div></div></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.squareup.workflow1.ui.container/-back-button-screen/index.html">BackButtonScreen</a></div></span></div><div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="See also">See also</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h4 class="">See also</h4>
-      <div data-togglable="See also">
-        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="See also"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div data-togglable="See also"><div class="table" data-togglable="See also"><div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="../../com.squareup.workflow1.ui.container/-android-overlay/index.html"><span>Android</span><wbr><span><span>Overlay</span></span></a></div></span></div><div></div></div></div></div></div></div></div>
-      </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="-591017534%2FProperties%2F-108279078" anchor-label="viewFactory" id="-591017534%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="view-factory.html"><span>view</span><wbr><span><span>Factory</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-591017534%2FProperties%2F-108279078" anchor-label="viewFactory" id="-591017534%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="view-factory.html"><span>view</span><wbr><span><span>Factory</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-591017534%2FProperties%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><a data-name="-591017534%2FProperties%2F-108279078" anchor-label="viewFactory" id="-591017534%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="view-factory.html">viewFactory</a><span class="token operator">: </span><a href="../-screen-view-factory/index.html">ScreenViewFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">S</a><span class="token operator">&gt;</span></div><div class="brief "><a data-name="-591017534%2FProperties%2F-108279078" anchor-label="viewFactory" id="-591017534%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><p class="paragraph">Used to build instances of <a href="https://developer.android.com/reference/kotlin/android/view/View.html">android.view.View</a> as needed to display renderings of this type.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="view-factory.html">viewFactory</a><span class="token operator">: </span><a href="../-screen-view-factory/index.html">ScreenViewFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">S</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Used to build instances of <a href="https://developer.android.com/reference/kotlin/android/view/View.html">android.view.View</a> as needed to display renderings of this type.</p></div></div></div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <h2 class="">Inheritors</h2>
-      <div class="table" data-togglable="Inheritors"><a data-name="-1240076759%2FInheritors%2F-108279078" anchor-label="BackButtonScreen" id="-1240076759%2FInheritors%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../com.squareup.workflow1.ui.container/-back-button-screen/index.html">BackButtonScreen</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1240076759%2FInheritors%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
           </div>
         </div>
       </div>
@@ -106,6 +94,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 
