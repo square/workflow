@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-runtime:dokkaHtmlPartial/commonMain">common</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,78 +49,78 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-runtime::com.squareup.workflow1/TreeSnapshot///PointingToDeclaration//-1625139255">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-runtime::com.squareup.workflow1/TreeSnapshot///PointingToDeclaration//-1625139255">
   <div class="breadcrumbs"><a href="../../index.html">workflow-runtime</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1</a><span class="delimiter">/</span><span class="current">TreeSnapshot</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Tree</span><wbr><span><span>Snapshot</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">TreeSnapshot</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-runtime/src/commonMain/kotlin/com/squareup/workflow1/TreeSnapshot.kt#L10">source</a>)</span></span></div><p class="paragraph">Aggregate of all the snapshots of a tree of workflows.</p><p class="paragraph">Can be serialized with <a href="to-byte-string.html">toByteString</a> and deserialized with <a href="-companion/parse.html">parse</a>.</p><p class="paragraph">For tests, you can get a <a href="index.html">TreeSnapshot</a> from a <a href="../-rendering-and-snapshot/index.html">RenderingAndSnapshot</a> or by creating one for your root workflow only by calling <a href="-companion/for-root-only.html">forRootOnly</a>.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">TreeSnapshot</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-runtime/src/commonMain/kotlin/com/squareup/workflow1/TreeSnapshot.kt#L22">source</a>)</span></span></div><p class="paragraph">Aggregate of all the snapshots of a tree of workflows.</p><p class="paragraph">Can be serialized with <a href="to-byte-string.html">toByteString</a> and deserialized with <a href="-companion/parse.html">parse</a>.</p><p class="paragraph">For tests, you can get a <a href="index.html">TreeSnapshot</a> from a <a href="../-rendering-and-snapshot/index.html">RenderingAndSnapshot</a> or by creating one for your root workflow only by calling <a href="-companion/for-root-only.html">forRootOnly</a>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>child</span><wbr><span>Tree</span><wbr><span><span>Snapshots</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A function that will lazily parse the child snapshots for this tree when invoked. It will be cached in the <a href="../../../workflow-core/com.squareup.workflow1/-tree-snapshot/child-tree-snapshots.html">childTreeSnapshots</a> property.</p></div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h4 class="">Parameters</h4>
-      <div data-togglable="Parameters">
-        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>child</span><wbr><span>Tree</span><wbr><span><span>Snapshots</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">A function that will lazily parse the child snapshots for this tree when invoked. It will be cached in the <a href="../../../workflow-core/com.squareup.workflow1/-tree-snapshot/child-tree-snapshots.html">childTreeSnapshots</a> property.</p></div></div></div></div></div></div></div></div></div>
-      </div>
-      <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="-1755898773%2FClasslikes%2F-1625139255" anchor-label="Companion" id="-1755898773%2FClasslikes%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1755898773%2FClasslikes%2F-1625139255" anchor-label="Companion" id="-1755898773%2FClasslikes%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1755898773%2FClasslikes%2F-1625139255"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-1951990581%2FFunctions%2F-1625139255" anchor-label="equals" id="-1951990581%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="equals.html"><span><span>equals</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1951990581%2FFunctions%2F-1625139255" anchor-label="equals" id="-1951990581%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="equals.html"><span><span>equals</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1951990581%2FFunctions%2F-1625139255"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1867942843%2FFunctions%2F-1625139255" anchor-label="hashCode" id="1867942843%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="hash-code.html"><span>hash</span><wbr><span><span>Code</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1867942843%2FFunctions%2F-1625139255"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-501261982%2FFunctions%2F-1625139255" anchor-label="toByteString" id="-501261982%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="to-byte-string.html"><span>to</span><wbr><span>Byte</span><wbr><span><span>String</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-byte-string.html"><span>to</span><wbr><span>Byte</span><wbr><span><span>String</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-501261982%2FFunctions%2F-1625139255"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="to-byte-string.html"><span class="token function">toByteString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="okio/ByteString///PointingToDeclaration/">ByteString</span></div><div class="brief "><p class="paragraph">Writes this <a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a> and all its children into a <span data-unresolved-link="okio/ByteString///PointingToDeclaration/">ByteString</span>. The snapshot can be restored with <a href="-companion/parse.html">parse</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="to-byte-string.html"><span class="token function">toByteString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="okio/ByteString///PointingToDeclaration/">ByteString</span></div><div class="brief "><p class="paragraph">Writes this <a href="../../../workflow-core/com.squareup.workflow1/-snapshot/index.html">Snapshot</a> and all its children into a <span data-unresolved-link="okio/ByteString///PointingToDeclaration/">ByteString</span>. The snapshot can be restored with <a href="-companion/parse.html">parse</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -131,6 +134,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

@@ -1004,7 +1004,7 @@ type-erased <code>AnyWorkflow</code>.</p>
 <details class="faq">
 <summary>Kotlin: <code>StatefulWorkflow</code> vs <code>Workflow</code></summary>
 <p>It is a common practice in Kotlin to divide types into two parts: an interface for public API,
-and a class for private implementation. The Workflow library defines a <a href="/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-workflow/"><code>Workflow</code></a>
+and a class for private implementation. The Workflow library defines a <a href="/workflow/kotlin/api/htmlMultiModule/workflow-core/com.squareup.workflow1/-workflow/index.html"><code>Workflow</code></a>
 interface, which should be used as the type of properties and parameters by code that needs to
 refer to a particular <code>Workflow</code> interface. The <code>Workflow</code> interface contains a single method,
 which simply returns a <code>StatefulWorkflow</code> – a <code>Workflow</code> can be described as “anything that can
@@ -1012,9 +1012,9 @@ be expressed as a <code>StatefulWorkflow</code>.”</p>
 <p>The library also defines two abstract classes which define the contract for workflows and should
 be subclassed to implement your workflows:</p>
 <ul>
-<li><a href="/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateful-workflow/"><strong><code>StatefulWorkflow</code></strong></a>
+<li><a href="/workflow/kotlin/api/htmlMultiModule/workflow-core/com.squareup.workflow1/-stateful-workflow/index.html"><strong><code>StatefulWorkflow</code></strong></a>
   should be subclassed to implement Workflows that have <a href="#private-state">private state</a>.</li>
-<li><a href="/workflow/kotlin/api/gfmCollector/workflow/com.squareup.workflow1/-stateless-workflow/"><strong><code>StatelessWorkflow</code></strong></a>
+<li><a href="/workflow/kotlin/api/htmlMultiModule/workflow-core/com.squareup.workflow1/-stateless-workflow/index.html"><strong><code>StatelessWorkflow</code></strong></a>
   should be subclassed to implement Workflows that <em>don&rsquo;t</em> have any private state. See <a href="#stateless-workflows">Stateless Workflows</a>.</li>
 </ul>
 </details>

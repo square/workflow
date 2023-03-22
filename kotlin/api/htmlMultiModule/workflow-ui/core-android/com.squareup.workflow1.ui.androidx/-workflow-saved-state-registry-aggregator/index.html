@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-android:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,104 +49,108 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator///PointingToDeclaration//-108279078">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.androidx/WorkflowSavedStateRegistryAggregator///PointingToDeclaration//-108279078">
   <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.androidx</a><span class="delimiter">/</span><span class="current">WorkflowSavedStateRegistryAggregator</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Workflow</span><wbr><span>Saved</span><wbr><span>State</span><wbr><span>Registry</span><wbr><span><span>Aggregator</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="index.html">WorkflowSavedStateRegistryAggregator</a></div><p class="paragraph">Manages a group of <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>s that are all saved to and restored from a single "parent" <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>. <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> is the new androidx alternative to the <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onsaveinstancestate">View.onSaveInstanceState</a> system, and is required by Compose UI.</p><p class="paragraph">This class is designed to support a navigation container view that owns a a set of navigation "frames", where a frame is something that can be navigated to/from. A frame loosely consists of a root <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> and its <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>. For example:</p><ul><li><p class="paragraph">a back stack container view will own an instance of <a href="index.html">WorkflowSavedStateRegistryAggregator</a>, and use it to assign a <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> for its top view.</p></li><li><p class="paragraph">a container view managing a set of windows will own an instance of <a href="index.html">WorkflowSavedStateRegistryAggregator</a>, and use it to assign a <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> to each dialog's content view.</p></li></ul><p class="paragraph">Note that a <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> works <i>in parallel</i> to a <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a>. Use <a href="../-workflow-lifecycle-owner/index.html">WorkflowLifecycleOwner</a> to ensure one is properly installed.</p><p class="paragraph"><a href="attach-to-parent-registry.html">attachToParentRegistry</a> must be called when the container view is attached to a window, and passed the parent registry. <a href="detach-from-parent-registry.html">detachFromParentRegistry</a> must be called when the container view is detached.</p><p class="paragraph">Call <a href="install-child-registry-owner-on.html">installChildRegistryOwnerOn</a> to put a <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> in place on each managed child view, <i>before it is attached to a window</i>. After that:</p><ul><li><p class="paragraph">call <a href="save-and-prune-child-registry-owner.html">saveAndPruneChildRegistryOwner</a> if the child is removed from service but may be restored before <a href="detach-from-parent-registry.html">detachFromParentRegistry</a> is called (as when a back stack pushes and pops)</p></li><li><p class="paragraph">call <a href="prune-all-child-registry-owners-except.html">pruneAllChildRegistryOwnersExcept</a> when views are permanently removed from service, taking care to identify the set that remain active</p></li></ul><p class="paragraph">Note that this class <i>does not</i> offer support for the pre-Jetpack <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onsaveinstancestate">View.onSaveInstanceState</a> mechanism. Container views must handle that themselves.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="index.html">WorkflowSavedStateRegistryAggregator</a></div><p class="paragraph">Manages a group of <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>s that are all saved to and restored from a single "parent" <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>. <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> is the new androidx alternative to the <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onsaveinstancestate">View.onSaveInstanceState</a> system, and is required by Compose UI.</p><p class="paragraph">This class is designed to support a navigation container view that owns a a set of navigation "frames", where a frame is something that can be navigated to/from. A frame loosely consists of a root <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> and its <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>. For example:</p><ul><li><p class="paragraph">a back stack container view will own an instance of <a href="index.html">WorkflowSavedStateRegistryAggregator</a>, and use it to assign a <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> for its top view.</p></li><li><p class="paragraph">a container view managing a set of windows will own an instance of <a href="index.html">WorkflowSavedStateRegistryAggregator</a>, and use it to assign a <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> to each dialog's content view.</p></li></ul><p class="paragraph">Note that a <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> works <i>in parallel</i> to a <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a>. Use <a href="../-workflow-lifecycle-owner/index.html">WorkflowLifecycleOwner</a> to ensure one is properly installed.</p><p class="paragraph"><a href="attach-to-parent-registry.html">attachToParentRegistry</a> must be called when the container view is attached to a window, and passed the parent registry. <a href="detach-from-parent-registry.html">detachFromParentRegistry</a> must be called when the container view is detached.</p><p class="paragraph">Call <a href="install-child-registry-owner-on.html">installChildRegistryOwnerOn</a> to put a <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> in place on each managed child view, <i>before it is attached to a window</i>. After that:</p><ul><li><p class="paragraph">call <a href="save-and-prune-child-registry-owner.html">saveAndPruneChildRegistryOwner</a> if the child is removed from service but may be restored before <a href="detach-from-parent-registry.html">detachFromParentRegistry</a> is called (as when a back stack pushes and pops)</p></li><li><p class="paragraph">call <a href="prune-all-child-registry-owners-except.html">pruneAllChildRegistryOwnersExcept</a> when views are permanently removed from service, taking care to identify the set that remain active</p></li></ul><p class="paragraph">Note that this class <i>does not</i> offer support for the pre-Jetpack <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onsaveinstancestate">View.onSaveInstanceState</a> mechanism. Container views must handle that themselves.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="tabbedcontent">Constructors</h2>
-      <div class="table" data-togglable="Constructors"><a data-name="-840255297%2FConstructors%2F-108279078" anchor-label="WorkflowSavedStateRegistryAggregator" id="-840255297%2FConstructors%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue TabbedContent">
-            <div class=""><span class="inline-flex">
-                <div><a href="-workflow-saved-state-registry-aggregator.html"><span>Workflow</span><wbr><span>Saved</span><wbr><span>State</span><wbr><span>Registry</span><wbr><span><span>Aggregator</span></span></a></div>
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-840255297%2FConstructors%2F-108279078" anchor-label="WorkflowSavedStateRegistryAggregator" id="-840255297%2FConstructors%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-workflow-saved-state-registry-aggregator.html"><span>Workflow</span><wbr><span>Saved</span><wbr><span>State</span><wbr><span>Registry</span><wbr><span><span>Aggregator</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-840255297%2FConstructors%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-workflow-saved-state-registry-aggregator.html"><span class="token function">WorkflowSavedStateRegistryAggregator</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="1676511827%2FFunctions%2F-108279078" anchor-label="attachToParentRegistry" id="1676511827%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="attach-to-parent-registry.html"><span>attach</span><wbr><span>To</span><wbr><span>Parent</span><wbr><span><span>Registry</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1676511827%2FFunctions%2F-108279078" anchor-label="attachToParentRegistry" id="1676511827%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="attach-to-parent-registry.html"><span>attach</span><wbr><span>To</span><wbr><span>Parent</span><wbr><span><span>Registry</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1676511827%2FFunctions%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="attach-to-parent-registry.html"><span class="token function">attachToParentRegistry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">parentOwner<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Must be called when the owning container view gets attached to the window. The owning view should find its <a href="attach-to-parent-registry.html">parentOwner</a> (probably via <a href="../-workflow-android-x-support/state-registry-owner-from-view-tree-or-context.html">WorkflowAndroidXSupport.stateRegistryOwnerFromViewTreeOrContext</a>) and determine a string key unique within that parent to save and restore this class in that registry. These values will be cached in this object for <a href="detach-from-parent-registry.html">detachment</a> later.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="attach-to-parent-registry.html"><span class="token function">attachToParentRegistry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">parentOwner<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Must be called when the owning container view gets attached to the window. The owning view should find its <a href="attach-to-parent-registry.html">parentOwner</a> (probably via <a href="../-workflow-android-x-support/state-registry-owner-from-view-tree-or-context.html">WorkflowAndroidXSupport.stateRegistryOwnerFromViewTreeOrContext</a>) and determine a string key unique within that parent to save and restore this class in that registry. These values will be cached in this object for <a href="detach-from-parent-registry.html">detachment</a> later.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="623528170%2FFunctions%2F-108279078" anchor-label="detachFromParentRegistry" id="623528170%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="detach-from-parent-registry.html"><span>detach</span><wbr><span>From</span><wbr><span>Parent</span><wbr><span><span>Registry</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="detach-from-parent-registry.html"><span>detach</span><wbr><span>From</span><wbr><span>Parent</span><wbr><span><span>Registry</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="623528170%2FFunctions%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="detach-from-parent-registry.html"><span class="token function">detachFromParentRegistry</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Must be called when the owning view detaches from the window.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="detach-from-parent-registry.html"><span class="token function">detachFromParentRegistry</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Must be called when the owning view detaches from the window.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-110175008%2FFunctions%2F-108279078" anchor-label="installChildRegistryOwnerOn" id="-110175008%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="install-child-registry-owner-on.html"><span>install</span><wbr><span>Child</span><wbr><span>Registry</span><wbr><span>Owner</span><wbr><span><span>On</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="install-child-registry-owner-on.html"><span>install</span><wbr><span>Child</span><wbr><span>Registry</span><wbr><span>Owner</span><wbr><span><span>On</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-110175008%2FFunctions%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="install-child-registry-owner-on.html"><span class="token function">installChildRegistryOwnerOn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">view<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">, </span></span><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Puts a new <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a> in place on <a href="install-child-registry-owner-on.html">view</a>, registered with its <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a>. (Use <a href="../-workflow-lifecycle-owner/index.html">WorkflowLifecycleOwner</a> to ensure one is properly installed.)</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="install-child-registry-owner-on.html"><span class="token function">installChildRegistryOwnerOn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">view<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">, </span></span><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Puts a new <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a> in place on <a href="install-child-registry-owner-on.html">view</a>, registered with its <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewTreeLifecycleOwner.html">ViewTreeLifecycleOwner</a>. (Use <a href="../-workflow-lifecycle-owner/index.html">WorkflowLifecycleOwner</a> to ensure one is properly installed.)</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1356668219%2FFunctions%2F-108279078" anchor-label="pruneAllChildRegistryOwnersExcept" id="1356668219%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="prune-all-child-registry-owners-except.html"><span>prune</span><wbr><span>All</span><wbr><span>Child</span><wbr><span>Registry</span><wbr><span>Owners</span><wbr><span><span>Except</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="prune-all-child-registry-owners-except.html"><span>prune</span><wbr><span>All</span><wbr><span>Child</span><wbr><span>Registry</span><wbr><span>Owners</span><wbr><span><span>Except</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1356668219%2FFunctions%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="prune-all-child-registry-owners-except.html"><span class="token function">pruneAllChildRegistryOwnersExcept</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">keysToKeep<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Drops all child <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/ViewTreeSavedStateRegistryOwner.html">ViewTreeSavedStateRegistryOwner</a>s and their restored state, except those identified in <a href="prune-all-child-registry-owners-except.html">keysToKeep</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="prune-all-child-registry-owners-except.html"><span class="token function">pruneAllChildRegistryOwnersExcept</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">keysToKeep<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Drops all child <a href="https://developer.android.com/reference/kotlin/androidx/savedstate/SavedStateRegistryOwner.html">SavedStateRegistryOwner</a>s and their restored state, except those identified in <a href="prune-all-child-registry-owners-except.html">keysToKeep</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-68330528%2FFunctions%2F-108279078" anchor-label="saveAndPruneChildRegistryOwner" id="-68330528%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="save-and-prune-child-registry-owner.html"><span>save</span><wbr><span>And</span><wbr><span>Prune</span><wbr><span>Child</span><wbr><span>Registry</span><wbr><span><span>Owner</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="save-and-prune-child-registry-owner.html"><span>save</span><wbr><span>And</span><wbr><span>Prune</span><wbr><span>Child</span><wbr><span>Registry</span><wbr><span><span>Owner</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-68330528%2FFunctions%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="save-and-prune-child-registry-owner.html"><span class="token function">saveAndPruneChildRegistryOwner</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Call this when the <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> previously <a href="install-child-registry-owner-on.html">registered</a> with <a href="save-and-prune-child-registry-owner.html">key</a> is being dropped, but may be replaced with a new instance before the container is destroyed -- think of pushing and popping in a back stack.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="save-and-prune-child-registry-owner.html"><span class="token function">saveAndPruneChildRegistryOwner</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Call this when the <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> previously <a href="install-child-registry-owner-on.html">registered</a> with <a href="save-and-prune-child-registry-owner.html">key</a> is being dropped, but may be replaced with a new instance before the container is destroyed -- think of pushing and popping in a back stack.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -157,6 +164,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

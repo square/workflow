@@ -724,6 +724,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base" class="md-nav__link">
+    base
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isclosurebased" class="md-nav__link">
+    isClosureBased
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#methods" class="md-nav__link">
     Methods
   </a>
@@ -739,8 +766,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#init__1" class="md-nav__link">
-    init(_:)
+  <a href="#init_fileidline" class="md-nav__link">
+    init(_:fileID:line:)
   </a>
   
 </li>
@@ -778,15 +805,19 @@
 <p><strong>STRUCT</strong></p>
 <h1 id="anyworkflowaction"><code>AnyWorkflowAction</code><a class="headerlink" href="#anyworkflowaction" title="Permanent link">&para;</a></h1>
 <p>A type-erased workflow action.</p>
-<p>The <code>AnyWorkflowAction</code> type forwards <code>apply</code> to an underlying workflow action, hiding its specific underlying type,
-or to a closure that implements the <code>apply</code> logic.</p>
+<p>The <code>AnyWorkflowAction</code> type forwards <code>apply</code> to an underlying workflow action, hiding its specific underlying type.</p>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<h3 id="base"><code>base</code><a class="headerlink" href="#base" title="Permanent link">&para;</a></h3>
+<p>The underlying type-erased <code>WorkflowAction</code></p>
+<h3 id="isclosurebased"><code>isClosureBased</code><a class="headerlink" href="#isclosurebased" title="Permanent link">&para;</a></h3>
+<p>True iff the underlying <code>apply</code> implementation is defined by a closure vs wrapping a <code>WorkflowAction</code> conformance</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="init_"><code>init(_:)</code><a class="headerlink" href="#init_" title="Permanent link">&para;</a></h3>
 <p>Creates a type-erased workflow action that wraps the given instance.</p>
 <ul>
 <li>Parameter base: A workflow action to wrap.</li>
 </ul>
-<h3 id="init__1"><code>init(_:)</code><a class="headerlink" href="#init__1" title="Permanent link">&para;</a></h3>
+<h3 id="init_fileidline"><code>init(_:fileID:line:)</code><a class="headerlink" href="#init_fileidline" title="Permanent link">&para;</a></h3>
 <p>Creates a type-erased workflow action with the given <code>apply</code> implementation.</p>
 <ul>
 <li>Parameter apply: the apply function for the resulting action.</li>

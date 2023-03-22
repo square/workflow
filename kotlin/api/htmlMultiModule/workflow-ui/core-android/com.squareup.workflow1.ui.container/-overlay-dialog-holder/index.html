@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-android:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,134 +49,157 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.container/OverlayDialogHolder///PointingToDeclaration//-108279078">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.container/OverlayDialogHolder///PointingToDeclaration//-108279078">
   <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.container</a><span class="delimiter">/</span><span class="current">OverlayDialogHolder</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Overlay</span><wbr><span>Dialog</span><wbr><span><span>Holder</span></span></h1>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">OverlayT</a><span class="token operator"> : </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a><span class="token operator">&gt;</span></div><p class="paragraph">Associates a <a href="dialog.html">dialog</a> with a function (<a href="runner.html">runner</a>) that can update it to display instances of <a href="index.html">OverlayT</a>. Also holds a reference to the <a href="environment.html">ViewEnvironment</a> that was most recently used to update the <a href="dialog.html">dialog</a>.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Extensions">Extensions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="139530183%2FProperties%2F-108279078" anchor-label="dialog" id="139530183%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="dialog.html"><span><span>dialog</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="139530183%2FProperties%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><a data-name="139530183%2FProperties%2F-108279078" anchor-label="dialog" id="139530183%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="dialog.html">dialog</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a></div><div class="brief "><a data-name="139530183%2FProperties%2F-108279078" anchor-label="dialog" id="139530183%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><p class="paragraph">The <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> managed by this holder, and updated via <a href="runner.html">runner</a></p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-690694152%2FProperties%2F-108279078" anchor-label="environment" id="-690694152%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="environment.html"><span><span>environment</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-690694152%2FProperties%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><a data-name="-690694152%2FProperties%2F-108279078" anchor-label="environment" id="-690694152%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="environment.html">environment</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></div><div class="brief "><a data-name="-690694152%2FProperties%2F-108279078" anchor-label="environment" id="-690694152%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><p class="paragraph">The <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a> that was provided the last time <a href="dialog.html">dialog</a> was updated by <a href="runner.html">runner</a>.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1606622001%2FProperties%2F-108279078" anchor-label="onBackPressed" id="-1606622001%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="on-back-pressed.html"><span>on</span><wbr><span>Back</span><wbr><span><span>Pressed</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1606622001%2FProperties%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><a data-name="-1606622001%2FProperties%2F-108279078" anchor-label="onBackPressed" id="-1606622001%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="on-back-pressed.html">onBackPressed</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span></div><div class="brief "><a data-name="-1606622001%2FProperties%2F-108279078" anchor-label="onBackPressed" id="-1606622001%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><p class="paragraph">Optional function to be called when the <a href="dialog.html">dialog</a> window receives a back button event, instead of <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html#onbackpressed">Dialog.onBackPressed</a>.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1059774382%2FProperties%2F-108279078" anchor-label="onUpdateBounds" id="-1059774382%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="on-update-bounds.html"><span>on</span><wbr><span>Update</span><wbr><span><span>Bounds</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1059774382%2FProperties%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><a data-name="-1059774382%2FProperties%2F-108279078" anchor-label="onUpdateBounds" id="-1059774382%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="on-update-bounds.html">onUpdateBounds</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Rect.html">Rect</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span></div><div class="brief "><a data-name="-1059774382%2FProperties%2F-108279078" anchor-label="onUpdateBounds" id="-1059774382%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><p class="paragraph">Optional function called to report the bounds of the managing container view, as reported by <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay-area/index.html">OverlayArea</a>. Well behaved <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> dialogs are expected to be restricted to those bounds, to the extent practical -- you probably want to ignore this for AlertDialog, e.g.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="117482207%2FProperties%2F-108279078" anchor-label="runner" id="117482207%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="runner.html"><span><span>runner</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="117482207%2FProperties%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><a data-name="117482207%2FProperties%2F-108279078" anchor-label="runner" id="117482207%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="runner.html">runner</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>rendering<span class="token operator">: </span><a href="index.html">OverlayT</a><span class="token punctuation">, </span><span class="token keyword"></span>environment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div><div class="brief "><a data-name="117482207%2FProperties%2F-108279078" anchor-label="runner" id="117482207%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a><p class="paragraph">The function that is run by <a href="../../com.squareup.workflow1.ui/show.html">show</a> to update <a href="dialog.html">dialog</a> with a new <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> rendering and <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a>.</p></div></div></div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-504147086%2FClasslikes%2F-108279078" anchor-label="Companion" id="-504147086%2FClasslikes%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-504147086%2FClasslikes%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="tabbedcontent">Extensions</h2>
-      <div class="table" data-togglable="Extensions"><a data-name="-1136112116%2FExtensions%2F-108279078" anchor-label="canShow" id="-1136112116%2FExtensions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../can-show.html"><span>can</span><wbr><span><span>Show</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1136112116%2FExtensions%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../can-show.html"><span class="token function">canShow</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">overlay<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true if <a href="../can-show.html">overlay</a> is <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">compatible</a> with the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> instance that was last <a href="../../com.squareup.workflow1.ui/show.html">shown</a> by the <a href="dialog.html">dialog</a> managed by the receiver.</p></div></div></div>
+      <div data-togglable="EXTENSION_FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1136112116%2FFunctions%2F-108279078" anchor-label="canShow" id="-1136112116%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../can-show.html"><span>can</span><wbr><span><span>Show</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1136112116%2FFunctions%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../can-show.html"><span class="token function">canShow</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">overlay<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true if <a href="../can-show.html">overlay</a> is <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">compatible</a> with the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> instance that was last <a href="../../com.squareup.workflow1.ui/show.html">shown</a> by the <a href="dialog.html">dialog</a> managed by the receiver.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1010495426%2FFunctions%2F-108279078" anchor-label="show" id="1010495426%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../show.html"><span><span>show</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1010495426%2FFunctions%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../show.html">OverlayT</a><span class="token operator"> : </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a><span class="token operator">&gt; </span><a href="index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../show.html">OverlayT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../show.html"><span class="token function">show</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">overlay<span class="token operator">: </span><a href="../show.html">OverlayT</a><span class="token punctuation">, </span></span><span class="parameter ">environment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Updates the <a href="dialog.html">dialog</a> managed by the receiver to display <a href="../show.html">overlay</a>, and updates the receiver's <a href="../show.html">environment</a> as well.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="1010495426%2FExtensions%2F-108279078" anchor-label="show" id="1010495426%2FExtensions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../show.html"><span><span>show</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1010495426%2FExtensions%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../show.html">OverlayT</a><span class="token operator"> : </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a><span class="token operator">&gt; </span><a href="index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../show.html">OverlayT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../show.html"><span class="token function">show</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">overlay<span class="token operator">: </span><a href="../show.html">OverlayT</a><span class="token punctuation">, </span></span><span class="parameter ">environment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Updates the <a href="dialog.html">dialog</a> managed by the receiver to display <a href="../show.html">overlay</a>, and updates the receiver's <a href="../show.html">environment</a> as well.</p></div></div></div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="139530183%2FProperties%2F-108279078" anchor-label="dialog" id="139530183%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="dialog.html"><span><span>dialog</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="139530183%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="dialog.html">dialog</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a></div><div class="brief "><p class="paragraph">The <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> managed by this holder, and updated via <a href="runner.html">runner</a></p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-<a data-name="-839872944%2FExtensions%2F-108279078" anchor-label="showing" id="-839872944%2FExtensions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../showing.html"><span><span>showing</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-839872944%2FExtensions%2F-108279078"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../showing.html">showing</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a></div><div class="brief "><p class="paragraph">Returns the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> most recently used to update the receiver's <a href="dialog.html">dialog</a> via a call to <a href="../../com.squareup.workflow1.ui/show.html">show</a>.</p></div></div></div>
+<a data-name="-690694152%2FProperties%2F-108279078" anchor-label="environment" id="-690694152%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="environment.html"><span><span>environment</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-690694152%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="environment.html">environment</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></div><div class="brief "><p class="paragraph">The <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a> that was provided the last time <a href="dialog.html">dialog</a> was updated by <a href="runner.html">runner</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1606622001%2FProperties%2F-108279078" anchor-label="onBackPressed" id="-1606622001%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-back-pressed.html"><span>on</span><wbr><span>Back</span><wbr><span><span>Pressed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1606622001%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="on-back-pressed.html">onBackPressed</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Optional function to be called when the <a href="dialog.html">dialog</a> window receives a back button event, instead of <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html#onbackpressed">Dialog.onBackPressed</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1059774382%2FProperties%2F-108279078" anchor-label="onUpdateBounds" id="-1059774382%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-update-bounds.html"><span>on</span><wbr><span>Update</span><wbr><span><span>Bounds</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1059774382%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="on-update-bounds.html">onUpdateBounds</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Rect.html">Rect</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Optional function called to report the bounds of the managing container view, as reported by <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay-area/index.html">OverlayArea</a>. Well behaved <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> dialogs are expected to be restricted to those bounds, to the extent practical -- you probably want to ignore this for AlertDialog, e.g.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="117482207%2FProperties%2F-108279078" anchor-label="runner" id="117482207%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="runner.html"><span><span>runner</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="117482207%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="runner.html">runner</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>rendering<span class="token operator">: </span><a href="index.html">OverlayT</a><span class="token punctuation">, </span><span class="token keyword"></span>environment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div><div class="brief "><p class="paragraph">The function that is run by <a href="../../com.squareup.workflow1.ui/show.html">show</a> to update <a href="dialog.html">dialog</a> with a new <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> rendering and <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-839872944%2FProperties%2F-108279078" anchor-label="showing" id="-839872944%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../showing.html"><span><span>showing</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-839872944%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../showing.html">showing</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a></div><div class="brief "><p class="paragraph">Returns the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a> most recently used to update the receiver's <a href="dialog.html">dialog</a> via a call to <a href="../../com.squareup.workflow1.ui/show.html">show</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -187,6 +213,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

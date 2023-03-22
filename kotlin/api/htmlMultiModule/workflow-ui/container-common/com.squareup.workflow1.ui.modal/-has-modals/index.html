@@ -37,6 +37,9 @@
     <div>
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:container-common:dokkaHtmlPartial/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -46,57 +49,46 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="workflow-ui-container-common-jvm::com.squareup.workflow1.ui.modal/HasModals///PointingToDeclaration//-1775400935">
+<div class="main-content" data-page-type="classlike" id="content" pageids="workflow-ui-container-common-jvm::com.squareup.workflow1.ui.modal/HasModals///PointingToDeclaration//-1775400935">
   <div class="breadcrumbs"><a href="../../index.html">workflow-ui-container-common-jvm</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.modal</a><span class="delimiter">/</span><span class="current">HasModals</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Has</span><wbr><span><span>Modals</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:container-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="index.html">HasModals</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="index.html">B</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="index.html">M</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/container-common/src/main/java/com/squareup/workflow1/ui/modal/HasModals.kt#L5">source</a>)</span></span></div><p class="paragraph"><strong>This will be deprecated in favor of </strong><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-body-and-overlays-screen/index.html"><strong>BodyAndModalsScreen</strong></a><strong> very soon.</strong></p><p class="paragraph">Interface implemented by screen classes that represent a stack of zero or more <a href="index.html">modal</a> screens above a <a href="beneath-modals.html">base screen</a>.</p><p class="paragraph">Use of this interface allows platform specific containers to share base classes, like <code class="lang-kotlin">ModalContainer</code> in the <code class="lang-kotlin">workflow-ui:core-android</code> module.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:container-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="index.html">HasModals</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="index.html">B</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="index.html">M</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/container-common/src/main/java/com/squareup/workflow1/ui/modal/HasModals.kt#L18">source</a>)</span></span></div><p class="paragraph"><strong>This will be deprecated in favor of </strong><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-body-and-overlays-screen/index.html"><strong>BodyAndModalsScreen</strong></a><strong> very soon.</strong></p><p class="paragraph">Interface implemented by screen classes that represent a stack of zero or more <a href="index.html">modal</a> screens above a <a href="beneath-modals.html">base screen</a>.</p><p class="paragraph">Use of this interface allows platform specific containers to share base classes, like <code class="lang-kotlin">ModalContainer</code> in the <code class="lang-kotlin">workflow-ui:core-android</code> module.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:container-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-alert-container-screen/index.html">AlertContainerScreen</a></div></span></div><div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="2142876898%2FProperties%2F-1775400935" anchor-label="beneathModals" id="2142876898%2FProperties%2F-1775400935" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:container-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="beneath-modals.html"><span>beneath</span><wbr><span><span>Modals</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="2142876898%2FProperties%2F-1775400935" anchor-label="beneathModals" id="2142876898%2FProperties%2F-1775400935" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:container-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="beneath-modals.html"><span>beneath</span><wbr><span><span>Modals</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2142876898%2FProperties%2F-1775400935"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:container-common:dokkaHtmlPartial/main"><a data-name="2142876898%2FProperties%2F-1775400935" anchor-label="beneathModals" id="2142876898%2FProperties%2F-1775400935" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="beneath-modals.html">beneathModals</a><span class="token operator">: </span><a href="index.html">B</a></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:container-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="beneath-modals.html">beneathModals</a><span class="token operator">: </span><a href="index.html">B</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1135079055%2FProperties%2F-1775400935" anchor-label="modals" id="-1135079055%2FProperties%2F-1775400935" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:container-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="modals.html"><span><span>modals</span></span></a></div>
+          <div class="table-row" data-filterable-current=":workflow-ui:container-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="modals.html"><span><span>modals</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1135079055%2FProperties%2F-1775400935"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:container-common:dokkaHtmlPartial/main"><a data-name="-1135079055%2FProperties%2F-1775400935" anchor-label="modals" id="-1135079055%2FProperties%2F-1775400935" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="modals.html">modals</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator">&gt;</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:container-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="modals.html">modals</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <h2 class="">Inheritors</h2>
-      <div class="table" data-togglable="Inheritors"><a data-name="2089347401%2FInheritors%2F-1775400935" anchor-label="AlertContainerScreen" id="2089347401%2FInheritors%2F-1775400935" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":workflow-ui:container-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:container-common:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-alert-container-screen/index.html">AlertContainerScreen</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2089347401%2FInheritors%2F-1775400935"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
           </div>
         </div>
       </div>
@@ -108,6 +100,6 @@
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 
