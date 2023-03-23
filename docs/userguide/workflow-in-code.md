@@ -137,7 +137,7 @@ sources (which will be covered below).
 !!! info "Stateless Workflows"
     If a workflow does not have any private state, it is often referred to as a
     "stateless workflow". A stateless Workflow is simply a Workflow that has a `Void` or `Unit`
-    `State` type. See more [below](#stateless-workflows).
+    `State` type. See [more](/workflow/kotlin/api/workflow/com.squareup.workflow1/-workflow/#stateless-workflows).
 
 ### Public Props
 
@@ -212,7 +212,7 @@ assist in creating the `Rendering` value.
 If a workflow is producing a view model, it is common to need an event handler to respond to UI
 events. The `RenderContext` has API to create an event handler, called a `Sink`, that when called
 will advance the workflow by dispatching an action back to the workflow (for more on actions, see
-[below](#workflows-are-advanced-by-actions)).
+[above](#workflows-are-advanced-by-workflowactions)).
 
 === "Swift"
     ```Swift
@@ -265,7 +265,7 @@ can ask the context to listen to those events from within the `render` method.
     In the Swift library, there is a special API for subscribing to hot streams (`Signal` in
     ReactiveSwift). The Kotlin library does not have any special API for subscribing to hot streams
     (channels), though it does have extension methods to convert [`ReceiveChannel`s](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/),
-    and RxJava `Flowable`s and `Observables`, to [`Worker`s](#worker). The reason for this
+    and RxJava `Flowable`s and `Observables`, to [`Worker`s](/workflow/userguide/worker-in-code/). The reason for this
     discrepancy is simply that we don't have any uses of channels yet in production, and so we've
     decided to keep the API simpler. If we start using channels in the future, it may make sense to
     make subscribing to them a first-class API like in Swift.
@@ -276,7 +276,7 @@ can ask the context to listen to those events from within the `render` method.
 do not have a `Rendering` type; they only exist to perform a single asynchronous task before sending
 zero or more output events back up the tree to their parent.
 
-For more information about workers, see the [Worker](#worker) section below.
+For more information about workers, see the [Worker](/workflow/userguide/worker-in-code/) section below.
 
 ## Workflows can be saved to and restored from a snapshot (Kotlin only)
 
