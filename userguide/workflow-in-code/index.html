@@ -1073,7 +1073,7 @@ sources (which will be covered below).</p>
 <p class="admonition-title">Stateless Workflows</p>
 <p>If a workflow does not have any private state, it is often referred to as a
 &ldquo;stateless workflow&rdquo;. A stateless Workflow is simply a Workflow that has a <code>Void</code> or <code>Unit</code>
-<code>State</code> type. See more <a href="#stateless-workflows">below</a>.</p>
+<code>State</code> type. See <a href="/workflow/kotlin/api/workflow/com.squareup.workflow1/-workflow/#stateless-workflows">more</a>.</p>
 </div>
 <h3 id="public-props">Public Props<a class="headerlink" href="#public-props" title="Permanent link">&para;</a></h3>
 <p>Every Workflow implementation also defines data that is passed into it. The Workflow is not able to
@@ -1133,7 +1133,7 @@ assist in creating the <code>Rendering</code> value.</p>
 <p>If a workflow is producing a view model, it is common to need an event handler to respond to UI
 events. The <code>RenderContext</code> has API to create an event handler, called a <code>Sink</code>, that when called
 will advance the workflow by dispatching an action back to the workflow (for more on actions, see
-<a href="#workflows-are-advanced-by-actions">below</a>).</p>
+<a href="#workflows-are-advanced-by-workflowactions">above</a>).</p>
 <div class="tabbed-set" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">Swift</label><div class="tabbed-content">
 <div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="n">DemoWorkflow</span><span class="p">&gt;)</span> <span class="p">-&gt;</span> <span class="n">DemoScreen</span> <span class="p">{</span>
     <span class="c1">// Create a sink of our Action type so we can send actions back to the workflow.</span>
@@ -1180,7 +1180,7 @@ can ask the context to listen to those events from within the <code>render</code
 <p>In the Swift library, there is a special API for subscribing to hot streams (<code>Signal</code> in
 ReactiveSwift). The Kotlin library does not have any special API for subscribing to hot streams
 (channels), though it does have extension methods to convert <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/"><code>ReceiveChannel</code>s</a>,
-and RxJava <code>Flowable</code>s and <code>Observables</code>, to <a href="#worker"><code>Worker</code>s</a>. The reason for this
+and RxJava <code>Flowable</code>s and <code>Observables</code>, to <a href="/workflow/userguide/worker-in-code/"><code>Worker</code>s</a>. The reason for this
 discrepancy is simply that we don&rsquo;t have any uses of channels yet in production, and so we&rsquo;ve
 decided to keep the API simpler. If we start using channels in the future, it may make sense to
 make subscribing to them a first-class API like in Swift.</p>
@@ -1189,7 +1189,7 @@ make subscribing to them a first-class API like in Swift.</p>
 <p><code>Workers</code> are very similar in concept to child workflows. Unlike child workflows, however, workers
 do not have a <code>Rendering</code> type; they only exist to perform a single asynchronous task before sending
 zero or more output events back up the tree to their parent.</p>
-<p>For more information about workers, see the <a href="#worker">Worker</a> section below.</p>
+<p>For more information about workers, see the <a href="/workflow/userguide/worker-in-code/">Worker</a> section below.</p>
 <h2 id="workflows-can-be-saved-to-and-restored-from-a-snapshot-kotlin-only">Workflows can be saved to and restored from a snapshot (Kotlin only)<a class="headerlink" href="#workflows-can-be-saved-to-and-restored-from-a-snapshot-kotlin-only" title="Permanent link">&para;</a></h2>
 <p>On every render pass, each workflow is asked to create a &ldquo;snapshot&rdquo; of its state – a lazily-produced
 serialization of the workflow&rsquo;s <code>State</code> as a binary blob. These <code>Snapshot</code>s are aggregated into a
