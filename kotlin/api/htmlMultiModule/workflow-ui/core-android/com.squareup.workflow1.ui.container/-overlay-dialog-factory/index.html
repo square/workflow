@@ -56,27 +56,8 @@
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="index.html">OverlayDialogFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">OverlayT</a><span class="token operator"> : </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a><span class="token operator">&gt;</span> : <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/-entry/index.html">ViewRegistry.Entry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">OverlayT</a><span class="token operator">&gt; </span></div><p class="paragraph">Factory for <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a> instances that can show renderings of type <a href="index.html">OverlayT</a> : <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-overlay/index.html">Overlay</a>.</p><p class="paragraph">Implement this interface directly for rendering types that are completely self-descriptive, like <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-alert-overlay/index.html">AlertOverlay</a>. For dialogs that wrap a <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> for their content, implement <a href="../-screen-overlay-dialog-factory/index.html">ScreenOverlayDialogFactory</a> interface and use the <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui.container/-screen-overlay/index.html">ScreenOverlay</a> rendering type.</p><p class="paragraph">To minimize boilerplate, have your rendering classes implement <a href="../-android-overlay/index.html">AndroidOverlay</a> to associate them with appropriate an appropriate <a href="index.html">OverlayDialogFactory</a>. For more flexibility, and to avoid coupling your workflow directly to the Android runtime, see <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a>.</p><p class="paragraph">See the kdoc on <a href="../-screen-overlay-dialog-factory/index.html">ScreenOverlayDialogFactory</a> for a fuller description of how <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a>s are placed on the screen, and their impact on UI events.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-screen-overlay-dialog-factory/index.html">ScreenOverlayDialogFactory</a></div></span></div><div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1795800865%2FFunctions%2F-108279078" anchor-label="buildDialog" id="1795800865%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="build-dialog.html"><span>build</span><wbr><span><span>Dialog</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1795800865%2FFunctions%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="build-dialog.html"><span class="token function">buildDialog</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">initialRendering<span class="token operator">: </span><a href="index.html">OverlayT</a><span class="token punctuation">, </span></span><span class="parameter ">initialEnvironment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-overlay-dialog-holder/index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">OverlayT</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Builds a <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a>, but does not show it.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
         <div class="table"><a data-name="949846928%2FProperties%2F-108279078" anchor-label="type" id="949846928%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
@@ -90,6 +71,25 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="index.html#949846928%2FProperties%2F-108279078">type</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">OverlayT</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1795800865%2FFunctions%2F-108279078" anchor-label="buildDialog" id="1795800865%2FFunctions%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="build-dialog.html"><span>build</span><wbr><span><span>Dialog</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1795800865%2FFunctions%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="build-dialog.html"><span class="token function">buildDialog</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">initialRendering<span class="token operator">: </span><a href="index.html">OverlayT</a><span class="token punctuation">, </span></span><span class="parameter ">initialEnvironment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-overlay-dialog-holder/index.html">OverlayDialogHolder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">OverlayT</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Builds a <a href="https://developer.android.com/reference/kotlin/android/app/Dialog.html">Dialog</a>, but does not show it.</p></div></div></div>
                 </div>
               </div>
             </div>

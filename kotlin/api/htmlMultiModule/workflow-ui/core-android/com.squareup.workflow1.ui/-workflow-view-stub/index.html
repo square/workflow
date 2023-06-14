@@ -53,13 +53,11 @@
   <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui</a><span class="delimiter">/</span><span class="current">WorkflowViewStub</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Workflow</span><wbr><span>View</span><wbr><span><span>Stub</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="index.html">WorkflowViewStub</a>&nbsp;<span><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">attributeSet<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">defStyle<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">defStyleRes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a></div><p class="paragraph">A placeholder <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> that can replace itself with ones driven by workflow renderings, similar to <a href="https://developer.android.com/reference/kotlin/android/view/ViewStub.html">android.view.ViewStub</a>.</p><h2 class=""> Usage</h2><p class="paragraph">In the XML layout for a container view, place a <a href="index.html">WorkflowViewStub</a> where you want child renderings to be displayed. E.g.:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">
-
-    
-   …</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Then in your <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-layout-runner/index.html">LayoutRunner</a>,</p><ul><li><p class="paragraph">pull the view out with <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/find-view-by-id.html">findViewById</a> like any other view</p></li><li><p class="paragraph">and <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a> it in your <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-layout-runner/show-rendering.html">LayoutRunner.showRendering</a> method:</p></li></ul><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">    class YourLayoutRunner(view: View) {<br>      private val childStub = view.findViewById&lt;WorkflowViewStub&gt;(R.id.child_stub)<br><br>      // Totally optional, since this view is also accessible as [childStub.actual].<br>      // Note that R.id.child was set in XML via the square:inflatedId parameter.<br>      private val child: View by lazy {<br>        view.findViewById&lt;View&gt;(R.id.child)<br>      }<br><br>      override fun showRendering(<br>         rendering: YourRendering,<br>         viewEnvironment: ViewEnvironment<br>      ) {<br>        childStub.update(rendering.childRendering, viewEnvironment)<br>      }<br>    }</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph"><strong>NB</strong>: If you're using a stub in a <code class="lang-kotlin">RelativeLayout</code> or <code class="lang-kotlin">ConstraintLayout</code>, relationships should be tied to the stub's <code class="lang-kotlin">app:inflatedId</code>, not its <code class="lang-kotlin">android:id</code>.</p><p class="paragraph">Use <a href="updates-visibility.html">updatesVisibility</a> and <a href="set-background.html">setBackground</a> for more control of how <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a> effects the visibility and backgrounds of created views.</p><p class="paragraph">Use <a href="replace-old-view-in-parent.html">replaceOldViewInParent</a> to customize replacing <a href="actual.html">actual</a> with a new view, e.g. for animated transitions.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">class </span><a href="index.html">WorkflowViewStub</a>&nbsp;<span><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">attributeSet<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">defStyle<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">defStyleRes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a></div><p class="paragraph">A placeholder <a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a> that can replace itself with ones driven by workflow renderings, similar to <a href="https://developer.android.com/reference/kotlin/android/view/ViewStub.html">android.view.ViewStub</a>.</p><h2 class=""> Usage</h2><p class="paragraph">In the XML layout for a container view, place a <a href="index.html">WorkflowViewStub</a> where you want child renderings to be displayed. E.g.:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea"><linearlayout xmlns:android="&quot;http://schemas.android.com/apk/res/android&quot;" xmlns:app="&quot;http://schemas.android.com/apk/res-auto&quot;" …><com.squareup.workflow1.workflowviewstub android:id="&quot;@+id/child_stub&quot;" app:inflatedid="&quot;@+id/child&quot;" />
+   …</linearlayout></code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Then in your <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-layout-runner/index.html">LayoutRunner</a>,</p><ul><li><p class="paragraph">pull the view out with <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/find-view-by-id.html">findViewById</a> like any other view</p></li><li><p class="paragraph">and <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a> it in your <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-layout-runner/show-rendering.html">LayoutRunner.showRendering</a> method:</p></li></ul><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">    class YourLayoutRunner(view: View) {<br>      private val childStub = view.findViewById&lt;WorkflowViewStub&gt;(R.id.child_stub)<br><br>      // Totally optional, since this view is also accessible as [childStub.actual].<br>      // Note that R.id.child was set in XML via the square:inflatedId parameter.<br>      private val child: View by lazy {<br>        view.findViewById&lt;View&gt;(R.id.child)<br>      }<br><br>      override fun showRendering(<br>         rendering: YourRendering,<br>         viewEnvironment: ViewEnvironment<br>      ) {<br>        childStub.update(rendering.childRendering, viewEnvironment)<br>      }<br>    }</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph"><strong>NB</strong>: If you're using a stub in a <code class="lang-kotlin">RelativeLayout</code> or <code class="lang-kotlin">ConstraintLayout</code>, relationships should be tied to the stub's <code class="lang-kotlin">app:inflatedId</code>, not its <code class="lang-kotlin">android:id</code>.</p><p class="paragraph">Use <a href="updates-visibility.html">updatesVisibility</a> and <a href="set-background.html">setBackground</a> for more control of how <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a> effects the visibility and backgrounds of created views.</p><p class="paragraph">Use <a href="replace-old-view-in-parent.html">replaceOldViewInParent</a> to customize replacing <a href="actual.html">actual</a> with a new view, e.g. for animated transitions.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="">Constructors</h2>
@@ -74,6 +72,130 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a></div></div><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">attributeSet<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">defStyle<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">defStyleRes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="674884200%2FProperties%2F-108279078" anchor-label="actual" id="674884200%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="actual.html"><span><span>actual</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="674884200%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="actual.html">actual</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a></div><div class="brief "><p class="paragraph">On-demand access to the view created by the last call to <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a>, or this <a href="index.html">WorkflowViewStub</a> instance if none has yet been made.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2030368362%2FProperties%2F-108279078" anchor-label="backPressedHandler" id="-2030368362%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../back-pressed-handler.html"><span>back</span><wbr><span>Pressed</span><wbr><span><span>Handler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2030368362%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">.</span><a href="../back-pressed-handler.html">backPressedHandler</a><span class="token operator">: </span><a href="../index.html#-353760787%2FClasslikes%2F-108279078">BackPressHandler</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">A function to be called if the device back button is pressed while this view is attached to a window.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1146549326%2FProperties%2F-108279078" anchor-label="environmentOrNull" id="-1146549326%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../environment-or-null.html"><span>environment</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1146549326%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">.</span><a href="../environment-or-null.html">environmentOrNull</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns the most recent <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a> applied to this view, or null if <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">bindShowRendering</a> has never been called.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1421269634%2FProperties%2F-108279078" anchor-label="inflatedId" id="-1421269634%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="inflated-id.html"><span>inflated</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1421269634%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/IdRes.html"><span class="token annotation builtin">IdRes</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="inflated-id.html">inflatedId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The id to be assigned to new views created by <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a>. If the inflated id is <a href="https://developer.android.com/reference/kotlin/android/view/View.html#no_id">View.NO_ID</a> (its default value), new views keep their original ids.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1249364561%2FProperties%2F-108279078" anchor-label="replaceOldViewInParent" id="-1249364561%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="replace-old-view-in-parent.html"><span>replace</span><wbr><span>Old</span><wbr><span>View</span><wbr><span>In</span><wbr><span><span>Parent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1249364561%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="replace-old-view-in-parent.html">replaceOldViewInParent</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div><div class="brief "><p class="paragraph">Function called from <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a> to replace this stub, or the current <a href="actual.html">actual</a>, with a new view. Can be updated to provide custom transition effects.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1657092531%2FProperties%2F-108279078" anchor-label="screen" id="1657092531%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../screen.html"><span><span>screen</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1657092531%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">.</span><a href="../screen.html">screen</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a></div><div class="brief "><p class="paragraph">Returns the most recent <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> rendering <a href="../show.html">shown</a> in this view, or throws a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-null-pointer-exception/index.html">NullPointerException</a> if the receiver was not created via <a href="../start-showing.html">ScreenViewFactory.startShowing</a>. If the receiver is showing non-<a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> rendering set by the legacy <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">showRendering</a>, it will be returned wrapped in <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-as-screen/index.html">AsScreen</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="712591261%2FProperties%2F-108279078" anchor-label="screenOrNull" id="712591261%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../screen-or-null.html"><span>screen</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="712591261%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">.</span><a href="../screen-or-null.html">screenOrNull</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns the most recent <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> rendering <a href="../show.html">shown</a> in this view, or <code class="lang-kotlin">null</code> if the receiver was not created via <a href="../start-showing.html">ScreenViewFactory.startShowing</a>. If the receiver is showing non-<a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> rendering set by the legacy <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">showRendering</a>, it will be returned wrapped in <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-as-screen/index.html">AsScreen</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1317072472%2FProperties%2F-108279078" anchor-label="updatesVisibility" id="-1317072472%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="updates-visibility.html"><span>updates</span><wbr><span><span>Visibility</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1317072472%2FProperties%2F-108279078"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="updates-visibility.html">updatesVisibility</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If true, the visibility of views created by <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a> will be copied from that of <a href="actual.html">actual</a>. Bear in mind that the initial value of <a href="actual.html">actual</a> is this stub.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -8253,130 +8375,6 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../com.squareup.workflow1.ui.container/-back-stack-container/index.html#-691997609%2FFunctions%2F-108279078"><span class="token function">willNotDraw</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="674884200%2FProperties%2F-108279078" anchor-label="actual" id="674884200%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="actual.html"><span><span>actual</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="674884200%2FProperties%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="actual.html">actual</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a></div><div class="brief "><p class="paragraph">On-demand access to the view created by the last call to <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a>, or this <a href="index.html">WorkflowViewStub</a> instance if none has yet been made.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-2030368362%2FProperties%2F-108279078" anchor-label="backPressedHandler" id="-2030368362%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../back-pressed-handler.html"><span>back</span><wbr><span>Pressed</span><wbr><span><span>Handler</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2030368362%2FProperties%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">.</span><a href="../back-pressed-handler.html">backPressedHandler</a><span class="token operator">: </span><a href="../index.html#-353760787%2FClasslikes%2F-108279078">BackPressHandler</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">A function to be called if the device back button is pressed while this view is attached to a window.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1146549326%2FProperties%2F-108279078" anchor-label="environmentOrNull" id="-1146549326%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../environment-or-null.html"><span>environment</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1146549326%2FProperties%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">.</span><a href="../environment-or-null.html">environmentOrNull</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns the most recent <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a> applied to this view, or null if <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">bindShowRendering</a> has never been called.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1421269634%2FProperties%2F-108279078" anchor-label="inflatedId" id="-1421269634%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="inflated-id.html"><span>inflated</span><wbr><span><span>Id</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1421269634%2FProperties%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/IdRes.html"><span class="token annotation builtin">IdRes</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="inflated-id.html">inflatedId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The id to be assigned to new views created by <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a>. If the inflated id is <a href="https://developer.android.com/reference/kotlin/android/view/View.html#no_id">View.NO_ID</a> (its default value), new views keep their original ids.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1249364561%2FProperties%2F-108279078" anchor-label="replaceOldViewInParent" id="-1249364561%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="replace-old-view-in-parent.html"><span>replace</span><wbr><span>Old</span><wbr><span>View</span><wbr><span>In</span><wbr><span><span>Parent</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1249364561%2FProperties%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="replace-old-view-in-parent.html">replaceOldViewInParent</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div><div class="brief "><p class="paragraph">Function called from <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a> to replace this stub, or the current <a href="actual.html">actual</a>, with a new view. Can be updated to provide custom transition effects.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1657092531%2FProperties%2F-108279078" anchor-label="screen" id="1657092531%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../screen.html"><span><span>screen</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1657092531%2FProperties%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">.</span><a href="../screen.html">screen</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a></div><div class="brief "><p class="paragraph">Returns the most recent <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> rendering <a href="../show.html">shown</a> in this view, or throws a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-null-pointer-exception/index.html">NullPointerException</a> if the receiver was not created via <a href="../start-showing.html">ScreenViewFactory.startShowing</a>. If the receiver is showing non-<a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> rendering set by the legacy <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">showRendering</a>, it will be returned wrapped in <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-as-screen/index.html">AsScreen</a>.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="712591261%2FProperties%2F-108279078" anchor-label="screenOrNull" id="712591261%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../screen-or-null.html"><span>screen</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="712591261%2FProperties%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">.</span><a href="../screen-or-null.html">screenOrNull</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns the most recent <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> rendering <a href="../show.html">shown</a> in this view, or <code class="lang-kotlin">null</code> if the receiver was not created via <a href="../start-showing.html">ScreenViewFactory.startShowing</a>. If the receiver is showing non-<a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen/index.html">Screen</a> rendering set by the legacy <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/index.html">showRendering</a>, it will be returned wrapped in <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-as-screen/index.html">AsScreen</a>.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1317072472%2FProperties%2F-108279078" anchor-label="updatesVisibility" id="-1317072472%2FProperties%2F-108279078" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-filterable-current=":workflow-ui:core-android:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:core-android:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="updates-visibility.html"><span>updates</span><wbr><span><span>Visibility</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1317072472%2FProperties%2F-108279078"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="updates-visibility.html">updatesVisibility</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If true, the visibility of views created by <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-view-stub/update.html">update</a> will be copied from that of <a href="actual.html">actual</a>. Bear in mind that the initial value of <a href="actual.html">actual</a> is this stub.</p></div></div></div>
                 </div>
               </div>
             </div>

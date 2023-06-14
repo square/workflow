@@ -745,13 +745,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    environment
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -780,8 +773,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#updatescreenenvironment" class="md-nav__link">
-    update(screen:environment:)
+  <a href="#updatescreen" class="md-nav__link">
+    update(screen:)
   </a>
   
 </li>
@@ -823,7 +816,7 @@ given screen type.</p>
 <p>Using this base class, a screen can be implemented as:
 <div class="highlight"><pre><span></span><code>struct MyScreen: Screen {
     func viewControllerDescription(environment: ViewEnvironment) -&gt; ViewControllerDescription {
-        return MyScreenViewController.description(for: self)
+        return MyScreenViewController.description(for: self, environment: environment)
     }
 }
 
@@ -836,11 +829,10 @@ private class MyScreenViewController: ScreenViewController&lt;MyScreen&gt; {
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="screen"><code>screen</code><a class="headerlink" href="#screen" title="Permanent link">&para;</a></h3>
 <h3 id="screentype"><code>screenType</code><a class="headerlink" href="#screentype" title="Permanent link">&para;</a></h3>
-<h3 id="environment"><code>environment</code><a class="headerlink" href="#environment" title="Permanent link">&para;</a></h3>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="initscreenenvironment"><code>init(screen:environment:)</code><a class="headerlink" href="#initscreenenvironment" title="Permanent link">&para;</a></h3>
 <h3 id="initcoder"><code>init(coder:)</code><a class="headerlink" href="#initcoder" title="Permanent link">&para;</a></h3>
-<h3 id="updatescreenenvironment"><code>update(screen:environment:)</code><a class="headerlink" href="#updatescreenenvironment" title="Permanent link">&para;</a></h3>
+<h3 id="updatescreen"><code>update(screen:)</code><a class="headerlink" href="#updatescreen" title="Permanent link">&para;</a></h3>
 <h3 id="screendidchangefrompreviousenvironment"><code>screenDidChange(from:previousEnvironment:)</code><a class="headerlink" href="#screendidchangefrompreviousenvironment" title="Permanent link">&para;</a></h3>
 <p>Subclasses should override this method in order to update any relevant UI bits when the screen model changes.</p>
 
