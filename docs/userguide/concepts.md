@@ -76,7 +76,7 @@ When that is called, `EmailInboxWorkflow` enqueues an Action function that emits
 ![Workflow schematic showing EmailBrowserWorkflow rendering by delegating to two children, InboxWorkflow and MessageWorkflow, and assembling their renderings into its own.](../images/split_screen_update.svg)
 
 Whenever such a [Workflow Action cascade](../../glossary#action-cascade) fires, the root Workflow is asked for a new Rendering.
-Just as before, `EmailInboxWorkflow` delegates to its two children for their Renderings, this time providing the new value of `selection` as the updated Props for `MessageWorkflow`.
+Just as before, `EmailBrowserWorkflow` delegates to its two children for their Renderings, this time providing the new value of `selection` as the updated Props for `MessageWorkflow`.
 
 <!-- ## Workers for I/O and other side effects
 
