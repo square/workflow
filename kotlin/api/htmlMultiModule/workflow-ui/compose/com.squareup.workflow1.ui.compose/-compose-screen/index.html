@@ -56,27 +56,8 @@
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="index.html">ComposeScreen</a> : <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-android-screen/index.html">AndroidScreen</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt; </span></div><p class="paragraph">Interface implemented by a rendering class to allow it to drive a composable UI via an appropriate <a href="../-compose-screen-view-factory/index.html">ComposeScreenViewFactory</a> implementation, by simply overriding the <a href="-content.html">Content</a> method. This is the compose analog to <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-android-screen/index.html">AndroidScreen</a>.</p><p class="paragraph">Note that unlike most workflow view functions, <a href="-content.html">Content</a> does not take the rendering as a parameter. Instead, the rendering is the receiver, i.e. the current value of <code class="lang-kotlin">this</code>.</p><p class="paragraph">Example:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">@OptIn(WorkflowUiExperimentalApi::class)<br>data class HelloView(<br>  val message: String,<br>  val onClick: () -&gt; Unit<br>) : ComposeScreen {<br><br>  @Composable override fun Content(viewEnvironment: ViewEnvironment) {<br>    Button(onClick) {<br>      Text(message)<br>    }<br>  }<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This is the simplest way to bridge the gap between your workflows and the UI, but using it requires your workflows code to reside in Android modules, instead of pure Kotlin. If this is a problem, or you need more flexibility for any other reason, you can use <a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-registry/index.html">ViewRegistry</a> to bind your renderings to <a href="../-compose-screen-view-factory/index.html">ComposeScreenViewFactory</a> implementations at runtime.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1679748610%2FFunctions%2F232754475" anchor-label="Content" id="1679748610%2FFunctions%2F232754475" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release"></a>
-          <div class="table-row" data-filterable-current=":workflow-ui:compose:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-content.html"><span><span>Content</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1679748610%2FFunctions%2F232754475"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-content.html"><span class="token function">Content</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">viewEnvironment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The composable content of this rendering. This method will be called with the current rendering instance as the receiver, any time a new rendering is emitted, or the <a href="-content.html">viewEnvironment</a> changes.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
         <div class="table"><a data-name="-1540996197%2FProperties%2F232754475" anchor-label="viewFactory" id="-1540996197%2FProperties%2F232754475" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release"></a>
@@ -90,6 +71,25 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="view-factory.html">viewFactory</a><span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory/index.html">ScreenViewFactory</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Don't override this, override <a href="-content.html">Content</a> instead.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1679748610%2FFunctions%2F232754475" anchor-label="Content" id="1679748610%2FFunctions%2F232754475" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:compose:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-content.html"><span><span>Content</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1679748610%2FFunctions%2F232754475"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-content.html"><span class="token function">Content</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">viewEnvironment<span class="token operator">: </span><a href="../../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The composable content of this rendering. This method will be called with the current rendering instance as the receiver, any time a new rendering is emitted, or the <a href="-content.html">viewEnvironment</a> changes.</p></div></div></div>
                 </div>
               </div>
             </div>

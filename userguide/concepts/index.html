@@ -922,7 +922,7 @@ When that is called, <code>EmailInboxWorkflow</code> enqueues an Action function
 <code>EmailBrowserWorkflow</code>  receives that Output, and enqueues another Action that updates the <code>selection: MessageId</code> of its State accordingly.</p>
 <p><img alt="Workflow schematic showing EmailBrowserWorkflow rendering by delegating to two children, InboxWorkflow and MessageWorkflow, and assembling their renderings into its own." src="../../images/split_screen_update.svg" /></p>
 <p>Whenever such a <a href="../../glossary#action-cascade">Workflow Action cascade</a> fires, the root Workflow is asked for a new Rendering.
-Just as before, <code>EmailInboxWorkflow</code> delegates to its two children for their Renderings, this time providing the new value of <code>selection</code> as the updated Props for <code>MessageWorkflow</code>.</p>
+Just as before, <code>EmailBrowserWorkflow</code> delegates to its two children for their Renderings, this time providing the new value of <code>selection</code> as the updated Props for <code>MessageWorkflow</code>.</p>
 <!-- ## Workers for I/O and other side effects
 
 There is a big gap in the email app above.

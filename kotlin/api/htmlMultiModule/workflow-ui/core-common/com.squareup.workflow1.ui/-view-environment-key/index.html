@@ -56,7 +56,7 @@
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">ViewEnvironmentKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/ViewEnvironment.kt#L74">source</a>)</span></span></div><p class="paragraph">Defines a value type <a href="index.html">T</a> that can be provided by a <a href="../-view-environment/index.html">ViewEnvironment</a> map, and specifies its <a href="default.html">default</a> value.</p><p class="paragraph">It is hard to imagine a useful implementation of this that is not a Kotlin <code class="lang-kotlin">object</code>. Preferred use is to have the <code class="lang-kotlin">companion object</code> of <a href="index.html">T</a> extend this class. See <a href="../../com.squareup.workflow1.ui.container/-back-stack-config/-companion/index.html">BackStackConfig.Companion</a> for an example.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-view-registry/-companion/index.html">Companion</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.squareup.workflow1.ui.container/-back-stack-config/-companion/index.html">Companion</a></div></span></div><div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="">Constructors</h2>
@@ -71,6 +71,25 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1321605852%2FProperties%2F-917155079" anchor-label="default" id="-1321605852%2FProperties%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="default.html"><span><span>default</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1321605852%2FProperties%2F-917155079"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="default.html">default</a><span class="token operator">: </span><a href="index.html">T</a></div><div class="brief "><p class="paragraph">Defines the default value for this key. It is a grievous error for this value to be dynamic in any way.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -120,25 +139,6 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-1321605852%2FProperties%2F-917155079" anchor-label="default" id="-1321605852%2FProperties%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="default.html"><span><span>default</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1321605852%2FProperties%2F-917155079"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="default.html">default</a><span class="token operator">: </span><a href="index.html">T</a></div><div class="brief "><p class="paragraph">Defines the default value for this key. It is a grievous error for this value to be dynamic in any way.</p></div></div></div>
                 </div>
               </div>
             </div>
