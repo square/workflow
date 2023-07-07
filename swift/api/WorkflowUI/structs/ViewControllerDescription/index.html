@@ -766,8 +766,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#initperforminitialupdatetypebuildupdate" class="md-nav__link">
-    init(performInitialUpdate:type:build:update:)
+  <a href="#initperforminitialupdatetypeenvironmentbuildupdate" class="md-nav__link">
+    init(performInitialUpdate:type:environment:build:update:)
   </a>
   
 </li>
@@ -852,7 +852,7 @@ in a way that is <code>Equatable</code> and <code>Hashable</code>. When implemen
 updating and diffing, you can use this type to identify if the backing view controller
 type changed.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="initperforminitialupdatetypebuildupdate"><code>init(performInitialUpdate:type:build:update:)</code><a class="headerlink" href="#initperforminitialupdatetypebuildupdate" title="Permanent link">&para;</a></h3>
+<h3 id="initperforminitialupdatetypeenvironmentbuildupdate"><code>init(performInitialUpdate:type:environment:build:update:)</code><a class="headerlink" href="#initperforminitialupdatetypeenvironmentbuildupdate" title="Permanent link">&para;</a></h3>
 <p>Constructs a view controller description by providing closures used to
 build and update a specific view controller type.</p>
 <ul>
@@ -860,6 +860,12 @@ build and update a specific view controller type.</p>
 <li>
 <p>performInitialUpdate: If an initial call to <code>update(viewController:)</code>
     will be performed when the view controller is created. Defaults to <code>true</code>.</p>
+</li>
+<li>
+<p>environment: The <code>ViewEnvironment</code> that should be injected above the
+    described view controller for ViewEnvironmentUI environment propagation.
+    This is typically passed in from a <code>Screen</code> in its
+    <code>viewControllerDescription(environment:)</code> method.</p>
 </li>
 <li>
 <p>type: The type of view controller produced by this description.

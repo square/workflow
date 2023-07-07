@@ -56,27 +56,8 @@
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ImpostorWorkflow</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/ImpostorWorkflow.kt#L18">source</a>)</span></span></div><p class="paragraph">Optional interface that <a href="../-workflow/index.html">Workflow</a>s should implement if they need the runtime to consider their identity to include a child workflow's identity. Two <a href="index.html">ImpostorWorkflow</a>s with the same concrete class, but different <a href="real-identifier.html">realIdentifier</a>s will be considered different workflows by the runtime.</p><p class="paragraph">This is intended to be used for helper workflows that implement things like operators by wrapping and delegating to other workflows, and which need to be able to express that the identity of the operator workflow is derived from the identity of the wrapped workflow.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="506295912%2FFunctions%2F-1897121320" anchor-label="describeRealIdentifier" id="506295912%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="describe-real-identifier.html"><span>describe</span><wbr><span>Real</span><wbr><span><span>Identifier</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="506295912%2FFunctions%2F-1897121320"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="describe-real-identifier.html"><span class="token function">describeRealIdentifier</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns a string that describes how this workflow is related to <a href="real-identifier.html">realIdentifier</a>.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
         <div class="table"><a data-name="-1296228173%2FProperties%2F-1897121320" anchor-label="realIdentifier" id="-1296228173%2FProperties%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
@@ -90,6 +71,25 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="real-identifier.html">realIdentifier</a><span class="token operator">: </span><a href="../-workflow-identifier/index.html">WorkflowIdentifier</a></div><div class="brief "><p class="paragraph">The <a href="../-workflow-identifier/index.html">WorkflowIdentifier</a> of another workflow to be combined with the identifier of this workflow, as obtained by <a href="../computed-identifier.html">Workflow.computedIdentifier</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="506295912%2FFunctions%2F-1897121320" anchor-label="describeRealIdentifier" id="506295912%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="describe-real-identifier.html"><span>describe</span><wbr><span>Real</span><wbr><span><span>Identifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="506295912%2FFunctions%2F-1897121320"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="describe-real-identifier.html"><span class="token function">describeRealIdentifier</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns a string that describes how this workflow is related to <a href="real-identifier.html">realIdentifier</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
