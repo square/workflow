@@ -910,7 +910,7 @@ This could be modeled as a trio of Workflows:</p>
 <p>When <code>EmailBrowserWorkflow</code> is asked to provide its Rendering, it in turn asks for Renderings from its two children.</p>
 <ul>
 <li>It provides the <code>List&lt;MessageId&gt;</code> from its state as the Props for <code>EmailInboxWorkflow</code> and receives an <code>InBoxScreen</code> rendering in return. That <code>InboxScreen</code> becomes the left pane of a <code>SplitScreen</code> Rendering.</li>
-<li>For the <code>SplitScreen</code>&lsquo;s right pane, the browser Workflow provides the currently selected <code>MessageId</code> as input to <code>EmailMessageWorkflow</code>, to get a <code>MessageScreen</code> rendering.</li>
+<li>For the <code>SplitScreen</code>&rsquo;s right pane, the browser Workflow provides the currently selected <code>MessageId</code> as input to <code>EmailMessageWorkflow</code>, to get a <code>MessageScreen</code> rendering.</li>
 </ul>
 <p><img alt="Workflow schematic showing a parent EmailBrowserWorkflow providing Props to its children, InboxWorkflow and MessageWorkflow, and assembling their renderings into a SplitScreen(InboxScreen, MessageScreen)" src="../../images/split_screen_schematic.svg" /></p>
 <div class="admonition note">

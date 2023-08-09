@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>restore</title>
+    <title>mapOverlays</title>
 <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -38,7 +38,7 @@
     </div>
     <div class="pull-right d-flex">
         <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-android:dokkaHtmlPartial/release">androidJvm</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-common:dokkaHtmlPartial/main">jvm</button>
         </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
@@ -49,12 +49,12 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" data-page-type="member" id="content" pageids="workflow-ui-core-android::com.squareup.workflow1.ui.container/ViewStateCache/restore/#com.squareup.workflow1.ui.container.ViewStateCache.Saved/PointingToDeclaration//-108279078">
-  <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-android</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.container</a><span class="delimiter">/</span><a href="index.html">ViewStateCache</a><span class="delimiter">/</span><span class="current">restore</span></div>
+<div class="main-content" data-page-type="member" id="content" pageids="workflow-ui-core-common-jvm::com.squareup.workflow1.ui.container/BodyAndOverlaysScreen/mapOverlays/#kotlin.Function1[TypeParam(bounds=[com.squareup.workflow1.ui.container.Overlay]),TypeParam(bounds=[com.squareup.workflow1.ui.container.Overlay])]/PointingToDeclaration//-917155079">
+  <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-common-jvm</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui.container</a><span class="delimiter">/</span><a href="index.html">BodyAndOverlaysScreen</a><span class="delimiter">/</span><span class="current">mapOverlays</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>restore</span></span></h1>
+    <h1 class="cover"><span>map</span><wbr><span><span>Overlays</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-android:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="restore.html"><span class="token function">restore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">from<span class="token operator">: </span><a href="-saved/index.html">ViewStateCache.Saved</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">Replaces the state of the receiver with that of <a href="restore.html">from</a>. Typical usage is to call this from a container view's <a href="https://developer.android.com/reference/kotlin/android/view/View.html#onRestoreInstanceState-android.os.Parcelable-">View.onRestoreInstanceState</a>.</p></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="map-overlays.html">N</a><span class="token operator"> : </span><a href="../-overlay/index.html">Overlay</a><span class="token operator">&gt; </span><a href="map-overlays.html"><span class="token function">mapOverlays</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">transform<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="index.html">O</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="map-overlays.html">N</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">BodyAndOverlaysScreen</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">B</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="map-overlays.html">N</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/container/BodyAndOverlaysScreen.kt#L96">source</a>)</span></span></div></div></div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>

@@ -869,7 +869,7 @@ They&rsquo;re actually pretty close to what goes on in Kotlin, the <code>Workflo
 <p><img alt="workflow rendering sequence diagram" src="../../images/swift/workflow_rendering.png" /></p>
 <p>The root of your workflow hierarchy gets put into a <code>WorkflowHost</code> (if you&rsquo;re using
 <code>ContainerViewController</code> this is created for you). As part of its initializer, <code>WorkflowHost</code>
-creates a <code>WorkflowNode</code> that wraps the given root <code>Workflow</code> (and keeps track of the <code>Workflow</code>&lsquo;s
+creates a <code>WorkflowNode</code> that wraps the given root <code>Workflow</code> (and keeps track of the <code>Workflow</code>&rsquo;s
 <code>State</code>). It then calls <code>render()</code> on the node:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// WorkflowHost</span>
 <span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">workflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">,</span> <span class="n">debugger</span><span class="p">:</span> <span class="n">WorkflowDebugger</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="p">{</span>
