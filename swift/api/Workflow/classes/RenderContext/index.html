@@ -796,6 +796,16 @@ render pass, a new child workflow node is generated.</p>
 <code>Rendering</code> value, which is then returned to the caller.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="makesinkof"><code>makeSink(of:)</code><a class="headerlink" href="#makesinkof" title="Permanent link">&para;</a></h3>
+<p>Creates a <code>Sink</code> that can be used to send <code>Action</code>s.</p>
+<p>Sinks are the primary mechanism for feeding State-changing events into the Workflow runtime.
+Upon receipt of an action, the associated Workflow (node) in the tree will have its State
+potentially transformed, and then any subsequent Output will be propagated to its parent node until
+the root of the Workflow tree is reached. At this point the tree will be re-rendered to reflect any
+State changes that occurred.</p>
+<ul>
+<li>Parameter actionType: The type of Action this Sink may process</li>
+<li>Returns: A Sink capable of relaying <code>Action</code> instances to the Workflow runtime</li>
+</ul>
 <h3 id="runsideeffectkeyaction"><code>runSideEffect(key:action:)</code><a class="headerlink" href="#runsideeffectkeyaction" title="Permanent link">&para;</a></h3>
 <p>Execute a side-effect action.</p>
 <p>Note that it is a programmer error to run two side-effects with the same <code>key</code>
