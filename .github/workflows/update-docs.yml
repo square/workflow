@@ -76,11 +76,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
-        java-version: 11
+        java-version: 17
 
     # Build Swift docs
     - name: Build Swift docs
