@@ -25,7 +25,6 @@ module:workflow-ui-container-android
 com.squareup.workflow1.ui.modal
 module:workflow-ui-container-common-jvm
 com.squareup.workflow1.ui.backstack
-com.squareup.workflow1.ui.modal
 module:workflow-ui-core-android
 com.squareup.workflow1.ui
 com.squareup.workflow1.ui.androidx

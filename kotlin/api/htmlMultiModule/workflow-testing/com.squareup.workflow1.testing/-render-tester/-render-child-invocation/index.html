@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>RenderChildInvocation</title>
-<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../../styles/style.css" rel="Stylesheet">
-<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../../../styles/main.css" rel="Stylesheet">
 <link href="../../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
@@ -29,31 +32,37 @@
 <script type="text/javascript" src="../../../../scripts/prism.js" async></script>
 <script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../../../index.html">
-<span>workflow</span>            </a>    </div>
-    <div>
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            workflow
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-testing:dokkaHtmlPartial/main">jvm</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="workflow-testing-jvm::com.squareup.workflow1.testing/RenderTester.RenderChildInvocation///PointingToDeclaration//-1959099706">
   <div class="breadcrumbs"><a href="../../../index.html">workflow-testing-jvm</a><span class="delimiter">/</span><a href="../../index.html">com.squareup.workflow1.testing</a><span class="delimiter">/</span><a href="../index.html">RenderTester</a><span class="delimiter">/</span><span class="current">RenderChildInvocation</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Render</span><wbr><span>Child</span><wbr><span><span>Invocation</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">RenderChildInvocation</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>workflow<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>props<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>outputType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>renderingType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>renderKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/RenderTester.kt#L274">source</a>)</span></span></div><p class="paragraph">Describes a call to <a href="../../../../workflow-core/com.squareup.workflow1/-base-render-context/render-child.html">RenderContext.renderChild</a>.</p><h2 class=""> Output and rendering types</h2><p class="paragraph">The testing library will attempt to determine the output and rendering types by using reflection to determine the type arguments that the concrete workflow class passes to the <a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a> interface. This is subject to the limitations of Kotlin's reflection. Notably, there is a compiler bug (<a href="https://youtrack.jetbrains.com/issue/KT-17103">KT-17103</a>) that prevents reflecting on these types when the workflow is an anonymous class that was created by an inline function with reified types, such as <code class="lang-kotlin">Workflow.stateful</code> and <code class="lang-kotlin">Workflow.stateless</code>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>workflow</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The child workflow that is being rendered.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>props</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The props value passed to <code class="lang-kotlin">renderChild</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>output</span><wbr><span><span>Type</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow's <code class="lang-kotlin">OutputT</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>rendering</span><wbr><span><span>Type</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow's <code class="lang-kotlin">RenderingT</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>render</span><wbr><span><span>Key</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The string key passed to <code class="lang-kotlin">renderChild</code>.</p></div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-testing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">RenderChildInvocation</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>workflow<span class="token operator">: </span><a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>props<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>outputType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>renderingType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type-projection/index.html">KTypeProjection</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>renderKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-testing/src/main/java/com/squareup/workflow1/testing/RenderTester.kt#L303">source</a>)</span></span></div><p class="paragraph">Describes a call to <a href="../../../../workflow-core/com.squareup.workflow1/-base-render-context/render-child.html">RenderContext.renderChild</a>.</p><h2 class=""> Output and rendering types</h2><p class="paragraph">The testing library will attempt to determine the output and rendering types by using reflection to determine the type arguments that the concrete workflow class passes to the <a href="../../../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a> interface. This is subject to the limitations of Kotlin's reflection. Notably, there is a compiler bug (<a href="https://youtrack.jetbrains.com/issue/KT-17103">KT-17103</a>) that prevents reflecting on these types when the workflow is an anonymous class that was created by an inline function with reified types, such as <code class="lang-kotlin">Workflow.stateful</code> and <code class="lang-kotlin">Workflow.stateless</code>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>workflow</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The child workflow that is being rendered.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>props</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The props value passed to <code class="lang-kotlin">renderChild</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>output</span><wbr><span><span>Type</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow's <code class="lang-kotlin">OutputT</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>rendering</span><wbr><span><span>Type</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/index.html">KType</a> of the workflow's <code class="lang-kotlin">RenderingT</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-testing:dokkaHtmlPartial/main" data-filterable-set=":workflow-testing:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>render</span><wbr><span><span>Key</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The string key passed to <code class="lang-kotlin">renderChild</code>.</p></div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
@@ -162,8 +171,9 @@
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 
