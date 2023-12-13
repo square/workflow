@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>com.squareup.workflow1.ui</title>
-<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
-<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../../styles/main.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
@@ -29,26 +32,32 @@
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
 <script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../../index.html">
-<span>workflow</span>            </a>    </div>
-    <div>
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            workflow
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-common:dokkaHtmlPartial/main">jvm</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="package" id="content" pageids="workflow-ui-core-common-jvm::com.squareup.workflow1.ui////PointingToDeclaration//-917155079">
   <div class="breadcrumbs"><a href="../index.html">workflow-ui-core-common-jvm</a><span class="delimiter">/</span><span class="current">com.squareup.workflow1.ui</span></div>
   <div class="cover ">
@@ -99,7 +108,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-container/index.html">Container</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-container/index.html">BaseT</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="-container/index.html">ContentT</a><span class="token operator"> : </span><a href="-container/index.html">BaseT</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A rendering type comprised of a set of other renderings.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-container/index.html">Container</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-container/index.html">BaseT</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="-container/index.html">C</a><span class="token operator"> : </span><a href="-container/index.html">BaseT</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A rendering type comprised of a set of other renderings.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -114,7 +123,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-named-screen/index.html">C</a><span class="token operator"> : </span><a href="-screen/index.html">Screen</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>content<span class="token operator">: </span><a href="-named-screen/index.html">C</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-screen/index.html">Screen</a>, <a href="-wrapper/index.html">Wrapper</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-screen/index.html">Screen</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-named-screen/index.html">C</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Allows <a href="-screen/index.html">Screen</a> renderings that do not implement <a href="-compatible/index.html">Compatible</a> themselves to be distinguished by more than just their type. Instances are <a href="compatible.html">compatible</a> if they have the same name and have <a href="-named-screen/content.html">compatible</a> fields.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-named-screen/index.html">NamedScreen</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="-named-screen/index.html">C</a><span class="token operator"> : </span><a href="-screen/index.html">Screen</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>content<span class="token operator">: </span><a href="-named-screen/index.html">C</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-screen/index.html">Screen</a>, <a href="-wrapper/index.html">Wrapper</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-screen/index.html">Screen</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-named-screen/index.html">C</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Allows <a href="-screen/index.html">Screen</a> renderings that do not implement <a href="-compatible/index.html">Compatible</a> themselves to be distinguished by more than just their type. Instances are <a href="compatible.html">compatible</a> if they have the same name and have <a href="-named-screen/content.html">compatible</a> fields.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -219,7 +228,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-wrapper/index.html">Wrapper</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-wrapper/index.html">BaseT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-wrapper/index.html">ContentT</a><span class="token operator"> : </span><a href="-wrapper/index.html">BaseT</a><span class="token operator">&gt;</span> : <a href="-container/index.html">Container</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-wrapper/index.html">BaseT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-wrapper/index.html">ContentT</a><span class="token operator">&gt; </span>, <a href="-compatible/index.html">Compatible</a></div><div class="brief "><p class="paragraph">A <a href="-container/index.html">Container</a> rendering that wraps exactly one other rendering, its <a href="-wrapper/content.html">content</a>. These are typically used to "add value" to the <a href="-wrapper/content.html">content</a>, e.g. an <a href="../com.squareup.workflow1.ui.container/-environment-screen/index.html">EnvironmentScreen</a> that allows changes to be made to the <a href="-view-environment/index.html">ViewEnvironment</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="-wrapper/index.html">Wrapper</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-wrapper/index.html">BaseT</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="-wrapper/index.html">C</a><span class="token operator"> : </span><a href="-wrapper/index.html">BaseT</a><span class="token operator">&gt;</span> : <a href="-container/index.html">Container</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-wrapper/index.html">BaseT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-wrapper/index.html">C</a><span class="token operator">&gt; </span>, <a href="-compatible/index.html">Compatible</a></div><div class="brief "><p class="paragraph">A <a href="-container/index.html">Container</a> rendering that wraps exactly one other rendering, its <a href="-wrapper/content.html">content</a>. These are typically used to "add value" to the <a href="-wrapper/content.html">content</a>, e.g. an <a href="../com.squareup.workflow1.ui.container/-environment-screen/index.html">EnvironmentScreen</a> that allows changes to be made to the <a href="-view-environment/index.html">ViewEnvironment</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -341,8 +350,9 @@
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 

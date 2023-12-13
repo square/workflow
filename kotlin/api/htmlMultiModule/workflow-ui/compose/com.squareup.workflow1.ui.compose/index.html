@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>com.squareup.workflow1.ui.compose</title>
-<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
-<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../../styles/main.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
@@ -29,26 +32,32 @@
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
 <script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../../index.html">
-<span>workflow</span>            </a>    </div>
-    <div>
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            workflow
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:compose:dokkaHtmlPartial/release">androidJvm</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="package" id="content" pageids="workflow-ui-compose::com.squareup.workflow1.ui.compose////PointingToDeclaration//232754475">
   <div class="breadcrumbs"><a href="../index.html">workflow-ui-compose</a><span class="delimiter">/</span><span class="current">com.squareup.workflow1.ui.compose</span></div>
   <div class="cover ">
@@ -93,13 +102,13 @@
           <div class="table-row" data-filterable-current=":workflow-ui:compose:dokkaHtmlPartial/release" data-filterable-set=":workflow-ui:compose:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#2122347671%2FClasslikes%2F232754475"><span>Composition</span><wbr><span><span>Root</span></span></a></div>
+                  <div><a href="-composition-root/index.html"><span>Composition</span><wbr><span><span>Root</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2122347671%2FClasslikes%2F232754475"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#2122347671%2FClasslikes%2F232754475">CompositionRoot</a><span class="token operator"> = </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token keyword"></span>content<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div><div class="brief "><p class="paragraph">A composable function that will be used to wrap the first (highest-level) <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> view factory in a composition. This can be used to setup any <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal.html">composition locals</a> that all <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> factories need access to, such as UI themes.</p><p class="paragraph">This function will called once, to wrap the <i>highest-level</i> <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> in the tree. However, composition locals are propagated down to child <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> compositions, so any locals provided here will be available in <i>all</i> <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> compositions.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-composition-root/index.html">CompositionRoot</a><span class="token operator"> = </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token keyword"></span>content<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div><div class="brief "><p class="paragraph">A composable function that will be used to wrap the first (highest-level) <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> view factory in a composition. This can be used to setup any <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/CompositionLocal.html">composition locals</a> that all <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> factories need access to, such as UI themes.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -178,7 +187,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a><span class="token punctuation">.</span><a href="with-composition-root.html"><span class="token function">withCompositionRoot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">root<span class="token operator">: </span><a href="index.html#2122347671%2FClasslikes%2F232754475">CompositionRoot</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a></div><div class="brief "><p class="paragraph">Returns a <a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a> that ensures that any <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> factories registered in this registry will be wrapped exactly once with a <a href="index.html#2122347671%2FClasslikes%2F232754475">CompositionRoot</a> wrapper. See <a href="index.html#2122347671%2FClasslikes%2F232754475">CompositionRoot</a> for more information.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">.</span><a href="with-composition-root.html"><span class="token function">withCompositionRoot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">root<span class="token operator">: </span><a href="index.html#2122347671%2FClasslikes%2F232754475">CompositionRoot</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></div><div class="brief "><p class="paragraph">Convenience function for applying a <a href="index.html#2122347671%2FClasslikes%2F232754475">CompositionRoot</a> to this <a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a>'s <a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a>. See <a href="with-composition-root.html">ScreenViewFactoryFinder.withCompositionRoot</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:compose:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a><span class="token punctuation">.</span><a href="with-composition-root.html"><span class="token function">withCompositionRoot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">root<span class="token operator">: </span><a href="-composition-root/index.html">CompositionRoot</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a></div><div class="brief "><p class="paragraph">Returns a <a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a> that ensures that any <a href="compose-screen-view-factory.html">composeScreenViewFactory</a> factories registered in this registry will be wrapped exactly once with a <a href="-composition-root/index.html">CompositionRoot</a> wrapper. See <a href="-composition-root/index.html">CompositionRoot</a> for more information.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a><span class="token punctuation">.</span><a href="with-composition-root.html"><span class="token function">withCompositionRoot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">root<span class="token operator">: </span><a href="-composition-root/index.html">CompositionRoot</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a></div><div class="brief "><p class="paragraph">Convenience function for applying a <a href="-composition-root/index.html">CompositionRoot</a> to this <a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-view-environment/index.html">ViewEnvironment</a>'s <a href="../../../workflow-ui/core-android/com.squareup.workflow1.ui/-screen-view-factory-finder/index.html">ScreenViewFactoryFinder</a>. See <a href="with-composition-root.html">ScreenViewFactoryFinder.withCompositionRoot</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -206,8 +215,9 @@
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 

@@ -739,6 +739,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#assertstatemodificationsfileline_" class="md-nav__link">
+    assertStateModifications(file:line:_:)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#assertoutputfileline" class="md-nav__link">
     assert(output:file:line:)
   </a>
@@ -773,6 +780,11 @@
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="assertstatefileline"><code>assert(state:file:line:)</code><a class="headerlink" href="#assertstatefileline" title="Permanent link">&para;</a></h3>
 <p>Verifies that the resulting state is equal to the given state.</p>
+<h3 id="assertstatemodificationsfileline_"><code>assertStateModifications(file:line:_:)</code><a class="headerlink" href="#assertstatemodificationsfileline_" title="Permanent link">&para;</a></h3>
+<p>Exhaustive state testing against the initial state.
+- Parameters:
+  - modifications: A function that receives the initial state
+  and is expected to mutate it to match the new state.</p>
 <h3 id="assertoutputfileline"><code>assert(output:file:line:)</code><a class="headerlink" href="#assertoutputfileline" title="Permanent link">&para;</a></h3>
 <p>Verifies that the resulting output is equal to the given output.</p>
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2014-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 filteringContext = {
     dependencies: {},
     restrictedDependencies: [],
@@ -82,7 +86,7 @@ const samplesAreEnabled = () => {
 
 
 const initHidingLeftNavigation = () => {
-    document.getElementById("leftToggler").onclick = function (event) {
+    document.getElementById("menu-toggle").onclick = function (event) {
         //Events need to be prevented from bubbling since they will trigger next handler
         event.preventDefault();
         event.stopPropagation();
@@ -329,6 +333,16 @@ function refreshFiltering() {
     refreshFilterButtons()
     refreshPlatformTabs()
     refreshNoContentNotification()
+    refreshPlaygroundSamples()
+}
+
+function refreshPlaygroundSamples() {
+    document.querySelectorAll('code.runnablesample').forEach(node => {
+        const playground = node.KotlinPlayground;
+        /* Some samples may be hidden by filter, they have 0px height  for visible code area
+         * after rendering. Call this method for re-calculate code area height */
+        playground && playground.view.codemirror.refresh();
+    });
 }
 
 function refreshNoContentNotification() {
