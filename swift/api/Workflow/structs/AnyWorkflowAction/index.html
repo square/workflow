@@ -763,6 +763,19 @@
     init(_:)
   </a>
   
+    <nav class="md-nav" aria-label="init(_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -770,12 +783,38 @@
     init(_:fileID:line:)
   </a>
   
+    <nav class="md-nav" aria-label="init(_:fileID:line:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#applytostate" class="md-nav__link">
     apply(toState:)
   </a>
+  
+    <nav class="md-nav" aria-label="apply(toState:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -804,25 +843,86 @@
 
 <p><strong>STRUCT</strong></p>
 <h1 id="anyworkflowaction"><code>AnyWorkflowAction</code><a class="headerlink" href="#anyworkflowaction" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">AnyWorkflowAction</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;:</span> <span class="n">WorkflowAction</span>
+</code></pre></div>
 <p>A type-erased workflow action.</p>
 <p>The <code>AnyWorkflowAction</code> type forwards <code>apply</code> to an underlying workflow action, hiding its specific underlying type.</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="base"><code>base</code><a class="headerlink" href="#base" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">let</span> <span class="nv">base</span><span class="p">:</span> <span class="nb">Any</span>
+</code></pre></div>
 <p>The underlying type-erased <code>WorkflowAction</code></p>
 <h3 id="isclosurebased"><code>isClosureBased</code><a class="headerlink" href="#isclosurebased" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">let</span> <span class="nv">isClosureBased</span><span class="p">:</span> <span class="nb">Bool</span>
+</code></pre></div>
 <p>True iff the underlying <code>apply</code> implementation is defined by a closure vs wrapping a <code>WorkflowAction</code> conformance</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="init_"><code>init(_:)</code><a class="headerlink" href="#init_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">E</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">base</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="k">where</span> <span class="n">E</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">E</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
+</code></pre></div>
 <p>Creates a type-erased workflow action that wraps the given instance.</p>
 <ul>
 <li>Parameter base: A workflow action to wrap.</li>
 </ul>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base</td>
+<td>A workflow action to wrap.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="init_fileidline"><code>init(_:fileID:line:)</code><a class="headerlink" href="#init_fileidline" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span>
+    <span class="kc">_</span> <span class="n">apply</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="kr">inout</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">?,</span>
+    <span class="n">fileID</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="p">#</span><span class="n">fileID</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Creates a type-erased workflow action with the given <code>apply</code> implementation.</p>
 <ul>
 <li>Parameter apply: the apply function for the resulting action.</li>
 </ul>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>apply</td>
+<td>the apply function for the resulting action.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="applytostate"><code>apply(toState:)</code><a class="headerlink" href="#applytostate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">apply</span><span class="p">(</span><span class="n">toState</span> <span class="n">state</span><span class="p">:</span> <span class="kr">inout</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">?</span>
+</code></pre></div>
+<h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>state</td>
+<td>The current state of the workflow. The state is passed as an <code>inout</code> param, allowing actions to modify state during application.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

@@ -736,12 +736,38 @@
     send(_:)
   </a>
   
+    <nav class="md-nav" aria-label="send(_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#send_value" class="md-nav__link">
     send(_:value:)
   </a>
+  
+    <nav class="md-nav" aria-label="send(_:value:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -770,21 +796,61 @@
 
 <p><strong>STRUCT</strong></p>
 <h1 id="statemutationsink"><code>StateMutationSink</code><a class="headerlink" href="#statemutationsink" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">StateMutationSink</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>StateMutationSink provides a <code>Sink</code> that helps mutate <code>State</code> using it&rsquo;s <code>KeyPath</code>.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="send_"><code>send(_:)</code><a class="headerlink" href="#send_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="kc">_</span> <span class="n">update</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="kr">inout</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
+</code></pre></div>
 <p>Sends message to <code>StateMutationSink</code> to update <code>State</code>&rsquo;s value using the provided closure.</p>
 <ul>
 <li>Parameters:</li>
 <li>update: The <code>State</code> mutation to perform.</li>
 </ul>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>update</td>
+<td>The <code>State</code> mutation to perform.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="send_value"><code>send(_:value:)</code><a class="headerlink" href="#send_value" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">keyPath</span><span class="p">:</span> <span class="n">WritableKeyPath</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">,</span> <span class="n">Value</span><span class="p">&gt;,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">)</span>
+</code></pre></div>
 <p>Sends message to <code>StateMutationSink</code> to update <code>State</code>&rsquo;s value at <code>KeyPath</code> with <code>Value</code>.</p>
 <ul>
 <li>Parameters:</li>
 <li>keyPath: Key path of <code>State</code> whose value needs to be mutated.</li>
 <li>value: Value to update <code>State</code> with.</li>
 </ul>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>keyPath</td>
+<td>Key path of <code>State</code> whose value needs to be mutated.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Value to update <code>State</code> with.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

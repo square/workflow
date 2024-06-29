@@ -756,6 +756,19 @@
     sendObservationEvent(_:)
   </a>
   
+    <nav class="md-nav" aria-label="sendObservationEvent(_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -825,20 +838,55 @@
 
 <p><strong>CLASS</strong></p>
 <h1 id="workflowuiviewcontroller"><code>WorkflowUIViewController</code><a class="headerlink" href="#workflowuiviewcontroller" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="n">open</span> <span class="kd">class</span> <span class="nc">WorkflowUIViewController</span><span class="p">:</span> <span class="bp">UIViewController</span>
+</code></pre></div>
 <p>Ancestor type from which all ViewControllers in WorkflowUI inherit.</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="hasviewappeared"><code>hasViewAppeared</code><a class="headerlink" href="#hasviewappeared" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">private</span><span class="p">(</span><span class="kr">set</span><span class="p">)</span> <span class="kr">final</span> <span class="kd">var</span> <span class="nv">hasViewAppeared</span><span class="p">:</span> <span class="nb">Bool</span> <span class="p">=</span> <span class="kc">false</span>
+</code></pre></div>
 <p>Set to <code>true</code> once <code>viewDidAppear</code> has been called</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="sendobservationevent_"><code>sendObservationEvent(_:)</code><a class="headerlink" href="#sendobservationevent_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">final</span> <span class="kd">func</span> <span class="nf">sendObservationEvent</span><span class="p">&lt;</span><span class="n">E</span><span class="p">:</span> <span class="n">WorkflowUIEvent</span><span class="p">&gt;(</span>
+    <span class="kc">_</span> <span class="n">event</span><span class="p">:</span> <span class="kr">@autoclosure</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="n">E</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Observation event emission point.
 - Parameter event: The event forwarded to any observers.</p>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>event</td>
+<td>The event forwarded to any observers.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="viewwillappear_"><code>viewWillAppear(_:)</code><a class="headerlink" href="#viewwillappear_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="n">open</span> <span class="kd">func</span> <span class="nf">viewWillAppear</span><span class="p">(</span><span class="kc">_</span> <span class="n">animated</span><span class="p">:</span> <span class="nb">Bool</span><span class="p">)</span>
+</code></pre></div>
 <h3 id="viewdidappear_"><code>viewDidAppear(_:)</code><a class="headerlink" href="#viewdidappear_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="n">open</span> <span class="kd">func</span> <span class="nf">viewDidAppear</span><span class="p">(</span><span class="kc">_</span> <span class="n">animated</span><span class="p">:</span> <span class="nb">Bool</span><span class="p">)</span>
+</code></pre></div>
 <h3 id="viewwilldisappear_"><code>viewWillDisappear(_:)</code><a class="headerlink" href="#viewwilldisappear_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="n">open</span> <span class="kd">func</span> <span class="nf">viewWillDisappear</span><span class="p">(</span><span class="kc">_</span> <span class="n">animated</span><span class="p">:</span> <span class="nb">Bool</span><span class="p">)</span>
+</code></pre></div>
 <h3 id="viewdiddisappear_"><code>viewDidDisappear(_:)</code><a class="headerlink" href="#viewdiddisappear_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="n">open</span> <span class="kd">func</span> <span class="nf">viewDidDisappear</span><span class="p">(</span><span class="kc">_</span> <span class="n">animated</span><span class="p">:</span> <span class="nb">Bool</span><span class="p">)</span>
+</code></pre></div>
 <h3 id="viewwilllayoutsubviews"><code>viewWillLayoutSubviews()</code><a class="headerlink" href="#viewwilllayoutsubviews" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="n">open</span> <span class="kd">func</span> <span class="nf">viewWillLayoutSubviews</span><span class="p">()</span>
+</code></pre></div>
 <h3 id="viewdidlayoutsubviews"><code>viewDidLayoutSubviews()</code><a class="headerlink" href="#viewdidlayoutsubviews" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kr">override</span> <span class="n">open</span> <span class="kd">func</span> <span class="nf">viewDidLayoutSubviews</span><span class="p">()</span>
+</code></pre></div>
 
               
             </article>

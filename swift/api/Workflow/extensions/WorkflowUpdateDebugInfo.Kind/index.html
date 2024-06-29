@@ -736,12 +736,38 @@
     encode(to:)
   </a>
   
+    <nav class="md-nav" aria-label="encode(to:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#initfrom" class="md-nav__link">
     init(from:)
   </a>
+  
+    <nav class="md-nav" aria-label="init(from:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -770,9 +796,45 @@
 
 <p><strong>EXTENSION</strong></p>
 <h1 id="workflowupdatedebuginfokind"><code>WorkflowUpdateDebugInfo.Kind</code><a class="headerlink" href="#workflowupdatedebuginfokind" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">WorkflowUpdateDebugInfo</span><span class="p">.</span><span class="n">Kind</span><span class="p">:</span> <span class="n">Codable</span>
+</code></pre></div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="encodeto"><code>encode(to:)</code><a class="headerlink" href="#encodeto" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">encode</span><span class="p">(</span><span class="n">to</span> <span class="n">encoder</span><span class="p">:</span> <span class="n">Encoder</span><span class="p">)</span> <span class="kr">throws</span>
+</code></pre></div>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>encoder</td>
+<td>The encoder to write data to.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="initfrom"><code>init(from:)</code><a class="headerlink" href="#initfrom" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">from</span> <span class="n">decoder</span><span class="p">:</span> <span class="n">Decoder</span><span class="p">)</span> <span class="kr">throws</span>
+</code></pre></div>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>decoder</td>
+<td>The decoder to read data from.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

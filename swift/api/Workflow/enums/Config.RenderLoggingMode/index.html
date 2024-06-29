@@ -777,13 +777,21 @@
 
 <p><strong>ENUM</strong></p>
 <h1 id="configrenderloggingmode"><code>Config.RenderLoggingMode</code><a class="headerlink" href="#configrenderloggingmode" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">enum</span> <span class="nc">RenderLoggingMode</span>
+</code></pre></div>
 <p>Configuration options to control logging during a render pass.</p>
 <h2 id="cases">Cases<a class="headerlink" href="#cases" title="Permanent link">&para;</a></h2>
 <h3 id="none"><code>none</code><a class="headerlink" href="#none" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">case</span> <span class="kr">none</span>
+</code></pre></div>
 <p>No data will be recorded for WorkflowNode render timings.</p>
 <h3 id="rootsonly"><code>rootsOnly</code><a class="headerlink" href="#rootsonly" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">case</span> <span class="n">rootsOnly</span>
+</code></pre></div>
 <p>Render timings will only be recorded for root nodes in a Workflow tree.</p>
 <h3 id="allnodes"><code>allNodes</code><a class="headerlink" href="#allnodes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">case</span> <span class="n">allNodes</span>
+</code></pre></div>
 <p>Render timings will be recorded for all nodes in a Workflow tree.
 N.B. performance may be noticeably impacted when using this option.</p>
 

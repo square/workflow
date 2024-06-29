@@ -790,14 +790,22 @@
 
 <p><strong>CLASS</strong></p>
 <h1 id="lifetime"><code>Lifetime</code><a class="headerlink" href="#lifetime" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kr">final</span> <span class="kd">class</span> <span class="nc">Lifetime</span>
+</code></pre></div>
 <p>Represents the lifetime of an object.</p>
 <p>Once ended, the <code>onEnded</code> closure is called.</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="hasended"><code>hasEnded</code><a class="headerlink" href="#hasended" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">private</span><span class="p">(</span><span class="kr">set</span><span class="p">)</span> <span class="kd">var</span> <span class="nv">hasEnded</span><span class="p">:</span> <span class="nb">Bool</span> <span class="p">=</span> <span class="kc">false</span>
+</code></pre></div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="onended_"><code>onEnded(_:)</code><a class="headerlink" href="#onended_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">onEnded</span><span class="p">(</span><span class="kc">_</span> <span class="n">action</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
+</code></pre></div>
 <p>Hook to clean-up after end of <code>lifetime</code>.</p>
 <h3 id="deinit"><code>deinit</code><a class="headerlink" href="#deinit" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">deinit</span>
+</code></pre></div>
 
               
             </article>

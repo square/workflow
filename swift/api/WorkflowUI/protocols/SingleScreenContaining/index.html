@@ -763,6 +763,8 @@
 
 <p><strong>PROTOCOL</strong></p>
 <h1 id="singlescreencontaining"><code>SingleScreenContaining</code><a class="headerlink" href="#singlescreencontaining" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">SingleScreenContaining</span>
+</code></pre></div>
 <p>Defines a type that semantically &lsquo;contains&rsquo; a <code>Screen</code> instance.</p>
 <p>The motivating use case for this protocol is to expose a means of unifying various types that provide
 access to <code>Screen</code>s in a way that can be used without knowing their static type.</p>
@@ -782,6 +784,8 @@ can use the conformances to this protocol to conditionally cast &amp; traverse t
 the inner <code>wrappedScreen</code>.</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="primaryscreen"><code>primaryScreen</code><a class="headerlink" href="#primaryscreen" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">var</span> <span class="nv">primaryScreen</span><span class="p">:</span> <span class="n">any</span> <span class="n">Screen</span>
+</code></pre></div>
 <p>The primary <code>Screen</code> the conforming type contains. Note that this may be ambiguous in some
 cases, for instance, if the conforming type logically contains multiple screens. Implementors should
 return the <code>Screen</code> which most appropriately reflects the &lsquo;primary&rsquo; one for a given domain.</p>

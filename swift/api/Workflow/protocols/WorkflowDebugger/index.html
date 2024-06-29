@@ -736,12 +736,38 @@
     didEnterInitialState(snapshot:)
   </a>
   
+    <nav class="md-nav" aria-label="didEnterInitialState(snapshot:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#didupdatesnapshotupdateinfo" class="md-nav__link">
     didUpdate(snapshot:updateInfo:)
   </a>
+  
+    <nav class="md-nav" aria-label="didUpdate(snapshot:updateInfo:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -770,19 +796,59 @@
 
 <p><strong>PROTOCOL</strong></p>
 <h1 id="workflowdebugger"><code>WorkflowDebugger</code><a class="headerlink" href="#workflowdebugger" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">WorkflowDebugger</span>
+</code></pre></div>
 <p>Defines a type that receives debug information about a running workflow hierarchy.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="didenterinitialstatesnapshot"><code>didEnterInitialState(snapshot:)</code><a class="headerlink" href="#didenterinitialstatesnapshot" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">didEnterInitialState</span><span class="p">(</span><span class="n">snapshot</span><span class="p">:</span> <span class="n">WorkflowHierarchyDebugSnapshot</span><span class="p">)</span>
+</code></pre></div>
 <p>Called once when the workflow hierarchy initializes.</p>
 <ul>
 <li>Parameter snapshot: Debug information about the workflow hierarchy.</li>
 </ul>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>snapshot</td>
+<td>Debug information about the workflow hierarchy.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="didupdatesnapshotupdateinfo"><code>didUpdate(snapshot:updateInfo:)</code><a class="headerlink" href="#didupdatesnapshotupdateinfo" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">didUpdate</span><span class="p">(</span><span class="n">snapshot</span><span class="p">:</span> <span class="n">WorkflowHierarchyDebugSnapshot</span><span class="p">,</span> <span class="n">updateInfo</span><span class="p">:</span> <span class="n">WorkflowUpdateDebugInfo</span><span class="p">)</span>
+</code></pre></div>
 <p>Called when an update occurs anywhere within the workflow hierarchy.</p>
 <ul>
 <li>Parameter snapshot: Debug information about the workflow hierarchy <em>after</em> the update.</li>
 <li>Parameter updateInfo: Information about the update.</li>
 </ul>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>snapshot</td>
+<td>Debug information about the workflow hierarchy  the update.</td>
+</tr>
+<tr>
+<td>updateInfo</td>
+<td>Information about the update.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

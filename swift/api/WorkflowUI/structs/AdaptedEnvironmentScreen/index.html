@@ -756,6 +756,19 @@
     init(wrapping:adapting:)
   </a>
   
+    <nav class="md-nav" aria-label="init(wrapping:adapting:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -763,12 +776,38 @@
     init(wrapping:key:value:)
   </a>
   
+    <nav class="md-nav" aria-label="init(wrapping:key:value:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#initwrappingkeypathvalue" class="md-nav__link">
     init(wrapping:keyPath:value:)
   </a>
+  
+    <nav class="md-nav" aria-label="init(wrapping:keyPath:value:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -797,6 +836,8 @@
 
 <p><strong>STRUCT</strong></p>
 <h1 id="adaptedenvironmentscreen"><code>AdaptedEnvironmentScreen</code><a class="headerlink" href="#adaptedenvironmentscreen" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">AdaptedEnvironmentScreen</span><span class="p">&lt;</span><span class="n">Content</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>Wraps a <code>Screen</code> tree with a modified <code>ViewEnvironment</code>.</p>
 <p>By specifying environmental values with this <code>Screen</code>, all child screens nested
 will inherit those values automatically. Values can be changed
@@ -806,16 +847,48 @@ anywhere in a sub-tree by inserting another <code>AdaptedEnvironmentScreen</code
 </code></pre></div>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="wrapped"><code>wrapped</code><a class="headerlink" href="#wrapped" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">var</span> <span class="nv">wrapped</span><span class="p">:</span> <span class="n">Content</span>
+</code></pre></div>
 <p>The screen wrapped by this screen.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="initwrappingadapting"><code>init(wrapping:adapting:)</code><a class="headerlink" href="#initwrappingadapting" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span>
+    <span class="n">wrapping</span> <span class="n">wrapped</span><span class="p">:</span> <span class="n">Content</span><span class="p">,</span>
+    <span class="n">adapting</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="n">Adapter</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Wraps a <code>Screen</code> with an environment that is modified using the given configuration block.</p>
 <ul>
 <li>Parameters:</li>
 <li>wrapping: The screen to be wrapped.</li>
 <li>adapting: A block that will set environmental values.</li>
 </ul>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wrapping</td>
+<td>The screen to be wrapped.</td>
+</tr>
+<tr>
+<td>adapting</td>
+<td>A block that will set environmental values.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="initwrappingkeyvalue"><code>init(wrapping:key:value:)</code><a class="headerlink" href="#initwrappingkeyvalue" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">Key</span><span class="p">:</span> <span class="n">ViewEnvironmentKey</span><span class="p">&gt;(</span>
+    <span class="n">wrapping</span> <span class="n">screen</span><span class="p">:</span> <span class="n">Content</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="n">Key</span><span class="p">.</span><span class="kr">Type</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Key</span><span class="p">.</span><span class="n">Value</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Wraps a <code>Screen</code> with an environment that is modified for a single key and value.</p>
 <ul>
 <li>Parameters:</li>
@@ -823,7 +896,36 @@ anywhere in a sub-tree by inserting another <code>AdaptedEnvironmentScreen</code
 <li>key: The environment key to modify.</li>
 <li>value: The new environment value to cascade.</li>
 </ul>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wrapping</td>
+<td>The screen to be wrapped.</td>
+</tr>
+<tr>
+<td>key</td>
+<td>The environment key to modify.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>The new environment value to cascade.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="initwrappingkeypathvalue"><code>init(wrapping:keyPath:value:)</code><a class="headerlink" href="#initwrappingkeypathvalue" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span>
+    <span class="n">wrapping</span> <span class="n">screen</span><span class="p">:</span> <span class="n">Content</span><span class="p">,</span>
+    <span class="n">keyPath</span><span class="p">:</span> <span class="n">WritableKeyPath</span><span class="p">&lt;</span><span class="n">ViewEnvironment</span><span class="p">,</span> <span class="n">Value</span><span class="p">&gt;,</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Value</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Wraps a <code>Screen</code> with an environment that is modified for a single value.</p>
 <ul>
 <li>Parameters:</li>
@@ -831,6 +933,29 @@ anywhere in a sub-tree by inserting another <code>AdaptedEnvironmentScreen</code
 <li>keyPath: The keypath of the environment value to modify.</li>
 <li>value: The new environment value to cascade.</li>
 </ul>
+<h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wrapping</td>
+<td>The screen to be wrapped.</td>
+</tr>
+<tr>
+<td>keyPath</td>
+<td>The keypath of the environment value to modify.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>The new environment value to cascade.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

@@ -736,6 +736,19 @@
     workflowObservers(for:)
   </a>
   
+    <nav class="md-nav" aria-label="workflowObservers(for:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -763,13 +776,32 @@
 
 <p><strong>PROTOCOL</strong></p>
 <h1 id="observersinterceptor"><code>ObserversInterceptor</code><a class="headerlink" href="#observersinterceptor" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">ObserversInterceptor</span>
+</code></pre></div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="workflowobserversfor"><code>workflowObservers(for:)</code><a class="headerlink" href="#workflowobserversfor" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">workflowObservers</span><span class="p">(</span><span class="k">for</span> <span class="n">initialObservers</span><span class="p">:</span> <span class="p">[</span><span class="n">WorkflowObserver</span><span class="p">])</span> <span class="p">-&gt;</span> <span class="p">[</span><span class="n">WorkflowObserver</span><span class="p">]</span>
+</code></pre></div>
 <p>Provides a single access point to provide the final list of <code>WorkflowObserver</code> used by the runtime.
 This may be used to ensure a known set of observers is used in a particular order for all
 <code>WorkflowHost</code>s created over the life of a program.
 - Parameter initialObservers: Array of observers passed to a <code>WorkflowHost</code> constructor
 - Returns: The array of <code>WorkflowObserver</code>s to be used by the <code>WorkflowHost</code></p>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>initialObservers</td>
+<td>Array of observers passed to a <code>WorkflowHost</code> constructor</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

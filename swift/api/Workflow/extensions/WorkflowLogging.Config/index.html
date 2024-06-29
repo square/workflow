@@ -770,11 +770,17 @@
 
 <p><strong>EXTENSION</strong></p>
 <h1 id="workflowloggingconfig"><code>WorkflowLogging.Config</code><a class="headerlink" href="#workflowloggingconfig" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">WorkflowLogging</span><span class="p">.</span><span class="n">Config</span>
+</code></pre></div>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="debug"><code>debug</code><a class="headerlink" href="#debug" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">let</span> <span class="nv">debug</span><span class="p">:</span> <span class="kc">Self</span> <span class="p">=</span> <span class="p">.</span><span class="kd">init</span><span class="p">(</span><span class="n">renderLoggingMode</span><span class="p">:</span> <span class="p">.</span><span class="n">allNodes</span><span class="p">,</span> <span class="n">logLifetimes</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="n">logActions</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+</code></pre></div>
 <p>Logging config that will output the most information.
 Will also have the most noticeable effect on performance.</p>
 <h3 id="rootrendersandactions"><code>rootRendersAndActions</code><a class="headerlink" href="#rootrendersandactions" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">let</span> <span class="nv">rootRendersAndActions</span><span class="p">:</span> <span class="kc">Self</span> <span class="p">=</span> <span class="p">.</span><span class="kd">init</span><span class="p">(</span><span class="n">renderLoggingMode</span><span class="p">:</span> <span class="p">.</span><span class="n">rootsOnly</span><span class="p">,</span> <span class="n">logLifetimes</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="n">logActions</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+</code></pre></div>
 <p>Logging config that will record render timings for root nodes as well as action events.
 This provides a reasonable performance tradeoff if you&rsquo;re interested in the runtime&rsquo;s behavior
 but don&rsquo;t wan to pay the price of logging everything.</p>
