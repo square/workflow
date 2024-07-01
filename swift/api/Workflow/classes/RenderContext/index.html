@@ -736,12 +736,38 @@
     makeSink(of:)
   </a>
   
+    <nav class="md-nav" aria-label="makeSink(of:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#runsideeffectkeyaction" class="md-nav__link">
     runSideEffect(key:action:)
   </a>
+  
+    <nav class="md-nav" aria-label="runSideEffect(key:action:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -770,6 +796,8 @@
 
 <p><strong>CLASS</strong></p>
 <h1 id="rendercontext"><code>RenderContext</code><a class="headerlink" href="#rendercontext" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RenderContext</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;:</span> <span class="n">RenderContextType</span>
+</code></pre></div>
 <p><code>RenderContext</code> is the composition point for the workflow tree.</p>
 <p>During a render pass, a workflow may want to defer to a child
 workflow to render some portion of its content. For example,
@@ -796,6 +824,8 @@ render pass, a new child workflow node is generated.</p>
 <code>Rendering</code> value, which is then returned to the caller.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="makesinkof"><code>makeSink(of:)</code><a class="headerlink" href="#makesinkof" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeSink</span><span class="p">&lt;</span><span class="n">Action</span><span class="p">&gt;(</span><span class="n">of</span> <span class="n">actionType</span><span class="p">:</span> <span class="n">Action</span><span class="p">.</span><span class="kr">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Sink</span><span class="p">&lt;</span><span class="n">Action</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">,</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
+</code></pre></div>
 <p>Creates a <code>Sink</code> that can be used to send <code>Action</code>s.</p>
 <p>Sinks are the primary mechanism for feeding State-changing events into the Workflow runtime.
 Upon receipt of an action, the associated Workflow (node) in the tree will have its State
@@ -806,7 +836,24 @@ State changes that occurred.</p>
 <li>Parameter actionType: The type of Action this Sink may process</li>
 <li>Returns: A Sink capable of relaying <code>Action</code> instances to the Workflow runtime</li>
 </ul>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>actionType</td>
+<td>The type of Action this Sink may process</td>
+</tr>
+</tbody>
+</table>
 <h3 id="runsideeffectkeyaction"><code>runSideEffect(key:action:)</code><a class="headerlink" href="#runsideeffectkeyaction" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">runSideEffect</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">AnyHashable</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="p">(</span><span class="n">Lifetime</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
+</code></pre></div>
 <p>Execute a side-effect action.</p>
 <p>Note that it is a programmer error to run two side-effects with the same <code>key</code>
 during the same render pass.</p>
@@ -819,6 +866,25 @@ it&rsquo;s lifetime ends and the <code>Lifetime</code> object&rsquo;s <code>onEn
 <li>key: represents the block of work that needs to be executed.</li>
 <li>action: a block of work that will be executed.</li>
 </ul>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>represents the block of work that needs to be executed.</td>
+</tr>
+<tr>
+<td>action</td>
+<td>a block of work that will be executed.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

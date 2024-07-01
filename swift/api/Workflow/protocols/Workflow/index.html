@@ -743,12 +743,38 @@
     workflowDidChange(from:state:)
   </a>
   
+    <nav class="md-nav" aria-label="workflowDidChange(from:state:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#renderstatecontext" class="md-nav__link">
     render(state:context:)
   </a>
+  
+    <nav class="md-nav" aria-label="render(state:context:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -777,6 +803,8 @@
 
 <p><strong>PROTOCOL</strong></p>
 <h1 id="workflow"><code>Workflow</code><a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">Workflow</span><span class="p">&lt;</span><span class="n">Rendering</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;:</span> <span class="n">AnyWorkflowConvertible</span>
+</code></pre></div>
 <p>Defines a node in the workflow tree.</p>
 <hr />
 <p><strong>Initialization and Updating</strong></p>
@@ -812,17 +840,42 @@ model for display.</p>
 </code></pre></div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="makeinitialstate"><code>makeInitialState()</code><a class="headerlink" href="#makeinitialstate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">makeInitialState</span><span class="p">()</span> <span class="p">-&gt;</span> <span class="n">State</span>
+</code></pre></div>
 <p>This method is invoked once when a workflow node comes into existence.</p>
 <ul>
 <li>Returns: The initial state for the workflow.</li>
 </ul>
 <h3 id="workflowdidchangefromstate"><code>workflowDidChange(from:state:)</code><a class="headerlink" href="#workflowdidchangefromstate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">workflowDidChange</span><span class="p">(</span><span class="n">from</span> <span class="n">previousWorkflow</span><span class="p">:</span> <span class="kc">Self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="kr">inout</span> <span class="n">State</span><span class="p">)</span>
+</code></pre></div>
 <p>Called when a new workflow is passed down from the parent to an existing workflow node.</p>
 <ul>
 <li>Parameter previousWorkflow: The workflow before the update.</li>
 <li>Parameter state: The current state.</li>
 </ul>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>previousWorkflow</td>
+<td>The workflow before the update.</td>
+</tr>
+<tr>
+<td>state</td>
+<td>The current state.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="renderstatecontext"><code>render(state:context:)</code><a class="headerlink" href="#renderstatecontext" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">RenderContext</span><span class="p">&lt;</span><span class="kc">Self</span><span class="p">&gt;)</span> <span class="p">-&gt;</span> <span class="n">Rendering</span>
+</code></pre></div>
 <p>Called by the internal Workflow infrastructure to &ldquo;render&rdquo; the current state into <code>Rendering</code>.
 A workflow&rsquo;s <code>Rendering</code> type is commonly a view or screen model.</p>
 <ul>
@@ -831,6 +884,25 @@ A workflow&rsquo;s <code>Rendering</code> type is commonly a view or screen mode
                      workflow, instantiate it based on the current state, then call <code>rendered(in:key:outputMap:)</code>.
                      This will return the child&rsquo;s <code>Rendering</code> type after creating or updating the nested workflow.</li>
 </ul>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>state</td>
+<td>The current state.</td>
+</tr>
+<tr>
+<td>context</td>
+<td>The workflow context is the composition point for the workflow tree. To use a nested workflow, instantiate it based on the current state, then call <code>rendered(in:key:outputMap:)</code>. This will return the child’s <code>Rendering</code> type after creating or updating the nested workflow.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

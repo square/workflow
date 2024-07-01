@@ -743,12 +743,38 @@
     send(_:)
   </a>
   
+    <nav class="md-nav" aria-label="send(_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#contramap_" class="md-nav__link">
     contraMap(_:)
   </a>
+  
+    <nav class="md-nav" aria-label="contraMap(_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -777,17 +803,40 @@
 
 <p><strong>STRUCT</strong></p>
 <h1 id="sink"><code>Sink</code><a class="headerlink" href="#sink" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">Sink</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>Sink is a type that receives incoming values (commonly events or <code>WorkflowAction</code>)</p>
 <p>Use <code>RenderContext.makeSink</code> to create instances.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="init_"><code>init(_:)</code><a class="headerlink" href="#init_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="kc">_</span> <span class="n">onValue</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">Value</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)</span>
+</code></pre></div>
 <p>Initializes a new sink with the given closure.</p>
 <h3 id="send_"><code>send(_:)</code><a class="headerlink" href="#send_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">)</span>
+</code></pre></div>
 <p>Sends a new event into the sink.</p>
 <ul>
 <li>Parameter event: The value to send into the sink.</li>
 </ul>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>event</td>
+<td>The value to send into the sink.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="contramap_"><code>contraMap(_:)</code><a class="headerlink" href="#contramap_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">contraMap</span><span class="p">&lt;</span><span class="n">NewValue</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">transform</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">NewValue</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Sink</span><span class="p">&lt;</span><span class="n">NewValue</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>Generates a new sink of type NewValue.</p>
 <p>Given a <code>transform</code> closure, the following code is functionally equivalent:</p>
 <p><div class="highlight"><pre><span></span><code>sink.send(transform(value))
@@ -803,6 +852,21 @@ output types of its API, while <code>contraMap</code> transforms a type by chang
 <ul>
 <li>Parameter transform: An escaping closure that transforms <code>T</code> into <code>Event</code>.</li>
 </ul>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>transform</td>
+<td>An escaping closure that transforms <code>T</code> into <code>Event</code>.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

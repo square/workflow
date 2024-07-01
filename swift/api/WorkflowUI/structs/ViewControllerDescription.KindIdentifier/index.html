@@ -750,12 +750,38 @@
     hash(into:)
   </a>
   
+    <nav class="md-nav" aria-label="hash(into:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#__" class="md-nav__link">
     ==(_:_:)
   </a>
+  
+    <nav class="md-nav" aria-label="==(_:_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -784,18 +810,62 @@
 
 <p><strong>STRUCT</strong></p>
 <h1 id="viewcontrollerdescriptionkindidentifier"><code>ViewControllerDescription.KindIdentifier</code><a class="headerlink" href="#viewcontrollerdescriptionkindidentifier" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">KindIdentifier</span><span class="p">:</span> <span class="nb">Hashable</span>
+</code></pre></div>
 <p>Describes the <code>UIViewController</code> type that backs the <code>ViewControllerDescription</code>
 in a way that is <code>Equatable</code> and <code>Hashable</code>. When implementing view controller
 updating and diffing, you can use this type to identify if the backing view controller
 type changed.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="init_"><code>init(_:)</code><a class="headerlink" href="#init_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">init</span><span class="p">&lt;</span><span class="n">VC</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">kind</span><span class="p">:</span> <span class="n">VC</span><span class="p">.</span><span class="kr">Type</span><span class="p">)</span>
+</code></pre></div>
 <p>Creates a new kind for the given view controller type.</p>
 <h3 id="canupdateviewcontroller"><code>canUpdate(viewController:)</code><a class="headerlink" href="#canupdateviewcontroller" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">canUpdate</span><span class="p">(</span><span class="n">viewController</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span>
+</code></pre></div>
 <p>If the given view controller is of the correct type to be updated by this view controller description.</p>
 <p>If your view controller type can change between updates, call this method before invoking <code>update(viewController:)</code>.</p>
 <h3 id="hashinto"><code>hash(into:)</code><a class="headerlink" href="#hashinto" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">hash</span><span class="p">(</span><span class="n">into</span> <span class="n">hasher</span><span class="p">:</span> <span class="kr">inout</span> <span class="n">Hasher</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hasher</td>
+<td>The hasher to use when combining the components of this instance.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="__"><code>==(_:_:)</code><a class="headerlink" href="#__" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="p">==</span> <span class="p">(</span><span class="n">lhs</span><span class="p">:</span> <span class="kc">Self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="kc">Self</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span>
+</code></pre></div>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lhs</td>
+<td>A value to compare.</td>
+</tr>
+<tr>
+<td>rhs</td>
+<td>Another value to compare.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

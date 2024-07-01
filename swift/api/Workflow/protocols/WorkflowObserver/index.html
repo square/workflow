@@ -736,12 +736,38 @@
     sessionDidBegin(_:)
   </a>
   
+    <nav class="md-nav" aria-label="sessionDidBegin(_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#sessiondidend_" class="md-nav__link">
     sessionDidEnd(_:)
   </a>
+  
+    <nav class="md-nav" aria-label="sessionDidEnd(_:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -750,12 +776,38 @@
     workflowDidMakeInitialState(_:initialState:session:)
   </a>
   
+    <nav class="md-nav" aria-label="workflowDidMakeInitialState(_:initialState:session:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#workflowwillrender_statesession" class="md-nav__link">
     workflowWillRender(_:state:session:)
   </a>
+  
+    <nav class="md-nav" aria-label="workflowWillRender(_:state:session:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_3" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -764,6 +816,19 @@
     workflowDidChange(from:to:state:session:)
   </a>
   
+    <nav class="md-nav" aria-label="workflowDidChange(from:to:state:session:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -771,12 +836,38 @@
     workflowDidReceiveAction(_:workflow:session:)
   </a>
   
+    <nav class="md-nav" aria-label="workflowDidReceiveAction(_:workflow:session:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_5" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
   <a href="#workflowwillapplyaction_workflowstatesession" class="md-nav__link">
     workflowWillApplyAction(_:workflow:state:session:)
   </a>
+  
+    <nav class="md-nav" aria-label="workflowWillApplyAction(_:workflow:state:session:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_6" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -805,41 +896,205 @@
 
 <p><strong>PROTOCOL</strong></p>
 <h1 id="workflowobserver"><code>WorkflowObserver</code><a class="headerlink" href="#workflowobserver" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="nc">WorkflowObserver</span>
+</code></pre></div>
 <p>The <code>WorkflowObserver</code> protocol provides an interface to receive updates during the runtime&rsquo;s
 execution loop. All requirements are optional, and no-ops are provided by default.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="sessiondidbegin_"><code>sessionDidBegin(_:)</code><a class="headerlink" href="#sessiondidbegin_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">sessionDidBegin</span><span class="p">(</span>
+    <span class="kc">_</span> <span class="n">session</span><span class="p">:</span> <span class="n">WorkflowSession</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Indicates the start of a <code>WorkflowSession</code>, which tracks the life of the underlying <code>WorkflowNode</code> used to provide renderings for a given <code>Workflow</code> type and rendering key.
 - Parameter session: The <code>WorkflowSession</code> that began.</p>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>session</td>
+<td>The <code>WorkflowSession</code> that began.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="sessiondidend_"><code>sessionDidEnd(_:)</code><a class="headerlink" href="#sessiondidend_" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">sessionDidEnd</span><span class="p">(</span>
+    <span class="kc">_</span> <span class="n">session</span><span class="p">:</span> <span class="n">WorkflowSession</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Marks the end of a <code>WorkflowSession</code>, indicating that the corresponding <code>WorkflowNode</code> has been removed from the tree of Workflows.
 - Parameter session: The <code>WorkflowSession</code> that ended.</p>
+<h4 id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>session</td>
+<td>The <code>WorkflowSession</code> that ended.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="workflowdidmakeinitialstate_initialstatesession"><code>workflowDidMakeInitialState(_:initialState:session:)</code><a class="headerlink" href="#workflowdidmakeinitialstate_initialstatesession" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">workflowDidMakeInitialState</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span>
+    <span class="kc">_</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">,</span>
+    <span class="n">initialState</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">WorkflowSession</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Indicates a <code>Workflow</code> produced its initial state value.
 - Parameters:
   - workflow: The <code>Workflow</code> that just produced its initial state.
   - initialState: The <code>State</code> that was created.
   - session: The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code></p>
+<h4 id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>workflow</td>
+<td>The <code>Workflow</code> that just produced its initial state.</td>
+</tr>
+<tr>
+<td>initialState</td>
+<td>The <code>State</code> that was created.</td>
+</tr>
+<tr>
+<td>session</td>
+<td>The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="workflowwillrender_statesession"><code>workflowWillRender(_:state:session:)</code><a class="headerlink" href="#workflowwillrender_statesession" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">workflowWillRender</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span>
+    <span class="kc">_</span> <span class="n">workflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">,</span>
+    <span class="n">state</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">WorkflowSession</span>
+<span class="p">)</span> <span class="p">-&gt;</span> <span class="p">((</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Rendering</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)?</span>
+</code></pre></div>
 <p>Called before a <code>Workflow</code> is queried for its latest <code>Rendering</code>.
 - Parameters:
   - workflow: The <code>Workflow</code> that is about to be render.
   - state: The corresponding <code>State</code> that will be used during the render call.
   - session: The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code>.
 - Returns: An optional closure to be called immediately after the new <code>Rendering</code> is produced, which takes the rendering as the only parameter.</p>
+<h4 id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>workflow</td>
+<td>The <code>Workflow</code> that is about to be render.</td>
+</tr>
+<tr>
+<td>state</td>
+<td>The corresponding <code>State</code> that will be used during the render call.</td>
+</tr>
+<tr>
+<td>session</td>
+<td>The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code>.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="workflowdidchangefromtostatesession"><code>workflowDidChange(from:to:state:session:)</code><a class="headerlink" href="#workflowdidchangefromtostatesession" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">workflowDidChange</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;(</span>
+    <span class="n">from</span> <span class="n">oldWorkflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">,</span>
+    <span class="n">to</span> <span class="n">newWorkflow</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">,</span>
+    <span class="n">state</span><span class="p">:</span> <span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">WorkflowSession</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Called after an existing <code>Workflow</code> is updated.
 - Parameters:
   - oldWorkflow: The previous <code>Workflow</code>
   - newWorkflow: The new <code>Workflow</code>
   - state: The state <strong>after</strong> the update has occurred.
   - session: The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code>.</p>
+<h4 id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>oldWorkflow</td>
+<td>The previous <code>Workflow</code></td>
+</tr>
+<tr>
+<td>newWorkflow</td>
+<td>The new <code>Workflow</code></td>
+</tr>
+<tr>
+<td>state</td>
+<td>The state  the update has occurred.</td>
+</tr>
+<tr>
+<td>session</td>
+<td>The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code>.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="workflowdidreceiveaction_workflowsession"><code>workflowDidReceiveAction(_:workflow:session:)</code><a class="headerlink" href="#workflowdidreceiveaction_workflowsession" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">workflowDidReceiveAction</span><span class="p">&lt;</span><span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">&gt;(</span>
+    <span class="kc">_</span> <span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span>
+    <span class="n">workflow</span><span class="p">:</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">WorkflowSession</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Called after a <code>WorkflowAction</code> is received, but <strong>before</strong> it has been handled and propagated up the tree.
 - Parameters:
   - action: The action that was received.
   - session: The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code>.</p>
+<h4 id="parameters_5">Parameters<a class="headerlink" href="#parameters_5" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td>The action that was received.</td>
+</tr>
+<tr>
+<td>session</td>
+<td>The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code>.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="workflowwillapplyaction_workflowstatesession"><code>workflowWillApplyAction(_:workflow:state:session:)</code><a class="headerlink" href="#workflowwillapplyaction_workflowstatesession" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span> <span class="nf">workflowWillApplyAction</span><span class="p">&lt;</span><span class="n">Action</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">&gt;(</span>
+    <span class="kc">_</span> <span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span>
+    <span class="n">workflow</span><span class="p">:</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span><span class="p">,</span>
+    <span class="n">state</span><span class="p">:</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">WorkflowSession</span>
+<span class="p">)</span> <span class="p">-&gt;</span> <span class="p">((</span><span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">,</span> <span class="n">Action</span><span class="p">.</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">?)</span> <span class="p">-&gt;</span> <span class="nb">Void</span><span class="p">)?</span>
+</code></pre></div>
 <p>Called when a <code>WorkflowAction</code> will be applied to its corresponding Workflow&rsquo;s State
 - Parameters:
   - action: The action that will be applied.
@@ -847,6 +1102,33 @@ execution loop. All requirements are optional, and no-ops are provided by defaul
   - state: The state to which the action will be applied.
   - session: The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code>.
 - Returns: An optional closure to be called immediately after the action is applied to the <code>State</code>, and an optional <code>Output</code> has been produced. The closure takes the updated state and optional output as its arguments.</p>
+<h4 id="parameters_6">Parameters<a class="headerlink" href="#parameters_6" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td>The action that will be applied.</td>
+</tr>
+<tr>
+<td>workflow</td>
+<td>The action’s corresponding <code>Workflow</code>.</td>
+</tr>
+<tr>
+<td>state</td>
+<td>The state to which the action will be applied.</td>
+</tr>
+<tr>
+<td>session</td>
+<td>The <code>WorkflowSession</code> corresponding to the backing <code>WorkflowNode</code>.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

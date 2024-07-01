@@ -736,6 +736,19 @@
     update(child:with:in:onChange:)
   </a>
   
+    <nav class="md-nav" aria-label="update(child:with:in:onChange:)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -763,8 +776,17 @@
 
 <p><strong>EXTENSION</strong></p>
 <h1 id="updatechildscreenviewcontroller"><code>UpdateChildScreenViewController</code><a class="headerlink" href="#updatechildscreenviewcontroller" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">UpdateChildScreenViewController</span> <span class="k">where</span> <span class="kc">Self</span><span class="p">:</span> <span class="bp">UIViewController</span>
+</code></pre></div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="updatechildwithinonchange"><code>update(child:with:in:onChange:)</code><a class="headerlink" href="#updatechildwithinonchange" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">&lt;</span><span class="n">VC</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">,</span> <span class="n">ScreenType</span><span class="p">:</span> <span class="n">Screen</span><span class="p">&gt;(</span>
+    <span class="n">child</span><span class="p">:</span> <span class="n">ReferenceWritableKeyPath</span><span class="p">&lt;</span><span class="kc">Self</span><span class="p">,</span> <span class="n">VC</span><span class="p">&gt;,</span>
+    <span class="n">with</span> <span class="n">screen</span><span class="p">:</span> <span class="n">ScreenType</span><span class="p">,</span>
+    <span class="k">in</span> <span class="n">environment</span><span class="p">:</span> <span class="n">ViewEnvironment</span><span class="p">,</span>
+    <span class="n">onChange</span><span class="p">:</span> <span class="p">(</span><span class="n">VC</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Void</span> <span class="p">=</span> <span class="p">{</span> <span class="kc">_</span> <span class="k">in</span> <span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>Updates the view controller at the given <code>child</code> key path with the
 <code>ViewControllerDescription</code> from <code>screen</code>. If the type of the underlying view
 controller changes between update passes, this method will remove
@@ -777,6 +799,33 @@ the old view controller, create a new one, update it, and insert it into the vie
 <li>parameter environment: The <code>environment</code> to used when updating the view controller.</li>
 <li>parameter onChange: A callback called if the view controller instance changed.</li>
 </ul>
+<h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>child</td>
+<td>The <code>KeyPath</code> which describes what view controller to update. This view controller must be a direct child of <code>self</code>.</td>
+</tr>
+<tr>
+<td>screen</td>
+<td>The <code>Screen</code> instance to apply to the view controller.</td>
+</tr>
+<tr>
+<td>environment</td>
+<td>The <code>environment</code> to used when updating the view controller.</td>
+</tr>
+<tr>
+<td>onChange</td>
+<td>A callback called if the view controller instance changed.</td>
+</tr>
+</tbody>
+</table>
 
               
             </article>

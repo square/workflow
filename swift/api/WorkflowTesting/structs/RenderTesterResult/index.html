@@ -798,20 +798,57 @@
 
 <p><strong>STRUCT</strong></p>
 <h1 id="rendertesterresult"><code>RenderTesterResult</code><a class="headerlink" href="#rendertesterresult" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">:</span> <span class="n">Workflow</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>The result of a <code>RenderTester</code> rendering. Used to verify state, output, and actions that were produced as a result of
 actions performed during the render (such as child workflow output being produced).</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="verifystatefilelineassertions"><code>verifyState(file:line:assertions:)</code><a class="headerlink" href="#verifystatefilelineassertions" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyState</span><span class="p">(</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
+    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">State</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>Allows for assertions against the resulting state.</p>
 <h3 id="assertnoactionfileline"><code>assertNoAction(file:line:)</code><a class="headerlink" href="#assertnoactionfileline" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">assertNoAction</span><span class="p">(</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
+<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>Asserts that no actions were produced</p>
 <h3 id="verifyactiontypefilelineassertions"><code>verifyAction(type:file:line:assertions:)</code><a class="headerlink" href="#verifyactiontypefilelineassertions" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyAction</span><span class="p">&lt;</span><span class="n">ActionType</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">&gt;(</span>
+    <span class="n">type</span><span class="p">:</span> <span class="n">ActionType</span><span class="p">.</span><span class="kr">Type</span> <span class="p">=</span> <span class="n">ActionType</span><span class="p">.</span><span class="kc">self</span><span class="p">,</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
+    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">ActionType</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">ActionType</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span>
+</code></pre></div>
 <p>Allows for assertions agains the resulting action</p>
 <h3 id="assertactionfileline"><code>assert(action:file:line:)</code><a class="headerlink" href="#assertactionfileline" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">assert</span><span class="p">&lt;</span><span class="n">ActionType</span><span class="p">:</span> <span class="n">WorkflowAction</span><span class="p">&gt;(</span>
+    <span class="n">action</span><span class="p">:</span> <span class="n">ActionType</span><span class="p">,</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
+<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">ActionType</span><span class="p">.</span><span class="n">WorkflowType</span> <span class="p">==</span> <span class="n">WorkflowType</span><span class="p">,</span> <span class="n">ActionType</span><span class="p">:</span> <span class="nb">Equatable</span>
+</code></pre></div>
 <p>Asserts that the resulting action is equal to the given action.</p>
 <h3 id="assertnooutputfileline"><code>assertNoOutput(file:line:)</code><a class="headerlink" href="#assertnooutputfileline" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">assertNoOutput</span><span class="p">(</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span>
+<span class="p">)</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>Asserts that no output was produced.</p>
 <h3 id="verifyoutputfilelineassertions"><code>verifyOutput(file:line:assertions:)</code><a class="headerlink" href="#verifyoutputfilelineassertions" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verifyOutput</span><span class="p">(</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">StaticString</span> <span class="p">=</span> <span class="kc">#file</span><span class="p">,</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">UInt</span> <span class="p">=</span> <span class="kc">#line</span><span class="p">,</span>
+    <span class="n">assertions</span><span class="p">:</span> <span class="p">(</span><span class="n">WorkflowType</span><span class="p">.</span><span class="n">Output</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="nb">Void</span>
+<span class="p">)</span> <span class="kr">rethrows</span> <span class="p">-&gt;</span> <span class="n">RenderTesterResult</span><span class="p">&lt;</span><span class="n">WorkflowType</span><span class="p">&gt;</span>
+</code></pre></div>
 <p>Allows for assertions agains the resulting output</p>
 
               

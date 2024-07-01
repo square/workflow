@@ -784,6 +784,8 @@
 
 <p><strong>STRUCT</strong></p>
 <h1 id="workflowsession"><code>WorkflowSession</code><a class="headerlink" href="#workflowsession" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">struct</span> <span class="nc">WorkflowSession</span>
+</code></pre></div>
 <p>A <code>WorkflowSession</code>encapsulates the information that gives a <code>WorkflowNode</code> its identity.
 In particular, it captures:
 - The type of the corresponding <code>Workflow</code> conformance.
@@ -792,9 +794,17 @@ In particular, it captures:
 - An optional reference to a parent <code>WorkflowSession</code>, to differentiate root nodes.</p>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <h3 id="workflowtype"><code>workflowType</code><a class="headerlink" href="#workflowtype" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">let</span> <span class="nv">workflowType</span><span class="p">:</span> <span class="nb">Any</span><span class="p">.</span><span class="kr">Type</span>
+</code></pre></div>
 <h3 id="renderkey"><code>renderKey</code><a class="headerlink" href="#renderkey" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">let</span> <span class="nv">renderKey</span><span class="p">:</span> <span class="nb">String</span>
+</code></pre></div>
 <h3 id="sessionid"><code>sessionID</code><a class="headerlink" href="#sessionid" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">let</span> <span class="nv">sessionID</span> <span class="p">=</span> <span class="n">Identifier</span><span class="p">()</span>
+</code></pre></div>
 <h3 id="parent"><code>parent</code><a class="headerlink" href="#parent" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">var</span> <span class="nv">parent</span><span class="p">:</span> <span class="n">WorkflowSession</span><span class="p">?</span>
+</code></pre></div>
 
               
             </article>

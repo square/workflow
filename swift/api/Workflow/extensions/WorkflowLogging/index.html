@@ -732,6 +732,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#isosloggingallowed" class="md-nav__link">
+    isOSLoggingAllowed
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#enabled" class="md-nav__link">
     enabled
   </a>
@@ -770,16 +777,35 @@
 
 <p><strong>EXTENSION</strong></p>
 <h1 id="workflowlogging"><code>WorkflowLogging</code><a class="headerlink" href="#workflowlogging" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="kd">extension</span> <span class="nc">WorkflowLogging</span>
+</code></pre></div>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<h3 id="isosloggingallowed"><code>isOSLoggingAllowed</code><a class="headerlink" href="#isosloggingallowed" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">let</span> <span class="nv">isOSLoggingAllowed</span><span class="p">:</span> <span class="nb">Bool</span> <span class="p">=</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">env</span> <span class="p">=</span> <span class="n">ProcessInfo</span><span class="p">.</span><span class="n">processInfo</span><span class="p">.</span><span class="n">environment</span>
+    <span class="k">guard</span> <span class="kd">let</span> <span class="nv">value</span> <span class="p">=</span> <span class="n">env</span><span class="p">[</span><span class="s">&quot;com.squareup.workflow.allowOSLogging&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">value</span> <span class="k">as</span> <span class="bp">NSString</span><span class="p">).</span><span class="n">boolValue</span>
+<span class="p">}()</span>
+</code></pre></div>
+<p>Flag indicating whether <code>OSLog</code> logs may be recorded. Note, actual emission of
+log statements in specific cases may depend on additional configuration options, so
+this being <code>true</code> does not necessarily imply logging will occur.</p>
 <h3 id="enabled"><code>enabled</code><a class="headerlink" href="#enabled" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">var</span> <span class="nv">enabled</span><span class="p">:</span> <span class="nb">Bool</span>
+</code></pre></div>
 <p>Global setting to enable or disable logging.
 Note, this is independent of the specified <code>config</code> value, and simply governs whether
 the runtime should emit any logs.</p>
 <p>To enable logging, at a minimum you must set:
 <code>WorkflowLogging.enabled = true</code></p>
+<p>Additionally, <code>isOSLoggingAllowed</code> must also be configured to be <code>true</code>.</p>
 <p>If you wish for more control over what the runtime will log, you may additionally specify
 a custom value for <code>WorkflowLogging.config</code>.</p>
 <h3 id="config"><code>config</code><a class="headerlink" href="#config" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">var</span> <span class="nv">config</span><span class="p">:</span> <span class="n">Config</span> <span class="p">=</span> <span class="p">.</span><span class="n">rootRendersAndActions</span>
+</code></pre></div>
 <p>Configuration options used to determine which activities are logged.</p>
 
               
