@@ -2,537 +2,537 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://square.github.io/workflow/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/CHANGELOG/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/CODE_OF_CONDUCT/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/CONTRIBUTING/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/RELEASING/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/code-recipes/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/development-process/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/faq/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/glossary/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/historical/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/sequence_diagrams/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/classes/Lifetime/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/classes/RenderContext/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/classes/WorkflowHost/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/enums/Config.RenderLoggingMode/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/enums/WorkflowLogging/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/enums/WorkflowObservation/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/enums/WorkflowUpdateDebugInfo.Kind/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/enums/WorkflowUpdateDebugInfo.Source/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/AnyWorkflow/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/AnyWorkflowAction/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/AnyWorkflowConvertible/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/DispatchQueue/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/RenderContext/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/Workflow/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/WorkflowLogging.Config/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/WorkflowLogging/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/WorkflowObserver/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/WorkflowUpdateDebugInfo.Kind/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/extensions/WorkflowUpdateDebugInfo.Source/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/protocols/AnyWorkflowConvertible/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/protocols/ObserversInterceptor/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/protocols/Workflow/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/protocols/WorkflowAction/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/protocols/WorkflowDebugger/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/protocols/WorkflowObserver/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/AnyWorkflow/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/AnyWorkflowAction/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/Sink/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/StateMutationSink/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/WorkflowHierarchyDebugSnapshot.Child/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/WorkflowHierarchyDebugSnapshot/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/WorkflowLogging.Config/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/WorkflowSession.Identifier/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/WorkflowSession/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/structs/WorkflowUpdateDebugInfo/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/typealiases/AnyWorkflow.Output/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/typealiases/AnyWorkflow.Rendering/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/Workflow/typealiases/AnyWorkflow.State/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/enums/WorkerLogging/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/extensions/Signal/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/extensions/SignalProducer/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/extensions/Worker/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/extensions/WorkerLogging/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/protocols/Worker/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/typealiases/SignalProducerWorkflow.Output/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/typealiases/SignalProducerWorkflow.Rendering/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowReactiveSwift/typealiases/SignalProducerWorkflow.State/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowTesting/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowTesting/extensions/RenderTesterResult/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowTesting/extensions/Workflow/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowTesting/extensions/WorkflowAction/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowTesting/extensions/WorkflowActionTester/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowTesting/structs/RenderTester/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowTesting/structs/RenderTesterResult/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowTesting/structs/WorkflowActionTester/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/classes/DescribedViewController/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/classes/ScreenViewController/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/classes/WorkflowHostingController/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/classes/WorkflowUIViewController/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/enums/WorkflowUIObservation/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/extensions/AdaptedEnvironmentScreen/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/extensions/AnyScreen/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/extensions/Screen/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/extensions/ScreenViewController/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/extensions/SingleScreenContaining/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/extensions/UpdateChildScreenViewController/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/extensions/WorkflowHostingController/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/protocols/Screen/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/protocols/SingleScreenContaining/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/protocols/UpdateChildScreenViewController/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/protocols/WorkflowUIEvent/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/protocols/WorkflowUIObserver/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/AdaptedEnvironmentScreen/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/AnyScreen/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/ViewControllerDescription.KindIdentifier/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/ViewControllerDescription/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/ViewDidAppearEvent/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/ViewDidDisappearEvent/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/ViewDidLayoutSubviewsEvent/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/ViewWillAppearEvent/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/ViewWillDisappearEvent/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/structs/ViewWillLayoutSubviewsEvent/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/typealiases/AdaptedEnvironmentScreen.Adapter/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/swift/api/WorkflowUI/typealiases/WorkflowHostingController.CustomizeEnvironment/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/common-patterns/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/concepts/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/implementation/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/testing-concepts/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/ui-concepts/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/ui-in-code/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/whyworkflow/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/worker-in-code/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://square.github.io/workflow/userguide/workflow-in-code/</loc>
-         <lastmod>2024-06-29</lastmod>
+         <lastmod>2024-08-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
