@@ -12,8 +12,7 @@ consists of three parts:
 1. Kotlin API reference: Kdoc embedded in Kotlin source files is converted to GitHub-flavored
    Markdown by Dokka and then included in the statically-generated website.
 1. Swift API reference: Markup comments from Swift files are converted Markdown by
-   [Sourcedocs](https://github.com/eneko/SourceDocs) and then included in the statically-generated
-   website.
+   [DocC](https://www.swift.org/documentation/docc/) and then published independently at [square.github.io/workflow-swift/documentation](https://square.github.io/workflow-swift/documentation).
 
 **Note: The documentation site is automatically built and deployed whenever a version tag is pushed.
 You only need these steps if you want to work on the site locally.**
@@ -32,44 +31,9 @@ cd kotlin
 ./gradlew dokka
 ```
 
-#### Swift: Sourcedocs
+#### Swift: DocC
 
-Sourcedocs generates a Markdown site from Swift files. You need Ruby, rubygems,
-bundler (2.x), Xcode 10.2+, CocoaPods, and of course Sourcedocs itself, to run it. Assuming you've
-already got Xcode, Ruby, and rubygems set up, install the rest of the dependencies:
-
-```bash
-gem install bundler cocoapods
-brew install sourcedocs
-```
-
-You will also need a checkout of the Swift repo:
-
-```bash
-git clone https://github.com/square/workflow-swift.git
-cd workflow-swift
-```
-
-Then generate an Xcode project before running Sourcedocs:
-
-```bash
-cd Samples/SampleApp/
-bundle exec pod install
-# If this is your first time running CocoaPods, that will fail and you'll need to run this instead:
-#bundle exec pod install --repo-update
-```
-
-You can manually generate the docs to verify everything is working correctly by running:
-
-```bash
-#cd Samples/SampleApp/
-sourcedocs generate -- -scheme Workflow -workspace SampleApp.xcworkspace
-sourcedocs generate -- -scheme WorkflowUI -workspace SampleApp.xcworkspace
-sourcedocs generate -- -scheme WorkflowTesting -workspace SampleApp.xcworkspace
-```
-
-Note that currently sourcedocs only supports Xcode 10, if you run it with Xcode 11 you might see
-an error about Catalyst and only empty READMEs will get generated.
+The Swift documentation is published by CI in the Swift repo and linked from the cross-platform Workflow docs. For info on how to generate the Swift docs locally, check out [the workflow-swift repo](https://github.com/square/workflow-swift).
 
 #### mkdocs
 
