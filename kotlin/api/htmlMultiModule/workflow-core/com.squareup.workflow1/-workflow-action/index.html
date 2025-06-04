@@ -25,47 +25,79 @@
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
 <link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
 <script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
     <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
 <a class="library-name--link" href="../../../index.html">
-                            workflow
-                    </a>            </div>
-            <div class="library-version">
+                    workflow
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-core:dokkaHtmlPartial/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":workflow-core:dokkaHtmlPartial/commonMain" data-filter=":workflow-core:dokkaHtmlPartial/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
         </div>
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-core:dokkaHtmlPartial/commonMain">common</button>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
+    </nav>
         <div id="container">
             <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    workflow
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
             </div>
             <div id="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="workflow-core::com.squareup.workflow1/WorkflowAction///PointingToDeclaration//-1897121320">
   <div class="breadcrumbs"><a href="../../index.html">workflow-core</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1</a><span class="delimiter">/</span><span class="current">WorkflowAction</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Workflow</span><wbr><span><span>Action</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">WorkflowAction</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">StateT</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="index.html">OutputT</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/WorkflowAction.kt#L32">source</a>)</span></span></div><p class="paragraph">An atomic operation that updates the state of a <a href="../-workflow/index.html">Workflow</a>, and also optionally emits an output.</p><p class="paragraph">A <a href="index.html">WorkflowAction</a>'s <a href="apply.html">apply</a> method is executed in the context of an <a href="-updater/index.html">Updater</a>, which provides access to the current <a href="-updater/props.html">props</a> and <a href="-updater/state.html">state</a>, along with a <a href="-updater/set-output.html">setOutput</a> function. The <a href="-updater/state.html">state</a> can be updated with a new <a href="index.html">StateT</a> instance that will become the current one after the <a href="apply.html">apply</a> function finishes.</p><p class="paragraph">It is possible for one <a href="index.html">WorkflowAction</a> to delegate to another, although the API is a bit opaque:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val actionA = action {
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">WorkflowAction</a><span class="token operator">&lt;</span><a href="index.html">PropsT</a><span class="token punctuation">, </span><a href="index.html">StateT</a><span class="token punctuation">, </span><a href="index.html">OutputT</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/WorkflowAction.kt#L37">source</a>)</span></span></div><p class="paragraph">An atomic operation that updates the state of a <a href="../-workflow/index.html">Workflow</a>, and also optionally emits an output.</p><p class="paragraph">A <a href="index.html">WorkflowAction</a>'s <a href="apply.html">apply</a> method is executed in the context of an <a href="-updater/index.html">Updater</a>, which provides access to the current <a href="-updater/props.html">props</a> and <a href="-updater/state.html">state</a>, along with a <a href="-updater/set-output.html">setOutput</a> function. The <a href="-updater/state.html">state</a> can be updated with a new <a href="index.html">StateT</a> instance that will become the current one after the <a href="apply.html">apply</a> function finishes.</p><p class="paragraph">It is possible for one <a href="index.html">WorkflowAction</a> to delegate to another, although the API is a bit opaque:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val actionA = action("a") {
 }
 
-val actionB = action {
+val actionB = action("b") {
   val (newState, outputApplied) = actionA.applyTo(props, state)
   state = newState
   outputApplied.output?.value?.let { setOutput(it) }
@@ -120,17 +152,36 @@ val actionB = action {
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">inner </span><span class="token keyword">class </span><a href="-updater/index.html">Updater</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>props<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unsafe-variance/index.html"><span class="token annotation builtin">UnsafeVariance</span></a>&nbsp;</span><a href="index.html">PropsT</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>state<span class="token operator">: </span><a href="index.html">StateT</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The context for calls to <a href="apply.html">WorkflowAction.apply</a>. Allows the action to read and change the <a href="-updater/state.html">state</a>, and to emit an <a href="-updater/set-output.html">output</a> value.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">inner </span><span class="token keyword">class </span><a href="-updater/index.html">Updater</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>props<span class="token operator">: </span><a href="index.html">PropsT</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>state<span class="token operator">: </span><a href="index.html">StateT</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The context for calls to <a href="apply.html">WorkflowAction.apply</a>. Allows the action to read and change the <a href="-updater/state.html">state</a>, and to emit an <a href="-updater/set-output.html">output</a> value.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div data-togglable="EXTENSION_FUNCTION">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1311690248%2FProperties%2F-1897121320" anchor-label="debuggingName" id="-1311690248%2FProperties%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="debugging-name.html"><span>debugging</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1311690248%2FProperties%2F-1897121320"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="debugging-name.html">debuggingName</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">The name to use for debugging. This is handy for logging and is used by the default <a href="to-string.html">toString</a> implementation provided here.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
         <div class="table"><a data-name="-559777646%2FFunctions%2F-1897121320" anchor-label="apply" id="-559777646%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="apply.html"><span><span>apply</span></span></a></div>
@@ -139,7 +190,7 @@ val actionB = action {
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-updater/index.html">WorkflowAction.Updater</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">OutputT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="apply.html"><span class="token function">apply</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Executes the logic for this action, including any side effects, updating <a href="index.html">state</a>, and setting the <a href="index.html">OutputT</a> to emit.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="-updater/index.html">WorkflowAction.Updater</a><span class="token operator">&lt;</span><a href="index.html">PropsT</a><span class="token punctuation">, </span><a href="index.html">StateT</a><span class="token punctuation">, </span><a href="index.html">OutputT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="apply.html"><span class="token function">apply</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Executes the logic for this action, including any side effects, updating <a href="index.html">state</a>, and setting the <a href="index.html">OutputT</a> to emit.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -154,7 +205,22 @@ val actionB = action {
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../apply-to.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../apply-to.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../apply-to.html">OutputT</a><span class="token operator">&gt; </span><a href="index.html">WorkflowAction</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../apply-to.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../apply-to.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../apply-to.html">OutputT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../apply-to.html"><span class="token function">applyTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">props<span class="token operator">: </span><a href="../apply-to.html">PropsT</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../apply-to.html">StateT</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../apply-to.html">StateT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../-action-applied/index.html">ActionApplied</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../apply-to.html">OutputT</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Applies this <a href="index.html">WorkflowAction</a> to <a href="../apply-to.html">state</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../apply-to.html">PropsT</a><span class="token punctuation">, </span><a href="../apply-to.html">StateT</a><span class="token punctuation">, </span><a href="../apply-to.html">OutputT</a><span class="token operator">&gt; </span><a href="index.html">WorkflowAction</a><span class="token operator">&lt;</span><a href="../apply-to.html">PropsT</a><span class="token punctuation">, </span><a href="../apply-to.html">StateT</a><span class="token punctuation">, </span><a href="../apply-to.html">OutputT</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../apply-to.html"><span class="token function">applyTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">props<span class="token operator">: </span><a href="../apply-to.html">PropsT</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../apply-to.html">StateT</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><a href="../apply-to.html">StateT</a><span class="token punctuation">, </span><a href="../-action-applied/index.html">ActionApplied</a><span class="token operator">&lt;</span><a href="../apply-to.html">OutputT</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Applies this <a href="index.html">WorkflowAction</a> to <a href="../apply-to.html">state</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-466830435%2FFunctions%2F-1897121320" anchor-label="toString" id="-466830435%2FFunctions%2F-1897121320" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-string.html"><span>to</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-466830435%2FFunctions%2F-1897121320"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
@@ -164,12 +230,18 @@ val actionB = action {
     </div>
   </div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-

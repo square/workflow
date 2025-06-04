@@ -25,37 +25,69 @@
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
 <link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
 <script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
     <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
 <a class="library-name--link" href="../../../index.html">
-                            workflow
-                    </a>            </div>
-            <div class="library-version">
+                    workflow
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-core:dokkaHtmlPartial/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":workflow-core:dokkaHtmlPartial/commonMain" data-filter=":workflow-core:dokkaHtmlPartial/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
         </div>
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-core:dokkaHtmlPartial/commonMain">common</button>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
+    </nav>
         <div id="container">
             <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    workflow
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
             </div>
             <div id="main">
 <div class="main-content" data-page-type="member" id="content" pageids="workflow-core::com.squareup.workflow1/BaseRenderContext/runningSideEffect/#kotlin.String#kotlin.coroutines.SuspendFunction1[kotlinx.coroutines.CoroutineScope,kotlin.Unit]/PointingToDeclaration//-1897121320">
@@ -63,14 +95,20 @@
   <div class="cover ">
     <h1 class="cover"><span>running</span><wbr><span>Side</span><wbr><span><span>Effect</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="running-side-effect.html"><span class="token function">runningSideEffect</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">sideEffect<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/BaseRenderContext.kt#L123">source</a>)</span></span></div><p class="paragraph">Ensures <a href="running-side-effect.html">sideEffect</a> is running with the given <a href="running-side-effect.html">key</a>.</p><p class="paragraph">The first render pass in which this method is called, <a href="running-side-effect.html">sideEffect</a> will be launched in a new coroutine that will be scoped to the rendering <a href="../-workflow/index.html">Workflow</a>. Subsequent render passes that invoke this method with the same <a href="running-side-effect.html">key</a> will not launch the coroutine again, but let it keep running. Note that if a different function is passed with the same key, the side effect will <i>not</i> be restarted, the new function will simply be ignored. The next render pass in which the workflow does not call this method with the same key, the coroutine running <a href="running-side-effect.html">sideEffect</a> will be <a href="https://kotlinlang.org/docs/reference/coroutines/cancellation-and-timeouts.html">cancelled</a>.</p><p class="paragraph">The coroutine will run with the same <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> that the workflow runtime is running in. The side effect coroutine will not be started until <i>after</i> the first render call than runs it returns.</p><p class="paragraph">Note that there is currently an <a href="https://github.com/square/workflow-kotlin/issues/1093">issue</a> when a <a href="running-side-effect.html">runningSideEffect</a> (and thus also <a href="../running-worker.html">runningWorker</a>, or the parent Workflow of either via <a href="render-child.html">renderChild</a>) is declared as running (or rendering) in one render pass and then not declared in the next render pass and both those consecutive render passes happen synchronously - i.e. without the <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span> for the Workflow runtime being able to dispatch asynchronously. This is because the jobs for side effects are launched lazily in order to ensure they happen after the render pass, but if the <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span>'s job (the parent for all these jobs) is cancelled before these lazy coroutines have a chance to dispatch, then they will never run at all. For more details, and to report problems with this, see the <a href="https://github.com/square/workflow-kotlin/issues/1093">issue</a>. If you need guaranteed execution for some code in this scenario (like for cleanup), please use a <a href="../-session-workflow/index.html">SessionWorkflow</a> and the <a href="../-session-workflow/initial-state.html">SessionWorkflow.initialState</a> that provides the <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> which is equivalent to the lifetime of the Workflow node in the tree. The <span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span> can be extracted from that and used to get guaranteed to be executed lifecycle hooks, e.g. via <span data-unresolved-link="kotlinx.coroutines/Job/invokeOnCompletion/#kotlin.Boolean#kotlin.Boolean#kotlin.Function1[kotlin.Throwable?,kotlin.Unit]/PointingToDeclaration/">Job.invokeOnCompletion</span>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>key</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The string key that is used to distinguish between side effects.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>side</span><wbr><span><span>Effect</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The suspend function that will be launched in a coroutine to perform the side effect.</p></div></div></div></div></div></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="running-side-effect.html"><span class="token function">runningSideEffect</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">sideEffect<span class="token operator">: </span><span class="token keyword">suspend </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-core/src/commonMain/kotlin/com/squareup/workflow1/BaseRenderContext.kt#L125">source</a>)</span></span></div><p class="paragraph">Ensures <a href="running-side-effect.html">sideEffect</a> is running with the given <a href="running-side-effect.html">key</a>.</p><p class="paragraph">The first render pass in which this method is called, <a href="running-side-effect.html">sideEffect</a> will be launched in a new coroutine that will be scoped to the rendering <a href="../-workflow/index.html">Workflow</a>. Subsequent render passes that invoke this method with the same <a href="running-side-effect.html">key</a> will not launch the coroutine again, but let it keep running. Note that if a different function is passed with the same key, the side effect will <i>not</i> be restarted, the new function will simply be ignored. The next render pass in which the workflow does not call this method with the same key, the coroutine running <a href="running-side-effect.html">sideEffect</a> will be <a href="https://kotlinlang.org/docs/reference/coroutines/cancellation-and-timeouts.html">cancelled</a>.</p><p class="paragraph">The coroutine will run with the same <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> that the workflow runtime is running in. The side effect coroutine will not be started until <i>after</i> the first render call than runs it returns.</p><p class="paragraph">Note that there is currently an <a href="https://github.com/square/workflow-kotlin/issues/1093">issue</a> when a <a href="running-side-effect.html">runningSideEffect</a> (and thus also <a href="../running-worker.html">runningWorker</a>, or the parent Workflow of either via <a href="render-child.html">renderChild</a>) is declared as running (or rendering) in one render pass and then not declared in the next render pass and both those consecutive render passes happen synchronously - i.e. without the <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span> for the Workflow runtime being able to dispatch asynchronously. This is because the jobs for side effects are launched lazily in order to ensure they happen after the render pass, but if the <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span>'s job (the parent for all these jobs) is cancelled before these lazy coroutines have a chance to dispatch, then they will never run at all. For more details, and to report problems with this, see the <a href="https://github.com/square/workflow-kotlin/issues/1093">issue</a>. If you need guaranteed execution for some code in this scenario (like for cleanup), please use a <a href="../-session-workflow/index.html">SessionWorkflow</a> and the <a href="../-session-workflow/initial-state.html">SessionWorkflow.initialState</a> that provides the <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> which is equivalent to the lifetime of the Workflow node in the tree. The <span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span> can be extracted from that and used to get guaranteed to be executed lifecycle hooks, e.g. via <span data-unresolved-link="kotlinx.coroutines/Job/invokeOnCompletion/#kotlin.Boolean#kotlin.Boolean#kotlin.Function1[kotlin.Throwable?,kotlin.Unit]/PointingToDeclaration/">Job.invokeOnCompletion</span>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>key</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The string key that is used to distinguish between side effects.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-core:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>side</span><wbr><span><span>Effect</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The suspend function that will be launched in a coroutine to perform the side effect.</p></div></div></div></div></div></div></div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-

@@ -25,37 +25,69 @@
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet">
 <link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
 <script type="text/javascript" src="../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script>
 <script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
     <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
 <a class="library-name--link" href="../../index.html">
-                            workflow
-                    </a>            </div>
-            <div class="library-version">
+                    workflow
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-runtime:dokkaHtmlPartial/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filter=":workflow-runtime:dokkaHtmlPartial/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
         </div>
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":workflow-runtime:dokkaHtmlPartial/commonMain">common</button>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
+    </nav>
         <div id="container">
             <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    workflow
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
             </div>
             <div id="main">
 <div class="main-content" data-page-type="package" id="content" pageids="workflow-runtime::com.squareup.workflow1////PointingToDeclaration//-1625139255">
@@ -98,36 +130,6 @@
               </div>
             </div>
           </div>
-<a data-name="1741599549%2FClasslikes%2F-1625139255" anchor-label="RuntimeConfig" id="1741599549%2FClasslikes%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-runtime-config/index.html"><span>Runtime</span><wbr><span><span>Config</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1741599549%2FClasslikes%2F-1625139255"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-runtime-config/index.html">RuntimeConfig</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-runtime-config-options/index.html">RuntimeConfigOptions</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1278672615%2FClasslikes%2F-1625139255" anchor-label="RuntimeConfigOptions" id="1278672615%2FClasslikes%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-runtime-config-options/index.html"><span>Runtime</span><wbr><span>Config</span><wbr><span><span>Options</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1278672615%2FClasslikes%2F-1625139255"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-runtime-config-options/index.html">RuntimeConfigOptions</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-runtime-config-options/index.html">RuntimeConfigOptions</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A specification of the possible Workflow Runtime options.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
 <a data-name="-1418115278%2FClasslikes%2F-1625139255" anchor-label="SimpleLoggingWorkflowInterceptor" id="-1418115278%2FClasslikes%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
@@ -138,7 +140,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-simple-logging-workflow-interceptor/index.html">SimpleLoggingWorkflowInterceptor</a> : <a href="-workflow-interceptor/index.html">WorkflowInterceptor</a></div><div class="brief "><p class="paragraph">A <a href="-workflow-interceptor/index.html">WorkflowInterceptor</a> that just prints all method calls using <a href="../../workflow-core/com.squareup.workflow1/-simple-logging-workflow-interceptor/log.html">log</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-simple-logging-workflow-interceptor/index.html">SimpleLoggingWorkflowInterceptor</a> : <a href="-workflow-interceptor/index.html">WorkflowInterceptor</a></div><div class="brief "><p class="paragraph">A <a href="-workflow-interceptor/index.html">WorkflowInterceptor</a> that just prints all method calls using <span data-unresolved-link="com.squareup.workflow1/SimpleLoggingWorkflowInterceptor/log/#kotlin.String/PointingToDeclaration/">log</span>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -154,21 +156,6 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-tree-snapshot/index.html">TreeSnapshot</a></div><div class="brief "><p class="paragraph">Aggregate of all the snapshots of a tree of workflows.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="736474694%2FClasslikes%2F-1625139255" anchor-label="WorkflowExperimentalRuntime" id="736474694%2FClasslikes%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-workflow-experimental-runtime/index.html"><span>Workflow</span><wbr><span>Experimental</span><wbr><span><span>Runtime</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="736474694%2FClasslikes%2F-1625139255"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-target/index.html"><span class="token annotation builtin">Target</span></a><span class="token punctuation">(</span><span>allowedTargets<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-c-l-a-s-s/index.html">AnnotationTarget.CLASS</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-p-r-o-p-e-r-t-y/index.html">AnnotationTarget.PROPERTY</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-f-u-n-c-t-i-o-n/index.html">AnnotationTarget.FUNCTION</a><span class="token punctuation">, </span></span><wbr><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-t-y-p-e-a-l-i-a-s/index.html">AnnotationTarget.TYPEALIAS</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">annotation class </span><a href="-workflow-experimental-runtime/index.html">WorkflowExperimentalRuntime</a></div><div class="brief "><p class="paragraph">This is used to mark any experimental runtimes.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -192,17 +179,17 @@
       </div>
       <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1388342379%2FFunctions%2F-1625139255" anchor-label="renderWorkflowIn" id="1388342379%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table"><a data-name="2145465300%2FFunctions%2F-1625139255" anchor-label="renderWorkflowIn" id="2145465300%2FFunctions%2F-1625139255" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":workflow-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":workflow-runtime:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="render-workflow-in.html"><span>render</span><wbr><span>Workflow</span><wbr><span><span>In</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1388342379%2FFunctions%2F-1625139255"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2145465300%2FFunctions%2F-1625139255"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="render-workflow-in.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="render-workflow-in.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="render-workflow-in.html">RenderingT</a><span class="token operator">&gt; </span><a href="render-workflow-in.html"><span class="token function">renderWorkflowIn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">workflow<span class="token operator">: </span><a href="../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="render-workflow-in.html">PropsT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="render-workflow-in.html">OutputT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="render-workflow-in.html">RenderingT</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">props<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="render-workflow-in.html">PropsT</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">initialSnapshot<span class="token operator">: </span><a href="-tree-snapshot/index.html">TreeSnapshot</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">interceptors<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-workflow-interceptor/index.html">WorkflowInterceptor</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter ">runtimeConfig<span class="token operator">: </span><a href="-runtime-config/index.html">RuntimeConfig</a><span class="token operator"> = </span>RuntimeConfigOptions.DEFAULT_CONFIG<span class="token punctuation">, </span></span><span class="parameter ">onOutput<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="render-workflow-in.html">OutputT</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-rendering-and-snapshot/index.html">RenderingAndSnapshot</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="render-workflow-in.html">RenderingT</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Launches the <a href="render-workflow-in.html">workflow</a> in a new coroutine in <a href="render-workflow-in.html">scope</a> and returns a <span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span> of its <a href="render-workflow-in.html">renderings</a> and <a href="../../workflow-core/com.squareup.workflow1/-snapshot/index.html">snapshots</a>. The workflow tree is seeded with <a href="render-workflow-in.html">initialSnapshot</a> and the current value value of <a href="render-workflow-in.html">props</a>. Subsequent values emitted from <a href="render-workflow-in.html">props</a> will be used to re-render the workflow.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="render-workflow-in.html">PropsT</a><span class="token punctuation">, </span><a href="render-workflow-in.html">OutputT</a><span class="token punctuation">, </span><a href="render-workflow-in.html">RenderingT</a><span class="token operator">&gt; </span><a href="render-workflow-in.html"><span class="token function">renderWorkflowIn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">workflow<span class="token operator">: </span><a href="../../workflow-core/com.squareup.workflow1/-workflow/index.html">Workflow</a><span class="token operator">&lt;</span><a href="render-workflow-in.html">PropsT</a><span class="token punctuation">, </span><a href="render-workflow-in.html">OutputT</a><span class="token punctuation">, </span><a href="render-workflow-in.html">RenderingT</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">props<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><a href="render-workflow-in.html">PropsT</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">initialSnapshot<span class="token operator">: </span><a href="-tree-snapshot/index.html">TreeSnapshot</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">interceptors<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-workflow-interceptor/index.html">WorkflowInterceptor</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter ">runtimeConfig<span class="token operator">: </span><a href="../../workflow-core/com.squareup.workflow1/-runtime-config/index.html">RuntimeConfig</a><span class="token operator"> = </span>RuntimeConfigOptions.DEFAULT_CONFIG<span class="token punctuation">, </span></span><span class="parameter ">workflowTracer<span class="token operator">: </span><a href="../../workflow-core/com.squareup.workflow1/-workflow-tracer/index.html">WorkflowTracer</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">onOutput<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="render-workflow-in.html">OutputT</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><a href="-rendering-and-snapshot/index.html">RenderingAndSnapshot</a><span class="token operator">&lt;</span><a href="render-workflow-in.html">RenderingT</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Launches the <a href="render-workflow-in.html">workflow</a> in a new coroutine in <a href="render-workflow-in.html">scope</a> and returns a <span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span> of its <a href="render-workflow-in.html">renderings</a> and <a href="../../workflow-core/com.squareup.workflow1/-snapshot/index.html">snapshots</a>. The workflow tree is seeded with <a href="render-workflow-in.html">initialSnapshot</a> and the current value value of <a href="render-workflow-in.html">props</a>. Subsequent values emitted from <a href="render-workflow-in.html">props</a> will be used to re-render the workflow.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -212,12 +199,18 @@
     </div>
   </div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-
