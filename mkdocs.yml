@@ -102,11 +102,7 @@ nav:
     - 'Kotlin Samples 🔗': https://github.com/square/workflow-kotlin/tree/main/samples
   - 'API Reference':
     - 'Kotlin 🔗': 'kotlin/api/htmlMultiModule'
-    - 'Swift API':
-      - 'Workflow ': 'swift/api/Workflow/README.md'
-      - 'WorkflowReactiveSwift': 'swift/api/WorkflowReactiveSwift/README.md'
-      - 'WorkflowUI ': 'swift/api/WorkflowUI/README.md'
-      - 'WorkflowTesting ': 'swift/api/WorkflowTesting/README.md'
+    - 'Swift 🔗': https://square.github.io/workflow-swift/documentation
   - 'Glossary': 'glossary.md'
   - 'FAQ': faq.md
   - 'Pre-1.0 Resources': historical.md

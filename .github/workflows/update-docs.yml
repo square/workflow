@@ -11,10 +11,6 @@ on:
         description: 'Kotlin Git ref to publish'
         default: 'main'
         required: true
-      swift-ref:
-        description: 'Swift Git ref to publish'
-        default: 'main'
-        required: true
       docs-branch:
         description: 'Branch name for updated documentation to be published'
         required: true
@@ -37,33 +33,6 @@ jobs:
         ref: ${{ github.event.inputs.kotlin-ref }}
         path: 'workflow-kotlin'
 
-    - name: Check out Swift repo
-      uses: actions/checkout@v3
-      with:
-        repository: 'square/workflow-swift'
-        ref: ${{ github.event.inputs.swift-ref }}
-        path: 'workflow-swift'
-
-    # Ruby Gems
-    - name: Load gem cache
-      uses: actions/cache@v3
-      with:
-        path: workflow-swift/.bundle
-        key: gems-${{ hashFiles('workflow-swift/Gemfile.lock') }}
-
-    - name: Set up Swift environment
-      run: |
-        # Set global bundle path so it gets used by build_swift_docs.sh running in the nested repo as well.
-        cd workflow-swift
-        bundle config --global path "$(pwd)/.bundle"
-        bundle check || bundle install
-
-        # Don't need to run pod gen, the website script does that itself.
-        brew install sourcedocs
-
-        # Use Xcode
-        sudo xcode-select -s /Applications/Xcode_15.1.app
-
     # Docs dependencies
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -81,20 +50,6 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: 17
-
-    # Build Swift docs
-    - name: Build Swift docs
-      run: |
-        mkdir -p workflow/docs/swift/api
-
-        cd workflow-swift
-        bundle exec pod gen Development.podspec
-        cd gen/Development
-
-        sourcedocs generate --output-folder "../../../workflow/docs/swift/api/Workflow" -- -scheme Workflow -workspace Development.xcworkspace
-        sourcedocs generate --output-folder "../../../workflow/docs/swift/api/WorkflowUI" -- -scheme WorkflowUI -workspace Development.xcworkspace
-        sourcedocs generate --output-folder "../../../workflow/docs/swift/api/WorkflowTesting" -- -scheme WorkflowTesting -workspace Development.xcworkspace
-        sourcedocs generate --output-folder "../../../workflow/docs/swift/api/WorkflowReactiveSwift" -- -scheme WorkflowReactiveSwift -workspace Development.xcworkspace
 
     # Build Kotlin docs
     - name: Build Kotlin docs
@@ -127,7 +82,6 @@ jobs:
       run: |
         # Get the source repo SHAs
         KOTLIN_REF=$(git --git-dir workflow-kotlin/.git log -1 --format='%H')
-        SWIFT_REF=$(git --git-dir workflow-swift/.git log -1 --format='%H')
 
         cd workflow-publish
         git checkout -b ${{ github.event.inputs.docs-branch }}
@@ -137,5 +91,5 @@ jobs:
 
         # Commit and push
         git add .
-        git commit -m "Update documentation" -m "Docs built from square/workflow-kotlin@$KOTLIN_REF and square/workflow-swift@$SWIFT_REF"
+        git commit -m "Update documentation" -m "Docs built from square/workflow-kotlin@$KOTLIN_REF"
         git push origin HEAD:${{ github.event.inputs.docs-branch }}
