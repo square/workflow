@@ -25,61 +25,112 @@
 <link href="../../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../../styles/logo-styles.css" rel="Stylesheet">
 <link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../ui-kit/ui-kit.min.js" defer></script>
 <script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
     <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
 <a class="library-name--link" href="../../../../index.html">
-                            workflow
-                    </a>            </div>
-            <div class="library-version">
+                    workflow
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-common:dokkaHtmlPartial/main">jvm</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filter=":workflow-ui:core-common:dokkaHtmlPartial/main">
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
         </div>
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":workflow-ui:core-common:dokkaHtmlPartial/main">jvm</button>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
+    </nav>
         <div id="container">
             <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    workflow
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
             </div>
             <div id="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="workflow-ui-core-common-jvm::com.squareup.workflow1.ui/Container///PointingToDeclaration//-917155079">
   <div class="breadcrumbs"><a href="../../index.html">workflow-ui-core-common-jvm</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui</a><span class="delimiter">/</span><span class="current">Container</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Container</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../-workflow-ui-experimental-api/index.html"><span class="token annotation builtin">WorkflowUiExperimentalApi</span></a></div></div><span class="token keyword">interface </span><a href="index.html">Container</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">BaseT</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="index.html">C</a><span class="token operator"> : </span><a href="index.html">BaseT</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/Container.kt#L23">source</a>)</span></span></div><p class="paragraph">A rendering type comprised of a set of other renderings.</p><p class="paragraph">Why two parameter types? The separate <a href="index.html">BaseT</a> type allows implementations and sub-interfaces to constrain the types that <a href="map.html">map</a> is allowed to transform <a href="index.html">C</a> to. E.g., it allows <code class="lang-kotlin">FooWrapper&lt;S: Screen&gt;</code> to declare that <a href="map.html">map</a> is only able to transform <code class="lang-kotlin">S</code> to other types of <code class="lang-kotlin">Screen</code>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>Base</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the invariant base type of the contents of such a container, usually <a href="../-screen/index.html">Screen</a> or <a href="../../com.squareup.workflow1.ui.navigation/-overlay/index.html">Overlay</a>. It is common for the <a href="index.html">Container</a> itself to implement <a href="index.html">BaseT</a>, but that is not a requirement. E.g., <a href="../../com.squareup.workflow1.ui.navigation/-screen-overlay/index.html">ScreenOverlay</a> is an <a href="../../com.squareup.workflow1.ui.navigation/-overlay/index.html">Overlay</a>, but it wraps a <a href="../-screen/index.html">Screen</a>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>C</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the specific subtype of <a href="index.html">BaseT</a> collected by this <a href="index.html">Container</a>.</p></div></div></div></div></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-wrapper/index.html">Wrapper</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.squareup.workflow1.ui.navigation/-back-stack-screen/index.html">BackStackScreen</a></div></span></div><div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Container</a><span class="token operator">&lt;</span><a href="index.html">CategoryT</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="index.html">C</a><span class="token operator"> : </span><a href="index.html">CategoryT</a><span class="token operator">&gt;</span> : <a href="../-composite/index.html">Composite</a><span class="token operator">&lt;</span><a href="index.html">C</a><span class="token operator">&gt; </span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/Container.kt#L54">source</a>)</span></span></div><p class="paragraph">A structured <a href="../-composite/index.html">Composite</a> rendering comprised of a set of other renderings of a <a href="index.html">specific type</a> of a particular <a href="index.html">category</a>, and whose contents can be transformed by <a href="map.html">map</a>.</p><p class="paragraph">Why two parameter types? The separate <a href="index.html">CategoryT</a> type allows implementations and sub-interfaces to constrain the types that <a href="map.html">map</a> is allowed to transform <a href="index.html">C</a> to. E.g., it allows <code class="lang-kotlin">BunchOfScreens&lt;S: Screen&gt;</code> to declare that <a href="map.html">map</a> is only able to transform <code class="lang-kotlin">S</code> to other types of <code class="lang-kotlin">Screen</code>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>Category</span><wbr><span><span>T</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the invariant base type of the contents of such a container, usually <a href="../-screen/index.html">Screen</a> or <a href="../../com.squareup.workflow1.ui.navigation/-overlay/index.html">Overlay</a>. It is common for the <a href="index.html">Container</a> itself to implement <a href="index.html">CategoryT</a>, but that is not a requirement. E.g., <a href="../../com.squareup.workflow1.ui.navigation/-screen-overlay/index.html">ScreenOverlay</a> is an <a href="../../com.squareup.workflow1.ui.navigation/-overlay/index.html">Overlay</a>, but it wraps a <a href="../-screen/index.html">Screen</a>.</p></div></div></div></div><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>C</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the specific subtype of <a href="index.html">CategoryT</a> collected by this <a href="index.html">Container</a>.</p></div></div></div></div></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-wrapper/index.html">Wrapper</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.squareup.workflow1.ui.navigation/-back-stack-screen/index.html">BackStackScreen</a></div></span></div><div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="614991238%2FFunctions%2F-917155079" anchor-label="asSequence" id="614991238%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="2134579631%2FProperties%2F-917155079" anchor-label="unwrapped" id="2134579631%2FProperties%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
           <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="as-sequence.html"><span>as</span><wbr><span><span>Sequence</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="614991238%2FFunctions%2F-917155079"></span>
+                  <div><a href="../-composite/unwrapped.html"><span><span>unwrapped</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2134579631%2FProperties%2F-917155079"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="as-sequence.html"><span class="token function">asSequence</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.sequences/-sequence/index.html">Sequence</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">C</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="../-composite/unwrapped.html">unwrapped</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a></div><div class="brief "><p class="paragraph">Topmost wrapped content, or <code class="lang-kotlin">this</code> if empty.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="17571980%2FFunctions%2F-917155079" anchor-label="asSequence" id="17571980%2FFunctions%2F-917155079" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":workflow-ui:core-common:dokkaHtmlPartial/main" data-filterable-set=":workflow-ui:core-common:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-composite/as-sequence.html"><span>as</span><wbr><span><span>Sequence</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="17571980%2FFunctions%2F-917155079"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="../-composite/as-sequence.html"><span class="token function">asSequence</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.sequences/-sequence/index.html">Sequence</a><span class="token operator">&lt;</span><a href="index.html">C</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -94,7 +145,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="map.html">D</a><span class="token operator"> : </span><a href="index.html">BaseT</a><span class="token operator">&gt; </span><a href="map.html"><span class="token function">map</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">transform<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="index.html">C</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="map.html">D</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Container</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">BaseT</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="map.html">D</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns a <a href="index.html">Container</a> with the <a href="map.html">transform</a>ed contents of the receiver. It is expected that an implementation will take advantage of covariance to declare its own type as the return type, rather than plain old <a href="index.html">Container</a>. This requirement is not enforced because recursive generics are a fussy nuisance.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="map.html">D</a><span class="token operator"> : </span><a href="index.html">CategoryT</a><span class="token operator">&gt; </span><a href="map.html"><span class="token function">map</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">transform<span class="token operator">: </span><span class="token punctuation">(</span><a href="index.html">C</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="map.html">D</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Container</a><span class="token operator">&lt;</span><a href="index.html">CategoryT</a><span class="token punctuation">, </span><a href="map.html">D</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns a <a href="index.html">Container</a> with the <a href="map.html">transform</a>ed contents of the receiver. It is expected that an implementation will take advantage of covariance to declare its own type as the return type, rather than plain old <a href="index.html">Container</a>. This requirement is not enforced because recursive generics are a fussy nuisance.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -104,12 +155,18 @@
     </div>
   </div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-

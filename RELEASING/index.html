@@ -517,85 +517,10 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2" type="checkbox" id="__nav_5_2" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_5_2">
-          Swift API
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Swift API" data-md-level="2">
-        <label class="md-nav__title" for="__nav_5_2">
-          <span class="md-nav__icon md-icon"></span>
-          Swift API
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../swift/api/Workflow/" class="md-nav__link">
-        Workflow 
+      <a href="https://square.github.io/workflow-swift/documentation" class="md-nav__link">
+        Swift 🔗
       </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../swift/api/WorkflowReactiveSwift/" class="md-nav__link">
-        WorkflowReactiveSwift
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../swift/api/WorkflowUI/" class="md-nav__link">
-        WorkflowUI 
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../swift/api/WorkflowTesting/" class="md-nav__link">
-        WorkflowTesting 
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -747,8 +672,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#swift-sourcedocs" class="md-nav__link">
-    Swift: Sourcedocs
+  <a href="#swift-docc" class="md-nav__link">
+    Swift: DocC
   </a>
   
 </li>
@@ -861,8 +786,7 @@ consists of three parts:</p>
 <li>Kotlin API reference: Kdoc embedded in Kotlin source files is converted to GitHub-flavored
    Markdown by Dokka and then included in the statically-generated website.</li>
 <li>Swift API reference: Markup comments from Swift files are converted Markdown by
-   <a href="https://github.com/eneko/SourceDocs">Sourcedocs</a> and then included in the statically-generated
-   website.</li>
+   <a href="https://www.swift.org/documentation/docc/">DocC</a> and then published independently at <a href="https://square.github.io/workflow-swift/documentation">square.github.io/workflow-swift/documentation</a>.</li>
 </ol>
 <p><strong>Note: The documentation site is automatically built and deployed whenever a version tag is pushed.
 You only need these steps if you want to work on the site locally.</strong></p>
@@ -874,31 +798,8 @@ that&rsquo;s it. To generate the docs manually, run:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span> kotlin
 ./gradlew dokka
 </code></pre></div>
-<h4 id="swift-sourcedocs">Swift: Sourcedocs<a class="headerlink" href="#swift-sourcedocs" title="Permanent link">&para;</a></h4>
-<p>Sourcedocs generates a Markdown site from Swift files. You need Ruby, rubygems,
-bundler (2.x), Xcode 10.2+, CocoaPods, and of course Sourcedocs itself, to run it. Assuming you&rsquo;ve
-already got Xcode, Ruby, and rubygems set up, install the rest of the dependencies:</p>
-<div class="highlight"><pre><span></span><code>gem install bundler cocoapods
-brew install sourcedocs
-</code></pre></div>
-<p>You will also need a checkout of the Swift repo:</p>
-<div class="highlight"><pre><span></span><code>git clone https://github.com/square/workflow-swift.git
-<span class="nb">cd</span> workflow-swift
-</code></pre></div>
-<p>Then generate an Xcode project before running Sourcedocs:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span> Samples/SampleApp/
-bundle <span class="nb">exec</span> pod install
-<span class="c1"># If this is your first time running CocoaPods, that will fail and you&#39;ll need to run this instead:</span>
-<span class="c1">#bundle exec pod install --repo-update</span>
-</code></pre></div>
-<p>You can manually generate the docs to verify everything is working correctly by running:</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#cd Samples/SampleApp/</span>
-sourcedocs generate -- -scheme Workflow -workspace SampleApp.xcworkspace
-sourcedocs generate -- -scheme WorkflowUI -workspace SampleApp.xcworkspace
-sourcedocs generate -- -scheme WorkflowTesting -workspace SampleApp.xcworkspace
-</code></pre></div>
-<p>Note that currently sourcedocs only supports Xcode 10, if you run it with Xcode 11 you might see
-an error about Catalyst and only empty READMEs will get generated.</p>
+<h4 id="swift-docc">Swift: DocC<a class="headerlink" href="#swift-docc" title="Permanent link">&para;</a></h4>
+<p>The Swift documentation is published by CI in the Swift repo and linked from the cross-platform Workflow docs. For info on how to generate the Swift docs locally, check out <a href="https://github.com/square/workflow-swift">the workflow-swift repo</a>.</p>
 <h4 id="mkdocs">mkdocs<a class="headerlink" href="#mkdocs" title="Permanent link">&para;</a></h4>
 <p>Mkdocs is written in Python, so you&rsquo;ll need Python 3 and pip in order to run it. Assuming those are
 set up, run:</p>
