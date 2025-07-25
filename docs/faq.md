@@ -40,3 +40,7 @@ Of course! Workflow was designed to make complex application architecture predic
 large development teams. We're confident that it brings benefits even to smaller projects, but there
 is never only one right way to build software. We recommend to [follow good practices and use an
 architecture that makes sense for your project](https://www.thoughtworks.com/insights/blog/write-quality-mobile-apps-any-architecture).
+
+## How do I do X in workflow?
+
+Take a look at the [Common Patterns](https://square.github.io/workflow/userguide/common-patterns/) section of the User Guide.
