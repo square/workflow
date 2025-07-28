@@ -34,15 +34,59 @@ simply by rendering various children. It may just combine the renderings of mult
 use its props to determine which of a set of children to render. Such workflows can often be
 stateless.
 
-## One-and-done Workflows (RenderingT v. OutputT)
+## Skippable Workflows
 
-A common question is “why can’t I emit output from `initialState`,” or “what if my Workflow realizes it doesn’t actually need to run? The most efficient, and most expressive, way to handle this is to use an optional or conditional `Rendering` type, and an `Output` of [`Never`](https://nshipster.com/never/)/[`Nothing`](https://medium.com/@agrawalsuneet/the-nothing-type-kotlin-2e7df43b0111).
+* Why can’t I emit output from `initialState`?
+* Why can’t I emit output from `render`?
+* Why can't I change states during `render`?
+* What if while rendering my Workflow realizes it doesn’t actually need to run?
+
+The best pattern we've found for all of these situations is a "skippable workflow".
+The idea is that a workflow that performs work that may not actually be necessary
+provides an extra function for parents to call.
+The parent can call this during the upstream action
+where it's deciding whether or not to enter the state
+in which the child would be run.
+
+Perhaps it's a simple boolean function indicating whether or not the child actually has any work to do:
+
+```kotlin
+state = if (stepTwoWorkflow.isThisNecessary()) RunStepTwo else RunStepThree
+```
+
+Perhaps it can return the usual output, or null to indicate that async work is required:
+
+```kotlin
+state = stepTwoWorkflow.instantResponse(stepTwoInput)?.let { RunStepThree(it) }
+  ?: RunStepTwo
+```
+
+A particularly nice aspect of this approach is how it keeps
+the knowledge encapsulated by the skippable workflow from leaking.
+
+Any hacks you might resort during `initialState` or `render`
+to make it seem like a workflow is short circuiting are big smells.
+They are guaranteed to cause performance problems that compound,
+and add needless complexity.
+
+## Optional renderings (using RenderT instead of OutputT)
+
+Besides the [skippable workflow](#skippable-workflows) pattern described above,
+another way a child can communicate to its parent that it has no work to do
+is with a nullable or otherwise un-renderable rendering type.
 
 Imagine a `PromptForPermissionMaybeWorkflow`, that renders a UI to get a passcode, but only if that permission has not already been granted. If you make its `RenderingT` nullable (e.g. `Screen?`), it can return `null` to indicate that its job is done. Its callers will be synchronously informed that the coast is clear, and can immediately render what they actually care about.
 
 Another variation of this pattern is to use a sealed class / enum type for `Rendering`, with a `Working` type that implements `Screen`, and a unviewable `Finished` type that carries the work product.
 
-A good rule of thumb for choosing between using `Rendering` or `Output` is to remember that `Output` is event-like, and is always asynchronous. A parent waiting for an output must be given something to render in the meantime. Using `Rendering` is a great idiom for a one-and-done workflow tasked with providing a single product, especially one that might be available instantly.
+Either way, it's a good idea to use an an output type of
+[`Never`](https://nshipster.com/never/)/[`Nothing`](https://medium.com/@agrawalsuneet/the-nothing-type-kotlin-2e7df43b0111)
+in a case like this, to keep it crystal clear how the child reports to the parent.
+
+This pattern requires that the parent will not need to change state or emit output
+based on the returned rendering type.
+The parent must be able to choose some other child to run or something else to render immediately.
+If that is not practical, go [skippable](#skippable-workflows) instead.
 
 ## Props values v. Injected Dependencies
 
