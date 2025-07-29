@@ -2,21 +2,31 @@
 
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
-Workflow is an application framework that provides architectural primitives.
+Workflow is a unidirectional data flow (UDF) library that
+provides navigation and state management for Kotlin and Swift applications.
+It can be compared to (and helped inspire!)
+[TCA](https://github.com/pointfreeco/swift-composable-architecture),
+[Circuit](https://github.com/slackhq/circuit)
+and [Molecule](https://github.com/cashapp/molecule).
 
-Workflow is:
+Workflow's main difference from its peers is its opionated take on navigation:
+that navigation is just another form of presenter state to be managed,
+not a separate special concern.
 
-* Written in and used for Kotlin and Swift
-* A unidirectional data flow library that uses immutable data within each Workflow.
+Workflow…
+
+* Uses immutable data within each Workflow.
   Data flows in a single direction from source to UI, and events in a single direction
   from the UI to the business logic.
-* A library that supports writing business logic and complex UI navigation logic as
+* Supports writing business logic and complex UI navigation logic as
   state machines, thereby enabling confident reasoning about state and validation of
   correctness.
-* Optimized for composability and scalability of features and screens.
-* Corresponding UI frameworks that bind Rendering data classes for “views”
+* Provides excellent support for recursion -- workflows of workflows of workflows --
+  as its main idiom for navigation.
+* Is optimized for composability and scalability of features and screens.
+* Includes UI frameworks that bind Rendering data classes for “views”
   (including event callbacks) to Mobile UI frameworks for Android and iOS.
-* A corresponding testing framework that facilitates simple-to-write unit
+* Provides a testing framework that facilitates simple-to-write unit
   tests for all application business logic and helps ensure correctness.
 
 ## Using Workflows in your project
