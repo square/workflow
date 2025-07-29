@@ -4,7 +4,7 @@
 
 Workflow is a unidirectional data flow (UDF) library that
 provides navigation and state management for Kotlin and Swift applications.
-It can be compared to (and helped inspire!) 
+It can be compared to (and helped inspire!)
 [TCA](https://github.com/pointfreeco/swift-composable-architecture),
 [Circuit](https://github.com/slackhq/circuit)
 and [Molecule](https://github.com/cashapp/molecule).
