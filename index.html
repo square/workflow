@@ -824,20 +824,29 @@
 
 <h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h1>
 <p><a href="https://www.apache.org/licenses/LICENSE-2.0"><img alt="GitHub license" src="https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat" /></a></p>
-<p>Workflow is an application framework that provides architectural primitives.</p>
-<p>Workflow is:</p>
+<p>Workflow is a unidirectional data flow (UDF) library that
+provides navigation and state management for Kotlin and Swift applications.
+It can be compared to (and helped inspire!)
+<a href="https://github.com/pointfreeco/swift-composable-architecture">TCA</a>,
+<a href="https://github.com/slackhq/circuit">Circuit</a>
+and <a href="https://github.com/cashapp/molecule">Molecule</a>.</p>
+<p>Workflow&rsquo;s main difference from its peers is its opionated take on navigation:
+that navigation is just another form of presenter state to be managed,
+not a separate special concern.</p>
+<p>Workflow…</p>
 <ul>
-<li>Written in and used for Kotlin and Swift</li>
-<li>A unidirectional data flow library that uses immutable data within each Workflow.
+<li>Uses immutable data within each Workflow.
   Data flows in a single direction from source to UI, and events in a single direction
   from the UI to the business logic.</li>
-<li>A library that supports writing business logic and complex UI navigation logic as
+<li>Supports writing business logic and complex UI navigation logic as
   state machines, thereby enabling confident reasoning about state and validation of
   correctness.</li>
-<li>Optimized for composability and scalability of features and screens.</li>
-<li>Corresponding UI frameworks that bind Rendering data classes for “views”
+<li>Provides excellent support for recursion &ndash; workflows of workflows of workflows &ndash;
+  as its main idiom for navigation.</li>
+<li>Is optimized for composability and scalability of features and screens.</li>
+<li>Includes UI frameworks that bind Rendering data classes for “views”
   (including event callbacks) to Mobile UI frameworks for Android and iOS.</li>
-<li>A corresponding testing framework that facilitates simple-to-write unit
+<li>Provides a testing framework that facilitates simple-to-write unit
   tests for all application business logic and helps ensure correctness.</li>
 </ul>
 <h2 id="using-workflows-in-your-project">Using Workflows in your project<a class="headerlink" href="#using-workflows-in-your-project" title="Permanent link">&para;</a></h2>
