@@ -416,8 +416,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#one-and-done-workflows-renderingt-v-outputt" class="md-nav__link">
-    One-and-done Workflows (RenderingT v. OutputT)
+  <a href="#skippable-workflows" class="md-nav__link">
+    Skippable Workflows
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-renderings-using-rendert-instead-of-outputt" class="md-nav__link">
+    Optional renderings (using RenderT instead of OutputT)
   </a>
   
 </li>
@@ -775,8 +782,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#one-and-done-workflows-renderingt-v-outputt" class="md-nav__link">
-    One-and-done Workflows (RenderingT v. OutputT)
+  <a href="#skippable-workflows" class="md-nav__link">
+    Skippable Workflows
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-renderings-using-rendert-instead-of-outputt" class="md-nav__link">
+    Optional renderings (using RenderT instead of OutputT)
   </a>
   
 </li>
@@ -852,11 +866,45 @@ Kotlin, use <a href="https://medium.com/@agrawalsuneet/the-nothing-type-kotlin-2
 simply by rendering various children. It may just combine the renderings of multiple children, or
 use its props to determine which of a set of children to render. Such workflows can often be
 stateless.</p>
-<h2 id="one-and-done-workflows-renderingt-v-outputt">One-and-done Workflows (RenderingT v. OutputT)<a class="headerlink" href="#one-and-done-workflows-renderingt-v-outputt" title="Permanent link">&para;</a></h2>
-<p>A common question is “why can’t I emit output from <code>initialState</code>,” or “what if my Workflow realizes it doesn’t actually need to run? The most efficient, and most expressive, way to handle this is to use an optional or conditional <code>Rendering</code> type, and an <code>Output</code> of <a href="https://nshipster.com/never/"><code>Never</code></a>/<a href="https://medium.com/@agrawalsuneet/the-nothing-type-kotlin-2e7df43b0111"><code>Nothing</code></a>.</p>
+<h2 id="skippable-workflows">Skippable Workflows<a class="headerlink" href="#skippable-workflows" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Why can’t I emit output from <code>initialState</code>?</li>
+<li>Why can’t I emit output from <code>render</code>?</li>
+<li>Why can&rsquo;t I change states during <code>render</code>?</li>
+<li>What if while rendering my Workflow realizes it doesn’t actually need to run?</li>
+</ul>
+<p>The best pattern we&rsquo;ve found for all of these situations is a &ldquo;skippable workflow&rdquo;.
+The idea is that a workflow that performs work that may not actually be necessary
+provides an extra function for parents to call.
+The parent can call this during the upstream action
+where it&rsquo;s deciding whether or not to enter the state
+in which the child would be run.</p>
+<p>Perhaps it&rsquo;s a simple boolean function indicating whether or not the child actually has any work to do:</p>
+<div class="highlight"><pre><span></span><code><span class="n">state</span> <span class="o">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">stepTwoWorkflow</span><span class="p">.</span><span class="na">isThisNecessary</span><span class="p">())</span> <span class="n">RunStepTwo</span> <span class="k">else</span> <span class="n">RunStepThree</span>
+</code></pre></div>
+<p>Perhaps it can return the usual output, or null to indicate that async work is required:</p>
+<div class="highlight"><pre><span></span><code><span class="n">state</span> <span class="o">=</span> <span class="n">stepTwoWorkflow</span><span class="p">.</span><span class="na">instantResponse</span><span class="p">(</span><span class="n">stepTwoInput</span><span class="p">)</span><span class="o">?.</span><span class="na">let</span> <span class="p">{</span> <span class="n">RunStepThree</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span> <span class="p">}</span>
+  <span class="o">?:</span> <span class="n">RunStepTwo</span>
+</code></pre></div>
+<p>A particularly nice aspect of this approach is how it keeps
+the knowledge encapsulated by the skippable workflow from leaking.</p>
+<p>Any hacks you might resort during <code>initialState</code> or <code>render</code>
+to make it seem like a workflow is short circuiting are big smells.
+They are guaranteed to cause performance problems that compound,
+and add needless complexity.</p>
+<h2 id="optional-renderings-using-rendert-instead-of-outputt">Optional renderings (using RenderT instead of OutputT)<a class="headerlink" href="#optional-renderings-using-rendert-instead-of-outputt" title="Permanent link">&para;</a></h2>
+<p>Besides the <a href="#skippable-workflows">skippable workflow</a> pattern described above,
+another way a child can communicate to its parent that it has no work to do
+is with a nullable or otherwise un-renderable rendering type.</p>
 <p>Imagine a <code>PromptForPermissionMaybeWorkflow</code>, that renders a UI to get a passcode, but only if that permission has not already been granted. If you make its <code>RenderingT</code> nullable (e.g. <code>Screen?</code>), it can return <code>null</code> to indicate that its job is done. Its callers will be synchronously informed that the coast is clear, and can immediately render what they actually care about.</p>
 <p>Another variation of this pattern is to use a sealed class / enum type for <code>Rendering</code>, with a <code>Working</code> type that implements <code>Screen</code>, and a unviewable <code>Finished</code> type that carries the work product.</p>
-<p>A good rule of thumb for choosing between using <code>Rendering</code> or <code>Output</code> is to remember that <code>Output</code> is event-like, and is always asynchronous. A parent waiting for an output must be given something to render in the meantime. Using <code>Rendering</code> is a great idiom for a one-and-done workflow tasked with providing a single product, especially one that might be available instantly.</p>
+<p>Either way, it&rsquo;s a good idea to use an an output type of
+<a href="https://nshipster.com/never/"><code>Never</code></a>/<a href="https://medium.com/@agrawalsuneet/the-nothing-type-kotlin-2e7df43b0111"><code>Nothing</code></a>
+in a case like this, to keep it crystal clear how the child reports to the parent.</p>
+<p>This pattern requires that the parent will not need to change state or emit output
+based on the returned rendering type.
+The parent must be able to choose some other child to run or something else to render immediately.
+If that is not practical, go <a href="#skippable-workflows">skippable</a> instead.</p>
 <h2 id="props-values-v-injected-dependencies">Props values v. Injected Dependencies<a class="headerlink" href="#props-values-v-injected-dependencies" title="Permanent link">&para;</a></h2>
 <p><a href="https://en.wikipedia.org/wiki/Dependency_injection">Dependency injection</a> is a technique for making
 code less coupled and more testable. In short, it&rsquo;s better for classes/structs to accept their
