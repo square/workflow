@@ -12,6 +12,9 @@ on:
       - lint_docs.sh
       - .markdownlint.rb
 
+permissions:
+  contents: read
+
 jobs:
   mkdocs:
     name: Build mkdocs to validate mkdocs.yml
