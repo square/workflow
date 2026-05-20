@@ -45,11 +45,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up JDK 17
+    - name: Set up JDK 21
       uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
-        java-version: 17
+        java-version: 21
 
     # Build Kotlin docs
     - name: Build Kotlin docs
