@@ -94,43 +94,14 @@
   <div class="breadcrumbs"><a href="../../index.html">core-common</a><span class="delimiter">/</span><a href="../index.html">com.squareup.workflow1.ui</a><span class="delimiter">/</span><span class="current">ViewRegistry</span></div>
   <div class="cover ">
     <h1 class="cover"><span>View</span><wbr><span><span>Registry</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ViewRegistry</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/ViewRegistry.kt#L64">source</a>)</span></span></div><p class="paragraph">The <a href="../-view-environment/index.html">ViewEnvironment</a> service that can be used to display the stream of renderings from a workflow tree as View instances. This is the engine behind AndroidViewRendering, WorkflowViewStub and ViewFactory. Most apps can ignore <a href="index.html">ViewRegistry</a> as an implementation detail, by using AndroidViewRendering to tie their rendering classes to view code.</p><p class="paragraph">To avoid that coupling between workflow code and the Android runtime, registries can be loaded with ViewFactory instances at runtime, and provided as an optional parameter to WorkflowLayout.start.</p><p class="paragraph">For example:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val AuthViewFactories = ViewRegistry(
-  AuthorizingLayoutRunner, LoginLayoutRunner, SecondFactorLayoutRunner
-)
-
-val TicTacToeViewFactories = ViewRegistry(
-  NewGameLayoutRunner, GamePlayLayoutRunner, GameOverLayoutRunner
-)
-
-val ApplicationViewFactories = ViewRegistry(ApplicationLayoutRunner) +
-  AuthViewFactories + TicTacToeViewFactories
-
-override fun onCreate(savedInstanceState: Bundle?) {
-  super.onCreate(savedInstanceState)
-
-  val model: MyViewModel by viewModels()
-  setContentView(
-    WorkflowLayout(this).apply { start(model.renderings, ApplicationViewFactories) }
-  )
-}
-
-/** As always, use an androidx ViewModel for state that survives config change. */
-class MyViewModel(savedState: SavedStateHandle) : ViewModel() {
-  val renderings: StateFlow<any> by lazy {
-    renderWorkflowIn(
-      workflow = rootWorkflow,
-      scope = viewModelScope,
-      savedStateHandle = savedState
-    )
-  }
-}</any></code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">In the above example, it is assumed that the <code class="lang-kotlin">companion object</code>s of the various decoupled LayoutRunner classes honor a convention of implementing ViewFactory, in aid of this kind of assembly.</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">class GamePlayLayoutRunner(view: View) : LayoutRunner<gamerendering> {
-
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":workflow-ui:core-common/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ViewRegistry</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/square/workflow-kotlin/blob/main/workflow-ui/core-common/src/main/java/com/squareup/workflow1/ui/ViewRegistry.kt#L60">source</a>)</span></span></div><p class="paragraph">The <a href="../-view-environment/index.html">ViewEnvironment</a> service that can be used to display the stream of renderings from a workflow tree as View instances. This is the engine behind AndroidViewRendering, WorkflowViewStub and ViewFactory. Most apps can ignore <a href="index.html">ViewRegistry</a> as an implementation detail, by using AndroidViewRendering to tie their rendering classes to view code.</p><p class="paragraph">To avoid that coupling between workflow code and the Android runtime, registries can be loaded with ViewFactory instances at runtime, and provided as an optional parameter to WorkflowLayout.start.</p><p class="paragraph">For example:     <code class="lang-kotlin">``     val AuthViewFactories = ViewRegistry(       AuthorizingLayoutRunner, LoginLayoutRunner, SecondFactorLayoutRunner     )     val TicTacToeViewFactories = ViewRegistry(       NewGameLayoutRunner, GamePlayLayoutRunner, GameOverLayoutRunner     )     val ApplicationViewFactories = ViewRegistry(ApplicationLayoutRunner) +       AuthViewFactories + TicTacToeViewFactories     override fun onCreate(savedInstanceState: Bundle?) {       super.onCreate(savedInstanceState)       val model: MyViewModel by viewModels()       setContentView(         WorkflowLayout(this).apply { start(model.renderings, ApplicationViewFactories) }       )     }     /** As always, use an androidx ViewModel for state that survives config change. */     class MyViewModel(savedState: SavedStateHandle) : ViewModel() {       val renderings: StateFlow&lt;Any&gt; by lazy {         renderWorkflowIn(           workflow = rootWorkflow,           scope = viewModelScope,           savedStateHandle = savedState         )       }     }     ``</code></p><p class="paragraph">In the above example, it is assumed that the <code class="lang-kotlin">companion object</code>s of the various decoupled LayoutRunner classes honor a convention of implementing ViewFactory, in aid of this kind of assembly.</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">```
+class GamePlayLayoutRunner(view: View) : LayoutRunner<gamerendering> {
   // ...
-
   companion object : ViewFactory<gamerendering> by LayoutRunner.bind(
     R.layout.game_layout, ::GameLayoutRunner
   )
-}</gamerendering></gamerendering></code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+}
+```</gamerendering></gamerendering></code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
